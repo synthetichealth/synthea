@@ -671,12 +671,15 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.remove(OutpatientFields.REV_CNTR_IDE_NDC_UPC_NUM);
             fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY);
             fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              String ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
+              fieldValues.put(OutpatientFields.REV_CNTR_IDE_NDC_UPC_NUM, ndcCode);
               fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
