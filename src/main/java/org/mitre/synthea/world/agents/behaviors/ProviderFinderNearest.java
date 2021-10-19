@@ -24,12 +24,12 @@ public class ProviderFinderNearest implements IProviderFinder {
     if (service == null
         || !(service.equals(EncounterType.URGENTCARE) || service.equals(EncounterType.EMERGENCY))) {
       // Filter to only VA Facilities if the person is a veteran
-      if (person.attributes.containsKey("veteran")) {
+      if (person.attributes.containsKey(Person.VETERAN)) {
         options = options.filter(p -> "VA Facility".equals(p.type));
       }
 
       // Filter out IHS facilities if someone is not Native American
-      if (! "NATIVE".equals(person.attributes.get(Person.RACE))) {
+      if (! "native".equals(person.attributes.get(Person.RACE))) {
         options = options.filter(p -> ! "IHS Facility".equals(p.type));
       }
     }
