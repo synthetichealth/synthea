@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -294,6 +296,24 @@ public class BB2RIFExporter {
         }
       }
     }
+  }
+  
+  /**
+   * Export the current values of IDs so subsequent runs can use them as a starting point
+   * @throws IOException 
+   */
+  public void exportEndState() throws IOException {
+    Properties endState = new Properties();
+    endState.setProperty("exporter.bfd.bene_id_start", beneId.toString());
+    endState.setProperty("exporter.bfd.clm_id_start", claimId.toString());
+    endState.setProperty("exporter.bfd.clm_grp_id_start", claimGroupId.toString());
+    endState.setProperty("exporter.bfd.pde_id_start", pdeId.toString());
+    endState.setProperty("exporter.bfd.mbi_start", mbi.toString());
+    endState.setProperty("exporter.bfd.hicn_start", hicn.toString());
+    File outputDir = Exporter.getOutputFolder("bfd", null);
+    FileOutputStream f = new FileOutputStream(new File(outputDir, "end_state.properties"));
+    endState.store(f, "BFD Properties End State");
+    f.close();
   }
 
   /**
