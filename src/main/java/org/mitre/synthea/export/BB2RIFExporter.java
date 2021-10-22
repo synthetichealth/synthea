@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -247,7 +246,7 @@ public class BB2RIFExporter {
             rifWriters.getWriter(BeneficiaryHistoryFields.class).getFile().getName()));
     manifest.write("</dataSetManifest>");
     Path manifestPath = output.toPath().resolve("manifest.xml");
-    Exporter.appendToFile(manifestPath, manifest.toString());
+    Exporter.overwriteFile(manifestPath, manifest.toString());
   }
 
   /**
@@ -299,8 +298,8 @@ public class BB2RIFExporter {
   }
   
   /**
-   * Export the current values of IDs so subsequent runs can use them as a starting point
-   * @throws IOException 
+   * Export the current values of IDs so subsequent runs can use them as a starting point.
+   * @throws IOException if something goes wrong
    */
   public void exportEndState() throws IOException {
     Properties endState = new Properties();
@@ -2352,18 +2351,21 @@ public class BB2RIFExporter {
   /**
    * Utility class for writing to BB2 writers.
    */
-  private static class SynchronizedBBLineWriter {
+  private static class SynchronizedBBLineWriter<E extends Enum<E>> {
     
     private String bbFieldSeparator = "|";
-    private Path path;
+    private final Path path;
+    private final Class<E> clazz;
     
     /**
      * Construct a new instance. Fields will be separated using the default '|' character.
      * @param path the file path to write to
      * @throws IOException if something goes wrong
      */
-    public SynchronizedBBLineWriter(Path path) {
+    public SynchronizedBBLineWriter(Class<E> clazz, Path path) {
       this.path = path;
+      this.clazz = clazz;
+      writeHeaderIfNeeded();
     }
 
     /**
@@ -2372,9 +2374,23 @@ public class BB2RIFExporter {
      * @param separator overrides the default '|' field separator
      * @throws IOException if something goes wrong
      */
-    public SynchronizedBBLineWriter(Path path, String separator) {
-      this.bbFieldSeparator = separator;
+    public SynchronizedBBLineWriter(Class<E> clazz, Path path, String separator) {
       this.path = path;
+      this.clazz = clazz;
+      this.bbFieldSeparator = separator;
+      writeHeaderIfNeeded();
+    }
+    
+    /**
+     * Write a BB2 header if the file is not present or is empty.
+     * @throws IOException if something goes wrong
+     */
+    private void writeHeaderIfNeeded() {
+      if (getFile().length() == 0) {
+        String[] fields = Arrays.stream(clazz.getEnumConstants()).map(Enum::name)
+                .toArray(String[]::new);
+        writeLine(fields);
+      }
     }
 
     /**
@@ -2389,26 +2405,14 @@ public class BB2RIFExporter {
     }
     
     /**
-     * Write a BB2 writer header.
-     * @param enumClass the enumeration class whose members define the column names
-     * @throws IOException if something goes wrong
-     */
-    public <E extends Enum<E>> void writeHeader(Class<E> enumClass) throws IOException {
-      String[] fields = Arrays.stream(enumClass.getEnumConstants()).map(Enum::name)
-              .toArray(String[]::new);
-      writeLine(fields);
-    }
-
-    /**
      * Write a BB2 writer line.
-     * @param enumClass the enumeration class whose members define the column names
      * @param fieldValues a sparse map of column names to values, missing values will result in
      *     empty values in the corresponding column
      * @throws IOException if something goes wrong 
      */
-    public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
+    public void writeValues(Map<E, String> fieldValues)
             throws IOException {
-      String[] fields = Arrays.stream(enumClass.getEnumConstants())
+      String[] fields = Arrays.stream(clazz.getEnumConstants())
               .map((e) -> fieldValues.getOrDefault(e, "")).toArray(String[]::new);
       writeLine(fields);
     }
@@ -2820,8 +2824,8 @@ public class BB2RIFExporter {
             throws IOException {
       if (!writers.containsKey(rifEnum)) {
         Path outputFilePath = outputDir.resolve(fileName);
-        SynchronizedBBLineWriter writer = new SynchronizedBBLineWriter(outputFilePath);
-        writer.writeHeader(rifEnum);
+        SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
+                rifEnum, outputFilePath);
         writers.put(rifEnum, writer);
       }
     }
@@ -2830,15 +2834,15 @@ public class BB2RIFExporter {
             String separator) throws IOException {
       if (!writers.containsKey(rifEnum)) {
         Path outputFilePath = outputDir.resolve(fileName);
-        SynchronizedBBLineWriter writer = new SynchronizedBBLineWriter(outputFilePath, separator);
-        writer.writeHeader(rifEnum);
+        SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
+                rifEnum, outputFilePath, separator);
         writers.put(rifEnum, writer);
       }
     }
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
             throws IOException {
-      writers.get(enumClass).writeValues(enumClass, fieldValues);
+      writers.get(enumClass).writeValues(fieldValues);
     }
   }
 }

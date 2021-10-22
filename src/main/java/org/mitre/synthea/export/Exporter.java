@@ -56,7 +56,7 @@ public abstract class Exporter {
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters =
           new ConcurrentHashMap<Path, PrintWriter>();
 
-  private static final int fileBufferSize = 4 * 1024 * 1024;
+  private static final int FILE_BUFFER_SIZE = 4 * 1024 * 1024;
 
   /**
    * Runtime configuration of the record exporter.
@@ -335,13 +335,27 @@ public abstract class Exporter {
   }
 
   /**
-   * Write a new file with the given contents.
+   * Write a new file with the given contents. Fails if the file already exists.
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
   private static void writeNewFile(Path file, String contents) {
     try {
       Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE_NEW);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Overwrite a file with the given contents. If the file doesn't exist it will be created.
+   * @param file Path to the new file.
+   * @param contents The contents of the file.
+   */
+  static void overwriteFile(Path file, String contents) {
+    try {
+      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE, 
+              StandardOpenOption.TRUNCATE_EXISTING);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -361,7 +375,7 @@ public abstract class Exporter {
         if (writer == null) {
           try {
             writer = new PrintWriter(
-              new BufferedWriter(new FileWriter(file.toFile(), true),fileBufferSize)
+              new BufferedWriter(new FileWriter(file.toFile(), true), FILE_BUFFER_SIZE)
             );
           } catch (IOException e) {
             e.printStackTrace();
