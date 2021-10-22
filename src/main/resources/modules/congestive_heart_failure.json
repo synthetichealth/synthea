@@ -1854,7 +1854,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "CHF initial workup encounter",
-      "value": "chf"
+      "value_attribute": "chf"
     }
   },
   "remarks": [

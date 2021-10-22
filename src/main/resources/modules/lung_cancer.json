@@ -2581,7 +2581,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "Schedule Follow Up III",
-      "value": "Lung Cancer"
+      "value_attribute": "Lung Cancer"
     }
   },
   "gmf_version": 1

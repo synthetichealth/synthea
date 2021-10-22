@@ -1033,7 +1033,7 @@
     "Hospice Reason": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "copd_variant",
+      "value_attribute": "copd_variant",
       "direct_transition": "Death"
     }
   },

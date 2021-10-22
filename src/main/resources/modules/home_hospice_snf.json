@@ -740,18 +740,18 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "COPD",
-      "value": "Type of Alzheimer's"
+      "value_attribute": "Type of Alzheimer's"
     },
     "COPD": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "copd_variant",
+      "value_attribute": "copd_variant",
       "direct_transition": "Initiate Hospice"
     },
     "CHF": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "chf",
+      "value_attribute": "chf",
       "direct_transition": "Initiate Hospice"
     },
     "Heart Disease": {
@@ -767,37 +767,37 @@
     "CKD": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "dialysis_reason",
+      "value_attribute": "dialysis_reason",
       "direct_transition": "Initiate Hospice"
     },
     "CF": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "Cystic_Fibrosis",
+      "value_attribute": "Cystic_Fibrosis",
       "direct_transition": "Initiate Hospice"
     },
     "Breast Cancer": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "breast_cancer_condition",
+      "value_attribute": "breast_cancer_condition",
       "direct_transition": "Initiate Hospice"
     },
     "Lung Cancer": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "Lung Cancer",
+      "value_attribute": "Lung Cancer",
       "direct_transition": "Initiate Hospice"
     },
     "Prostate Cancer": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "prostate_cancer",
+      "value_attribute": "prostate_cancer",
       "direct_transition": "Initiate Hospice"
     },
     "Colorectal Cancer": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "value": "colorectal_cancer",
+      "value_attribute": "colorectal_cancer",
       "direct_transition": "Initiate Hospice"
     }
   },
