@@ -631,6 +631,8 @@ public abstract class State implements Cloneable, Serializable {
     // For GMF 1.0 Support
     private Object value;
     private Code valueCode;
+    /** When the value of the attribute should be the value of another attribute. */
+    private String valueAttribute;
     private Range<Double> range;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
@@ -709,14 +711,14 @@ public abstract class State implements Cloneable, Serializable {
         value = distribution.generate(person);
       } else if (valueCode != null) {
         value = valueCode;
+      } else if (valueAttribute != null) {
+        // the module is setting an attribute to be the value of an existing attribute
+        if (person.attributes.containsKey(valueAttribute)) {
+          value = person.attributes.get(valueAttribute);
+        }
       }
 
       if (value != null) {
-        // the module is setting an attribute to be the value of an existing attribute
-        if (person.attributes.containsKey(value)) {
-          Object obj = person.attributes.get(value);
-          value = obj;
-        }
         person.attributes.put(attribute, value);
       } else if (person.attributes.containsKey(attribute)) {
         // intentionally clear out the variable

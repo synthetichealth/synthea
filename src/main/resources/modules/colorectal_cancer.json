@@ -2100,7 +2100,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "Wait_For_Oncologist_Encounter",
-      "value": "colorectal_cancer"
+      "value_attribute": "colorectal_cancer"
     }
   },
   "gmf_version": 1

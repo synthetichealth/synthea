@@ -2114,7 +2114,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
-      "value": "breast_cancer_condition"
+      "value_attribute": "breast_cancer_condition"
     }
   },
   "gmf_version": 1

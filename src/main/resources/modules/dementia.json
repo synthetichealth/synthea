@@ -735,7 +735,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "direct_transition": "NoImpairment",
-      "value": "Type of Alzheimer's"
+      "value_attribute": "Type of Alzheimer's"
     }
   },
   "gmf_version": 1
