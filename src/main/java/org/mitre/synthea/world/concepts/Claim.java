@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
@@ -16,6 +17,7 @@ public class Claim implements Serializable {
 
   public class ClaimEntry implements Serializable {
     private static final long serialVersionUID = 1871121895630816723L;
+    @JSONSkip
     public Entry entry;
     /** total cost of the entry. */
     public double cost;
@@ -70,6 +72,7 @@ public class Claim implements Serializable {
 
   public Payer payer;
   public Payer secondaryPayer;
+  @JSONSkip
   public Person person;
   public ClaimEntry mainEntry;
   public List<ClaimEntry> items;

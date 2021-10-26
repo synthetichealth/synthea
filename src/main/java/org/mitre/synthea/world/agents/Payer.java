@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -61,6 +62,7 @@ public class Payer implements Serializable {
   private static final String BESTRATE = "best_rate";
 
   /* Payer Adjustment strategy. */
+  @JSONSkip
   private IPayerAdjustment payerAdjustment;
   // Payer adjustment algorithm choices:
   private static final String NONE = "none";

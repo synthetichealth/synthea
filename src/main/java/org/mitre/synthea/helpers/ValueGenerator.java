@@ -1,6 +1,8 @@
 package org.mitre.synthea.helpers;
 
 import java.io.Serializable;
+
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -8,6 +10,7 @@ import org.mitre.synthea.world.agents.Person;
  * A value generator can determine a numerical value as a function of a given timestamp.
  */
 public abstract class ValueGenerator implements Serializable {
+  @JSONSkip
   protected final Person person;
 
   protected ValueGenerator(Person person) {

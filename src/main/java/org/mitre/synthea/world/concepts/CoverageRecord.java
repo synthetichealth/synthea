@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -40,6 +41,7 @@ public class CoverageRecord implements Serializable {
     }
   }
 
+  @JSONSkip
   private Person person;
   private List<Plan> planHistory;
 
