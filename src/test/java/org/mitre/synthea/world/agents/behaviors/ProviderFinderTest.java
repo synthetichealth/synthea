@@ -61,9 +61,9 @@ public class ProviderFinderTest {
   @Test
   public void testNonEligibleIHSNearest() {
     ProviderFinderNearest finder = new ProviderFinderNearest();
-    // Making the second facility a VA facility
+    // Making the first facility an IHS facility
     providers.get(0).type = "IHS Facility";
-    // Making the test person a veteran, so they will prefer the closest VA facility in a
+    // Setting the race to white for a test person so that they will not go to an IHS facility in a
     // non-emergency situation
     person.attributes.put(Person.RACE, "white");
     Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);

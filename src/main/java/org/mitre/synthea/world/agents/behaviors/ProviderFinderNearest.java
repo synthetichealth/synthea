@@ -1,6 +1,10 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.mitre.synthea.world.agents.Person;
@@ -34,12 +38,18 @@ public class ProviderFinderNearest implements IProviderFinder {
       }
     }
     // Sort by distance
-    options = options.sorted((a, b) -> {
-      double distanceToA = a.getLonLat().distance(person.getLonLat());
-      double distanceToB = b.getLonLat().distance(person.getLonLat());
-      return Double.compare(distanceToA, distanceToB);
-    });
-
-    return options.findFirst().orElse(null);
+    Map<Double, List<Provider>> groupedByDistance =
+        options.collect(groupingBy(p -> p.getLonLat().distance(person.getLonLat())));
+    Optional<Double> minDistance = groupedByDistance.keySet().stream().min(Double::compare);
+    if (minDistance.isPresent()) {
+      List<Provider> closestProviderGroup = groupedByDistance.get(minDistance.get());
+      if (closestProviderGroup.size() > 1) {
+        return closestProviderGroup.get(person.randInt(closestProviderGroup.size()));
+      } else {
+        return closestProviderGroup.get(0);
+      }
+    } else {
+      return null;
+    }
   }
 }
