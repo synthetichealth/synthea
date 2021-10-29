@@ -175,7 +175,7 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 173	FIPS_STATE_CNTY_SEPT_CD		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	NOT PRESENT IN DATA DICTIONARY
 174	FI_CLM_ACTN_CD	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A		TRUE	
 175	FI_CLM_PROC_DT	N/A	N/A			N/A	N/A	N/A				TRUE	
-176	FI_DOC_CLM_CNTL_NUM	N/A	N/A			N/A	N/A	N/A				TRUE	
+176	FI_DOC_CLM_CNTL_NUM	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
 177	FI_NUM	N/A	N/A			N/A	N/A	N/A				TRUE	
 178	FI_ORIG_CLM_CNTL_NUM	N/A	N/A			N/A	N/A	N/A				TRUE	
 179	FST_DGNS_E_CD	N/A	N/A			N/A	N/A	N/A				TRUE	
@@ -621,4 +621,4 @@ Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	Outpatient
 619	UPDT_TS	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 620	UPDT_USER_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 621	V_DOD_SW		N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-622	CARR_CLM_CNTL_NUM	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	
+622	CARR_CLM_CNTL_NUM	N/A	N/A	N/A	N/A	Coded	N/A	Coded	N/A	N/A	N/A	TRUE	

@@ -110,6 +110,10 @@ public class BB2RIFExporter {
       new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
   private static AtomicLong pdeId =
       new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
+  private static AtomicLong fiDocCntlNum =
+      new AtomicLong(Config.getAsLong("exporter.bfd.fi_doc_cntl_num_start", -1));
+  private static AtomicLong carrClmCntlNum =
+      new AtomicLong(Config.getAsLong("exporter.bfd.carr_clm_cntl_num_start", -1));
   private static AtomicReference<MBI> mbi =
       new AtomicReference<>(MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   private static AtomicReference<HICN> hicn =
@@ -309,6 +313,8 @@ public class BB2RIFExporter {
     endState.setProperty("exporter.bfd.pde_id_start", pdeId.toString());
     endState.setProperty("exporter.bfd.mbi_start", mbi.toString());
     endState.setProperty("exporter.bfd.hicn_start", hicn.toString());
+    endState.setProperty("exporter.bfd.fi_doc_cntl_num_start", fiDocCntlNum.toString());
+    endState.setProperty("exporter.bfd.carr_clm_cntl_num_start", carrClmCntlNum.toString());
     File outputDir = Exporter.getOutputFolder("bfd", null);
     FileOutputStream f = new FileOutputStream(new File(outputDir, "end_state.properties"));
     endState.store(f, "BFD Properties End State");
@@ -389,12 +395,11 @@ public class BB2RIFExporter {
         fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
                 getBB2SexCode((String)person.attributes.get(Person.GENDER)));
         String zipCode = (String)person.attributes.get(Person.ZIP);
+        fieldValues.put(BeneficiaryFields.BENE_ZIP_CD, zipCode);
         fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
                 locationMapper.zipToCountyCode(zipCode));
         fieldValues.put(BeneficiaryFields.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(BeneficiaryFields.BENE_ZIP_CD,
-                (String)person.attributes.get(Person.ZIP));
         fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
                 bb2RaceCode(
                         (String)person.attributes.get(Person.ETHNICITY),
@@ -557,6 +562,7 @@ public class BB2RIFExporter {
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
         continue;
@@ -568,6 +574,7 @@ public class BB2RIFExporter {
       fieldValues.put(OutpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(OutpatientFields.CLM_ID, "" + claimId);
       fieldValues.put(OutpatientFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(OutpatientFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(OutpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(OutpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(OutpatientFields.NCH_WKLY_PROC_DT,
@@ -751,6 +758,7 @@ public class BB2RIFExporter {
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       if (!(isInpatient || isEmergency)) {
         previousEmergency = false;
@@ -764,6 +772,7 @@ public class BB2RIFExporter {
       fieldValues.put(InpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(InpatientFields.CLM_ID, "" + claimId);
       fieldValues.put(InpatientFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(InpatientFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(InpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(InpatientFields.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(InpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
@@ -979,6 +988,7 @@ public class BB2RIFExporter {
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -992,6 +1002,7 @@ public class BB2RIFExporter {
       // The REQUIRED fields
       fieldValues.put(CarrierFields.CLM_ID, "" + claimId);
       fieldValues.put(CarrierFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(CarrierFields.CARR_CLM_CNTL_NUM, "" + carrClmId);
       fieldValues.put(CarrierFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(CarrierFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(CarrierFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
@@ -1502,6 +1513,8 @@ public class BB2RIFExporter {
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
+
       double latestHemoglobin = 0;
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {
@@ -1515,6 +1528,7 @@ public class BB2RIFExporter {
       // complex fields that could not easily be set using cms_field_values.tsv
       fieldValues.put(DMEFields.CLM_ID, "" + claimId);
       fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(DMEFields.CARR_CLM_CNTL_NUM, "" + carrClmId);
       fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
       fieldValues.put(DMEFields.CARR_NUM,
@@ -1623,6 +1637,7 @@ public class BB2RIFExporter {
       homeVisits += 1;
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
@@ -1631,6 +1646,7 @@ public class BB2RIFExporter {
       fieldValues.put(HHAFields.BENE_ID,  (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(HHAFields.CLM_ID, "" + claimId);
       fieldValues.put(HHAFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HHAFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(HHAFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(HHAFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(HHAFields.NCH_WKLY_PROC_DT,
@@ -1778,12 +1794,14 @@ public class BB2RIFExporter {
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
 
       fieldValues.put(HospiceFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(HospiceFields.CLM_ID, "" + claimId);
       fieldValues.put(HospiceFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HospiceFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(HospiceFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(HospiceFields.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(HospiceFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
@@ -1952,6 +1970,7 @@ public class BB2RIFExporter {
       }
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, SNFFields.class, person);
@@ -1960,6 +1979,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNFFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(SNFFields.CLM_ID, "" + claimId);
       fieldValues.put(SNFFields.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(SNFFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(SNFFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(SNFFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(SNFFields.NCH_WKLY_PROC_DT,
