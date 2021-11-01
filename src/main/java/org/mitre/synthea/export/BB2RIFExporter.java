@@ -198,17 +198,17 @@ public class BB2RIFExporter {
     Path outputDirectory = output.toPath();
     
     rifWriters = new RifWriters(outputDirectory);
-    rifWriters.addWriter(BeneficiaryFields.class, "beneficiary.csv");
-    rifWriters.addWriter(BeneficiaryHistoryFields.class, "beneficiary_history.csv");
-    rifWriters.addWriter(OutpatientFields.class, "outpatient.csv");
-    rifWriters.addWriter(InpatientFields.class, "inpatient.csv");
-    rifWriters.addWriter(CarrierFields.class, "carrier.csv");
-    rifWriters.addWriter(PrescriptionFields.class, "prescription.csv");
-    rifWriters.addWriter(DMEFields.class, "dme.csv");
-    rifWriters.addWriter(HHAFields.class, "home.csv");
-    rifWriters.addWriter(HospiceFields.class, "hospice.csv");
-    rifWriters.addWriter(SNFFields.class, "snf.csv");
-    rifWriters.addWriter(NPIFields.class, "npi.tsv", "\t");
+    rifWriters.addWriter(BeneficiaryFields.class, "beneficiary", true);
+    rifWriters.addWriter(BeneficiaryHistoryFields.class, "beneficiary_history");
+    rifWriters.addWriter(OutpatientFields.class, "outpatient");
+    rifWriters.addWriter(InpatientFields.class, "inpatient");
+    rifWriters.addWriter(CarrierFields.class, "carrier");
+    rifWriters.addWriter(PrescriptionFields.class, "prescription");
+    rifWriters.addWriter(DMEFields.class, "dme");
+    rifWriters.addWriter(HHAFields.class, "home");
+    rifWriters.addWriter(HospiceFields.class, "hospice");
+    rifWriters.addWriter(SNFFields.class, "snf");
+    rifWriters.addWriter(NPIFields.class, "npi", "tsv", "\t");
   }
   
   /**
@@ -230,6 +230,8 @@ public class BB2RIFExporter {
     manifest.write("sequenceId=\"0\">\n");
     manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
             rifWriters.getWriter(BeneficiaryFields.class).getFile().getName()));
+    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
+            rifWriters.getWriter(BeneficiaryFields.class, true).getFile().getName()));
     manifest.write(String.format("  <entry name=\"%s\" type=\"INPATIENT\"/>\n",
             rifWriters.getWriter(InpatientFields.class).getFile().getName()));
     manifest.write(String.format("  <entry name=\"%s\" type=\"OUTPATIENT\"/>\n",
@@ -368,17 +370,16 @@ public class BB2RIFExporter {
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
 
-    boolean firstLine = true;
+    boolean isUpdate = false;
     synchronized (rifWriters.getWriter(BeneficiaryFields.class)) {
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
         staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
-        if (!firstLine) {
+        if (isUpdate) {
           // The first year output is set via staticFieldConfig to "INSERT", subsequent years
           // need to be "UPDATE"
           fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
         }
-        firstLine = false;
 
         fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
         int monthCount = year == endYear ? endMonth : 12;
@@ -433,7 +434,8 @@ public class BB2RIFExporter {
             }
           }
         }
-        rifWriters.writeValues(BeneficiaryFields.class, fieldValues);
+        rifWriters.writeValues(BeneficiaryFields.class, fieldValues, isUpdate);
+        isUpdate = true;
       }
     }
   }
@@ -2510,9 +2512,9 @@ public class BB2RIFExporter {
                     row.get("Line"), row.get("Field"), columnName));
             continue; // Skip unsupported macro's in the TSV
           } else if (cellContents.isEmpty()) {
-            tsvIssues.add(String.format(
-                    "Empty cell in TSV line %s [%s] for %s",
-                    row.get("Line"), row.get("Field"), columnName));
+            // tsvIssues.add(String.format(
+            //        "Empty cell in TSV line %s [%s] for %s",
+            //        row.get("Line"), row.get("Field"), columnName));
             continue; // Skip empty cells
           }
           try {
@@ -2829,31 +2831,53 @@ public class BB2RIFExporter {
   
   private static class RifWriters {
     private final Map<Class, SynchronizedBBLineWriter> writers;
+    private final Map<Class, SynchronizedBBLineWriter> updateWriters;
     private final Path outputDir;
     
     public RifWriters(Path outputDir) {
       this.outputDir = outputDir;
       writers = Collections.synchronizedMap(new HashMap<>());
+      updateWriters = Collections.synchronizedMap(new HashMap<>());
     }
     
     public <E extends Enum<E>> SynchronizedBBLineWriter getWriter(Class<E> rifEnum) {
-      return writers.get(rifEnum);
+      return getWriter(rifEnum, false);
+    }
+    
+    public <E extends Enum<E>> SynchronizedBBLineWriter getWriter(Class<E> rifEnum,
+            boolean forUpdates) {
+      if (forUpdates) {
+        return updateWriters.get(rifEnum);
+      } else {
+        return writers.get(rifEnum);
+      }
     }
     
     public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName)
             throws IOException {
+      addWriter(rifEnum, fileName, false);
+    }
+    
+    public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName,
+            boolean separateUpdates) throws IOException {
       if (!writers.containsKey(rifEnum)) {
-        Path outputFilePath = outputDir.resolve(fileName);
+        Path outputFilePath = outputDir.resolve(fileName + ".csv");
         SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
                 rifEnum, outputFilePath);
         writers.put(rifEnum, writer);
+        if (separateUpdates) {
+          Path updateFilePath = outputDir.resolve(fileName + "_updates.csv");
+          SynchronizedBBLineWriter<E> updateWriter = new SynchronizedBBLineWriter<E>(
+                  rifEnum, updateFilePath);
+          updateWriters.put(rifEnum, updateWriter);          
+        }
       }
     }
     
     public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName,
-            String separator) throws IOException {
+            String ext, String separator) throws IOException {
       if (!writers.containsKey(rifEnum)) {
-        Path outputFilePath = outputDir.resolve(fileName);
+        Path outputFilePath = outputDir.resolve(fileName + "." + ext);
         SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
                 rifEnum, outputFilePath, separator);
         writers.put(rifEnum, writer);
@@ -2862,7 +2886,16 @@ public class BB2RIFExporter {
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
             throws IOException {
-      writers.get(enumClass).writeValues(fieldValues);
+      writeValues(enumClass, fieldValues, false);
+    }
+
+    public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues,
+            boolean isUpdate) throws IOException {
+      if (isUpdate) {
+        updateWriters.get(enumClass).writeValues(fieldValues);
+      } else {
+        writers.get(enumClass).writeValues(fieldValues);        
+      }
     }
   }
 }
