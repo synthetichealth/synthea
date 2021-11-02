@@ -1,10 +1,10 @@
 package org.mitre.synthea.engine;
 
-import org.mitre.synthea.export.JSONSkip;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.mitre.synthea.export.JSONSkip;
 
 public class ExpressedSymptom implements Cloneable, Serializable {
 

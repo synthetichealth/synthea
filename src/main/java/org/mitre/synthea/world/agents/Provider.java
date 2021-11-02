@@ -69,6 +69,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final Boolean USE_HOSPITAL_AS_DEFAULT =
       Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
+  @JSONSkip
   public Map<String, Object> attributes;
   public String uuid;
   private String locationUuid;
