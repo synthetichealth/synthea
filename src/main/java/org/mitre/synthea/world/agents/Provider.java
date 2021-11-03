@@ -327,7 +327,9 @@ public class Provider implements QuadTreeElement, Serializable {
         loadProviders(location, hospitalFile, servicesProvided, true, clinicianSeed);
 
         String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
-        loadProviders(location, ihsHospitalFile, servicesProvided, true, clinicianSeed);
+        if (ihsHospitalFile != null && ihsHospitalFile.length() > 0) {
+          loadProviders(location, ihsHospitalFile, servicesProvided, true, clinicianSeed);
+        }
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
@@ -337,9 +339,10 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, servicesProvided, false, clinicianSeed);
-
         String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
-        loadProviders(location, ihsPCFile, servicesProvided, true, clinicianSeed);
+        if (ihsPCFile != null && ihsPCFile.length() > 0) {
+          loadProviders(location, ihsPCFile, servicesProvided, true, clinicianSeed);
+        }
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
