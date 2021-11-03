@@ -29,10 +29,10 @@ import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.HICN;
 import org.mitre.synthea.export.BB2RIFExporter.MBI;
 import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
-import org.mitre.synthea.export.BB2RIFStructure.BeneficiaryFields;
-import org.mitre.synthea.export.BB2RIFStructure.CarrierFields;
-import org.mitre.synthea.export.BB2RIFStructure.DMEFields;
-import org.mitre.synthea.export.BB2RIFStructure.InpatientFields;
+import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY;
+import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
+import org.mitre.synthea.export.BB2RIFStructure.DME;
+import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -185,15 +185,15 @@ public class BB2RIFExporterTest {
             || randomVal.equalsIgnoreCase("3"));
     
     StaticFieldConfig config = new StaticFieldConfig();
-    assertEquals("INSERT", config.getValue("DML_IND", InpatientFields.class));
-    assertEquals("82 (DMEPOS)", config.getValue("NCH_CLM_TYPE_CD", DMEFields.class));
+    assertEquals("INSERT", config.getValue("DML_IND", INPATIENT.class));
+    assertEquals("82 (DMEPOS)", config.getValue("NCH_CLM_TYPE_CD", DME.class));
     assertEquals("71 (local carrier, non-DME)",
-            config.getValue("NCH_CLM_TYPE_CD", CarrierFields.class));
+            config.getValue("NCH_CLM_TYPE_CD", CARRIER.class));
     
-    HashMap<BeneficiaryFields, String> values = new HashMap<>();
-    config.setValues(values, BeneficiaryFields.class, rand);
-    assertEquals("INSERT", values.get(BeneficiaryFields.DML_IND));
-    String sexIdent = values.get(BeneficiaryFields.BENE_SEX_IDENT_CD);
+    HashMap<BENEFICIARY, String> values = new HashMap<>();
+    config.setValues(values, BENEFICIARY.class, rand);
+    assertEquals("INSERT", values.get(BENEFICIARY.DML_IND));
+    String sexIdent = values.get(BENEFICIARY.BENE_SEX_IDENT_CD);
     assertTrue(sexIdent.equals("1") || sexIdent.equals("2"));
   }
   

@@ -1,4 +1,4 @@
-Line	Field	BeneficiaryFields	BeneficiaryHistoryFields	InpatientFields	OutpatientFields	CarrierFields	PrescriptionFields	DMEFields	HHAFields	HospiceFields	SNFFields	Optional	Comment
+Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	HHA	HOSPICE	SNF	Optional	Comment
 0	ADJSTMT_DLTN_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
 1	ADMTG_DGNS_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	Coded	TRUE	
 2	ADMTG_DGNS_VRSN_CD	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	0	TRUE	
