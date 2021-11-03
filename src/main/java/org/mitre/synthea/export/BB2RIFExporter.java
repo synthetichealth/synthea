@@ -36,17 +36,17 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.StringUtils;
-import org.mitre.synthea.export.BB2RIFStructure.BeneficiaryFields;
-import org.mitre.synthea.export.BB2RIFStructure.BeneficiaryHistoryFields;
-import org.mitre.synthea.export.BB2RIFStructure.CarrierFields;
-import org.mitre.synthea.export.BB2RIFStructure.DMEFields;
-import org.mitre.synthea.export.BB2RIFStructure.HHAFields;
-import org.mitre.synthea.export.BB2RIFStructure.HospiceFields;
-import org.mitre.synthea.export.BB2RIFStructure.InpatientFields;
-import org.mitre.synthea.export.BB2RIFStructure.NPIFields;
-import org.mitre.synthea.export.BB2RIFStructure.OutpatientFields;
-import org.mitre.synthea.export.BB2RIFStructure.PrescriptionFields;
-import org.mitre.synthea.export.BB2RIFStructure.SNFFields;
+import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY;
+import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY_HISTORY;
+import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
+import org.mitre.synthea.export.BB2RIFStructure.DME;
+import org.mitre.synthea.export.BB2RIFStructure.HHA;
+import org.mitre.synthea.export.BB2RIFStructure.HOSPICE;
+import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
+import org.mitre.synthea.export.BB2RIFStructure.NPI;
+import org.mitre.synthea.export.BB2RIFStructure.OUTPATIENT;
+import org.mitre.synthea.export.BB2RIFStructure.PDE;
+import org.mitre.synthea.export.BB2RIFStructure.SNF;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -189,7 +189,7 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Create the output folder and files. Write headers to each file.
+   * Create the output folder. Files will be added as needed.
    */
   final void prepareOutputFiles() throws IOException {
     // Initialize output writers
@@ -198,17 +198,6 @@ public class BB2RIFExporter {
     Path outputDirectory = output.toPath();
     
     rifWriters = new RifWriters(outputDirectory);
-    rifWriters.addWriter(BeneficiaryFields.class, "beneficiary", true);
-    rifWriters.addWriter(BeneficiaryHistoryFields.class, "beneficiary_history");
-    rifWriters.addWriter(OutpatientFields.class, "outpatient");
-    rifWriters.addWriter(InpatientFields.class, "inpatient");
-    rifWriters.addWriter(CarrierFields.class, "carrier");
-    rifWriters.addWriter(PrescriptionFields.class, "prescription");
-    rifWriters.addWriter(DMEFields.class, "dme");
-    rifWriters.addWriter(HHAFields.class, "home");
-    rifWriters.addWriter(HospiceFields.class, "hospice");
-    rifWriters.addWriter(SNFFields.class, "snf");
-    rifWriters.addWriter(NPIFields.class, "npi", "tsv", "\t");
   }
   
   /**
@@ -228,28 +217,17 @@ public class BB2RIFExporter {
                      .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
                      .toString()));
     manifest.write("sequenceId=\"0\">\n");
-    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
-            rifWriters.getWriter(BeneficiaryFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY\"/>\n",
-            rifWriters.getWriter(BeneficiaryFields.class, true).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"INPATIENT\"/>\n",
-            rifWriters.getWriter(InpatientFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"OUTPATIENT\"/>\n",
-            rifWriters.getWriter(OutpatientFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"PDE\"/>\n",
-            rifWriters.getWriter(PrescriptionFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"CARRIER\"/>\n",
-            rifWriters.getWriter(CarrierFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"DME\"/>\n",
-            rifWriters.getWriter(DMEFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"HHA\"/>\n",
-            rifWriters.getWriter(HHAFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"HOSPICE\"/>\n",
-            rifWriters.getWriter(HospiceFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"SNF\"/>\n",
-            rifWriters.getWriter(SNFFields.class).getFile().getName()));
-    manifest.write(String.format("  <entry name=\"%s\" type=\"BENEFICIARY_HISTORY\"/>\n",
-            rifWriters.getWriter(BeneficiaryHistoryFields.class).getFile().getName()));
+    for (Class<?> rifFile: BB2RIFStructure.RIF_FILES) {
+      for (RifEntryStatus status: RifEntryStatus.values()) {
+        // generics and arrays are weird so need to cast below rather than declare on the array
+        Class<? extends Enum> rifEnum = (Class<? extends Enum>) rifFile;
+        SynchronizedBBLineWriter writer = rifWriters.getWriter(rifEnum, status);
+        if (writer != null) {
+          manifest.write(String.format("  <entry name=\"%s\" type=\"%s\"/>\n",
+                  writer.getFile().getName(), rifEnum.getSimpleName()));
+        }
+      }
+    }
     manifest.write("</dataSetManifest>");
     Path manifestPath = output.toPath().resolve("manifest.xml");
     Exporter.overwriteFile(manifestPath, manifest.toString());
@@ -260,7 +238,9 @@ public class BB2RIFExporter {
    * @throws IOException if something goes horribly wrong.
    */
   public void exportNPIs() throws IOException {
-    HashMap<NPIFields, String> fieldValues = new HashMap<>();
+    HashMap<NPI, String> fieldValues = new HashMap<>();
+    SynchronizedBBLineWriter rifWriter = rifWriters.getOrCreateWriter(NPI.class,
+            RifEntryStatus.INITIAL, "tsv", "\t");
 
     for (Provider h : Provider.getProviderList()) {
 
@@ -272,11 +252,11 @@ public class BB2RIFExporter {
       if (totalEncounters > 0) {
         // export organization
         fieldValues.clear();
-        fieldValues.put(NPIFields.NPI, h.npi);
-        fieldValues.put(NPIFields.ENTITY_TYPE_CODE, "2");
-        fieldValues.put(NPIFields.EIN, "<UNAVAIL>");
-        fieldValues.put(NPIFields.ORG_NAME, h.name);
-        rifWriters.writeValues(NPIFields.class, fieldValues);
+        fieldValues.put(NPI.NPI, h.npi);
+        fieldValues.put(NPI.ENTITY_TYPE_CODE, "2");
+        fieldValues.put(NPI.EIN, "<UNAVAIL>");
+        fieldValues.put(NPI.ORG_NAME, h.name);
+        rifWriter.writeValues(fieldValues);
 
         Map<String, ArrayList<Clinician>> clinicians = h.clinicianMap;
         for (String specialty : clinicians.keySet()) {
@@ -286,16 +266,16 @@ public class BB2RIFExporter {
               // export each doc
               Map<String,Object> attributes = doc.getAttributes();
               fieldValues.clear();
-              fieldValues.put(NPIFields.NPI, doc.npi);
-              fieldValues.put(NPIFields.ENTITY_TYPE_CODE, "1");
-              fieldValues.put(NPIFields.LAST_NAME,
+              fieldValues.put(NPI.NPI, doc.npi);
+              fieldValues.put(NPI.ENTITY_TYPE_CODE, "1");
+              fieldValues.put(NPI.LAST_NAME,
                   attributes.get(Clinician.LAST_NAME).toString());
-              fieldValues.put(NPIFields.FIRST_NAME,
+              fieldValues.put(NPI.FIRST_NAME,
                   attributes.get(Clinician.FIRST_NAME).toString());
-              fieldValues.put(NPIFields.PREFIX,
+              fieldValues.put(NPI.PREFIX,
                   attributes.get(Clinician.NAME_PREFIX).toString());
-              fieldValues.put(NPIFields.CREDENTIALS, "M.D.");
-              rifWriters.writeValues(NPIFields.class, fieldValues);
+              fieldValues.put(NPI.CREDENTIALS, "M.D.");
+              rifWriter.writeValues(fieldValues);
             }
           }
         }
@@ -370,57 +350,57 @@ public class BB2RIFExporter {
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
 
-    boolean isUpdate = false;
-    synchronized (rifWriters.getWriter(BeneficiaryFields.class)) {
+    RifEntryStatus entryStatus = RifEntryStatus.INITIAL;
+    synchronized (rifWriters.getOrCreateWriter(BENEFICIARY.class, entryStatus)) {
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
-        HashMap<BeneficiaryFields, String> fieldValues = new HashMap<>();
-        staticFieldConfig.setValues(fieldValues, BeneficiaryFields.class, person);
-        if (isUpdate) {
+        HashMap<BENEFICIARY, String> fieldValues = new HashMap<>();
+        staticFieldConfig.setValues(fieldValues, BENEFICIARY.class, person);
+        if (entryStatus != RifEntryStatus.INITIAL) {
           // The first year output is set via staticFieldConfig to "INSERT", subsequent years
           // need to be "UPDATE"
-          fieldValues.put(BeneficiaryFields.DML_IND, "UPDATE");
+          fieldValues.put(BENEFICIARY.DML_IND, "UPDATE");
         }
 
-        fieldValues.put(BeneficiaryFields.RFRNC_YR, String.valueOf(year));
+        fieldValues.put(BENEFICIARY.RFRNC_YR, String.valueOf(year));
         int monthCount = year == endYear ? endMonth : 12;
         String monthCountStr = String.valueOf(monthCount);
-        fieldValues.put(BeneficiaryFields.A_MO_CNT, monthCountStr);
-        fieldValues.put(BeneficiaryFields.B_MO_CNT, monthCountStr);
-        fieldValues.put(BeneficiaryFields.BUYIN_MO_CNT, monthCountStr);
-        fieldValues.put(BeneficiaryFields.RDS_MO_CNT, monthCountStr);
+        fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
+        fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
+        fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
+        fieldValues.put(BENEFICIARY.RDS_MO_CNT, monthCountStr);
         int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
-        fieldValues.put(BeneficiaryFields.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
-        fieldValues.put(BeneficiaryFields.BENE_ID, beneIdStr);
-        fieldValues.put(BeneficiaryFields.BENE_CRNT_HIC_NUM, hicId);
-        fieldValues.put(BeneficiaryFields.MBI_NUM, mbiStr);
-        fieldValues.put(BeneficiaryFields.BENE_SEX_IDENT_CD,
+        fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
+        fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
+        fieldValues.put(BENEFICIARY.BENE_CRNT_HIC_NUM, hicId);
+        fieldValues.put(BENEFICIARY.MBI_NUM, mbiStr);
+        fieldValues.put(BENEFICIARY.BENE_SEX_IDENT_CD,
                 getBB2SexCode((String)person.attributes.get(Person.GENDER)));
         String zipCode = (String)person.attributes.get(Person.ZIP);
-        fieldValues.put(BeneficiaryFields.BENE_ZIP_CD, zipCode);
-        fieldValues.put(BeneficiaryFields.BENE_COUNTY_CD,
+        fieldValues.put(BENEFICIARY.BENE_ZIP_CD, zipCode);
+        fieldValues.put(BENEFICIARY.BENE_COUNTY_CD,
                 locationMapper.zipToCountyCode(zipCode));
-        fieldValues.put(BeneficiaryFields.STATE_CODE,
+        fieldValues.put(BENEFICIARY.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(BeneficiaryFields.BENE_RACE_CD,
+        fieldValues.put(BENEFICIARY.BENE_RACE_CD,
                 bb2RaceCode(
                         (String)person.attributes.get(Person.ETHNICITY),
                         (String)person.attributes.get(Person.RACE)));
-        fieldValues.put(BeneficiaryFields.BENE_SRNM_NAME, 
+        fieldValues.put(BENEFICIARY.BENE_SRNM_NAME, 
                 (String)person.attributes.get(Person.LAST_NAME));
         String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-        fieldValues.put(BeneficiaryFields.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
+        fieldValues.put(BENEFICIARY.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
         long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-        fieldValues.put(BeneficiaryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
-        fieldValues.put(BeneficiaryFields.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
-        fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "0");
-        fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "0");
+        fieldValues.put(BENEFICIARY.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+        fieldValues.put(BENEFICIARY.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
+        fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "0");
+        fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "0");
         if (deathDate != -1) {
           // only add death date for years when it was (presumably) known. E.g. If we are outputting
           // record for 2005 and patient died in 2007 we don't include the death date.
           if (Utilities.getYear(deathDate) <= year) {
-            fieldValues.put(BeneficiaryFields.DEATH_DT, bb2DateFromTimestamp(deathDate));
-            fieldValues.put(BeneficiaryFields.BENE_PTA_TRMNTN_CD, "1");
-            fieldValues.put(BeneficiaryFields.BENE_PTB_TRMNTN_CD, "1");
+            fieldValues.put(BENEFICIARY.DEATH_DT, bb2DateFromTimestamp(deathDate));
+            fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
+            fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
           }
         }
         
@@ -428,14 +408,19 @@ public class BB2RIFExporter {
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
           if (partDContractID != null) {
+            String partDContractIDStr = partDContractID.toString();
             for (int i: period.getCoveredMonths(year)) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
-                      partDContractID.toString());
+                      partDContractIDStr);
             }
           }
         }
-        rifWriters.writeValues(BeneficiaryFields.class, fieldValues, isUpdate);
-        isUpdate = true;
+        rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
+        if (year == (endYear - 1)) {
+          entryStatus = RifEntryStatus.FINAL;
+        } else {
+          entryStatus = RifEntryStatus.INTERIM;
+        }
       }
     }
   }
@@ -501,39 +486,39 @@ public class BB2RIFExporter {
    */
   private void exportBeneficiaryHistory(Person person, 
         long stopTime) throws IOException {
-    HashMap<BeneficiaryHistoryFields, String> fieldValues = new HashMap<>();
+    HashMap<BENEFICIARY_HISTORY, String> fieldValues = new HashMap<>();
 
-    staticFieldConfig.setValues(fieldValues, BeneficiaryHistoryFields.class, person);
+    staticFieldConfig.setValues(fieldValues, BENEFICIARY_HISTORY.class, person);
 
     String beneIdStr = (String)person.attributes.get(BB2_BENE_ID);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_ID, beneIdStr);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_ID, beneIdStr);
     String hicId = (String)person.attributes.get(BB2_HIC_ID);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_CRNT_HIC_NUM, hicId);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_CRNT_HIC_NUM, hicId);
     String mbiStr = (String)person.attributes.get(BB2_MBI);
-    fieldValues.put(BeneficiaryHistoryFields.MBI_NUM, mbiStr);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_SEX_IDENT_CD,
+    fieldValues.put(BENEFICIARY_HISTORY.MBI_NUM, mbiStr);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
     String zipCode = (String)person.attributes.get(Person.ZIP);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_COUNTY_CD,
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_COUNTY_CD,
             locationMapper.zipToCountyCode(zipCode));
-    fieldValues.put(BeneficiaryHistoryFields.STATE_CODE,
+    fieldValues.put(BENEFICIARY_HISTORY.STATE_CODE,
             locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-    fieldValues.put(BeneficiaryHistoryFields.BENE_ZIP_CD,
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_ZIP_CD,
             (String)person.attributes.get(Person.ZIP));
-    fieldValues.put(BeneficiaryHistoryFields.BENE_RACE_CD,
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_RACE_CD,
             bb2RaceCode(
                     (String)person.attributes.get(Person.ETHNICITY),
                     (String)person.attributes.get(Person.RACE)));
-    fieldValues.put(BeneficiaryHistoryFields.BENE_SRNM_NAME, 
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_SRNM_NAME, 
             (String)person.attributes.get(Person.LAST_NAME));
-    fieldValues.put(BeneficiaryHistoryFields.BENE_GVN_NAME,
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
     String terminationCode = (person.attributes.get(Person.DEATHDATE) == null) ? "0" : "1";
-    fieldValues.put(BeneficiaryHistoryFields.BENE_PTA_TRMNTN_CD, terminationCode);
-    fieldValues.put(BeneficiaryHistoryFields.BENE_PTB_TRMNTN_CD, terminationCode);
-    rifWriters.writeValues(BeneficiaryHistoryFields.class, fieldValues);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
+    rifWriters.writeValues(BENEFICIARY_HISTORY.class, fieldValues);
   }
 
   /**
@@ -554,7 +539,7 @@ public class BB2RIFExporter {
    */
   private void exportOutpatient(Person person, long stopTime) 
         throws IOException {
-    HashMap<OutpatientFields, String> fieldValues = new HashMap<>();
+    HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
@@ -570,31 +555,31 @@ public class BB2RIFExporter {
         continue;
       }
       
-      staticFieldConfig.setValues(fieldValues, OutpatientFields.class, person);
+      staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
       
       // The REQUIRED fields
-      fieldValues.put(OutpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(OutpatientFields.CLM_ID, "" + claimId);
-      fieldValues.put(OutpatientFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(OutpatientFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(OutpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(OutpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(OutpatientFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(OUTPATIENT.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(OUTPATIENT.CLM_ID, "" + claimId);
+      fieldValues.put(OUTPATIENT.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(OUTPATIENT.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+      fieldValues.put(OUTPATIENT.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(OUTPATIENT.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(OUTPATIENT.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(OutpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(OutpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(OutpatientFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(OutpatientFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(OutpatientFields.OP_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(OutpatientFields.CLM_PMT_AMT, String.format("%.2f",
+      fieldValues.put(OUTPATIENT.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(OUTPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(OUTPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(OUTPATIENT.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+        fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
-        fieldValues.put(OutpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+        fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
                 String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(OutpatientFields.PRVDR_STATE_CD,
+      fieldValues.put(OUTPATIENT.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
@@ -606,29 +591,29 @@ public class BB2RIFExporter {
       if (!person.alive(encounter.stop)) {
         field = "20"; // the patient died before the encounter ended
       }
-      fieldValues.put(OutpatientFields.PTNT_DSCHRG_STUS_CD, field);
-      fieldValues.put(OutpatientFields.CLM_TOT_CHRG_AMT,
+      fieldValues.put(OUTPATIENT.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(OUTPATIENT.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(OutpatientFields.CLM_OP_PRVDR_PMT_AMT,
+      fieldValues.put(OUTPATIENT.CLM_OP_PRVDR_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", encounter.claim.getPatientCost()));
-      fieldValues.put(OutpatientFields.NCH_BENE_PTB_DDCTBL_AMT,
+      fieldValues.put(OUTPATIENT.NCH_BENE_PTB_DDCTBL_AMT,
               String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(OutpatientFields.REV_CNTR_CASH_DDCTBL_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_CASH_DDCTBL_AMT,
               String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(OutpatientFields.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
+      fieldValues.put(OUTPATIENT.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
               String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(OutpatientFields.REV_CNTR_PMT_AMT_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(OutpatientFields.REV_CNTR_PRVDR_PMT_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_PRVDR_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(OutpatientFields.REV_CNTR_PTNT_RSPNSBLTY_PMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_PTNT_RSPNSBLTY_PMT,
               String.format("%.2f",
                       encounter.claim.getDeductiblePaid() + encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(OutpatientFields.REV_CNTR_RDCD_COINSRNC_AMT,
+      fieldValues.put(OUTPATIENT.REV_CNTR_RDCD_COINSRNC_AMT,
               String.format("%.2f", encounter.claim.getCoinsurancePaid()));
 
       if (encounter.reason != null) {
@@ -636,7 +621,7 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, icdCode);
         }
       }
 
@@ -648,12 +633,12 @@ public class BB2RIFExporter {
         int smallest = Math.min(mappedDiagnosisCodes.size(),
                 BB2RIFStructure.outpatientDxFields.length);
         for (int i = 0; i < smallest; i++) {
-          OutpatientFields[] dxField = BB2RIFStructure.outpatientDxFields[i];
+          OUTPATIENT[] dxField = BB2RIFStructure.outpatientDxFields[i];
           fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
           fieldValues.put(dxField[1], "0"); // 0=ICD10
         }
-        if (!fieldValues.containsKey(OutpatientFields.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(OutpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        if (!fieldValues.containsKey(OUTPATIENT.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
 
@@ -675,7 +660,7 @@ public class BB2RIFExporter {
           int smallest = Math.min(mappableProcedures.size(),
                   BB2RIFStructure.outpatientPxFields.length);
           for (int i = 0; i < smallest; i++) {
-            OutpatientFields[] pxField = BB2RIFStructure.outpatientPxFields[i];
+            OUTPATIENT[] pxField = BB2RIFStructure.outpatientPxFields[i];
             fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
             fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
@@ -688,7 +673,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      synchronized (rifWriters.getWriter(OutpatientFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(OUTPATIENT.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -699,45 +684,45 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.remove(OutpatientFields.REV_CNTR_IDE_NDC_UPC_NUM);
-            fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY);
-            fieldValues.remove(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
+            fieldValues.remove(OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
+            fieldValues.remove(OUTPATIENT.REV_CNTR_NDC_QTY);
+            fieldValues.remove(OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
               String ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
-              fieldValues.put(OutpatientFields.REV_CNTR_IDE_NDC_UPC_NUM, ndcCode);
-              fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(OutpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.put(OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM, ndcCode);
+              fieldValues.put(OUTPATIENT.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
           if (hcpcsCode == null) {
             continue;
           }
 
-          fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(OutpatientFields.HCPCS_CD, hcpcsCode);
-          fieldValues.put(OutpatientFields.REV_CNTR_RATE_AMT,
+          fieldValues.put(OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(OUTPATIENT.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(OUTPATIENT.HCPCS_CD, hcpcsCode);
+          fieldValues.put(OUTPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost)));
-          fieldValues.put(OutpatientFields.REV_CNTR_PMT_AMT_AMT,
+          fieldValues.put(OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
               String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-          fieldValues.put(OutpatientFields.REV_CNTR_TOT_CHRG_AMT,
+          fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(OutpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+          fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-          rifWriters.writeValues(OutpatientFields.class, fieldValues);
+          rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(OutpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(OutpatientFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(OUTPATIENT.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
           // 99241: "Office consultation for a new or established patient" 
-          fieldValues.put(OutpatientFields.HCPCS_CD, "99241");
-          rifWriters.writeValues(OutpatientFields.class, fieldValues);
+          fieldValues.put(OUTPATIENT.HCPCS_CD, "99241");
+          rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
       }
     }
@@ -751,7 +736,7 @@ public class BB2RIFExporter {
    */
   private void exportInpatient(Person person, long stopTime) 
         throws IOException {
-    HashMap<InpatientFields, String> fieldValues = new HashMap<>();
+    HashMap<INPATIENT, String> fieldValues = new HashMap<>();
 
     boolean previousEmergency = false;
 
@@ -768,31 +753,31 @@ public class BB2RIFExporter {
       }
 
       fieldValues.clear();
-      staticFieldConfig.setValues(fieldValues, InpatientFields.class, person);
+      staticFieldConfig.setValues(fieldValues, INPATIENT.class, person);
       
       // The REQUIRED fields
-      fieldValues.put(InpatientFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(InpatientFields.CLM_ID, "" + claimId);
-      fieldValues.put(InpatientFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(InpatientFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(InpatientFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(InpatientFields.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(InpatientFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(InpatientFields.NCH_BENE_DSCHRG_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(InpatientFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(INPATIENT.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(INPATIENT.CLM_ID, "" + claimId);
+      fieldValues.put(INPATIENT.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(INPATIENT.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+      fieldValues.put(INPATIENT.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(INPATIENT.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(INPATIENT.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(INPATIENT.NCH_BENE_DSCHRG_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(INPATIENT.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(InpatientFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(InpatientFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(InpatientFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(InpatientFields.CLM_PMT_AMT,
+      fieldValues.put(INPATIENT.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(INPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(INPATIENT.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(InpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+        fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
-        fieldValues.put(InpatientFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+        fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
                 String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(InpatientFields.PRVDR_STATE_CD,
+      fieldValues.put(INPATIENT.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
@@ -804,8 +789,8 @@ public class BB2RIFExporter {
       if (!person.alive(encounter.stop)) {
         field = "20"; // the patient died before the encounter ended
       }
-      fieldValues.put(InpatientFields.PTNT_DSCHRG_STUS_CD, field);
-      fieldValues.put(InpatientFields.CLM_TOT_CHRG_AMT,
+      fieldValues.put(INPATIENT.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(INPATIENT.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (isEmergency) {
         field = "1"; // emergency
@@ -814,23 +799,23 @@ public class BB2RIFExporter {
       } else {
         field = "3"; // elective
       }
-      fieldValues.put(InpatientFields.CLM_IP_ADMSN_TYPE_CD, field);
-      fieldValues.put(InpatientFields.NCH_BENE_IP_DDCTBL_AMT,
+      fieldValues.put(INPATIENT.CLM_IP_ADMSN_TYPE_CD, field);
+      fieldValues.put(INPATIENT.NCH_BENE_IP_DDCTBL_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(InpatientFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
+      fieldValues.put(INPATIENT.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
           String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(InpatientFields.NCH_IP_NCVRD_CHRG_AMT,
+      fieldValues.put(INPATIENT.NCH_IP_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
-      fieldValues.put(InpatientFields.NCH_IP_TOT_DDCTN_AMT,
+      fieldValues.put(INPATIENT.NCH_IP_TOT_DDCTN_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
-      fieldValues.put(InpatientFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      fieldValues.put(INPATIENT.CLM_UTLZTN_DAY_CNT, "" + days);
       if (days > 60) {
         field = "" + (days - 60);
       } else {
         field = "0";
       }
-      fieldValues.put(InpatientFields.BENE_TOT_COINSRNC_DAYS_CNT, field);
+      fieldValues.put(INPATIENT.BENE_TOT_COINSRNC_DAYS_CNT, field);
       if (days > 60) {
         field = "1"; // days outlier
       } else if (encounter.claim.getTotalClaimCost() > 100_000) {
@@ -838,24 +823,24 @@ public class BB2RIFExporter {
       } else {
         field = "0"; // no outlier
       }
-      fieldValues.put(InpatientFields.CLM_DRG_OUTLIER_STAY_CD, field);
-      fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
+      fieldValues.put(INPATIENT.CLM_DRG_OUTLIER_STAY_CD, field);
+      fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+      fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
 
       // OPTIONAL FIELDS
-      fieldValues.put(InpatientFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(INPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(InpatientFields.ADMTG_DGNS_CD, icdCode);
+          fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(INPATIENT.ADMTG_DGNS_CD, icdCode);
           if (drgCodeMapper.canMap(icdCode)) {
-            fieldValues.put(InpatientFields.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
+            fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
           }
         }
       }
@@ -868,15 +853,15 @@ public class BB2RIFExporter {
         int smallest = Math.min(mappedDiagnosisCodes.size(),
                 BB2RIFStructure.inpatientDxFields.length);
         for (int i = 0; i < smallest; i++) {
-          InpatientFields[] dxField = BB2RIFStructure.inpatientDxFields[i];
+          INPATIENT[] dxField = BB2RIFStructure.inpatientDxFields[i];
           String dxCode = mappedDiagnosisCodes.get(i);
           fieldValues.put(dxField[0], dxCode);
           fieldValues.put(dxField[1], "0"); // 0=ICD10
           String present = presentOnAdmission.contains(dxCode) ? "Y" : "N";
           fieldValues.put(dxField[2], present);
         }
-        if (!fieldValues.containsKey(InpatientFields.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(InpatientFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        if (!fieldValues.containsKey(INPATIENT.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
       // Use the procedures in this encounter to enter mapped values
@@ -897,7 +882,7 @@ public class BB2RIFExporter {
           int smallest = Math.min(mappableProcedures.size(),
                   BB2RIFStructure.inpatientPxFields.length);
           for (int i = 0; i < smallest; i++) {
-            InpatientFields[] pxField = BB2RIFStructure.inpatientPxFields[i];
+            INPATIENT[] pxField = BB2RIFStructure.inpatientPxFields[i];
             fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
             fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
@@ -911,7 +896,7 @@ public class BB2RIFExporter {
       }
       previousEmergency = isEmergency;
 
-      synchronized (rifWriters.getWriter(InpatientFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(INPATIENT.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -922,51 +907,51 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY);
-            fieldValues.remove(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD);
+            fieldValues.remove(INPATIENT.REV_CNTR_NDC_QTY);
+            fieldValues.remove(INPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
-              fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(InpatientFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.put(INPATIENT.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(INPATIENT.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
           if (hcpcsCode == null) {
             continue;
           }
 
-          fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(InpatientFields.HCPCS_CD, hcpcsCode);
-          fieldValues.put(InpatientFields.REV_CNTR_RATE_AMT,
+          fieldValues.put(INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(INPATIENT.HCPCS_CD, hcpcsCode);
+          fieldValues.put(INPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-          fieldValues.put(InpatientFields.REV_CNTR_TOT_CHRG_AMT,
+          fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(InpatientFields.REV_CNTR_NCVRD_CHRG_AMT,
+          fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
           if (lineItem.pocket == 0 && lineItem.deductible == 0) {
             // Not subject to deductible or coinsurance
-            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+            fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
           } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
             // Subject to deductible and coinsurance
-            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+            fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
           } else if (lineItem.pocket == 0) {
             // Not subject to deductible
-            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+            fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
             // Not subject to coinsurance
-            fieldValues.put(InpatientFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+            fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
           }
-          rifWriters.writeValues(InpatientFields.class, fieldValues);
+          rifWriters.writeValues(INPATIENT.class, fieldValues);
         }
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(InpatientFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
           // HCPCS 99221: "Inpatient hospital visits: Initial and subsequent"
-          fieldValues.put(InpatientFields.HCPCS_CD, "99221");
-          rifWriters.writeValues(InpatientFields.class, fieldValues);
+          fieldValues.put(INPATIENT.HCPCS_CD, "99221");
+          rifWriters.writeValues(INPATIENT.class, fieldValues);
         }
       }
     }
@@ -979,7 +964,7 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   private void exportCarrier(Person person, long stopTime) throws IOException {
-    HashMap<CarrierFields, String> fieldValues = new HashMap<>();
+    HashMap<CARRIER, String> fieldValues = new HashMap<>();
 
     double latestHemoglobin = 0;
 
@@ -998,57 +983,57 @@ public class BB2RIFExporter {
         }
       }
 
-      staticFieldConfig.setValues(fieldValues, CarrierFields.class, person);
-      fieldValues.put(CarrierFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      staticFieldConfig.setValues(fieldValues, CARRIER.class, person);
+      fieldValues.put(CARRIER.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
 
       // The REQUIRED fields
-      fieldValues.put(CarrierFields.CLM_ID, "" + claimId);
-      fieldValues.put(CarrierFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(CarrierFields.CARR_CLM_CNTL_NUM, "" + carrClmId);
-      fieldValues.put(CarrierFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(CarrierFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(CarrierFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(CarrierFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(CarrierFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(CARRIER.CLM_ID, "" + claimId);
+      fieldValues.put(CARRIER.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(CARRIER.CARR_CLM_CNTL_NUM, "" + carrClmId);
+      fieldValues.put(CARRIER.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(CARRIER.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(CARRIER.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(CARRIER.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(CARRIER.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(CarrierFields.CARR_NUM,
-              getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
-      fieldValues.put(CarrierFields.CLM_PMT_AMT, 
+      fieldValues.put(CARRIER.CARR_NUM,
+              getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
+      fieldValues.put(CARRIER.CLM_PMT_AMT, 
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
+        fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
-        fieldValues.put(CarrierFields.CARR_CLM_PRMRY_PYR_PD_AMT,
+        fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
                 String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(CarrierFields.NCH_CLM_PRVDR_PMT_AMT,
+      fieldValues.put(CARRIER.NCH_CLM_PRVDR_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(CarrierFields.NCH_CARR_CLM_SBMTD_CHRG_AMT,
+      fieldValues.put(CARRIER.NCH_CARR_CLM_SBMTD_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(CarrierFields.NCH_CARR_CLM_ALOWD_AMT,
+      fieldValues.put(CARRIER.NCH_CARR_CLM_ALOWD_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(CarrierFields.CARR_CLM_CASH_DDCTBL_APLD_AMT,
+      fieldValues.put(CARRIER.CARR_CLM_CASH_DDCTBL_APLD_AMT,
               String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(CarrierFields.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
-      fieldValues.put(CarrierFields.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
-      fieldValues.put(CarrierFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(CarrierFields.PRF_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(CarrierFields.RFR_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(CarrierFields.PRVDR_SPCLTY,
+      fieldValues.put(CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CARRIER.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(CARRIER.RFR_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(CARRIER.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
-      fieldValues.put(CarrierFields.TAX_NUM,
+      fieldValues.put(CARRIER.TAX_NUM,
               bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
-      fieldValues.put(CarrierFields.LINE_SRVC_CNT, "" + encounter.claim.items.size());
-      fieldValues.put(CarrierFields.CARR_LINE_PRCNG_LCLTY_CD,
-              getCarrier(encounter.provider.state, CarrierFields.CARR_LINE_PRCNG_LCLTY_CD));
-      fieldValues.put(CarrierFields.LINE_NCH_PMT_AMT,
+      fieldValues.put(CARRIER.LINE_SRVC_CNT, "" + encounter.claim.items.size());
+      fieldValues.put(CARRIER.CARR_LINE_PRCNG_LCLTY_CD,
+              getCarrier(encounter.provider.state, CARRIER.CARR_LINE_PRCNG_LCLTY_CD));
+      fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
       // length of encounter in minutes
-      fieldValues.put(CarrierFields.CARR_LINE_MTUS_CNT,
+      fieldValues.put(CARRIER.CARR_LINE_MTUS_CNT,
               "" + ((encounter.stop - encounter.start) / (1000 * 60)));
 
-      fieldValues.put(CarrierFields.LINE_HCT_HGB_RSLT_NUM,
+      fieldValues.put(CARRIER.LINE_HCT_HGB_RSLT_NUM,
               "" + latestHemoglobin);
 
       // OPTIONAL
@@ -1058,8 +1043,8 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, icdReasonCode);
-          fieldValues.put(CarrierFields.LINE_ICD_DGNS_CD, icdReasonCode);
+          fieldValues.put(CARRIER.PRNCPAL_DGNS_CD, icdReasonCode);
+          fieldValues.put(CARRIER.LINE_ICD_DGNS_CD, icdReasonCode);
         }
       }
 
@@ -1072,58 +1057,58 @@ public class BB2RIFExporter {
       int smallest = Math.min(mappedDiagnosisCodes.size(),
               BB2RIFStructure.carrierDxFields.length);
       for (int i = 0; i < smallest; i++) {
-        CarrierFields[] dxField = BB2RIFStructure.carrierDxFields[i];
+        CARRIER[] dxField = BB2RIFStructure.carrierDxFields[i];
         fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
         fieldValues.put(dxField[1], "0"); // 0=ICD10
       }
-      if (!fieldValues.containsKey(CarrierFields.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(CarrierFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+      if (!fieldValues.containsKey(CARRIER.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(CARRIER.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
       
-      synchronized (rifWriters.getWriter(CarrierFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(CARRIER.class)) {
         int lineNum = 1;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
-          fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
+          fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
-          fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
+          fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.coinsurance));
-          fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT,
+          fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-          fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
+          fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-          fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
+          fieldValues.put(CARRIER.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
+          fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
 
           // If this item is a lab report, add the number of the clinical lab...
           if  (lineItem.entry instanceof HealthRecord.Report) {
-            fieldValues.put(CarrierFields.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
+            fieldValues.put(CARRIER.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
           }
 
           // set the line number and write out field values
-          fieldValues.put(CarrierFields.LINE_NUM, Integer.toString(lineNum++));
-          rifWriters.writeValues(CarrierFields.class, fieldValues);
+          fieldValues.put(CARRIER.LINE_NUM, Integer.toString(lineNum++));
+          rifWriters.writeValues(CARRIER.class, fieldValues);
         }
 
         if (lineNum == 1) {
           // If lineNum still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(CarrierFields.LINE_NUM, Integer.toString(lineNum));
-          fieldValues.put(CarrierFields.LINE_BENE_PTB_DDCTBL_AMT,
+          fieldValues.put(CARRIER.LINE_NUM, Integer.toString(lineNum));
+          fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", encounter.claim.getDeductiblePaid()));
-          fieldValues.put(CarrierFields.LINE_COINSRNC_AMT,
+          fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
                   String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-          fieldValues.put(CarrierFields.LINE_SBMTD_CHRG_AMT,
+          fieldValues.put(CARRIER.LINE_SBMTD_CHRG_AMT,
                   String.format("%.2f", encounter.claim.getTotalClaimCost()));
-          fieldValues.put(CarrierFields.LINE_ALOWD_CHRG_AMT,
+          fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
-          fieldValues.put(CarrierFields.LINE_PRVDR_PMT_AMT,
+          fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
-          fieldValues.put(CarrierFields.LINE_BENE_PMT_AMT,
+          fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
                   String.format("%.2f", encounter.claim.getPatientCost()));
-          rifWriters.writeValues(CarrierFields.class, fieldValues);
+          rifWriters.writeValues(CARRIER.class, fieldValues);
         }
       }
     }
@@ -1137,7 +1122,7 @@ public class BB2RIFExporter {
     }
   }
   
-  private String getCarrier(String state, CarrierFields column) {
+  private String getCarrier(String state, CARRIER column) {
     for (LinkedHashMap<String, String> row : carrierLookup) {
       if (row.get("STATE").equals(state) || row.get("STATE_CODE").equals(state)) {
         return row.get(column.toString());
@@ -1416,7 +1401,7 @@ public class BB2RIFExporter {
         throws IOException {
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
-    HashMap<PrescriptionFields, String> fieldValues = new HashMap<>();
+    HashMap<PDE, String> fieldValues = new HashMap<>();
     HashMap<String, Integer> fillNum = new HashMap<>();
     double costs = 0;
     int costYear = 0;
@@ -1435,18 +1420,18 @@ public class BB2RIFExporter {
         int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
         fieldValues.clear();
-        staticFieldConfig.setValues(fieldValues, PrescriptionFields.class, person);
+        staticFieldConfig.setValues(fieldValues, PDE.class, person);
 
         // The REQUIRED fields
-        fieldValues.put(PrescriptionFields.PDE_ID, "" + pdeId);
-        fieldValues.put(PrescriptionFields.CLM_GRP_ID, "" + claimGroupId);
-        fieldValues.put(PrescriptionFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-        fieldValues.put(PrescriptionFields.SRVC_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(PrescriptionFields.SRVC_PRVDR_ID, encounter.provider.id);
-        fieldValues.put(PrescriptionFields.PRSCRBR_ID,
+        fieldValues.put(PDE.PDE_ID, "" + pdeId);
+        fieldValues.put(PDE.CLM_GRP_ID, "" + claimGroupId);
+        fieldValues.put(PDE.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+        fieldValues.put(PDE.SRVC_DT, bb2DateFromTimestamp(encounter.start));
+        fieldValues.put(PDE.SRVC_PRVDR_ID, encounter.provider.id);
+        fieldValues.put(PDE.PRSCRBR_ID,
             "" + (9_999_999_999L - encounter.clinician.identifier));
-        fieldValues.put(PrescriptionFields.RX_SRVC_RFRNC_NUM, "" + pdeId);
-        fieldValues.put(PrescriptionFields.PROD_SRVC_ID, 
+        fieldValues.put(PDE.RX_SRVC_RFRNC_NUM, "" + pdeId);
+        fieldValues.put(PDE.PROD_SRVC_ID, 
                 medicationCodeMapper.map(medication.codes.get(0).code, person));
         // The following field was replaced by the PartD contract ID, leaving this here for now
         // until this is validated
@@ -1455,16 +1440,16 @@ public class BB2RIFExporter {
         //     ("R" + Math.abs(
         //         UUID.fromString(medication.claim.payer.uuid)
         //         .getMostSignificantBits())).substring(0, 5));
-        fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID, partDContractID.toString());
-        fieldValues.put(PrescriptionFields.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
-        fieldValues.put(PrescriptionFields.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
-        fieldValues.put(PrescriptionFields.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
+        fieldValues.put(PDE.PLAN_CNTRCT_REC_ID, partDContractID.toString());
+        fieldValues.put(PDE.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
+        fieldValues.put(PDE.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
+        fieldValues.put(PDE.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
         Integer fill = 1;
         if (fillNum.containsKey(medication.codes.get(0).code)) {
           fill = 1 + fillNum.get(medication.codes.get(0).code);
         }
         fillNum.put(medication.codes.get(0).code, fill);
-        fieldValues.put(PrescriptionFields.FILL_NUM, "" + fill);
+        fieldValues.put(PDE.FILL_NUM, "" + fill);
         int year = Utilities.getYear(medication.start);
         if (year != costYear) {
           costYear = year;
@@ -1472,32 +1457,32 @@ public class BB2RIFExporter {
         }
         costs += medication.claim.getPatientCost();
         if (costs <= 4550.00) {
-          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
-          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT, "0");
+          fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
+          fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
         } else {
-          fieldValues.put(PrescriptionFields.GDC_BLW_OOPT_AMT, "4550.00");
-          fieldValues.put(PrescriptionFields.GDC_ABV_OOPT_AMT,
+          fieldValues.put(PDE.GDC_BLW_OOPT_AMT, "4550.00");
+          fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
                   String.format("%.2f", (costs - 4550)));
         }
-        fieldValues.put(PrescriptionFields.PTNT_PAY_AMT, 
+        fieldValues.put(PDE.PTNT_PAY_AMT, 
                 String.format("%.2f", medication.claim.getPatientCost()));
-        fieldValues.put(PrescriptionFields.CVRD_D_PLAN_PD_AMT,
+        fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
             String.format("%.2f", medication.claim.getCoveredCost()));
-        fieldValues.put(PrescriptionFields.NCVRD_PLAN_PD_AMT,
+        fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
             String.format("%.2f", medication.claim.getPatientCost()));
-        fieldValues.put(PrescriptionFields.TOT_RX_CST_AMT,
+        fieldValues.put(PDE.TOT_RX_CST_AMT,
             String.format("%.2f", medication.claim.getTotalClaimCost()));
-        fieldValues.put(PrescriptionFields.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
-        fieldValues.put(PrescriptionFields.PD_DT, bb2DateFromTimestamp(encounter.start));
+        fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
+        fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(encounter.start));
         // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
         if (person.attributes.containsKey("homeless")
             && ((Boolean) person.attributes.get("homeless") == true)) {
-          fieldValues.put(PrescriptionFields.PTNT_RSDNC_CD, "14");
+          fieldValues.put(PDE.PTNT_RSDNC_CD, "14");
         } else {
-          fieldValues.put(PrescriptionFields.PTNT_RSDNC_CD, "01");
+          fieldValues.put(PDE.PTNT_RSDNC_CD, "01");
         }
 
-        rifWriters.writeValues(PrescriptionFields.class, fieldValues);
+        rifWriters.writeValues(PDE.class, fieldValues);
       }
     }
   }
@@ -1510,7 +1495,7 @@ public class BB2RIFExporter {
    */
   private void exportDME(Person person, long stopTime) 
         throws IOException {
-    HashMap<DMEFields, String> fieldValues = new HashMap<>();
+    HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
@@ -1525,31 +1510,31 @@ public class BB2RIFExporter {
       }
 
       fieldValues.clear();
-      staticFieldConfig.setValues(fieldValues, DMEFields.class, person);
+      staticFieldConfig.setValues(fieldValues, DME.class, person);
 
       // complex fields that could not easily be set using cms_field_values.tsv
-      fieldValues.put(DMEFields.CLM_ID, "" + claimId);
-      fieldValues.put(DMEFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(DMEFields.CARR_CLM_CNTL_NUM, "" + carrClmId);
-      fieldValues.put(DMEFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(DMEFields.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
-      fieldValues.put(DMEFields.CARR_NUM,
-              getCarrier(encounter.provider.state, CarrierFields.CARR_NUM));
-      fieldValues.put(DMEFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(DME.CLM_ID, "" + claimId);
+      fieldValues.put(DME.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(DME.CARR_CLM_CNTL_NUM, "" + carrClmId);
+      fieldValues.put(DME.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(DME.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
+      fieldValues.put(DME.CARR_NUM,
+              getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
+      fieldValues.put(DME.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(DMEFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(DMEFields.PRVDR_NPI, encounter.provider.npi);
-      fieldValues.put(DMEFields.PRVDR_SPCLTY,
+      fieldValues.put(DME.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(DME.PRVDR_NPI, encounter.provider.npi);
+      fieldValues.put(DME.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
-      fieldValues.put(DMEFields.PRVDR_STATE_CD,
+      fieldValues.put(DME.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
-      fieldValues.put(DMEFields.TAX_NUM,
+      fieldValues.put(DME.TAX_NUM,
               bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
-      fieldValues.put(DMEFields.DMERC_LINE_PRCNG_STATE_CD,
+      fieldValues.put(DME.DMERC_LINE_PRCNG_STATE_CD,
               locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-      fieldValues.put(DMEFields.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(DMEFields.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(DME.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(DME.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
 
       // OPTIONAL
       if (encounter.reason != null) {
@@ -1557,8 +1542,8 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, icdCode);
+          fieldValues.put(DME.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(DME.LINE_ICD_DGNS_CD, icdCode);
         }
       }
 
@@ -1570,16 +1555,16 @@ public class BB2RIFExporter {
       }
       int smallest = Math.min(mappedDiagnosisCodes.size(), BB2RIFStructure.dmeDxFields.length);
       for (int i = 0; i < smallest; i++) {
-        DMEFields[] dxField = BB2RIFStructure.dmeDxFields[i];
+        DME[] dxField = BB2RIFStructure.dmeDxFields[i];
         fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
         fieldValues.put(dxField[1], "0"); // 0=ICD10
       }
-      if (!fieldValues.containsKey(DMEFields.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(DMEFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-        fieldValues.put(DMEFields.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
+      if (!fieldValues.containsKey(DME.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(DME.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        fieldValues.put(DME.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      synchronized (rifWriters.getWriter(DMEFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device)) {
@@ -1592,31 +1577,31 @@ public class BB2RIFExporter {
             continue;
           }
 
-          fieldValues.put(DMEFields.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
-          fieldValues.put(DMEFields.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
-          fieldValues.put(DMEFields.HCPCS_CD,
+          fieldValues.put(DME.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DME.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DME.HCPCS_CD,
                   dmeCodeMapper.map(device.codes.get(0).code, person));
-          fieldValues.put(DMEFields.LINE_CMS_TYPE_SRVC_CD,
+          fieldValues.put(DME.LINE_CMS_TYPE_SRVC_CD,
                   dmeCodeMapper.map(device.codes.get(0).code,
-                          DMEFields.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
+                          DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
-          fieldValues.put(DMEFields.LINE_BENE_PTB_DDCTBL_AMT,
+          fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
-          fieldValues.put(DMEFields.LINE_COINSRNC_AMT,
+          fieldValues.put(DME.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.coinsurance));
-          fieldValues.put(DMEFields.LINE_BENE_PMT_AMT,
+          fieldValues.put(DME.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
-          fieldValues.put(DMEFields.LINE_PRVDR_PMT_AMT,
+          fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-          fieldValues.put(DMEFields.LINE_SBMTD_CHRG_AMT,
+          fieldValues.put(DME.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(DMEFields.LINE_ALOWD_CHRG_AMT,
+          fieldValues.put(DME.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
 
 
           // set the line number and write out field values
-          fieldValues.put(DMEFields.LINE_NUM, Integer.toString(lineNum++));
-          rifWriters.writeValues(DMEFields.class, fieldValues);
+          fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
+          rifWriters.writeValues(DME.class, fieldValues);
         }
       }
     }
@@ -1629,7 +1614,7 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   private void exportHome(Person person, long stopTime) throws IOException {
-    HashMap<HHAFields, String> fieldValues = new HashMap<>();
+    HashMap<HHA, String> fieldValues = new HashMap<>();
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (!encounter.type.equals(EncounterType.HOME.toString())) {
@@ -1642,47 +1627,47 @@ public class BB2RIFExporter {
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
-      staticFieldConfig.setValues(fieldValues, HHAFields.class, person);
+      staticFieldConfig.setValues(fieldValues, HHA.class, person);
 
       // The REQUIRED fields
-      fieldValues.put(HHAFields.BENE_ID,  (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(HHAFields.CLM_ID, "" + claimId);
-      fieldValues.put(HHAFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(HHAFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(HHAFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HHAFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(HHAFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(HHA.BENE_ID,  (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(HHA.CLM_ID, "" + claimId);
+      fieldValues.put(HHA.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HHA.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+      fieldValues.put(HHA.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HHA.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HHA.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(HHAFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(HHAFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(HHAFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HHAFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HHA.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HHA.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HHA.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HHA.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
-      fieldValues.put(HHAFields.CLM_PMT_AMT,
+      fieldValues.put(HHA.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(HHAFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+        fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
-        fieldValues.put(HHAFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+        fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
             String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(HHAFields.PRVDR_STATE_CD,
+      fieldValues.put(HHA.PRVDR_STATE_CD,
           locationMapper.getStateCode(encounter.provider.state));
-      fieldValues.put(HHAFields.CLM_TOT_CHRG_AMT,
+      fieldValues.put(HHA.CLM_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(HHAFields.CLM_HHA_TOT_VISIT_CNT, "" + homeVisits);
+      fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + homeVisits);
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
       }
-      fieldValues.put(HHAFields.REV_CNTR_UNIT_CNT, "" + days);
-      fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
+      fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(HHA.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
-      fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
+      fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
+      fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
+      fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
 
       if (encounter.reason != null) {
@@ -1690,7 +1675,7 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(HHA.PRNCPAL_DGNS_CD, icdCode);
         }
       }
 
@@ -1703,15 +1688,15 @@ public class BB2RIFExporter {
       int smallest = Math.min(mappedDiagnosisCodes.size(),
               BB2RIFStructure.homeDxFields.length);
       for (int i = 0; i < smallest; i++) {
-        HHAFields[] dxField = BB2RIFStructure.homeDxFields[i];
+        HHA[] dxField = BB2RIFStructure.homeDxFields[i];
         fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
         fieldValues.put(dxField[1], "0"); // 0=ICD10
       }
-      if (!fieldValues.containsKey(HHAFields.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(HHAFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+      if (!fieldValues.containsKey(HHA.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
-      synchronized (rifWriters.getWriter(HHAFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1722,54 +1707,54 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY);
-            fieldValues.remove(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD);
+            fieldValues.remove(HHA.REV_CNTR_NDC_QTY);
+            fieldValues.remove(HHA.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
-              fieldValues.put(HHAFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(HHAFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.put(HHA.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
           if (hcpcsCode == null) {
             continue;
           }
 
-          fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(HHAFields.HCPCS_CD, hcpcsCode);
-          fieldValues.put(HHAFields.REV_CNTR_RATE_AMT,
+          fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(HHA.HCPCS_CD, hcpcsCode);
+          fieldValues.put(HHA.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-          fieldValues.put(HHAFields.REV_CNTR_PMT_AMT_AMT,
+          fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
               String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-          fieldValues.put(HHAFields.REV_CNTR_TOT_CHRG_AMT,
+          fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(HHAFields.REV_CNTR_NCVRD_CHRG_AMT,
+          fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
           if (lineItem.pocket == 0 && lineItem.deductible == 0) {
             // Not subject to deductible or coinsurance
-            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
           } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
             // Subject to deductible and coinsurance
-            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
           } else if (lineItem.pocket == 0) {
             // Not subject to deductible
-            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
             // Not subject to coinsurance
-            fieldValues.put(HHAFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
           }
-          rifWriters.writeValues(HHAFields.class, fieldValues);
+          rifWriters.writeValues(HHA.class, fieldValues);
         }
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(HHAFields.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(HHAFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-          fieldValues.put(HHAFields.HCPCS_CD, "T1021"); // home health visit
-          rifWriters.writeValues(HHAFields.class, fieldValues);
+          fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(HHA.HCPCS_CD, "T1021"); // home health visit
+          rifWriters.writeValues(HHA.class, fieldValues);
         }
       }
     }
@@ -1782,7 +1767,7 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   private void exportHospice(Person person, long stopTime) throws IOException {
-    HashMap<HospiceFields, String> fieldValues = new HashMap<>();
+    HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
         continue;
@@ -1798,30 +1783,30 @@ public class BB2RIFExporter {
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
       fieldValues.clear();
-      staticFieldConfig.setValues(fieldValues, HospiceFields.class, person);
+      staticFieldConfig.setValues(fieldValues, HOSPICE.class, person);
 
-      fieldValues.put(HospiceFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(HospiceFields.CLM_ID, "" + claimId);
-      fieldValues.put(HospiceFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(HospiceFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(HospiceFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HospiceFields.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HospiceFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(HospiceFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(HOSPICE.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(HOSPICE.CLM_ID, "" + claimId);
+      fieldValues.put(HOSPICE.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(HOSPICE.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+      fieldValues.put(HOSPICE.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HOSPICE.CLM_HOSPC_START_DT_ID, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HOSPICE.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HOSPICE.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(HospiceFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(HospiceFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HospiceFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HospiceFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(HospiceFields.CLM_PMT_AMT,
+      fieldValues.put(HOSPICE.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HOSPICE.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HOSPICE.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(HOSPICE.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+        fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
-        fieldValues.put(HospiceFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+        fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
                 String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(HospiceFields.PRVDR_STATE_CD,
+      fieldValues.put(HOSPICE.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
@@ -1841,18 +1826,18 @@ public class BB2RIFExporter {
         patientStatus = "B"; // died
         dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
       }
-      fieldValues.put(HospiceFields.PTNT_DSCHRG_STUS_CD, dischargeStatus);
-      fieldValues.put(HospiceFields.NCH_PTNT_STATUS_IND_CD, patientStatus);
+      fieldValues.put(HOSPICE.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+      fieldValues.put(HOSPICE.NCH_PTNT_STATUS_IND_CD, patientStatus);
       if (dischargeDate != null) {
-        fieldValues.put(HospiceFields.NCH_BENE_DSCHRG_DT, dischargeDate);
+        fieldValues.put(HOSPICE.NCH_BENE_DSCHRG_DT, dischargeDate);
       }
-      fieldValues.put(HospiceFields.CLM_TOT_CHRG_AMT,
+      fieldValues.put(HOSPICE.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+      fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+      fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
-      fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+      fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
 
       if (encounter.reason != null) {
@@ -1860,35 +1845,35 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(HOSPICE.PRNCPAL_DGNS_CD, icdCode);
         }
       }
 
       int smallest = Math.min(mappedDiagnosisCodes.size(),
               BB2RIFStructure.hospiceDxFields.length);
       for (int i = 0; i < smallest; i++) {
-        HospiceFields[] dxField = BB2RIFStructure.hospiceDxFields[i];
+        HOSPICE[] dxField = BB2RIFStructure.hospiceDxFields[i];
         fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
         fieldValues.put(dxField[1], "0"); // 0=ICD10
       }
-      if (!fieldValues.containsKey(HospiceFields.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(HospiceFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+      if (!fieldValues.containsKey(HOSPICE.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(HOSPICE.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
       }
-      fieldValues.put(HospiceFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      fieldValues.put(HOSPICE.CLM_UTLZTN_DAY_CNT, "" + days);
       int coinDays = days -  21; // first 21 days no coinsurance
       if (coinDays < 0) {
         coinDays = 0;
       }
-      fieldValues.put(HospiceFields.REV_CNTR_UNIT_CNT, "" + days);
-      fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+      fieldValues.put(HOSPICE.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(HOSPICE.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
 
-      synchronized (rifWriters.getWriter(HospiceFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(HOSPICE.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -1899,54 +1884,54 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY);
-            fieldValues.remove(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD);
+            fieldValues.remove(HOSPICE.REV_CNTR_NDC_QTY);
+            fieldValues.remove(HOSPICE.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
-              fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(HospiceFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.put(HOSPICE.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(HOSPICE.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
           if (hcpcsCode == null) {
             continue;
           }
 
-          fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(HospiceFields.HCPCS_CD, hcpcsCode);
-          fieldValues.put(HospiceFields.REV_CNTR_RATE_AMT,
+          fieldValues.put(HOSPICE.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(HOSPICE.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(HOSPICE.HCPCS_CD, hcpcsCode);
+          fieldValues.put(HOSPICE.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-          fieldValues.put(HospiceFields.REV_CNTR_PMT_AMT_AMT,
+          fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
               String.format("%.2f", lineItem.coinsurance + lineItem.payer));
-          fieldValues.put(HospiceFields.REV_CNTR_TOT_CHRG_AMT,
+          fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(HospiceFields.REV_CNTR_NCVRD_CHRG_AMT,
+          fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
           if (lineItem.pocket == 0 && lineItem.deductible == 0) {
             // Not subject to deductible or coinsurance
-            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+            fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
           } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
             // Subject to deductible and coinsurance
-            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+            fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
           } else if (lineItem.pocket == 0) {
             // Not subject to deductible
-            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+            fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
             // Not subject to coinsurance
-            fieldValues.put(HospiceFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+            fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
           }
-          rifWriters.writeValues(HospiceFields.class, fieldValues);
+          rifWriters.writeValues(HOSPICE.class, fieldValues);
         }
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(HospiceFields.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(HospiceFields.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-          fieldValues.put(HospiceFields.HCPCS_CD, "S9126"); // hospice per diem
-          rifWriters.writeValues(HospiceFields.class, fieldValues);
+          fieldValues.put(HOSPICE.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(HOSPICE.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(HOSPICE.HCPCS_CD, "S9126"); // hospice per diem
+          rifWriters.writeValues(HOSPICE.class, fieldValues);
         }
       }
     }
@@ -1959,7 +1944,7 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   private void exportSNF(Person person, long stopTime) throws IOException {
-    HashMap<SNFFields, String> fieldValues = new HashMap<>();
+    HashMap<SNF, String> fieldValues = new HashMap<>();
     boolean previousEmergency;
     boolean previousUrgent;
 
@@ -1975,66 +1960,66 @@ public class BB2RIFExporter {
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
-      staticFieldConfig.setValues(fieldValues, SNFFields.class, person);
+      staticFieldConfig.setValues(fieldValues, SNF.class, person);
 
       // The REQUIRED Fields
-      fieldValues.put(SNFFields.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-      fieldValues.put(SNFFields.CLM_ID, "" + claimId);
-      fieldValues.put(SNFFields.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(SNFFields.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(SNFFields.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(SNFFields.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(SNFFields.NCH_WKLY_PROC_DT,
+      fieldValues.put(SNF.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(SNF.CLM_ID, "" + claimId);
+      fieldValues.put(SNF.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(SNF.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+      fieldValues.put(SNF.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(SNF.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(SNFFields.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(SNFFields.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(SNFFields.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(SNFFields.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(SNF.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(SNF.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(SNF.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(SNF.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       
-      fieldValues.put(SNFFields.CLM_PMT_AMT,
+      fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
-        fieldValues.put(SNFFields.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+        fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
-        fieldValues.put(SNFFields.NCH_PRMRY_PYR_CLM_PD_AMT,
+        fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
             String.format("%.2f", encounter.claim.getCoveredCost()));
       }
-      fieldValues.put(SNFFields.PRVDR_STATE_CD,
+      fieldValues.put(SNF.PRVDR_STATE_CD,
           locationMapper.getStateCode(encounter.provider.state));
-      fieldValues.put(SNFFields.CLM_TOT_CHRG_AMT,
+      fieldValues.put(SNF.CLM_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (previousEmergency) {
-        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "1");
+        fieldValues.put(SNF.CLM_IP_ADMSN_TYPE_CD, "1");
       } else if (previousUrgent) {
-        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "2");
+        fieldValues.put(SNF.CLM_IP_ADMSN_TYPE_CD, "2");
       } else {
-        fieldValues.put(SNFFields.CLM_IP_ADMSN_TYPE_CD, "3");
+        fieldValues.put(SNF.CLM_IP_ADMSN_TYPE_CD, "3");
       }
-      fieldValues.put(SNFFields.NCH_BENE_IP_DDCTBL_AMT,
+      fieldValues.put(SNF.NCH_BENE_IP_DDCTBL_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(SNFFields.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
+      fieldValues.put(SNF.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
           String.format("%.2f", encounter.claim.getCoinsurancePaid()));
-      fieldValues.put(SNFFields.NCH_IP_NCVRD_CHRG_AMT,
+      fieldValues.put(SNF.NCH_IP_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
-      fieldValues.put(SNFFields.NCH_IP_TOT_DDCTN_AMT,
+      fieldValues.put(SNF.NCH_IP_TOT_DDCTN_AMT,
           String.format("%.2f", encounter.claim.getDeductiblePaid()
               + encounter.claim.getCoinsurancePaid()));
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
       }
-      fieldValues.put(SNFFields.CLM_UTLZTN_DAY_CNT, "" + days);
+      fieldValues.put(SNF.CLM_UTLZTN_DAY_CNT, "" + days);
       int coinDays = days -  21; // first 21 days no coinsurance
       if (coinDays < 0) {
         coinDays = 0;
       }
-      fieldValues.put(SNFFields.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
-      fieldValues.put(SNFFields.REV_CNTR_UNIT_CNT, "" + days);
-      fieldValues.put(SNFFields.REV_CNTR_RATE_AMT,
+      fieldValues.put(SNF.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
+      fieldValues.put(SNF.REV_CNTR_UNIT_CNT, "" + days);
+      fieldValues.put(SNF.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
-      fieldValues.put(SNFFields.REV_CNTR_TOT_CHRG_AMT,
+      fieldValues.put(SNF.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
+      fieldValues.put(SNF.REV_CNTR_NCVRD_CHRG_AMT,
           String.format("%.2f", encounter.claim.getPatientCost()));
 
       // OPTIONAL CODES
@@ -2043,8 +2028,8 @@ public class BB2RIFExporter {
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(SNFFields.ADMTG_DGNS_CD, icdCode);
+          fieldValues.put(SNF.PRNCPAL_DGNS_CD, icdCode);
+          fieldValues.put(SNF.ADMTG_DGNS_CD, icdCode);
         }
       }
 
@@ -2056,13 +2041,13 @@ public class BB2RIFExporter {
         int smallest = Math.min(mappedDiagnosisCodes.size(),
                 BB2RIFStructure.snfDxFields.length);
         for (int i = 0; i < smallest; i++) {
-          SNFFields[] dxField = BB2RIFStructure.snfDxFields[i];
+          SNF[] dxField = BB2RIFStructure.snfDxFields[i];
           fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
           fieldValues.put(dxField[1], "0"); // 0=ICD10
         }
-        if (!fieldValues.containsKey(SNFFields.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(SNFFields.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-          fieldValues.put(SNFFields.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
+        if (!fieldValues.containsKey(SNF.PRNCPAL_DGNS_CD)) {
+          fieldValues.put(SNF.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+          fieldValues.put(SNF.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
 
@@ -2084,7 +2069,7 @@ public class BB2RIFExporter {
           int smallest = Math.min(mappableProcedures.size(),
                   BB2RIFStructure.snfPxFields.length);
           for (int i = 0; i < smallest; i++) {
-            SNFFields[] pxField = BB2RIFStructure.snfPxFields[i];
+            SNF[] pxField = BB2RIFStructure.snfPxFields[i];
             fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
             fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
@@ -2098,7 +2083,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
 
-      synchronized (rifWriters.getWriter(SNFFields.class)) {
+      synchronized (rifWriters.getOrCreateWriter(SNF.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
@@ -2109,52 +2094,52 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY);
-            fieldValues.remove(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD);
+            fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
+            fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
-              fieldValues.put(SNFFields.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(SNFFields.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.put(SNF.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+              fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
           if (hcpcsCode == null) {
             continue;
           }
 
-          fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(SNFFields.HCPCS_CD, hcpcsCode);
-          fieldValues.put(SNFFields.REV_CNTR_RATE_AMT,
+          fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
+          fieldValues.put(SNF.HCPCS_CD, hcpcsCode);
+          fieldValues.put(SNF.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
-          fieldValues.put(SNFFields.REV_CNTR_TOT_CHRG_AMT,
+          fieldValues.put(SNF.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
-          fieldValues.put(SNFFields.REV_CNTR_NCVRD_CHRG_AMT,
+          fieldValues.put(SNF.REV_CNTR_NCVRD_CHRG_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
           if (lineItem.pocket == 0 && lineItem.deductible == 0) {
             // Not subject to deductible or coinsurance
-            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+            fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
           } else if (lineItem.pocket > 0 && lineItem.deductible > 0) {
             // Subject to deductible and coinsurance
-            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+            fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
           } else if (lineItem.pocket == 0) {
             // Not subject to deductible
-            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+            fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
             // Not subject to coinsurance
-            fieldValues.put(SNFFields.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+            fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
           }
-          rifWriters.writeValues(SNFFields.class, fieldValues);
+          rifWriters.writeValues(SNF.class, fieldValues);
         }
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
-          fieldValues.put(SNFFields.CLM_LINE_NUM, Integer.toString(claimLine));
+          fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine));
           // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health
           // or hospice setting”
-          fieldValues.put(SNFFields.HCPCS_CD, "G0299");
-          rifWriters.writeValues(SNFFields.class, fieldValues);
+          fieldValues.put(SNF.HCPCS_CD, "G0299");
+          rifWriters.writeValues(SNF.class, fieldValues);
         }
       }
     }
@@ -2481,16 +2466,7 @@ public class BB2RIFExporter {
     
     Set<String> validateTSV() {
       LinkedHashSet tsvIssues = new LinkedHashSet<>();
-      Class<?>[] tableEnums = {
-        BeneficiaryFields.class,
-        BeneficiaryHistoryFields.class,
-        InpatientFields.class,
-        OutpatientFields.class,
-        CarrierFields.class,
-        PrescriptionFields.class,
-        DMEFields.class
-      };
-      for (Class tableEnum: tableEnums) {
+      for (Class tableEnum: BB2RIFStructure.RIF_FILES) {
         String columnName = tableEnum.getSimpleName();
         Method valueOf;
         try {
@@ -2829,73 +2805,71 @@ public class BB2RIFExporter {
     }
   }
   
+  private enum RifEntryStatus {
+    INITIAL,
+    INTERIM,
+    FINAL
+  }
+  
   private static class RifWriters {
-    private final Map<Class, SynchronizedBBLineWriter> writers;
-    private final Map<Class, SynchronizedBBLineWriter> updateWriters;
+    private final Map<RifEntryStatus, Map<Class, SynchronizedBBLineWriter>> allWriters;
     private final Path outputDir;
     
     public RifWriters(Path outputDir) {
       this.outputDir = outputDir;
-      writers = Collections.synchronizedMap(new HashMap<>());
-      updateWriters = Collections.synchronizedMap(new HashMap<>());
-    }
-    
-    public <E extends Enum<E>> SynchronizedBBLineWriter getWriter(Class<E> rifEnum) {
-      return getWriter(rifEnum, false);
-    }
-    
-    public <E extends Enum<E>> SynchronizedBBLineWriter getWriter(Class<E> rifEnum,
-            boolean forUpdates) {
-      if (forUpdates) {
-        return updateWriters.get(rifEnum);
-      } else {
-        return writers.get(rifEnum);
+      allWriters = Collections.synchronizedMap(new HashMap<>());
+      for (RifEntryStatus status: RifEntryStatus.values()) {
+        allWriters.put(status, Collections.synchronizedMap(new HashMap<>()));
       }
     }
     
-    public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName)
-            throws IOException {
-      addWriter(rifEnum, fileName, false);
+    public <E extends Enum<E>> SynchronizedBBLineWriter<E> getWriter(Class<E> rifEnum,
+            RifEntryStatus status) {
+      return allWriters.get(status).get(rifEnum);
     }
     
-    public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName,
-            boolean separateUpdates) throws IOException {
-      if (!writers.containsKey(rifEnum)) {
-        Path outputFilePath = outputDir.resolve(fileName + ".csv");
-        SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
-                rifEnum, outputFilePath);
-        writers.put(rifEnum, writer);
-        if (separateUpdates) {
-          Path updateFilePath = outputDir.resolve(fileName + "_updates.csv");
-          SynchronizedBBLineWriter<E> updateWriter = new SynchronizedBBLineWriter<E>(
-                  rifEnum, updateFilePath);
-          updateWriters.put(rifEnum, updateWriter);          
-        }
-      }
+    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status) {
+      return getFilePath(enumClass, status, "csv");
     }
     
-    public synchronized <E extends Enum<E>> void addWriter(Class<E> rifEnum, String fileName,
-            String ext, String separator) throws IOException {
-      if (!writers.containsKey(rifEnum)) {
-        Path outputFilePath = outputDir.resolve(fileName + "." + ext);
-        SynchronizedBBLineWriter<E> writer = new SynchronizedBBLineWriter<E>(
-                rifEnum, outputFilePath, separator);
-        writers.put(rifEnum, writer);
+    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status,
+            String ext) {
+      String prefix = enumClass.getSimpleName().toLowerCase();
+      String suffix = status == RifEntryStatus.INITIAL ? "" : "_" + status.toString().toLowerCase();
+      String fileName = String.format("%s%s.%s", prefix, suffix, ext);
+      return outputDir.resolve(fileName);
+    }
+    
+    public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
+            Class<E> enumClass) {
+      return getOrCreateWriter(enumClass, RifEntryStatus.INITIAL);
+    }
+    
+    public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
+            Class<E> enumClass, RifEntryStatus status) {
+      return getOrCreateWriter(enumClass, status, "csv", "|");
+    }
+    
+    public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
+            Class<E> enumClass, RifEntryStatus status, String ext, String separator) {
+      SynchronizedBBLineWriter<E> writer = getWriter(enumClass, status);
+      if (writer == null) {
+        Path filePath = getFilePath(enumClass, status, ext);
+        writer = new SynchronizedBBLineWriter<>(
+                enumClass, filePath, separator);
+        allWriters.get(status).put(enumClass, writer);
       }
+      return writer;
     }
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
             throws IOException {
-      writeValues(enumClass, fieldValues, false);
+      writeValues(enumClass, fieldValues, RifEntryStatus.INITIAL);
     }
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues,
-            boolean isUpdate) throws IOException {
-      if (isUpdate) {
-        updateWriters.get(enumClass).writeValues(fieldValues);
-      } else {
-        writers.get(enumClass).writeValues(fieldValues);        
-      }
+            RifEntryStatus status) throws IOException {
+      getOrCreateWriter(enumClass, status).writeValues(fieldValues);        
     }
   }
 }
