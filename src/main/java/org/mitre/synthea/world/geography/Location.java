@@ -42,6 +42,9 @@ public class Location implements Serializable {
   /** Map of CityId to Demographics. */
   private Map<String, Demographics> demographics;
 
+  /** Map of County Name to attributes and probabilities. */
+  private Map<String, Map<String, Double>> socialDeterminantsOfHealth;
+
   /**
    * Location is a set of demographic and place information.
    * @param state The full name of the state.
@@ -118,6 +121,53 @@ public class Location implements Serializable {
       System.err.println("ERROR: unable to load zips csv: " + filename);
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
+    }
+
+    socialDeterminantsOfHealth = new HashMap<String, Map<String, Double>>();
+    try {
+      filename = Config.get("generate.geography.sdoh.default_file",
+        "geography/sdoh.csv");
+      String csv = Utilities.readResource(filename);
+      List<? extends Map<String,String>> sdohList = SimpleCSV.parse(csv);
+
+      for (Map<String,String> line : sdohList) {
+        String lineState = line.remove("STATE");
+        if (!lineState.equalsIgnoreCase(state)) {
+          continue;
+        }
+        line.remove("FIPS_CODE");
+        line.remove("COUNTY_CODE");
+        String county = line.remove("COUNTY");
+        line.remove("ST");
+
+        Map<String, Double> sdoh = new HashMap<String, Double>();
+        for (String attribute : line.keySet()) {
+          Double probability = Double.parseDouble(line.get(attribute));
+          sdoh.put(attribute.toLowerCase(), probability);
+        }
+
+        socialDeterminantsOfHealth.put(county, sdoh);
+      }
+    } catch (Exception e) {
+      System.err.println("WARNING: unable to load SDoH csv: " + filename);
+      e.printStackTrace();
+    }
+
+    if (!socialDeterminantsOfHealth.isEmpty()) {
+      Map<String, Double> averages = new HashMap<String, Double>();
+      for (String county : socialDeterminantsOfHealth.keySet()) {
+        Map<String, Double> determinants = socialDeterminantsOfHealth.get(county);
+        for (String determinant : determinants.keySet()) {
+          Double probability = determinants.get(determinant);
+          Double sum = averages.getOrDefault(determinant, new Double(0));
+          averages.put(determinant, probability + sum);
+        }
+      }
+      for (String determinant : averages.keySet()) {
+        Double probability = averages.get(determinant);
+        averages.put(determinant, (probability / socialDeterminantsOfHealth.keySet().size()));
+      }
+      socialDeterminantsOfHealth.put("AVERAGE", averages);
     }
   }
   
@@ -400,6 +450,25 @@ public class Location implements Serializable {
       double dy = (clinician.rand() * 0.1) - 0.05;
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       clinician.attributes.put(Person.COORDINATE, coordinate);
+    }
+  }
+
+  /**
+   * Set social determinants of health attributes on the patient, as defined
+   * by the optional social determinants of health county-level file.
+   * @param person The person to assign attributes.
+   */
+  public void setSocialDeterminants(Person person) {
+    String county = (String) person.attributes.get("county");
+    if (county == null) {
+      county = "AVERAGE";
+    }
+    Map<String, Double> sdoh = socialDeterminantsOfHealth.get(county);
+    if (sdoh != null) {
+      for (String determinant : sdoh.keySet()) {
+        Double probability = sdoh.get(determinant);
+        person.attributes.put(determinant, (person.rand() <= probability));
+      }
     }
   }
   

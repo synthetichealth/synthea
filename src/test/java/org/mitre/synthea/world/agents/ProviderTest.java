@@ -223,7 +223,7 @@ public class ProviderTest {
            try {
              Provider.clear();
              Provider.loadProviders(location, "providers/" + t.getFileName(),
-                 providerServices, 1L);
+                 providerServices, true, 1L);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }

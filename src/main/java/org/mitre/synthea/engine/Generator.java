@@ -52,6 +52,11 @@ import org.mitre.synthea.world.geography.Location;
  */
 public class Generator implements RandomNumberGenerator {
 
+  /**
+   * Unique ID for this instance of the Generator. 
+   * Even if the same settings are used multiple times, this ID should be unique.
+   */
+  public final UUID id = UUID.randomUUID();
   public GeneratorOptions options;
   private Random random;
   public long timestep;
@@ -59,7 +64,7 @@ public class Generator implements RandomNumberGenerator {
   public long referenceTime;
   public Map<String, AtomicInteger> stats;
   public Location location;
-  private AtomicInteger totalGeneratedPopulation;
+  public AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyAlivePatients;
   private boolean onlyDeadPatients;
@@ -125,6 +130,8 @@ public class Generator implements RandomNumberGenerator {
     public File keepPatientsModulePath;
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = seed;
+    /** Actual time the run started. */
+    public final long runStartTime = referenceTime;
   }
 
   /**
@@ -622,6 +629,7 @@ public class Generator implements RandomNumberGenerator {
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
+    location.setSocialDeterminants(person);
 
     if (Generator.fixedRecordGroupManager != null) {
       // Add the person to their household.
@@ -794,6 +802,8 @@ public class Generator implements RandomNumberGenerator {
     demographicsOutput.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
     demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
+    double povertyRatio = city.povertyRatio(income);
+    demographicsOutput.put(Person.POVERTY_RATIO, povertyRatio);
 
     double occupation = random.nextDouble();
     demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);

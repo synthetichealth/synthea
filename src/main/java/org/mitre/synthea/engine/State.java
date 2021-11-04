@@ -483,6 +483,10 @@ public abstract class State implements Cloneable, Serializable {
       if (this.next == null) {
         this.processOnce(person, time);
         this.next = this.endOfDelay(time, person);
+        if (this.next < time) {
+          // Don't allow a negative delay
+          this.next = time;
+        }
       }
 
       return ((time >= this.next) && person.alive(this.next));
@@ -626,6 +630,7 @@ public abstract class State implements Cloneable, Serializable {
     private String attribute;
     // For GMF 1.0 Support
     private Object value;
+    private Code valueCode;
     private Range<Double> range;
     private String expression;
     private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
@@ -702,6 +707,8 @@ public abstract class State implements Cloneable, Serializable {
         value = data;
       } else if (distribution != null) {
         value = distribution.generate(person);
+      } else if (valueCode != null) {
+        value = valueCode;
       }
 
       if (value != null) {
@@ -1083,11 +1090,13 @@ public abstract class State implements Cloneable, Serializable {
         person.record.conditionEndByState(time, conditionOnset);
       } else if (referencedByAttribute != null) {
         Entry condition = (Entry) person.attributes.get(referencedByAttribute);
-        person.getOnsetConditionRecord().onConditionEnd(
-            module.name, condition.codes.get(0).display, time
-        );
-        condition.stop = time;
-        person.record.conditionEnd(time, condition.type);
+        if (condition != null) {
+          person.getOnsetConditionRecord().onConditionEnd(
+              module.name, condition.codes.get(0).display, time
+          );
+          condition.stop = time;
+          person.record.conditionEnd(time, condition.type);
+        }
       } else if (codes != null) {
         person.getOnsetConditionRecord().onConditionEnd(module.name, codes.get(0).display, time);
         codes.forEach(code -> person.record.conditionEnd(time, code.code));
@@ -1105,15 +1114,33 @@ public abstract class State implements Cloneable, Serializable {
    * then the allergy will only be diagnosed when that future encounter occurs.
    */
   public static class AllergyOnset extends OnsetState {
+    private String allergyType;
+    private String category;
+    private List<ReactionProbabilities> reactions;
+
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
       entry = person.record.allergyStart(time, primaryCode);
       entry.name = this.name;
       entry.codes.addAll(codes);
+      HealthRecord.Allergy allergy = (HealthRecord.Allergy) entry;
+      allergy.allergyType = allergyType;
+      allergy.category = category;
 
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, entry);
+      }
+
+      if (this.reactions != null && !this.reactions.isEmpty()) {
+        HashMap<Code, HealthRecord.ReactionSeverity> reactions = new HashMap();
+        this.reactions.forEach(rp -> {
+          HealthRecord.ReactionSeverity rs = rp.generateSeverity(person);
+          if (rs != null) {
+            reactions.put(rp.getReaction(), rs);
+          }
+        });
+        allergy.reactions = reactions;
       }
 
       diagnosed = true;

@@ -1,0 +1,247 @@
+{
+  "name": "fall_risk_screening",
+  "remarks": [
+    "Basic fall risk screening pathway."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Conduct Fall Screening",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "At Least",
+                "minimum": 1,
+                "conditions": [
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "65966004",
+                        "display": "Fracture of forearm"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "263102004",
+                        "display": "Fracture subluxation of wrist"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "16114001",
+                        "display": "Fracture of ankle"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "33737001",
+                        "display": "Fracture of rib"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "58150001",
+                        "display": "Fracture of clavicle"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "359817006",
+                        "display": "Closed fracture of hip"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 65,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Conduct Fall Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "762993000",
+          "display": "Assessment using Morse Fall Scale (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Determine Fall Risk"
+    },
+    "Determine Fall Risk": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "High Fall Risk Score",
+          "distribution": 0.34
+        },
+        {
+          "distribution": 0.33,
+          "transition": "Low Fall Risk Score"
+        },
+        {
+          "transition": "Moderate Fall Risk Score",
+          "distribution": 0.33
+        }
+      ]
+    },
+    "Low Fall Risk Score": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 24,
+          "low": 0
+        }
+      },
+      "direct_transition": "Low Fall Risk Code"
+    },
+    "High Fall Risk Score": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 125,
+          "low": 50
+        }
+      },
+      "direct_transition": "High Fall Risk Code"
+    },
+    "Moderate Fall Risk Score": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 45,
+          "low": 25
+        }
+      },
+      "direct_transition": "Moderate Fall Risk Code"
+    },
+    "Morse Fall Scale": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "59453-1",
+          "display": "Morse Fall Scale panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{#}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "59460-6",
+              "display": "Fall risk total [Morse Fall Scale]"
+            }
+          ],
+          "attribute": "fall_risk_screening_score"
+        },
+        {
+          "category": "survey",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "59461-4",
+              "display": "Fall risk level [Morse Fall Scale]"
+            }
+          ],
+          "attribute": "fall_risk_screening_code"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "High Fall Risk Code": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_code",
+      "direct_transition": "Morse Fall Scale",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13040-3",
+        "display": "High Risk (MFS Score 50+)"
+      }
+    },
+    "Low Fall Risk Code": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13038-7",
+        "display": "Low Risk (MFS Score 0 - 24)"
+      },
+      "direct_transition": "Morse Fall Scale"
+    },
+    "Moderate Fall Risk Code": {
+      "type": "SetAttribute",
+      "attribute": "fall_risk_screening_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA13039-5",
+        "display": "Moderate Risk (MFS Score 25 - 45)"
+      },
+      "direct_transition": "Morse Fall Scale"
+    }
+  },
+  "gmf_version": 2
+}

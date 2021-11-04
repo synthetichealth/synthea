@@ -1,0 +1,512 @@
+{
+  "name": "Drug_Allergies",
+  "remarks": [
+    "This submodule onsets various drug allergies and is intended to be called by the main allergies module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Penicillin_Allergy"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Penicillin_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Actual penicillin allergies happen in about 1% of individuals.",
+        "About 10% of people have a penicillin allergy listed in the medical record.",
+        "This will set an attribute indicating a real allergy on 1% of people, but ensure that 10% have allergies in their record.",
+        "https://www.cdc.gov/antibiotic-use/community/pdfs/penicillin-factsheet.pdf"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "True_Penicillin_Allergy",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Penicillin_Allergy_Onset",
+          "distribution": 0.09
+        },
+        {
+          "transition": "Aspirin_Allergy_Intolerance",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "True_Penicillin_Allergy": {
+      "type": "SetAttribute",
+      "attribute": "Penicillin_Allergy",
+      "direct_transition": "Penicillin_Allergy_Onset",
+      "value": true
+    },
+    "Penicillin_Allergy_Onset": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 7984,
+          "display": "Penicillin V"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.05},
+            {"level":  "none", "value":  0.95}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.11},
+            {"level":  "none", "value":  0.89}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "404640003", "display":  "Dizziness (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.01},
+            {"level":  "none", "value":  0.99}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.06},
+            {"level":  "none", "value":  0.94}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.52},
+            {"level":  "none", "value":  0.48}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.03},
+            {"level":  "none", "value":  0.97}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.34},
+            {"level":  "none", "value":  0.6599999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.04},
+            {"level":  "none", "value":  0.96}
+          ]
+        }
+      ],
+      "direct_transition": "Aspirin_Allergy_Intolerance"
+    },
+    "Aspirin_Allergy_Intolerance": {
+      "type": "Simple",
+      "remarks": [
+        "About 1% of individuals have an allergy to aspirin",
+        "About 20% of individuals have an intolerance",
+        ""
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Aspirin_Allergy_Onset",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NSAID_Allergy",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Aspirin_Allergy_Onset": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1191,
+          "display": "Aspirin"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.19},
+            {"level":  "none", "value":  0.81}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.05},
+            {"level":  "none", "value":  0.95}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.028},
+            {"level":  "none", "value":  0.972}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "21522001", "display":  "Abdominal pain (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.32},
+            {"level":  "none", "value":  0.68}
+          ]
+        }
+      ],
+      "direct_transition": "NSAID_Allergy"
+    },
+    "NSAID_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "1.6% of people have a Non-steroidal anti-inflammatory drugs (NSAIDs), ibuprofen allergy.",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6004000/"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Onset_Ibuprofen_Allergy",
+          "distribution": 0.016
+        },
+        {
+          "transition": "Sulfa_Drug_Allergy",
+          "distribution": 0.984
+        }
+      ]
+    },
+    "Sulfa_Drug_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "Allergy to sulfa drugs occurs in 3% - 8% of the population. We will give it to 5% of individuals.",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6789825/",
+        ""
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Onset_Sulfa_Drug_Allergy",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Cephalosporin_Allergy",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "Onset_Ibuprofen_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "5640",
+          "display": "Ibuprofen"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.40},
+            {"level":  "none", "value":  0.60}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.29},
+            {"level":  "none", "value":  0.71}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "270474007", "display":  "Flushes/goes red (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.15},
+            {"level":  "none", "value":  0.85}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.30},
+            {"level":  "none", "value":  0.70}
+          ]
+        }
+      ],
+      "direct_transition": "Sulfa_Drug_Allergy"
+    },
+    "Onset_Sulfa_Drug_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "10831",
+          "display": "Sulfamethoxazole / Trimethoprim"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.126},
+            {"level":  "none", "value":  0.874}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.46},
+            {"level":  "none", "value":  0.54}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.01},
+            {"level":  "none", "value":  0.99}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.63},
+            {"level":  "none", "value":  0.37}
+          ]
+        }
+      ],
+      "direct_transition": "Cephalosporin_Allergy"
+    },
+    "Cephalosporin_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "1% to 3% of individuals are allergic to cphalosporins. This module sets it fo 2% of people."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Onset_Cephalosporin_Allergy",
+          "distribution": 0.02
+        },
+        {
+          "transition": "ACE_Inhibitor_Intolerance",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Onset_Cephalosporin_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "25037",
+          "display": "cefdinir"
+        },
+        {
+          "system": "RxNorm",
+          "code": "25033",
+          "display": "Cefixime"
+        },
+        {
+          "system": "RxNorm",
+          "code": "20489",
+          "display": "cefpodoxime"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2191",
+          "display": "Ceftazidime"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2193",
+          "display": "Ceftriaxone"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2180",
+          "display": "Cefazolin"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2231",
+          "display": "Cephalexin"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2176",
+          "display": "Cefaclor"
+        },
+        {
+          "system": "RxNorm",
+          "code": "20481",
+          "display": "cefepime"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2189",
+          "display": "Cefoxitin"
+        },
+        {
+          "system": "RxNorm",
+          "code": "2194",
+          "display": "Cefuroxime"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.08},
+            {"level":  "none", "value":  0.92}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.08},
+            {"level":  "none", "value":  0.92}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.2},
+            {"level":  "none", "value":  0.8}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.2},
+            {"level":  "none", "value":  0.8}
+          ]
+        }
+      ],
+      "direct_transition": "ACE_Inhibitor_Intolerance"
+    },
+    "ACE_Inhibitor_Intolerance": {
+      "type": "Simple",
+      "remarks": [
+        "11.48% of individuals have an intolerance to ACE inhibitors.",
+        "https://www.sciencedirect.com/science/article/pii/S0735109718304315?viewFullText=true"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Onset_ACE_Inhibitor_Intolerance",
+          "distribution": 0.1148
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8852
+        }
+      ]
+    },
+    "Onset_ACE_Inhibitor_Intolerance": {
+      "type": "AllergyOnset",
+      "allergy_type": "intolerance",
+      "category": "medication",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "29046",
+          "display": "Lisinopril"
+        },
+        {
+          "system": "RxNorm",
+          "code": "1998",
+          "display": "Captopril"
+        },
+        {
+          "system": "RxNorm",
+          "code": "3827",
+          "display": "Enalapril"
+        },
+        {
+          "system": "RxNorm",
+          "code": "18867",
+          "display": "benazepril"
+        },
+        {
+          "system": "RxNorm",
+          "code": "35208",
+          "display": "quinapril"
+        },
+        {
+          "system": "RxNorm",
+          "code": "35296",
+          "display": "Ramipril"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.20},
+            {"level":  "none", "value":  0.80}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.007},
+            {"level":  "none", "value":  0.993}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "404640003", "display":  "Dizziness (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.002},
+            {"level":  "none", "value":  0.998}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "236429004", "display":  "Acute drug-induced renal failure (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.008},
+            {"level":  "none", "value":  0.992}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.06},
+            {"level":  "none", "value":  0.94}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "237849008", "display":  "Drug-induced hyperkalemia (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.04},
+            {"level":  "none", "value":  0.96}
+          ]
+        }
+      ],
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

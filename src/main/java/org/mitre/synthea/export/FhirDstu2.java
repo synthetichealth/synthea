@@ -328,7 +328,10 @@ public class FhirDstu2 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Other (Put Hawaiian and Pacific Islander here for now)
+      case "hawaiian":
+        raceDisplay = "Native Hawaiian or Other Pacific Islander";
+        break;
+      default:
         raceDisplay = "Other";
         break;
     }
@@ -728,7 +731,8 @@ public class FhirDstu2 {
 
     int itemSequence = 2;
     int conditionSequence = 1;
-    for (HealthRecord.Entry item : claim.items) {
+    for (Claim.ClaimEntry claimEntry : claim.items) {
+      HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
         ca.uhn.fhir.model.dstu2.resource.Claim.Item procedureItem =

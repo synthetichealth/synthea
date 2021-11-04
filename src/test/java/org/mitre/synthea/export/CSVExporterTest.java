@@ -29,7 +29,7 @@ public class CSVExporterTest {
   
   private static File exportDir;
 
-  private static final int NUMBER_OF_FILES = 16;
+  private static final int NUMBER_OF_FILES = 18;
 
   /**
    * Global setup for export tests.
@@ -88,7 +88,7 @@ public class CSVExporterTest {
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
-      assertTrue(SimpleCSV.isValid(csvData));
+      assertTrue("CSV Validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
       count++;
     }
@@ -230,7 +230,7 @@ public class CSVExporterTest {
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
-      assertTrue(SimpleCSV.isValid(csvData));
+      assertTrue("CSV validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
       count++;
     }

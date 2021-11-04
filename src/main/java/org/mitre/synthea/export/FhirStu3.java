@@ -396,7 +396,10 @@ public class FhirStu3 {
       case "native":
         raceDisplay = "American Indian or Alaska Native";
         break;
-      default: // Other (Put Hawaiian and Pacific Islander here for now)
+      case "hawaiian":
+        raceDisplay = "Native Hawaiian or Other Pacific Islander";
+        break;
+      default:
         raceDisplay = "Other";
         break;
     }
@@ -435,7 +438,7 @@ public class FhirStu3 {
       ethnicityDisplay = "Hispanic or Latino";
     } else {
       ethnicity = "nonhispanic";
-      ethnicityDisplay = "Non Hispanic or Latino";
+      ethnicityDisplay = "Not Hispanic or Latino";
     }
 
     String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);
@@ -851,7 +854,8 @@ public class FhirStu3 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (HealthRecord.Entry item : claim.items) {
+    for (Claim.ClaimEntry claimEntry : claim.items) {
+      HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
         ItemComponent claimItem = new ItemComponent(new PositiveIntType(itemSequence));

@@ -144,7 +144,8 @@ public class HealthRecord implements Serializable {
      */
     void determineCost() {
       this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
-      this.cost = this.cost.setScale(2, RoundingMode.DOWN); // truncate to 2 decimal places
+      // truncate to 2 decimal places
+      this.cost = this.cost.setScale(2, RoundingMode.DOWN);
     }
 
     /**
@@ -494,7 +495,7 @@ public class HealthRecord implements Serializable {
     public List<Observation> observations;
     public List<Report> reports;
     public List<Entry> conditions;
-    public List<Entry> allergies;
+    public List<Allergy> allergies;
     public List<Procedure> procedures;
     public List<Immunization> immunizations;
     public List<Medication> medications;
@@ -534,7 +535,7 @@ public class HealthRecord implements Serializable {
       observations = new ArrayList<Observation>();
       reports = new ArrayList<Report>();
       conditions = new ArrayList<Entry>();
-      allergies = new ArrayList<Entry>();
+      allergies = new ArrayList<Allergy>();
       procedures = new ArrayList<Procedure>();
       immunizations = new ArrayList<Immunization>();
       medications = new ArrayList<Medication>();
@@ -603,6 +604,36 @@ public class HealthRecord implements Serializable {
           return record.encounters.get(index - 1);
         }
       }
+    }
+  }
+
+  public enum ReactionSeverity {
+    SEVERE("24484000", "Severe"),
+    MODERATE("6736007", "Moderate"),
+    MILD("255604002", "Mild");
+
+    public String code;
+    public String display;
+
+    ReactionSeverity(String code, String display) {
+      this.code = code;
+      this.display = display;
+    }
+  }
+
+  public class Allergy extends Entry {
+    public String allergyType;
+    public String category;
+    public HashMap<Code, ReactionSeverity> reactions;
+
+    /**
+     * Constructor for Entry.
+     *
+     * @param start Time when the allergy starts
+     * @param type Substance that the person is allergic or intolerant to
+     */
+    public Allergy(long start, String type) {
+      super(start, type);
     }
   }
   
@@ -828,18 +859,31 @@ public class HealthRecord implements Serializable {
   }
 
   /**
+   * Get the onset time for any entry that is currently present in the healthrecord.
+   * @param code The clinical code for the entry.
+   * @return The onset time or null if not present.
+   */
+  public Long presentOnset(String code) {
+    Long onset = null;
+    if (present.containsKey(code)) {
+      onset = present.get(code).start;
+    }
+    return onset;
+  }
+
+  /**
    * Return the current allergy of the specified type or create a new one if none exists.
    * @param time the start time of the new allergy if one is created.
    * @param primaryCode the type of allergy.
    * @return the existing or new allergy entry.
    */
-  public Entry allergyStart(long time, String primaryCode) {
+  public Allergy allergyStart(long time, String primaryCode) {
     if (!present.containsKey(primaryCode)) {
-      Entry allergy = new Entry(time, primaryCode);
+      Allergy allergy = new Allergy(time, primaryCode);
       currentEncounter(time).allergies.add(allergy);
       present.put(primaryCode, allergy);
     }
-    return present.get(primaryCode);
+    return (Allergy) present.get(primaryCode);
   }
 
   /**
@@ -873,6 +917,19 @@ public class HealthRecord implements Serializable {
       allergy.stop = time;
       present.remove(allergy.type);
     }
+  }
+
+  /**
+   * Checks whether the specified allergy is active.
+   * Note that this functionality already exited in the conditionActive method, but adding
+   * this method makes the intention of the caller more clear. This is method simply calls
+   * conditionActive and returns the result.
+   *
+   * @param type The type of allergy to look for
+   * @return true if there is an active allergy for the type
+   */
+  public boolean allergyActive(String type) {
+    return conditionActive(type);
   }
 
   /**

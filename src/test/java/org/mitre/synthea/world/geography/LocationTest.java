@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -195,5 +194,14 @@ public class LocationTest {
       Assert.assertNotNull(part);
       Assert.assertTrue(placeOfBirth[placeOfBirth.length - 1].contains(part));
     }
+  }
+
+  @Test
+  public void testSocialDeterminantsOfHealth() {
+    Person person = new Person(0L);
+    int attributeCountBefore = person.attributes.keySet().size();
+    location.setSocialDeterminants(person);
+    int attributeCountAfter = person.attributes.keySet().size();
+    Assert.assertTrue(attributeCountAfter > attributeCountBefore);
   }
 }

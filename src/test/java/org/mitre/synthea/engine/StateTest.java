@@ -80,13 +80,15 @@ public class StateTest {
     person.setProvider(EncounterType.EMERGENCY, mock);
     person.setProvider(EncounterType.INPATIENT, mock);
 
+    int age = 35;
     time = System.currentTimeMillis();
-    long birthTime = time - Utilities.convertTime("years", 35);
+    long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     Payer.loadNoInsurance();
-    for (int i = 0; i < person.payerHistory.length; i++) {
-      person.setPayerAtAge(i, Payer.noInsurance);
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
     
     // Ensure Physiology state is enabled by default
@@ -344,6 +346,38 @@ public class StateTest {
   }
 
   @Test
+  public void gausian_delay_never_negative() throws Exception {
+    Module module = TestHelper.getFixture("gaussian_distro_delay.json");
+
+    // Seconds
+    State delay = module.getState("1 Mean Delay");
+    for (int i = 0; i < 100; i++) {
+      State.Delay daClone = (State.Delay) delay.clone();
+      daClone.entered = time;
+      daClone.process(person, time);
+      assertTrue(daClone.next >= time);
+    }
+  }
+
+  @Test
+  public void gausian_delay_has_correct_mean() throws Exception {
+    Module module = TestHelper.getFixture("gaussian_distro_delay.json");
+
+    long acc = 0;
+    // Seconds
+    State delay = module.getState("10 Mean Delay");
+    for (int i = 0; i < 1000; i++) {
+      State.Delay daClone = (State.Delay) delay.clone();
+      daClone.entered = time;
+      daClone.process(person, time);
+      acc += (daClone.next - time);
+    }
+    long mean = acc / 1000;
+    assertTrue(mean > 9500);
+    assertTrue(mean < 10500);
+  }
+
+  @Test
   public void delay_passes_after_time_range() throws Exception {
     Module module = TestHelper.getFixture("delay.json");
 
@@ -352,56 +386,56 @@ public class StateTest {
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000));
-    assertFalse(delay.process(person, time + 2L * 1000));
-    assertTrue(delay.process(person, time + 10L * 1000));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000));
 
     // Minutes
     delay = module.getState("2_To_10_Minute_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60));
 
     // Hours
     delay = module.getState("2_To_10_Hour_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60));
 
     // Days
     delay = module.getState("2_To_10_Day_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24));
 
     // Weeks
     delay = module.getState("2_To_10_Week_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 7));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 7));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 7));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 7));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 7));
 
     // Months
     delay = module.getState("2_To_10_Month_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 30));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 30));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 30));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 30));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 30));
 
     // Years
     delay = module.getState("2_To_10_Year_Delay");
     delay.entered = time;
     assertFalse(delay.process(person, time));
     assertFalse(delay.process(person, time + 1L * 1000 * 60 * 60 * 24 * 365));
-    assertFalse(delay.process(person, time + 2L * 1000 * 60 * 60 * 24 * 365));
-    assertTrue(delay.process(person, time + 10L * 1000 * 60 * 60 * 24 * 365));
+    assertFalse(delay.process(person, time - 1 + 2L * 1000 * 60 * 60 * 24 * 365));
+    assertTrue(delay.process(person, time + 1 + 10L * 1000 * 60 * 60 * 24 * 365));
   }
 
   @Test
@@ -915,7 +949,6 @@ public class StateTest {
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
     assertEquals("Emergency Room Admission", code.display);
-
   }
 
   @Test
@@ -953,13 +986,26 @@ public class StateTest {
     State encounter = module.getState("Dr_Visit");
     assertTrue(encounter.process(person, time));
 
-    HealthRecord.Entry allergy = person.record.encounters.get(0).allergies.get(0);
+    HealthRecord.Allergy allergy = person.record.encounters.get(0).allergies.get(0);
     assertEquals(time, allergy.start);
     assertEquals(0L, allergy.stop);
 
     Code code = allergy.codes.get(0);
     assertEquals("91930004", code.code);
     assertEquals("Allergy to eggs", code.display);
+
+    assertTrue(allergy.reactions.size() >= 1 && allergy.reactions.size() < 3);
+    allergy.reactions.forEach((reaction, severity) -> {
+      String reactionCode = reaction.code;
+      assertTrue(reactionCode.equals("21626009") || reactionCode.equals("91941002"));
+      if (reactionCode.equals("21626009")) {
+        assertTrue(severity == HealthRecord.ReactionSeverity.MILD
+            || severity == HealthRecord.ReactionSeverity.MODERATE);
+      }
+      if (reactionCode.equals("91941002")) {
+        assertTrue(severity == HealthRecord.ReactionSeverity.SEVERE);
+      }
+    });
   }
 
   @Test

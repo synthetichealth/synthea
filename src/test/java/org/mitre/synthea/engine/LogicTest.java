@@ -64,7 +64,7 @@ public class LogicTest {
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();
-    person.setPayerAtTime(time, Payer.noInsurance);
+    person.coverage.setPayerAtTime(time, Payer.noInsurance);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");
@@ -399,6 +399,23 @@ public class LogicTest {
     person.attributes.put("Alzheimer's Variant", cond);
 
     assertTrue(doTest("alzheimersConditionTest"));
+  }
+
+  @Test
+  public void test_allergy_condition() {
+    person.record = new HealthRecord(person);
+    assertFalse(doTest("penicillinAllergyTest"));
+
+    HealthRecord.Code penicillinCode = new HealthRecord.Code("RxNorm", "7984",
+        "Penicillin V");
+
+    person.record.allergyStart(time, penicillinCode.code);
+    assertTrue(doTest("penicillinAllergyTest"));
+
+    time += Utilities.convertTime("years", 10);
+
+    person.record.allergyEnd(time, penicillinCode.code);
+    assertFalse(doTest("penicillinAllergyTest"));
   }
 
   @Test

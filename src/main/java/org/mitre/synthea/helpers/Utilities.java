@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -43,7 +44,7 @@ public class Utilities {
       case "days":
         return TimeUnit.DAYS.toMillis(value);
       case "years":
-        return TimeUnit.DAYS.toMillis(365 * value);
+        return TimeUnit.DAYS.toMillis((long) 365.25 * value);
       case "months":
         return TimeUnit.DAYS.toMillis(30 * value);
       case "weeks":
@@ -73,7 +74,7 @@ public class Utilities {
       case "days":
         return TimeUnit.HOURS.toMillis((long)(24.0 * value));
       case "years":
-        return TimeUnit.DAYS.toMillis((long)(365.0 * value));
+        return TimeUnit.DAYS.toMillis((long)(365.25 * value));
       case "months":
         return TimeUnit.DAYS.toMillis((long)(30.0 * value));
       case "weeks":
@@ -358,6 +359,8 @@ public class Utilities {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(Logic.class,"condition_type"))
       .registerTypeAdapterFactory(InnerClassTypeAdapterFactory.of(State.class, "type"))
+      // as of JDK16, GSON can no longer handle certain sdk classes
+      .registerTypeAdapter(Random.class, new SerializableTypeAdapter<Random>())
       .create();
   }
 

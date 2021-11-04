@@ -75,6 +75,8 @@ public class Provider implements QuadTreeElement, Serializable {
   public String phone;
   public String type;
   public String ownership;
+  /** institutional (e.g. hospital) else professional (e.g. PCP) */
+  public boolean institutional;
   public int quality;
   private double revenue;
   private Point2D.Double coordinates;
@@ -347,21 +349,21 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.INPATIENT);
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(location, hospitalFile, servicesProvided, clinicianSeed);
+        loadProviders(location, hospitalFile, servicesProvided, true, clinicianSeed);
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, servicesProvided, clinicianSeed);
+        loadProviders(location, vaFile, servicesProvided, true, clinicianSeed);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(location, primaryCareFile, servicesProvided, clinicianSeed);
+        loadProviders(location, primaryCareFile, servicesProvided, false, clinicianSeed);
         
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(location, urgentcareFile, servicesProvided, clinicianSeed);
+        loadProviders(location, urgentcareFile, servicesProvided, true, clinicianSeed);
       
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -380,10 +382,11 @@ public class Provider implements QuadTreeElement, Serializable {
    * @param location the state being loaded
    * @param filename Location of the file, relative to src/main/resources
    * @param servicesProvided Set of services provided by these facilities
+   * @param institutional If the provider is institutional (true) or professional (false)
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      Set<EncounterType> servicesProvided, long clinicianSeed)
+      Set<EncounterType> servicesProvided, boolean institutional, long clinicianSeed)
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -400,6 +403,7 @@ public class Provider implements QuadTreeElement, Serializable {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Provider parsed = csvLineToProvider(row);
+        parsed.institutional = institutional;
         parsed.servicesProvided.addAll(servicesProvided);
 
         if ("Yes".equals(row.remove("emergency"))) {

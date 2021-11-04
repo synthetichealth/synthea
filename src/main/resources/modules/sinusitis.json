@@ -197,7 +197,7 @@
         },
         {
           "distribution": 0.2,
-          "transition": "Prescribe_Antibiotic"
+          "transition": "Penicillin_Allergy_Check"
         }
       ]
     },
@@ -507,7 +507,40 @@
     "Chronic_Sinusitis_Followup_without_action": {
       "type": "EncounterEnd",
       "direct_transition": "Chronic_Sinusitis_Continues"
+    },
+    "Penicillin_Allergy_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Prescribe_Alternative_Antibiotic",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Prescribe_Antibiotic"
+        }
+      ]
+    },
+    "Prescribe_Alternative_Antibiotic": {
+      "type": "MedicationOrder",
+      "reason": "Sinusitis Condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1649987,
+          "display": "doxycycline hyclate 100 MG"
+        }
+      ],
+      "direct_transition": "End_Encounter"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
