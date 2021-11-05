@@ -163,11 +163,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     this.initializeDefaultHealthRecords();
-    // 128 because it's a nice power of 2, and nobody will reach that age
-    payerHistory = new Payer[128];
-    payerOwnerHistory = new String[128];
-    annualHealthExpenses = new HashMap<Integer, Double>();
-    annualHealthCoverage = new HashMap<Integer, Double>();
+    coverage = new CoverageRecord(this);
   }
 
   /**

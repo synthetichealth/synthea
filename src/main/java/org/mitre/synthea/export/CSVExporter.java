@@ -623,7 +623,9 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.coverage.getTotalExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.coverage.getTotalCoverage());
+    s.append(person.coverage.getTotalCoverage()).append(',');
+    // INCOME
+    s.append(person.attributes.get(Person.INCOME));
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS
