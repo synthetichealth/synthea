@@ -131,7 +131,7 @@ public final class LifecycleModule extends Module {
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
-    
+
     String fatherFirstName = Names.fakeFirstName("M", language, person);
     // this is anglocentric where the baby gets the father's last name
     attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
@@ -229,7 +229,7 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
-    
+
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
@@ -237,7 +237,7 @@ public final class LifecycleModule extends Module {
 
     if (ENABLE_PHYSIOLOGY_GENERATORS) {
       List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
-      
+
       for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
         person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
       }
@@ -840,7 +840,7 @@ public final class LifecycleModule extends Module {
   /**
    * Determines whether a person dies due to loss-of-care and lack of
    * necessary treatment.
-   * 
+   *
    * @param person the person to check for loss of care death.
    */
   public static boolean deathFromLossOfCare(Person person) {

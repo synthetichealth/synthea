@@ -68,7 +68,7 @@ public abstract class State implements Cloneable, Serializable {
   private List<ComplexTransitionOption> complexTransition;
   private List<LookupTableTransitionOption> lookupTableTransition;
   public List<String> remarks;
-  
+
   public static boolean ENABLE_PHYSIOLOGY_STATE =
       Config.getAsBoolean("physiology.state.enabled", false);
 
@@ -123,7 +123,7 @@ public abstract class State implements Cloneable, Serializable {
    * executed and modified without altering the original copy. So for example, 'entered' and
    * 'exited' times should not be copied so the clone can be cleanly executed.
    * Implementation note: the base Object.clone() copies over all fields automatically
-   * (as a shallow copy), so we don't need to do that ourselves. Instead, we should 
+   * (as a shallow copy), so we don't need to do that ourselves. Instead, we should
    * 1. explicitly null out any fields that should not be copied, such as entered/exited
    * 2. deep copy mutable reference types, if necessary.
    */
@@ -271,7 +271,7 @@ public abstract class State implements Cloneable, Serializable {
         } else {
           this.submoduleExited = person.history.get(0).exited;
         }
-        
+
         // add the history from the submodule to this module's history, at the front
         if (moduleHistory != person.history) {
           // if the submodule is a java module, it didn't create its own history
@@ -299,7 +299,7 @@ public abstract class State implements Cloneable, Serializable {
       }
     }
   }
-  
+
   /**
    * The Physiology state executes a physiology simulation according to the provided
    * configuration options. Expressions can be used to map Patient attributes /
@@ -320,18 +320,18 @@ public abstract class State implements Cloneable, Serializable {
     private Transition altTransition;
     private transient PhysiologySimulator simulator;
     private transient Map<String,String> paramTypes;
-    
+
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-      
+
       if (altDirectTransition == null || altDirectTransition == "") {
         throw new RuntimeException("All Physiology States MUST have an alt_direct_transition"
             + " defined in the event that Physiology States are disabled.");
       }
-      
+
       this.altTransition = new DirectTransition(altDirectTransition);
-      
+
       if (leadTime > simDuration) {
         throw new IllegalArgumentException(
             "Simulation lead time cannot be greater than sim duration!");
@@ -341,11 +341,11 @@ public abstract class State implements Cloneable, Serializable {
         setup();
       }
     }
-    
+
     private void setup() {
       simulator = new PhysiologySimulator(model, solver, stepSize, simDuration);
       paramTypes = new HashMap<String, String>();
-      
+
       for (String param : simulator.getParameters()) {
         // Assume all physiology model inputs are lists of Decimal objects which is typically
         // the case
@@ -353,7 +353,7 @@ public abstract class State implements Cloneable, Serializable {
         // those types to CQL types
         paramTypes.put(param, "List<Decimal>");
       }
-      
+
       for (IoMapper mapper : inputs) {
         mapper.initialize(paramTypes);
       }
@@ -364,13 +364,13 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public Physiology clone() {
-      Physiology clone = (Physiology) super.clone();     
+      Physiology clone = (Physiology) super.clone();
       List<IoMapper> inputList = new ArrayList<IoMapper>(inputs.size());
       for (IoMapper mapper : inputs) {
         inputList.add(new IoMapper(mapper));
       }
       clone.inputs = inputList;
-      
+
       List<IoMapper> outputList = new ArrayList<IoMapper>(outputs.size());
       for (IoMapper mapper : outputs) {
         outputList.add(new IoMapper(mapper));
@@ -415,11 +415,11 @@ public abstract class State implements Cloneable, Serializable {
       }
       return true;
     }
-    
+
     /**
      * Directs to the normal transition if Physiology states are enabled. Otherwise
      * directs to the alternative direct transition.
-     * 
+     *
      * @param person
      *          the person being simulated
      * @param time
@@ -430,10 +430,10 @@ public abstract class State implements Cloneable, Serializable {
       if (ENABLE_PHYSIOLOGY_STATE) {
         return super.transition(person, time);
       }
-      
+
       return altTransition.follow(person, time);
     }
-    
+
   }
 
   /**
@@ -461,7 +461,7 @@ public abstract class State implements Cloneable, Serializable {
       clone.next = null;
       return clone;
     }
-    
+
     public abstract long endOfDelay(long time, Person person);
 
     /**
@@ -639,15 +639,15 @@ public abstract class State implements Cloneable, Serializable {
     // For GMF 2.0 Support
     private Distribution distribution;
 
-    
+
     private ThreadLocal<ExpressionProcessor> getExpProcessor() {
       // If the ThreadLocal instance hasn't been created yet, create it now
       if (threadExpProcessor == null) {
         threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
       }
-      
+
       // If there's an expression, create the processor for it
-      if (this.expression != null && threadExpProcessor.get() == null) { 
+      if (this.expression != null && threadExpProcessor.get() == null) {
         threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
 
@@ -657,7 +657,7 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-      
+
       // special handling for integers
       if (value instanceof Double) {
         double doubleVal = (double) value;
@@ -666,7 +666,7 @@ public abstract class State implements Cloneable, Serializable {
           value = (int) doubleVal;
         }
       }
-      
+
       // Series data default period is 1.0s
       if (period <= 0.0) {
         period = 1.0;
@@ -694,7 +694,7 @@ public abstract class State implements Cloneable, Serializable {
       } else if (seriesData != null) {
         String[] items = seriesData.split(" ");
         TimeSeriesData data = new TimeSeriesData(items.length, period);
-        
+
         for (int i = 0; i < items.length; i++) {
           try {
             data.addValue(Double.parseDouble(items[i]));
@@ -703,7 +703,7 @@ public abstract class State implements Cloneable, Serializable {
                 + "\" in SetAttribute state for \"" + attribute + "\"", nfe);
           }
         }
-        
+
         value = data;
       } else if (distribution != null) {
         value = distribution.generate(person);
@@ -882,7 +882,7 @@ public abstract class State implements Cloneable, Serializable {
     private void renewChronicMedicationsAtWellness(Person person, long time) {
       // note that this code has some child codes for various different reasons,
       // eg "medical aim achieved", "ineffective", "avoid interaction", "side effect", etc
-      Code expiredCode = new Code("SNOMED-CT", "182840001", 
+      Code expiredCode = new Code("SNOMED-CT", "182840001",
           "Drug treatment stopped - medical advice");
 
       // We keep track of the meds we renewed to add them to the chronic list later
@@ -1016,7 +1016,7 @@ public abstract class State implements Cloneable, Serializable {
       }
       return true;
     }
-    
+
     protected void updateOnsetInfo(Person person, long time) {
       return;
     }
@@ -1033,14 +1033,14 @@ public abstract class State implements Cloneable, Serializable {
    * then the condition will only be diagnosed when that future encounter occurs.
    */
   public static class ConditionOnset extends OnsetState {
-      
+
     @Override
     protected void updateOnsetInfo(Person person, long time) {
       person.getOnsetConditionRecord().onConditionOnset(
           module.name, this.name, codes.get(0).display, time
       );
     }
-    
+
     @Override
     public void diagnose(Person person, long time) {
       String primaryCode = codes.get(0).code;
@@ -1201,7 +1201,7 @@ public abstract class State implements Cloneable, Serializable {
     private String assignToAttribute;
     private boolean administration;
     private boolean chronic;
-    
+
     /**
      * Java Serialization support method to serialize the JsonObject prescription which isn't
      * natively serializable.
@@ -1219,7 +1219,7 @@ public abstract class State implements Cloneable, Serializable {
         oos.writeObject(null);
       }
     }
-    
+
     /**
      * Java Serialization support method to deserialize the JsonObject prescription which isn't
      * natively serializable.
@@ -1548,15 +1548,15 @@ public abstract class State implements Cloneable, Serializable {
       if (threadExpProcessor == null) {
         threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
       }
-      
+
       // If there's an expression, create the processor for it
-      if (this.expression != null && threadExpProcessor.get() == null) { 
+      if (this.expression != null && threadExpProcessor.get() == null) {
         threadExpProcessor.set(new ExpressionProcessor(this.expression));
       }
 
       return threadExpProcessor;
     }
-    
+
     @Override
     public VitalSign clone() {
       VitalSign clone = (VitalSign) super.clone();
@@ -1663,9 +1663,9 @@ public abstract class State implements Cloneable, Serializable {
       if (threadExpProcessor == null) {
         threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
       }
-      
+
       // If there's an expression, create the processor for it
-      if (expression != null && threadExpProcessor.get() == null) { 
+      if (expression != null && threadExpProcessor.get() == null) {
         threadExpProcessor.set(new ExpressionProcessor(expression));
       }
 
@@ -1676,7 +1676,7 @@ public abstract class State implements Cloneable, Serializable {
 
       return threadExpProcessor;
     }
-    
+
     @Override
     public Observation clone() {
       Observation clone = (Observation) super.clone();
@@ -1726,7 +1726,7 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-  
+
   /**
    * ObservationGroup is an internal parent class to provide common logic to state types that
    * package multiple observations into a single entity. It is an implementation detail and should
@@ -1746,7 +1746,7 @@ public abstract class State implements Cloneable, Serializable {
 
     public ObservationGroup clone() {
       ObservationGroup clone = (ObservationGroup) super.clone();
-      
+
       // IMPORTANT: because each observation gets process()ed when the state gets processed,
       // we need to ensure we deep clone the list
       // (otherwise as this gets passed around, the same objects are used for different patients
@@ -1756,7 +1756,7 @@ public abstract class State implements Cloneable, Serializable {
         cloneObs.add(o.clone());
       }
       clone.observations = cloneObs;
-      
+
       return clone;
     }
   }
@@ -1990,7 +1990,7 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-  
+
   /**
    * The Device state indicates the point that a permanent or semi-permanent device
    * (for example, a prosthetic, or pacemaker) is associated to a person.
@@ -2025,7 +2025,7 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-  
+
   /**
    * The DeviceEnd state indicates the point that a permanent or semi-permanent device
    * (for example, a prosthetic, or pacemaker) is removed from a person.

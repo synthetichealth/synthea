@@ -34,7 +34,7 @@ public class FactTableTest {
     }
     String output = writer.toString();
     Assert.assertTrue(output.contains(h + ",H"));
-    Assert.assertTrue(output.contains(he + ",He"));    
+    Assert.assertTrue(output.contains(he + ",He"));
   }
 
 }

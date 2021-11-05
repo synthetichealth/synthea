@@ -47,15 +47,15 @@ public abstract class TestHelper {
     File file = new File(uri);
     Config.load(file);
   }
-  
+
   public static WireMockConfiguration wiremockOptions() {
     return WireMockConfiguration.options().port(5566);
   }
-  
+
   /**
-   * Check whether the <code>synthea.test.httpRecording</code> property is set to enable HTTP 
+   * Check whether the <code>synthea.test.httpRecording</code> property is set to enable HTTP
    * recording, for tests with HTTP mocking.
-   * 
+   *
    * @return true if HTTP recording is enabled
    */
   public static boolean isHttpRecordingEnabled() {
@@ -65,7 +65,7 @@ public abstract class TestHelper {
 
   /**
    * Return the configured URL for recording terminology HTTP responses.
-   * 
+   *
    * @return the configured terminology service URL
    */
   public static String getTxRecordingSource() {
@@ -78,7 +78,7 @@ public abstract class TestHelper {
 
   /**
    * Returns a WireMock response builder representing a response from a FHIR server.
-   * 
+   *
    * @return a ResponseDefinitionBuilder object
    */
   public static ResponseDefinitionBuilder fhirResponse() {

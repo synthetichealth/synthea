@@ -29,7 +29,7 @@ public class FixedRecordTest {
   @Before
   public void setup() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-    Config.set("generate.only_dead_patients", "false"); 
+    Config.set("generate.only_dead_patients", "false");
     Config.set("exporter.split_records", "true");
     Provider.clear();
     Payer.clear();
@@ -48,7 +48,7 @@ public class FixedRecordTest {
 
     // List of raw RecordGroups imported directly from the input file for later comparison.
     List<FixedRecordGroup> rawRecordGroups = generator.importFixedPatientDemographicsFile();
-    
+
     // Generate each patient from the fixed record input file.
     for (int i = 0; i < generator.options.population; i++) {
       generator.generatePerson(i);
@@ -70,14 +70,14 @@ public class FixedRecordTest {
       // Track the number of fixed records that match the person's attributes exactly.
       int fixedRecordMatches = 0;
       // Cycle the person's FixedRecords to compare them to the raw imported FixedRecords.
-      for (int r = 0; r < currentPerson.records.size(); r++) {        
+      for (int r = 0; r < currentPerson.records.size(); r++) {
 
         int recordToPull = Math.min(r, recordGroup.count - 1);
         FixedRecord personFixedRecord = recordGroup.records.get(recordToPull);
 
         recordToPull = Math.min(r, rawRecordGroups.get(p).records.size() - 1);
         FixedRecord rawFixedRecord = rawRecordGroups.get(p).records.get(recordToPull);
-        
+
         // Compare the person's current FixedRecord with the raw imported FixedRecords.
         assertEquals(personFixedRecord.firstName, rawFixedRecord.firstName);
         assertEquals(personFixedRecord.lastName, rawFixedRecord.lastName);

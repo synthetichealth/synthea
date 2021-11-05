@@ -38,30 +38,30 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 public class Concepts {
   /**
    * Generate an output file containing all clinical concepts used in Synthea.
-   * 
+   *
    * @param args unused
    * @throws Exception if any error occurs in reading the module files
    */
   public static void main(String[] args) throws Exception {
     System.out.println("Performing an inventory of concepts...");
-    
+
     boolean onlyMissingCosts = Boolean.parseBoolean(args[0]);
     List<String> output = getConceptInventory(onlyMissingCosts);
-    
+
     Path outFilePath;
     if (onlyMissingCosts) {
       outFilePath = new File("./output/concepts_without_costs.csv").toPath();
     } else {
       outFilePath = new File("./output/concepts.csv").toPath();
     }
-    
+
     Files.write(outFilePath, output, StandardOpenOption.CREATE);
-    
+
     System.out.println("Catalogued " + output.size() + " concepts in file `"
         + outFilePath.toString() + "`.");
     System.out.println("Done.");
   }
-  
+
   /**
    * Get the list of all concepts in Synthea, as a list of CSV strings.
    * @return list of CSV strings
@@ -87,9 +87,9 @@ public class Concepts {
     inventoryCodes(concepts, Immunizations.getAllCodes(), Immunizations.class.getSimpleName());
     inventoryCodes(concepts, LifecycleModule.getAllCodes(), LifecycleModule.class.getSimpleName());
     // QualityOfLifeModule adds no new codes to patients
-    
+
     List<String> conceptList = new ArrayList<>();
-    
+
     for (Code code : concepts.keySet()) {
       Set<String> modules = concepts.get(code);
       String display = code.display;
@@ -101,13 +101,13 @@ public class Concepts {
         conceptList.add(concept);
       }
     }
-    
+
     return conceptList;
   }
-  
+
   /**
    * Catalog all concepts from the given module into the given Table.
-   * 
+   *
    * @param concepts Table of concepts to add to
    * @param module Module to parse for concepts and codes
    */
@@ -118,10 +118,10 @@ public class Concepts {
       inventoryState(concepts, state, module.get("name").getAsString());
     }
   }
-  
+
   /**
    * Catalog all concepts from the given state into the given Table.
-   * 
+   *
    * @param concepts Table of concepts to add to
    * @param state State to parse for concepts and codes
    */
@@ -162,7 +162,7 @@ public class Concepts {
       inventoryCodes(concepts, Collections.singleton(code), module);
     }
   }
-  
+
   /**
    * Add the Codes in the given Collection to the given inventory of concepts.
    * @param concepts Table of concepts to add to

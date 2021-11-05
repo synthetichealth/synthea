@@ -424,7 +424,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   private static final List<String> CSV_RACES = Arrays.asList(
       "WHITE", "BLACK", "ASIAN", "NATIVE", "OTHER");
-  
+
   private static final List<String> CSV_INCOMES = Arrays.asList(
       "00..10", "10..15", "15..25", "25..35", "35..50",
       "50..75", "75..100", "100..150", "150..200", "200..999");
@@ -508,7 +508,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     }
 
     d.ethnicity = Double.parseDouble(line.get(CSV_ETHNICITY));
-    
+
     return d;
   }
 

@@ -41,7 +41,7 @@ public class HealthInsuranceModule extends Module {
   /**
    * Process this HealthInsuranceModule with the given Person at the specified
    * time within the simulation.
-   * 
+   *
    * @param person the person being simulated
    * @param time   the date within the simulated world
    * @return completed : whether or not this Module completed.
@@ -51,7 +51,7 @@ public class HealthInsuranceModule extends Module {
     if (!person.alive(time)) {
       return true;
     }
-    
+
     // If the payerHistory at the current age is null, they must get insurance for the new year.
     // Note: This means the person will check to change insurance yearly, just after their
     // birthday.

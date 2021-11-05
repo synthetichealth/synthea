@@ -43,7 +43,7 @@ public abstract class Config {
   public static String get(String key) {
     return properties.getProperty(key);
   }
-  
+
   /**
    * Get a named property, or the default value if not found.
    *

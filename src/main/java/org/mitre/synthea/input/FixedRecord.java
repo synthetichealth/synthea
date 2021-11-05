@@ -104,7 +104,7 @@ public class FixedRecord {
 
   /**
    * Return the telephone number associated with this FixedRecord.
-   * 
+   *
    * @return The phone number in this FixedRecord.
    */
   public String getTelecom() {
@@ -114,7 +114,7 @@ public class FixedRecord {
   /**
    * Completely overwrites the given person to have the demographic attributes in
    * this FixedRecord.
-   * 
+   *
    * @param person The person who's attributes will be overwritten.
    */
   public void totalOverwrite(Person person) {
@@ -133,7 +133,7 @@ public class FixedRecord {
 
   /**
    * Returns the attributes associated with this FixedRecord.
-   * 
+   *
    * @return the attributes associated with this FixedRecord.
    */
   public Map<String, Object> getFixedRecordAttributes() {

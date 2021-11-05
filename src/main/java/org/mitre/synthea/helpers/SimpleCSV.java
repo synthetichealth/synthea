@@ -23,7 +23,7 @@ public class SimpleCSV {
    * Parse the data from the given CSV file into a List of Maps, where the key is the
    * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
    * the resulting maps.
-   * 
+   *
    * @param csvData
    *          Raw CSV data
    * @return parsed data
@@ -43,20 +43,20 @@ public class SimpleCSV {
 
     return it.readAll();
   }
-  
+
   /**
    * Parse the data from the given CSV file into an Iterator of Maps, where the key is the
    * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
    * the resulting maps. Uses an Iterator, as opposed to a list, in order to parse line by line and
    * avoid memory overload.
-   * 
+   *
    * @param csvData
    *          Raw CSV data
    * @return parsed data
    * @throws IOException
    *           if any exception occurs while parsing the data
    */
-  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData) 
+  public static Iterator<LinkedHashMap<String, String>> parseLineByLine(String csvData)
       throws IOException {
     CsvMapper mapper = new CsvMapper();
     // use first row as header; otherwise defaults are fine
@@ -64,18 +64,18 @@ public class SimpleCSV {
 
     MappingIterator<LinkedHashMap<String, String>> it = mapper.readerFor(LinkedHashMap.class)
         .with(schema).readValues(csvData);
-    
+
     return it;
   }
 
   /**
-   * Convert the data in the given List of Maps to a String of CSV data. 
-   * Each Map in the List represents one line of the resulting CSV. Uses the keySet from the 
-   * first Map to populate the set of columns. This means that the first Map must contain all 
+   * Convert the data in the given List of Maps to a String of CSV data.
+   * Each Map in the List represents one line of the resulting CSV. Uses the keySet from the
+   * first Map to populate the set of columns. This means that the first Map must contain all
    * the columns desired in the final CSV. The order of the columns is specified by the order
-   * provided by the first Map's keySet, so using an ordered Map implementation 
+   * provided by the first Map's keySet, so using an ordered Map implementation
    * (such as LinkedHashMap) is recommended.
-   * 
+   *
    * @param data List of Map data. CSV data read/modified from SimpleCSV.parse(...)
    * @return data formatted as a String containing raw CSV data
    * @throws IOException on file IO write errors.

@@ -166,7 +166,7 @@ public class CSVExporter {
   private CSVExporter() {
     init();
   }
-  
+
   void init() {
     try {
       File output = Exporter.getOutputFolder("csv", null);
@@ -181,13 +181,13 @@ public class CSVExporter {
         outputDirectory = outputDirectory.resolve(subfolderName);
         outputDirectory.toFile().mkdirs();
       }
-      
+
       String includedFilesStr = Config.get("exporter.csv.included_files", "").trim();
       String excludedFilesStr = Config.get("exporter.csv.excluded_files", "").trim();
-      
+
       List<String> includedFiles = Collections.emptyList();
       List<String> excludedFiles = Collections.emptyList();
-      
+
       if (!includedFilesStr.isEmpty() && !excludedFilesStr.isEmpty()) {
         System.err.println(
             "CSV exporter: Included and Excluded file settings are both set -- ignoring both");
@@ -1906,35 +1906,35 @@ public class CSVExporter {
       writer.write(line);
     }
   }
-  
+
   /**
    * "No-op" writer to use to prevent writing to excluded files.
    * Note that this uses an Apache "NullOutputStream", but JDK11 provides its own.
    */
   private static final OutputStreamWriter NO_OP =
       new OutputStreamWriter(NullOutputStream.NULL_OUTPUT_STREAM);
-  
+
   /**
    * Helper method to get the writer for the given output file.
    * Returns a "no-op" writer for any excluded files.
-   * 
+   *
    * @param outputDirectory Parent directory for output csv files
    * @param filename Filename for the current file
    * @param append True = append to an existing file, False = overwrite any existing files
    * @param includedFiles List of filenames that should be included in output
    * @param excludedFiles List of filenames that should not be included in output
-   * 
+   *
    * @return OutputStreamWriter for the given output file.
    */
   private OutputStreamWriter getWriter(Path outputDirectory, String filename, boolean append,
       List<String> includedFiles, List<String> excludedFiles) throws IOException {
 
-    boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(filename)) 
+    boolean excluded = (!includedFiles.isEmpty() && !includedFiles.contains(filename))
         || excludedFiles.contains(filename);
     if (excluded) {
       return NO_OP;
     }
-    
+
     File file = outputDirectory.resolve(filename).toFile();
     // file writing may fail if we tell it to append to a file that doesn't already exist
     append = append && file.exists();

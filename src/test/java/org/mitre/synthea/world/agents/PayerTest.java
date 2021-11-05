@@ -381,7 +381,7 @@ public class PayerTest {
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     person.checkToPayMonthlyPremium(0L);
   }
-  
+
   @Test
   public void costsCoveredByPayer() {
     long time = 0L;

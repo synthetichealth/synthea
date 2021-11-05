@@ -28,16 +28,16 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class TransitionMetrics {
   /**
-   * Internal table of (Module,State) -> Metric. 
+   * Internal table of (Module,State) -> Metric.
    * Note that a table may not be the most appropriate data structure,
    * but it's a lot cleaner than a Map of Module -> Map of State -> Metric.
    */
-  private Table<String, String, Metric> metrics = 
+  private Table<String, String, Metric> metrics =
       Tables.synchronizedTable(HashBasedTable.create());
 
   /**
    * Record all appropriate state transition information from the given person.
-   * 
+   *
    * @param person
    *          Person that went through the modules
    * @param simulationEnd
@@ -84,7 +84,7 @@ public class TransitionMetrics {
 
   /**
    * Get the Metric object for the given State in the given Module.
-   * 
+   *
    * @param moduleName Name of the module
    * @param stateName Name of the state
    * @return Metric object
@@ -110,7 +110,7 @@ public class TransitionMetrics {
       return;
     }
     stateStats.entered.incrementAndGet();
-    long exitTime = (state.exited == null) ? endDate : state.exited; 
+    long exitTime = (state.exited == null) ? endDate : state.exited;
     // if they were in the last state when they died or time expired
     long startTime = state.entered;
     // note: the ruby module has a hack for
@@ -119,10 +119,10 @@ public class TransitionMetrics {
 
     stateStats.duration.addAndGet(exitTime - startTime);
   }
-  
+
   /**
    * Print the statistics that have been gathered.
-   * 
+   *
    * @param totalPopulation
    *          The total population that was simulated.
    * @param modules
@@ -171,8 +171,8 @@ public class TransitionMetrics {
         if (!stats.destinations.isEmpty()) {
           System.out.println(" Transitioned to:");
           long total = stats.destinations.values().stream().mapToLong(ai -> ai.longValue()).sum();
-          stats.destinations.forEach((toState, count) -> 
-                System.out.println(" --> " + toState + " : " + count + " = " 
+          stats.destinations.forEach((toState, count) ->
+                System.out.println(" --> " + toState + " : " + count + " = "
                                     + decimal(count.get(), total) + "%"));
         }
         System.out.println();
@@ -181,7 +181,7 @@ public class TransitionMetrics {
       List<String> unreached = new ArrayList<>(m.getStateNames());
       Collections.sort(unreached);
       // moduleMetrics only includes states actually hit
-      unreached.removeAll(moduleMetrics.keySet()); 
+      unreached.removeAll(moduleMetrics.keySet());
       unreached.forEach(state -> System.out.println(state + ": \n Never reached \n\n"));
 
       System.out.println();
@@ -195,20 +195,20 @@ public class TransitionMetrics {
    * not specified and may change at any time.
    * Ex. duration(14*30*24*60*60*1000) may indicate a result of "14 months", "1 year and 2 months",
    * "1.17 years", etc.
-   * 
+   *
    * @param time time duration in ms
    * @return Human readable description of the time
    */
   public static String durationOf(long time) {
     // this returns something like 15 days 15 hours 24 minutes 26 seconds
     String result = DurationFormatUtils.formatDurationWords(time, true, true);
-    
+
     // if it starts with a large number of days, we can do a little better
     String[] parts = result.split(" ");
-    
+
     if (parts.length > 1 && parts[1].equals("days")) {
       long days = Long.parseLong(parts[0]);
-      
+
       if (days > 365) {
         long years = days / 365;
         long months = (days % 365) / 30;
@@ -219,14 +219,14 @@ public class TransitionMetrics {
         return months + " months " + days + " days";
       }
     }
-    
+
     return result;
   }
 
   /**
    * Helper function to convert a numerator and denominator into a string with a single number and
    * exactly 2 decimal places.
-   * 
+   *
    * @param num
    *          Numerator
    * @param denom
@@ -246,23 +246,23 @@ public class TransitionMetrics {
     /**
      * Number of times the state was entered.
      */
-    public final AtomicInteger entered = new AtomicInteger(0); 
-    
+    public final AtomicInteger entered = new AtomicInteger(0);
+
     /**
      * Total length of time (ms) people were in this state.
      */
     public final AtomicLong duration = new AtomicLong(0L);
-    
+
     /**
      * Number of people that ever his this state.
      */
     public final AtomicInteger population = new AtomicInteger(0);
-    
+
     /**
      * Number of people that are "currently" in that state.
      */
     public final AtomicInteger current = new AtomicInteger(0);
-    
+
     /**
      * Tracker for what states this state transitions to.
      * Key: state that this state transitioned to.
@@ -272,11 +272,11 @@ public class TransitionMetrics {
 
     /**
      * Helper function to increment the count for a destination state.
-     * 
+     *
      * @param destination Target state that was transitioned to
      */
     void incrementDestination(String destination) {
-      
+
       AtomicInteger count = destinations.get(destination);
       if (count == null) {
         synchronized (destinations) {

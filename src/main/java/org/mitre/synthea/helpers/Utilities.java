@@ -142,7 +142,7 @@ public class Utilities {
 
     return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
   }
-  
+
   /**
    * Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).
    */
@@ -154,7 +154,7 @@ public class Utilities {
   /**
    * Compare two objects. lhs and rhs must be of the same type (Number, Boolean, String or Code)
    * Numbers are converted to double prior to comparison.
-   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil. 
+   * Supported operators are: &lt;, &lt;=, ==, &gt;=, &gt;, !=, is nil, is not nil.
    * Only lhs is checked for is nil and is not nil.
    */
   public static boolean compare(Object lhs, Object rhs, String operator) {
@@ -403,7 +403,7 @@ public class Utilities {
     int saltInt = random.randInt(MAX - MIN + 1) + MIN;
     return String.valueOf(saltInt);
   }
-  
+
   /**
    * Utility function to convert from string to a base Java object type.
    * @param clazz type to convert to
@@ -437,8 +437,8 @@ public class Utilities {
 
   /**
    * Walk the directory structure of the modules, and apply the given function for every module.
-   * 
-   * @param action Action to apply for every module. Function signature is 
+   *
+   * @param action Action to apply for every module. Function signature is
    *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
@@ -451,8 +451,8 @@ public class Utilities {
   /**
    * Walk the directory structure of the modules starting at the given location, and apply the given
    * function for every module underneath.
-   * 
-   * @param action Action to apply for every module. Function signature is 
+   *
+   * @param action Action to apply for every module. Function signature is
    *        (currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(Path modulesPath, Consumer<Path> action) throws Exception {
@@ -461,5 +461,5 @@ public class Utilities {
         .filter(Files::isRegularFile)
         .filter(p -> p.toString().endsWith(".json"))
         .forEach(p -> action.accept(p));
-  } 
+  }
 }

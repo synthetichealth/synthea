@@ -57,7 +57,7 @@ public class PhysiologySimulator {
   private static Map<String, Model> MODEL_CACHE;
   private static Path SBML_PATH;
   private static Path OUTPUT_PATH = Paths.get("output", "physiology");
-  
+
   private final Model model;
   private final SBMLinterpreter interpreter;
   private final AbstractDESSolver solver;
@@ -130,7 +130,7 @@ public class PhysiologySimulator {
     public void setCharts(List<MultiTableChartConfig> charts) {
       this.charts = charts;
     }
-    
+
   }
 
   static {
@@ -150,17 +150,17 @@ public class PhysiologySimulator {
 
     // Make unmodifiable so it doesn't change after initialization
     SOLVER_CLASSES = Collections.unmodifiableMap(initSolvers);
-    
+
     try {
       SBML_PATH = Paths.get(MODELS_RESOURCE.toURI());
     } catch (URISyntaxException ex) {
       throw new RuntimeException(ex);
     }
-    
+
     // Initialize our model cache
     MODEL_CACHE = new HashMap<String, Model>();
   }
-  
+
   /**
    * Sets the path to search for SBML model files.
    * @param newPath new path to use
@@ -168,7 +168,7 @@ public class PhysiologySimulator {
   public static void setModelsPath(Path newPath) {
     SBML_PATH = newPath;
   }
-  
+
   /**
    * Sets the path to place main simulation results in.
    * @param newPath new path to use
@@ -186,7 +186,7 @@ public class PhysiologySimulator {
    */
   public PhysiologySimulator(String modelPath, String solverName, double stepSize,
       double simDuration) {
-    
+
     // Get the model from cache if it has already been loaded
     if (MODEL_CACHE.containsKey(modelPath)) {
       model = MODEL_CACHE.get(modelPath);
@@ -202,7 +202,7 @@ public class PhysiologySimulator {
         throw new RuntimeException(ex);
       }
       model = doc.getModel();
-      
+
       // Add the loaded model to the cache so we don't need to load it again
       MODEL_CACHE.put(modelPath, model);
     }
@@ -213,7 +213,7 @@ public class PhysiologySimulator {
     modelDefaults = interpreter.getInitialValues();
     this.simDuration = simDuration;
   }
-  
+
   /**
    * Returns a list of all model parameters.
    * @return list of model parameters
@@ -221,13 +221,13 @@ public class PhysiologySimulator {
   public List<String> getParameters() {
     return Arrays.asList(modelFields);
   }
-  
+
   /**
    * Solves the model at each time step for the specified duration using the provided inputs
    * as initial parameters. Provides the results as a map of value lists where each key is
    * a model parameter. In addition to the model parameters is a "Time" field which provides
    * a list of all simulated time points.
-   * 
+   *
    * <p>Note that this method will throw a DerivativeException if the model encounters an error
    * while attempting to solve the system.
    * @param inputs Map of model parameter inputs. For any parameters which are not provided
@@ -246,7 +246,7 @@ public class PhysiologySimulator {
       // at least once
       throw new RuntimeException(ex);
     }
-    
+
     // Create a copy of the default parameters to use
     double[] params = Arrays.copyOf(modelDefaults, modelDefaults.length);
 
@@ -259,10 +259,10 @@ public class PhysiologySimulator {
         }
       }
     }
-    
+
     // Solve the ODE for the specified duration and return the results
     MultiTable results = solver.solve(interpreter, params, 0, simDuration);
-    
+
     return results;
   }
 
@@ -307,7 +307,7 @@ public class PhysiologySimulator {
     }
 
   }
-  
+
   /**
    * Retrieves the interpreter for a given SBML Model.
    * @param bioModel SBML model to interpret
@@ -322,7 +322,7 @@ public class PhysiologySimulator {
       throw new RuntimeException(ex);
     }
   }
-  
+
   /**
    * Writes the contents of a MultiTable to a CSV file.
    * @param table MultiTable to write
@@ -362,7 +362,7 @@ public class PhysiologySimulator {
     }
     writer.close();
   }
-  
+
   /**
    * Retrieves the default value for a model parameter.
    * @param param parameter to search for
@@ -382,13 +382,13 @@ public class PhysiologySimulator {
       throw new IllegalArgumentException(
           "YAML simulation configuration file path must be provided.");
     }
-    
+
     // Open the config file
     Path configFilePath = Paths.get(args[0]);
-    
+
     File configFile = new File(configFilePath.toString());
     FileInputStream inputStream;
-    
+
     // Try to open the configuration file as an input stream
     try {
       inputStream = new FileInputStream(configFile);
@@ -396,7 +396,7 @@ public class PhysiologySimulator {
       throw new IllegalArgumentException("Configuration file not found: \""
           + configFilePath.toAbsolutePath() + "\".");
     }
-    
+
     // Add type descriptions so Yaml knows how to instantiate our Lists
     Constructor constructor = new Constructor(SimConfig.class);
     TypeDescription simConfigDescription = new TypeDescription(SimConfig.class);
@@ -405,11 +405,11 @@ public class PhysiologySimulator {
     TypeDescription chartConfigDescription = new TypeDescription(MultiTableSeriesConfig.class);
     chartConfigDescription.addPropertyParameters("series", MultiTableSeriesConfig.class);
     constructor.addTypeDescription(chartConfigDescription);
-    
+
     // Parse the SimConfig from the yaml file
     Yaml yaml = new Yaml(constructor);
     SimConfig config = (SimConfig) yaml.load(inputStream);
-    
+
     // Instantiate our simulator
     PhysiologySimulator simulator = new PhysiologySimulator(
         config.getModel(),
@@ -417,7 +417,7 @@ public class PhysiologySimulator {
         config.getStepSize(),
         config.getDuration()
     );
-    
+
     // Create the output directory if it doesn't already exist
     Path outputDir = Paths.get(OUTPUT_PATH.toString(), config.getName());
     if (Files.notExists(outputDir)) {
@@ -428,19 +428,19 @@ public class PhysiologySimulator {
         throw new RuntimeException(ex);
       }
     }
-    
+
     try {
-      
+
       // Run with all default parameters
       long startTime = System.nanoTime();
       MultiTable results = simulator.run(config.getInputs());
       long duration = System.nanoTime() - startTime;
-      
+
       System.out.println("Simulation took " + (duration / 1000000.0) + " ms");
-      
+
       // Write CSV data file
       multiTableToCsvFile(results, Paths.get(outputDir.toString(), config.getName() + ".csv"));
-      
+
       // Draw all of the configured charts
       if (config.getCharts() != null) {
         int chartId = 1;

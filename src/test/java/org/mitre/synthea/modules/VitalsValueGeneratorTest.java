@@ -41,7 +41,7 @@ public class VitalsValueGeneratorTest {
 
   @Test
   public void testZeroStdDevTrendGenerator() {
-    TrendingValueGenerator boundedRandomVariable = 
+    TrendingValueGenerator boundedRandomVariable =
         new TrendingValueGenerator(person, 0.0, 0.0, 1000.0, 0L, 1000L, null, null);
 
     assertEquals(0.0, boundedRandomVariable.getValue(0L), 0.0);
@@ -51,7 +51,7 @@ public class VitalsValueGeneratorTest {
 
   @Test
   public void testNonZeroStdDevTrendGenerator() {
-    TrendingValueGenerator boundedRandomVariable = 
+    TrendingValueGenerator boundedRandomVariable =
         new TrendingValueGenerator(person, 5.0, 0.0, 1000.0, 0L, 1000L, 2.0, 998.0);
 
     for (long testTime = -200L; testTime < 1200L; testTime += 100L) {
@@ -64,9 +64,9 @@ public class VitalsValueGeneratorTest {
 
   @Test
   public void testToString() {
-    TrendingValueGenerator boundedRandomVariable = 
+    TrendingValueGenerator boundedRandomVariable =
         new TrendingValueGenerator(person, 5.0, 0.0, 1000.0, 0L, 1000L, 2.0, 998.0);
-    assertNotNull(boundedRandomVariable.toString());    
+    assertNotNull(boundedRandomVariable.toString());
   }
 
   @Test

@@ -39,7 +39,7 @@ public class Costs {
 
   /**
    * Return the cost of the given entry (Encounter/Procedure/Immunization/Medication).
-   * 
+   *
    * @param entry the entry to calculate the cost for.
    * @param person the person associated with the entry.
    * @return the total cost of the entry.
@@ -159,12 +159,12 @@ public class Costs {
   /**
    * Whether or not this HealthRecord.Entry has an associated cost on a claim.
    * Billing cost is not necessarily reimbursed cost or paid cost.
-   * 
+   *
    * @param entry HealthRecord.Entry
    * @return true if the entry has a cost; false otherwise
    */
   public static boolean hasCost(Entry entry) {
-    return (entry instanceof HealthRecord.Procedure) 
+    return (entry instanceof HealthRecord.Procedure)
         || (entry instanceof HealthRecord.Medication)
         || (entry instanceof HealthRecord.Encounter)
         || (entry instanceof HealthRecord.Immunization);
@@ -172,7 +172,7 @@ public class Costs {
 
   /**
    * Returns Whether or not this code has an ossociated specified cost in one of the cost CSVs.
-   * 
+   *
    * @param code String
    * @return true if the code has a sepcified cost; false otherwise
    */

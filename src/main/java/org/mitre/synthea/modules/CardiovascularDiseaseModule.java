@@ -546,7 +546,7 @@ public final class CardiovascularDiseaseModule extends Module {
           0.78, 0.84 } };
 
   // the index for each range corresponds to the number of points
-  private static final int[][] age_stroke = { 
+  private static final int[][] age_stroke = {
       { 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
       { 54, 57, 60, 63, 65, 68, 71, 74, 77, 79, 82 } // female
   };
@@ -627,7 +627,7 @@ public final class CardiovascularDiseaseModule extends Module {
     strokePoints += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
 
     int bp = bloodPressure.intValue();
-    
+
     if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
       strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
     } else {
@@ -863,7 +863,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.
-   * 
+   *
    * @return Collection of all codes and concepts this module uses
    */
   public static Collection<Code> getAllCodes() {

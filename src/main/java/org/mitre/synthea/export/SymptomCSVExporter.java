@@ -21,15 +21,15 @@ import org.mitre.synthea.world.agents.Person;
  * imported into any database for analysis. Unlike other formats which export a
  * single record per patient, this format generates 1 total file, and adds
  * lines to each based on the clinical events for each patient. The generated
- * file contains the list of symptoms associated to a pathology a person 
+ * file contains the list of symptoms associated to a pathology a person
  * suffered from.
  */
 public class SymptomCSVExporter {
   /**
    * Writer for symptoms.csv.
    */
-  private OutputStreamWriter symptoms; 
-  
+  private OutputStreamWriter symptoms;
+
   /**
    * Charset for specifying the character set of the output files.
    */
@@ -100,18 +100,18 @@ public class SymptomCSVExporter {
 
   /**
    * Get the current instance of the SymptomCSVExporter.
-   * 
+   *
    * @return the current instance of the SymptomCSVExporter.
    */
   public static SymptomCSVExporter getInstance() {
     return SingletonHolder.instance;
   }
 
-  
+
 
   /**
    * Add a single Person's condition symptoms info to the CSV records.
-   * 
+   *
    * @param person Person to write record data for
    * @param time   Time the simulation ended
    * @throws IOException if any IO error occurs
@@ -140,7 +140,7 @@ public class SymptomCSVExporter {
     } else {
       person.attributes.put("exported_symptoms_to_csv", personID);
     }
-    
+
     String gender = clean((String) person.attributes.getOrDefault(Person.GENDER, ""));
     String race = clean((String) person.attributes.getOrDefault(Person.RACE, ""));
     String ethnic = clean((String) person.attributes.getOrDefault(Person.ETHNICITY, ""));
@@ -149,29 +149,29 @@ public class SymptomCSVExporter {
     demoData.append(gender).append(',');
     demoData.append(race).append(',');
     demoData.append(ethnic);
-    
+
     Map<Long, List<ConditionWithSymptoms>> infos = person.getOnsetConditionRecord(
         ).getConditionSymptoms();
     List<Long> list = new LinkedList<Long>(infos.keySet());
     Collections.sort(list);
-    
+
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
-    
+
     for (Long time: list) {
       int symptomExporterMode = Integer.parseInt(Config.get("exporter.symptoms.mode"));
       boolean toBeExported = true;
-      if (symptomExporterMode == 0) {        
+      if (symptomExporterMode == 0) {
         long cutoffDate = endTime - Utilities.convertTime("years", yearsOfHistory);
         toBeExported = time >= cutoffDate;
-      }     
+      }
       if (!toBeExported) {
         continue;
       }
-      Integer ageYear = person.ageInYears(time); 
+      Integer ageYear = person.ageInYears(time);
       for (ConditionWithSymptoms conditionWithSymptoms: infos.get(time)) {
         String condition = conditionWithSymptoms.getConditionName();
         Map<String, List<Integer>> symptomInfo = conditionWithSymptoms.getSymptoms();
-        Long ageEnd = conditionWithSymptoms.getEndTime(); 
+        Long ageEnd = conditionWithSymptoms.getEndTime();
         String ageEndStr = "";
         if (ageEnd != null) {
           ageEndStr = String.valueOf(person.ageInYears(ageEnd));
@@ -182,7 +182,7 @@ public class SymptomCSVExporter {
         s.append(ageEndStr).append(',');
         s.append(clean(condition)).append(',');
         s.append(clean(String.valueOf(symptomInfo.size())));
-        
+
         StringBuilder symptomStr = new StringBuilder();
         for (String symptom: symptomInfo.keySet()) {
           List<Integer> values = symptomInfo.get(symptom);
@@ -202,12 +202,12 @@ public class SymptomCSVExporter {
         s.append(',').append(symptomData).append(NEWLINE);
         write(s.toString(), symptoms);
       }
-    }  
+    }
 
     return personID;
   }
 
-  
+
 
   /**
    * Replaces commas and line breaks in the source string with a single space.

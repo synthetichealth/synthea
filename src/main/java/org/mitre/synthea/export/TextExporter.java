@@ -77,7 +77,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * </pre>
 
  * Exporter for a simple human-readable text format per encounter.
- * Sample: <pre> 
+ * Sample: <pre>
  * Chia293 Rohan584
  * ================
  * Race:                White
@@ -100,42 +100,42 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * 2016-06-01 : Encounter for Acute bronchitis (disorder)
  * Location: BEVERLY HOSPITAL CORPORATION
  * Type: ambulatory
- *   
+ *
  *  MEDICATIONS:
  *  2016-06-01 : Acetaminophen 160 MG for Acute bronchitis (disorder)
- *   
+ *
  *  CONDITIONS:
  *  2016-06-01 : Acute bronchitis (disorder)
- *  
+ *
  *  CARE PLANS:
  *  2016-06-01 : Respiratory therapy
  *                        Reason: Acute bronchitis (disorder)
  *                        Activity: Recommendation to avoid exercise
  *                        Activity: Deep breathing and coughing exercises
- *  
+ *
  *  OBSERVATIONS:
- *   
+ *
  *  PROCEDURES:
  *  2016-06-01 : Measurement of respiratory function (procedure) for Acute bronchitis (disorder)
- *   
+ *
  *  IMMUNIZATIONS:
- *   
+ *
  *  IMAGING STUDIES:
- *   
+ *
  * --------------------------------------------------------------------------------
  * CONTINUING
- *   
+ *
  *  CONDITIONS:
  *  2015-01-14 : Atopic dermatitis
  *  2016-04-18 : Childhood asthma
- *  
+ *
  *  MEDICATIONS:
  *  2015-01-27 : 0.3 ML EPINEPHrine 0.5 MG/ML Auto-Injector
  *  2015-01-27 : Loratadine 5 MG Chewable Tablet
  *  2016-04-18 + 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler for Childhood asthma
  *  2016-04-18 + 120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose
  *              Inhaler for Childhood asthma
- *   
+ *
  *  CAREPLANS:
  *  2015-01-14 : Skin condition care
  *                        Reason: Atopic dermatitis
@@ -149,7 +149,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  *                        Activity: Inhaled steroid therapy
  *                        Activity: Home nebulizer therapy
  *                        Activity: Breathing control
- *   
+ *
  * --------------------------------------------------------------------------------
  * </pre>
  */
@@ -240,7 +240,7 @@ public class TextExporter {
       diagnosticReport(textRecord, report);
     }
     breakline(textRecord);
-    
+
     textRecord.add("OBSERVATIONS:");
     for (Observation observation : observations) {
       observation(textRecord, observation);
@@ -279,7 +279,7 @@ public class TextExporter {
 
   /**
    * Produce and export a person's record in text format.
-   * 
+   *
    * @param person Person
    * @param time Time the simulation ended
    * @throws IOException if any error occurs writing to the standard export location
@@ -304,14 +304,14 @@ public class TextExporter {
     Collections.reverse(allergies);
     Collections.reverse(medications);
     Collections.reverse(careplans);
-    
+
     //set an integer that will be used as a counter for file naming purposes
     int encounterNumber = 0;
 
     for (Encounter encounter : encounters) {
       //make a record for each encounter to write information
       List<String> textRecord = new LinkedList<>();
-            
+
       basicInfo(textRecord, person, time);
       breakline(textRecord);
 
@@ -358,9 +358,9 @@ public class TextExporter {
       Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename(person,
           Integer.toString(encounterNumber), "txt"));
       Files.write(outFilePath2, textRecord, StandardOpenOption.CREATE_NEW);
-    }      
-  }  
-  
+    }
+  }
+
   /**
    * Add the basic information to the record.
    *
@@ -404,7 +404,7 @@ public class TextExporter {
           + ", " + person.record.provider.city + ", " + person.record.provider.state);
     }
   }
-  
+
   /**
    * Write a line for a single Encounter to the exported record.
    *
@@ -418,7 +418,7 @@ public class TextExporter {
 
     String clinician = "";
     if (encounter.clinician != null) {
-      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX) 
+      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX)
           + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
     }
     if (encounter.reason == null && encounter.provider == null) {
@@ -428,10 +428,10 @@ public class TextExporter {
     } else if  (encounter.reason != null && encounter.provider == null) {
       textRecord.add(encounterTime + clinician + " : Encounter for " + encounter.reason.display);
     } else {
-      textRecord.add(encounterTime + clinician + " : Encounter at " 
+      textRecord.add(encounterTime + clinician + " : Encounter at "
           + encounter.provider.name + " : Encounter for " + encounter.reason.display);
     }
-  } 
+  }
 
   /**
    * Add all info from the encounter to the record.
@@ -610,7 +610,7 @@ public class TextExporter {
 
     String unit = observation.unit != null ? observation.unit : "";
 
-    textRecord.add("  " + obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " " 
+    textRecord.add("  " + obsTime + " : " + Strings.padEnd(obsDesc, 40, ' ') + " "
         + value + " " + unit);
   }
 
@@ -628,10 +628,10 @@ public class TextExporter {
     String obsDesc = report.codes.get(0).display;
 
     textRecord.add("  " + obsTime + " : " + obsDesc);
-    
+
     observationGroup(textRecord, report.observations);
   }
-  
+
   /**
    * Write lines for an Observation with multiple parts to the exported record.
    *
@@ -648,7 +648,7 @@ public class TextExporter {
 
     observationGroup(textRecord, observation.observations);
   }
-  
+
   /**
    * Common logic for outputting a group of observations,
    * intended to be used by MultiObservations and DiagnosticReports.
@@ -731,7 +731,7 @@ public class TextExporter {
       Encounter encounter) {
     String medTime = dateFromTimestamp(medication.start);
     String medDesc = medication.codes.get(0).display;
-    if ((medication.stop == 0L || medication.stop > encounter.stop) 
+    if ((medication.stop == 0L || medication.stop > encounter.stop)
         && (medication.start < encounter.start)) {
       //checks that the medication is still being taken at the time of the encounter
       //and began prior to the encounter
@@ -777,7 +777,7 @@ public class TextExporter {
     } else {
       textRecord.add("  " + cpTime + " : " + cpDesc);
     }
-    
+
 
     if (careplan.reasons != null && !careplan.reasons.isEmpty()) {
       for (Code reason : careplan.reasons) {
@@ -819,7 +819,7 @@ public class TextExporter {
       if (careplan.activities != null && !careplan.activities.isEmpty()) {
         for (Code activity : careplan.activities) {
           textRecord.add("                         Activity: " + activity.display);
-        }   
+        }
       }
     }
   }

@@ -17,21 +17,21 @@ import java.util.Base64;
  * that are Serializable, but can't be instrumented by GSON for whatever reason.
  * This is primarily used for core Java classes (java.*.*) which as of JDK16 no longer
  * allow access via reflection. See: https://github.com/google/gson/issues/1216
- * 
+ *
  * <p>The internal approach is to write the object to a string using ObjectOutputStream,
  * then base64 it. Reading the object reverses the base64 then turns it back into
  * an Object via ObjectInputStream.
- * 
+ *
  * <p>This class is based on StackOverflow answer https://stackoverflow.com/a/33097652
  *
  * @param <E> Serializable class that cannot be natively deserialized by Gson.
  */
 public class SerializableTypeAdapter<E extends Serializable> extends TypeAdapter<E> {
-  
+
   @Override
   public void write(JsonWriter out, E value) throws IOException {
     // TODO: what if value is null?
-    
+
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
     ObjectOutputStream so = new ObjectOutputStream(bo);
     so.writeObject(value);
@@ -44,7 +44,7 @@ public class SerializableTypeAdapter<E extends Serializable> extends TypeAdapter
   @Override
   public E read(JsonReader in) throws IOException {
     String valueString = in.nextString();
-    byte[] b = Base64.getDecoder().decode(valueString.getBytes()); 
+    byte[] b = Base64.getDecoder().decode(valueString.getBytes());
     ByteArrayInputStream bi = new ByteArrayInputStream(b);
     ObjectInputStream si = new ObjectInputStream(bi);
     try {

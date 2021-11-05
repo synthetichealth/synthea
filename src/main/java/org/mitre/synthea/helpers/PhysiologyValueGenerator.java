@@ -38,7 +38,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   private VitalSign vitalSign;
   private ValueGenerator preGenerator;
   private double outputVariance;
-  
+
   static {
     try {
       GENERATORS_PATH = Paths.get(ClassLoader.getSystemClassLoader()
@@ -47,17 +47,17 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       throw new RuntimeException(e);
     }
   }
-  
+
   public static void setGeneratorsPath(Path newPath) {
     GENERATORS_PATH = newPath;
   }
-  
+
   /**
    * A generator of VitalSign values from a physiology simulation.
    * @param config physiology configuration file
    * @param person Person instance to generate VitalSigns for
    */
-  public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, SimRunner runner, 
+  public PhysiologyValueGenerator(PhysiologyGeneratorConfig config, SimRunner runner,
       VitalSign vitalSign,
       Person person, double outputVariance) {
     super(person);
@@ -65,7 +65,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     this.vitalSign = vitalSign;
     this.outputVariance = outputVariance;
     this.simRunner = runner;
-    
+
     // Set any patient attribute default values
     if (config.getPersonAttributeDefaults() != null) {
       for (Entry<String, Object> entry : config.getPersonAttributeDefaults().entrySet()) {
@@ -74,10 +74,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         }
       }
     }
-    
+
     // If pre-simulation generators are being used, instantiate the generator
     if (config.isUsePreGenerators()) {
-      
+
       // Get the IoMapper for this VitalSign output
       IoMapper outMapper = null;
       for (IoMapper mapper : config.getOutputs()) {
@@ -86,23 +86,23 @@ public class PhysiologyValueGenerator extends ValueGenerator {
           outMapper = mapper;
         }
       }
-      
+
       // This shouldn't ever happen, since it wouldn't make sense to be instantiating a
       // PhysiologyValueGenerator for a VitalSign that's not in the config
       if (outMapper == null) {
         throw new RuntimeException("Unable to find corresponding IoMapper for " + vitalSign);
       }
-      
+
       // Check for missing preGenerator configuration
       if (outMapper.getPreGenerator() == null) {
         throw new RuntimeException("usePreGenerators is true but no preGenerator "
             + "is defined for output " + vitalSign);
       }
-      
+
       preGenerator = outMapper.getPreGenerator().getGenerator(person);
     }
   }
-  
+
   /**
    * Returns a List of all PhysiologyValueGenerators defined in the configuration directory.
    * @return List of PhysiologyValueGenerator
@@ -110,7 +110,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static List<PhysiologyValueGenerator> loadAll(Person person) {
     return loadAll(person, "");
   }
-  
+
   /**
    * Loads all PhysiologyValueGenerators defined in the given generator configuration subdirectory.
    * @param person Person to generate values for
@@ -120,26 +120,26 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static List<PhysiologyValueGenerator> loadAll(Person person, String subfolder) {
 
     String[] configExt = {"yml"};
-    
+
     // Get all of the configuration files in the generator configuration path and all
     // of its subdirectories
     File baseFolder = new File(GENERATORS_PATH.toString(), subfolder);
     Collection<File> physiologyConfigFiles = FileUtils.listFiles(baseFolder, configExt, true);
-    
+
     List<PhysiologyValueGenerator> allGenerators = new ArrayList<PhysiologyValueGenerator>();
-    
+
     // Set the ValueGenerator for each VitalSign output in each configuration
     for (File cfgFile : physiologyConfigFiles) {
       allGenerators.addAll(PhysiologyValueGenerator.fromConfig(cfgFile, person));
     }
-  
+
     return allGenerators;
   }
-  
+
   /**
    * Instantiates PhysiologyValueGenerators for each VitalSign output in the generator
    * configuration at the provided path.
-   * 
+   *
    * @param configFile generator configuration file
    * @param person Person to generate VitalSigns for
    * @return List of PhysiologyValueGenerator instances
@@ -147,11 +147,11 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static List<PhysiologyValueGenerator> fromConfig(File configFile, Person person) {
     return fromConfig(getConfig(configFile), person);
   }
-  
+
   /**
    * Instantiates PhysiologyValueGenerators for each VitalSign output in the generator
    * configuration.
-   * 
+   *
    * @param generatorConfig generator configuration object
    * @param person Person to generate VitalSigns for
    * @return List of PhysiologyValueGenerator instances
@@ -159,9 +159,9 @@ public class PhysiologyValueGenerator extends ValueGenerator {
   public static List<PhysiologyValueGenerator> fromConfig(
       PhysiologyGeneratorConfig generatorConfig, Person person) {
     List<PhysiologyValueGenerator> generators = new ArrayList<PhysiologyValueGenerator>();
-    
+
     SimRunner runner = new SimRunner(generatorConfig, person);
-    
+
     for (IoMapper mapper : generatorConfig.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.VITAL_SIGN) {
         generators.add(new PhysiologyValueGenerator(
@@ -171,10 +171,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
             person, mapper.getVariance()));
       }
     }
-    
+
     return generators;
   }
-  
+
   /**
    * Retrieves the PhysiologyValueGenerator configuration from the given path.
    * @param configPath path to the generator configuration file
@@ -184,20 +184,20 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     File configFile = new File(GENERATORS_PATH.toString(), configPath);
     return getConfig(configFile);
   }
-  
+
   /**
    * Retrieves the PhysiologyValueGenerator configuration from the given file.
    * @param configFile generator configuration file
    * @return generator configuration object
    */
   public static synchronized PhysiologyGeneratorConfig getConfig(File configFile) {
-    
+
     String relativePath;
     relativePath = GENERATORS_PATH.toUri().relativize(configFile.toURI()).getPath();
-    
+
     // key is the path to the config file
     String configKey = relativePath;
-    
+
     // If it exists in the cache, go ahead and get it
     if (CONFIG_CACHE.containsKey(configKey)) {
       return CONFIG_CACHE.get(configKey);
@@ -205,7 +205,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
 
     // Resource isn't already loaded, so we've got to load the resource
     System.out.println("Loading physiology generator configuration \"" + relativePath + "\"");
-    
+
     FileInputStream inputStream;
 
     try {
@@ -214,7 +214,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
       throw new RuntimeException("PhysiologyValueGenerator configuration not found: \""
           + configFile.getPath() + "\".");
     }
-    
+
     // Add type descriptions so Yaml knows how to instantiate our Lists
     Constructor constructor = new Constructor(PhysiologyGeneratorConfig.class);
     TypeDescription configDescription = new TypeDescription(PhysiologyGeneratorConfig.class);
@@ -227,21 +227,21 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     configDescription = new TypeDescription(PreGenerator.class);
     configDescription.addPropertyParameters("args", PreGeneratorArg.class);
     constructor.addTypeDescription(configDescription);
-    
+
     // Parse the PhysiologyConfig from the yaml file
     Yaml yaml = new Yaml(constructor);
     PhysiologyGeneratorConfig config = (PhysiologyGeneratorConfig) yaml.load(inputStream);
-    
+
     // Validate the configuration
     config.validate();
-    
+
     // Add the config to the cache in case there are other PhysiologyValueGenerators
     // that need it
     CONFIG_CACHE.put(configKey, config);
-    
+
     return config;
   }
-  
+
   /**
    * Returns the VitalSign this generator targets.
    * @return VitalSign target
@@ -256,7 +256,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     final StringBuilder sb = new StringBuilder("PhysiologyValueGenerator {");
 
     sb.append("model=").append(config.getModel());
-    
+
     sb.append(", VitalSigns=[");
 
     boolean firstVital = false;
@@ -270,9 +270,9 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         sb.append(mapper.getVitalSignTarget().name());
       }
     }
-    
+
     sb.append("], Attributes=[");
-    
+
     boolean firstAttr = false;
     for (IoMapper mapper : config.getOutputs()) {
       if (mapper.getType() == IoMapper.IoType.ATTRIBUTE) {
@@ -284,7 +284,7 @@ public class PhysiologyValueGenerator extends ValueGenerator {
         sb.append(mapper.getTo());
       }
     }
-    
+
     sb.append("]}");
 
     return sb.toString();
@@ -297,9 +297,9 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     if (simRunner.setInputs(time)) {
       simRunner.execute(time);
     }
-    
+
     double result;
-    
+
     // If we haven't executed the simulator yet, use the pre-simulation
     // generator values until it does run
     if (!simRunner.hasExecuted()) {
@@ -307,10 +307,10 @@ public class PhysiologyValueGenerator extends ValueGenerator {
     } else {
       result = simRunner.getVitalSignValue(vitalSign) + (person.rand() - 0.5) * outputVariance;
     }
-    
+
     return result;
   }
-  
+
   /**
    * Sets the amount of variance to generate for the output VitalSign.
    * @param variance amount of variance

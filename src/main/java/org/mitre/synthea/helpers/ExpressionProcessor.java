@@ -58,7 +58,7 @@ public class ExpressionProcessor {
    *  - In: "10 + 3", Out: (Integer)13
    *  - In: "25 / 2", Out: (Double)12.5
    *  - In: "#{age} / 3", Person{age = 27}, Out: (Integer) 9
-   * 
+   *
    * @param expression "CQL-lite" expression, with attribute references wrapped in "#{ attr }"
    * @param person Person to evaluate expression against.
    * @param time Timestamp
@@ -67,7 +67,7 @@ public class ExpressionProcessor {
 
   private String cqlToElm(String cql) {
     CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, libraryManager);
-    
+
     if (translator.getErrors().size() > 0) {
       throw translator.getErrors().get(0);
     }
@@ -80,7 +80,7 @@ public class ExpressionProcessor {
 
     return elm;
   }
-  
+
   /**
    * ExpressionProcessor convenience constructor when all parameters are Decimals.
    * @param expression Expression to evaluate for each future set of parameters.
@@ -88,7 +88,7 @@ public class ExpressionProcessor {
   public ExpressionProcessor(String expression) {
     this(expression, new HashMap<String,String>());
   }
-  
+
   /**
    * ExpressionProcessor constructor.
    * @param expression Expression to evaluate for each future set of parameters.
@@ -97,7 +97,7 @@ public class ExpressionProcessor {
   public ExpressionProcessor(String expression, Map<String,String> paramTypeMap) {
     this.cqlParamMap = HashBiMap.create();
     this.paramTypeMap = paramTypeMap;
-    
+
     String cleanExpression = replaceParameters(expression);
     String wrappedExpression = convertParameterizedExpressionToCql(cleanExpression);
 
@@ -116,7 +116,7 @@ public class ExpressionProcessor {
     this.context = new Context(library);
     this.expression = expression;
   }
-  
+
   /**
    * Returns the expression associated with this expression processor.
    * @return expression
@@ -124,7 +124,7 @@ public class ExpressionProcessor {
   public String getExpression() {
     return expression;
   }
-  
+
   /**
    * Returns a list of parameters in the expression associated with this processor.
    * @return list of parameters
@@ -132,7 +132,7 @@ public class ExpressionProcessor {
   public Set<String> getParamNames() {
     return cqlParamMap.keySet();
   }
-  
+
   /**
    * Returns a map of parameter names to their CQL types as provided to the constructor.
    * @return map of parameter names to CQL type names
@@ -140,7 +140,7 @@ public class ExpressionProcessor {
   public Map<String,String> getParamTypes() {
     return paramTypeMap;
   }
-  
+
   /**
    * Evaluates the expression with the given numeric parameters, returning the result
    * as a BigDecimal.
@@ -150,8 +150,8 @@ public class ExpressionProcessor {
   public BigDecimal evaluateNumeric(Map<String,Object> params) {
     return (BigDecimal) evaluate(params);
   }
-  
-  /** 
+
+  /**
    * Retrieve the desired value from a Person model. Check for a VitalSign first and
    * then an attribute if there is no VitalSign by the provided name.
    * Throws an IllegalArgumentException if neither exists.
@@ -163,8 +163,8 @@ public class ExpressionProcessor {
   public static Object getPersonValue(String param, Person person, long time) {
     return getPersonValue(param, person, time, null);
   }
-  
-  /** 
+
+  /**
    * Retrieve the desired value from a Person model. Check for a VitalSign first and
    * then an attribute if there is no VitalSign by the provided name.
    * Throws an IllegalArgumentException if neither exists.
@@ -174,19 +174,19 @@ public class ExpressionProcessor {
    * @return value
    */
   public static Object getPersonValue(String param, Person person, long time, String expression) {
-    
+
     // Treat "age" as a special case. In expressions, age is represented in decimal years
     if (param.equals("age")) {
       return new BigDecimal(person.ageInDecimalYears(time));
     }
-    
+
     // If this param is in the cache, check if we have a VitalSign or not
     org.mitre.synthea.world.concepts.VitalSign vs = vitalSignCache.get(param);
-    
+
     if (vs == null && !attributeSet.contains(param)) {
       try {
         vs = org.mitre.synthea.world.concepts.VitalSign.fromString(param);
-        
+
         // Take note that this parameter is a VitalSign so we don't have to repeatedly
         // call fromString, which can get expensive
         vitalSignCache.put(param, vs);
@@ -200,9 +200,9 @@ public class ExpressionProcessor {
     if (vs != null) {
       return new BigDecimal(person.getVitalSign(vs, time));
     }
-    
+
     Object value = person.attributes.get(param);
-    
+
     if (value == null) {
       if (expression != null) {
         throw new IllegalArgumentException("Unable to map \"" + param
@@ -211,9 +211,9 @@ public class ExpressionProcessor {
       } else {
         throw new IllegalArgumentException("Unable to map \""
             + param + "\": Invalid person attribute or vital sign.");
-      } 
+      }
     }
-    
+
     if (value instanceof Number) {
       // If it's any numeric type, use a BigDecimal
       return new BigDecimal(value.toString());
@@ -231,7 +231,7 @@ public class ExpressionProcessor {
       }
     }
   }
-  
+
   /**
    * Evaluates the provided expression given the simulation results.
    * @param results table of simulation results
@@ -239,33 +239,33 @@ public class ExpressionProcessor {
    * @return BigDecimal result value
    */
   public BigDecimal evaluateFromSimResults(MultiTable results, double leadTime) {
-    
+
     // Create our map of expression parameters
     Map<String,Object> expParams = new HashMap<String,Object>();
-    
+
     // Get the index past the lead time to start getting values
     int leadTimeIdx = Arrays.binarySearch(results.getTimePoints(), leadTime);
-    
+
     // Add all model outputs to the expression parameter map as lists of decimals
     for (String param : getParamNames()) {
       List<BigDecimal> paramList = new ArrayList<BigDecimal>(results.getRowCount());
-      
+
       Column col = results.getColumn(param);
       if (col == null) {
         throw new IllegalArgumentException("Invalid model parameter \"" + param
             + "\" in expression \"" + expression + "\".");
       }
-      
+
       for (int i = leadTimeIdx; i < col.getRowCount(); i++) {
         paramList.add(new BigDecimal(col.getValue(i)));
       }
       expParams.put(param, paramList);
     }
-    
+
     // Evaluate the expression
     return evaluateNumeric(expParams);
   }
-  
+
   /**
    * Evaluates the expression with parameters derived from the given Person object.
    * @param person Person instance to get parameters from
@@ -274,14 +274,14 @@ public class ExpressionProcessor {
    */
   public Object evaluate(Person person, long time) {
     Map<String,Object> params = new HashMap<String,Object>();
-    
+
     for (String paramName : getParamNames()) {
       params.put(paramName, getPersonValue(paramName, person, time, expression));
     }
-    
+
     return evaluate(params);
   }
-  
+
   /**
    * Evaluates the expression with the given parameters.
    * @param params parameters as a map of variable names to values
@@ -295,10 +295,10 @@ public class ExpressionProcessor {
       context.setParameter(null, cqlParamMap.get(entry.getKey()), entry.getValue());
       setParams.add(entry.getKey());
     }
-    
+
     Set<String> missing = Sets.difference(cqlParamMap.keySet(), setParams);
     Set<String> extra = Sets.difference(setParams, cqlParamMap.keySet());
-    
+
     if (missing.size() > 0) {
       throw new IllegalArgumentException("Missing parameter(s): " + String.join(", ", missing)
       + " for expression \"" + expression + "\"");
@@ -308,7 +308,7 @@ public class ExpressionProcessor {
               "unused parameter(s) provided for expression \"{0}\": {1}",
               new Object[]{expression, String.join(", ",extra)});
     }
-    
+
     Object retVal = null;
 
     for (ExpressionDef statement : library.getStatements().getDef()) {
@@ -321,10 +321,10 @@ public class ExpressionProcessor {
       throw new RuntimeException(e);
     }
   }
-  
+
   private String replaceParameters(String expression) {
     String cleanExpression = expression;
-    
+
     // identify the parameters that are used
     // we identify parameters with #{attr}
     Pattern pattern = Pattern.compile("#([dlbs]?)\\{(.+?)\\}");
@@ -335,10 +335,10 @@ public class ExpressionProcessor {
       String typeKey = matcher.group(1);
       String param = matcher.group(2);
       String cqlParam = param.replace(" ", "_");
-      
+
       // Add the bi-directional mapping from params to CQL compatible params
       cqlParamMap.put(param, cqlParam);
-      
+
       if (!typeKey.isEmpty()) {
         switch (typeKey) {
           case "d":
@@ -361,10 +361,10 @@ public class ExpressionProcessor {
       // clean up the expression so we can plug it in later
       cleanExpression = cleanExpression.replace(key, cqlParam);
     }
-    
+
     return cleanExpression;
   }
-  
+
   private String convertParameterizedExpressionToCql(String expression) {
     StringBuilder wrappedExpression = new StringBuilder();
 
@@ -379,9 +379,9 @@ public class ExpressionProcessor {
     }
 
     wrappedExpression.append("\n\ncontext Patient\n\n");
-    
+
     String[] statements = expression.split("\n");
-    
+
     for (int i = 0; i < statements.length; i++) {
       if (i == statements.length - 1) {
         wrappedExpression.append("define result: " + statements[i]);
@@ -389,7 +389,7 @@ public class ExpressionProcessor {
         wrappedExpression.append(statements[i] + "\n");
       }
     }
-    
+
     return wrappedExpression.toString();
   }
 }

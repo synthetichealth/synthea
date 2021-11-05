@@ -407,7 +407,7 @@ public class Graphviz {
       case "Device":
         JsonObject c = state.get("code").getAsJsonObject();
         details.append(toCodeString(c, true));
-        
+
         if (state.has("manufacturer")) {
           details.append("Manufacturer: ")
             .append(state.get("manufacturer").getAsString())
@@ -543,7 +543,7 @@ public class Graphviz {
    * Helper function to turn a a Json "code" type object into a consistent string.
    * Format: "SYSTEM[CODE]: DISPLAY"
    * Example: "SNOMED-CT[44054006]: Diabetes"
-   * 
+   *
    * @param coding JSON coding object
    * @param includeNewLine whether or not to include a newline at the end
    * @return String to display the code
@@ -565,7 +565,7 @@ public class Graphviz {
 
     return sb.toString();
   }
-  
+
   private static String logicDetails(JsonObject logic) {
     String conditionType = logic.get("condition_type").getAsString();
 

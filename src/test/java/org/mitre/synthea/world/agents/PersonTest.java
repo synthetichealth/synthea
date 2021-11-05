@@ -40,7 +40,7 @@ public class PersonTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   /**
    * Create a person for use in each test.
    * @throws IOException if something goes wrong.
@@ -51,7 +51,7 @@ public class PersonTest {
     Config.set("generate.only_dead_patients", "false");
     person = new Person(0L);
   }
-  
+
   /**
    * Serialize a person, then deserialize and return the person. Note that when serializing
    * more than one person it is much more efficient to serialize them within a collection since
@@ -69,16 +69,16 @@ public class PersonTest {
     oos.writeObject(original);
     oos.close();
     fos.close();
-    
+
     // Deserialize
     FileInputStream fis = new FileInputStream(tf);
     ObjectInputStream ois = new ObjectInputStream(fis);
     Person rehydrated = (Person) ois.readObject();
     ois.close();
-    
+
     return rehydrated;
   }
-  
+
   @Test
   public void testSerializationAndDeserialization() throws Exception {
     // Skip if physiology generators are enabled since they are incompatible with Java
@@ -88,7 +88,7 @@ public class PersonTest {
       System.out.println("Set config physiology.generators.enabled=false to enable this test");
       return;
     }
-    
+
     // Generate a filled-out patient record to test on
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
@@ -99,9 +99,9 @@ public class PersonTest {
     Random randomForDemographics = new Random(personSeed);
     Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
     Person original = generator.createPerson(0, demoAttributes);
-    
+
     Person rehydrated = serializeAndDeserialize(original);
-    
+
     // Compare the original to the serialized+deserialized version
     assertEquals(original.randInt(), rehydrated.randInt());
     assertEquals(original.seed, rehydrated.seed);
@@ -169,7 +169,7 @@ public class PersonTest {
     person.attributes.put(Person.BIRTHDATE, birthdate);
     assertEquals(expectedAge, person.ageInMonths(now));
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void testVitalSignNaN() {
     person.setVitalSign(VitalSign.HEIGHT, Double.NaN);
@@ -211,10 +211,10 @@ public class PersonTest {
 
       Generator generator = new Generator(options);
       generator.generatePerson(0, 42L);
-      
+
       File expectedExportFolder = tempOutputFolder.toPath().resolve("text").toFile();
       assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
-    
+
       // Read the output files
       for (File txtFile : expectedExportFolder.listFiles()) {
         if (!txtFile.getName().endsWith(".txt")) {
@@ -223,7 +223,7 @@ public class PersonTest {
         fileContents.add(Files.readAllLines(txtFile.toPath()));
       }
     }
-    
+
     // Check that there are exactly two files
     assertEquals("Expected 2 files, found " + fileContents.size(), 2,
         fileContents.size());
@@ -252,13 +252,13 @@ public class PersonTest {
 
     Generator generator = new Generator(options);
     List<List<String>> fileContents = new ArrayList<>();
-    
+
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-      
+
       generator.generatePerson(0, 42L);
 
       // Check that the output files exist
@@ -292,13 +292,13 @@ public class PersonTest {
 
     Generator generator = new Generator(options);
     List<List<String>> fileContents = new ArrayList<>();
-    
+
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-      
+
       generator.generatePerson(0, 42L);
 
       // Check that the output files exist
@@ -313,7 +313,7 @@ public class PersonTest {
       }
     }
 
-    
+
     // Check that there are exactly two files
     assertEquals("Expected 2 files, found " + fileContents.size(), 2,
         fileContents.size());
@@ -342,13 +342,13 @@ public class PersonTest {
 
     Generator generator = new Generator(options);
     List<List<String>> fileContents = new ArrayList<>();
-    
+
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-      
+
       generator.generatePerson(0, 42L);
 
       // Check that the output files exist
@@ -363,7 +363,7 @@ public class PersonTest {
       }
     }
 
-    
+
     // Check that there are exactly two files
     assertEquals("Expected 2 files, found " + fileContents.size(), 2,
         fileContents.size());
@@ -373,7 +373,7 @@ public class PersonTest {
       assertEquals(fileContents.get(0).get(i), fileContents.get(1).get(i));
     }
   }
-  
+
   @Test()
   public void testPersonFhirDSTU2Recreation() throws Exception {
     TestHelper.loadTestProperties();
@@ -392,13 +392,13 @@ public class PersonTest {
 
     Generator generator = new Generator(options);
     List<List<String>> fileContents = new ArrayList<>();
-    
+
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-      
+
       generator.generatePerson(0, 42L);
 
       // Check that the output files exist
@@ -413,7 +413,7 @@ public class PersonTest {
       }
     }
 
-    
+
     // Check that there are exactly two files
     assertEquals("Expected 2 files, found " + fileContents.size(), 2,
         fileContents.size());
@@ -442,13 +442,13 @@ public class PersonTest {
 
     Generator generator = new Generator(options);
     List<List<String>> fileContents = new ArrayList<>();
-    
+
     // Generate two patients that should be identical. Switch the output directory since
     // the file names should be identical
     for (int i = 0; i < 2; i++) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-      
+
       generator.generatePerson(0, 42L);
 
       // Check that the output files exist
@@ -463,7 +463,7 @@ public class PersonTest {
       }
     }
 
-    
+
     // Check that there are exactly two files
     assertEquals("Expected 2 files, found " + fileContents.size(), 2,
         fileContents.size());
@@ -500,7 +500,7 @@ public class PersonTest {
     while (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
       /* do nothing */
     }
-    
+
     long endTime = System.currentTimeMillis();
     Config.set("exporter.text.export", "true");
     List<List<String>> fileContents = new ArrayList<>();
@@ -508,7 +508,7 @@ public class PersonTest {
     for (Future<Person> fp: generatedPatients) {
       File tempOutputFolder = tempFolder.newFolder();
       Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-    
+
       Person p = fp.get();
       Exporter.export(p, endTime);
 
@@ -523,7 +523,7 @@ public class PersonTest {
         fileContents.add(Files.readAllLines(txtFile.toPath()));
       }
     }
-    
+
     assertEquals("Expected 10 files, found " + fileContents.size(), 10,
         fileContents.size());
 
@@ -543,7 +543,7 @@ public class PersonTest {
     double[] doubleRange = { 3.14159d, 42.4233d };
     int[] intRange = { 33, 333 };
     String[] choices = { "foo", "bar", "baz" };
-    
+
     List<String> resultsA = new ArrayList<String>();
     List<String> resultsB = new ArrayList<String>();
 

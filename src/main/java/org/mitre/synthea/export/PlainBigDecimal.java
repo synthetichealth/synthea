@@ -10,16 +10,16 @@ import java.math.RoundingMode;
  * @author mhadley
  */
 public class PlainBigDecimal extends BigDecimal {
-  
+
   private static final MathContext MATH_CTX = new MathContext(5, RoundingMode.HALF_UP);
-  
+
   public PlainBigDecimal(double val) {
     super(val, MATH_CTX);
   }
-  
+
   @Override
   public String toString() {
     return this.stripTrailingZeros().toPlainString();
   }
-  
+
 }

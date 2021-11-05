@@ -13,7 +13,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 public class PayerFinderRandom implements IPayerFinder {
   /**
    * Find a provider with a specific service for the person.
-   * 
+   *
    * @param payers The list of eligible payers.
    * @param person The patient who requires the service.
    * @param service The service required.

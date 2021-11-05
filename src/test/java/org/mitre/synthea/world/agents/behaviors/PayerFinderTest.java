@@ -16,7 +16,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
 
 public class PayerFinderTest {
-  
+
   private Person person;
 
   /**

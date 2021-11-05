@@ -37,7 +37,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public abstract class Exporter {
-  
+
   /**
    * Supported FHIR versions.
    */
@@ -46,11 +46,11 @@ public abstract class Exporter {
     STU3,
     R4
   }
-  
-  private static final List<Pair<Person, Long>> deferredExports = 
+
+  private static final List<Pair<Person, Long>> deferredExports =
           Collections.synchronizedList(new LinkedList<>());
 
-  private static final ConcurrentHashMap<Path, PrintWriter> fileWriters = 
+  private static final ConcurrentHashMap<Path, PrintWriter> fileWriters =
           new ConcurrentHashMap<Path, PrintWriter>();
 
   private static final int fileBufferSize = 4 * 1024 * 1024;
@@ -59,18 +59,18 @@ public abstract class Exporter {
    * Runtime configuration of the record exporter.
    */
   public static class ExporterRuntimeOptions {
-    
+
     public int yearsOfHistory;
     public boolean deferExports = false;
     public boolean terminologyService =
         !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
-    
+
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     }
-    
+
     /**
      * Copy constructor.
      */
@@ -81,7 +81,7 @@ public abstract class Exporter {
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
     }
-    
+
     /**
      * Enables a blocking queue to which FHIR patient records will be written.
      * @param version specifies the version of FHIR that will be written to the queue.
@@ -90,17 +90,17 @@ public abstract class Exporter {
       recordQueue = new LinkedBlockingQueue<>(1);
       fhirVersion = version;
     }
-    
+
     public SupportedFhirVersion queuedFhirVersion() {
       return fhirVersion;
     }
-    
+
     public boolean isQueueEnabled() {
       return recordQueue != null;
     }
 
     /**
-     * Returns the newest generated patient record 
+     * Returns the newest generated patient record
      * or blocks until next record becomes available.
      * Returns null if the generator does not have a record queue.
      */
@@ -118,7 +118,7 @@ public abstract class Exporter {
       return recordQueue == null || recordQueue.size() == 0;
     }
   }
-  
+
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
    * configuration)
@@ -160,7 +160,7 @@ public abstract class Exporter {
       }
     }
   }
-  
+
   /**
    * Export a single patient, into all the formats supported. (Formats may be enabled or disabled by
    * configuration). This method variant is only currently used by test classes.
@@ -359,7 +359,7 @@ public abstract class Exporter {
         }
       }
     }
-    
+
     synchronized (writer) {
       writer.println(contents);
     }
@@ -385,7 +385,7 @@ public abstract class Exporter {
   public static void runPostCompletionExports(Generator generator) {
     runPostCompletionExports(generator, new ExporterRuntimeOptions());
   }
-  
+
   /**
    * Run any exporters that require the full dataset to be generated prior to exporting.
    * (E.g., an aggregate statistical exporter)
@@ -393,7 +393,7 @@ public abstract class Exporter {
    * @param generator Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator, ExporterRuntimeOptions options) {
-    
+
     if (options.deferExports) {
       ExporterRuntimeOptions nonDeferredOptions = new ExporterRuntimeOptions(options);
       nonDeferredOptions.deferExports = false;
@@ -402,7 +402,7 @@ public abstract class Exporter {
       }
       deferredExports.clear();
     }
-    
+
     String bulk = Config.get("exporter.fhir.bulk_data");
 
     // Before we force bulk data to be off...
@@ -462,7 +462,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-    
+
     if (Config.getAsBoolean("exporter.metadata.export", false)) {
       try {
         MetadataExporter.exportMetadata(generator);
