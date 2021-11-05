@@ -365,8 +365,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 427089005,
-          "display": "Male Infertility"
+          "code": 707418001,
+          "display": "Male infertility due to cystic fibrosis (disorder)"
         }
       ],
       "direct_transition": "chronic_cough"
