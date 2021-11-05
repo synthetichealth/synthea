@@ -64,6 +64,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Device;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.HealthRecord.Supply;
 import org.mitre.synthea.world.geography.CMSStateCodeMapper;
 
 /**
@@ -1567,22 +1568,21 @@ public class BB2RIFExporter {
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
-          if (!(lineItem.entry instanceof Device)) {
+          if (!(lineItem.entry instanceof Device || lineItem.entry instanceof Supply)) {
             continue;
           }
-          Device device = (Device)lineItem.entry;
-          if (!dmeCodeMapper.canMap(device.codes.get(0).code)) {
-            System.err.println(" *** Possibly Missing DME Code: " + device.codes.get(0).code
-                    + " " + device.codes.get(0).display);
+          if (!dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
+            System.err.println(" *** Possibly Missing DME Code: "
+                + lineItem.entry.codes.get(0).code
+                + " " + lineItem.entry.codes.get(0).display);
             continue;
           }
-
-          fieldValues.put(DME.CLM_FROM_DT, bb2DateFromTimestamp(device.start));
-          fieldValues.put(DME.CLM_THRU_DT, bb2DateFromTimestamp(device.start));
+          fieldValues.put(DME.CLM_FROM_DT, bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(DME.CLM_THRU_DT, bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(DME.HCPCS_CD,
-                  dmeCodeMapper.map(device.codes.get(0).code, person));
+                  dmeCodeMapper.map(lineItem.entry.codes.get(0).code, person));
           fieldValues.put(DME.LINE_CMS_TYPE_SRVC_CD,
-                  dmeCodeMapper.map(device.codes.get(0).code,
+                  dmeCodeMapper.map(lineItem.entry.codes.get(0).code,
                           DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
           fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,

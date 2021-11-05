@@ -187,7 +187,8 @@ public class Costs {
         || (entry instanceof HealthRecord.Encounter)
         || (entry instanceof HealthRecord.Immunization)
         || (entry instanceof HealthRecord.Report)
-        || (entry instanceof HealthRecord.Device);
+        || (entry instanceof HealthRecord.Device)
+        || (entry instanceof HealthRecord.Supply);
   }
 
   /**

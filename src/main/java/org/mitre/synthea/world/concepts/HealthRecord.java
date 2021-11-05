@@ -1048,6 +1048,7 @@ public class HealthRecord implements Serializable {
     supply.codes.add(code);
     supply.quantity = quantity;
     encounter.supplies.add(supply);
+    encounter.claim.addLineItem(supply);
     return supply;
   }
 
