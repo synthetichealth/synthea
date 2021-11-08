@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -36,8 +37,22 @@ public class JSONExporter {
         .addSerializationExclusionStrategy(new SyntheaExclusionStrategy())
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
         .registerTypeHierarchyAdapter(Person.class, new PersonSerializer())
+        .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
         .create();
     return gson.toJson(person);
+  }
+
+  /**
+   * Trimming down the attributes that are serialized out when exporting the Person record.
+   */
+  public static class ShortPayerSerializer implements JsonSerializer<Payer> {
+    @Override
+    public JsonElement serialize(Payer src, Type typeOfSrc, JsonSerializationContext context) {
+      JsonObject payerOut = new JsonObject();
+      payerOut.add("name", new JsonPrimitive(src.getName()));
+      payerOut.add("uuid", new JsonPrimitive(src.uuid));
+      return payerOut;
+    }
   }
 
   public static class PersonSerializer implements JsonSerializer<Person> {
