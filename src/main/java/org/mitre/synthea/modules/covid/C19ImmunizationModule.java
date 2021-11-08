@@ -2,12 +2,16 @@ package org.mitre.synthea.modules.covid;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.EncounterModule;
+import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -110,6 +114,10 @@ public class C19ImmunizationModule extends Module {
   // This is somewhat redundant given that there is C19_VACCINE_STATUS, but GMF modules can't
   // check attributes set to java enumeration values, so this will just be a simple boolean
   public static final String C19_FULLY_VACCINATED = "C19_FULLY_VACCINATED";
+
+  // Key to use in Person.attributes in the IMMUNIZATIONS entry. Convention used by the
+  // Immunizations module is to use lower case.
+  public static final String C19_PERSON_ATTRS_KEY = "covid19";
 
   public enum VaccinationStatus {
     NOT_ELIGIBLE,
@@ -219,6 +227,19 @@ public class C19ImmunizationModule extends Module {
     HealthRecord.Code immCode = new HealthRecord.Code("http://hl7.org/fhir/sid/cvx",
         vaccine.getCvx(), vaccine.getDisplay());
     immunization.codes.add(immCode);
+
+    Map<String, List<Long>> immunizationHistory =
+        (Map<String, List<Long>>) person.attributes.get(Immunizations.IMMUNIZATIONS);
+    if (immunizationHistory == null) {
+      immunizationHistory = new HashMap<>();
+      person.attributes.put(Immunizations.IMMUNIZATIONS, immunizationHistory);
+    }
+    List<Long> covidImmunizationHistory = immunizationHistory.get(C19_PERSON_ATTRS_KEY);
+    if (covidImmunizationHistory == null) {
+      covidImmunizationHistory = new ArrayList<>();
+      immunizationHistory.put(C19_PERSON_ATTRS_KEY, covidImmunizationHistory);
+    }
+    covidImmunizationHistory.add(time);
     person.record.encounterEnd(time + Utilities.convertTime("minutes", 15),
         HealthRecord.EncounterType.OUTPATIENT);
   }
