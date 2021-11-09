@@ -546,13 +546,12 @@ public class BB2RIFExporter {
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
-      boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
-      if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent || isWellness)) {
+      if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent)) {
         continue;
       }
       
@@ -617,12 +616,13 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.REV_CNTR_RDCD_COINSRNC_AMT,
               String.format("%.2f", encounter.claim.getCoinsurancePaid()));
 
+      String icdReasonCode = null;
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, icdCode);
+          icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, icdReasonCode);
         }
       }
 
@@ -670,7 +670,7 @@ public class BB2RIFExporter {
           noProcedures = true;
         }
       }
-      if (noDiagnoses && noProcedures) {
+      if (icdReasonCode == null && noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
 
@@ -833,15 +833,16 @@ public class BB2RIFExporter {
       // OPTIONAL FIELDS
       fieldValues.put(INPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
+      String icdReasonCode = null;
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
         if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(INPATIENT.ADMTG_DGNS_CD, icdCode);
-          if (drgCodeMapper.canMap(icdCode)) {
-            fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
+          icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+          fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, icdReasonCode);
+          fieldValues.put(INPATIENT.ADMTG_DGNS_CD, icdReasonCode);
+          if (drgCodeMapper.canMap(icdReasonCode)) {
+            fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdReasonCode, person));
           }
         }
       }
@@ -892,7 +893,7 @@ public class BB2RIFExporter {
           noProcedures = true;
         }
       }
-      if (noDiagnoses && noProcedures) {
+      if (icdReasonCode == null && noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
       previousEmergency = isEmergency;
@@ -970,7 +971,10 @@ public class BB2RIFExporter {
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (ProviderType.PRIMARY != encounter.provider.type) {
+      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+      boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
+
+      if (!isPrimary && !isWellness) {
         continue;
       }
 
