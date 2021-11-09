@@ -1,5 +1,7 @@
 package org.mitre.synthea.export;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -7,8 +9,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
-
-import static org.junit.Assert.*;
 
 public class JSONExporterTest {
   @Rule

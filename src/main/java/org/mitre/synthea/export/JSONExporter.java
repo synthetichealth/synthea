@@ -65,7 +65,7 @@ public class JSONExporter {
       JsonObject attributes = new JsonObject();
       src.attributes.forEach((key, value) -> {
         boolean keepEntry = true;
-        if (key.startsWith("ehr_") || key.contains("lookup")) {
+        if (key.startsWith("ehr_") || key.contains("lookup") || key.contains("UUID")) {
           keepEntry = false;
         } else if ((!Config.getAsBoolean("exporter.json.include_module_history"))
             && isModuleHistory(value)) {
