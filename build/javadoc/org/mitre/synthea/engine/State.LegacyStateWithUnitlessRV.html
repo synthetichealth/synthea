@@ -308,7 +308,7 @@ extends <a href="../../../../org/mitre/synthea/engine/State.html" title="class i
  executed and modified without altering the original copy. So for example, 'entered' and
  'exited' times should not be copied so the clone can be cleanly executed.
  Implementation note: the base Object.clone() copies over all fields automatically
- (as a shallow copy), so we don't need to do that ourselves. Instead, we should 
+ (as a shallow copy), so we don't need to do that ourselves. Instead, we should
  1. explicitly null out any fields that should not be copied, such as entered/exited
  2. deep copy mutable reference types, if necessary.</div>
 <dl>

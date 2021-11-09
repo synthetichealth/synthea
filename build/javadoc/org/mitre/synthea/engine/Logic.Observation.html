@@ -123,11 +123,11 @@ var activeTableTab = "activeTableTab";
 <pre>public static class <span class="typeNameLabel">Logic.Observation</span>
 extends <a href="../../../../org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></pre>
 <div class="block">The Observation condition type tests the most recent observation of a given type against a
- given value. 
+ given value.
  Implementation Warnings:
  - Synthea does not support conversion between arbitrary units, so all observations of a given
-   type are expected to be made in the same units. 
- - The given observation must have been recorded prior to performing this logical check, 
+   type are expected to be made in the same units.
+ - The given observation must have been recorded prior to performing this logical check,
    unless the operator is is nil or is not nil. Otherwise, the GMF will raise an exception
    that the observation value cannot be compared as there has been no observation made.</div>
 <dl>

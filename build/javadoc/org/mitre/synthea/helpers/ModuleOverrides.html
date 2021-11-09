@@ -113,20 +113,20 @@ extends java.lang.Object</pre>
   which includes the name of the file, the JSONPath to the field, and the original value.
  By default this is expected to be the set of all distributions,
   within all transitions, in all modules, but there are 4 configuration options:
-  - includeFields: (defaults to ["distribution"] ) 
+  - includeFields: (defaults to ["distribution"] )
       -- numeric fields that match one of the given name will be written to the properties file
   - excludeFields: (defaults to null)
       -- if provided, all numeric fields except those that match the given names
          will be written to the properties file
       -- note: if both includeFields and excludeFields are given, includeFields will be ignored
-  - includeModules: (defaults to null)    
+  - includeModules: (defaults to null)
       -- if provided, only modules that match the given file names will be processed
       -- wildcards are allowed, ex "metabolic*"
-  - excludeModules: (defaults to null)    
+  - excludeModules: (defaults to null)
       -- if provided, all modules except those that match the given file names will be processed
       -- wildcards are allowed, ex "metabolic*"
  The format of the properties file is:
- (module file name)\:\:(JSONPath to numeric field within module) = original value     
+ (module file name)\:\:(JSONPath to numeric field within module) = original value
  Sample Line:
  osteoporosis.json\:\:$['states']['Male']['distributed_transition'][1]['distribution'] = 0.02</div>
 </li>

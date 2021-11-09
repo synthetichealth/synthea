@@ -119,10 +119,10 @@ var activeTableTab = "activeTableTab";
 extends java.lang.Object
 implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="block">Module represents the entry point of a generic module.
- 
- <p>The `modules` map is the static list of generic modules. It is loaded once per process, 
- and the list of modules is shared between the generated population. Because we share modules 
- across the population, it is important that States are cloned before they are executed. 
+
+ <p>The `modules` map is the static list of generic modules. It is loaded once per process,
+ and the list of modules is shared between the generated population. Because we share modules
+ across the population, it is important that States are cloned before they are executed.
  This keeps the "master" copy of the module clean.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -485,7 +485,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="block">Get a list of top-level modules including core and submodules.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a list of top-level modules, only including core modules and those allowed by the 
+<dd>a list of top-level modules, only including core modules and those allowed by the
      supplied predicate. Submodules are loaded, but not included.</dd>
 </dl>
 </li>
