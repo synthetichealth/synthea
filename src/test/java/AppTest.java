@@ -142,7 +142,7 @@ public class AppTest {
     Matcher matches = Pattern.compile(regex).matcher(output);
     Assert.assertTrue(matches.find());
     int alive = Integer.parseInt(matches.group(1));
-    int dead = Integer.parseInt(matches.group(2));    
+    int dead = Integer.parseInt(matches.group(2));
     System.setOut(original);
     System.out.println(output);
     Assert.assertEquals(String.format("Expected 3 total records, got %d alive and %d dead",
@@ -179,12 +179,12 @@ public class AppTest {
     String[] args = {"-s", "0", "-p", "0",
         "--test_key", "changed value", "--exporter.fhir.export=true"};
     App.main(args);
-    
+
     Assert.assertEquals("changed value", Config.get("test_key"));
     Assert.assertEquals("true", Config.get("exporter.fhir.export"));
   }
-  
-  
+
+
   @Test
   public void testAppWithLocalConfigFile() throws Exception {
     TestHelper.exportOff();
@@ -192,10 +192,10 @@ public class AppTest {
     String[] args = {"-s", "0", "-p", "0",
         "-c", "src/test/resources/test2.properties"};
     App.main(args);
-    
+
     Assert.assertEquals("24", Config.get("test.bar"));
   }
-  
+
   @Test
   public void testAppWithLocalModuleDir() throws Exception {
     TestHelper.exportOff();
@@ -216,7 +216,7 @@ public class AppTest {
     System.setOut(original);
     System.out.println(output);
   }
-  
+
   @Test
   public void testInvalidArgs() throws Exception {
     String[] args = {"-s", "foo", "-p", "foo", testStateDefault, testTownDefault};

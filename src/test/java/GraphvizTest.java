@@ -15,7 +15,7 @@ public class GraphvizTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
- 
+
   @Ignore("Graphviz test is disabled due to time requirements.")
   @Test
   public void testGraphviz() throws Exception {

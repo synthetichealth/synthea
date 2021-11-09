@@ -27,9 +27,9 @@ public class ExporterTest {
   private int yearsToKeep;
   private Person patient;
   private HealthRecord record;
-  
+
   private static final HealthRecord.Code DUMMY_CODE = new HealthRecord.Code("", "", "");
-  
+
   /**
    * Setup test data.
    * @throws Exception on configuration loading error.
@@ -62,7 +62,7 @@ public class ExporterTest {
   public void testExportFilterSimpleCutoff() {
     record.encounterStart(time - years(8), EncounterType.WELLNESS);
     record.observation(time - years(8), "height", 64);
-    
+
     record.encounterStart(time - years(4), EncounterType.WELLNESS);
     record.observation(time - years(4), "weight", 128);
 
@@ -193,10 +193,10 @@ public class ExporterTest {
 
   @Test
   public void testExportFilterShouldKeepCauseOfDeath() {
-    HealthRecord.Code causeOfDeath = 
+    HealthRecord.Code causeOfDeath =
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
     patient.recordDeath(time - years(20), causeOfDeath);
-    
+
     DeathModule.process(patient, time - years(20));
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
 
@@ -238,16 +238,16 @@ public class ExporterTest {
     assertEquals(1, filtered.record.encounters.get(0).conditions.size());
     assertEquals("diabetes", filtered.record.encounters.get(0).conditions.get(0).type);
   }
-  
+
   @Test
   public void testExportFilterShouldFilterClaimItems() {
     record.encounterStart(time - years(10), EncounterType.EMERGENCY);
     record.conditionStart(time - years(10), "something_permanent");
     record.procedure(time - years(10), "xray");
-    
+
     assertEquals(1, record.encounters.size());
     assertEquals(2, record.encounters.get(0).claim.items.size()); // 1 condition, 1 procedure
-    
+
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
     // filter removes the procedure but keeps the open condition
     assertEquals(1, filtered.record.encounters.size());

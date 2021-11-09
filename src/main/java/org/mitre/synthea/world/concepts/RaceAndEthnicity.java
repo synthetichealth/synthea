@@ -7,7 +7,7 @@ import java.util.Map;
 public class RaceAndEthnicity {
   public static final Map<String, String> LOOK_UP_CDC_RACE = createCDCRaceLookup();
   public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_CODE = createCDCEthnicityLookup();
-  public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_DISPLAY = 
+  public static final Map<String, String> LOOK_UP_CDC_ETHNICITY_DISPLAY =
       createCDCEthnicityDisplayLookup();
 
   private static Map<String, String> createCDCRaceLookup() {

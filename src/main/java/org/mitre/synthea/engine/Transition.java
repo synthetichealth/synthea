@@ -27,7 +27,7 @@ public abstract class Transition implements Serializable {
 
   /**
    * Get the name of the next state.
-   * 
+   *
    * @param person : person being processed
    * @param time   : time of this transition
    * @return name : name of the next state
@@ -170,7 +170,7 @@ public abstract class Transition implements Serializable {
       // Hashmap for the new lookup table.
       HashMap<LookupTableKey, List<DistributedTransitionOption>> newTable
           = new HashMap<LookupTableKey, List<DistributedTransitionOption>>();
-      
+
       // Load in this transitions's CSV file.
       String fileName = Config.get("generate.lookup_tables") + lookupTableName;
       List<? extends Map<String, String>> lookupTable = null;
@@ -255,7 +255,7 @@ public abstract class Transition implements Serializable {
 
       ArrayList<DistributedTransitionOption> transitionProbabilities
           = new ArrayList<DistributedTransitionOption>();
-      
+
       for (String transitionName : transitionStates) {
         if (currentRow.containsKey(transitionName)
             && transitions.stream().anyMatch(t -> t.transition.equals(transitionName))) {
@@ -356,7 +356,7 @@ public abstract class Transition implements Serializable {
      * Overides the equals method. If there is no age in this tranistion, then it just
      * returns the default List.equals(). If there is an age range, then the age
      * must fit in the range for this to return true.
-     * 
+     *
      * @param obj the object to check that this equals.
      */
     @Override

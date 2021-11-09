@@ -223,7 +223,7 @@ public class HealthRecord implements Serializable {
       // Create a medication claim.
       this.claim = new Claim(this, person);
     }
-    
+
     /**
      * Java Serialization support for the prescriptionDetails field.
      * @param oos stream to write to
@@ -236,7 +236,7 @@ public class HealthRecord implements Serializable {
         oos.writeObject(null);
       }
     }
-    
+
     /**
      * Java Serialization support for the prescriptionDetails field.
      * @param ois stream to read from
@@ -301,7 +301,7 @@ public class HealthRecord implements Serializable {
       }
       oos.writeObject(stringifiedGoals);
     }
-    
+
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
       ois.defaultReadObject();
       ArrayList<String> stringifiedGoals = (ArrayList<String>) ois.readObject();
@@ -636,7 +636,7 @@ public class HealthRecord implements Serializable {
       super(start, type);
     }
   }
-  
+
   private Person person;
   public Provider provider;
   public List<Encounter> encounters;
@@ -968,7 +968,7 @@ public class HealthRecord implements Serializable {
       present.remove(type);
     }
   }
-  
+
   /**
    * Remove a device from the patient based on the state where it was assigned.
    * @param time The time the device is removed.
@@ -1238,7 +1238,7 @@ public class HealthRecord implements Serializable {
    * @param time the time of the study.
    * @param type the type of the study.
    * @param series the series associated with the study.
-   * @return 
+   * @return
    */
   public ImagingStudy imagingStudy(long time, String type,
       List<ImagingStudy.Series> series) {

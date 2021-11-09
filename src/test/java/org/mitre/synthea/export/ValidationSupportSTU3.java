@@ -30,7 +30,7 @@ public class ValidationSupportSTU3 extends PrePopulatedValidationSupport  {
    */
   public ValidationSupportSTU3(FhirContext ctx) {
     super(ctx);
-    
+
     try {
       loadFromDirectory(PROFILE_DIR);
     } catch (Throwable t) {

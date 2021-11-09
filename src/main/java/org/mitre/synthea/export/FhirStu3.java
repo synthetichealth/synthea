@@ -219,7 +219,7 @@ public class FhirStu3 {
 
     return mappingTable;
   }
-  
+
   public static FhirContext getContext() {
     return FHIR_CTX;
   }
@@ -290,11 +290,11 @@ public class FhirStu3 {
       for (HealthRecord.Device device : encounter.devices) {
         device(person, personEntry, bundle, device);
       }
-      
+
       for (HealthRecord.Supply supply : encounter.supplies) {
         supplyDelivery(person, personEntry, bundle, supply, encounter);
       }
-      
+
       // one claim per encounter
       BundleEntryComponent encounterClaim = encounterClaim(person, personEntry, bundle,
           encounterEntry, encounter.claim);
@@ -311,7 +311,7 @@ public class FhirStu3 {
    *
    * @param person Person to generate the FHIR JSON for
    * @param stopTime Time the simulation ended
-   * @return String containing a JSON representation of a FHIR Bundle containing the Person's 
+   * @return String containing a JSON representation of a FHIR Bundle containing the Person's
    *     health record.
    */
   public static String convertToFHIRJson(Person person, long stopTime) {
@@ -681,7 +681,7 @@ public class FhirStu3 {
       // no associated provider, patient goes to wellness provider
       provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
     }
-    
+
     if (TRANSACTION_BUNDLE) {
       encounterResource.setServiceProvider(new Reference(
               ExportHelper.buildFhirSearchUrl("Organization", provider.getResourceID())));
@@ -788,7 +788,7 @@ public class FhirStu3 {
    * @param medicationEntry The Entry for the Medication object, previously created
    * @return the added Entry
    */
-  private static BundleEntryComponent medicationClaim(RandomNumberGenerator rand, 
+  private static BundleEntryComponent medicationClaim(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Claim claim, BundleEntryComponent medicationEntry) {
     org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
@@ -830,7 +830,7 @@ public class FhirStu3 {
    * @param claim the Claim object
    * @return the added Entry
    */
-  private static BundleEntryComponent encounterClaim(RandomNumberGenerator rand, 
+  private static BundleEntryComponent encounterClaim(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Claim claim) {
     org.hl7.fhir.dstu3.model.Claim claimResource = new org.hl7.fhir.dstu3.model.Claim();
@@ -1543,7 +1543,7 @@ public class FhirStu3 {
    * @param condition The Condition
    * @return The added Entry
    */
-  private static BundleEntryComponent condition(RandomNumberGenerator rand, 
+  private static BundleEntryComponent condition(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
@@ -1640,7 +1640,7 @@ public class FhirStu3 {
    * @param observation The Observation
    * @return The added Entry
    */
-  private static BundleEntryComponent observation(RandomNumberGenerator rand, 
+  private static BundleEntryComponent observation(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Observation observation) {
     org.hl7.fhir.dstu3.model.Observation observationResource =
@@ -1720,31 +1720,31 @@ public class FhirStu3 {
           + value.getClass().toString() + "; " + value);
     }
   }
-  
+
   /**
    * Maps a Synthea internal SampledData object to the FHIR standard SampledData
    * representation.
-   * 
+   *
    * @param value Synthea internal SampledData instance
    * @param unit Observation unit value
    * @return
    */
   static org.hl7.fhir.dstu3.model.SampledData mapValueToSampledData(
       Components.SampledData value, String unit) {
-    
+
     org.hl7.fhir.dstu3.model.SampledData recordData = new org.hl7.fhir.dstu3.model.SampledData();
-    
+
     SimpleQuantity origin = new SimpleQuantity();
     origin.setValue(new BigDecimal(value.originValue))
       .setCode(unit).setSystem(UNITSOFMEASURE_URI)
       .setUnit(unit);
-    
+
     recordData.setOrigin(origin);
-    
+
     // Use the period from the first series. They should all be the same.
     // FHIR output is milliseconds so we need to convert from TimeSeriesData seconds.
     recordData.setPeriod(value.series.get(0).getPeriod() * 1000);
-    
+
     // Set optional fields if they were provided
     if (value.factor != null) {
       recordData.setFactor(value.factor);
@@ -1755,11 +1755,11 @@ public class FhirStu3 {
     if (value.upperLimit != null) {
       recordData.setUpperLimit(value.upperLimit);
     }
-    
+
     recordData.setDimensions(value.series.size());
-    
+
     recordData.setData(ExportHelper.sampledDataToValueString(value));
-    
+
     return recordData;
   }
 
@@ -1773,7 +1773,7 @@ public class FhirStu3 {
    * @param procedure  The Procedure
    * @return The added Entry
    */
-  private static BundleEntryComponent procedure(RandomNumberGenerator rand, 
+  private static BundleEntryComponent procedure(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Procedure procedure) {
     org.hl7.fhir.dstu3.model.Procedure procedureResource = new org.hl7.fhir.dstu3.model.Procedure();
@@ -1829,7 +1829,7 @@ public class FhirStu3 {
     return procedureEntry;
   }
 
-  private static BundleEntryComponent immunization(RandomNumberGenerator rand, 
+  private static BundleEntryComponent immunization(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
@@ -1871,7 +1871,7 @@ public class FhirStu3 {
    * @param medication The Medication
    * @return The added Entry
    */
-  private static BundleEntryComponent medication(RandomNumberGenerator rand, 
+  private static BundleEntryComponent medication(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Medication medication) {
     MedicationRequest medicationResource = new MedicationRequest();
@@ -1995,10 +1995,10 @@ public class FhirStu3 {
 
     return medicationEntry;
   }
-  
+
   /**
    * Add a MedicationAdministration if needed for the given medication.
-   * 
+   *
    * @param rand Source of randomness to use when generating ids etc
    * @param personEntry       The Entry for the Person
    * @param bundle            Bundle to add the MedicationAdministration to
@@ -2082,7 +2082,7 @@ public class FhirStu3 {
    * @param report The Report
    * @return The added Entry
    */
-  private static BundleEntryComponent report(RandomNumberGenerator rand, 
+  private static BundleEntryComponent report(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle,
           BundleEntryComponent encounterEntry, Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
@@ -2188,7 +2188,7 @@ public class FhirStu3 {
    * @param imagingStudy The ImagingStudy to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent imagingStudy(RandomNumberGenerator rand, 
+  private static BundleEntryComponent imagingStudy(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           ImagingStudy imagingStudy) {
     org.hl7.fhir.dstu3.model.ImagingStudy imagingStudyResource =
@@ -2260,7 +2260,7 @@ public class FhirStu3 {
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
     return newEntry(rand, bundle, imagingStudyResource);
   }
-  
+
   /**
    * Map the given Media element to a FHIR Media resource, and add it to the given Bundle.
    *
@@ -2271,7 +2271,7 @@ public class FhirStu3 {
    * @param obs   The Observation to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent media(RandomNumberGenerator rand, 
+  private static BundleEntryComponent media(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle,
           BundleEntryComponent encounterEntry, Observation obs) {
     org.hl7.fhir.dstu3.model.Media mediaResource =
@@ -2282,14 +2282,14 @@ public class FhirStu3 {
           .map(code -> mapCodeToCodeableConcept(code, SNOMED_URI)).collect(Collectors.toList());
       mediaResource.setReasonCode(reasonList);
     }
-    
+
     // Hard code as an image
     mediaResource.setType(DigitalMediaType.PHOTO);
     mediaResource.setSubject(new Reference(personEntry.getFullUrl()));
 
     Attachment content = (Attachment) obs.value;
     org.hl7.fhir.dstu3.model.Attachment contentResource = new org.hl7.fhir.dstu3.model.Attachment();
-    
+
     contentResource.setContentType(content.contentType);
     contentResource.setLanguage(content.language);
     if (content.data != null) {
@@ -2301,10 +2301,10 @@ public class FhirStu3 {
     if (content.hash != null) {
       contentResource.setHashElement(new org.hl7.fhir.dstu3.model.Base64BinaryType(content.hash));
     }
-    
+
     mediaResource.setWidth(content.width);
     mediaResource.setHeight(content.height);
-    
+
     mediaResource.setContent(contentResource);
 
     return newEntry(rand, bundle, mediaResource);
@@ -2319,7 +2319,7 @@ public class FhirStu3 {
    * @param device         The device to add.
    * @return The added Entry.
    */
-  private static BundleEntryComponent device(RandomNumberGenerator rand, 
+  private static BundleEntryComponent device(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, HealthRecord.Device device) {
     Device deviceResource = new Device();
     Device.DeviceUdiComponent udi = new Device.DeviceUdiComponent()
@@ -2340,7 +2340,7 @@ public class FhirStu3 {
     deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
     return newEntry(rand, bundle, deviceResource);
   }
-  
+
   /**
    * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
    *
@@ -2354,32 +2354,32 @@ public class FhirStu3 {
   private static BundleEntryComponent supplyDelivery(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, HealthRecord.Supply supply,
           Encounter encounter) {
-   
+
     SupplyDelivery supplyResource = new SupplyDelivery();
     supplyResource.setStatus(SupplyDeliveryStatus.COMPLETED);
     supplyResource.setPatient(new Reference(personEntry.getFullUrl()));
-    
+
     CodeableConcept type = new CodeableConcept();
     type.addCoding()
       .setCode("device")
       .setDisplay("Device")
       .setSystem("http://hl7.org/fhir/supply-item-type");
     supplyResource.setType(type);
-    
+
     SupplyDeliverySuppliedItemComponent suppliedItem = new SupplyDeliverySuppliedItemComponent();
     suppliedItem.setItem(mapCodeToCodeableConcept(supply.codes.get(0), SNOMED_URI));
-    
+
     SimpleQuantity quantity = new SimpleQuantity();
     quantity.setValue(supply.quantity);
     suppliedItem.setQuantity(quantity);
-    
+
     supplyResource.setSuppliedItem(suppliedItem);
-    
+
     supplyResource.setOccurrence(convertFhirDateTime(supply.start, true));
-    
+
     return newEntry(rand, bundle, supplyResource);
   }
-  
+
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    * @param bundle The Bundle to add to
@@ -2423,7 +2423,7 @@ public class FhirStu3 {
       geolocation.addExtension("latitude", new DecimalType(coord.getY()));
       geolocation.addExtension("longitude", new DecimalType(coord.getX()));
     }
-    
+
     if (provider.phone != null && !provider.phone.isEmpty()) {
       ContactPoint contactPoint = new ContactPoint()
           .setSystem(ContactPointSystem.PHONE)
@@ -2648,7 +2648,7 @@ public class FhirStu3 {
    * @param resource Resource the new Entry should contain
    * @return the created Entry
    */
-  private static BundleEntryComponent newEntry(RandomNumberGenerator rand, Bundle bundle, 
+  private static BundleEntryComponent newEntry(RandomNumberGenerator rand, Bundle bundle,
           Resource resource) {
     String resourceID = rand.randUUID().toString();
     return newEntry(bundle, resource, resourceID);

@@ -33,7 +33,7 @@ public class PayerAdjustmentRandom implements IPayerAdjustment, Serializable {
     if (person.randBoolean()) {
       double currentRate = person.rand(0.0, rate);
       claimEntry.adjustment = currentRate * claimEntry.cost;
-      return claimEntry.adjustment;      
+      return claimEntry.adjustment;
     } else {
       return 0;
     }

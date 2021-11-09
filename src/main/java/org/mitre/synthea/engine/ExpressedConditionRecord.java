@@ -13,26 +13,26 @@ import org.mitre.synthea.engine.ExpressedSymptom.SymptomSource;
 import org.mitre.synthea.world.agents.Person;
 
 public class ExpressedConditionRecord implements Cloneable, Serializable {
-  
+
   private static final long serialVersionUID = 4322116644425686900L;
-  
+
   // this class contains basic info regarding an expressed conditions.
   // such as the onset time and end time
-  public class ConditionPeriod implements Cloneable, Serializable {    
-    private static final long serialVersionUID = 4322116644425686901L;    
-    private Long onsetTime; 
+  public class ConditionPeriod implements Cloneable, Serializable {
+    private static final long serialVersionUID = 4322116644425686901L;
+    private Long onsetTime;
     private Long endTime;
-    
+
     public ConditionPeriod(Long onsetTime) {
       this.onsetTime = onsetTime;
       this.endTime = null;
     }
-    
+
     public ConditionPeriod(Long onsetTime, Long endTime) {
       this.onsetTime = onsetTime;
       this.endTime = endTime;
     }
-    
+
     public ConditionPeriod clone() {
       return new ConditionPeriod(this.onsetTime, this.endTime);
     }
@@ -47,24 +47,24 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
 
     public Long getOnsetTime() {
       return onsetTime;
-    }        
+    }
   }
 
   /**
    * A condition with a set of onset and end time entries.
    */
-  public class OnsetCondition implements Cloneable, Serializable {    
+  public class OnsetCondition implements Cloneable, Serializable {
     private static final long serialVersionUID = 4322116644425686902L;
-    
-    // name of the condition    
+
+    // name of the condition
     private String name;
     private List<ConditionPeriod> timeInfos;
-    
+
     public OnsetCondition(String name) {
       this.name = name;
       timeInfos = new LinkedList<ConditionPeriod>();
     }
-    
+
     /**
      * Create a shallow copy of this object.
      */
@@ -81,7 +81,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     public List<ConditionPeriod> getTimeInfos() {
       return timeInfos;
     }
-    
+
     /**
      * Get the last recorded onset time.
      */
@@ -93,7 +93,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
         return timeInfos.get(size - 1).getOnsetTime();
       }
     }
-    
+
     /**
      * Get the last recorded end time.
      */
@@ -105,23 +105,23 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
         return timeInfos.get(size - 1).getEndTime();
       }
     }
-    
+
     public void addNewEntry(long onsetTime) {
       ConditionPeriod entry = new ConditionPeriod(Long.valueOf(onsetTime), null);
       timeInfos.add(entry);
     }
-    
+
     /**
      * Set the end time the last entry.
      */
     public void endLastEntry(long time) {
       int size = timeInfos.size();
       if (size > 0) {
-        timeInfos.get(size - 1).setEndTime(Long.valueOf(time));  
+        timeInfos.get(size - 1).setEndTime(Long.valueOf(time));
       }
     }
   }
-  
+
   /**
    * Used to record condition onset by modules.
    */
@@ -134,7 +134,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     /** Data structure for storing mapping from state to condition names
      * This is useful when facing ConditionEnd.conditionOnSet attribute*/
     private Map<String, String> state2conditionMapping;
-    
+
     /**
      * Create new instance for the specified module name.
      */
@@ -143,7 +143,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       onsetConditions = new ConcurrentHashMap<String, OnsetCondition>();
       state2conditionMapping = new ConcurrentHashMap<String, String>();
     }
-    
+
     /**
      * Create a shallow copy of this instance.
      */
@@ -153,7 +153,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       data.onsetConditions.putAll(this.onsetConditions);
       return data;
     }
-    
+
     /**
      * Record the onset of a condition.
      */
@@ -165,7 +165,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       onsetCondition.addNewEntry(time);
       state2conditionMapping.put(state, condition);
     }
-    
+
     /**
      * Record the end of a condition.
      */
@@ -174,7 +174,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
         onsetConditions.get(condition).endLastEntry(time);
       }
     }
-    
+
     /**
      * Get the last recorded onset time.
      */
@@ -184,7 +184,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       }
       return null;
     }
-    
+
     /**
      * Get the last recorded end time.
      */
@@ -194,7 +194,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       }
       return null;
     }
-    
+
     /**
      * Get the condition for the supplied state.
      */
@@ -213,17 +213,17 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       return onsetConditions;
     }
   }
-  
+
   // this class represents a condition with its associated symptoms
   public class ConditionWithSymptoms implements Cloneable, Serializable {
     private static final long serialVersionUID = 4322116644425686904L;
-    
+
     private String conditionName;
     private Long onsetTime;
     private Long endTime;
     // Data structure for storing symptoms and associated values during the condition
     private Map<String, List<Integer>> symptoms;
-    
+
     /**
      * Create a new instance for the supplied condition name, onset and end times.
      */
@@ -233,7 +233,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       this.endTime = endTime;
       this.symptoms = new ConcurrentHashMap<String, List<Integer>>();
     }
-    
+
     /**
      * Create a shallow copy of this instance.
      */
@@ -242,7 +242,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       data.symptoms.putAll(this.symptoms);
       return data;
     }
-    
+
     /**
      * Record a symptom for the supplied module.
      * @param name symptom name.
@@ -271,15 +271,15 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
         }
       }
     }
-    
+
     public Long getOnsetTime() {
       return onsetTime;
     }
-    
+
     public Long getEndTime() {
       return endTime;
     }
-    
+
     public String getConditionName() {
       return conditionName;
     }
@@ -288,16 +288,16 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       return symptoms;
     }
   }
-  
+
   // a map:  module.name -> Conditions
   private Map<String, ModuleConditions> sources;
   Person person;
-  
+
   public ExpressedConditionRecord(Person person) {
     this.person = person;
     sources = new ConcurrentHashMap<String, ModuleConditions>();
   }
-  
+
   /**
    * Create a shallow clone of this instance.
    */
@@ -306,11 +306,11 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     data.sources.putAll(this.sources);
     return data;
   }
-  
+
   public Map<String, ModuleConditions> getSources() {
     return sources;
   }
-  
+
   /**
    * Method that is used to update the onsetConditions field when
    * a ConditionOnset state is processed.
@@ -322,7 +322,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     ModuleConditions moduleConditions = sources.get(module);
     moduleConditions.onsetCondition(condition, state, time);
   }
-    
+
   /**
    * Method that is used to retrieve the last time a condition
    * has been onset from a given module.
@@ -335,7 +335,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     }
     return result;
   }
-    
+
   /**
    * Method that is used to retrieve the last time a ConditionEnd state
    * has been processed for a given condition from a given module.
@@ -348,7 +348,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     }
     return result;
   }
-    
+
   /**
    * Method for retrieving the condition name from a state name.
    * Useful when dealing with ConditionEnd.conditionOnSet attribute.
@@ -361,7 +361,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     }
     return result;
   }
-    
+
   /**
    * Method that is used to update the onsetConditions field when
    * a ConditionEnd state is processed.
@@ -372,19 +372,19 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       sources.get(module).endCondition(condition, time);
     }
   }
-  
-  
+
+
   /**
-   * Get the symptoms that were expressed as parts of 
+   * Get the symptoms that were expressed as parts of
    * the conditions the person suffers from.
    * The returned data is a map of [time: List of ConditionWithSymtoms].
-   * It captures the conditions a person has suffered from together 
-   * with the related symptoms at different age/time. 
+   * It captures the conditions a person has suffered from together
+   * with the related symptoms at different age/time.
    */
   public Map<Long, List<ConditionWithSymptoms>> getConditionSymptoms() {
     Map<String, ExpressedSymptom> symptoms = person.getExpressedSymptoms();
     Map<Long, List<ConditionWithSymptoms>> result;
-    result = new ConcurrentHashMap<Long, List<ConditionWithSymptoms>>();    
+    result = new ConcurrentHashMap<Long, List<ConditionWithSymptoms>>();
     for (String module : sources.keySet()) {
       ModuleConditions moduleConditions = sources.get(module);
       for (String condition : moduleConditions.getOnsetConditions().keySet()) {
@@ -411,5 +411,5 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
       }
     }
     return result;
-  }  
+  }
 }

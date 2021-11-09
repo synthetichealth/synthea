@@ -9,7 +9,7 @@ public class TestElement implements QuadTreeElement {
     this.coordinateX = x;
     this.coordinateY = y;
   }
-  
+
   @Override
   public double getX() {
     return coordinateX;

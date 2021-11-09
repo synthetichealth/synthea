@@ -20,7 +20,7 @@ public class Place implements QuadTreeElement, Serializable {
   public String postalCode;
   /** Coordinate of the place. */
   public Point2D.Double coordinate;
-  
+
   /**
    * Create a new row from a CSV row.
    * @param row from the zip file. Each key is the column header.
@@ -34,17 +34,17 @@ public class Place implements QuadTreeElement, Serializable {
     double lon = Double.parseDouble(row.get("LON"));
     this.coordinate = new Point2D.Double(lon, lat);
   }
-  
+
   /**
    * Check whether or not this Place is in the given state.
    * @param state Name or Abbreviation
    * @return true if they are the same state, otherwise false.
    */
   public boolean sameState(String state) {
-    return this.state.equalsIgnoreCase(state) 
+    return this.state.equalsIgnoreCase(state)
         || this.abbreviation.equalsIgnoreCase(state);
   }
-  
+
   @Override
   public double getX() {
     return coordinate.getX();

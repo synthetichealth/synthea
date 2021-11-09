@@ -49,7 +49,7 @@ import org.mitre.synthea.world.agents.Person;
  * Provider specific attributes.
  */
 public class Attributes {
-  
+
   public class Inventory {
     /** Key: Module Name, Values: State names that read this attribute. */
     public Map<String,Set<String>> read;
@@ -75,7 +75,7 @@ public class Attributes {
     public void read(String module, String state) {
       Set<String> states = this.read.computeIfAbsent(module, f -> new TreeSet<String>());
       if (state != null) {
-        states.add(state);        
+        states.add(state);
       }
     }
 
@@ -101,15 +101,15 @@ public class Attributes {
   /**
    * Generate an output file containing all Person attributes used in Synthea.
    * Attributes of Clinicians and Providers are not included.
-   * 
+   *
    * @param args unused
    * @throws Exception if any error occurs in reading the module files
    */
   public static void main(String[] args) throws Exception {
     System.out.println("Performing an inventory of attributes into `output/attributes.json`...");
-    
+
     Map<String,Inventory> output = getAttributeInventory();
-    
+
     String outFilePath = new File("./output/attributes.json").toPath().toString();
     Writer writer = new FileWriter(outFilePath);
     Gson gson = new GsonBuilder()
@@ -118,14 +118,14 @@ public class Attributes {
     gson.toJson(output, writer);
     writer.flush();
     writer.close();
-    
+
     graph(output, "attributes_all", false);
     graph(output, "attributes_readwrite", true);
-    
+
     System.out.println("Catalogued " + output.size() + " attributes.");
     System.out.println("Done.");
   }
-  
+
   /**
    * Get the list of all Person attributes in Synthea, as a list of CSV strings.
    * @return list of CSV strings
@@ -151,13 +151,13 @@ public class Attributes {
     LifecycleModule.inventoryAttributes(attributes);
     QualityOfLifeModule.inventoryAttributes(attributes);
     C19ImmunizationModule.inventoryAttributes(attributes);
-    
+
     return attributes;
   }
-  
+
   /**
    * Catalog all attributes from the given module into the given Table.
-   * 
+   *
    * @param attributes Table of attributes to add to
    * @param module Module to parse for attributes and codes
    */
@@ -174,10 +174,10 @@ public class Attributes {
       inventoryState(attributes, moduleName, stateName, state, stateNames);
     }
   }
-  
+
   /**
    * Catalog all attributes from the given state into the given Table.
-   * 
+   *
    * @param attributes Table of attributes to add to
    * @param moduleName The name of the module.
    * @param stateName The name of the state.
@@ -198,8 +198,8 @@ public class Attributes {
           // reason is another attribute
           Inventory data = attributes.computeIfAbsent(reason,
               f -> new Attributes().new Inventory());
-          data.read(moduleName, stateName);    
-        }        
+          data.read(moduleName, stateName);
+        }
       }
     }
 
@@ -208,7 +208,7 @@ public class Attributes {
       if (!attribute.isEmpty()) {
         Inventory data = attributes.computeIfAbsent(attribute,
             f -> new Attributes().new Inventory());
-        data.write(moduleName, stateName, type);        
+        data.write(moduleName, stateName, type);
       }
     }
 
@@ -217,7 +217,7 @@ public class Attributes {
       if (!attribute.isEmpty()) {
         Inventory data = attributes.computeIfAbsent(attribute,
             f -> new Attributes().new Inventory());
-        data.read(moduleName, stateName);        
+        data.read(moduleName, stateName);
       }
     }
 
@@ -240,7 +240,7 @@ public class Attributes {
           data.read(moduleName, stateName);
         } else {
           System.out.println("Unhandled State: " + type);
-        }        
+        }
       }
     }
 
@@ -390,9 +390,9 @@ public class Attributes {
   public static void graph(Map<String,Inventory> output, String filename, boolean readAndWrite) {
     Map<String,Node> modules = new TreeMap<String,Node>();
     Map<String,List<Link>> writeLinks = new TreeMap<String,List<Link>>();
-    
+
     Graph graph = Factory.graph().directed();
-    
+
     for (String attribute : output.keySet()) {
       Inventory inventory = output.get(attribute);
       if (readAndWrite && (inventory.read.isEmpty() || inventory.write.isEmpty())) {
@@ -420,7 +420,7 @@ public class Attributes {
           moduleNode = Factory.node(key);
           modules.put(key, moduleNode);
         }
-        
+
         List<Link> moduleWriteLinks = null;
         if (writeLinks.containsKey(key)) {
           moduleWriteLinks = writeLinks.get(key);
@@ -433,17 +433,17 @@ public class Attributes {
       }
       graph = graph.with(attributeNode);
     }
-    
+
     for (String key : modules.keySet()) {
       Node node = modules.get(key);
       List<Link> moduleWriteLinks = writeLinks.get(key);
       if (moduleWriteLinks != null && !moduleWriteLinks.isEmpty()) {
-        graph = graph.with(node.link(moduleWriteLinks.toArray(new Link[0])));        
+        graph = graph.with(node.link(moduleWriteLinks.toArray(new Link[0])));
       } else {
         graph = graph.with(node);
       }
     }
-    
+
     File graphFile = new File("./output/" + filename + ".png");
     try {
       Graphviz.fromGraph(graph).rasterizer(Rasterizer.BATIK).render(Format.PNG).toFile(graphFile);

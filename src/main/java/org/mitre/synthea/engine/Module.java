@@ -47,10 +47,10 @@ import org.mitre.synthea.world.agents.Person;
 
 /**
  * Module represents the entry point of a generic module.
- * 
- * <p>The `modules` map is the static list of generic modules. It is loaded once per process, 
- * and the list of modules is shared between the generated population. Because we share modules 
- * across the population, it is important that States are cloned before they are executed. 
+ *
+ * <p>The `modules` map is the static list of generic modules. It is loaded once per process,
+ * and the list of modules is shared between the generated population. Because we share modules
+ * across the population, it is important that States are cloned before they are executed.
  * This keeps the "master" copy of the module clean.
  */
 public class Module implements Cloneable, Serializable {
@@ -63,7 +63,7 @@ public class Module implements Cloneable, Serializable {
       .build();
 
   private static final Map<String, ModuleSupplier> modules = loadModules();
-  
+
   private static Map<String, ModuleSupplier> loadModules() {
     Map<String, ModuleSupplier> retVal = new ConcurrentHashMap<>();
     int submoduleCount = 0;
@@ -86,8 +86,8 @@ public class Module implements Cloneable, Serializable {
       e.printStackTrace();
     }
 
-    System.out.format("Scanned %d modules and %d submodules.\n", 
-                      retVal.size() - submoduleCount, 
+    System.out.format("Scanned %d modules and %d submodules.\n",
+                      retVal.size() - submoduleCount,
                       submoduleCount);
 
     return retVal;
@@ -110,7 +110,7 @@ public class Module implements Cloneable, Serializable {
 
   private static int walkModuleTree(
           Path modulesPath,
-          Map<String, ModuleSupplier> retVal, 
+          Map<String, ModuleSupplier> retVal,
           Properties overrides,
           boolean localFiles)
           throws Exception {
@@ -148,8 +148,8 @@ public class Module implements Cloneable, Serializable {
       e.printStackTrace();
     }
 
-    System.out.format("Scanned %d local modules and %d local submodules.\n", 
-                      modules.size() - (originalModuleCount + submoduleCount), 
+    System.out.format("Scanned %d local modules and %d local submodules.\n",
+                      modules.size() - (originalModuleCount + submoduleCount),
                       submoduleCount);
   }
 
@@ -229,7 +229,7 @@ public class Module implements Cloneable, Serializable {
 
   /**
    * Get a list of top-level modules including core and submodules.
-   * @return a list of top-level modules, only including core modules and those allowed by the 
+   * @return a list of top-level modules, only including core modules and those allowed by the
    *     supplied predicate. Submodules are loaded, but not included.
    */
   public static List<Module> getModules(Predicate<String> pathPredicate) {
@@ -321,7 +321,7 @@ public class Module implements Cloneable, Serializable {
   /**
    * Process this Module with the given Person at the specified time within the simulation.
    * Processing will complete if the person dies.
-   * 
+   *
    * @param person
    *          : the person being simulated
    * @param time
@@ -331,10 +331,10 @@ public class Module implements Cloneable, Serializable {
   public boolean process(Person person, long time) {
     return process(person, time, true);
   }
-  
+
   /**
    * Process this Module with the given Person at the specified time within the simulation.
-   * 
+   *
    * @param person
    *          : the person being simulated
    * @param time
@@ -367,7 +367,7 @@ public class Module implements Cloneable, Serializable {
     // probably more than one state
     String nextStateName = null;
     while (current.run(person, time, terminateOnDeath)) {
-      Long exited = current.exited;      
+      Long exited = current.exited;
       nextStateName = current.transition(person, time);
       // System.out.println(" Transitioning to " + nextStateName);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
@@ -406,7 +406,7 @@ public class Module implements Cloneable, Serializable {
 
   /**
    * Get a collection of the names of all the states this Module contains.
-   * 
+   *
    * @return set of all state names, or empty set if this is a non-GMF module
    */
   public Collection<String> getStateNames() {

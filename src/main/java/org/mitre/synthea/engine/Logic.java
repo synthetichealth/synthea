@@ -28,7 +28,7 @@ public abstract class Logic implements Serializable {
 
   /**
    * Test whether the logic is true for the given person at the given time.
-   * 
+   *
    * @param person Person to execute logic against
    * @param time Timestamp to execute logic against
    * @return boolean - whether or not the given condition is true or not
@@ -76,9 +76,9 @@ public abstract class Logic implements Serializable {
       return gender.equals(person.attributes.get(Person.GENDER));
     }
   }
-  
+
   /**
-   * The Age condition type tests the patient's age, in a given unit. 
+   * The Age condition type tests the patient's age, in a given unit.
    * (Ex, years for adults or months for young children)
    */
   public static class Age extends Logic {
@@ -106,7 +106,7 @@ public abstract class Logic implements Serializable {
       return Utilities.compare(age, quantity, operator);
     }
   }
-  
+
   /**
    * The Date condition type tests the current year, month, or date being simulated.
    * For example, this may be used to drive different logic depending on the suggested
@@ -153,7 +153,7 @@ public abstract class Logic implements Serializable {
       return category.equals(person.attributes.get(Person.SOCIOECONOMIC_CATEGORY));
     }
   }
-  
+
   /**
    * The Race condition type tests a patient's race. Synthea supports the following races:
    * "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other".
@@ -185,11 +185,11 @@ public abstract class Logic implements Serializable {
 
   /**
    * The Observation condition type tests the most recent observation of a given type against a
-   * given value. 
+   * given value.
    * Implementation Warnings:
    * - Synthea does not support conversion between arbitrary units, so all observations of a given
-   *   type are expected to be made in the same units. 
-   * - The given observation must have been recorded prior to performing this logical check, 
+   *   type are expected to be made in the same units.
+   * - The given observation must have been recorded prior to performing this logical check,
    *   unless the operator is is nil or is not nil. Otherwise, the GMF will raise an exception
    *   that the observation value cannot be compared as there has been no observation made.
    */
@@ -235,7 +235,7 @@ public abstract class Logic implements Serializable {
         }
       } else if (this.referencedByAttribute != null) {
         if (person.attributes.containsKey(this.referencedByAttribute)) {
-          observation = 
+          observation =
               (HealthRecord.Observation) person.attributes.get(this.referencedByAttribute);
         } else {
           return false;
@@ -243,7 +243,7 @@ public abstract class Logic implements Serializable {
       }
       if (valueCode != null) {
         value = valueCode;
-      } 
+      }
       if (operator.equals("is nil")) {
         return observation == null;
       } else if (operator.equals("is not nil")) {
@@ -262,14 +262,14 @@ public abstract class Logic implements Serializable {
       }
     }
   }
-  
+
   /**
    * The Attribute condition type tests a named attribute on the patient entity.
    */
   public static class Attribute extends Logic {
     private String attribute;
     private String operator;
-    
+
     private Object value;
 
     @Override
@@ -291,10 +291,10 @@ public abstract class Logic implements Serializable {
   private abstract static class GroupedCondition extends Logic {
     protected Collection<Logic> conditions;
   }
-  
+
   /**
-   * The And condition type tests that a set of sub-conditions are all true. 
-   * If all sub-conditions are true, it will return true, 
+   * The And condition type tests that a set of sub-conditions are all true.
+   * If all sub-conditions are true, it will return true,
    * but if any are false, it will return false.
    */
   public static class And extends GroupedCondition {
@@ -305,8 +305,8 @@ public abstract class Logic implements Serializable {
   }
 
   /**
-   * The Or condition type tests that at least one of its sub-conditions is true. 
-   * If any sub-condition is true, it will return true, 
+   * The Or condition type tests that at least one of its sub-conditions is true.
+   * If any sub-condition is true, it will return true,
    * but if all sub-conditions are false, it will return false.
    */
   public static class Or extends GroupedCondition {
@@ -317,8 +317,8 @@ public abstract class Logic implements Serializable {
   }
 
   /**
-   * The Not condition type negates its sub-condition. 
-   * If the sub-condition is true, it will return false; 
+   * The Not condition type negates its sub-condition.
+   * If the sub-condition is true, it will return false;
    * if the sub-condition is false, it will return true.
    */
   public static class Not extends Logic {
@@ -336,7 +336,7 @@ public abstract class Logic implements Serializable {
    * If the minimum number or more sub-conditions are true, it will return true,
    * but if less than the minimum are true, it will return false.
    * (If the minimum is the same as the number of sub-conditions provided,
-   * this is equivalent to the And condition. 
+   * this is equivalent to the And condition.
    * If the minimum is 1, this is equivalent to the Or condition.)
    */
   public static class AtLeast extends GroupedCondition {
@@ -361,10 +361,10 @@ public abstract class Logic implements Serializable {
       return conditions.stream().filter(c -> c.test(person, time)).count() <= maximum;
     }
   }
-  
+
 
   /**
-   * The True condition always returns true. 
+   * The True condition always returns true.
    * This condition is mainly used for testing purposes
    * and is not expected to be used in any real module.
    */
@@ -402,7 +402,7 @@ public abstract class Logic implements Serializable {
     @Override
     public boolean test(Person person, long time) {
       Long sinceTime = null;
-      
+
       if (within != null) {
         if (window == null) {
           // cache the value since it doesn't depend on person or time
@@ -414,7 +414,7 @@ public abstract class Logic implements Serializable {
       return person.hadPriorState(name, since, sinceTime);
     }
   }
-  
+
   /**
    * Parent class for logics that look up "active" things.
    * This class should never be referenced directly.
@@ -567,7 +567,7 @@ public abstract class Logic implements Serializable {
       person.record.currentEncounter(time).careplans.add((HealthRecord.CarePlan) entry);
     }
   }
-  
+
   /**
    * The Vital Sign condition type tests a patient's current vital signs. Synthea tracks vital signs
    * in order to drive a patient's physical condition, and are recorded in observations. See also

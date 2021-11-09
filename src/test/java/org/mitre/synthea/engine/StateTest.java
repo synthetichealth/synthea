@@ -90,12 +90,12 @@ public class StateTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     // Ensure Physiology state is enabled by default
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
   }
-  
+
   /**
    * Reset state after State tests.
    */
@@ -605,7 +605,7 @@ public class StateTest {
 
     assertNull(person.attributes.get("Current Opioid Prescription"));
   }
-  
+
   @Test
   public void setAttribute_with_expression() throws Exception {
     Module module = TestHelper.getFixture("set_attribute.json");
@@ -616,14 +616,14 @@ public class StateTest {
     assertEquals(185, ((BigDecimal) person.attributes.get("Maximum Heart Rate"))
         .doubleValue(), 0.1);
   }
-  
+
   @Test
   public void setAttribute_with_seriesData() throws Exception {
     Module module = TestHelper.getFixture("set_attribute.json");
 
     State set4 = module.getState("Set_Attribute_4");
     assertTrue(set4.process(person, time));
-    
+
     TimeSeriesData data = (TimeSeriesData) person.attributes.get("ECG");
 
     assertEquals(10, data.getValues().size());
@@ -653,7 +653,7 @@ public class StateTest {
     Module module = TestHelper.getFixture("set_attribute.json");
 
     State set5 = module.getState("Set_Attribute_5");
-    
+
     try {
       set5.process(person, time);
       fail("Expected RuntimeException to be thrown");
@@ -724,7 +724,7 @@ public class StateTest {
 
     List<HealthRecord.Procedure> procedures = person.record.encounters.get(0).procedures;
     assertEquals(1, procedures.size());
-    
+
     HealthRecord.Procedure proc = procedures.get(0);
     Code code = proc.codes.get(0);
 
@@ -758,7 +758,7 @@ public class StateTest {
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
@@ -768,13 +768,13 @@ public class StateTest {
 
     State codeObs = module.getState("CodeObservation");
     assertTrue(codeObs.process(person, time));
-    
+
     State sampleObs = module.getState("SampledDataObservation");
     assertTrue(sampleObs.process(person, time));
-    
+
     State chartObs = module.getState("ChartObservation");
     assertTrue(chartObs.process(person, time));
-    
+
     State urlObs = module.getState("UrlObservation");
     assertTrue(urlObs.process(person, time));
 
@@ -799,7 +799,7 @@ public class StateTest {
     Code codeObsCode = codeObservation.codes.get(0);
     assertEquals("24356-8", codeObsCode.code);
     assertEquals("Urinalysis complete panel - Urine", codeObsCode.display);
-    
+
     HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
         .observations.get(2);
     assertEquals("procedure", sampleObservation.category);
@@ -810,7 +810,7 @@ public class StateTest {
     assertEquals("P_lv", sampledData.attributes.get(1));
     assertEquals("P_rv", sampledData.attributes.get(2));
     assertEquals(3, sampledData.series.size());
-    
+
     HealthRecord.Observation chartObservation = person.record.encounters.get(0).observations.get(3);
     assertTrue(chartObservation.value instanceof Attachment);
     Attachment obsAttachment = (Attachment) chartObservation.value;
@@ -828,7 +828,7 @@ public class StateTest {
     assertEquals("en-US", urlAttachment.language);
     assertEquals("https://example.com/image/12498596132", urlAttachment.url);
   }
-  
+
   @Test
   public void imaging_study_during_encounter() throws Exception {
     Module module = TestHelper.getFixture("imaging_study.json");
@@ -1054,7 +1054,7 @@ public class StateTest {
     // Now process the end of the condition
     State conEnd = module.getState("Condition2_End");
     assertTrue(conEnd.process(person, time));
-    
+
     Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, "Influenza"
     );
@@ -1094,7 +1094,7 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("228380004", code.code);
     assertEquals("Chases the dragon (finding)", code.display);
-    
+
     Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
@@ -1132,7 +1132,7 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("6142004", code.code);
     assertEquals("Influenza", code.display);
-    
+
     Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
@@ -1169,7 +1169,7 @@ public class StateTest {
     Code code = condition.codes.get(0);
     assertEquals("73211009", code.code);
     assertEquals("Diabetes mellitus", code.display);
-    
+
     Long endTime = person.getOnsetConditionRecord().getConditionLastEndTimeFromModule(
         module.name, code.display
     );
@@ -1877,7 +1877,7 @@ public class StateTest {
       long previousStateExited = person.history.get(17).exited;
       long currentStateEntered = person.history.get(16).entered;
       assertEquals(previousStateExited, currentStateEntered);
-      
+
       assertEquals("Call_Encounter_Submodule", person.history.get(15).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(15).module.name);
       previousStateExited = person.history.get(16).exited;
@@ -1975,7 +1975,7 @@ public class StateTest {
       // previousStateExited = person.history.get(3).exited;
       // currentStateEntered = person.history.get(2).entered;
       // assertEquals(previousStateExited, currentStateEntered);
-      // see note above, this is the same as position 15 
+      // see note above, this is the same as position 15
 
       assertEquals("End_Condition", person.history.get(1).name);
       assertEquals("Recursive Calls Submodules Module", person.history.get(1).module.name);
@@ -2077,28 +2077,28 @@ public class StateTest {
     assertEquals("8462-4", o.observations.get(0).codes.get(0).code); // diastolic
     assertEquals("8480-6", o.observations.get(1).codes.get(0).code); // systolic
   }
-  
+
   @Test
   public void testPhysiology() throws Exception {
-    
+
     // BMI is an input parameter so we need to set it
     person.setVitalSign(VitalSign.BMI, 32.98);
-    
+
     // Pulmonary resistance and BMI multiplier are also input parameters
     person.attributes.put("Pulmonary Resistance", 0.1552);
     person.attributes.put("BMI Multiplier", 0.055);
 
     Module module = TestHelper.getFixture("smith_physiology.json");
-    
+
     State simulateCvs = module.getState("Simulate_CVS");
     assertTrue(simulateCvs.process(person, time));
-    
+
     // The "Final Aortal Volume" attribute should have been set
     assertTrue(person.attributes.containsKey("Final Aortal Volume"));
-    
+
     // The "Arterial Pressure Values" attribute should have been set to a list
     assertTrue(person.attributes.get("Arterial Pressure Values") instanceof TimeSeriesData);
-    
+
     // LVEF should be diminished and BP should be elevated
     assertTrue("LVEF < 60%", (double) person.attributes.get("LVEF") < 60.0);
     assertTrue("LVEF > 50%", (double) person.attributes.get("LVEF") > 50.0);
@@ -2110,23 +2110,23 @@ public class StateTest {
         (double) person.attributes.get("DBP") < 100.0);
     assertTrue("DIA BP > 80 mmhg",
         (double) person.attributes.get("DBP") > 80.0);
-    
+
     // test that the state can be effectively cloned
     State cvsClone = simulateCvs.clone();
-    
+
     assertNotEquals(cvsClone, simulateCvs);
     assertTrue(cvsClone.process(person, time));
-    
+
   }
-  
+
   @Test
   public void testPhysiologyDisabled() throws Exception {
-    
+
     // Ensure state is disabled
     State.ENABLE_PHYSIOLOGY_STATE = false;
 
     Module module = TestHelper.getFixture("smith_physiology.json");
-    
+
     // Run the whole module against the Person
     try {
       module.process(person, 0L);
@@ -2138,45 +2138,45 @@ public class StateTest {
           + "provided for chart series: null. Attribute value must be a "
           + "TimeSeriesData or List<Double> Object.", ex.getMessage());
     }
-    
+
     // Values should have been set directly instead of through the simulation
     assertEquals(55.5, (double) person.attributes.get("LVEF"), 0.0001);
     assertEquals(140.5, (double) person.attributes.get("SBP"), 0.0001);
     assertEquals(90.5, (double) person.attributes.get("DBP"), 0.0001);
-    
+
     // Re-enable physiology states
     State.ENABLE_PHYSIOLOGY_STATE = true;
   }
-  
+
   @Test
   public void testExpressionUse() throws Exception {
-    
+
     // Birth makes the vital signs come alive :-)
     LifecycleModule.birth(person, (long)person.attributes.get(Person.BIRTHDATE));
 
     Module module = TestHelper.getFixture("expression_use.json");
-    
+
     State attrExpression = module.getState("Set_Attr");
     assertTrue(attrExpression.process(person, time));
-    
+
     State vitalExpression = module.getState("Set_Vital");
     assertTrue(vitalExpression.process(person, time));
-    
+
     State observeExpression = module.getState("Observe");
     assertTrue(observeExpression.process(person, time));
-    
+
     // Verify that the Person now has an LVEF value of 60
     assertEquals(person.getVitalSign(VitalSign.LVEF, time), 60.0, 0.00001);
-    
+
   }
-  
+
   @Test
   public void testDevice() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
-    
+
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    
+
     State deviceState = module.getState("Artificial_Heart");
     assertTrue(deviceState.process(person, time));
 
@@ -2184,98 +2184,98 @@ public class StateTest {
     List<HealthRecord.Device> devices = encounter.devices;
     assertNotNull(devices);
     assertEquals(1, devices.size());
-    
+
     HealthRecord.Device device = devices.get(0);
     assertEquals("13459008", device.type);
     assertEquals("SynCardia", device.manufacturer);
     assertEquals("Total Artificial Heart", device.model);
     assertEquals(0L, device.stop);
-    
+
     HealthRecord.Device attribute = (HealthRecord.Device)person.attributes.get("artificial_heart");
     assertNotNull(attribute);
     assertTrue(attribute == device); // we want reference equality, it should be the same object
   }
-  
+
   @Test
   public void testDeviceEndByAttribute() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
-    
+
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    
+
     State deviceState = module.getState("Artificial_Heart");
     assertTrue(deviceState.process(person, time));
 
     State deviceEndState = module.getState("Remove_Device_By_Attribute");
     assertTrue(deviceEndState.process(person, time));
-    
+
     Encounter encounter = person.getCurrentEncounter(module);
-    List<HealthRecord.Device> devices = encounter.devices;    
+    List<HealthRecord.Device> devices = encounter.devices;
     HealthRecord.Device device = devices.get(0);
     assertEquals(time, device.stop);
   }
-  
+
   @Test
   public void testDeviceEndByCode() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
-    
+
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    
+
     State deviceState = module.getState("Artificial_Heart");
     assertTrue(deviceState.process(person, time));
 
     State deviceEndState = module.getState("Remove_Device_By_Code");
     assertTrue(deviceEndState.process(person, time));
-    
+
     Encounter encounter = person.getCurrentEncounter(module);
-    List<HealthRecord.Device> devices = encounter.devices;    
+    List<HealthRecord.Device> devices = encounter.devices;
     HealthRecord.Device device = devices.get(0);
     assertEquals(time, device.stop);
   }
-  
-  
+
+
   @Test
   public void testDeviceEndByState() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
-    
+
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    
+
     State deviceState = module.getState("Artificial_Heart");
     assertTrue(deviceState.process(person, time));
 
     State deviceEndState = module.getState("Remove_Device_By_State");
     assertTrue(deviceEndState.process(person, time));
-    
+
     Encounter encounter = person.getCurrentEncounter(module);
-    List<HealthRecord.Device> devices = encounter.devices;    
+    List<HealthRecord.Device> devices = encounter.devices;
     HealthRecord.Device device = devices.get(0);
     assertEquals(time, device.stop);
   }
-  
-  
+
+
   @Test
   public void testSupplyList() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
-    
+
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    
+
     State supplyListState = module.getState("Necessary_Supplies");
     assertTrue(supplyListState.process(person, time));
-    
+
     Encounter encounter = person.getCurrentEncounter(module);
     List<HealthRecord.Supply> supplies = encounter.supplies;
     assertNotNull(supplies);
     assertEquals(4, supplies.size());
-    
+
     String[] expectedCodes = { "52291003", "468159004", "39802000", "788177008" };
-    String[] expectedDisplays = { "Glove, device (physical object)", 
-        "Cotton ball (physical object)", "Tongue blade, device (physical object)", 
+    String[] expectedDisplays = { "Glove, device (physical object)",
+        "Cotton ball (physical object)", "Tongue blade, device (physical object)",
         "Examination gown, single-use (physical object)" };
     int[] expectedQuantities = { 10_000, 3_000, 98765, 1 };
-    
+
     for (int i = 0; i < 4; i++) {
       HealthRecord.Supply supply = supplies.get(i);
       Code code = supply.codes.get(0);

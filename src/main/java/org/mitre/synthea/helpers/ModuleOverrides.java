@@ -25,20 +25,20 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  *  which includes the name of the file, the JSONPath to the field, and the original value.
  * By default this is expected to be the set of all distributions,
  *  within all transitions, in all modules, but there are 4 configuration options:
- *  - includeFields: (defaults to ["distribution"] ) 
+ *  - includeFields: (defaults to ["distribution"] )
  *      -- numeric fields that match one of the given name will be written to the properties file
  *  - excludeFields: (defaults to null)
  *      -- if provided, all numeric fields except those that match the given names
  *         will be written to the properties file
  *      -- note: if both includeFields and excludeFields are given, includeFields will be ignored
- *  - includeModules: (defaults to null)    
+ *  - includeModules: (defaults to null)
  *      -- if provided, only modules that match the given file names will be processed
  *      -- wildcards are allowed, ex "metabolic*"
- *  - excludeModules: (defaults to null)    
+ *  - excludeModules: (defaults to null)
  *      -- if provided, all modules except those that match the given file names will be processed
  *      -- wildcards are allowed, ex "metabolic*"
  * The format of the properties file is:
- * (module file name)\:\:(JSONPath to numeric field within module) = original value     
+ * (module file name)\:\:(JSONPath to numeric field within module) = original value
  * Sample Line:
  * osteoporosis.json\:\:$['states']['Male']['distributed_transition'][1]['distribution'] = 0.02
  */
@@ -51,7 +51,7 @@ public class ModuleOverrides {
 
   /**
    * Main method, not to be invoked directly: should always be called via gradle task `overrides`.
-   * 
+   *
    * @param args -- format is [includeFields, includeModules, excludeFields, excludeModules]
    */
   public static void main(String[] args) throws Exception {
@@ -107,7 +107,7 @@ public class ModuleOverrides {
 
   /**
    * Create a ModuleOverrides object which will process the modules according to the given options.
-   * 
+   *
    * @param includeFields - List of field names to include
    * @param includeModulesList - list of module filename rules to include
    * @param excludeFields - list of field names to exclude
@@ -158,7 +158,7 @@ public class ModuleOverrides {
   }
 
   private List<String> handleElement(String path, String currentElementName, JsonElement element) {
-    // do a depth-first search through the JSON structure, 
+    // do a depth-first search through the JSON structure,
     // and add things that are numbers and meet our filter criteria to the list
     List<String> parameters = new LinkedList<>();
 
@@ -173,7 +173,7 @@ public class ModuleOverrides {
 
       for (String field : jo.keySet()) {
         // note: spaces have to be escaped in properties file key
-        String safeFieldName = field.replace(" ", "\\ "); 
+        String safeFieldName = field.replace(" ", "\\ ");
         JsonElement fieldValue = jo.get(field);
         parameters.addAll(handleElement(path + "['" + safeFieldName + "']", field, fieldValue));
       }

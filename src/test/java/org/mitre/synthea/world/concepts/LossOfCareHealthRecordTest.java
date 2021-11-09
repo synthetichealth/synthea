@@ -223,4 +223,4 @@ public class LossOfCareHealthRecordTest {
     assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounterYearTwo));
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounterYearTwo));
   }
-} 
+}

@@ -24,13 +24,13 @@ public class BirthStatistics {
   public static final String BIRTH_WEIGHT = "pregnancy_birth_weight";
   public static final String BIRTH_HEIGHT = "pregnancy_birth_height";
   public static final String BIRTH_SEX = "pregnancy_birth_sex";
-  
+
   /** Default birth weight. */
   public static final double DEFAULT_WEIGHT = 3.5; // kilograms (kg)
   /** Default birth height. */
   public static final double DEFAULT_HEIGHT = 51.0; // centimeters (cm)
 
-  private static final boolean LOG_OUTPUT = 
+  private static final boolean LOG_OUTPUT =
       Config.getAsBoolean("generate.birthweights.logging", false);
   private static FileWriter OUTPUT = openFile();
 
@@ -128,13 +128,13 @@ public class BirthStatistics {
     boolean rhispanic;
     String rsex;
     double x;
-    
+
     // Get the max weight of the rows...
     for (Map<String, String> row : WEIGHT_DATA) {
       rhispanic = Boolean.parseBoolean(row.get("hispanic_mother"));
       rsex = row.get("baby_sex");
       x = Double.parseDouble(row.get("sum"));
-      
+
       if (rhispanic == hispanic
           && rsex.equals(babySex)
           && x > max) {
@@ -149,7 +149,7 @@ public class BirthStatistics {
       rhispanic = Boolean.parseBoolean(row.get("hispanic_mother"));
       rsex = row.get("baby_sex");
       x = Double.parseDouble(row.get("sum"));
-      
+
       if (rhispanic == hispanic
           && rsex.equals(babySex)
           && (roll < x) && (data == null)) {
@@ -180,7 +180,7 @@ public class BirthStatistics {
         break;
       }
     }
-    
+
     // How long will the baby be?
     mother.attributes.put(BIRTH_HEIGHT, DEFAULT_HEIGHT);
 

@@ -8,9 +8,9 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 public class Names {
-  
+
   private static SimpleYML names = loadNames();
-  
+
   private static SimpleYML loadNames() {
     String filename = "names.yml";
     try {
@@ -22,13 +22,13 @@ public class Names {
       throw new ExceptionInInitializerError(e);
     }
   }
-  
+
   public static final boolean appendNumbersToNames =
       Config.getAsBoolean("generate.append_numbers_to_person_names", false);
-  
+
   /**
    * Generate a first name appropriate for a given gender and language.
-   * If `generate.append_numbers_to_person_names` == true, 
+   * If `generate.append_numbers_to_person_names` == true,
    * then numbers will be appended automatically.
    * @param gender Gender of the name, "M" or "F"
    * @param language Origin language of the name, "english", "spanish"
@@ -55,7 +55,7 @@ public class Names {
 
   /**
    * Generate a surname appropriate for a given language.
-   * If `generate.append_numbers_to_person_names` == true, 
+   * If `generate.append_numbers_to_person_names` == true,
    * then numbers will be appended automatically.
    * @param language Origin language of the name, "english", "spanish"
    * @param person person to generate a name for.
@@ -95,7 +95,7 @@ public class Names {
     String streetName = n.get(person.randInt(n.size()));
     List<String> a = (List<String>)names.get("street.type");
     String streetType = a.get(person.randInt(a.size()));
-    
+
     if (includeLine2) {
       int addtlNum = person.randInt(100);
       List<String> s = (List<String>)names.get("street.secondary");

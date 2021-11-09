@@ -12,7 +12,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderTest {
-  
+
   private static List<Provider> providers;
   private static Person person;
 
@@ -25,7 +25,7 @@ public class ProviderFinderTest {
     person = new Person(0L);
     Point2D.Double coordinate = new Point2D.Double(0, 0);
     person.attributes.put(Person.COORDINATE, coordinate);
-    
+
     providers = new ArrayList<Provider>();
     for (int i = 1; i <= 3; i += 1) {
       Provider provider = new Provider();

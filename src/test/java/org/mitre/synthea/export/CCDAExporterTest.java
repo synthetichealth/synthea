@@ -23,10 +23,10 @@ import org.mitre.synthea.world.agents.Person;
  * https://github.com/mdht/mdht-models
  */
 public class CCDAExporterTest {
-  
+
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   @Test
   public void testCCDAExport() throws Exception {
     TestHelper.loadTestProperties();

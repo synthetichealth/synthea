@@ -45,13 +45,13 @@ import org.mockito.Mockito;
  */
 public class FHIRR4ExporterTest {
   private boolean physStateEnabled;
-  
+
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   /**
    * Setup state for exporter test.
    */
@@ -61,7 +61,7 @@ public class FHIRR4ExporterTest {
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
   }
-  
+
   /**
    * Reset state after exporter test.
    */
@@ -69,7 +69,7 @@ public class FHIRR4ExporterTest {
   public void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
-  
+
   @Test
   public void testDecimalRounding() {
     Integer i = 123456;
@@ -104,7 +104,7 @@ public class FHIRR4ExporterTest {
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
-    
+
     generator.options.overflow = false;
 
     for (int i = 0; i < numberOfPeople; i++) {
@@ -199,7 +199,7 @@ public class FHIRR4ExporterTest {
     assertTrue("Validation of exported FHIR bundle failed: "
         + String.join("|", validationErrors), validationErrors.size() == 0);
   }
-  
+
   @Test
   public void testSampledDataExport() throws Exception {
 
@@ -233,26 +233,26 @@ public class FHIRR4ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State sampleObs = module.getState("SampledDataObservation");
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
-    
+
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Observation) {
         Observation obs = (Observation) entry.getResource();
@@ -263,7 +263,7 @@ public class FHIRR4ExporterTest {
       }
     }
   }
-  
+
   @Test
   public void testObservationAttachment() throws Exception {
 
@@ -297,30 +297,30 @@ public class FHIRR4ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State chartState = module.getState("ChartObservation");
     assertTrue(chartState.process(person, time));
     person.history.add(chartState);
-    
+
     State urlState = module.getState("UrlObservation");
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
-    
+
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();

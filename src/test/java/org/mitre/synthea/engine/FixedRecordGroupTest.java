@@ -27,7 +27,7 @@ public class FixedRecordGroupTest {
   @BeforeClass
   public static void setup() {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-    Config.set("generate.only_dead_patients", "false"); 
+    Config.set("generate.only_dead_patients", "false");
     Config.set("exporter.split_records", "true");
     Provider.clear();
     Payer.clear();

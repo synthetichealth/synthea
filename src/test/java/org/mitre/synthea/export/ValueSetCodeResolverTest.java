@@ -50,7 +50,7 @@ public class ValueSetCodeResolverTest {
 
   /**
    * Prepare for each test.
-   * 
+   *
    * @throws Exception
    *           on failure
    */

@@ -158,21 +158,21 @@ public class Immunizations {
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.
-   * 
+   *
    * @return Collection of all codes and concepts this module uses
    */
   @SuppressWarnings("rawtypes")
   public static Collection<Code> getAllCodes() {
     List<Map> rawCodes = (List<Map>) immunizationSchedule.values()
         .stream().map(m -> (Map)m.get("code")).collect(Collectors.toList());
-    
+
     List<Code> convertedCodes = new ArrayList<Code>(rawCodes.size());
-    
+
     for (Map m : rawCodes) {
       Code immCode = new Code(m.get("system").toString(),
-                              m.get("code").toString(), 
+                              m.get("code").toString(),
                               m.get("display").toString());
-      
+
       convertedCodes.add(immCode);
     }
 

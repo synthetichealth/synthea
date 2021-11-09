@@ -68,7 +68,7 @@ public class ProviderTest {
     Map<String, ArrayList<Clinician>> clinicianMap = provider.clinicianMap;
     Assert.assertNotNull(clinicianMap.get("GENERAL PRACTICE"));
   }
-  
+
   @Test
   public void testGenerateClinicianByState() {
     Provider.loadProviders(location, 1L);
@@ -79,7 +79,7 @@ public class ProviderTest {
     Map<String, ArrayList<Clinician>> clinicianMap = provider.clinicianMap;
     Assert.assertNotNull(clinicianMap.get("GENERAL PRACTICE"));
   }
-  
+
   @Test
   public void testAllFacilitiesHaveAnId() {
     Provider.loadProviders(location, 1L);
@@ -144,9 +144,9 @@ public class ProviderTest {
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.URGENTCARE, 0);
-    Assert.assertNotNull(provider); 
+    Assert.assertNotNull(provider);
   }
-  
+
   @Test
   public void testNearestInpatientInCity() {
     Provider.loadProviders(city, 1L);

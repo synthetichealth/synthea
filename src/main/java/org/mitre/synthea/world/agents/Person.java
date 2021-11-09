@@ -101,7 +101,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   private final Random random;
   public final long seed;
   public long populationSeed;
-  /** 
+  /**
    * Tracks the last time that the person was updated over a serialize/deserialize.
    */
   public long lastUpdated;
@@ -207,14 +207,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public long randLong() {
     return random.nextLong();
   }
-  
+
   /**
    * Return a random UUID.
    */
   public UUID randUUID() {
     return new UUID(randLong(), randLong());
   }
-  
+
   /**
    * Returns a person's age in Period form.
    */
@@ -238,20 +238,20 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public double ageInDecimalYears(long time) {
     Period agePeriod = age(time);
-    
+
     double years = agePeriod.getYears() + agePeriod.getMonths() / 12.0
         + agePeriod.getDays() / 365.2425;
-    
+
     if (years < 0) {
       years = 0;
     }
-    
+
     return years;
   }
 
   /**
    * Return the persons age in months at a given time.
-   * 
+   *
    * @param time The time when their age should be calculated.
    * @return age in months. Can never be less than zero, even if given a time
    *         before they were born.
@@ -266,7 +266,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Returns the persons age in years at the given time.
-   * 
+   *
    * @param time The time when their age should be calculated.
    * @return age in years. Can never be less than zero, even if given a time
    *         before they were born.
@@ -287,14 +287,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     Long died = (Long) attributes.get(Person.DEATHDATE);
     return (born && (died == null || died > time));
   }
-  
+
   /**
   * Get the expressed symptoms.
   */
   public Map<String, ExpressedSymptom> getExpressedSymptoms() {
     return symptoms;
   }
-  
+
   /**
   * Get the onsetonditionRecord.
   */
@@ -316,11 +316,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     return count;
   }
-  
+
   /** Updating the method for accounting of the time on which
-   * the symptom is set. 
+   * the symptom is set.
    */
-  public void setSymptom(String module, String cause, String type, 
+  public void setSymptom(String module, String cause, String type,
       long time, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
       symptoms.put(type, new ExpressedSymptom(type));
@@ -328,7 +328,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     ExpressedSymptom expressedSymptom = symptoms.get(type);
     expressedSymptom.onSet(module, cause, time, value, addressed);
   }
-  
+
   /**
    * Method for retrieving the last time a given symptom has been updated from a given module.
    */
@@ -340,9 +340,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     return result;
   }
-  
+
   /**
-   * Method for retrieving the value associated to a given symptom. 
+   * Method for retrieving the value associated to a given symptom.
    * This correspond to the maximum value across all potential causes.
    */
   public int getSymptom(String type) {
@@ -385,7 +385,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         if (value > maxValue) {
           maxValue = value;
           highestCause = cause;
-          highestType = type;                
+          highestType = type;
         }
       }
     }
@@ -438,7 +438,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public void setVitalSign(VitalSign vitalSign, double value) {
     if (!Double.isFinite(value)) {
       throw new IllegalArgumentException(String.format(
-              "Vital signs must have finite values - %s is invalid", 
+              "Vital signs must have finite values - %s is invalid",
               Double.valueOf(value).toString()));
     }
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
@@ -446,7 +446,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Records a person's death.
-   * 
+   *
    * @param time     the time of death.
    * @param cause    the cause of death.
    */
@@ -465,7 +465,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * The total number of all unaddressed symptom severities.
-   * 
+   *
    * @return total : sum of all the symptom severities. This number drives
    *         care-seeking behaviors.
    */
@@ -482,7 +482,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-   * Check for prior existence of specified state. 
+   * Check for prior existence of specified state.
    */
   public boolean hadPriorState(String name, String since, Long within) {
     if (history == null) {
@@ -516,7 +516,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Returns the current HealthRecord based on the provider. If the person has no more remaining
    * income, Uncovered HealthRecord is returned.
-   * 
+   *
    * @param provider the provider of the encounter
    * @param time the current time (To determine person's current income and payer)
    */
@@ -564,7 +564,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
     return moduleToCurrentEncounter.get(module.name);
   }
-  
+
   /**
    * Check if there are any current encounters.
    * @return true if there current encounters, false otherwise
@@ -714,7 +714,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns whether or not a person can afford a given payer.
    * If a person's income is greater than a year of montlhy premiums + deductible
    * then they can afford the insurance.
-   * 
+   *
    * @param payer the payer to check.
    */
   public boolean canAffordPayer(Payer payer) {
@@ -728,7 +728,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns whether the person's yearly expenses exceed their income. If they do,
    * then they will switch to No Insurance.
    * NOTE: This could result in person being kicked off Medicaid/Medicare.
-   * 
+   *
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
@@ -752,7 +752,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Checks if the person has paid their monthly premium. If not, the person pays
    * the premium to their current payer.
-   * 
+   *
    * @param time the time that the person checks to pay premium.
    */
   public void checkToPayMonthlyPremium(long time) {
@@ -782,7 +782,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Returns the person's QOL at the given time.
-   * 
+   *
    * @param year the year to get QOL data.
    */
   @SuppressWarnings("unchecked")
