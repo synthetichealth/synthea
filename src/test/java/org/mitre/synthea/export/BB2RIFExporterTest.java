@@ -107,26 +107,31 @@ public class BB2RIFExporterTest {
       });
     }
     
-    File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
-    assertTrue(inpatientFile.exists() && inpatientFile.isFile());
-    // TODO: more meaningful testing of contents (e.g. count of inpatient claims)
-
-    File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
-    assertTrue(outpatientFile.exists() && outpatientFile.isFile());
-    // TODO: more meaningful testing of contents (e.g. count of outpatient claims)
-
-    File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
-    assertTrue(carrierFile.exists() && carrierFile.isFile());
     // TODO: more meaningful testing of contents
-
     File beneficiaryHistoryFile = expectedExportFolder.toPath()
             .resolve("beneficiary_history.csv").toFile();
     assertTrue(beneficiaryHistoryFile.exists() && beneficiaryHistoryFile.isFile());
-    // TODO: more meaningful testing of contents
 
-    File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
-    assertTrue(dmeFile.exists() && dmeFile.isFile());
-    // TODO: more meaningful testing of contents
+
+    // Check that other expected files are present but only if the corresponding code mapping files
+    // are present, otherwise the files could be empty and in that case they aren't created.
+    BB2RIFExporter bb2Exporter = BB2RIFExporter.getInstance();
+
+    if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.hcpcsCodeMapper.hasMap()) {
+      // TODO: more meaningful testing of contents (e.g. count of claims)
+      File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
+      assertTrue(inpatientFile.exists() && inpatientFile.isFile());
+      File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
+      assertTrue(outpatientFile.exists() && outpatientFile.isFile());
+      File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
+      assertTrue(carrierFile.exists() && carrierFile.isFile());
+    }
+
+    if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
+      // TODO: more meaningful testing of contents
+      File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
+      assertTrue(dmeFile.exists() && dmeFile.isFile());
+    }
   }
 
   @Test
