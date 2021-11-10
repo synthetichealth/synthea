@@ -122,11 +122,11 @@ public class BB2RIFExporter {
   private final CLIA[] cliaLabNumbers;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
-  private CodeMapper conditionCodeMapper;
-  private CodeMapper medicationCodeMapper;
-  private CodeMapper drgCodeMapper;
-  private CodeMapper dmeCodeMapper;
-  private CodeMapper hcpcsCodeMapper;
+  CodeMapper conditionCodeMapper;
+  CodeMapper medicationCodeMapper;
+  CodeMapper drgCodeMapper;
+  CodeMapper dmeCodeMapper;
+  CodeMapper hcpcsCodeMapper;
   
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -2256,6 +2256,7 @@ public class BB2RIFExporter {
     private static boolean requireCodeMaps = Config.getAsBoolean(
             "exporter.bfd.require_code_maps", true);
     private HashMap<String, List<Map<String, String>>> map;
+    private boolean mapImported = false;
     
     /**
      * Create a new CodeMapper for the supplied JSON string.
@@ -2278,6 +2279,7 @@ public class BB2RIFExporter {
         Gson g = new Gson();
         Type type = new TypeToken<HashMap<String,List<Map<String, String>>>>(){}.getType();
         map = g.fromJson(json, type);
+        mapImported = true;
       } catch (JsonSyntaxException | IOException | IllegalArgumentException e) {
         if (requireCodeMaps) {
           throw new MissingResourceException("Unable to read code map file: " + jsonMap,
@@ -2299,6 +2301,14 @@ public class BB2RIFExporter {
         return false;
       }
       return map.containsKey(codeToMap);
+    }
+
+    /**
+     * Determines whether this mapper was successfully configured with a code map.
+     * @return true if configured, false otherwise.
+     */
+    public boolean hasMap() {
+      return mapImported;
     }
     
     /**
