@@ -836,7 +836,7 @@ public abstract class State implements Cloneable, Serializable {
             ClinicianSpecialty.GENERAL_PRACTICE, null);
         entry = encounter;
         if (codes != null) {
-          encounter.codes.addAll(codes);
+          encounter.mergeCodeList(codes);
         }
         person.setCurrentEncounter(module, encounter);
         encounter.name = this.name;
@@ -906,7 +906,7 @@ public abstract class State implements Cloneable, Serializable {
 
         // Copy over the characteristics from old medication to new medication
         medication.name = chronicMedication.name;
-        medication.codes.addAll(chronicMedication.codes);
+        medication.mergeCodeList(chronicMedication.codes);
         medication.reasons.addAll(chronicMedication.reasons);
         medication.prescriptionDetails = chronicMedication.prescriptionDetails;
         medication.administration = chronicMedication.administration;
@@ -1010,7 +1010,7 @@ public abstract class State implements Cloneable, Serializable {
         // create a temporary coded entry to use for reference in the attribute,
         // which will be replaced if the thing is diagnosed
         HealthRecord.Entry codedEntry = person.record.new Entry(time, codes.get(0).code);
-        codedEntry.codes.addAll(codes);
+        codedEntry.mergeCodeList(codes);
 
         person.attributes.put(assignToAttribute, codedEntry);
       }
@@ -1047,7 +1047,7 @@ public abstract class State implements Cloneable, Serializable {
       entry = person.record.conditionStart(time, primaryCode);
       entry.name = this.name;
       if (codes != null) {
-        entry.codes.addAll(codes);
+        entry.mergeCodeList(codes);
       }
       if (assignToAttribute != null) {
         person.attributes.put(assignToAttribute, entry);
@@ -1123,7 +1123,7 @@ public abstract class State implements Cloneable, Serializable {
       String primaryCode = codes.get(0).code;
       entry = person.record.allergyStart(time, primaryCode);
       entry.name = this.name;
-      entry.codes.addAll(codes);
+      entry.mergeCodeList(codes);
       HealthRecord.Allergy allergy = (HealthRecord.Allergy) entry;
       allergy.allergyType = allergyType;
       allergy.category = category;
@@ -1250,7 +1250,7 @@ public abstract class State implements Cloneable, Serializable {
       Medication medication = person.record.medicationStart(time, primaryCode, chronic);
       entry = medication;
       medication.name = this.name;
-      medication.codes.addAll(codes);
+      medication.mergeCodeList(codes);
 
       if (reason != null) {
         // "reason" is an attribute or stateName referencing a previous conditionOnset state
@@ -1354,7 +1354,7 @@ public abstract class State implements Cloneable, Serializable {
       CarePlan careplan = person.record.careplanStart(time, primaryCode);
       entry = careplan;
       careplan.name = this.name;
-      careplan.codes.addAll(codes);
+      careplan.mergeCodeList(codes);
 
       if (activities != null) {
         careplan.activities.addAll(activities);
@@ -1468,7 +1468,7 @@ public abstract class State implements Cloneable, Serializable {
       HealthRecord.Procedure procedure = person.record.procedure(time, primaryCode);
       entry = procedure;
       procedure.name = this.name;
-      procedure.codes.addAll(codes);
+      procedure.mergeCodeList(codes);
 
       if (reason != null) {
         // "reason" is an attribute or stateName referencing a previous conditionOnset state
@@ -1719,7 +1719,7 @@ public abstract class State implements Cloneable, Serializable {
       HealthRecord.Observation observation = person.record.observation(time, primaryCode, value);
       entry = observation;
       observation.name = this.name;
-      observation.codes.addAll(codes);
+      observation.mergeCodeList(codes);
       observation.category = category;
       observation.unit = unit;
 
@@ -1788,7 +1788,7 @@ public abstract class State implements Cloneable, Serializable {
           person.record.multiObservation(time, primaryCode, observations.size());
       entry = observation;
       observation.name = this.name;
-      observation.codes.addAll(codes);
+      observation.mergeCodeList(codes);
       observation.category = category;
 
       return true;
@@ -1812,7 +1812,7 @@ public abstract class State implements Cloneable, Serializable {
       Report report = person.record.report(time, primaryCode, observations.size());
       entry = report;
       report.name = this.name;
-      report.codes.addAll(codes);
+      report.mergeCodeList(codes);
 
       // increment number of labs by respective provider
       Provider provider;

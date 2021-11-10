@@ -169,6 +169,19 @@ public class HealthRecord implements Serializable {
     }
 
     /**
+     * Merges the passed in code list into the existing list of codes for this entry. If a code in
+     * otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.
+     * @param otherCodes codes to add to this entry
+     */
+    public void mergeCodeList(List<Code> otherCodes) {
+      otherCodes.forEach(oc -> {
+        if (! this.containsCode(oc.code, oc.system)) {
+          this.codes.add(oc);
+        }
+      });
+    }
+
+    /**
      * Converts the entry to a String.
      */
     @Override
