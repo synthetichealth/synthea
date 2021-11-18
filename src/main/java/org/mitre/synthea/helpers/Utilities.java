@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.mitre.synthea.engine.Logic;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
@@ -144,21 +145,11 @@ public class Utilities {
     return retVal;
   }
 
-  private static double timestepCache = Double.NaN;
-
-  private static double getTimestep() {
-    if (timestepCache == Double.NaN) {
-      timestepCache = Double.parseDouble(Config.get("generate.timestep"));
-    }
-
-    return timestepCache;
-  }
-
   /**
    * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
-    double currTimeStepInMS = getTimestep();
+    double currTimeStepInMS = Module.TIMESTEP;
 
     return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
   }

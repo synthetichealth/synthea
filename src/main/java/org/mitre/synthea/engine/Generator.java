@@ -206,7 +206,7 @@ public class Generator implements RandomNumberGenerator {
     }
 
     this.random = new Random(options.seed);
-    this.timestep = Long.parseLong(Config.get("generate.timestep"));
+    this.timestep = Module.TIMESTEP;
     this.stop = System.currentTimeMillis();
     this.referenceTime = options.referenceTime;
 

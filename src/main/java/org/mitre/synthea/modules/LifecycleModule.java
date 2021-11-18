@@ -602,15 +602,6 @@ public final class LifecycleModule extends Module {
   private static final double[] RESPIRATION_RATE_NORMAL =
       BiometricsConfig.doubles("respiratory.respiration_rate.normal");
 
-  private static long timestepCache = Long.MIN_VALUE;
-
-  private static long getTimestep() {
-    if (timestepCache == Long.MIN_VALUE) {
-      timestepCache = Long.parseLong(Config.get("generate.timestep"));
-    }
-    return timestepCache;
-  }
-
   /**
    * Calculate this person's vital signs,
    * based on their conditions, medications, body composition, etc.
@@ -712,7 +703,7 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.CARBON_DIOXIDE, person.rand(CO2_RANGE));
     person.setVitalSign(VitalSign.SODIUM, person.rand(SODIUM_RANGE));
 
-    long timestep = getTimestep();
+    long timestep = Module.TIMESTEP;
     double heartStart = person.rand(HEART_RATE_NORMAL);
     double heartEnd = person.rand(HEART_RATE_NORMAL);
     person.setVitalSign(VitalSign.HEART_RATE,

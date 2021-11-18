@@ -63,6 +63,8 @@ public class Module implements Cloneable, Serializable {
       .mappingProvider(new GsonMappingProvider())
       .build();
 
+  public static final long TIMESTEP = Long.parseLong(Config.get("generate.timestep"));
+
   private static final Map<String, ModuleSupplier> modules = loadModules();
 
   private static Map<String, ModuleSupplier> loadModules() {
