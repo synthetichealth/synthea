@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
@@ -148,7 +149,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     /* initialized the onsetConditions field */
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
-    chronicMedications = new HashMap<String, HealthRecord.Medication>();
+    chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
     hasMultipleRecords =
         Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
