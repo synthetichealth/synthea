@@ -1,0 +1,231 @@
+{
+  "name": "hiv_infection",
+  "remarks": [
+    "This module only determines infection and mortality from HIV. Clinical treatment is in a separate module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Infection Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Infection Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Infection Check Later Years",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1993
+          }
+        },
+        {
+          "transition": "Infection Check Early Years",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1979,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Wait_Until_Next_Infection_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Infection Check"
+    },
+    "Infection Check Early Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Infected_Early_Years",
+          "default_probability": 0.0001565,
+          "lookup_table_name": "hiv_infection_early.csv"
+        },
+        {
+          "transition": "Wait_Until_Next_Infection_Check",
+          "default_probability": 0.9998435,
+          "lookup_table_name": "hiv_infection_early.csv"
+        }
+      ]
+    },
+    "Infection Check Later Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Infected_Later_Years",
+          "default_probability": 0.000097,
+          "lookup_table_name": "hiv_infection_later.csv"
+        },
+        {
+          "transition": "Wait_Until_Next_Infection_Check",
+          "default_probability": 0.999903,
+          "lookup_table_name": "hiv_infection_later.csv"
+        }
+      ]
+    },
+    "Infected_Early_Years": {
+      "type": "SetAttribute",
+      "attribute": "hiv_infection",
+      "direct_transition": "Diagnosis Early Years",
+      "value": true
+    },
+    "Infected_Later_Years": {
+      "type": "SetAttribute",
+      "attribute": "hiv_infection",
+      "direct_transition": "Diagnosis Later Years",
+      "value": true
+    },
+    "Mortality Check Later Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Death",
+          "default_probability": 0.0334,
+          "lookup_table_name": "hiv_mortality_later.csv"
+        },
+        {
+          "transition": "Living_with_Diagnosis_Later_Years",
+          "default_probability": 0.9666,
+          "lookup_table_name": "hiv_mortality_later.csv"
+        }
+      ]
+    },
+    "Diagnosis Later Years": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 86406008,
+          "display": "Human immunodeficiency virus infection (disorder)"
+        }
+      ],
+      "direct_transition": "Mortality Check Later Years"
+    },
+    "Living_with_Diagnosis_Later_Years": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Mortality Check Later Years"
+    },
+    "Diagnosis Early Years": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 62479008,
+          "display": "Acquired immune deficiency syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "Mortality Check"
+    },
+    "Mortality Check Early Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Death",
+          "default_probability": 0.0705,
+          "lookup_table_name": "hiv_mortality_early.csv"
+        },
+        {
+          "transition": "Living_with_Diagnosis_Early_Years",
+          "default_probability": 0.9295,
+          "lookup_table_name": "hiv_mortality_early.csv"
+        }
+      ]
+    },
+    "Mortality Check Very Early Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Death_within_six_months",
+          "default_probability": 0.2055,
+          "lookup_table_name": "hiv_mortality_very_early.csv"
+        },
+        {
+          "transition": "Living_with_Diagnosis_Six_Months",
+          "default_probability": 0.7945,
+          "lookup_table_name": "hiv_mortality_very_early.csv"
+        }
+      ]
+    },
+    "Mortality Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Mortality Check Early Years",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1992
+          }
+        },
+        {
+          "transition": "Mortality Check Very Early Years"
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 0,
+        "high": 364,
+        "unit": "days"
+      },
+      "referenced_by_attribute": "hiv_diagnosis"
+    },
+    "Living_with_Diagnosis_Six_Months": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 6
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Mortality Check"
+    },
+    "Living_with_Diagnosis_Early_Years": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Mortality Check"
+    },
+    "Death_within_six_months": {
+      "type": "Death",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "hiv_diagnosis"
+    }
+  },
+  "gmf_version": 2
+}
