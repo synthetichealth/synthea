@@ -301,7 +301,7 @@ public class Module implements Cloneable, Serializable {
       states.put(entry.getKey(), state);
     }
   }
-  
+
   /**
    * Clone this module. Never provide the original.
    */
@@ -311,12 +311,12 @@ public class Module implements Cloneable, Serializable {
     clone.submodule = this.submodule;
     clone.remarks = this.remarks;
     if (this.states != null) {
-	  clone.states = this.states.entrySet().stream()
-			  .collect(Collectors.toMap(
-					  e -> e.getKey(),
-					  e -> e.getValue().clone(),
-					  (oldValue, newValue) -> newValue,
-					  ConcurrentHashMap::new));
+      clone.states = this.states.entrySet().stream()
+        .collect(Collectors.toMap(
+            e -> e.getKey(),
+            e -> e.getValue().clone(),
+            (oldValue, newValue) -> newValue,
+            ConcurrentHashMap::new));
     }
     return clone;
   }
@@ -425,7 +425,7 @@ public class Module implements Cloneable, Serializable {
    */
   public static class ModuleSupplier implements Supplier<Module> {
 
-	private final Object getLock = new Object();
+    private final Object getLock = new Object();
 
     public final boolean core;
     public final boolean submodule;
@@ -467,7 +467,7 @@ public class Module implements Cloneable, Serializable {
     @Override
     public Module get() {
       if (!loaded) {
-		synchronized(getLock) {
+        synchronized (getLock) {
           if (!loaded) {
             try {
               module = loader.call();
@@ -478,8 +478,8 @@ public class Module implements Cloneable, Serializable {
               loaded = true;
               loader = null;
             }
-		  }
-		}
+          }
+        }
       }
       if (fault != null) {
         throw new RuntimeException(fault);

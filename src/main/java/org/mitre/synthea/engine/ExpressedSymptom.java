@@ -114,7 +114,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      * Get the current value of the symptom.
      */
     public Integer getCurrentValue() {
-	  final SymptomInfo timeInfo = timeInfos.get(lastUpdateTime);
+      final SymptomInfo timeInfo = timeInfos.get(lastUpdateTime);
       if (timeInfo != null) {
         return timeInfo.getValue();
       }
@@ -134,7 +134,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   private String name;
 
   public ExpressedSymptom(String name) {
-    this.name = name;  
+    this.name = name;
     sources = new HashMap<String, SymptomSource>();
   }
 
@@ -167,12 +167,12 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public int getSymptom() {
     int max = 0;
     for (SymptomSource module : sources.values()) {
-      if(!module.isResolved()) {
+      if (!module.isResolved()) {
         Integer value = module.getCurrentValue();
         if (value != null && value.intValue() > max) {
           max = value.intValue();
         }
-	  }
+      }
     }
     return max;
   }

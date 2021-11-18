@@ -603,12 +603,12 @@ public final class LifecycleModule extends Module {
       BiometricsConfig.doubles("respiratory.respiration_rate.normal");
 
   private static long timestepCache = Long.MIN_VALUE;
-  
+
   private static long getTimestep() {
-	if(timestepCache == Long.MIN_VALUE)
+    if (timestepCache == Long.MIN_VALUE) {
       timestepCache = Long.parseLong(Config.get("generate.timestep"));
-	
-	return timestepCache;
+    }
+    return timestepCache;
   }
 
   /**

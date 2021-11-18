@@ -1753,8 +1753,8 @@ public abstract class State implements Cloneable, Serializable {
       // (otherwise as this gets passed around, the same objects are used for different patients
       // which causes weird and unexpected results)
       List<Observation> cloneObs = observations.stream()
-			  .map(Observation::clone)
-			  .collect(Collectors.toCollection(ArrayList::new));
+          .map(Observation::clone)
+          .collect(Collectors.toCollection(ArrayList::new));
       clone.observations = cloneObs;
 
       return clone;

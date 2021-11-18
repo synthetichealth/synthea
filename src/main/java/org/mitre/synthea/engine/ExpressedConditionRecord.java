@@ -384,7 +384,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
   public Map<Long, List<ConditionWithSymptoms>> getConditionSymptoms() {
     Map<String, ExpressedSymptom> symptoms = person.getExpressedSymptoms();
     Map<Long, List<ConditionWithSymptoms>> result;
-    result = new HashMap<Long, List<ConditionWithSymptoms>>();    
+    result = new HashMap<Long, List<ConditionWithSymptoms>>();
     for (String module : sources.keySet()) {
       ModuleConditions moduleConditions = sources.get(module);
       for (String condition : moduleConditions.getOnsetConditions().keySet()) {

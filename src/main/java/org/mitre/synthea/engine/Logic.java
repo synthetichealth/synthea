@@ -300,12 +300,13 @@ public abstract class Logic implements Serializable {
   public static class And extends GroupedCondition {
     @Override
     public boolean test(Person person, long time) {
-	  for(Logic condition: conditions) {
-		  if (!condition.test(person, time))
-			  return false;
-	  }
+      for (Logic condition: conditions) {
+        if (!condition.test(person, time)) {
+          return false;
+        }
+      }
 
-	  return true;
+      return true;
     }
   }
 

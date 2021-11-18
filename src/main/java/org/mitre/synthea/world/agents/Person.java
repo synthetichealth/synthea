@@ -192,29 +192,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return random.nextInt(bound);
   }
 
-  private boolean haveNextNextGaussian = false;
-  private double nextNextGaussian;
-  
   /**
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
-	// See Knuth, ACP, Section 3.4.1 Algorithm C.
-	if (haveNextNextGaussian) {
-		haveNextNextGaussian = false;
-		return nextNextGaussian;
-	} else {
-		double v1, v2, s;
-		do {
-			v1 = 2 * random.nextDouble() - 1; // between -1 and 1
-			v2 = 2 * random.nextDouble() - 1; // between -1 and 1
-			s = v1 * v1 + v2 * v2;
-		} while (s >= 1 || s == 0);
-		double multiplier = Math.sqrt(-2 * Math.log(s)/s);
-		nextNextGaussian = v2 * multiplier;
-		haveNextNextGaussian = true;
-		return v1 * multiplier;
-	}
+    return random.nextGaussian();
   }
 
   /**
@@ -231,15 +213,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return new UUID(randLong(), randLong());
   }
 
-  /**
-   * Returns a person's age in Period form.
-   */
   private Period ageCache = null;
   private long ageCacheTime = Long.MIN_VALUE;
 
+  /**
+   * Returns a person's age in Period form.
+   */
   public Period age(long time) {
-	if(ageCacheTime != time) {
-	  ageCacheTime = time;
+    if (ageCacheTime != time) {
+      ageCacheTime = time;
       ageCache = Period.ZERO;
 
       if (attributes.containsKey(BIRTHDATE)) {
@@ -249,7 +231,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         ageCache = Period.between(birthdate, now);
       }
     }
-	  
+
     return ageCache;
   }
 
@@ -302,29 +284,29 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return years;
   }
 
-	private Boolean aliveCacheValue = null;
-	private long aliveCacheTime = Long.MIN_VALUE;
+  private Boolean aliveCacheValue = null;
+  private long aliveCacheTime = Long.MIN_VALUE;
 
   /**
    * Returns whether a person is alive at the given time.
    */
-	public boolean alive(long time) {
-		if (aliveCacheTime != time || null == aliveCacheValue) {
-			aliveCacheTime = time;
-			aliveCacheValue = calcAlive(time);
-		}
-		return aliveCacheValue.booleanValue();
-	}
+  public boolean alive(long time) {
+    if (aliveCacheTime != time || null == aliveCacheValue) {
+      aliveCacheTime = time;
+      aliveCacheValue = calcAlive(time);
+    }
+    return aliveCacheValue.booleanValue();
+  }
 
-	private boolean calcAlive(long time) {
-		boolean born = attributes.containsKey(Person.BIRTHDATE);
-		if (born) {
-			Long died = (Long) attributes.get(Person.DEATHDATE);
-			return (died == null || died > time);
-		}
-		return false;
-	}
-	  
+  private boolean calcAlive(long time) {
+    boolean born = attributes.containsKey(Person.BIRTHDATE);
+    if (born) {
+      Long died = (Long) attributes.get(Person.DEATHDATE);
+      return (died == null || died > time);
+    }
+    return false;
+  }
+
   /**
   * Get the expressed symptoms.
   */
@@ -384,8 +366,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public int getSymptom(String type) {
     int max = 0;
-	ExpressedSymptom expressedSymptom = symptoms.get(type);
-	if(null != expressedSymptom){
+    ExpressedSymptom expressedSymptom = symptoms.get(type);
+    if (null != expressedSymptom) {
       max = expressedSymptom.getSymptom();
     }
     return max;
@@ -455,9 +437,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         decimalPlaces = 2;
     }
 
-	try {
-	  final double factor = Math.pow(10, decimalPlaces);
-	  value = Math.floor(((value * factor * 10) + 5) / 10) / factor;
+    try {
+      final double factor = Math.pow(10, decimalPlaces);
+      value = Math.floor(((value * factor * 10) + 5) / 10) / factor;
     } catch (NumberFormatException e) {
       // Ignore, value was NaN or infinity.
     }

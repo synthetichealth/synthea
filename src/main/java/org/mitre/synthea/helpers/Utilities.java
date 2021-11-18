@@ -26,12 +26,12 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 public class Utilities {
 
   private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
-  
-  private static final ThreadLocal<Calendar> threadLocalCalendar = new ThreadLocal<Calendar>(){
-	  @Override
-	  protected Calendar initialValue() {
-		  return Calendar.getInstance(UTC_TIME_ZONE);
-	  }
+
+  private static final ThreadLocal<Calendar> threadLocalCalendar = new ThreadLocal<Calendar>() {
+    @Override
+    protected Calendar initialValue() {
+      return Calendar.getInstance(UTC_TIME_ZONE);
+    }
   };
 
   /**
@@ -145,12 +145,13 @@ public class Utilities {
   }
 
   private static double timestepCache = Double.NaN;
-  
+
   private static double getTimestep() {
-	if(timestepCache == Double.NaN)
+    if (timestepCache == Double.NaN) {
       timestepCache = Double.parseDouble(Config.get("generate.timestep"));
-	
-	return timestepCache;
+    }
+
+    return timestepCache;
   }
 
   /**
