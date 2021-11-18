@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -13,15 +13,15 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderTest {
 
-  private static List<Provider> providers;
-  private static Person person;
+  private List<Provider> providers;
+  private Person person;
 
   /**
    * Setup the unit tests with a single person/patient and a list of
    * three providers.
    */
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     person = new Person(0L);
     Point2D.Double coordinate = new Point2D.Double(0, 0);
     person.attributes.put(Person.COORDINATE, coordinate);
@@ -43,6 +43,32 @@ public class ProviderFinderTest {
     Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("1", provider.id);
+  }
+
+  @Test
+  public void testVeteranNearest() {
+    ProviderFinderNearest finder = new ProviderFinderNearest();
+    // Making the second facility a VA facility
+    providers.get(1).type = "VA Facility";
+    // Making the test person a veteran, so they will prefer the closest VA facility in a
+    // non-emergency situation
+    person.attributes.put(Person.VETERAN, "Civil War");
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Assert.assertNotNull(provider);
+    Assert.assertEquals("2", provider.id);
+  }
+
+  @Test
+  public void testNonEligibleIHSNearest() {
+    ProviderFinderNearest finder = new ProviderFinderNearest();
+    // Making the first facility an IHS facility
+    providers.get(0).type = "IHS Facility";
+    // Setting the race to white for a test person so that they will not go to an IHS facility in a
+    // non-emergency situation
+    person.attributes.put(Person.RACE, "white");
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Assert.assertNotNull(provider);
+    Assert.assertEquals("2", provider.id);
   }
 
   @Test

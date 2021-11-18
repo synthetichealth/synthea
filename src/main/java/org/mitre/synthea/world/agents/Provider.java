@@ -219,12 +219,20 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public boolean accepts(Person person, long time) {
     // for now assume every provider accepts every patient
-    // UNLESS it's a VA facility and the person is not a veteran
+    // UNLESS it's a VA facility and the person is not a veteran or
+    // it's an IHS Facility and only accepts people with a race set to Native American
     // eventually we may want to expand this (ex. capacity?)
-    if ("VA Facility".equals(this.type) && !person.attributes.containsKey("veteran")) {
-      return false;
+    if (this.type == null) {
+      return true;
     }
-    return true;
+    switch (this.type) {
+      case "VA Facility":
+        return person.attributes.containsKey(Person.VETERAN);
+      case "IHS Facility":
+        return "native".equals(person.attributes.get(Person.RACE));
+      default:
+        return true;
+    }
   }
 
   /**
@@ -318,6 +326,11 @@ public class Provider implements QuadTreeElement, Serializable {
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, servicesProvided, true, clinicianSeed);
 
+        String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
+        if (ihsHospitalFile != null && ihsHospitalFile.length() > 0) {
+          loadProviders(location, ihsHospitalFile, servicesProvided, true, clinicianSeed);
+        }
+
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, servicesProvided, true, clinicianSeed);
@@ -326,6 +339,10 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, servicesProvided, false, clinicianSeed);
+        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
+        if (ihsPCFile != null && ihsPCFile.length() > 0) {
+          loadProviders(location, ihsPCFile, servicesProvided, true, clinicianSeed);
+        }
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
