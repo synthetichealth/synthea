@@ -782,15 +782,20 @@ public class BB2RIFExporter {
               locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
       String field = null;
+      String patientStatus = null;
       if (encounter.ended) {
         field = "1"; // TODO 2=transfer if the next encounter is also inpatient
+        patientStatus = "A"; // discharged
       } else {
         field = "30"; // the patient is still here
+        patientStatus = "C"; // still a patient
       }
       if (!person.alive(encounter.stop)) {
         field = "20"; // the patient died before the encounter ended
+        patientStatus = "B"; // died
       }
       fieldValues.put(INPATIENT.PTNT_DSCHRG_STUS_CD, field);
+      fieldValues.put(INPATIENT.NCH_PTNT_STATUS_IND_CD, patientStatus);
       fieldValues.put(INPATIENT.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (isEmergency) {
@@ -1074,6 +1079,26 @@ public class BB2RIFExporter {
         int lineNum = 1;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
+          String hcpcsCode = null;
+          if (lineItem.entry instanceof HealthRecord.Procedure) {
+            for (HealthRecord.Code code : lineItem.entry.codes) {
+              if (hcpcsCodeMapper.canMap(code.code)) {
+                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                break; // take the first mappable code for each procedure
+              }
+            }
+          } else if (lineItem.entry instanceof HealthRecord.Medication) {
+            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+            if (med.administration) {
+              hcpcsCode = "T1502";  // Administration of medication
+            }
+          }
+          // TBD: decide whether line item skip logic is needed here and in other files
+          // TBD: affects ~80% of carrier claim lines, so left out for now
+          // if (hcpcsCode == null) {
+          //   continue; // skip this line item
+          // }
+          fieldValues.put(CARRIER.HCPCS_CD, hcpcsCode);
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
@@ -1113,6 +1138,8 @@ public class BB2RIFExporter {
                   String.format("%.2f", encounter.claim.getCoveredCost()));
           fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
                   String.format("%.2f", encounter.claim.getPatientCost()));
+          // 99241: "Office consultation for a new or established patient"
+          fieldValues.put(CARRIER.HCPCS_CD, "99241");
           rifWriters.writeValues(CARRIER.class, fieldValues);
         }
       }
@@ -1639,6 +1666,7 @@ public class BB2RIFExporter {
       fieldValues.put(HHA.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(HHA.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(HHA.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HHA.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(HHA.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(HHA.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
@@ -1972,6 +2000,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(SNF.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(SNF.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(SNF.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(SNF.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
@@ -2034,7 +2063,34 @@ public class BB2RIFExporter {
           String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(SNF.PRNCPAL_DGNS_CD, icdCode);
           fieldValues.put(SNF.ADMTG_DGNS_CD, icdCode);
+          if (drgCodeMapper.canMap(icdCode)) {
+            fieldValues.put(SNF.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
+          }
         }
+      }
+
+      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+      // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
+      String dischargeStatus = null;
+      String patientStatus = null;
+      String dischargeDate = null;
+      if (encounter.ended) {
+        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+        patientStatus = "A"; // discharged
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+      } else {
+        dischargeStatus = "30"; // the patient is still here
+        patientStatus = "C"; // still a patient
+      }
+      if (!person.alive(encounter.stop)) {
+        dischargeStatus = "20"; // the patient died before the encounter ended
+        patientStatus = "B"; // died
+        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+      }
+      fieldValues.put(SNF.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+      fieldValues.put(SNF.NCH_PTNT_STATUS_IND_CD, patientStatus);
+      if (dischargeDate != null) {
+        fieldValues.put(SNF.NCH_BENE_DSCHRG_DT, dischargeDate);
       }
 
       // Use the active condition diagnoses to enter mapped values
