@@ -105,6 +105,7 @@ public class LogicTest {
     LocalDateTime bday = now.minus(age, ChronoUnit.YEARS);
     long birthdate = bday.toInstant(ZoneOffset.UTC).toEpochMilli();
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.ageCache = null;
   }
 
   @Test

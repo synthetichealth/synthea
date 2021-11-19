@@ -252,7 +252,7 @@ public final class LifecycleModule extends Module {
   private static boolean age(Person person, long time) {
     int prevAge = (int) person.attributes.get(AGE);
     int prevAgeMos = (int) person.attributes.get(AGE_MONTHS);
-
+    person.ageCache = null;
     int newAge = person.ageInYears(time);
     int newAgeMos = person.ageInMonths(time);
     person.attributes.put(AGE, newAge);

@@ -214,14 +214,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return new UUID(randLong(), randLong());
   }
 
-  private Period ageCache = null;
+  public Period ageCache = null;
   private long ageCacheTime = Long.MIN_VALUE;
 
   /**
    * Returns a person's age in Period form.
    */
   public Period age(long time) {
-    if (ageCacheTime != time) {
+    if (ageCacheTime != time || ageCache == null) {
       ageCacheTime = time;
       ageCache = Period.ZERO;
 
@@ -479,6 +479,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         attributes.put(CAUSE_OF_DEATH, cause);
       }
       record.death = deathTime;
+      this.aliveCacheTime = Long.MIN_VALUE;
+      this.aliveCacheValue = null;
     }
   }
 
