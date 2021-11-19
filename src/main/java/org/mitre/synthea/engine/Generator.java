@@ -324,7 +324,9 @@ public class Generator implements RandomNumberGenerator {
       Config.set("generate.append_numbers_to_person_names", "false");
     }
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(8);
+    int numThreads = Integer.parseInt(Config.get("generate.cpu_threads", "8"));
+
+    ExecutorService threadPool = Executors.newFixedThreadPool(numThreads);
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;
