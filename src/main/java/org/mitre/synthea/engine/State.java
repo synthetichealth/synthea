@@ -1372,7 +1372,7 @@ public abstract class State implements Cloneable, Serializable {
           // the name of the ConditionOnset state (aka "reason")
           for (Entry entry : person.record.present.values()) {
             if (reason.equals(entry.name)) {
-              careplan.reasons.addAll(entry.codes);
+              careplan.mergeReasonList(entry.codes);
             }
           }
         }
