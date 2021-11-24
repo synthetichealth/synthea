@@ -8,9 +8,9 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -147,7 +147,10 @@ public class ModuleOverrides {
       return;
     }
 
-    try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
+    try {
+      String moduleRelativePath = modulesPath.getParent().relativize(modulePath).toString();
+      JsonReader reader = new JsonReader(new StringReader(
+               Utilities.readResource(moduleRelativePath)));
       JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
 
       String lineStart = moduleFilename + "\\:\\:$";

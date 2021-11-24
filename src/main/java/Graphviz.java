@@ -16,12 +16,10 @@ import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -42,7 +41,7 @@ public class Graphviz {
    *     the default modules will be loaded using the ClassLoader.
    * @throws URISyntaxException on failure to load modules.
    */
-  public static void main(String[] args) throws URISyntaxException {
+  public static void main(String[] args) throws URISyntaxException, IOException {
     File folder = Exporter.getOutputFolder("graphviz", null);
 
     Path inputPath = null;
@@ -50,8 +49,7 @@ public class Graphviz {
       File file = new File(args[0]);
       inputPath = file.toPath();
     } else {
-      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-      inputPath = Paths.get(modulesFolder.toURI());
+      inputPath = Module.getModulesPath();
     }
 
     System.out.println("Rendering graphs to `" + folder.getAbsolutePath() + "`...");
@@ -81,10 +79,10 @@ public class Graphviz {
 
   private static JsonObject loadFile(Path path, Path modulesFolder) throws IOException {
     System.out.format("Loading %s\n", path.toString());
-    FileReader fileReader = new FileReader(path.toString());
-    JsonReader reader = new JsonReader(fileReader);
+    String moduleRelativePath = modulesFolder.getParent().relativize(path).toString();
+    JsonReader reader = new JsonReader(new StringReader(
+             Utilities.readResource(moduleRelativePath)));
     JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-    fileReader.close();
     reader.close();
     return object;
   }
