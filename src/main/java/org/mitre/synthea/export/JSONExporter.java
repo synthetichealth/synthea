@@ -101,7 +101,9 @@ public class JSONExporter {
     public JsonElement serialize(State src, Type typeOfSrc, JsonSerializationContext context) {
       JsonObject stateOut = new JsonObject();
       stateOut.add("state_name", new JsonPrimitive(src.name));
-      stateOut.add("entered", new JsonPrimitive(src.entered));
+      if (src.entered != null) {
+        stateOut.add("entered", new JsonPrimitive(src.entered));
+      }
       if (src.exited != null) {
         stateOut.add("exited", new JsonPrimitive(src.exited));
       }

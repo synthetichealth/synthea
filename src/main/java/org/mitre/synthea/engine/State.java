@@ -54,7 +54,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.simulator.math.odes.MultiTable;
 
 public abstract class State implements Cloneable, Serializable {
-  public transient Module module;
+  public Module module;
   public String name;
   public Long entered;
   public Entry entry;
