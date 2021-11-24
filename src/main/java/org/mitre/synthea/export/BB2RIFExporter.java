@@ -770,6 +770,7 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(INPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -1556,6 +1557,7 @@ public class BB2RIFExporter {
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(DME.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(DME.PRVDR_NPI, encounter.provider.npi);
+      fieldValues.put(DME.RFR_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(DME.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
@@ -2007,6 +2009,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.PRVDR_NUM, encounter.provider.id);
       fieldValues.put(SNF.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(SNF.AT_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(SNF.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(SNF.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       
       fieldValues.put(SNF.CLM_PMT_AMT,
