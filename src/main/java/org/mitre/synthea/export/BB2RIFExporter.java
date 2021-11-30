@@ -931,6 +931,7 @@ public class BB2RIFExporter {
 
           fieldValues.put(INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
           fieldValues.put(INPATIENT.HCPCS_CD, hcpcsCode);
+          fieldValues.put(INPATIENT.REV_CNTR_UNIT_CNT, "" + Integer.max(1, days));
           fieldValues.put(INPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
           fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
@@ -1569,6 +1570,9 @@ public class BB2RIFExporter {
               locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
       fieldValues.put(DME.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(DME.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(DME.LINE_SRVC_CNT, "" + encounter.claim.items.size());
+      fieldValues.put(DME.CLM_PMT_AMT,
+          String.format("%.2f", encounter.claim.getCoveredCost()));
 
       // OPTIONAL
       if (encounter.reason != null) {
@@ -1712,6 +1716,18 @@ public class BB2RIFExporter {
           fieldValues.put(HHA.PRNCPAL_DGNS_CD, icdCode);
         }
       }
+
+      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+      String dischargeStatus = null;
+      if (encounter.ended) {
+        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+      } else {
+        dischargeStatus = "30"; // the patient is still here
+      }
+      if (!person.alive(encounter.stop)) {
+        dischargeStatus = "20"; // the patient died before the encounter ended
+      }
+      fieldValues.put(HHA.PTNT_DSCHRG_STUS_CD, dischargeStatus);
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
@@ -1873,6 +1889,8 @@ public class BB2RIFExporter {
           String.format("%.2f", encounter.claim.getPatientCost()));
       fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
+      fieldValues.put(HOSPICE.REV_CNTR_PRVDR_PMT_AMT,
+              String.format("%.2f", encounter.claim.getCoveredCost()));
 
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
