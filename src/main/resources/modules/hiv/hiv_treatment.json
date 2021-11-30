@@ -1,0 +1,182 @@
+{
+  "name": "hiv_treatment",
+  "remarks": [
+    "Placeholder."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait"
+    },
+    "Wait": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "hiv_diagnosis",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Check Treatment"
+    },
+    "Baseline Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Set Baseline"
+    },
+    "Check Treatment": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Continuous_ART",
+          "default_probability": 0.645,
+          "lookup_table_name": "hiv_treatment.csv"
+        },
+        {
+          "transition": "Non_Continuous_ART",
+          "default_probability": 0.355,
+          "lookup_table_name": "hiv_treatment.csv"
+        }
+      ]
+    },
+    "Set Baseline": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_baseline",
+      "direct_transition": "End Baseline Encounter"
+    },
+    "End Baseline Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Short Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Long Delay"
+        }
+      ]
+    },
+    "Non_Continuous_ART": {
+      "type": "SetAttribute",
+      "attribute": "hiv_continuous_art",
+      "value": false,
+      "direct_transition": "Baseline Encounter"
+    },
+    "Continuous_ART": {
+      "type": "SetAttribute",
+      "attribute": "hiv_continuous_art",
+      "direct_transition": "Baseline Encounter",
+      "value": true
+    },
+    "Short Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 6,
+          "low": 3
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Treatment Encounter"
+    },
+    "Long Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 24,
+          "low": 12
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Treatment Encounter"
+    },
+    "Treatment Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "CD4_Check"
+    },
+    "CD4_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CD4_Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1993,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Medication_Submodule"
+        }
+      ]
+    },
+    "CD4_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_cd4",
+      "conditional_transition": [
+        {
+          "transition": "HIV_Viral_Load_Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1996,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Medication_Submodule"
+        }
+      ]
+    },
+    "HIV_Viral_Load_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_viral_load",
+      "direct_transition": "Medication_Submodule"
+    },
+    "Medication_Submodule": {
+      "type": "Simple",
+      "direct_transition": "End Treatment Encounter"
+    },
+    "End Treatment Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Short Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Long Delay"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

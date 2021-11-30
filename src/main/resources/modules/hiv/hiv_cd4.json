@@ -1,0 +1,1623 @@
+{
+  "name": "hiv_cd4",
+  "remarks": [
+    "Set and update CD4 levels.",
+    "",
+    "The notion of \"CD4 Group\" is an artificial construct to bin patients into different baseline levels.",
+    "",
+    "Group A == <100 CD4 T-Lymphocyte Count, Cell/microL",
+    "Group B == 100-199",
+    "Group C == 200-299",
+    "Group D == 300-399",
+    "Group E == 400-499",
+    "Group F == >= 500"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Age"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Group": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check AIDS",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Check Treatment"
+        }
+      ]
+    },
+    "Set CD4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_A",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "==",
+            "value": "A"
+          }
+        },
+        {
+          "transition": "Set_Group_B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "==",
+            "value": "B"
+          }
+        },
+        {
+          "transition": "Set_Group_C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "==",
+            "value": "C"
+          }
+        },
+        {
+          "transition": "Set_Group_D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "==",
+            "value": "D"
+          }
+        },
+        {
+          "transition": "Set_Group_E",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4_group",
+            "operator": "==",
+            "value": "E"
+          }
+        },
+        {
+          "transition": "Set_Group_F"
+        }
+      ]
+    },
+    "Set Group": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "stage_1",
+          "default_probability": 0.27,
+          "lookup_table_name": "hiv_stage.csv"
+        },
+        {
+          "transition": "stage_2",
+          "default_probability": 0.38,
+          "lookup_table_name": "hiv_stage.csv"
+        },
+        {
+          "transition": "stage_3",
+          "default_probability": 0.35,
+          "lookup_table_name": "hiv_stage.csv"
+        }
+      ]
+    },
+    "stage_1": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "direct_transition": "Baseline",
+      "value": "F"
+    },
+    "stage_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Group_C",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Group_D",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Group_E",
+          "distribution": 0.34
+        }
+      ]
+    },
+    "stage_3": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Group_A",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Group_B",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Group_C": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "direct_transition": "Baseline",
+      "value": "C"
+    },
+    "Group_D": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "direct_transition": "Baseline",
+      "value": "D"
+    },
+    "Group_E": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "direct_transition": "Baseline",
+      "value": "E"
+    },
+    "Group_A": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "value": "A",
+      "direct_transition": "Baseline"
+    },
+    "Group_B": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4_group",
+      "value": "B",
+      "direct_transition": "Baseline"
+    },
+    "Check Age": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check Group",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 13,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Set_Group_A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_A_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_A_48"
+        }
+      ]
+    },
+    "Set_Group_A_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 40,
+          "standardDeviation": 25
+        }
+      }
+    },
+    "Set_Group_A_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 125,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_A_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 185,
+          "standardDeviation": 75
+        }
+      }
+    },
+    "Set_Group_A_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 220,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_A_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 260,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_A_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 300,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_A_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 335,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_A_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 335,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_A_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_A_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 350,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Baseline": {
+      "type": "Simple",
+      "direct_transition": "Check Treatment"
+    },
+    "Set_Group_A_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set_Group_B": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_B_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_B_48"
+        }
+      ]
+    },
+    "Set_Group_B_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 140,
+          "standardDeviation": 25
+        }
+      }
+    },
+    "Set_Group_B_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 230,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_B_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 280,
+          "standardDeviation": 75
+        }
+      }
+    },
+    "Set_Group_B_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 330,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 370,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 400,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 415,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 430,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_B_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 445,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_B_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set_Group_C": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_C_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_C_48"
+        }
+      ]
+    },
+    "Set_Group_C_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 255,
+          "standardDeviation": 25
+        }
+      }
+    },
+    "Set_Group_C_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 340,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_C_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 410,
+          "standardDeviation": 75
+        }
+      }
+    },
+    "Set_Group_C_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 420,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 465,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 505,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 505,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 505,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_C_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 530,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_C_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set_Group_D": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_D_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_D_48"
+        }
+      ]
+    },
+    "Set_Group_D_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 350,
+          "standardDeviation": 25
+        }
+      }
+    },
+    "Set_Group_D_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 450,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_D_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 510,
+          "standardDeviation": 75
+        }
+      }
+    },
+    "Set_Group_D_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 540,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 570,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 590,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 595,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 615,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_D_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 630,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_D_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set_Group_E": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_E_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_E_48"
+        }
+      ]
+    },
+    "Set_Group_E_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 470,
+          "standardDeviation": 25
+        }
+      }
+    },
+    "Set_Group_E_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 580,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_E_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 620,
+          "standardDeviation": 75
+        }
+      }
+    },
+    "Set_Group_E_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 630,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 695,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 735,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 700,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 725,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_E_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 765,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_E_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set_Group_F": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Group_F_0",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 1,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_6",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 7,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_12",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 13,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_18",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 19,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_24",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 25,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_30",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 31,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_36",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 37,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_42",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Baseline",
+            "within": {
+              "quantity": 43,
+              "unit": "months"
+            }
+          }
+        },
+        {
+          "transition": "Set_Group_F_48"
+        }
+      ]
+    },
+    "Set_Group_F_0": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 585,
+          "standardDeviation": 50
+        }
+      }
+    },
+    "Set_Group_F_6": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 735,
+          "standardDeviation": 100
+        }
+      }
+    },
+    "Set_Group_F_12": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 740,
+          "standardDeviation": 125
+        }
+      }
+    },
+    "Set_Group_F_18": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 790,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_24": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 850,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_30": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 825,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_36": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 840,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_42": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 870,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_48": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set_Group_F_Complete",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 900,
+          "standardDeviation": 150
+        }
+      }
+    },
+    "Set_Group_F_Complete": {
+      "type": "Simple",
+      "direct_transition": "Set CD4 Complete"
+    },
+    "Set CD4 Complete": {
+      "type": "Simple",
+      "direct_transition": "Count CD4"
+    },
+    "Check AIDS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "stage_3",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 62479008,
+                "display": "Acquired immune deficiency syndrome (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Set Group"
+        }
+      ]
+    },
+    "Count CD4": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313660005,
+          "display": "Absolute CD4 count procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Record CD4",
+      "reason": "hiv_diagnosis"
+    },
+    "Record CD4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "/uL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24467-3",
+          "display": "CD3+CD4+ (T4 helper) cells [#/volume] in Blood"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "attribute": "hiv_cd4"
+    },
+    "Check Treatment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set CD4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set CD4",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "PriorState",
+              "name": "Set CD4"
+            }
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline"
+        }
+      ]
+    },
+    "Non_Continuous_ART_Decline": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 40,
+      "conditional_transition": [
+        {
+          "transition": "Sanity Check",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Set CD4 Complete"
+        }
+      ]
+    },
+    "Sanity Check": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set CD4 Complete",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 200,
+          "low": 5
+        }
+      }
+    }
+  },
+  "gmf_version": 2
+}

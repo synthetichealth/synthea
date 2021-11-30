@@ -1,0 +1,195 @@
+{
+  "name": "hiv_viral_load",
+  "remarks": [
+    "Measure and record HIV viral load."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Age"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check Age": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check Viral Load",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 13,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Check Viral Load": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Viral Load",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Decrease Viral Load",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set Viral Load"
+        }
+      ]
+    },
+    "Set Viral Load": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CD4 < 200",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4",
+            "operator": "<",
+            "value": 200
+          }
+        },
+        {
+          "transition": "CD4 >= 500",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4",
+            "operator": ">=",
+            "value": 500
+          }
+        },
+        {
+          "transition": "200 >= CD4 < 500"
+        }
+      ]
+    },
+    "Decrease Viral Load": {
+      "type": "Counter",
+      "attribute": "hiv_viral_load",
+      "action": "decrement",
+      "direct_transition": "Sanity Check",
+      "amount": 10000
+    },
+    "Measure Viral Load": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 315124004,
+          "display": "Human immunodeficiency virus viral load (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Observe Viral Load",
+      "reason": "hiv_diagnosis"
+    },
+    "Observe Viral Load": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "[copies]/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "20447-9",
+          "display": "HIV 1 RNA [#/volume] (viral load) in Serum or Plasma by NAA with probe detection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "attribute": "hiv_viral_load"
+    },
+    "Sanity Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Minimal Viral Load",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load",
+            "operator": "<",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Measure Viral Load"
+        }
+      ]
+    },
+    "Minimal Viral Load": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "direct_transition": "Measure Viral Load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 199,
+          "low": 0
+        }
+      }
+    },
+    "CD4 >= 500": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 16649,
+          "standardDeviation": 13302
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "200 >= CD4 < 500": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 38497,
+          "standardDeviation": 24127
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "CD4 < 200": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "direct_transition": "Sanity Check",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 119000,
+          "standardDeviation": 74380
+        }
+      }
+    }
+  },
+  "gmf_version": 2
+}

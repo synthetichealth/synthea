@@ -1,0 +1,2041 @@
+{
+  "name": "hiv_baseline",
+  "remarks": [
+    "The HIV sequence module drives the HIV baseline and follow-up visits. ",
+    "The baseline visit is technically a submodule in the HIV sequence.",
+    "This baseline module is for individuals age >= 13."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "History and Physical Exam"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "History and Physical Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63332003,
+          "display": "History AND physical examination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Laboratory Test",
+      "reason": "hiv_diagnosis"
+    },
+    "Laboratory Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 15220000,
+          "display": "Laboratory test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Anemia Check",
+      "reason": "hiv_diagnosis"
+    },
+    "CBC": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.4,
+            "high": 10.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3.77,
+            "high": 5.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11.1,
+            "high": 17.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "4544-3",
+              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 34,
+            "high": 51
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 79,
+            "high": 97
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 26.6,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 31.5,
+            "high": 35.7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "788-0",
+              "display": "Erythrocyte distribution width [Ratio] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 12.3,
+            "high": 15.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        }
+      ],
+      "direct_transition": "CBC_Differential"
+    },
+    "Metabolic Panel": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Normal_Kidney",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Kidney_Damage"
+        }
+      ]
+    },
+    "Comprehensive_Metabolic_Panel_with_Normal_Kidney": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "vital_sign": "Creatinine"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "vital_sign": "EGFR"
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 8.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4,
+            "high": 5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0.3,
+            "high": 1.2
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 117
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 44
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "Urinalysis"
+    },
+    "Comprehensive_Metabolic_Panel_with_Kidney_Damage": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 2.5,
+            "high": 3
+          }
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 14
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 8.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4,
+            "high": 5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 117
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 44
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "Urinalysis"
+    },
+    "CKD Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "Metabolic Panel"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Set CKD",
+              "distribution": 0.0815
+            },
+            {
+              "transition": "Metabolic Panel",
+              "distribution": 0.9185
+            }
+          ]
+        }
+      ]
+    },
+    "Set CKD": {
+      "type": "SetAttribute",
+      "attribute": "ckd",
+      "direct_transition": "Metabolic Panel",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 5,
+          "low": 1
+        }
+      }
+    },
+    "CBC_Differential": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57023-4",
+          "display": "Auto Differential panel - Blood"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "770-8",
+              "display": "Neutrophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 10,
+            "high": 45
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "736-9",
+              "display": "Lymphocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 25
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5905-5",
+              "display": "Monocytes/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "713-8",
+              "display": "Eosinophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 3,
+            "high": 6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "706-2",
+              "display": "Basophils/100 leukocytes in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 2,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "751-8",
+              "display": "Neutrophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 1.4,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "731-0",
+              "display": "Lymphocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 4.8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "742-7",
+              "display": "Monocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.5,
+            "high": 1.4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "711-2",
+              "display": "Eosinophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.6
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "704-7",
+              "display": "Basophils [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 0.2,
+            "high": 0.4
+          }
+        }
+      ],
+      "remarks": [
+        "Viral infection should show DECREASES in neutro and lymph, and INCREASES in mono, eosino, and baso."
+      ],
+      "direct_transition": "CKD Check"
+    },
+    "CBC_Panel_M_Anemia": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 6.7,
+            "high": 10
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 30
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ],
+      "direct_transition": "CBC_Differential"
+    },
+    "CBC_Panel_F_Anemia": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 11,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 7,
+            "high": 10.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 21,
+            "high": 32.9
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "WBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 10.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*6/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "789-8",
+              "display": "RBC Auto (Bld) [#/Vol]"
+            }
+          ],
+          "range": {
+            "low": 3.9,
+            "high": 5.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "787-2",
+              "display": "MCV [Entitic volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 80,
+            "high": 95
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pg",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "785-6",
+              "display": "MCH [Entitic mass] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 27,
+            "high": 33
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "786-4",
+              "display": "MCHC [Mass/volume] by Automated count"
+            }
+          ],
+          "range": {
+            "low": 33,
+            "high": 36
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "21000-5",
+              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 46
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "10*3/uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 450
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32207-3",
+              "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 150,
+            "high": 520
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "fL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32623-1",
+              "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 9.4,
+            "high": 12.3
+          }
+        }
+      ],
+      "direct_transition": "CBC_Differential"
+    },
+    "Anemia Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "Has Anemia"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Anemia",
+              "distribution": 0.25
+            },
+            {
+              "transition": "No Anemia",
+              "distribution": 0.75
+            }
+          ],
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 86406008,
+                "display": "Human immunodeficiency virus infection (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 62479008,
+                "display": "Acquired immune deficiency syndrome (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Anemia",
+              "distribution": 0.665
+            },
+            {
+              "transition": "No Anemia",
+              "distribution": 0.33499999999999996
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "No Anemia"
+        }
+      ]
+    },
+    "Anemia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "anemia",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271737000,
+          "display": "Anemia (disorder)"
+        }
+      ],
+      "direct_transition": "Has Anemia"
+    },
+    "Has Anemia": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CBC_Panel_F_Anemia",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "CBC_Panel_M_Anemia"
+        }
+      ]
+    },
+    "No Anemia": {
+      "type": "Simple",
+      "direct_transition": "CBC"
+    },
+    "Urinalysis": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24357-6",
+          "display": "Urinalysis macro (dipstick) panel - Urine"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5767-9",
+              "display": "Appearance of Urine"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 7766007,
+            "display": "Cloudy urine (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5767-9",
+              "display": "Odor of Urine"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167248002,
+            "display": "Urine smell ammoniacal (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "32167-9",
+              "display": "Clarity of Urine"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 300828005,
+            "display": "Translucent (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5778-6",
+              "display": "Color of Urine"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 371254008,
+            "display": "Brown color (qualifier value)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5792-7",
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 0.5,
+            "high": 2.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "25428-4",
+              "display": "Glucose [Presence] in Urine by Test strip"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167265006,
+            "display": "Urine glucose test = ++ (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20505-4",
+              "display": "Bilirubin.total [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 0.2,
+            "high": 1.5
+          }
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5770-3",
+              "display": "Bilirubin.total [Presence] in Urine by Test strip"
+            }
+          ],
+          "unit": "{nominal}",
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 275778006,
+            "display": "Finding of bilirubin in urine (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5797-6",
+              "display": "Ketones [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 20
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167290008,
+            "display": "Urine ketone test = ++ (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.001,
+            "high": 1.039
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pH",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5804-0",
+              "display": "Protein [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 50,
+            "high": 400
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20454-5",
+              "display": "Protein [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167276005,
+            "display": "Urine protein test = ++ (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 314138001,
+            "display": "Urine nitrite negative (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167297006,
+            "display": "Urine blood test = negative (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 394717006,
+            "display": "Urine leukocyte test negative (finding)"
+          }
+        }
+      ],
+      "direct_transition": "Record_LipidPanel"
+    },
+    "Record_LipidPanel": {
+      "type": "DiagnosticReport",
+      "number_of_observations": 4,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57698-3",
+          "display": "Lipid Panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Total Cholesterol",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2093-3",
+              "display": "Total Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Triglycerides",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2571-8",
+              "display": "Triglycerides"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "LDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18262-6",
+              "display": "Low Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "HDL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2085-9",
+              "display": "High Density Lipoprotein Cholesterol"
+            }
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Urine Pregnancy Test",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Viral Hepatitis Screening"
+        }
+      ]
+    },
+    "Urine Pregnancy Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 167252002,
+          "display": "Urine pregnancy test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Viral Hepatitis Screening",
+      "reason": "hiv_diagnosis"
+    },
+    "Viral Hepatitis Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 412809002,
+          "display": "Viral hepatitis screening test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Hepatitis B Screening",
+      "reason": "hiv_diagnosis"
+    },
+    "Hepatitis B Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 171122006,
+          "display": "Hepatitis B screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "distributed_transition": [
+        {
+          "transition": "Hepatitis B Diagnosis",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Hepatitis C Screening",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Hepatitis B Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 61977001,
+          "display": "Chronic type B viral hepatitis (disorder)"
+        }
+      ],
+      "direct_transition": "Hepatitis C Screening"
+    },
+    "Hepatitis C Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 413107006,
+          "display": "Hepatitis C screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "distributed_transition": [
+        {
+          "transition": "Hepatitis C Diagnosis",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Hepatitis A Screening",
+          "distribution": 0.75
+        }
+      ]
+    },
+    "Hepatitis C Diagnosis": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 128302006,
+          "display": "Chronic hepatitis C (disorder)"
+        }
+      ],
+      "direct_transition": "Hepatitis A Screening"
+    },
+    "Hepatitis A Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313613002,
+          "display": "Hepatitis A antibody test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Tuberculosis Screening"
+    },
+    "Tuberculosis Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 171126009,
+          "display": "Tuberculosis screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "STI Screening"
+    },
+    "STI Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 171128005,
+          "display": "Venereal disease screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Serologic Test"
+    },
+    "Serologic Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 104308009,
+          "display": "Serologic test for Toxoplasma gondii (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "distributed_transition": [
+        {
+          "transition": "Toxoplasma Positive",
+          "distribution": 0.15
+        },
+        {
+          "transition": "CD4 Check",
+          "distribution": 0.85
+        }
+      ]
+    },
+    "TG+ Observation": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "22577-1",
+          "display": "Toxoplasma gondii Ab [Presence] in Serum"
+        }
+      ],
+      "direct_transition": "TG+ Condition",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 428915008,
+        "display": "Toxoplasma gondii antibody positive (finding)"
+      }
+    },
+    "Toxoplasma Positive": {
+      "type": "SetAttribute",
+      "attribute": "toxoplasma_positive",
+      "direct_transition": "TG+ Observation",
+      "value": true
+    },
+    "TG+ Condition": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 428915008,
+          "display": "Toxoplasma gondii antibody positive (finding)"
+        }
+      ],
+      "direct_transition": "CD4 Check"
+    },
+    "CD4 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CD4 Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1993,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Medication Submodule"
+        }
+      ]
+    },
+    "CD4 Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_cd4",
+      "conditional_transition": [
+        {
+          "transition": "HIV Viral Load Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1996,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Medication Submodule"
+        }
+      ]
+    },
+    "HIV Viral Load Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_viral_load",
+      "direct_transition": "Genotype Determination"
+    },
+    "Genotype Determination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 363779003,
+          "display": "Genotype determination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Medication Submodule",
+      "reason": "hiv_diagnosis"
+    },
+    "Medication Submodule": {
+      "type": "Simple",
+      "direct_transition": "Education"
+    },
+    "Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 409066002,
+          "display": "Education, guidance and counseling (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 45
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Care Planning",
+      "reason": "hiv_diagnosis"
+    },
+    "Care Planning": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225297008,
+          "display": "Care planning and problem solving actions (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 45
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Care Plan"
+    },
+    "CarePlan Coordination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 711069006,
+          "display": "Coordination of care plan (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis"
+    },
+    "Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736376001,
+          "display": "Infectious disease care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "CarePlan Coordination",
+      "reason": "hiv_diagnosis"
+    }
+  },
+  "gmf_version": 2
+}
