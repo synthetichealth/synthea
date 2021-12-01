@@ -1,0 +1,90 @@
+{
+  "records": [
+    {
+      "individualId": "1234",
+      "dateOfBirth": "1944-03-17",
+      "gender": "F",
+      "seeds": [
+        {
+          "seedId": "5678",
+          "period": {
+            "start": "1944-03-17",
+            "end": "1958-03-17"
+          },
+          "givenName": "Rita Ebony",
+          "familyName": "Noble",
+          "phone": "9194819376",
+          "addressLines": [
+            " 865 WHITT TOWN RD"
+          ],
+          "city": "ROXBORO",
+          "state": "NC",
+          "zipCode": "27574",
+          "variants": [
+            {
+              "variantId": "91011",
+              "dateOfBirth": "1944-03-17",
+              "gender": "F",
+              "givenName": "Margarita Ebony",
+              "familyName": "Noble",
+              "phone": "9194819376",
+              "addressLines": [
+                " 865 WHITT TOWN RD"
+              ],
+              "city": "ROXBORO",
+              "state": "NC",
+              "zipCode": "27574"
+            },
+            {
+              "variantId": "1213",
+              "dateOfBirth": "1944-04-17",
+              "gender": "F",
+              "givenName": "Margarita Ebony",
+              "familyName": "Noble",
+              "phone": "9194819376",
+              "addressLines": [
+                " 865 WHITT TOWN RD"
+              ],
+              "city": "ROXBORO",
+              "state": "NC",
+              "zipCode": "27574"
+            }
+          ]
+        },
+        {
+          "seedId": "1415",
+          "period": {
+            "start": "1958-03-17",
+            "end": "1970-03-17"
+          },
+          "givenName": "Rita Ebony",
+          "familyName": "Noble",
+          "phone": "9194819376",
+          "addressLines": [
+            "7217 BRIGHTON HILL LN"
+          ],
+          "city": "RALEIGH",
+          "state": "NC",
+          "zipCode": "27616",
+          "variants": [
+            {
+              "variantId": "1617",
+              "dateOfBirth": "1944-04-17",
+              "gender": "F",
+              "givenName": "Margarita Ebony",
+              "familyName": "Noble",
+              "phone": "9194819376",
+              "addressLines": [
+                "7217 BRIGHTON-HILL"
+              ],
+              "city": "RAHLEY",
+              "state": "NC",
+              "zipCode": "27616"
+            }
+          ]
+        }
+
+      ]
+    }
+  ]
+}

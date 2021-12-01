@@ -5,10 +5,8 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Seed {
-  private String id;
-  private LocalDate dateOfBirth;
-  private String gender;
+public class Seed implements IdentityRecord {
+  private String seedId;
   private Period period;
   private String givenName;
   private String familyName;
@@ -17,30 +15,15 @@ public class Seed {
   private String city;
   private String state;
   private String zipCode;
+  private transient Entity entity;
   private List<Variant> variants;
 
-  public String getId() {
-    return id;
+  public String getSeedId() {
+    return seedId;
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public LocalDate getDateOfBirth() {
-    return dateOfBirth;
-  }
-
-  public void setDateOfBirth(LocalDate dateOfBirth) {
-    this.dateOfBirth = dateOfBirth;
-  }
-
-  public String getGender() {
-    return gender;
-  }
-
-  public void setGender(String gender) {
-    this.gender = gender;
+  public void setSeedId(String seedId) {
+    this.seedId = seedId;
   }
 
   public Period getPeriod() {
@@ -51,56 +34,28 @@ public class Seed {
     this.period = period;
   }
 
-  public String getGivenName() {
-    return givenName;
-  }
-
   public void setGivenName(String givenName) {
     this.givenName = givenName;
-  }
-
-  public String getFamilyName() {
-    return familyName;
   }
 
   public void setFamilyName(String familyName) {
     this.familyName = familyName;
   }
 
-  public String getPhone() {
-    return phone;
-  }
-
   public void setPhone(String phone) {
     this.phone = phone;
-  }
-
-  public List<String> getAddressLines() {
-    return addressLines;
   }
 
   public void setAddressLines(List<String> addressLines) {
     this.addressLines = addressLines;
   }
 
-  public String getCity() {
-    return city;
-  }
-
   public void setCity(String city) {
     this.city = city;
   }
 
-  public String getState() {
-    return state;
-  }
-
   public void setState(String state) {
     this.state = state;
-  }
-
-  public String getZipCode() {
-    return zipCode;
   }
 
   public void setZipCode(String zipCode) {
@@ -117,5 +72,54 @@ public class Seed {
 
   public Variant selectVariant(RandomNumberGenerator rng) {
     return variants.get(rng.randInt(variants.size()));
+  }
+
+  @Override
+  public LocalDate getDateOfBirth() {
+    return entity.getDateOfBirth();
+  }
+
+  @Override
+  public String getGender() {
+    return entity.getGender();
+  }
+
+  @Override
+  public String getGivenName() {
+    return givenName;
+  }
+
+  @Override
+  public String getFamilyName() {
+    return familyName;
+  }
+
+  @Override
+  public String getPhone() {
+    return phone;
+  }
+
+  @Override
+  public List<String> getAddressLines() {
+    return addressLines;
+  }
+
+  @Override
+  public String getCity() {
+    return city;
+  }
+
+  @Override
+  public String getState() {
+    return state;
+  }
+
+  @Override
+  public String getZipCode() {
+    return zipCode;
+  }
+
+  public void setEntity(Entity entity) {
+    this.entity = entity;
   }
 }
