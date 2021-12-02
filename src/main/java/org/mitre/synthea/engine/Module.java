@@ -182,7 +182,14 @@ public class Module implements Cloneable, Serializable {
     }
   }
 
-  private static String relativePath(Path filePath, Path modulesFolder) {
+  /**
+   * Create a relative path from a folder to a file, removing the file extension and normalizing
+   * path segment separators.
+   * @param filePath path to a file
+   * @param modulesFolder path to the folder
+   * @return relative path to file from the folder
+   */
+  public static String relativePath(Path filePath, Path modulesFolder) {
     String relativeFilePath = modulesFolder.relativize(filePath).toString()
         .replaceFirst(".json", "").replace("\\", "/");
     return relativeFilePath;

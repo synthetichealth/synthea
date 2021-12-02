@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
@@ -66,7 +65,7 @@ public class Graphviz {
       Utilities.walkAllModules(inputPath, t -> {
         try {
           JsonObject module = loadFile(t, inputPath);
-          String relativePath = relativePath(t, inputPath);
+          String relativePath = Module.relativePath(t, inputPath);
           generateJsonModuleGraph(module, outputFolder, relativePath);
         } catch (IOException e) {
           e.printStackTrace();
@@ -85,12 +84,6 @@ public class Graphviz {
     JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
     reader.close();
     return object;
-  }
-
-  private static String relativePath(Path filePath, Path modulesFolder) {
-    String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
-    return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "")
-        .replace("\\", "/");
   }
 
   private static void generateJsonModuleGraph(JsonObject module, File outputFolder,
