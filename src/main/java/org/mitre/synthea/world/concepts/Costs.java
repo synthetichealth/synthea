@@ -11,6 +11,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
 
@@ -45,7 +46,48 @@ public class Costs {
   private static final double DEFAULT_SUPPLY_COST = Double
       .parseDouble(Config.get("generate.costs.default_supply_cost"));
 
-  private static final Map<String, Double> LOCATION_ADJUSTMENT_FACTORS = parseAdjustmentFactors();
+  private static final Map<String, Double> DEVICE_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/devices_adjustments.csv");
+  private static final Map<String, Double> SUPPLY_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/supplies_adjustments.csv");
+  private static final Map<String, Double> MEDICATION_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/medications_adjustments.csv");
+  private static final Map<String, Double> LAB_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/labs_adjustments.csv");
+  private static final Map<String, Double> DIALYSIS_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/dialysis_adjustments.csv");
+  private static final Map<String, Double> PROCEDURES_ADJUSTMENT_FACTORS =
+      parseAdjustmentFactors("costs/procedures_adjustments.csv");
+  private static final Map<String, Double> ENCOUNTER_ADJUSTMENT_FACTORS =
+      parseEncounterAdjustmentFactors("costs/encounters_adjustments.csv");
+
+  private static double getLocationAdjustmentFactor(Person person, Map<String,Double> table) {
+    // Retrieve the location adjustment factor.
+    double locationAdjustment = 1.0;
+    if (person != null && person.attributes.containsKey(Person.STATE)) {
+      String state = (String) person.attributes.get(Person.STATE);
+      state = Location.getAbbreviation(state);
+      if (table.containsKey(state)) {
+        locationAdjustment = (double) table.get(state);
+      }
+    }
+    return locationAdjustment;
+  }
+
+  private static double getEncounterAdjustmentFactor(Person person, HealthRecord.Encounter entry) {
+    // Retrieve the location adjustment factor.
+    double locationAdjustment = 1.0;
+    if (person != null && person.attributes.containsKey(Person.STATE)) {
+      String state = (String) person.attributes.get(Person.STATE);
+      state = Location.getAbbreviation(state);
+
+      String key = state + "|" + entry.type;
+      if (ENCOUNTER_ADJUSTMENT_FACTORS.containsKey(key)) {
+        locationAdjustment = (double) ENCOUNTER_ADJUSTMENT_FACTORS.get(key);
+      }
+    }
+    return locationAdjustment;
+  }
 
   /**
    * Return the cost of the given entry (Encounter/Procedure/Immunization/Medication).
@@ -56,29 +98,47 @@ public class Costs {
    */
   public static double determineCostOfEntry(Entry entry, Person person) {
 
+    // Retrieve the location adjustment factor.
+    double locationAdjustment = 1.0;
     double defaultCost = 0.0;
     Map<String, CostData> costs = null;
 
     if (entry instanceof HealthRecord.Procedure) {
       costs = PROCEDURE_COSTS;
       defaultCost = DEFAULT_PROCEDURE_COST;
+      boolean dialysis = false;
+      for (Code code : entry.codes) {
+        if (code.display.toLowerCase().contains("dialysis")) {
+          dialysis = true;
+        }
+      }
+      if (dialysis) {
+        locationAdjustment = getLocationAdjustmentFactor(person, DIALYSIS_ADJUSTMENT_FACTORS);
+      } else {
+        locationAdjustment = getLocationAdjustmentFactor(person, PROCEDURES_ADJUSTMENT_FACTORS);
+      }
     } else if (entry instanceof HealthRecord.Medication) {
       costs = MEDICATION_COSTS;
       defaultCost = DEFAULT_MEDICATION_COST;
+      locationAdjustment = getLocationAdjustmentFactor(person, MEDICATION_ADJUSTMENT_FACTORS);
     } else if (entry instanceof HealthRecord.Encounter) {
       costs = ENCOUNTER_COSTS;
       defaultCost = DEFAULT_ENCOUNTER_COST;
+      locationAdjustment = getEncounterAdjustmentFactor(person, (HealthRecord.Encounter) entry);
     } else if (entry instanceof HealthRecord.Immunization) {
       costs = IMMUNIZATION_COSTS;
       defaultCost = DEFAULT_IMMUNIZATION_COST;
     } else if (entry instanceof HealthRecord.Device) {
       costs = DEVICE_COSTS;
       defaultCost = DEFAULT_DEVICE_COST;
+      locationAdjustment = getLocationAdjustmentFactor(person, DEVICE_ADJUSTMENT_FACTORS);
     } else if (entry instanceof HealthRecord.Supply) {
       costs = SUPPLY_COSTS;
       defaultCost = DEFAULT_SUPPLY_COST;
+      locationAdjustment = getLocationAdjustmentFactor(person, SUPPLY_ADJUSTMENT_FACTORS);
     } else if (entry instanceof HealthRecord.Report) {
       defaultCost = DEFAULT_LAB_COST;
+      locationAdjustment = getLocationAdjustmentFactor(person, LAB_ADJUSTMENT_FACTORS);
     } else {
       // Not an entry type that has an associated cost.
       return 0.0;
@@ -93,15 +153,6 @@ public class Costs {
       baseCost = defaultCost;
     }
 
-    // Retrieve the location adjustment factor.
-    double locationAdjustment = 1.0;
-    if (person != null && person.attributes.containsKey(Person.STATE)) {
-      String state = (String) person.attributes.get(Person.STATE);
-      state = Location.getAbbreviation(state);
-      if (LOCATION_ADJUSTMENT_FACTORS.containsKey(state)) {
-        locationAdjustment = (double) LOCATION_ADJUSTMENT_FACTORS.get(state);
-      }
-    }
     // Return the total cost of the given entry.
     return (baseCost * locationAdjustment);
   }
@@ -150,9 +201,9 @@ public class Costs {
     }
   }
 
-  private static Map<String, Double> parseAdjustmentFactors() {
+  private static Map<String, Double> parseAdjustmentFactors(String resource) {
     try {
-      String rawData = Utilities.readResource("costs/adjustmentFactors.csv");
+      String rawData = Utilities.readResource(resource);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, Double> costMap = new HashMap<>();
@@ -170,7 +221,33 @@ public class Costs {
     } catch (IOException e) {
       e.printStackTrace();
       throw new ExceptionInInitializerError(
-          "Unable to read required file: costs/adjustmentFactors.csv");
+          "Unable to read required file: " + resource);
+    }
+  }
+
+  private static Map<String, Double> parseEncounterAdjustmentFactors(String resource) {
+    try {
+      String rawData = Utilities.readResource(resource);
+      List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
+
+      Map<String, Double> costMap = new HashMap<>();
+      for (Map<String, String> line : lines) {
+        String state = line.get("STATE");
+        String encounterType = line.get("ENCOUNTER").toLowerCase();
+        String key = state + "|" + encounterType;
+        String factorStr = line.get("ADJ_FACTOR");
+        try {
+          Double factor = Double.valueOf(factorStr);
+          costMap.put(key, factor);
+        } catch (NumberFormatException nfe) {
+          throw new RuntimeException("Invalid cost adjustment factor: " + factorStr, nfe);
+        }
+      }
+      return costMap;
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new ExceptionInInitializerError(
+          "Unable to read required file: " + resource);
     }
   }
 
@@ -195,13 +272,15 @@ public class Costs {
    * Returns Whether or not this code has an ossociated specified cost in one of the cost CSVs.
    *
    * @param code String
-   * @return true if the code has a sepcified cost; false otherwise
+   * @return true if the code has a specified cost; false otherwise
    */
   public static boolean hasSpecifiedCost(String code) {
     return PROCEDURE_COSTS.containsKey(code)
         || MEDICATION_COSTS.containsKey(code)
         || ENCOUNTER_COSTS.containsKey(code)
-        || IMMUNIZATION_COSTS.containsKey(code);
+        || IMMUNIZATION_COSTS.containsKey(code)
+        || DEVICE_COSTS.containsKey(code)
+        || SUPPLY_COSTS.containsKey(code);
   }
 
   /**

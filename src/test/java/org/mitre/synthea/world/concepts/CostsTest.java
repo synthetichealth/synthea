@@ -67,7 +67,7 @@ public class CostsTest {
     assertTrue(cost >= minCost);
 
     person.attributes.put(Person.STATE, "Massachusetts");
-    double adjFactor = 1.0333;
+    double adjFactor = 0.8183;
     cost = Costs.determineCostOfEntry(fakeDevice, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
@@ -88,7 +88,7 @@ public class CostsTest {
     assertTrue(cost >= minCost);
 
     person.attributes.put(Person.STATE, "Massachusetts");
-    double adjFactor = 1.0333;
+    double adjFactor = 0.8183;
     cost = Costs.determineCostOfEntry(fakeSupply, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
@@ -103,17 +103,17 @@ public class CostsTest {
     double minCost = 816.12;
     double maxCost = 1237.68;
 
-    Entry fakeMedication = person.record.medicationStart(time, code.display, true);
-    fakeMedication.codes.add(code);
+    Entry fakeEntry = person.record.medicationStart(time, code.display, true);
+    fakeEntry.codes.add(code);
 
-    double cost = Costs.determineCostOfEntry(fakeMedication, person);
+    double cost = Costs.determineCostOfEntry(fakeEntry, person);
     // At this point there is no state set, so there is no geogeaphic factor applied.
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
-    // Now test cost with adjustement factor.
+    // Now test cost with adjustment factor.
     person.attributes.put(Person.STATE, "California");
-    double adjFactor = 1.1668;
-    cost = Costs.determineCostOfEntry(fakeMedication, person);
+    double adjFactor = 1.0227;
+    cost = Costs.determineCostOfEntry(fakeEntry, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
 
@@ -122,16 +122,12 @@ public class CostsTest {
     code = new Code("SNOMED","48387007","Incision of trachea (procedure)");
     minCost = 235;
     maxCost = 1690;
-
-    fakeMedication = person.record.medicationStart(time, code.display, true);
-    fakeMedication.codes.add(code);
-
-    cost = Costs.determineCostOfEntry(fakeMedication, person);
-    // At this point there is no state set, so there is no geogeaphic factor applied.
-    assertTrue(cost <= maxCost);
-    assertTrue(cost >= minCost);
-    // Now test cost with adjustement factor.
-    cost = Costs.determineCostOfEntry(fakeMedication, person);
+    
+    fakeEntry = person.record.procedure(time, code.display);
+    fakeEntry.codes.add(code);
+    
+    cost = Costs.determineCostOfEntry(fakeEntry, person);
+    adjFactor = 1.2010;
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
   }
