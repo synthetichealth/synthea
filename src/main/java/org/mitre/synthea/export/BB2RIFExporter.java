@@ -127,6 +127,7 @@ public class BB2RIFExporter {
   CodeMapper drgCodeMapper;
   CodeMapper dmeCodeMapper;
   CodeMapper hcpcsCodeMapper;
+  CodeMapper betosCodeMapper;
   
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -161,6 +162,7 @@ public class BB2RIFExporter {
     drgCodeMapper = new CodeMapper("export/drg_code_map.json");
     dmeCodeMapper = new CodeMapper("export/dme_code_map.json");
     hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
+    betosCodeMapper = new CodeMapper("export/betos_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     try {
       String csv = Utilities.readResourceAndStripBOM("payers/carriers.csv");
@@ -352,6 +354,7 @@ public class BB2RIFExporter {
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
 
     RifEntryStatus entryStatus = RifEntryStatus.INITIAL;
+    String initialBeneEntitlementReason = null;
     synchronized (rifWriters.getOrCreateWriter(BENEFICIARY.class, entryStatus)) {
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         HashMap<BENEFICIARY, String> fieldValues = new HashMap<>();
@@ -403,6 +406,21 @@ public class BB2RIFExporter {
             fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
             fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
           }
+        }
+        boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
+        boolean esrdThisYear = hasESRD(person, year);
+        fieldValues.put(BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
+        // "0" = old age, "2" = ESRD
+        if (medicareAgeThisYear) {
+          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "0");
+        } else if (esrdThisYear) {
+          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "2");
+        }
+        if (initialBeneEntitlementReason == null) {
+          initialBeneEntitlementReason = fieldValues.get(BENEFICIARY.BENE_ENTLMT_RSN_CURR);
+        }
+        if (initialBeneEntitlementReason != null) {
+          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
         }
         
         for (PartDContractHistory.PartDContractPeriod period: 
@@ -477,6 +495,18 @@ public class BB2RIFExporter {
     }
     return mappedDiagnosisCodes;
   }
+
+  /**
+   * Determines whether the person has end stage renal disease at the end of the supplied year.
+   * @param person the person
+   * @param year the year
+   * @return true if has ESRD, false otherwise
+   */
+  private boolean hasESRD(Person person, int year) {
+    long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
+    List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
+    return mappedDiagnosisCodes.contains("N18.6");
+  }
   
   /**
    * Export a beneficiary history for single person. Assumes exportBeneficiary
@@ -519,6 +549,20 @@ public class BB2RIFExporter {
     String terminationCode = (person.attributes.get(Person.DEATHDATE) == null) ? "0" : "1";
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
+    int year = Utilities.getYear(stopTime);
+    boolean medicareAge = ageAtEndOfYear(birthdate, year) >= 65;
+    boolean esrd = hasESRD(person, year);
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_ESRD_IND, esrd ? "Y" : "0");
+    // "0" = old age, "2" = ESRD
+    if (medicareAge) {
+      fieldValues.put(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "0");
+    } else if (esrd) {
+      fieldValues.put(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "2");
+    }
+    String initialBeneEntitlementReason = fieldValues.get(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR);
+    if (initialBeneEntitlementReason != null) {
+      fieldValues.put(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
+    }
     rifWriters.writeValues(BENEFICIARY_HISTORY.class, fieldValues);
   }
 
@@ -1081,7 +1125,7 @@ public class BB2RIFExporter {
         int lineNum = 1;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
-          String hcpcsCode = null;
+          String hcpcsCode = "";
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
               if (hcpcsCodeMapper.canMap(code.code)) {
@@ -1101,6 +1145,11 @@ public class BB2RIFExporter {
           //   continue; // skip this line item
           // }
           fieldValues.put(CARRIER.HCPCS_CD, hcpcsCode);
+          if (betosCodeMapper.canMap(hcpcsCode)) {
+            fieldValues.put(CARRIER.BETOS_CD, betosCodeMapper.map(hcpcsCode, person));
+          } else {
+            fieldValues.put(CARRIER.BETOS_CD, "");
+          }
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
@@ -1616,8 +1665,13 @@ public class BB2RIFExporter {
           }
           fieldValues.put(DME.CLM_FROM_DT, bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(DME.CLM_THRU_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(DME.HCPCS_CD,
-                  dmeCodeMapper.map(lineItem.entry.codes.get(0).code, person));
+          String hcpcsCode = dmeCodeMapper.map(lineItem.entry.codes.get(0).code, person);
+          fieldValues.put(DME.HCPCS_CD, hcpcsCode);
+          if (betosCodeMapper.canMap(hcpcsCode)) {
+            fieldValues.put(DME.BETOS_CD, betosCodeMapper.map(hcpcsCode, person));
+          } else {
+            fieldValues.put(DME.BETOS_CD, "");
+          }
           fieldValues.put(DME.LINE_CMS_TYPE_SRVC_CD,
                   dmeCodeMapper.map(lineItem.entry.codes.get(0).code,
                           DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
