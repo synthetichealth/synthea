@@ -403,7 +403,7 @@
         "Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
         "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"
       ],
-      "direct_transition": "Set_CKD_5 Damage"
+      "direct_transition": "Set ESRD"
     },
     "Retinopathy_Progression": {
       "type": "Simple",
@@ -1168,6 +1168,12 @@
         "low": 45,
         "high": 100
       }
+    },
+    "Set ESRD": {
+      "type": "SetAttribute",
+      "attribute": "end_stage_renal_disease",
+      "direct_transition": "Set_CKD_5 Damage",
+      "value": true
     }
   },
   "gmf_version": 1
