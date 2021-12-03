@@ -22,6 +22,7 @@ src/main/resources/export/medication_code_map.json
 src/main/resources/export/drg_code_map.json
 src/main/resources/export/dme_code_map.json
 src/main/resources/export/hcpcs_code_map.json
+src/main/resources/export/betos_code_map.json
 
 # H2 database files
 **/*.mv.db
