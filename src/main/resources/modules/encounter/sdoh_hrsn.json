@@ -743,7 +743,6 @@
     },
     "Social Migrant": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -828,7 +827,6 @@
     },
     "Veteran": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -983,7 +981,6 @@
     },
     "Homeless": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1036,7 +1033,6 @@
     },
     "Housing Issue": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1976,7 +1972,6 @@
     },
     "Transport Problem": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1988,7 +1983,6 @@
     },
     "No Transport Access": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2494,7 +2488,6 @@
     },
     "Violence": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2535,7 +2528,6 @@
     },
     "Partner Violence": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",

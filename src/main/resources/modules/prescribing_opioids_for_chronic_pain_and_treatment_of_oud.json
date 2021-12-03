@@ -1691,7 +1691,6 @@
     },
     "Condition_Chronic_Neck_Pain_4": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1704,7 +1703,6 @@
     },
     "Condition_Chronic_Low_Back_Pain_3": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2562,7 +2560,6 @@
     },
     "Condition_OUD": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Encounter_OUD",
       "codes": [
         {
@@ -2635,7 +2632,6 @@
     },
     "Condition_OUD_2": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Encounter_OUD_Treatment_Cont",
       "codes": [
         {
