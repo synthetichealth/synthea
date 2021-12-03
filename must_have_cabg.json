@@ -31,16 +31,6 @@
                     "display": "Off-pump coronary artery bypass (procedure)"
                   }
                 ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 414088005,
-                    "display": "Emergency coronary artery bypass graft (procedure)"
-                  }
-                ]
               }
             ]
           }
