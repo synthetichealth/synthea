@@ -599,7 +599,6 @@
     },
     "Cerebral_Palsy_Sialorrhea": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1028,7 +1027,6 @@
     },
     "Cerebral_Palsy_Dystonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1044,7 +1042,6 @@
     },
     "Cerebral_Palsy_Pain": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1060,7 +1057,6 @@
     },
     "Cerebral_Palsy_Central_Hypotonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1076,7 +1072,6 @@
     },
     "Cerebral_Palsy_Spasticity": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1092,7 +1087,6 @@
     },
     "Cerebral_Palsy_Osteoporosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1108,7 +1102,6 @@
     },
     "Cerebral_Palsy_Epilepsy": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1124,7 +1117,6 @@
     },
     "Cerebral_Palsy_Intellectual_Disability": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1140,7 +1132,6 @@
     },
     "Cerebral_Palsy_GERD": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1320,7 +1311,6 @@
     },
     "Cerebral_Palsy_Pneumonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1495,7 +1485,6 @@
     },
     "Cerebral_Palsy_Hip_Dislocation": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {

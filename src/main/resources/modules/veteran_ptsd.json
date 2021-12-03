@@ -347,7 +347,6 @@
     },
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Initial_Psychiatric_PTSD_Encounter",
       "codes": [
         {

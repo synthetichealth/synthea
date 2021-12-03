@@ -1506,7 +1506,6 @@
     },
     "Shock Disorder": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",

@@ -195,7 +195,6 @@
     },
     "Died_in_Hospice": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
