@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/mitre/synthea/world/concepts/HealthRecord.Entry.html" target="_top">Frames</a></li>
@@ -111,7 +111,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Immunization.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Immunization</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a></dd>
+<dd><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Allergy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Allergy</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.ImagingStudy</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Immunization.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Immunization</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Report.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Report</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Supply.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Supply</a></dd>
 </dl>
 <dl>
 <dt>Enclosing class:</dt>
@@ -220,6 +220,12 @@ implements java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#mergeCodeList-java.util.List-">mergeCodeList</a></span>(java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;&nbsp;otherCodes)</code>
+<div class="block">Merges the passed in code list into the existing list of codes for this entry.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#toString--">toString</a></span>()</code>
 <div class="block">Converts the entry to a String.</div>
@@ -356,6 +362,21 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
+<a name="mergeCodeList-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>mergeCodeList</h4>
+<pre>public&nbsp;void&nbsp;mergeCodeList(java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;&nbsp;otherCodes)</pre>
+<div class="block">Merges the passed in code list into the existing list of codes for this entry. If a code in
+ otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>otherCodes</code> - codes to add to this entry</dd>
+</dl>
+</li>
+</ul>
 <a name="toString--">
 <!--   -->
 </a>
@@ -398,7 +419,7 @@ implements java.io.Serializable</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/mitre/synthea/world/concepts/HealthRecord.Entry.html" target="_top">Frames</a></li>

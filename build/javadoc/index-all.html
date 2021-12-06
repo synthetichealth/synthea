@@ -1043,6 +1043,10 @@
 <dd>
 <div class="block">Determines if the given entry contains the provided code in its list of codes.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#containsReason-java.lang.String-java.lang.String-">containsReason(String, String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></dt>
+<dd>
+<div class="block">Determines if the given entry contains the provided reason code in its list of reason codes.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Attachment.html#contentType">contentType</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Attachment.html" title="class in org.mitre.synthea.engine">Components.Attachment</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#convertCalendarYearsToTime-int-">convertCalendarYearsToTime(int)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
@@ -1546,6 +1550,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#Entry-long-java.lang.String-">Entry(long, String)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>
 <div class="block">Constructor for Entry.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#EntryWithReasons-long-java.lang.String-">EntryWithReasons(long, String)</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></dt>
+<dd>
+<div class="block">Constructor for HealthRecord EntryWithReasons.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.LookupTableKey.html#equals-java.lang.Object-">equals(Object)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.LookupTableKey.html" title="class in org.mitre.synthea.engine">Transition.LookupTableKey</a></dt>
 <dd>
@@ -2984,6 +2992,8 @@
 <dd>
 <div class="block">All things within a HealthRecord are instances of Entry.</div>
 </dd>
+<dt><a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.EntryWithReasons</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.ImagingStudy</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/concepts/HealthRecord.ImagingStudy.Instance.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">HealthRecord.ImagingStudy.Instance</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
@@ -3898,6 +3908,14 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/WeightLossModule.html#meetsWeightManagementThresholds-org.mitre.synthea.world.agents.Person-long-">meetsWeightManagementThresholds(Person, long)</a></span> - Method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/WeightLossModule.html" title="class in org.mitre.synthea.modules">WeightLossModule</a></dt>
 <dd>
 <div class="block">Determines whether a person meets the thresholds for starting weight management.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#mergeCodeList-java.util.List-">mergeCodeList(List&lt;HealthRecord.Code&gt;)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
+<dd>
+<div class="block">Merges the passed in code list into the existing list of codes for this entry.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#mergeReasonList-java.util.List-">mergeReasonList(List&lt;HealthRecord.Code&gt;)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></dt>
+<dd>
+<div class="block">Merges the passed in code list into the existing list of codes for this entry.</div>
 </dd>
 <dt><a href="org/mitre/synthea/export/MetadataExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">MetadataExporter</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
 <dd>&nbsp;</dd>
@@ -4981,11 +4999,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#reason">reason</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html#reasons">reasons</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.CarePlan</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html#reasons">reasons</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html#reasons">reasons</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Procedure</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#reasons">reasons</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html#recalculateBMI-org.mitre.synthea.world.concepts.HealthRecord.Encounter-">recalculateBMI(HealthRecord.Encounter)</a></span> - Static method in class org.mitre.synthea.editors.<a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html" title="class in org.mitre.synthea.editors">GrowthDataErrorsEditor</a></dt>
 <dd>

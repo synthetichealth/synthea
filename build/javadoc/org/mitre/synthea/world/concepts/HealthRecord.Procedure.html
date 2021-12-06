@@ -69,7 +69,7 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.Entry">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
@@ -95,7 +95,12 @@
 <li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Entry</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons</a></li>
+<li>
+<ul class="inheritance">
 <li>org.mitre.synthea.world.concepts.HealthRecord.Procedure</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -115,7 +120,7 @@
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">HealthRecord.Procedure</span>
-extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></pre>
+extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../serialized-form.html#org.mitre.synthea.world.concepts.HealthRecord.Procedure">Serialized Form</a></dd>
@@ -146,11 +151,14 @@ extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.En
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Procedure.html#provider">provider</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Procedure.html#reasons">reasons</a></span></code>&nbsp;</td>
-</tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="fields.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;org.mitre.synthea.world.concepts.<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></h3>
+<code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#reasons">reasons</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="fields.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.Entry">
 <!--   -->
@@ -187,11 +195,18 @@ extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.En
 </a>
 <h3>Method Summary</h3>
 <ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.mitre.synthea.world.concepts.<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a></h3>
+<code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#containsReason-java.lang.String-java.lang.String-">containsReason</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html#mergeReasonList-java.util.List-">mergeReasonList</a></code></li>
+</ul>
+<ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.Entry">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.mitre.synthea.world.concepts.<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></h3>
-<code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#containsCode-java.lang.String-java.lang.String-">containsCode</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#getCost--">getCost</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#toString--">toString</a></code></li>
+<code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#containsCode-java.lang.String-java.lang.String-">containsCode</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#getCost--">getCost</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#mergeCodeList-java.util.List-">mergeCodeList</a>, <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Entry.html#toString--">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -214,15 +229,6 @@ extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.En
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="reasons">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>reasons</h4>
-<pre>public&nbsp;java.util.List&lt;<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt; reasons</pre>
-</li>
-</ul>
 <a name="provider">
 <!--   -->
 </a>
@@ -315,7 +321,7 @@ extends <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.En
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.Entry">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>

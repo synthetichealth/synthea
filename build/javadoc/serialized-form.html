@@ -3250,7 +3250,7 @@
 <li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.CarePlan">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.CarePlan</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.CarePlan.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.CarePlan</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a> implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialization Methods</h3>
@@ -3283,10 +3283,6 @@
 <li class="blockList">
 <h4>activities</h4>
 <pre>java.util.Set&lt;E&gt; activities</pre>
-</li>
-<li class="blockList">
-<h4>reasons</h4>
-<pre>java.util.List&lt;E&gt; reasons</pre>
 </li>
 <li class="blockListLast">
 <h4>stopReason</h4>
@@ -3507,6 +3503,22 @@
 </li>
 </ul>
 </li>
+<li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.EntryWithReasons</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>reasons</h4>
+<pre>java.util.List&lt;E&gt; reasons</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.ImagingStudy">
 <!--   -->
 </a>
@@ -3625,7 +3637,7 @@
 <li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.Medication">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Medication</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Medication</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a> implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialization Methods</h3>
@@ -3657,10 +3669,6 @@
 <li class="blockList">
 <h3>Serialized Fields</h3>
 <ul class="blockList">
-<li class="blockList">
-<h4>reasons</h4>
-<pre>java.util.List&lt;E&gt; reasons</pre>
-</li>
 <li class="blockList">
 <h4>stopReason</h4>
 <pre><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a> stopReason</pre>
@@ -3716,15 +3724,11 @@
 <li class="blockList"><a name="org.mitre.synthea.world.concepts.HealthRecord.Procedure">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Procedure</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/concepts/HealthRecord.Procedure.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.HealthRecord.Procedure</a> extends <a href="org/mitre/synthea/world/concepts/HealthRecord.EntryWithReasons.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.EntryWithReasons</a> implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialized Fields</h3>
 <ul class="blockList">
-<li class="blockList">
-<h4>reasons</h4>
-<pre>java.util.List&lt;E&gt; reasons</pre>
-</li>
 <li class="blockList">
 <h4>provider</h4>
 <pre><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a> provider</pre>
