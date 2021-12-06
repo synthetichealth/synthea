@@ -195,7 +195,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>main</h4>
 <pre>public static&nbsp;void&nbsp;main(java.lang.String[]&nbsp;args)
-                 throws java.net.URISyntaxException</pre>
+                 throws java.net.URISyntaxException,
+                        java.io.IOException</pre>
 <div class="block">Generate the Graphviz-like graphs of the disease modules.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -203,6 +204,7 @@ extends java.lang.Object</pre>
      the default modules will be loaded using the ClassLoader.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.net.URISyntaxException</code> - on failure to load modules.</dd>
+<dd><code>java.io.IOException</code></dd>
 </dl>
 </li>
 </ul>
