@@ -169,11 +169,60 @@ public class HealthRecord implements Serializable {
     }
 
     /**
+     * Merges the passed in code list into the existing list of codes for this entry. If a code in
+     * otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.
+     * @param otherCodes codes to add to this entry
+     */
+    public void mergeCodeList(List<Code> otherCodes) {
+      otherCodes.forEach(oc -> {
+        if (! this.containsCode(oc.code, oc.system)) {
+          this.codes.add(oc);
+        }
+      });
+    }
+
+    /**
      * Converts the entry to a String.
      */
     @Override
     public String toString() {
       return String.format("%s %s", Instant.ofEpochMilli(start).toString(), type);
+    }
+  }
+
+  public abstract class EntryWithReasons extends Entry {
+    public List<Code> reasons;
+
+    /**
+     * Constructor for HealthRecord EntryWithReasons.
+     */
+    public EntryWithReasons(long time, String type) {
+      super(time, type);
+      this.reasons = new ArrayList<Code>();
+    }
+
+
+    /**
+     * Merges the passed in code list into the existing list of codes for this entry. If a code in
+     * otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.
+     * @param otherCodes codes to add to this entry
+     */
+    public void mergeReasonList(List<Code> otherCodes) {
+      otherCodes.forEach(oc -> {
+        if (! this.containsReason(oc.code, oc.system)) {
+          this.codes.add(oc);
+        }
+      });
+    }
+
+    /**
+     * Determines if the given entry contains the provided reason code in its list of reason codes.
+     * @param code clinical term
+     * @param system system for the code
+     * @return true if the code is there
+     */
+    public boolean containsReason(String code, String system) {
+      return this.reasons.stream().anyMatch(c -> code.equals(c.code) && system.equals(c.system));
     }
   }
 
@@ -206,8 +255,7 @@ public class HealthRecord implements Serializable {
     }
   }
 
-  public class Medication extends Entry {
-    public List<Code> reasons;
+  public class Medication extends EntryWithReasons {
     public Code stopReason;
     public transient JsonObject prescriptionDetails;
     public Claim claim;
@@ -219,7 +267,6 @@ public class HealthRecord implements Serializable {
      */
     public Medication(long time, String type) {
       super(time, type);
-      this.reasons = new ArrayList<Code>();
       // Create a medication claim.
       this.claim = new Claim(this, person);
     }
@@ -262,8 +309,7 @@ public class HealthRecord implements Serializable {
     }
   }
 
-  public class Procedure extends Entry {
-    public List<Code> reasons;
+  public class Procedure extends EntryWithReasons {
     public Provider provider;
     public Clinician clinician;
 
@@ -272,14 +318,12 @@ public class HealthRecord implements Serializable {
      */
     public Procedure(long time, String type) {
       super(time, type);
-      this.reasons = new ArrayList<Code>();
       this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
     }
   }
 
-  public class CarePlan extends Entry {
+  public class CarePlan extends EntryWithReasons {
     public Set<Code> activities;
-    public List<Code> reasons;
     public transient Set<JsonObject> goals;
     public Code stopReason;
 
@@ -289,7 +333,6 @@ public class HealthRecord implements Serializable {
     public CarePlan(long time, String type) {
       super(time, type);
       this.activities = new LinkedHashSet<Code>();
-      this.reasons = new ArrayList<Code>();
       this.goals = new LinkedHashSet<JsonObject>();
     }
 
