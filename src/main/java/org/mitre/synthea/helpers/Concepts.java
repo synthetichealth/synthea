@@ -7,8 +7,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -71,7 +71,10 @@ public class Concepts {
     Map<Code,Set<String>> concepts = new TreeMap<Code,Set<String>>();
 
     Utilities.walkAllModules((modulesPath, modulePath) -> {
-      try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
+      try {
+        String moduleRelativePath = modulesPath.getParent().relativize(modulePath).toString();
+        JsonReader reader = new JsonReader(new StringReader(
+                Utilities.readResource(moduleRelativePath)));
         JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
         inventoryModule(concepts, module);
       } catch (IOException e) {

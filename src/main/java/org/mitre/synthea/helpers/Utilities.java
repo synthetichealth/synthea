@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
@@ -20,6 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.mitre.synthea.engine.Logic;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
@@ -442,8 +442,7 @@ public class Utilities {
    *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path modulesPath = Paths.get(modulesFolder.toURI());
+    Path modulesPath = Module.getModulesPath();
 
     walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
   }

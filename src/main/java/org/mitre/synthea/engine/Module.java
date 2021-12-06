@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
@@ -78,9 +79,7 @@ public class Module implements Cloneable, Serializable {
     Properties moduleOverrides = getModuleOverrides();
 
     try {
-      URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
-      fixPathFromJar(modulesURI);
-      Path modulesPath = Paths.get(modulesURI);
+      Path modulesPath = getModulesPath();
       submoduleCount = walkModuleTree(modulesPath, retVal, moduleOverrides, false);
     } catch (Exception e) {
       e.printStackTrace();
@@ -91,6 +90,19 @@ public class Module implements Cloneable, Serializable {
                       submoduleCount);
 
     return retVal;
+  }
+
+  /**
+   * The the path to the modules directory, ensuring the right file system support is loaded if
+   * we are running from a jar file.
+   * @return the path
+   * @throws URISyntaxException if something goes wrong
+   * @throws IOException if something goes wrong
+   */
+  public static Path getModulesPath() throws URISyntaxException, IOException {
+    URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
+    fixPathFromJar(modulesURI);
+    return Paths.get(modulesURI);
   }
 
   private static Properties getModuleOverrides() {
@@ -170,7 +182,14 @@ public class Module implements Cloneable, Serializable {
     }
   }
 
-  private static String relativePath(Path filePath, Path modulesFolder) {
+  /**
+   * Create a relative path from a folder to a file, removing the file extension and normalizing
+   * path segment separators.
+   * @param filePath path to a file
+   * @param modulesFolder path to the folder
+   * @return relative path to file from the folder
+   */
+  public static String relativePath(Path filePath, Path modulesFolder) {
     String relativeFilePath = modulesFolder.relativize(filePath).toString()
         .replaceFirst(".json", "").replace("\\", "/");
     return relativeFilePath;
