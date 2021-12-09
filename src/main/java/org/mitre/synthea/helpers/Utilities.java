@@ -11,13 +11,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.Range;
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
@@ -336,6 +343,37 @@ public class Utilities {
       e.printStackTrace();
     }
     return version;
+  }
+
+  public static Range<Long> parseDateRange(String range) throws IllegalArgumentException {
+    if (!range.contains("-")
+        || range.substring(0, range.indexOf("-")).length() < 1
+        || range.substring(range.indexOf("-") + 1).length() < 1) {
+      throw new IllegalArgumentException(
+          "LOOKUP TABLE '"
+              + "' ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
+              + range + "'");
+    }
+
+    Pattern dateRangeRegex =
+        Pattern.compile("^(\\d{4}\\-\\d{2}\\-\\d{2})\\-(\\d{4}\\-\\d{2}\\-\\d{2})$");
+
+    Matcher matcher = dateRangeRegex.matcher(range);
+
+    Range<Long> parsedRange;
+    if (matcher.matches()) {
+      parsedRange = Range.between(
+        LocalDate.parse(matcher.group(1), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
+            .toInstant(ZoneOffset.UTC).toEpochMilli(),
+        LocalDate.parse(matcher.group(2), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
+            .toInstant(ZoneOffset.UTC).toEpochMilli());
+    } else {
+      parsedRange = Range.between(
+          Long.parseLong(range.substring(0, range.indexOf("-"))),
+          Long.parseLong(range.substring(range.indexOf("-") + 1)));
+    }
+
+    return parsedRange;
   }
 
   /**
