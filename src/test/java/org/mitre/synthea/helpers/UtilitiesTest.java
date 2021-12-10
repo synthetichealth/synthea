@@ -1,5 +1,11 @@
 package org.mitre.synthea.helpers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.google.gson.JsonPrimitive;
 
 import java.time.LocalDateTime;
@@ -11,7 +17,6 @@ import org.apache.commons.lang3.Range;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 
-import static org.junit.Assert.*;
 
 public class UtilitiesTest {
 

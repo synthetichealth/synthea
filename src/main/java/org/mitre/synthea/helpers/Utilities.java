@@ -345,13 +345,22 @@ public class Utilities {
     return version;
   }
 
+  /**
+   * Parse a range of Synthea timestamps (milliseconds since the epoch) from a String. The string
+   * can be in one of two formats:
+   * "milliseconds start-milliseconds end" example: "1599264000000-1627948800000"
+   * or
+   * "ISO date start-ISO date end" example: "2020-09-05-2021-08-03"
+   * @param range String containing the range
+   * @return A Range with the min and max set to Synthea timestamps, longs containing milliseconds
+   *     since the epoch
+   * @throws IllegalArgumentException If the string is not in one of the expected formats
+   */
   public static Range<Long> parseDateRange(String range) throws IllegalArgumentException {
     if (!range.contains("-")
         || range.substring(0, range.indexOf("-")).length() < 1
         || range.substring(range.indexOf("-") + 1).length() < 1) {
-      throw new IllegalArgumentException(
-          "LOOKUP TABLE '"
-              + "' ERROR: Age Range must be in the form: 'ageLow-ageHigh'. Found '"
+      throw new IllegalArgumentException("Time range format error. Expect low-high. Found '"
               + range + "'");
     }
 
