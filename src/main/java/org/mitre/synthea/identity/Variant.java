@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Variant implements IdentityRecord {
   private String variantId;
-  private Period period;
   private String givenName;
   private String familyName;
   private String phone;
@@ -15,6 +14,7 @@ public class Variant implements IdentityRecord {
   private String zipCode;
   private LocalDate dateOfBirth;
   private String gender;
+  private transient Seed seed;
 
 
   public Variant() {
@@ -30,14 +30,13 @@ public class Variant implements IdentityRecord {
   }
 
   public Period getPeriod() {
-    return period;
-  }
-
-  public void setPeriod(Period period) {
-    this.period = period;
+    return seed.getPeriod();
   }
 
   public String getGivenName() {
+    if (givenName == null) {
+      return seed.getGivenName();
+    }
     return givenName;
   }
 
@@ -46,6 +45,9 @@ public class Variant implements IdentityRecord {
   }
 
   public String getFamilyName() {
+    if (familyName == null) {
+      return familyName;
+    }
     return familyName;
   }
 
@@ -54,6 +56,9 @@ public class Variant implements IdentityRecord {
   }
 
   public String getPhone() {
+    if (phone == null) {
+      return phone;
+    }
     return phone;
   }
 
@@ -62,6 +67,9 @@ public class Variant implements IdentityRecord {
   }
 
   public List<String> getAddressLines() {
+    if (addressLines == null || addressLines.isEmpty()) {
+      return seed.getAddressLines();
+    }
     return addressLines;
   }
 
@@ -70,6 +78,9 @@ public class Variant implements IdentityRecord {
   }
 
   public String getCity() {
+    if (city == null) {
+      return seed.getCity();
+    }
     return city;
   }
 
@@ -78,6 +89,9 @@ public class Variant implements IdentityRecord {
   }
 
   public String getState() {
+    if (state == null) {
+      return seed.getState();
+    }
     return state;
   }
 
@@ -86,6 +100,9 @@ public class Variant implements IdentityRecord {
   }
 
   public String getZipCode() {
+    if (zipCode == null) {
+      return seed.getZipCode();
+    }
     return zipCode;
   }
 
@@ -94,6 +111,9 @@ public class Variant implements IdentityRecord {
   }
 
   public LocalDate getDateOfBirth() {
+    if (dateOfBirth == null) {
+      return seed.getDateOfBirth();
+    }
     return dateOfBirth;
   }
 
@@ -102,10 +122,21 @@ public class Variant implements IdentityRecord {
   }
 
   public String getGender() {
+    if (gender == null) {
+      return seed.getGender();
+    }
     return gender;
   }
 
   public void setGender(String gender) {
     this.gender = gender;
+  }
+
+  public Seed getSeed() {
+    return seed;
+  }
+
+  public void setSeed(Seed seed) {
+    this.seed = seed;
   }
 }

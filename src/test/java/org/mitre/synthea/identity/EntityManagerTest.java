@@ -14,7 +14,10 @@ public class EntityManagerTest {
     EntityManager em = EntityManager.fromJSON(rawJSON);
     Assert.assertEquals(1, em.getRecords().size());
     Assert.assertEquals("F", em.getRecords().get(0).getGender());
-    Assert.assertEquals("Rita Ebony", em.getRecords().get(0).getSeeds().get(0).getGivenName());
-    em.getRecords().get(0).getSeeds().get(0).getDateOfBirth();
+    Seed firstSeed = em.getRecords().get(0).getSeeds().get(0);
+    Assert.assertEquals("Rita Ebony", firstSeed.getGivenName());
+    Assert.assertNotNull(firstSeed.getDateOfBirth());
+    Variant firstVariant = firstSeed.getVariants().get(0);
+    Assert.assertEquals("Margarita Ebony", firstVariant.getGivenName());
   }
 }

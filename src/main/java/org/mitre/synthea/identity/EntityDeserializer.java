@@ -25,8 +25,8 @@ public class EntityDeserializer implements JsonDeserializer<Entity> {
     List<Seed> seeds = new ArrayList<>();
     entityObject.getAsJsonArray("seeds").forEach(seedElement -> {
       Seed seed = context.deserialize(seedElement, Seed.class);
-
       seed.setEntity(entity);
+      seed.getVariants().forEach(variant -> variant.setSeed(seed));
       seeds.add(seed);
     });
     entity.setSeeds(seeds);
