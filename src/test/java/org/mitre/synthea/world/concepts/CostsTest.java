@@ -56,13 +56,13 @@ public class CostsTest {
     Code code = new Code("SNOMED","363753007","Crutches");
     double minCost = 66.96;
     double maxCost = 66.96;
-    
+
     Entry fakeDevice = person.record.deviceImplant(time, code.display);
     fakeDevice.codes.add(code);
-    
+
     double cost = Costs.determineCostOfEntry(fakeDevice, person);
     // at this point person has no state set, so there won't be a geographic factor applied
-    
+
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
 
@@ -77,13 +77,13 @@ public class CostsTest {
     Code code = new Code("SNOMED","337388004","Blood glucose testing strips");
     double minCost = 8.32;
     double maxCost = 8.32;
-    
+
     Entry fakeSupply = person.record.useSupply(time, code, 1);
     fakeSupply.codes.add(code);
-    
+
     double cost = Costs.determineCostOfEntry(fakeSupply, person);
     // at this point person has no state set, so there won't be a geographic factor applied
-    
+
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
 
@@ -122,10 +122,10 @@ public class CostsTest {
     code = new Code("SNOMED","48387007","Incision of trachea (procedure)");
     minCost = 235;
     maxCost = 1690;
-    
+
     fakeEntry = person.record.procedure(time, code.display);
     fakeEntry.codes.add(code);
-    
+
     cost = Costs.determineCostOfEntry(fakeEntry, person);
     adjFactor = 1.2010;
     assertTrue(cost <= (maxCost * adjFactor));

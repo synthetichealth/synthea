@@ -199,7 +199,7 @@ public class ProviderTest {
     Provider.loadProviders(location, 1L);
     Provider vaProvider = Provider.getProviderList()
                                   .stream()
-                                  .filter(p -> "VA Facility".equals(p.type))
+                                  .filter(p -> ProviderType.VETERAN.equals(p.type))
                                   .findFirst().get();
     Person veteran = new Person(0L);
     veteran.attributes.put("veteran", "vietnam");
@@ -230,7 +230,7 @@ public class ProviderTest {
            }
          });
   }
-  
+
   @Test
   public void testNPICreation() {
     Assert.assertEquals("1234567893", Provider.toNPI(123_456_789L));

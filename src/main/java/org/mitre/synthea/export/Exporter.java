@@ -49,9 +49,6 @@ public abstract class Exporter {
 
   private static final List<Pair<Person, Long>> deferredExports =
           Collections.synchronizedList(new LinkedList<>());
-  
-  private static final Set<Flushable> flushableExporters = 
-          Collections.synchronizedSet(new HashSet<>());
 
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters =
           new ConcurrentHashMap<Path, PrintWriter>();
@@ -354,7 +351,7 @@ public abstract class Exporter {
    */
   static void overwriteFile(Path file, String contents) {
     try {
-      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE, 
+      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE,
               StandardOpenOption.TRUNCATE_EXISTING);
     } catch (IOException e) {
       e.printStackTrace();
@@ -509,7 +506,7 @@ public abstract class Exporter {
 
     closeOpenFiles();
   }
-  
+
   /**
    * Filter the patient's history to only the last __ years
    * but also include relevant history from before that. Exclude

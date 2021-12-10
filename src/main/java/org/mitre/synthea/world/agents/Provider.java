@@ -40,7 +40,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   public enum ProviderType {
     DIALYSIS, HOME_HEALTH, HOSPICE, HOSPITAL, LONG_TERM,
-    NURSING, PRIMARY, REHAB, URGENT, VETERAN, PHARMACY;
+    NURSING, PRIMARY, REHAB, URGENT, VETERAN, PHARMACY, IHS;
   }
 
   public static final String ENCOUNTERS = "encounters";
@@ -235,9 +235,9 @@ public class Provider implements QuadTreeElement, Serializable {
       return true;
     }
     switch (this.type) {
-      case "VA Facility":
+      case VETERAN:
         return person.attributes.containsKey(Person.VETERAN);
-      case "IHS Facility":
+      case IHS:
         return "native".equals(person.attributes.get(Person.RACE));
       default:
         return true;
@@ -333,30 +333,35 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.INPATIENT);
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(location, hospitalFile, servicesProvided, true, clinicianSeed);
+        loadProviders(location, hospitalFile,
+            ProviderType.HOSPITAL, servicesProvided, clinicianSeed);
 
         String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
         if (ihsHospitalFile != null && ihsHospitalFile.length() > 0) {
-          loadProviders(location, ihsHospitalFile, servicesProvided, true, clinicianSeed);
+          loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
+                  clinicianSeed);
         }
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, servicesProvided, true, clinicianSeed);
+        loadProviders(location, vaFile,
+            ProviderType.VETERAN, servicesProvided, clinicianSeed);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(location, primaryCareFile, servicesProvided, false, clinicianSeed);
+        loadProviders(location, primaryCareFile,
+            ProviderType.PRIMARY, servicesProvided, clinicianSeed);
         String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
         if (ihsPCFile != null && ihsPCFile.length() > 0) {
-          loadProviders(location, ihsPCFile, servicesProvided, true, clinicianSeed);
+          loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed);
         }
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(location, urgentcareFile, servicesProvided, true, clinicianSeed);
+        loadProviders(location, urgentcareFile,
+            ProviderType.URGENT, servicesProvided, clinicianSeed);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -404,7 +409,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      Set<EncounterType> servicesProvided, boolean institutional, long clinicianSeed)
+      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed)
       throws IOException {
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -421,7 +426,9 @@ public class Provider implements QuadTreeElement, Serializable {
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Provider parsed = csvLineToProvider(row);
-        parsed.institutional = institutional;
+        parsed.type = providerType;
+        parsed.institutional =
+            (providerType == ProviderType.HOSPITAL || providerType == ProviderType.NURSING);
         parsed.servicesProvided.addAll(servicesProvided);
 
         if ("Yes".equals(row.remove("emergency"))) {
@@ -559,7 +566,7 @@ public class Provider implements QuadTreeElement, Serializable {
     doc.incrementEncounters();
     return doc;
   }
-  
+
   private static String toProviderNPI(String idStr, long defaultId) {
     long id = defaultId;
     try {
@@ -570,10 +577,10 @@ public class Provider implements QuadTreeElement, Serializable {
     if (id > 888_888_888L) {
       throw new IllegalArgumentException(
               String.format("Supplied id (%d) is too big, max is %d", id, 888_888_888L));
-    }    
+    }
     return toNPI(888_888_888L - id);
   }
-  
+
   /**
    * Creates an NPI from a number by appending a check digit calculated according to:
    * https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand/Downloads/NPIcheckdigit.pdf

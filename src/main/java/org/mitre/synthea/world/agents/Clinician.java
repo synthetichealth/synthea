@@ -65,15 +65,15 @@ public class Clinician implements Serializable, QuadTreeElement {
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
   }
-  
+
   private static String toClinicianNPI(long id) {
     if (id > 999_999_999L) {
       throw new IllegalArgumentException(
               String.format("Supplied id (%d) is too big, max is %d", id, 999_999_999L));
-    }    
+    }
     return Provider.toNPI(999_999_999L - id);
   }
-  
+
   /**
    * Get the Clinician's UUID.
    * @return UUID as String.

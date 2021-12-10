@@ -72,35 +72,35 @@ import org.mitre.synthea.world.geography.CMSStateCodeMapper;
  * <a href="https://github.com/CMSgov/beneficiary-fhir-data/tree/master/apps/bfd-model">
  * https://github.com/CMSgov/beneficiary-fhir-data/tree/master/apps/bfd-model</a>.
  * Workflow:
- *    This exporter now takes advantage of an analyst-centered, config approach 
+ *    This exporter now takes advantage of an analyst-centered, config approach
  *      to setting exported data.
- *    Specifically, 
- *    1. An analyst uses a spreadsheet to enter information from official documents 
+ *    Specifically,
+ *    1. An analyst uses a spreadsheet to enter information from official documents
  *      (see syntax below)
  *    2. Spreadsheet is exported as a tab-separated values file (TSV)
- *    3. TSV file is copied to ./src/main/resources/export as bfd_field_values.tsv 
+ *    3. TSV file is copied to ./src/main/resources/export as bfd_field_values.tsv
  *        (or whatever is specified in synthea.properties)
- *    4. when this exporter runs, it will read in the config file 
+ *    4. when this exporter runs, it will read in the config file
  *        to set the values needed for the export
- *    5. the resulting values are then written out to the export files 
+ *    5. the resulting values are then written out to the export files
  *        in the order the export files require
  * Syntax for TSV file:
  *    empty cell   : Not yet analyzed, exporter prints a reminder
  *    N/A          : Not applicable, ignored by exporter
  *    (ccccc)      : General comments are enclosed in parenthesis, ignored by exporter
  *                 : If this is the only content, exporter prints a reminder
- *                 : If a value precedes the comment, exporter will use value, 
- *                 : and ignore the comment (e.g., 0001 (always 0001 for inpatient) will 
+ *                 : If a value precedes the comment, exporter will use value,
+ *                 : and ignore the comment (e.g., 0001 (always 0001 for inpatient) will
  *                 : result in just 0001)
  *    vvvvv        : Literal replacement value to be used by exporter (e.g., INSERT)
- *    a,b,c,d      : A "flat" distribution, exporter will randomly pick one 
- *                 : of the comma delimited values. E.g., B,G (B = brand, G = generic) 
+ *    a,b,c,d      : A "flat" distribution, exporter will randomly pick one
+ *                 : of the comma delimited values. E.g., B,G (B = brand, G = generic)
  *                 : exporter randomly chooses either B or G and ignores comment
  *    Coded        : Implementation in exporter source code, ignored
- *    [Blank]      : Cell was analyzed and value should be empty 
+ *    [Blank]      : Cell was analyzed and value should be empty
  */
 public class BB2RIFExporter {
-  
+
   private RifWriters rifWriters;
 
   private static AtomicLong beneId =
@@ -128,7 +128,7 @@ public class BB2RIFExporter {
   CodeMapper dmeCodeMapper;
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
-  
+
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
 
@@ -136,7 +136,7 @@ public class BB2RIFExporter {
   private static final String BB2_PARTD_CONTRACTS = "BB2_PARTD_CONTRACTS";
   private static final String BB2_HIC_ID = "BB2_HIC_ID";
   private static final String BB2_MBI = "BB2_MBI";
-  
+
   /**
    * Day-Month-Year date format.
    */
@@ -151,7 +151,7 @@ public class BB2RIFExporter {
       return BB2_DATE_FORMAT.format(new Date(time));
     }
   }
-  
+
   /**
    * Create the output folder and files. Write headers to each file.
    */
@@ -179,7 +179,7 @@ public class BB2RIFExporter {
       throw new RuntimeException(e);
     }
   }
-  
+
   private static CLIA[] initCliaLabNumbers() {
     int numLabs = Config.getAsInteger("exporter.bfd.clia_labs_count",1);
     CLIA[] labNumbers = new CLIA[numLabs];
@@ -199,10 +199,10 @@ public class BB2RIFExporter {
     File output = Exporter.getOutputFolder("bfd", null);
     output.mkdirs();
     Path outputDirectory = output.toPath();
-    
+
     rifWriters = new RifWriters(outputDirectory);
   }
-  
+
   /**
    * Export a manifest file that lists all of the other BFD files (except the NPI file
    * which is special).
@@ -214,7 +214,7 @@ public class BB2RIFExporter {
     StringWriter manifest = new StringWriter();
     manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
     manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
-    manifest.write(String.format(" timestamp=\"%s\" ", 
+    manifest.write(String.format(" timestamp=\"%s\" ",
              java.time.Instant.now()
                      .atZone(java.time.ZoneId.of("Z"))
                      .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
@@ -285,7 +285,7 @@ public class BB2RIFExporter {
       }
     }
   }
-  
+
   /**
    * Export the current values of IDs so subsequent runs can use them as a starting point.
    * @throws IOException if something goes wrong
@@ -324,14 +324,14 @@ public class BB2RIFExporter {
     exportHospice(person, stopTime);
     exportSNF(person, stopTime);
   }
-  
+
   /**
    * Export a beneficiary details for single person.
    * @param person the person to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiary(Person person, 
+  private void exportBeneficiary(Person person,
         long stopTime) throws IOException {
     String beneIdStr = Long.toString(BB2RIFExporter.beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
@@ -389,7 +389,7 @@ public class BB2RIFExporter {
                 bb2RaceCode(
                         (String)person.attributes.get(Person.ETHNICITY),
                         (String)person.attributes.get(Person.RACE)));
-        fieldValues.put(BENEFICIARY.BENE_SRNM_NAME, 
+        fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
                 (String)person.attributes.get(Person.LAST_NAME));
         String givenName = (String)person.attributes.get(Person.FIRST_NAME);
         fieldValues.put(BENEFICIARY.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
@@ -422,8 +422,8 @@ public class BB2RIFExporter {
         if (initialBeneEntitlementReason != null) {
           fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
         }
-        
-        for (PartDContractHistory.PartDContractPeriod period: 
+
+        for (PartDContractHistory.PartDContractPeriod period:
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
           if (partDContractID != null) {
@@ -443,7 +443,7 @@ public class BB2RIFExporter {
       }
     }
   }
-  
+
   private String getBB2SexCode(String sex) {
     switch (sex) {
       case "M":
@@ -507,7 +507,7 @@ public class BB2RIFExporter {
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
     return mappedDiagnosisCodes.contains("N18.6");
   }
-  
+
   /**
    * Export a beneficiary history for single person. Assumes exportBeneficiary
    * was called first to set up various ID on person
@@ -515,7 +515,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiaryHistory(Person person, 
+  private void exportBeneficiaryHistory(Person person,
         long stopTime) throws IOException {
     HashMap<BENEFICIARY_HISTORY, String> fieldValues = new HashMap<>();
 
@@ -542,7 +542,7 @@ public class BB2RIFExporter {
             bb2RaceCode(
                     (String)person.attributes.get(Person.ETHNICITY),
                     (String)person.attributes.get(Person.RACE)));
-    fieldValues.put(BENEFICIARY_HISTORY.BENE_SRNM_NAME, 
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_SRNM_NAME,
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
@@ -582,7 +582,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long stopTime) 
+  private void exportOutpatient(Person person, long stopTime)
         throws IOException {
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
@@ -598,9 +598,9 @@ public class BB2RIFExporter {
       if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent)) {
         continue;
       }
-      
+
       staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
-      
+
       // The REQUIRED fields
       fieldValues.put(OUTPATIENT.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(OUTPATIENT.CLM_ID, "" + claimId);
@@ -765,21 +765,21 @@ public class BB2RIFExporter {
           // Add a single top-level entry.
           fieldValues.put(OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
           fieldValues.put(OUTPATIENT.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-          // 99241: "Office consultation for a new or established patient" 
+          // 99241: "Office consultation for a new or established patient"
           fieldValues.put(OUTPATIENT.HCPCS_CD, "99241");
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
       }
     }
   }
-  
+
   /**
    * Export inpatient claims details for a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long stopTime) 
+  private void exportInpatient(Person person, long stopTime)
         throws IOException {
     HashMap<INPATIENT, String> fieldValues = new HashMap<>();
 
@@ -799,7 +799,7 @@ public class BB2RIFExporter {
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, INPATIENT.class, person);
-      
+
       // The REQUIRED fields
       fieldValues.put(INPATIENT.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(INPATIENT.CLM_ID, "" + claimId);
@@ -1054,7 +1054,7 @@ public class BB2RIFExporter {
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(CARRIER.CARR_NUM,
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
-      fieldValues.put(CARRIER.CLM_PMT_AMT, 
+      fieldValues.put(CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
@@ -1120,7 +1120,7 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(CARRIER.PRNCPAL_DGNS_CD)) {
         fieldValues.put(CARRIER.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
-      
+
       synchronized (rifWriters.getOrCreateWriter(CARRIER.class)) {
         int lineNum = 1;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
@@ -1196,7 +1196,7 @@ public class BB2RIFExporter {
       }
     }
   }
-  
+
   private static String bb2TaxId(String ssn) {
     if (ssn != null) {
       return ssn.replaceAll("-", "");
@@ -1204,7 +1204,7 @@ public class BB2RIFExporter {
       return "";
     }
   }
-  
+
   private String getCarrier(String state, CARRIER column) {
     for (LinkedHashMap<String, String> row : carrierLookup) {
       if (row.get("STATE").equals(state) || row.get("STATE_CODE").equals(state)) {
@@ -1213,14 +1213,14 @@ public class BB2RIFExporter {
     }
     return "0";
   }
-  
+
   /**
    * Utility class to manage a beneficiary's part D contract history.
    */
   static class PartDContractHistory {
     private static final PartDContractID[] partDContractIDs = initContractIDs();
     private List<PartDContractPeriod> contractPeriods;
-    
+
     /**
      * Create a new random Part D contract history.
      * @param rand source of randomness
@@ -1231,7 +1231,7 @@ public class BB2RIFExporter {
       int endYear = Utilities.getYear(stopTime);
       int endMonth = 12;
       contractPeriods = new ArrayList<>();
-      PartDContractPeriod currentContractPeriod = 
+      PartDContractPeriod currentContractPeriod =
               new PartDContractPeriod(endYear - yearsOfHistory, rand);
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         if (year == endYear) {
@@ -1256,7 +1256,7 @@ public class BB2RIFExporter {
       currentContractPeriod.setEnd(stopTime);
       contractPeriods.add(currentContractPeriod);
     }
-    
+
     /**
      * Get the contract ID for the specified point in time.
      * @param timeStamp the point in time
@@ -1270,7 +1270,7 @@ public class BB2RIFExporter {
       }
       return null;
     }
-    
+
     /**
      * Get a list of contract periods that were active during the specified year.
      * @param year the year
@@ -1285,7 +1285,7 @@ public class BB2RIFExporter {
       }
       return Collections.unmodifiableList(periods);
     }
-    
+
     /**
      * Get a count of months that were covered by Part D in the specified year.
      * @param year the year
@@ -1300,7 +1300,7 @@ public class BB2RIFExporter {
       }
       return count;
     }
-    
+
     /**
      * Get a random contract ID or null.
      * @param rand source of randomness
@@ -1314,10 +1314,10 @@ public class BB2RIFExporter {
       }
       return partDContractIDs[rand.randInt(partDContractIDs.length)];
     }
-    
+
     /**
      * Initialize an array containing all of the configured contract IDs.
-     * @return 
+     * @return
      */
     private static PartDContractID[] initContractIDs() {
       int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
@@ -1340,8 +1340,8 @@ public class BB2RIFExporter {
       private PartDContractID contractID;
 
       /**
-       * Create a new contract period. Contract periods have a one month granularity so the 
-       * supplied start and end are adjusted to the first day of the start month and last day of 
+       * Create a new contract period. Contract periods have a one month granularity so the
+       * supplied start and end are adjusted to the first day of the start month and last day of
        * the end month.
        * @param start the start of the contract period
        * @param end the end of the contract period
@@ -1357,7 +1357,7 @@ public class BB2RIFExporter {
         }
         this.contractID = contractID;
       }
-      
+
       /**
        * Create a new contract period starting on the first days of the specified month. A contract
        * id is randomly assigned.
@@ -1378,7 +1378,7 @@ public class BB2RIFExporter {
       public PartDContractPeriod(int year, RandomNumberGenerator rand) {
         this(year, 1, rand);
       }
-      
+
       /**
        * Get the contract id.
        * @return the contract id or null if not enrolled during this period
@@ -1386,7 +1386,7 @@ public class BB2RIFExporter {
       public PartDContractID getContractID() {
         return contractID;
       }
-      
+
       /**
        * Get a list of years covered by this period.
        * @return list of years
@@ -1403,9 +1403,9 @@ public class BB2RIFExporter {
         }
         return years;
       }
-      
+
       /**
-       * Get the list of months that are covered by this contract period in the specified year. 
+       * Get the list of months that are covered by this contract period in the specified year.
        * @param year the year
        * @return the list
        */
@@ -1440,7 +1440,7 @@ public class BB2RIFExporter {
         }
         this.endDate = newContractPeriod.startDate.minusDays(1);
       }
-      
+
       /**
        * Set the end of this period to the supplied point in time (in ms since the epoch).
        * @param stopTime the point in time
@@ -1480,7 +1480,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long stopTime) 
+  private void exportPrescription(Person person, long stopTime)
         throws IOException {
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
@@ -1514,7 +1514,7 @@ public class BB2RIFExporter {
         fieldValues.put(PDE.PRSCRBR_ID,
             "" + (9_999_999_999L - encounter.clinician.identifier));
         fieldValues.put(PDE.RX_SRVC_RFRNC_NUM, "" + pdeId);
-        fieldValues.put(PDE.PROD_SRVC_ID, 
+        fieldValues.put(PDE.PROD_SRVC_ID,
                 medicationCodeMapper.map(medication.codes.get(0).code, person));
         // The following field was replaced by the PartD contract ID, leaving this here for now
         // until this is validated
@@ -1547,7 +1547,7 @@ public class BB2RIFExporter {
           fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
                   String.format("%.2f", (costs - 4550)));
         }
-        fieldValues.put(PDE.PTNT_PAY_AMT, 
+        fieldValues.put(PDE.PTNT_PAY_AMT,
                 String.format("%.2f", medication.claim.getPatientCost()));
         fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
             String.format("%.2f", medication.claim.getCoveredCost()));
@@ -1576,7 +1576,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportDME(Person person, long stopTime) 
+  private void exportDME(Person person, long stopTime)
         throws IOException {
     HashMap<DME, String> fieldValues = new HashMap<>();
 
@@ -2083,7 +2083,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(SNF.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(SNF.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
-      
+
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
@@ -2373,13 +2373,13 @@ public class BB2RIFExporter {
 
   /**
    * Get the current instance of the BBExporter.
-   * 
+   *
    * @return the current instance of the BBExporter.
    */
   public static BB2RIFExporter getInstance() {
     return SingletonHolder.instance;
   }
-  
+
   /**
    * Utility class for dealing with code mapping configuration writers.
    */
@@ -2388,7 +2388,7 @@ public class BB2RIFExporter {
             "exporter.bfd.require_code_maps", true);
     private HashMap<String, List<Map<String, String>>> map;
     private boolean mapImported = false;
-    
+
     /**
      * Create a new CodeMapper for the supplied JSON string.
      * @param jsonMap a stringified JSON mapping writer. Expects the following format:
@@ -2419,9 +2419,9 @@ public class BB2RIFExporter {
           // For testing, the mapping writer is not present.
           System.out.println("BB2Exporter is running without " + jsonMap);
         }
-      }      
+      }
     }
-    
+
     /**
      * Determines whether this mapper has an entry for the supplied code.
      * @param codeToMap the Synthea code to look for
@@ -2441,7 +2441,7 @@ public class BB2RIFExporter {
     public boolean hasMap() {
       return mapImported;
     }
-    
+
     /**
      * Get one of the BFD codes for the supplied Synthea code. Equivalent to
      * {@code map(codeToMap, "code", rand)}.
@@ -2504,11 +2504,11 @@ public class BB2RIFExporter {
    * Utility class for writing to BB2 writers.
    */
   private static class SynchronizedBBLineWriter<E extends Enum<E>> {
-    
+
     private String bbFieldSeparator = "|";
     private final Path path;
     private final Class<E> clazz;
-    
+
     /**
      * Construct a new instance. Fields will be separated using the default '|' character.
      * @param path the file path to write to
@@ -2532,7 +2532,7 @@ public class BB2RIFExporter {
       this.bbFieldSeparator = separator;
       writeHeaderIfNeeded();
     }
-    
+
     /**
      * Write a BB2 header if the file is not present or is empty.
      * @throws IOException if something goes wrong
@@ -2555,12 +2555,12 @@ public class BB2RIFExporter {
       String line = String.join(bbFieldSeparator, fields);
       Exporter.appendToFile(path, line);
     }
-    
+
     /**
      * Write a BB2 writer line.
      * @param fieldValues a sparse map of column names to values, missing values will result in
      *     empty values in the corresponding column
-     * @throws IOException if something goes wrong 
+     * @throws IOException if something goes wrong
      */
     public void writeValues(Map<E, String> fieldValues)
             throws IOException {
@@ -2577,14 +2577,14 @@ public class BB2RIFExporter {
       return path.toFile();
     }
   }
-  
+
   /**
    * Class to manage mapping values in the static BFD TSV writer to the exported writers.
    */
   public static class StaticFieldConfig {
     List<LinkedHashMap<String, String>> config;
     Map<String, LinkedHashMap<String, String>> configMap;
-    
+
     /**
      * Default constructor that parses the TSV config writer.
      * @throws IOException if the writer can't be read.
@@ -2597,7 +2597,7 @@ public class BB2RIFExporter {
         configMap.put(row.get("Field"), row);
       }
     }
-    
+
     /**
      * Only used for unit tests.
      * @param <E> the type parameter
@@ -2608,7 +2608,7 @@ public class BB2RIFExporter {
     <E extends Enum<E>> String getValue(String field, Class<E> tableEnum) {
       return configMap.get(field).get(tableEnum.getSimpleName());
     }
-    
+
     Set<String> validateTSV() {
       LinkedHashSet tsvIssues = new LinkedHashSet<>();
       for (Class tableEnum: BB2RIFStructure.RIF_FILES) {
@@ -2652,7 +2652,7 @@ public class BB2RIFExporter {
       }
       return tsvIssues;
     }
-    
+
     /**
      * Set the configured values from the BFD TSV into the supplied map.
      * @param <E> the type parameter.
@@ -2665,7 +2665,7 @@ public class BB2RIFExporter {
       // Get the name of the columnName to populate. This must match a column name in the
       // config TSV.
       String columnName = tableEnum.getSimpleName();
-      
+
       // Get the valueOf method for the supplied enum using reflection.
       // We'll use this to convert the string field name to the corresponding enum value
       Method valueOf;
@@ -2676,7 +2676,7 @@ public class BB2RIFExporter {
         // method but the compiler isn't clever enought to figure that out
         throw new IllegalArgumentException(ex);
       }
-      
+
       // Iterate over all of the rows in the TSV
       for (LinkedHashMap<String, String> row: config) {
         String cellContents = stripComments(row.get(columnName));
@@ -2702,7 +2702,7 @@ public class BB2RIFExporter {
         }
       }
     }
-    
+
     /**
      * Remove comments (that consist of text in braces like this) and white space. Note that
      * this is greedy so "(foo) bar (baz)" would yield "".
@@ -2767,7 +2767,7 @@ public class BB2RIFExporter {
    * Utility class for working with CMS MBIs.
    * Note that this class fixes the value of character position 2 to be 'S' and will fail to
    * parse MBIs that do not conform to this restriction.
-   * 
+   *
    * @see <a href="https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf">
    * https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf</a>
    */
@@ -2779,20 +2779,20 @@ public class BB2RIFExporter {
       NON_NUMERIC_LIKE_ALPHA, NUMERIC, NUMERIC};
     static final long MIN_MBI = 0;
     static final long MAX_MBI = maxValue(MBI_FORMAT);
-    
+
     public MBI(long value) {
       super(value, MBI_FORMAT);
     }
-    
+
     static MBI parse(String str) {
       return new MBI(parse(str, MBI_FORMAT));
     }
-    
+
     public MBI next() {
       return new MBI(value + 1);
     }
   }
-  
+
   /**
    * Utility class for working with CMS Part D Contract IDs.
    */
@@ -2802,25 +2802,25 @@ public class BB2RIFExporter {
       ALPHA, NUMERIC, NUMERIC, NUMERIC, NUMERIC};
     static final long MIN_PARTD_CONTRACT_ID = 0;
     static final long MAX_PARTD_CONTRACT_ID = maxValue(PARTD_CONTRACT_FORMAT);
-    
+
     public PartDContractID(long value) {
       super(value, PARTD_CONTRACT_FORMAT);
     }
-    
+
     static PartDContractID parse(String str) {
       return new PartDContractID(parse(str, PARTD_CONTRACT_FORMAT));
     }
-    
+
     public PartDContractID next() {
       return new PartDContractID(value + 1);
     }
   }
-  
+
   /**
    * Utility class for working with CMS HICNs.
    * Note that this class fixes the value of character position 1 to be 'T' and character position
    * 10 to be 'A' - it will fail to parse HICNs that do not conform to this restriction.
-   * 
+   *
    * @see <a href="https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md">
    * https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md</a>
    */
@@ -2832,20 +2832,20 @@ public class BB2RIFExporter {
       NUMERIC, NUMERIC, NUMERIC, NUMERIC, END};
     static final long MIN_HICN = 0;
     static final long MAX_HICN = maxValue(HICN_FORMAT);
-    
+
     public HICN(long value) {
       super(value, HICN_FORMAT);
     }
-    
+
     static HICN parse(String str) {
       return new HICN(parse(str, HICN_FORMAT));
     }
-    
+
     public HICN next() {
       return new HICN(value + 1);
     }
   }
-  
+
   private static class FixedLengthIdentifier {
 
     static final char[] NUMERIC = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -2859,13 +2859,13 @@ public class BB2RIFExporter {
       'W', 'X', 'Y'
     };
     static final char[] ALPHA_NUMERIC = {
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J',
       'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'
     };
-    
-    private final char[][] format;    
+
+    private final char[][] format;
     long value;
-    
+
     public FixedLengthIdentifier(long value, char[][] format) {
       this.format = format;
       if (value < 0 || value > maxValue(format)) {
@@ -2874,7 +2874,7 @@ public class BB2RIFExporter {
       }
       this.value = value;
     }
-    
+
     protected static long parse(String str, char[][] format) {
       str = str.replaceAll("-", "").toUpperCase();
       if (str.length() != format.length) {
@@ -2896,7 +2896,7 @@ public class BB2RIFExporter {
       }
       return v;
     }
-    
+
     protected static long maxValue(char[][] format) {
       long max = 1;
       for (char[] range : format) {
@@ -2904,7 +2904,7 @@ public class BB2RIFExporter {
       }
       return max - 1;
     }
-    
+
     private static int indexOf(char[] arr, char v) {
       for (int i = 0; i < arr.length; i++) {
         if (arr[i] == v) {
@@ -2913,7 +2913,7 @@ public class BB2RIFExporter {
       }
       return -1;
     }
-    
+
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
@@ -2949,17 +2949,17 @@ public class BB2RIFExporter {
       return this.value == other.value;
     }
   }
-  
+
   private enum RifEntryStatus {
     INITIAL,
     INTERIM,
     FINAL
   }
-  
+
   private static class RifWriters {
     private final Map<RifEntryStatus, Map<Class, SynchronizedBBLineWriter>> allWriters;
     private final Path outputDir;
-    
+
     public RifWriters(Path outputDir) {
       this.outputDir = outputDir;
       allWriters = Collections.synchronizedMap(new HashMap<>());
@@ -2967,16 +2967,16 @@ public class BB2RIFExporter {
         allWriters.put(status, Collections.synchronizedMap(new HashMap<>()));
       }
     }
-    
+
     public <E extends Enum<E>> SynchronizedBBLineWriter<E> getWriter(Class<E> rifEnum,
             RifEntryStatus status) {
       return allWriters.get(status).get(rifEnum);
     }
-    
+
     private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status) {
       return getFilePath(enumClass, status, "csv");
     }
-    
+
     private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status,
             String ext) {
       String prefix = enumClass.getSimpleName().toLowerCase();
@@ -2984,17 +2984,17 @@ public class BB2RIFExporter {
       String fileName = String.format("%s%s.%s", prefix, suffix, ext);
       return outputDir.resolve(fileName);
     }
-    
+
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
             Class<E> enumClass) {
       return getOrCreateWriter(enumClass, RifEntryStatus.INITIAL);
     }
-    
+
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
             Class<E> enumClass, RifEntryStatus status) {
       return getOrCreateWriter(enumClass, status, "csv", "|");
     }
-    
+
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
             Class<E> enumClass, RifEntryStatus status, String ext, String separator) {
       SynchronizedBBLineWriter<E> writer = getWriter(enumClass, status);
@@ -3014,7 +3014,7 @@ public class BB2RIFExporter {
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues,
             RifEntryStatus status) throws IOException {
-      getOrCreateWriter(enumClass, status).writeValues(fieldValues);        
+      getOrCreateWriter(enumClass, status).writeValues(fieldValues);
     }
   }
 }

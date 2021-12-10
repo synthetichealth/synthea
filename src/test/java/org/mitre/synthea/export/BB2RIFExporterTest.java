@@ -45,7 +45,7 @@ public class BB2RIFExporterTest {
    */
   @ClassRule
   public static TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   private static File exportDir;
 
   /**
@@ -63,7 +63,7 @@ public class BB2RIFExporterTest {
     Config.set("exporter.baseDirectory", exportDir.toString());
     BB2RIFExporter.getInstance().prepareOutputFiles();
   }
-  
+
   @Test
   public void testBB2Export() throws Exception {
     int numberOfPeople = 10;
@@ -102,11 +102,11 @@ public class BB2RIFExporterTest {
               "Expected at least 1 row in the beneficiary file, found " + rows.size(),
               rows.size() >= 1);
       rows.forEach(row -> {
-        assertTrue("Expected non-zero length surname", 
+        assertTrue("Expected non-zero length surname",
                 row.containsKey("BENE_SRNM_NAME") && row.get("BENE_SRNM_NAME").length() > 0);
       });
     }
-    
+
     // TODO: more meaningful testing of contents
     File beneficiaryHistoryFile = expectedExportFolder.toPath()
             .resolve("beneficiary_history.csv").toFile();
@@ -151,7 +151,7 @@ public class BB2RIFExporterTest {
     assertEquals("J209", mapper.map("10509002", generator, true));
     assertFalse(mapper.canMap("not a code"));
   }
-  
+
   @Test
   public void testMBI() {
     MBI mbi = new MBI(MBI.MIN_MBI);
@@ -167,7 +167,7 @@ public class BB2RIFExporterTest {
     mbi = MBI.parse("9SY9-YY9-YY99");
     assertEquals("9SY9YY9YY99", mbi.toString());
   }
-  
+
   @Test
   public void testHICN() {
     HICN hicn = new HICN(HICN.MIN_HICN);
@@ -179,29 +179,29 @@ public class BB2RIFExporterTest {
     hicn = HICN.parse("T99999999A");
     assertEquals("T99999999A", hicn.toString());
   }
-  
+
   @Test
   public void testStaticFieldConfig() throws IOException, NoSuchMethodException {
     RandomNumberGenerator rand = new Person(System.currentTimeMillis());
-    
+
     assertEquals("foo", StaticFieldConfig.processCell("foo", rand));
     String randomVal = StaticFieldConfig.processCell("1, 2, 3", rand);
     assertTrue(randomVal.equalsIgnoreCase("1") || randomVal.equalsIgnoreCase("2")
             || randomVal.equalsIgnoreCase("3"));
-    
+
     StaticFieldConfig config = new StaticFieldConfig();
     assertEquals("INSERT", config.getValue("DML_IND", INPATIENT.class));
     assertEquals("82 (DMEPOS)", config.getValue("NCH_CLM_TYPE_CD", DME.class));
     assertEquals("71 (local carrier, non-DME)",
             config.getValue("NCH_CLM_TYPE_CD", CARRIER.class));
-    
+
     HashMap<BENEFICIARY, String> values = new HashMap<>();
     config.setValues(values, BENEFICIARY.class, rand);
     assertEquals("INSERT", values.get(BENEFICIARY.DML_IND));
     String sexIdent = values.get(BENEFICIARY.BENE_SEX_IDENT_CD);
     assertTrue(sexIdent.equals("1") || sexIdent.equals("2"));
   }
-  
+
   @Test
   public void testPartDContractPeriod() {
     RandomNumberGenerator rand = new Person(System.currentTimeMillis());
@@ -213,10 +213,10 @@ public class BB2RIFExporterTest {
     BB2RIFExporter.PartDContractHistory.PartDContractPeriod period
             = history.new PartDContractPeriod(start, end, null);
     assertNull(period.getContractID());
-    
+
     assertFalse(period.coversYear(2019));
     assertEquals(0, period.getCoveredMonths(2019).size());
-    
+
     assertTrue(period.coversYear(2020));
     List<Integer> twentyTwentyMonths = period.getCoveredMonths(2020);
     assertEquals(10, twentyTwentyMonths.size());
@@ -232,7 +232,7 @@ public class BB2RIFExporterTest {
     assertTrue(twentyTwentyMonths.contains(10));
     assertTrue(twentyTwentyMonths.contains(11));
     assertTrue(twentyTwentyMonths.contains(12));
-    
+
     assertTrue(period.coversYear(2021));
     List<Integer> twentyTwentyOneMonths = period.getCoveredMonths(2021);
     assertEquals(6, twentyTwentyOneMonths.size());
@@ -248,30 +248,30 @@ public class BB2RIFExporterTest {
     assertFalse(twentyTwentyOneMonths.contains(10));
     assertFalse(twentyTwentyOneMonths.contains(11));
     assertFalse(twentyTwentyOneMonths.contains(12));
-    
+
     assertFalse(period.coversYear(2022));
     assertEquals(0, period.getCoveredMonths(2022).size());
-    
+
     LocalDate pointInTime = start;
     Instant instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     long timeInMillis = instant.toEpochMilli();
     assertTrue(period.covers(timeInMillis));
-    
+
     pointInTime = start.minusDays(1); // previous day (start is middle of month)
     instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     timeInMillis = instant.toEpochMilli();
     assertTrue(period.covers(timeInMillis));
-    
+
     pointInTime = start.minusDays(15); // previous month
     instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     timeInMillis = instant.toEpochMilli();
     assertFalse(period.covers(timeInMillis));
-    
+
     pointInTime = end;
     instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     timeInMillis = instant.toEpochMilli();
     assertTrue(period.covers(timeInMillis));
-    
+
     pointInTime = end.plusDays(1); // next day (end is middle of month)
     instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     timeInMillis = instant.toEpochMilli();

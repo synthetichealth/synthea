@@ -1,7 +1,7 @@
 package org.mitre.synthea.export;
 
 /**
- * A collection of enums and related that describe the structure of RIF files. Note that order 
+ * A collection of enums and related that describe the structure of RIF files. Note that order
  * is significant, columns will be written in the order specified.
  */
 public class BB2RIFStructure {
@@ -18,7 +18,7 @@ public class BB2RIFStructure {
     PDE.class,
     SNF.class
   };
-  
+
   enum BENEFICIARY {
     DML_IND,
     BENE_ID,
@@ -226,7 +226,7 @@ public class BB2RIFStructure {
     EFCTV_END_DT,
     BENE_LINK_KEY
   }
-  
+
   static final BENEFICIARY[] beneficiaryPartDContractFields = {
     BENEFICIARY.PTD_CNTRCT_JAN_ID,
     BENEFICIARY.PTD_CNTRCT_FEB_ID,
@@ -266,7 +266,7 @@ public class BB2RIFStructure {
     EFCTV_BGN_DT,
     EFCTV_END_DT
   }
-  
+
   enum OUTPATIENT {
     DML_IND,
     BENE_ID,
@@ -1256,7 +1256,7 @@ public class BB2RIFStructure {
     SUFFIX,
     CREDENTIALS
   }
-  
+
   enum HHA {
     DML_IND,
     BENE_ID,
@@ -1550,7 +1550,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_UPIN,
     RNDRNG_PHYSN_NPI
   }
-  
+
   static final HOSPICE[][] hospiceDxFields = {
     { HOSPICE.ICD_DGNS_CD1, HOSPICE.ICD_DGNS_VRSN_CD1 },
     { HOSPICE.ICD_DGNS_CD2, HOSPICE.ICD_DGNS_VRSN_CD2 },
@@ -1866,5 +1866,5 @@ public class BB2RIFStructure {
     { SNF.ICD_PRCDR_CD23, SNF.ICD_PRCDR_VRSN_CD23, SNF.PRCDR_DT23 },
     { SNF.ICD_PRCDR_CD24, SNF.ICD_PRCDR_VRSN_CD24, SNF.PRCDR_DT24 },
     { SNF.ICD_PRCDR_CD25, SNF.ICD_PRCDR_VRSN_CD25, SNF.PRCDR_DT25 }
-  };  
+  };
 }
