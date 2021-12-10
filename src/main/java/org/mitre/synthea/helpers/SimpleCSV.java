@@ -33,12 +33,12 @@ public class SimpleCSV {
   public static List<LinkedHashMap<String, String>> parse(String csvData) throws IOException {
     return parse(csvData, ',');
   }
-  
+
   /**
    * Parse the data from the given CSV file into a List of Maps, where the key is the
    * column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
    * the resulting maps.
-   * 
+   *
    * @param csvData
    *          Raw CSV data
    * @param fieldSeparator

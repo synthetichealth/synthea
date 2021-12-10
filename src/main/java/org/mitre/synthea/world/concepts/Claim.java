@@ -220,7 +220,7 @@ public class Claim implements Serializable {
     if (this.totals.secondaryPayer > 0) {
       return this.totals.secondaryPayer;
     } else if (this.totals.coinsurance > 0) {
-      return this.totals.pocket; 
+      return this.totals.pocket;
     }
     return 0;
   }

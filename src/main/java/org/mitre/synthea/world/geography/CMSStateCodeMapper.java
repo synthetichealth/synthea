@@ -256,5 +256,5 @@ public class CMSStateCodeMapper {
     }
     return capitalizeWords.trim();
   }
-  
+
 }
