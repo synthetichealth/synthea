@@ -138,7 +138,7 @@ public class Utilities {
    * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
-    double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
+    double currTimeStepInMS = Config.getAsDouble("generate.timestep");
 
     return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
   }
@@ -351,6 +351,9 @@ public class Utilities {
 
   /**
    * Read the entire contents of a file in resources into a String and strip the BOM if present.
+   * This method is intended for use when reading CSV files that may have been created by
+   * spreadsheet programs that sometimes automatically add a BOM though it could also be used for
+   * any other type of file that may optionally include a BOM.
    * @param filename Path to the file, relative to src/main/resources.
    * @return The entire text contents of the file minus the leading BOM if present.
    * @throws IOException if any error occurs reading the file

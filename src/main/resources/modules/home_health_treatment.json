@@ -208,7 +208,7 @@
         {
           "system": "SNOMED-CT",
           "code": "311555007",
-          "display": "Speech and language therapy regime (regime/therapy"
+          "display": "Speech and language therapy regime (regime/therapy)"
         }
       ],
       "direct_transition": "Check for End"

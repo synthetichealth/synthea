@@ -713,8 +713,9 @@ public abstract class State implements Cloneable, Serializable {
         value = valueCode;
       } else if (valueAttribute != null) {
         // the module is setting an attribute to be the value of an existing attribute
-        if (person.attributes.containsKey(valueAttribute)) {
-          value = person.attributes.get(valueAttribute);
+        Object newValue = person.attributes.get(valueAttribute);
+        if (newValue != null) {
+          value = newValue;
         }
       }
 

@@ -56,6 +56,31 @@ public abstract class Config {
   }
 
   /**
+   * Get a named property as a double value.
+   *
+   * @param key property name
+   * @return value for the property, or null if not found
+   */
+  public static double getAsDouble(String key) {
+    return Double.parseDouble(get(key));
+  }
+
+  /**
+   * Get a named property as a double, or the default value if not found.
+   *
+   * @param key          property name
+   * @param defaultValue value to return if the property is not found in the list
+   * @return value for the property, or defaultValue if not found
+   */
+  public static double getAsDouble(String key, double defaultValue) {
+    if (properties.containsKey(key)) {
+      return getAsDouble(key);
+    } else {
+      return defaultValue;
+    }
+  }
+
+  /**
    * Get a named property as a boolean value.
    *
    * @param key property name

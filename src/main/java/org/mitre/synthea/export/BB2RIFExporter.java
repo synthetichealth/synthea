@@ -51,6 +51,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -423,6 +424,8 @@ public class BB2RIFExporter {
           fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
         }
 
+        // TODO: make claim copay match the designated cost sharing code
+        String partDCostSharingCode = getPartDCostSharingCode(person);
         for (PartDContractHistory.PartDContractPeriod period:
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
@@ -431,6 +434,13 @@ public class BB2RIFExporter {
             for (int i: period.getCoveredMonths(year)) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
                       partDContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
+                      partDCostSharingCode);
+            }
+          } else {
+            for (int i: period.getCoveredMonths(year)) {
+              // Not enrolled this month
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
             }
           }
         }
@@ -442,6 +452,26 @@ public class BB2RIFExporter {
         }
       }
     }
+  }
+
+  private String getPartDCostSharingCode(Person person) {
+    double incomeLevel = Double.parseDouble(
+            person.attributes.get(Person.INCOME_LEVEL).toString());
+    if (incomeLevel >= 1.0) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; no premium or cost sharing subsidy
+      return "09";
+    } else if (incomeLevel >= 0.6) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+      // premium subsidy and high copayment
+      return "03";
+    } else if (incomeLevel >= 0.3) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+      // premium subsidy and low copayment
+      return "02";
+    }
+    // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+    // premium subsidy and no copayment
+    return "01";
   }
 
   private String getBB2SexCode(String sex) {
@@ -617,7 +647,7 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -817,7 +847,7 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1056,7 +1086,7 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
@@ -1737,7 +1767,7 @@ public class BB2RIFExporter {
 
       fieldValues.put(HHA.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1904,7 +1934,7 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HOSPICE.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -2086,7 +2116,7 @@ public class BB2RIFExporter {
 
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer("Medicare")) {
+      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT,

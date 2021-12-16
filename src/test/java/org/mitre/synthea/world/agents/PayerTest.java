@@ -53,8 +53,8 @@ public class PayerTest {
     testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
-    double povertyLevel = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    double povertyLevel =
+            Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
     medicaidLevel = 1.33 * povertyLevel;
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
@@ -275,8 +275,8 @@ public class PayerTest {
     // Set the medicaid poverty level to be lower than their income
     Config.set("generate.demographics.socioeconomic.income.poverty",
         Integer.toString((int) totalYearlyCost - 2));
-    HealthInsuranceModule.medicaidLevel = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    HealthInsuranceModule.medicaidLevel = Config.getAsDouble(
+            "generate.demographics.socioeconomic.income.poverty", 11000);
 
     healthInsuranceModule.process(person, 0L);
     assertEquals("NO_INSURANCE", person.coverage.getPayerAtTime(0L).getName());
