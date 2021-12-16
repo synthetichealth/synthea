@@ -213,8 +213,9 @@ public class ValueSetCodeResolverTest {
     ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
     Person resolvedPerson = valueSetCodeResolver.resolve();
 
-    assertEquals(2, resolvedPerson.record.encounters.size());
-    Encounter resolvedEncounter = resolvedPerson.record.encounters.get(1);
+    // assertEquals(2, resolvedPerson.record.encounters.size());
+    Encounter resolvedEncounter = resolvedPerson.record.encounters.get(
+            resolvedPerson.record.encounters.size() - 1);
     assertEquals(1, resolvedEncounter.imagingStudies.size());
     ImagingStudy resolvedImagingStudy = resolvedEncounter.imagingStudies.get(0);
 
@@ -275,7 +276,7 @@ public class ValueSetCodeResolverTest {
     State mri = module.getState("Knee_MRI");
     assertTrue(mri.process(person, time));
 
-    Encounter imagingEncounter = person.record.encounters.get(1);
+    Encounter imagingEncounter = person.record.encounters.get(person.record.encounters.size() - 1);
     imagingEncounter.imagingStudies.get(0).series.get(0).instances.set(0, null);
     ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
     valueSetCodeResolver.resolve();
