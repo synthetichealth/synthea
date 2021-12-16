@@ -31,20 +31,20 @@ public class Costs {
   private static final Map<String, CostData> SUPPLY_COSTS =
       parseCsvToMap("costs/supplies.csv");
 
-  private static final double DEFAULT_PROCEDURE_COST = Double
-      .parseDouble(Config.get("generate.costs.default_procedure_cost"));
-  private static final double DEFAULT_MEDICATION_COST = Double
-      .parseDouble(Config.get("generate.costs.default_medication_cost"));
-  private static final double DEFAULT_ENCOUNTER_COST = Double
-      .parseDouble(Config.get("generate.costs.default_encounter_cost"));
-  private static final double DEFAULT_IMMUNIZATION_COST = Double
-      .parseDouble(Config.get("generate.costs.default_immunization_cost"));
-  private static final double DEFAULT_LAB_COST = Double
-      .parseDouble(Config.get("generate.costs.default_lab_cost"));
-  private static final double DEFAULT_DEVICE_COST = Double
-      .parseDouble(Config.get("generate.costs.default_device_cost"));
-  private static final double DEFAULT_SUPPLY_COST = Double
-      .parseDouble(Config.get("generate.costs.default_supply_cost"));
+  private static final double DEFAULT_PROCEDURE_COST =
+          Config.getAsDouble("generate.costs.default_procedure_cost", 500);
+  private static final double DEFAULT_MEDICATION_COST =
+          Config.getAsDouble("generate.costs.default_medication_cost", 255);
+  private static final double DEFAULT_ENCOUNTER_COST =
+          Config.getAsDouble("generate.costs.default_encounter_cost", 125);
+  private static final double DEFAULT_IMMUNIZATION_COST =
+          Config.getAsDouble("generate.costs.default_immunization_cost", 136);
+  private static final double DEFAULT_LAB_COST =
+          Config.getAsDouble("generate.costs.default_lab_cost", 100);
+  private static final double DEFAULT_DEVICE_COST =
+          Config.getAsDouble("generate.costs.default_device_cost", 0);
+  private static final double DEFAULT_SUPPLY_COST =
+          Config.getAsDouble("generate.costs.default_supply_cost", 0);
 
   private static final Map<String, Double> DEVICE_ADJUSTMENT_FACTORS =
       parseAdjustmentFactors("costs/devices_adjustments.csv");

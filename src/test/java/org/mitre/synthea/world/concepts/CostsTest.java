@@ -140,7 +140,7 @@ public class CostsTest {
     // it's the same number as above, but a procedure not a medication,
     // so we don't expect the same result
     double cost = Costs.determineCostOfEntry(fakeProcedure, person);
-    double expectedCost = Double.parseDouble(Config.get("generate.costs.default_procedure_cost"));
+    double expectedCost = Config.getAsDouble("generate.costs.default_procedure_cost");
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }
 
@@ -150,7 +150,7 @@ public class CostsTest {
     fakeMedication.codes.add(code);
 
     double cost = Costs.determineCostOfEntry(fakeMedication, person);
-    double expectedCost = Double.parseDouble(Config.get("generate.costs.default_medication_cost"));
+    double expectedCost = Config.getAsDouble("generate.costs.default_medication_cost");
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
   }
 }

@@ -61,7 +61,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
-      Double.parseDouble(Config.get("generate.providers.maximum_search_distance", "2"));
+      Config.getAsDouble("generate.providers.maximum_search_distance", 2);
   public static final String PROVIDER_SELECTION_BEHAVIOR =
       Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
@@ -333,35 +333,31 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.INPATIENT);
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
-        loadProviders(location, hospitalFile,
-            ProviderType.HOSPITAL, servicesProvided, clinicianSeed);
+        loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
+                clinicianSeed, false);
 
         String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
-        if (ihsHospitalFile != null && ihsHospitalFile.length() > 0) {
-          loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
-                  clinicianSeed);
-        }
+        loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
+                clinicianSeed, true);
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile,
-            ProviderType.VETERAN, servicesProvided, clinicianSeed);
+        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, clinicianSeed,
+                false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
-        loadProviders(location, primaryCareFile,
-            ProviderType.PRIMARY, servicesProvided, clinicianSeed);
+        loadProviders(location, primaryCareFile, ProviderType.PRIMARY, servicesProvided,
+                clinicianSeed, false);
         String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
-        if (ihsPCFile != null && ihsPCFile.length() > 0) {
-          loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed);
-        }
+        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
-        loadProviders(location, urgentcareFile,
-            ProviderType.URGENT, servicesProvided, clinicianSeed);
+        loadProviders(location, urgentcareFile, ProviderType.URGENT, servicesProvided,
+                clinicianSeed, false);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -377,20 +373,20 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOME);
         String homeHealthFile = Config.get("generate.providers.homehealth.default_file");
-        loadProviders(location, homeHealthFile,
-            ProviderType.HOME_HEALTH, servicesProvided, clinicianSeed);
+        loadProviders(location, homeHealthFile, ProviderType.HOME_HEALTH, servicesProvided,
+                clinicianSeed, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOSPICE);
         String hospiceFile = Config.get("generate.providers.hospice.default_file");
-        loadProviders(location, hospiceFile,
-            ProviderType.HOSPICE, servicesProvided, clinicianSeed);
+        loadProviders(location, hospiceFile, ProviderType.HOSPICE, servicesProvided,
+                clinicianSeed, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.SNF);
         String nursingFile = Config.get("generate.providers.nursing.default_file");
-        loadProviders(location, nursingFile,
-            ProviderType.NURSING, servicesProvided, clinicianSeed);
+        loadProviders(location, nursingFile, ProviderType.NURSING, servicesProvided,
+                clinicianSeed, true);
       } catch (IOException e) {
         System.err.println("WARNING: unable to load optional providers in: " + location.state);
       }
@@ -406,11 +402,17 @@ public class Provider implements QuadTreeElement, Serializable {
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
    * @param clinicianSeed random seed for clinicians
+   * @param optional if true the function will silently ignore a null or empty filename
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed)
+      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed,
+      boolean optional)
       throws IOException {
+    if (optional && (filename == null || filename.length() == 0)) {
+      return;
+    }
+
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
     Random clinicianRand = new Random(clinicianSeed);

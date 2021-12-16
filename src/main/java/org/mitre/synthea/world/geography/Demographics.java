@@ -270,10 +270,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * deaton_kahneman_high_income_improves_evaluation_August2010.pdf.
    */
   public double incomeLevel(int income) {
-    double poverty = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
-    double high = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.high", "75000"));
+    double poverty =
+            Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
+    double high = Config.getAsDouble("generate.demographics.socioeconomic.income.high", 75000);
 
     if (income >= high) {
       return 1.0;
@@ -290,8 +289,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @return poverty ratio.
    */
   public double povertyRatio(int income) {
-    double poverty = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    double poverty =
+            Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
     return ((double) income) / poverty;
   }
 
@@ -311,22 +310,22 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * Return a random number between the configured bounds for a specified education level.
    */
   public double educationLevel(String level, Random random) {
-    double lessThanHsMin = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.less_than_hs.min", "0.0"));
-    double lessThanHsMax = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.less_than_hs.max", "0.5"));
-    double hsDegreeMin = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.hs_degree.min", "0.1"));
-    double hsDegreeMax = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.hs_degree.max", "0.75"));
-    double someCollegeMin = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.some_college.min", "0.3"));
-    double someCollegeMax = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.some_college.max", "0.85"));
-    double bsDegreeMin = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.bs_degree.min", "0.5"));
-    double bsDegreeMax = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.education.bs_degree.max", "1.0"));
+    double lessThanHsMin = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.less_than_hs.min", 0.0);
+    double lessThanHsMax = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.less_than_hs.max", 0.5);
+    double hsDegreeMin = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.hs_degree.min", 0.1);
+    double hsDegreeMax = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.hs_degree.max", 0.75);
+    double someCollegeMin = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.some_college.min", 0.3);
+    double someCollegeMax = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.some_college.max", 0.85);
+    double bsDegreeMin = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.bs_degree.min", 0.5);
+    double bsDegreeMax = Config.getAsDouble(
+            "generate.demographics.socioeconomic.education.bs_degree.max", 1.0);
 
     switch (level) {
       case "less_than_hs":
@@ -350,12 +349,11 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * Calculate the socio-economic score for the supplied parameters.
    */
   public double socioeconomicScore(double income, double education, double occupation) {
-    double incomeWeight = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.weights.income"));
-    double educationWeight = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.weights.education"));
-    double occupationWeight = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.weights.occupation"));
+    double incomeWeight = Config.getAsDouble("generate.demographics.socioeconomic.weights.income");
+    double educationWeight =
+            Config.getAsDouble("generate.demographics.socioeconomic.weights.education");
+    double occupationWeight =
+            Config.getAsDouble("generate.demographics.socioeconomic.weights.occupation");
 
     return (income * incomeWeight) + (education * educationWeight)
         + (occupation * occupationWeight);
@@ -366,10 +364,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * configured stratifier values.
    */
   public String socioeconomicCategory(double score) {
-    double highScore = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.score.high"));
-    double middleScore = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.score.middle"));
+    double highScore = Config.getAsDouble("generate.demographics.socioeconomic.score.high");
+    double middleScore = Config.getAsDouble("generate.demographics.socioeconomic.score.middle");
 
     if (score >= highScore) {
       return "High";

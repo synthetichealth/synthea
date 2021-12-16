@@ -130,18 +130,18 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 128	CREAT_TS	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 129	CREAT_USER_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 130	CRNT_BIC	"A,A,D,D,TA"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-131	CST_SHR_GRP_APR_CD	"01,02,03,04,05,06,07,08,09,10,13"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-132	CST_SHR_GRP_AUG_CD	"01,02,03,04,05,06,07,08,09,10,14"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-133	CST_SHR_GRP_DEC_CD	"01,02,03,04,05,06,07,08,09,10,15"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-134	CST_SHR_GRP_FEB_CD	"01,02,03,04,05,06,07,08,09,10,16"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-135	CST_SHR_GRP_JAN_CD	"01,02,03,04,05,06,07,08,09,10,17"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-136	CST_SHR_GRP_JUL_CD	"01,02,03,04,05,06,07,08,09,10,18"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-137	CST_SHR_GRP_JUN_CD	"01,02,03,04,05,06,07,08,09,10,19"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-138	CST_SHR_GRP_MAR_CD	"01,02,03,04,05,06,07,08,09,10,20"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-139	CST_SHR_GRP_MAY_CD	"01,02,03,04,05,06,07,08,09,10,21"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-140	CST_SHR_GRP_NOV_CD	"01,02,03,04,05,06,07,08,09,10,22"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-141	CST_SHR_GRP_OCT_CD	"01,02,03,04,05,06,07,08,09,10,23"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
-142	CST_SHR_GRP_SEPT_CD	"01,02,03,04,05,06,07,08,09,10,24"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+131	CST_SHR_GRP_APR_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+132	CST_SHR_GRP_AUG_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+133	CST_SHR_GRP_DEC_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+134	CST_SHR_GRP_FEB_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+135	CST_SHR_GRP_JAN_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+136	CST_SHR_GRP_JUL_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+137	CST_SHR_GRP_JUN_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+138	CST_SHR_GRP_MAR_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+139	CST_SHR_GRP_MAY_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+140	CST_SHR_GRP_NOV_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+141	CST_SHR_GRP_OCT_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
+142	CST_SHR_GRP_SEPT_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
 143	CTSTRPHC_CVRG_CD	N/A	N/A	N/A	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	TRUE	
 144	CVRD_D_PLAN_PD_AMT	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	
 145	DAW_PROD_SLCTN_CD	N/A	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	FALSE	

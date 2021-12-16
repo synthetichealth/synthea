@@ -224,7 +224,7 @@ public class ProviderTest {
            try {
              Provider.clear();
              Provider.loadProviders(location, "providers/" + t.getFileName(),
-                 ProviderType.HOSPITAL, providerServices, 1L);
+                 ProviderType.HOSPITAL, providerServices, 1L, false);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }
