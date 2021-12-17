@@ -108,12 +108,11 @@ public class FHIRDSTU2ExporterTest {
     List<String> validationErrors = new ArrayList<String>();
 
     int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
+
     for (int i = 0; i < numberOfPeople; i++) {
       int x = validationErrors.size();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
+      Person person = TestHelper.getGeneratedPerson(i);
       Config.set("exporter.fhir_dstu2.export", "true");
       FhirDstu2.TRANSACTION_BUNDLE = person.randBoolean();
       String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());

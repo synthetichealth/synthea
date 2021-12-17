@@ -13,6 +13,7 @@ import org.eclipse.mdht.uml.cda.util.CDAUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -33,15 +34,9 @@ public class CCDAExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     CDAUtil.loadPackages();
-    List<String> validationErrors = new ArrayList<String>();
-
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       Config.set("exporter.ccda.export", "true");
       String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
       InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
@@ -56,13 +51,13 @@ public class CCDAExporterTest {
         e.printStackTrace();
         validationErrors.add(e.getMessage());
       }
-      int y = validationErrors.size();
-      if (x != y) {
+      if (! validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
 
     assertEquals("Validation of exported CCDA failed: "
-        + String.join("|", validationErrors), 0, validationErrors.size());
+        + String.join("|", errors), 0, errors.size());
   }
 }
