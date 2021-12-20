@@ -1,0 +1,170 @@
+age,gender,state,Prescribe_Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet,Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet,Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet
+36-45,M,Alabama,0.0,1.0,0.0
+36-45,M,Arkansas,0.0,1.0,0.0
+36-45,M,Delaware,0.0,1.0,0.0
+36-45,M,District of Columbia,0.0,1.0,0.0
+36-45,M,Florida,0.0,1.0,0.0
+36-45,M,Georgia,0.0,1.0,0.0
+36-45,M,Kentucky,0.0,1.0,0.0
+36-45,M,Louisiana,0.0,1.0,0.0
+36-45,M,Maryland,0.0,1.0,0.0
+36-45,M,Mississippi,0.0,1.0,0.0
+36-45,M,North Carolina,0.0,1.0,0.0
+36-45,M,Oklahoma,0.0,1.0,0.0
+36-45,M,South Carolina,0.0,1.0,0.0
+36-45,M,Tennessee,0.0,1.0,0.0
+36-45,M,Texas,0.0,1.0,0.0
+36-45,M,Virginia,0.0,1.0,0.0
+36-45,M,West Virginia,0.0,1.0,0.0
+46-65,F,Alabama,0.0,0.0,1.0
+46-65,F,Arkansas,0.0,0.0,1.0
+46-65,F,Delaware,0.0,0.0,1.0
+46-65,F,District of Columbia,0.0,0.0,1.0
+46-65,F,Florida,0.0,0.0,1.0
+46-65,F,Georgia,0.0,0.0,1.0
+46-65,F,Illinois,0.0,0.0,1.0
+46-65,F,Indiana,0.0,0.0,1.0
+46-65,F,Iowa,0.0,0.0,1.0
+46-65,F,Kansas,0.0,0.0,1.0
+46-65,F,Kentucky,0.0,0.0,1.0
+46-65,F,Louisiana,0.0,0.0,1.0
+46-65,F,Maryland,0.0,0.0,1.0
+46-65,F,Michigan,0.0,0.0,1.0
+46-65,F,Minnesota,0.0,0.0,1.0
+46-65,F,Mississippi,0.0,0.0,1.0
+46-65,F,Missouri,0.0,0.0,1.0
+46-65,F,Nebraska,0.0,0.0,1.0
+46-65,F,North Carolina,0.0,0.0,1.0
+46-65,F,North Dakota,0.0,0.0,1.0
+46-65,F,Ohio,0.0,0.0,1.0
+46-65,F,Oklahoma,0.0,0.0,1.0
+46-65,F,South Carolina,0.0,0.0,1.0
+46-65,F,South Dakota,0.0,0.0,1.0
+46-65,F,Tennessee,0.0,0.0,1.0
+46-65,F,Texas,0.0,0.0,1.0
+46-65,F,Virginia,0.0,0.0,1.0
+46-65,F,West Virginia,0.0,0.0,1.0
+46-65,F,Wisconsin,0.0,0.0,1.0
+46-65,M,Alabama,0.0,0.393,0.607
+46-65,M,Alaska,1.0,0.0,0.0
+46-65,M,Arizona,1.0,0.0,0.0
+46-65,M,Arkansas,0.0,0.393,0.607
+46-65,M,California,1.0,0.0,0.0
+46-65,M,Colorado,1.0,0.0,0.0
+46-65,M,Delaware,0.0,0.393,0.607
+46-65,M,District of Columbia,0.0,0.393,0.607
+46-65,M,Florida,0.0,0.393,0.607
+46-65,M,Georgia,0.0,0.393,0.607
+46-65,M,Hawaii,1.0,0.0,0.0
+46-65,M,Idaho,1.0,0.0,0.0
+46-65,M,Illinois,0.0,0.0,1.0
+46-65,M,Indiana,0.0,0.0,1.0
+46-65,M,Iowa,0.0,0.0,1.0
+46-65,M,Kansas,0.0,0.0,1.0
+46-65,M,Kentucky,0.0,0.393,0.607
+46-65,M,Louisiana,0.0,0.393,0.607
+46-65,M,Maryland,0.0,0.393,0.607
+46-65,M,Michigan,0.0,0.0,1.0
+46-65,M,Minnesota,0.0,0.0,1.0
+46-65,M,Mississippi,0.0,0.393,0.607
+46-65,M,Missouri,0.0,0.0,1.0
+46-65,M,Montana,1.0,0.0,0.0
+46-65,M,Nebraska,0.0,0.0,1.0
+46-65,M,Nevada,1.0,0.0,0.0
+46-65,M,New Mexico,1.0,0.0,0.0
+46-65,M,North Carolina,0.0,0.393,0.607
+46-65,M,North Dakota,0.0,0.0,1.0
+46-65,M,Ohio,0.0,0.0,1.0
+46-65,M,Oklahoma,0.0,0.393,0.607
+46-65,M,Oregon,1.0,0.0,0.0
+46-65,M,South Carolina,0.0,0.393,0.607
+46-65,M,South Dakota,0.0,0.0,1.0
+46-65,M,Tennessee,0.0,0.393,0.607
+46-65,M,Texas,0.0,0.393,0.607
+46-65,M,Utah,1.0,0.0,0.0
+46-65,M,Virginia,0.0,0.393,0.607
+46-65,M,Washington,1.0,0.0,0.0
+46-65,M,West Virginia,0.0,0.393,0.607
+46-65,M,Wisconsin,0.0,0.0,1.0
+46-65,M,Wyoming,1.0,0.0,0.0
+65-103,F,Alabama,0.204,0.796,0.0
+65-103,F,Alaska,0.5,0.0,0.5
+65-103,F,Arizona,0.5,0.0,0.5
+65-103,F,Arkansas,0.204,0.796,0.0
+65-103,F,California,0.5,0.0,0.5
+65-103,F,Colorado,0.5,0.0,0.5
+65-103,F,Connecticut,0.0,1.0,0.0
+65-103,F,Delaware,0.204,0.796,0.0
+65-103,F,District of Columbia,0.204,0.796,0.0
+65-103,F,Florida,0.204,0.796,0.0
+65-103,F,Georgia,0.204,0.796,0.0
+65-103,F,Hawaii,0.5,0.0,0.5
+65-103,F,Idaho,0.5,0.0,0.5
+65-103,F,Illinois,0.52,0.48,0.0
+65-103,F,Indiana,0.52,0.48,0.0
+65-103,F,Iowa,0.52,0.48,0.0
+65-103,F,Kansas,0.52,0.48,0.0
+65-103,F,Kentucky,0.204,0.796,0.0
+65-103,F,Louisiana,0.204,0.796,0.0
+65-103,F,Maine,0.0,1.0,0.0
+65-103,F,Maryland,0.204,0.796,0.0
+65-103,F,Massachusetts,0.0,1.0,0.0
+65-103,F,Michigan,0.52,0.48,0.0
+65-103,F,Minnesota,0.52,0.48,0.0
+65-103,F,Mississippi,0.204,0.796,0.0
+65-103,F,Missouri,0.52,0.48,0.0
+65-103,F,Montana,0.5,0.0,0.5
+65-103,F,Nebraska,0.52,0.48,0.0
+65-103,F,Nevada,0.5,0.0,0.5
+65-103,F,New Hampshire,0.0,1.0,0.0
+65-103,F,New Jersey,0.0,1.0,0.0
+65-103,F,New Mexico,0.5,0.0,0.5
+65-103,F,New York,0.0,1.0,0.0
+65-103,F,North Carolina,0.204,0.796,0.0
+65-103,F,North Dakota,0.52,0.48,0.0
+65-103,F,Ohio,0.52,0.48,0.0
+65-103,F,Oklahoma,0.204,0.796,0.0
+65-103,F,Oregon,0.5,0.0,0.5
+65-103,F,Pennsylvania,0.0,1.0,0.0
+65-103,F,Rhode Island,0.0,1.0,0.0
+65-103,F,South Carolina,0.204,0.796,0.0
+65-103,F,South Dakota,0.52,0.48,0.0
+65-103,F,Tennessee,0.204,0.796,0.0
+65-103,F,Texas,0.204,0.796,0.0
+65-103,F,Utah,0.5,0.0,0.5
+65-103,F,Vermont,0.0,1.0,0.0
+65-103,F,Virginia,0.204,0.796,0.0
+65-103,F,Washington,0.5,0.0,0.5
+65-103,F,West Virginia,0.204,0.796,0.0
+65-103,F,Wisconsin,0.52,0.48,0.0
+65-103,F,Wyoming,0.5,0.0,0.5
+65-103,M,Alabama,0.0,0.0,1.0
+65-103,M,Alaska,0.423,0.305,0.272
+65-103,M,Arizona,0.423,0.305,0.272
+65-103,M,Arkansas,0.0,0.0,1.0
+65-103,M,California,0.423,0.305,0.272
+65-103,M,Colorado,0.423,0.305,0.272
+65-103,M,Delaware,0.0,0.0,1.0
+65-103,M,District of Columbia,0.0,0.0,1.0
+65-103,M,Florida,0.0,0.0,1.0
+65-103,M,Georgia,0.0,0.0,1.0
+65-103,M,Hawaii,0.423,0.305,0.272
+65-103,M,Idaho,0.423,0.305,0.272
+65-103,M,Kentucky,0.0,0.0,1.0
+65-103,M,Louisiana,0.0,0.0,1.0
+65-103,M,Maryland,0.0,0.0,1.0
+65-103,M,Mississippi,0.0,0.0,1.0
+65-103,M,Montana,0.423,0.305,0.272
+65-103,M,Nevada,0.423,0.305,0.272
+65-103,M,New Mexico,0.423,0.305,0.272
+65-103,M,North Carolina,0.0,0.0,1.0
+65-103,M,Oklahoma,0.0,0.0,1.0
+65-103,M,Oregon,0.423,0.305,0.272
+65-103,M,South Carolina,0.0,0.0,1.0
+65-103,M,Tennessee,0.0,0.0,1.0
+65-103,M,Texas,0.0,0.0,1.0
+65-103,M,Utah,0.423,0.305,0.272
+65-103,M,Virginia,0.0,0.0,1.0
+65-103,M,Washington,0.423,0.305,0.272
+65-103,M,West Virginia,0.0,0.0,1.0
+65-103,M,Wyoming,0.423,0.305,0.272

@@ -38,7 +38,7 @@
     "STEMI": {
       "type": "CallSubmodule",
       "submodule": "heart/stemi_pathway",
-      "direct_transition": "TTE"
+      "direct_transition": "Check_CABG_Referral"
     },
     "End_Encounter": {
       "type": "EncounterEnd",
@@ -92,42 +92,11 @@
         }
       ],
       "duration": {
-        "low": 8,
-        "high": 12,
+        "low": 2,
+        "high": 2,
         "unit": "minutes"
       },
-      "direct_transition": "Oxygen"
-    },
-    "Oxygen": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 371908008,
-          "display": "Oxygen administration by mask (procedure)"
-        }
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Aspirin_Once",
-          "distribution": 0.98
-        },
-        {
-          "transition": "Nitroglycerin",
-          "distribution": 0.02
-        }
-      ]
-    },
-    "Nitroglycerin": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 198039,
-          "display": "nitroglycerin 0.4 MG Sublingual Tablet"
-        }
-      ],
-      "direct_transition": "Lab test"
+      "direct_transition": "ECG"
     },
     "Lab test": {
       "type": "Procedure",
@@ -139,70 +108,11 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
+        "low": 5,
+        "high": 10,
         "unit": "minutes"
       },
-      "direct_transition": "CBC"
-    },
-    "Morphine": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1728805,
-          "display": "2 ML morphine sulfate 1 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Atorvastatin_2",
-      "administration": true
-    },
-    "Atorvastatin_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 259255,
-          "display": "Atorvastatin 80 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Metoprolol Succinate"
-    },
-    "Metoprolol Succinate": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1999035,
-          "display": "24 HR metoprolol succinate 25 MG Extended Release Oral Capsule"
-        }
-      ],
-      "direct_transition": "ECG"
-    },
-    "ECG": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure (procedure)"
-        }
-      ],
-      "duration": {
-        "low": 30,
-        "high": 30,
-        "unit": "minutes"
-      },
-      "distributed_transition": [
-        {
-          "transition": "NSTEACS",
-          "distribution": 0.6
-        },
-        {
-          "transition": "STEMI",
-          "distribution": 0.4
-        }
-      ]
+      "direct_transition": "Cardiac_Labs"
     },
     "TTE": {
       "type": "Procedure",
@@ -218,19 +128,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Lisinopril"
-    },
-    "Lisinopril": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 314076,
-          "display": "lisinopril 10 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Discharge_Care_Plan",
-      "chronic": true
+      "direct_transition": "Discharge_Medications"
     },
     "Discharge_Care_Plan": {
       "type": "CarePlanStart",
@@ -259,43 +157,7 @@
     "NSTEACS": {
       "type": "CallSubmodule",
       "submodule": "heart/nsteacs_pathway",
-      "direct_transition": "TTE"
-    },
-    "Aspirin_Once": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 243670,
-          "display": "aspirin 81 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Aspirin_Daily",
-      "administration": true,
-      "prescription": {
-        "dosage": {
-          "amount": 4,
-          "frequency": 1,
-          "period": 1,
-          "unit": "hours"
-        },
-        "duration": {
-          "quantity": 1,
-          "unit": "days"
-        }
-      }
-    },
-    "Aspirin_Daily": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 243670,
-          "display": "aspirin 81 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Nitroglycerin",
-      "chronic": true
+      "direct_transition": "Check_CABG_Referral"
     },
     "Chest_XRay": {
       "type": "Procedure",
@@ -311,12 +173,7 @@
         "high": 10,
         "unit": "minutes"
       },
-      "distributed_transition": [
-        {
-          "transition": "Morphine",
-          "distribution": 1
-        }
-      ]
+      "direct_transition": "Diagnostic_Assessment"
     },
     "Emergency_Encounter": {
       "type": "Encounter",
@@ -331,310 +188,64 @@
       ],
       "direct_transition": "Cardiac_Assessment"
     },
-    "CBC": {
-      "type": "DiagnosticReport",
+    "Pre-Hospital Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "remarks": [
+        "assume for now all pre-hospital deaths are STEMI"
+      ],
       "codes": [
         {
-          "system": "LOINC",
-          "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
         }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6690-2",
-              "display": "Leukocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 3,
-            "high": 4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*6/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "789-8",
-              "display": "Erythrocytes [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 3.77,
-            "high": 5.8
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "718-7",
-              "display": "Hemoglobin [Mass/volume] in Blood"
-            }
-          ],
-          "range": {
-            "low": 11.1,
-            "high": 14.1
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "4544-3",
-              "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 37.5,
-            "high": 46.6
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "fL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "787-2",
-              "display": "MCV [Entitic volume] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 79,
-            "high": 97
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "pg",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "785-6",
-              "display": "MCH [Entitic mass] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 26.6,
-            "high": 33
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "786-4",
-              "display": "MCHC [Mass/volume] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 31.5,
-            "high": 35.7
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "%",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "788-0",
-              "display": "Erythrocyte distribution width [Ratio] by Automated count"
-            }
-          ],
-          "range": {
-            "low": 12.3,
-            "high": 15.4
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "10*3/uL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "777-3",
-              "display": "Platelets [#/volume] in Blood by Automated count"
-            }
-          ],
-          "range": {
-            "low": 99,
-            "high": 150
-          }
-        }
-      ],
-      "remarks": [
-        "In the most severe patients, white-cell counts should be less than 4000 per mm3",
-        "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
-        "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
-      ],
-      "direct_transition": "Record_CMP"
-    },
-    "Magnesium": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "mg/dL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "21377-7",
-          "display": "Magnesium [Mass/volume] in Blood"
-        }
-      ],
-      "direct_transition": "Lipids",
-      "range": {
-        "low": 1.7,
-        "high": 2.2
-      },
-      "remarks": [
-        "normal range reference: https://medlineplus.gov/ency/article/003487.htm",
-        "",
-        "should we have a different range here?"
       ]
     },
-    "Lipids": {
-      "type": "DiagnosticReport",
-      "codes": [
+    "Check_CABG_Referral": {
+      "type": "Simple",
+      "conditional_transition": [
         {
-          "system": "LOINC",
-          "code": "57698-3",
-          "display": "Lipid Panel"
+          "transition": "Reset_CABG_Referral_Flag",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ACS_CABG_referral",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "TTE"
         }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "vital_sign": "Total Cholesterol",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2093-3",
-              "display": "Total Cholesterol"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 205,
-            "high": 305
-          }
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2571-8",
-              "display": "Triglycerides"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 100,
-            "high": 400
-          }
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "18262-6",
-              "display": "Low Density Lipoprotein Cholesterol"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 101,
-            "high": 200
-          }
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2085-9",
-              "display": "High Density Lipoprotein Cholesterol"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 20,
-            "high": 65
-          }
-        }
-      ],
-      "direct_transition": "HbA1c",
-      "remarks": [
-        "copied from Veteran hyperlipidemia module, need to review values"
       ]
     },
-    "HbA1c": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "%",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "4548-4",
-          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
-        }
-      ],
-      "direct_transition": "PT/INR",
-      "vital_sign": "Blood Glucose"
+    "Discharge_Medications": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_discharge_meds",
+      "direct_transition": "Discharge_Care_Plan"
     },
-    "PT/INR": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "{INR}",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "6301-6",
-          "display": "INR in Platelet poor plasma by Coagulation assay"
-        }
-      ],
-      "direct_transition": "PTT",
-      "range": {
-        "low": 0.9,
-        "high": 1.2
-      }
+    "Reset_CABG_Referral_Flag": {
+      "type": "SetAttribute",
+      "attribute": "ACS_CABG_referral",
+      "direct_transition": "History of MI",
+      "remarks": [
+        "Reset the referral flag, so that just in case the patient winds up going through this pathway a second time, the attribute will be set as appropriate"
+      ]
     },
-    "PTT": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "s",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "3173-2",
-          "display": "aPTT in Blood by Coagulation assay"
-        }
-      ],
-      "direct_transition": "Troponin-I",
-      "range": {
-        "low": 25,
-        "high": 35
-      }
+    "ACS_Arrival_Meds": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_arrival_medications",
+      "direct_transition": "Lab test"
     },
-    "Troponin-I": {
+    "Cardiac_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cardiac_labs",
+      "direct_transition": "HS Troponin-I 0hr"
+    },
+    "HS Troponin-I 0hr": {
       "type": "Observation",
       "category": "laboratory",
-      "unit": "ng/mL",
+      "unit": "ng/L",
       "codes": [
         {
           "system": "LOINC",
@@ -642,10 +253,10 @@
           "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
         }
       ],
-      "direct_transition": "NT-proBNP",
+      "direct_transition": "Chest_XRay",
       "range": {
         "low": 0,
-        "high": 0.5
+        "high": 120
       },
       "remarks": [
         "    Normal range: below 0.04 ng/ml",
@@ -655,276 +266,51 @@
         "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA"
       ]
     },
-    "NT-proBNP": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "pg/mL",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "71425-3",
-          "display": "Natriuretic peptide.B prohormone N-Terminal [Mass/volume] in Blood by Immunoassay"
-        }
-      ],
-      "direct_transition": "Chest_XRay",
-      "range": {
-        "low": 1,
-        "high": 2
-      },
-      "remarks": [
-        "A normal level of NT-proBNP, based on Cleveland Clinic’s Reference Range is:",
-        "",
-        "Less than 125 pg/mL for patients aged 0-74 years",
-        "Less than 450 pg/mL for patients aged 75-99 years",
-        "If you have heart failure, the following NT-proBNP levels could mean your heart function is unstable:",
-        "",
-        "Higher than 450 pg/mL for patients under age 50",
-        "Higher than 900 pg/mL for patients age 50 and older"
-      ]
-    },
-    "Record_CMP": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "24323-8",
-          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "vital_sign": "Glucose",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Urea Nitrogen",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
-            }
-          ],
-          "unit": "mg/dL",
-          "range": {
-            "low": 2.5,
-            "high": 3.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Calcium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
-            }
-          ],
-          "unit": "mg/dL"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Sodium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Potassium",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Chloride",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "vital_sign": "Carbon Dioxide",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
-            }
-          ],
-          "unit": "mmol/L"
-        },
-        {
-          "category": "laboratory",
-          "unit": "mL/min",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
-            }
-          ],
-          "range": {
-            "low": 65,
-            "high": 90
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "2885-2",
-              "display": "Protein [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 60,
-            "high": 80
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1751-7",
-              "display": "Albumin [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 3.5,
-            "high": 5.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "g/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "10834-0",
-              "display": "Globulin [Mass/volume] in Serum by calculation"
-            }
-          ],
-          "range": {
-            "low": 2,
-            "high": 3.5
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "mg/dL",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1975-2",
-              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 0.1,
-            "high": 1.2
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "6768-6",
-              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 140
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1742-6",
-              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 20,
-            "high": 60
-          }
-        },
-        {
-          "category": "laboratory",
-          "unit": "U/L",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "1920-8",
-              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
-            }
-          ],
-          "range": {
-            "low": 6,
-            "high": 40
-          }
-        }
-      ],
-      "direct_transition": "Magnesium"
-    },
-    "Pre-Hospital Death": {
-      "type": "Death",
-      "direct_transition": "Terminal",
-      "remarks": ["assume for now all pre-hospital deaths are STEMI"],
+    "Diagnostic_Assessment": {
+      "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 401303003,
-          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+          "code": 165197003,
+          "display": "Diagnostic assessment (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "NSTEACS",
+          "distribution": 0.6
+        },
+        {
+          "transition": "STEMI",
+          "distribution": 0.4
         }
       ]
+    },
+    "ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "NSTEACS",
+          "distribution": 0.6
+        },
+        {
+          "transition": "STEMI",
+          "distribution": 0.4
+        }
+      ],
+      "direct_transition": "ACS_Arrival_Meds"
     }
   },
   "gmf_version": 2

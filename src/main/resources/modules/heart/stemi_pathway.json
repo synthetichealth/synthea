@@ -21,101 +21,8 @@
           "display": "Hospital admission (procedure)"
         }
       ],
-      "direct_transition": "CABG_Referral1",
+      "direct_transition": "Cardiology Consultation",
       "reason": "STEMI"
-    },
-    "CABG_Referral1": {
-      "type": "CallSubmodule",
-      "submodule": "heart/stemi_cad_referral",
-      "direct_transition": "CABG_Operation1"
-    },
-    "Ticagrelor": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1116635,
-          "display": "ticagrelor 90 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Bivalirudin",
-      "reason": "STEMI"
-    },
-    "Bivalirudin": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1997015,
-          "display": "50 ML bivalirudin 5 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "Pick_a_better_name_for_this",
-      "reason": "STEMI"
-    },
-    "Referral_to_Cardiac_Surgery": {
-      "type": "Simple",
-      "direct_transition": "Terminal"
-    },
-    "Pick_a_better_name_for_this": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "PCI",
-          "distribution": 0.96
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.04
-        }
-      ]
-    },
-    "Tenecteplase": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 313212,
-          "display": "tenecteplase 50 MG Injection"
-        }
-      ],
-      "direct_transition": "Clopidogrel_Once",
-      "reason": "STEMI"
-    },
-    "Enoxaparin": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 854255,
-          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Hospital_Transfer",
-      "reason": "STEMI",
-      "administration": true
-    },
-    "Hospital_Admission": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "STEMI",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 32485007,
-          "display": "Hospital admission (procedure)"
-        }
-      ],
-      "direct_transition": "CABG_Referral2"
-    },
-    "Hospital_Transfer": {
-      "type": "Simple",
-      "direct_transition": "Hospital_Admission"
-    },
-    "CABG_Referral2": {
-      "type": "CallSubmodule",
-      "submodule": "heart/stemi_cad_referral",
-      "direct_transition": "CABG_Operation2"
     },
     "PCI": {
       "type": "Procedure",
@@ -131,43 +38,8 @@
         "high": 90,
         "unit": "minutes"
       },
-      "distributed_transition": [
-        {
-          "transition": "Referral_to_Cardiac_Surgery",
-          "distribution": 0.0104
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.9896
-        }
-      ],
-      "reason": "STEMI"
-    },
-    "Clopidogrel_Once": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 309362,
-          "display": "clopidogrel 75 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Clopidogrel_Daily",
       "reason": "STEMI",
-      "administration": true
-    },
-    "Clopidogrel_Daily": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 309362,
-          "display": "clopidogrel 75 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Enoxaparin",
-      "reason": "STEMI",
-      "chronic": true
+      "direct_transition": "Anti-Plt Submodule"
     },
     "STEMI": {
       "type": "ConditionOnset",
@@ -181,58 +53,190 @@
       ],
       "direct_transition": "Set_Chance_of_Death"
     },
-    "CABG_Operation1": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg_sequence",
-      "conditional_transition": [
-        {
-          "transition": "Deceased",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Postop ICU and Ward"
-        }
-      ],
-      "direct_transition": "Ticagrelor"
-    },
-    "CABG_Operation2": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg_sequence",
-      "conditional_transition": [
-        {
-          "transition": "Deceased",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Postop ICU and Ward"
-        }
-      ],
-      "direct_transition": "Pick_a_better_name_for_this"
-    },
     "Set_Chance_of_Death": {
       "type": "SetAttribute",
       "attribute": "chance_of_mi_death",
       "distributed_transition": [
         {
-          "transition": "Admission_to_Hospital",
-          "distribution": 0.95
+          "transition": "Cardiology",
+          "distribution": 0.935
         },
         {
-          "transition": "Tenecteplase",
-          "distribution": 0.05
+          "transition": "Cardiac Surgery",
+          "distribution": 0.065
         }
       ],
       "value": 0.052
+    },
+    "Cardiac Surgery": {
+      "type": "Simple",
+      "direct_transition": "CABG_Operation"
+    },
+    "Cardiology": {
+      "type": "Simple",
+      "direct_transition": "Admission_to_Hospital"
+    },
+    "Set_ACS_CABG_Referral": {
+      "type": "SetAttribute",
+      "attribute": "ACS_CABG_referral",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "CABG_Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg_sequence",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Postop ICU and Ward"
+        }
+      ],
+      "direct_transition": "Set_ACS_CABG_Referral"
+    },
+    "Cardiology Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Primary PCI",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Pharmacoinvasive",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Fibrinolysis",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "Primary PCI": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "AC Submodule",
+      "value": "pci"
+    },
+    "Pharmacoinvasive": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "Fibrinolytic Submodule",
+      "value": "pharmacoinvasive"
+    },
+    "Fibrinolysis": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "Fibrinolytic Submodule",
+      "value": "fibrinolysis"
+    },
+    "AC Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_anticoagulant",
+      "conditional_transition": [
+        {
+          "transition": "Risk Assessment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stemi_cardiology_approach",
+            "operator": "==",
+            "value": "pharmacoinvasive"
+          }
+        },
+        {
+          "transition": "Anti-Plt Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stemi_cardiology_approach",
+            "operator": "==",
+            "value": "fibrinolysis"
+          }
+        },
+        {
+          "transition": "Coronary Angiography"
+        }
+      ]
+    },
+    "Fibrinolytic Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/stemi_fibrinolytic",
+      "direct_transition": "AC Submodule"
+    },
+    "Anti-Plt Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_antiplatelet",
+      "direct_transition": "Terminal"
+    },
+    "Coronary Angiography": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33367005,
+          "display": "Coronary angiography (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "PCI"
+    },
+    "Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 25338004,
+          "display": "Risk assessment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Routine",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Rescue",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Routine": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 24,
+          "low": 2
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Coronary Angiography"
+    },
+    "Rescue": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Coronary Angiography"
     }
   },
   "gmf_version": 2

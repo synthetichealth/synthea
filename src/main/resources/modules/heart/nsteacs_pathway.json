@@ -25,7 +25,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Check_Troponin_I",
+      "direct_transition": "HS_Troponin_I_1-3hr",
       "remarks": [
         "Repeat ECG x2 q 30 mins"
       ]
@@ -44,8 +44,8 @@
                 "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
               }
             ],
-            "operator": ">",
-            "value": 0.04
+            "operator": ">=",
+            "value": 10
           }
         },
         {
@@ -91,40 +91,18 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Hospital_Admission",
+      "direct_transition": "Initial_Revasc_Strategy",
       "reason": "cardiac_surgery_reason"
     },
     "Ischemia-Guided": {
-      "type": "Simple",
-      "direct_transition": "Enoxaparin"
+      "type": "SetAttribute",
+      "attribute": "acs_ischemia_guided",
+      "direct_transition": "Stress_Testing",
+      "value": true
     },
     "Invasive Care": {
       "type": "Simple",
-      "direct_transition": "Heparin"
-    },
-    "Enoxaparin": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 854255,
-          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
-        }
-      ],
-      "direct_transition": "Ticagrelor",
-      "reason": "cardiac_surgery_reason"
-    },
-    "Ticagrelor": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 1116635,
-          "display": "ticagrelor 90 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "Stress_Testing",
-      "reason": "cardiac_surgery_reason"
+      "direct_transition": "Time_Delay"
     },
     "Stress_Testing": {
       "type": "Procedure",
@@ -142,20 +120,15 @@
       },
       "distributed_transition": [
         {
-          "transition": "Referral",
+          "transition": "Abnormal Stress Test",
           "distribution": 0.3
         },
         {
-          "transition": "Terminal",
+          "transition": "Call ACS Anti-PLT",
           "distribution": 0.7
         }
       ],
       "reason": "cardiac_surgery_reason"
-    },
-    "Referral": {
-      "type": "CallSubmodule",
-      "submodule": "heart/nsteacs_cad_referral",
-      "direct_transition": "Operation"
     },
     "PCI": {
       "type": "Procedure",
@@ -171,7 +144,7 @@
         "high": 90,
         "unit": "minutes"
       },
-      "direct_transition": "Terminal",
+      "direct_transition": "Call ACS Anti-PLT",
       "reason": "cardiac_surgery_reason"
     },
     "Hospital_Admission": {
@@ -185,111 +158,236 @@
           "display": "Hospital admission (procedure)"
         }
       ],
+      "direct_transition": "Risk_Assessment"
+    },
+    "NSTEMI_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "direct_transition": "Hospital_Admission",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 0.06,
+          "low": 0.045
+        }
+      }
+    },
+    "UA_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "direct_transition": "Hospital_Admission",
+      "value": 0.003
+    },
+    "HS_Troponin_I_1-3hr": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89579-7",
+          "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+        }
+      ],
+      "direct_transition": "Check_Troponin_I",
+      "range": {
+        "low": 0,
+        "high": 120
+      },
+      "remarks": [
+        "    Normal range: below 0.04 ng/ml",
+        "    Probable heart attack: above 0.40 ng/ml",
+        "https://testguide.labmed.uw.edu/public/view/TROPIG",
+        " ",
+        "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA"
+      ]
+    },
+    "Initial_Revasc_Strategy": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Cardiology",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Cardiac_Surgery",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Cardiac_Surgery": {
+      "type": "Simple",
+      "direct_transition": "Call CABG Sequence"
+    },
+    "Call CABG Sequence": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg_sequence",
+      "direct_transition": "Set ACS_CABG_Referral"
+    },
+    "Set ACS_CABG_Referral": {
+      "type": "SetAttribute",
+      "attribute": "ACS_CABG_referral",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "Cardiology": {
+      "type": "Simple",
+      "direct_transition": "Cardiology Consultation"
+    },
+    "Call ACS_AC": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_anticoagulant",
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Age",
-            "operator": ">",
-            "quantity": 0,
-            "unit": "years"
+            "condition_type": "True"
           },
           "distributions": [
             {
-              "transition": "Ischemia-Guided",
+              "transition": "Invasive Care",
               "distribution": 0.8
             },
             {
-              "transition": "Invasive Care",
+              "transition": "Ischemia-Guided",
               "distribution": 0.2
             }
           ]
         }
       ]
     },
-    "Heparin": {
-      "type": "MedicationOrder",
+    "Cardiology Consultation": {
+      "type": "Simple",
+      "direct_transition": "Call ACS_AC"
+    },
+    "Abnormal Stress Test": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
       "codes": [
         {
-          "system": "RxNorm",
-          "code": 1361048,
-          "display": "heparin sodium, porcine 100 UNT/ML Injectable Solution"
+          "system": "LOINC",
+          "code": "18752-6",
+          "display": "Exercise stress test study"
         }
       ],
-      "direct_transition": "CABG_Referral",
-      "remarks": [
-        "TODO: fix this code! almost certainly the wrong code"
-      ]
+      "direct_transition": "Angiography",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 439590007,
+        "display": "Cardiovascular stress test abnormal (finding)"
+      }
     },
-    "CABG_Referral": {
-      "type": "CallSubmodule",
-      "submodule": "heart/nsteacs_cad_referral",
-      "direct_transition": "CABG_Operation"
-    },
-    "Ticagrelor2": {
-      "type": "MedicationOrder",
+    "Angiography": {
+      "type": "Procedure",
       "codes": [
         {
-          "system": "RxNorm",
-          "code": 1116635,
-          "display": "ticagrelor 90 MG Oral Tablet"
+          "system": "SNOMED-CT",
+          "code": 33367005,
+          "display": "Coronary angiography (procedure)"
         }
       ],
+      "unit": "minutes",
       "distributed_transition": [
         {
           "transition": "PCI",
-          "distribution": 0.9
+          "distribution": 0.95
         },
         {
           "transition": "Terminal",
-          "distribution": 0.1
-        }
-      ],
-      "reason": "cardiac_surgery_reason"
-    },
-    "CABG_Operation": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg_sequence",
-      "conditional_transition": [
-        {
-          "transition": "Deceased",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Postop ICU and Ward"
-        }
-      ],
-      "direct_transition": "Ticagrelor2"
-    },
-    "Operation": {
-      "type": "CallSubmodule",
-      "submodule": "heart/cabg_sequence",
-      "distributed_transition": [
-        {
-          "transition": "PCI",
-          "distribution": 0.9
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.1
+          "distribution": 0.05
         }
       ]
     },
-    "NSTEMI_Chance_of_Death": {
-      "type": "SetAttribute",
-      "attribute": "chance_of_mi_death",
-      "direct_transition": "Risk_Assessment",
-      "value": 0.045
+    "Call ACS Anti-PLT": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_antiplatelet",
+      "direct_transition": "Terminal"
     },
-    "UA_Chance_of_Death": {
-      "type": "SetAttribute",
-      "attribute": "chance_of_mi_death",
-      "direct_transition": "Risk_Assessment",
-      "value": 0.003
+    "Time_Delay": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "0-2 hrs",
+          "distribution": 0.04
+        },
+        {
+          "transition": "2-24 hrs",
+          "distribution": 0.2
+        },
+        {
+          "transition": "24-48 hrs",
+          "distribution": 0.65
+        },
+        {
+          "transition": "48-72 hrs",
+          "distribution": 0.1
+        },
+        {
+          "transition": "72-plus hrs",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "0-2 hrs": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Angiography"
+    },
+    "2-24 hrs": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 24,
+          "low": 2
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Angiography"
+    },
+    "24-48 hrs": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 24
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Angiography"
+    },
+    "48-72 hrs": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 72,
+          "low": 48
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Angiography"
+    },
+    "72-plus hrs": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 84,
+          "low": 72
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Angiography"
     }
   },
   "gmf_version": 2
