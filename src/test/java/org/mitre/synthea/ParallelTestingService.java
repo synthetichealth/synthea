@@ -18,12 +18,20 @@ public class ParallelTestingService {
     List<Future<Exception>> potentialCrashes = new ArrayList<>(10);
     for (int i = 0; i < numberOfPeople; i++) {
       Person person = TestHelper.getGeneratedPerson(i);
+      final int counter = i;
       Future<Exception> maybeCrash = service.submit(() -> {
+        long start = System.currentTimeMillis();
+        System.out.println(String.format("Starting person %d at %d", counter, start));
         try {
           validationErrors.addAll(pt.test(person));
           return null;
         } catch (Exception e) {
           return e;
+        } finally {
+          long end = System.currentTimeMillis();
+          long duration = end - start;
+          System.out.println(String.format("Finished %d at %d, which took %d", counter,
+              end, duration));
         }
       });
       potentialCrashes.add(i, maybeCrash);
