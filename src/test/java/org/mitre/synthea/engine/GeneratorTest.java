@@ -323,13 +323,13 @@ public class GeneratorTest {
       return;
     }
 
-    // Get 100 people
+    // Get 10 people
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
     opts.minAge = 50;
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
-    final int NUM_RECS = 100;
+    final int NUM_RECS = 10;
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
