@@ -136,6 +136,16 @@ public abstract class TestHelper {
     return Utilities.convertTime("years", numYears);
   }
 
+  /**
+   * This method generates 10 people and then serializes them out into memory as byte arrays. For
+   * tests that need a generated patient, they can call this method to grab a fresh copy of a person
+   * which is rehydrated from the byte array to ensure an unmodified copy of the original. This
+   * eliminates regeneration of people in the test suite for many of the exporters.
+   * @param index which of the 10 people do you want?
+   * @return a person
+   * @throws IOException when there is a problem rehydrating a person
+   * @throws ClassNotFoundException when there is a problem rehydrating a person
+   */
   public static Person getGeneratedPerson(int index) throws IOException, ClassNotFoundException {
     if (serializedPatients == null) {
       int numberOfPeople = 10;
