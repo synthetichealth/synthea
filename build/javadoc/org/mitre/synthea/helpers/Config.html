@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -177,24 +177,63 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsDouble-java.lang.String-">getAsDouble</a></span>(java.lang.String&nbsp;key)</code>
+<div class="block">Get a named property as a double value.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsDouble-java.lang.String-double-">getAsDouble</a></span>(java.lang.String&nbsp;key,
+           double&nbsp;defaultValue)</code>
+<div class="block">Get a named property as a double, or the default value if not found.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsInteger-java.lang.String-">getAsInteger</a></span>(java.lang.String&nbsp;key)</code>
+<div class="block">Get a named property as an int value.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsInteger-java.lang.String-int-">getAsInteger</a></span>(java.lang.String&nbsp;key,
+            int&nbsp;defaultValue)</code>
+<div class="block">Get a named property as an int, or the default value if not found.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsLong-java.lang.String-">getAsLong</a></span>(java.lang.String&nbsp;key)</code>
+<div class="block">Get a named property as a long value.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#getAsLong-java.lang.String-long-">getAsLong</a></span>(java.lang.String&nbsp;key,
+         long&nbsp;defaultValue)</code>
+<div class="block">Get a named property as a long, or the default value if not found.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#load-java.io.File-">load</a></span>(java.io.File&nbsp;propsFile)</code>
 <div class="block">Load properties from a file.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#load-java.io.InputStream-">load</a></span>(java.io.InputStream&nbsp;stream)</code>
 <div class="block">Load properties from an input stream.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#remove-java.lang.String-">remove</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Unset a configuration value.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Config.html#set-java.lang.String-java.lang.String-">set</a></span>(java.lang.String&nbsp;key,
    java.lang.String&nbsp;value)</code>
@@ -306,6 +345,40 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a name="getAsDouble-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsDouble</h4>
+<pre>public static&nbsp;double&nbsp;getAsDouble(java.lang.String&nbsp;key)</pre>
+<div class="block">Get a named property as a double value.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or null if not found</dd>
+</dl>
+</li>
+</ul>
+<a name="getAsDouble-java.lang.String-double-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsDouble</h4>
+<pre>public static&nbsp;double&nbsp;getAsDouble(java.lang.String&nbsp;key,
+                                 double&nbsp;defaultValue)</pre>
+<div class="block">Get a named property as a double, or the default value if not found.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or defaultValue if not found</dd>
+</dl>
+</li>
+</ul>
 <a name="getAsBoolean-java.lang.String-">
 <!--   -->
 </a>
@@ -331,6 +404,74 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;boolean&nbsp;getAsBoolean(java.lang.String&nbsp;key,
                                    boolean&nbsp;defaultValue)</pre>
 <div class="block">Get a named property as a boolean, or the default value if not found.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or defaultValue if not found</dd>
+</dl>
+</li>
+</ul>
+<a name="getAsInteger-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsInteger</h4>
+<pre>public static&nbsp;int&nbsp;getAsInteger(java.lang.String&nbsp;key)</pre>
+<div class="block">Get a named property as an int value.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or null if not found</dd>
+</dl>
+</li>
+</ul>
+<a name="getAsInteger-java.lang.String-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsInteger</h4>
+<pre>public static&nbsp;int&nbsp;getAsInteger(java.lang.String&nbsp;key,
+                               int&nbsp;defaultValue)</pre>
+<div class="block">Get a named property as an int, or the default value if not found.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dd><code>defaultValue</code> - value to return if the property is not found in the list</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or defaultValue if not found</dd>
+</dl>
+</li>
+</ul>
+<a name="getAsLong-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsLong</h4>
+<pre>public static&nbsp;long&nbsp;getAsLong(java.lang.String&nbsp;key)</pre>
+<div class="block">Get a named property as a long value.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - property name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>value for the property, or null if not found</dd>
+</dl>
+</li>
+</ul>
+<a name="getAsLong-java.lang.String-long-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAsLong</h4>
+<pre>public static&nbsp;long&nbsp;getAsLong(java.lang.String&nbsp;key,
+                             long&nbsp;defaultValue)</pre>
+<div class="block">Get a named property as a long, or the default value if not found.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - property name</dd>

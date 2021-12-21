@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -161,13 +161,21 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>static java.util.List&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#parse-java.lang.String-char-">parse</a></span>(java.lang.String&nbsp;csvData,
+     char&nbsp;fieldSeparator)</code>
+<div class="block">Parse the data from the given CSV file into a List of Maps, where the key is the
+ column name.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.util.Iterator&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#parseLineByLine-java.lang.String-">parseLineByLine</a></span>(java.lang.String&nbsp;csvData)</code>
 <div class="block">Parse the data from the given CSV file into an Iterator of Maps, where the key is the
  column name.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#unparse-java.util.List-">unparse</a></span>(java.util.List&lt;? extends java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;data)</code>
 <div class="block">Convert the data in the given List of Maps to a String of CSV data.</div>
@@ -226,6 +234,29 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>csvData</code> - Raw CSV data</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>parsed data</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if any exception occurs while parsing the data</dd>
+</dl>
+</li>
+</ul>
+<a name="parse-java.lang.String-char-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parse</h4>
+<pre>public static&nbsp;java.util.List&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;parse(java.lang.String&nbsp;csvData,
+                                                                                               char&nbsp;fieldSeparator)
+                                                                                        throws java.io.IOException</pre>
+<div class="block">Parse the data from the given CSV file into a List of Maps, where the key is the
+ column name. Uses a LinkedHashMap specifically to ensure the order of columns is preserved in
+ the resulting maps.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>csvData</code> - Raw CSV data</dd>
+<dd><code>fieldSeparator</code> - The separator used in the CSV</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>parsed data</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>

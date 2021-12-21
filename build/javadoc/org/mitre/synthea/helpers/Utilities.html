@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -288,19 +288,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResourceAndStripBOM-java.lang.String-">readResourceAndStripBOM</a></span>(java.lang.String&nbsp;filename)</code>
+<div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.</div>
+</td>
+</tr>
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#strToObject-java.lang.Class-java.lang.String-">strToObject</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.util.function.BiConsumer-">walkAllModules</a></span>(java.util.function.BiConsumer&lt;java.nio.file.Path,java.nio.file.Path&gt;&nbsp;action)</code>
 <div class="block">Walk the directory structure of the modules, and apply the given function for every module.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.nio.file.Path-java.util.function.Consumer-">walkAllModules</a></span>(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code>
@@ -570,6 +576,28 @@ extends java.lang.Object</pre>
 <dd><code>filename</code> - Path to the file, relative to src/main/resources.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The entire text contents of the file.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if any error occurs reading the file</dd>
+</dl>
+</li>
+</ul>
+<a name="readResourceAndStripBOM-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readResourceAndStripBOM</h4>
+<pre>public static final&nbsp;java.lang.String&nbsp;readResourceAndStripBOM(java.lang.String&nbsp;filename)
+                                                      throws java.io.IOException</pre>
+<div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.
+ This method is intended for use when reading CSV files that may have been created by
+ spreadsheet programs that sometimes automatically add a BOM though it could also be used for
+ any other type of file that may optionally include a BOM.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filename</code> - Path to the file, relative to src/main/resources.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The entire text contents of the file minus the leading BOM if present.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if any error occurs reading the file</dd>
 </dl>
