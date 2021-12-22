@@ -3,11 +3,15 @@ package org.mitre.synthea.engine;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +36,9 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.identity.Entity;
+import org.mitre.synthea.identity.EntityManager;
+import org.mitre.synthea.identity.Seed;
 import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.modules.DeathModule;
@@ -77,6 +84,7 @@ public class Generator implements RandomNumberGenerator {
 
   // Fixed Record Mana
   public static FixedRecordGroupManager fixedRecordGroupManager;
+  public static EntityManager entityManager;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -312,20 +320,26 @@ public class Generator implements RandomNumberGenerator {
 
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
-      // Import household demogarphics.
-      fixedRecordGroupManager
-          = FixedRecordGroupManager.importFixedDemographicsFile(this.options.fixedRecordPath);
-      // Update the population size based on number of people.
-      this.options.population = fixedRecordGroupManager.getPopulationSize();
-      // We'll be using the FixedRecord names, so no numbers should be appended to them.
-      Config.set("generate.append_numbers_to_person_names", "false");
-      // Since we're using FixedRecords, split records must be true.
-      Config.set("exporter.split_records", "true");
-      // We want every person to survive the simulation.
-      Config.set("generate.only_alive_patients", "true");
-      Config.set("generate.only_dead_patients", "false");
-      // We want full years of history.
-      Config.set("exporter.years_of_history", "0");
+      try {
+        // Import demographics
+        String rawJSON = new String(Files.readAllBytes(
+            Paths.get(this.options.fixedRecordPath.getPath())));
+        entityManager = EntityManager.fromJSON(rawJSON);
+        // Update the population size based on number of people.
+        this.options.population = entityManager.getPopulationSize();
+        // We'll be using the FixedRecord names, so no numbers should be appended to them.
+        Config.set("generate.append_numbers_to_person_names", "false");
+        // Since we're using FixedRecords, split records must be true.
+        Config.set("exporter.split_records", "true");
+        // We want every person to survive the simulation.
+        Config.set("generate.only_alive_patients", "true");
+        Config.set("generate.only_dead_patients", "false");
+        // We want full years of history.
+        Config.set("exporter.years_of_history", "0");
+      } catch (IOException ioe) {
+        throw new RuntimeException("Couldn't open the fixed patient demographics records file", ioe);
+      }
+
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(8);
@@ -434,10 +448,10 @@ public class Generator implements RandomNumberGenerator {
 
       Map<String, Object> demoAttributes;
 
-      if (fixedRecordGroupManager != null) {
-        // Get the fixed demographic attributes for the this person.
-        FixedRecordGroup recordGroup = fixedRecordGroupManager.getNextRecordGroup(index);
-        demoAttributes = pickFixedDemographics(recordGroup, random);        
+      if (entityManager != null) {
+        // Get the fixed demographic attributes for the person.
+        Entity entity = entityManager.getRecords().get(index);
+        demoAttributes = pickFixedDemographics(entity, random);
       } else {
         // Standard random demographics.
         demoAttributes = randomDemographics(randomForDemographics);
@@ -762,7 +776,7 @@ public class Generator implements RandomNumberGenerator {
    * @return the person's picked demographics.
    */
   private Map<String, Object> pickDemographics(Random random, Demographics city) {
-    // Output map of the generated demographc data.
+    // Output map of the generated demographic data.
     Map<String, Object> demographicsOutput = new HashMap<>();
 
     // Pull the person's location data.
@@ -835,25 +849,25 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Pick a person's demographics based on their seed fixed record.
-   * @param recordGroup The record group to pull demographics from.
+   * @param entity The record group to pull demographics from.
    * @param random Random object.
    */
-  public Map<String, Object> pickFixedDemographics(FixedRecordGroup recordGroup, Random random) {
+  public Map<String, Object> pickFixedDemographics(Entity entity, Random random) {
+    Seed firstSeed = entity.getSeeds().get(0);
     this.location = new Location(
-      recordGroup.getSeedState(),
-      recordGroup.getSeedCity());
+      firstSeed.getState(),
+      firstSeed.getCity());
 
     Demographics city = this.location.randomCity(random);
 
 
     // Pick the rest of the demographics based on the location of the fixed record.
-    Map<String, Object> demoAttributes = recordGroup.getSeedRecordAttributes();
+    Map<String, Object> demoAttributes = firstSeed.demographicAttributesForPerson();
     demoAttributes = this.pickDemographics(random, city);
     // Overwrite the person's attributes with the seed of the fixed record group.
-    demoAttributes.putAll(recordGroup.getSeedRecordAttributes());
+    demoAttributes.putAll(demoAttributes);
     demoAttributes.put(Person.BIRTH_CITY, city.city);
-    demoAttributes.put(Person.BIRTHDATE, recordGroup.getSeedBirthdate());
-    demoAttributes.put(Person.HOUSEHOLD, recordGroup.getHouseholdId());
+    demoAttributes.put(Person.BIRTHDATE, firstSeed.birthdateTimestamp());
 
     return demoAttributes;
   }

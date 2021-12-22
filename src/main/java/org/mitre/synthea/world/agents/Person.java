@@ -104,6 +104,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String HOUSEHOLD_ROLE = "household_role";
   public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";
   public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
+  public static final String ENTITY_INDIVIDUAL_ID = "ENTITY_INDIVIDUAL_ID";
 
   private final Random random;
   public final long seed;

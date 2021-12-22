@@ -21,4 +21,6 @@ public interface IdentityRecord {
   public String getState();
 
   public String getZipCode();
+
+  public long birthdateTimestamp();
 }

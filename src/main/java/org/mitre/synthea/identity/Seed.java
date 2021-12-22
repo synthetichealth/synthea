@@ -1,9 +1,14 @@
 package org.mitre.synthea.identity;
 
 import org.mitre.synthea.helpers.RandomNumberGenerator;
+import org.mitre.synthea.world.agents.Person;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Seed implements IdentityRecord {
   private String seedId;
@@ -119,7 +124,28 @@ public class Seed implements IdentityRecord {
     return zipCode;
   }
 
+  @Override
+  public long birthdateTimestamp() {
+    return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+  }
+
   public void setEntity(Entity entity) {
     this.entity = entity;
+  }
+
+  public Map<String, Object> demographicAttributesForPerson() {
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.IDENTIFIER_SEED_ID, this.seedId);
+    attributes.put(Person.FIRST_NAME, this.givenName);
+    attributes.put(Person.LAST_NAME, this.familyName);
+    attributes.put(Person.NAME, this.givenName + " " + this.familyName);
+    attributes.put(Person.TELECOM, this.phone);
+    attributes.put(Person.GENDER, this.getGender());
+    attributes.put(Person.STATE, this.state);
+    attributes.put(Person.CITY, this.city);
+    attributes.put(Person.ADDRESS, this.addressLines.stream()
+        .collect(Collectors.joining("\n")));
+    attributes.put(Person.ZIP, this.zipCode);
+    return attributes;
   }
 }

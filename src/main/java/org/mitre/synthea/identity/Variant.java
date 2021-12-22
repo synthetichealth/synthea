@@ -1,6 +1,7 @@
 package org.mitre.synthea.identity;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 public class Variant implements IdentityRecord {
@@ -15,7 +16,6 @@ public class Variant implements IdentityRecord {
   private LocalDate dateOfBirth;
   private String gender;
   private transient Seed seed;
-
 
   public Variant() {
 
@@ -138,5 +138,10 @@ public class Variant implements IdentityRecord {
 
   public void setSeed(Seed seed) {
     this.seed = seed;
+  }
+
+  @Override
+  public long birthdateTimestamp() {
+    return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
   }
 }
