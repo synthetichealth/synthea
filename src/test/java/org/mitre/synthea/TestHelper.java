@@ -33,7 +33,7 @@ public abstract class TestHelper {
   public static final String SNOMED_OID = "2.16.840.1.113883.6.96";
   public static final String LOINC_OID = "2.16.840.1.113883.6.1";
 
-  private static List<byte[]> serializedPatients;
+  private static byte[] serializedPatients;
 
   /**
    * Returns a test fixture Module by filename.
@@ -141,29 +141,29 @@ public abstract class TestHelper {
    * tests that need a generated patient, they can call this method to grab a fresh copy of a person
    * which is rehydrated from the byte array to ensure an unmodified copy of the original. This
    * eliminates regeneration of people in the test suite for many of the exporters.
-   * @param index which of the 10 people do you want?
-   * @return a person
+   * @return the people array
    * @throws IOException when there is a problem rehydrating a person
    * @throws ClassNotFoundException when there is a problem rehydrating a person
    */
-  public static Person getGeneratedPerson(int index) throws IOException, ClassNotFoundException {
+  public static synchronized Person[] getGeneratedPeople() throws IOException,
+      ClassNotFoundException {
     if (serializedPatients == null) {
       int numberOfPeople = 10;
-      serializedPatients = new ArrayList<>(numberOfPeople);
       Generator generator = new Generator(numberOfPeople);
       generator.options.overflow = false;
+      Person[] people = new Person[10];
       for (int i = 0; i < numberOfPeople; i++) {
-        Person person = generator.generatePerson(i);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(person);
-        oos.close();
-        serializedPatients.add(i, baos.toByteArray());
+        people[i] = generator.generatePerson(i);
       }
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(people);
+      oos.close();
+      serializedPatients = baos.toByteArray();
     }
-    ByteArrayInputStream bais = new ByteArrayInputStream(serializedPatients.get(index));
+    ByteArrayInputStream bais = new ByteArrayInputStream(serializedPatients);
     ObjectInputStream ois = new ObjectInputStream(bais);
-    Person rehydrated = (Person) ois.readObject();
+    Person[] rehydrated = (Person[]) ois.readObject();
     ois.close();
     return rehydrated;
   }
