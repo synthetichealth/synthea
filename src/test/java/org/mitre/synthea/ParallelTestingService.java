@@ -22,10 +22,10 @@ public class ParallelTestingService {
     ExecutorService service = Executors.newFixedThreadPool(6);
     List<String> validationErrors = new ArrayList<>();
     int numberOfPeople = 10;
-    TestHelper.getGeneratedPerson(1);
     List<Future<Exception>> potentialCrashes = new ArrayList<>(10);
+    Person[] people = TestHelper.getGeneratedPeople();
     for (int i = 0; i < numberOfPeople; i++) {
-      Person person = TestHelper.getGeneratedPerson(i);
+      Person person = people[i];
       final int counter = i;
       Future<Exception> maybeCrash = service.submit(() -> {
         long start = System.currentTimeMillis();
