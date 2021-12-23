@@ -3,12 +3,10 @@ package org.mitre.synthea.engine;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,8 +37,6 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.identity.EntityManager;
 import org.mitre.synthea.identity.Seed;
-import org.mitre.synthea.input.FixedRecordGroup;
-import org.mitre.synthea.input.FixedRecordGroupManager;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -81,9 +77,6 @@ public class Generator implements RandomNumberGenerator {
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
-
-  // Fixed Record Mana
-  public static FixedRecordGroupManager fixedRecordGroupManager;
   public static EntityManager entityManager;
 
   /**
@@ -524,7 +517,7 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        if (Generator.fixedRecordGroupManager == null || isAlive) {
+        if (Generator.entityManager == null || isAlive) {
           // This if-statement prevents dead patients from being exported during
           // fixed demographics runs.
           Exporter.export(person, finishTime, exporterRuntimeOptions);
@@ -629,7 +622,7 @@ public class Generator implements RandomNumberGenerator {
   }
 
   /**
-   * Create a new person and update them until until Generator.stop or
+   * Create a new person and update them until Generator.stop or
    * they die, whichever comes sooner.
    * @param personSeed Seed for the random person
    * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
@@ -645,20 +638,7 @@ public class Generator implements RandomNumberGenerator {
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
     location.setSocialDeterminants(person);
 
-    if (Generator.fixedRecordGroupManager != null) {
-      // Add the person to their household.
-      fixedRecordGroupManager.addPersonToHousehold(person,
-          (String) person.attributes.get(Person.HOUSEHOLD_ROLE));
-      this.setFixedDemographics(person);
-      person.lastUpdated = (long) person.attributes.get(Person.BIRTHDATE);
-    }
-
     LifecycleModule.birth(person, person.lastUpdated);
-
-    if (Generator.fixedRecordGroupManager != null) {
-      // Re-Initialize the person to their fixed record attributes if used.
-      this.setFixedDemographics(person);
-    }
 
     person.currentModules = Module.getModules(modulePredicate);
 
@@ -668,18 +648,6 @@ public class Generator implements RandomNumberGenerator {
     return person;
   }
 
-  /**
-   * Sets the demographics of the person based on imported fixed records.
-   * 
-   * @param person the person whose demographics are to be set.
-   */
-  public void setFixedDemographics(Person person) {
-    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
-    person.attributes.putAll(frg.getCurrentRecord().getFixedRecordAttributes());
-    // Reset person's default records after attributes have been reset.
-    person.initializeDefaultHealthRecords();
-    person.attributes.put(Person.BIRTHDATE, frg.getSeedBirthdate());
-  }
 
   /**
    * Update a previously created person from the time they were last updated until Generator.stop or
@@ -694,13 +662,16 @@ public class Generator implements RandomNumberGenerator {
     while (person.alive(time) && time < stop) {
 
       // If fixed demographics are in use then check to update the person's current fixed record.
-      if (person.attributes.get(Person.HOUSEHOLD) != null) {
-        // Check to update each household's address and the current
-        // fixed record groups and seed records for each member.
-        if (fixedRecordGroupManager
-            .checkToUpdateHouseholdAddressFor(person, Utilities.getYear(time))) {
-          // Check to update this person's variant record.
-          fixedRecordGroupManager.updateFixedDemographicRecord(person, time, this);
+      String entityId = (String) person.attributes.get(Person.ENTITY_INDIVIDUAL_ID);
+      if (entityId != null) {
+        Entity entity = entityManager.findEntity(entityId);
+        Seed currentSeed = entity.seedAt(time);
+        // Check to see if the seed has changed
+        if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
+          person.attributes.putAll(currentSeed.demographicAttributesForPerson());
+          Location newLocation = new Location(currentSeed.getState(), currentSeed.getCity());
+          newLocation.assignPoint(person, currentSeed.getCity());
+
         }
       }
 
@@ -859,13 +830,12 @@ public class Generator implements RandomNumberGenerator {
       firstSeed.getCity());
 
     Demographics city = this.location.randomCity(random);
-
-
     // Pick the rest of the demographics based on the location of the fixed record.
-    Map<String, Object> demoAttributes = firstSeed.demographicAttributesForPerson();
-    demoAttributes = this.pickDemographics(random, city);
+    Map<String, Object> demoAttributes = this.pickDemographics(random, city);
+
     // Overwrite the person's attributes with the seed of the fixed record group.
-    demoAttributes.putAll(demoAttributes);
+    demoAttributes.putAll(firstSeed.demographicAttributesForPerson());
+    demoAttributes.put(Person.ENTITY_INDIVIDUAL_ID, entity.getIndividualId());
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     demoAttributes.put(Person.BIRTHDATE, firstSeed.birthdateTimestamp());
 
@@ -895,12 +865,6 @@ public class Generator implements RandomNumberGenerator {
     long finishTime = person.lastUpdated + timestep;
     boolean isAlive = person.alive(finishTime);
 
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      // Set the person's attributes to their seed record to ensure console display is correct.
-      FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
-      person.attributes.putAll(frg.getSeedRecordAttributes());
-    }
-
     if (internalStore != null) {
       internalStore.add(person);
     }
@@ -911,12 +875,6 @@ public class Generator implements RandomNumberGenerator {
 
     if (!this.logLevel.equals("none")) {
       writeToConsole(person, index, finishTime, isAlive);
-    }
-
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      // Reset the person's attributes to their current demographics.
-      FixedRecordGroup frg = fixedRecordGroupManager.getCurrentRecordGroupFor(person);
-      person.attributes.putAll(frg.getCurentVariantRecordAttributes());
     }
 
     String key = isAlive ? "alive" : "dead";

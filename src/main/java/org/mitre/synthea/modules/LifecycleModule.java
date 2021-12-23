@@ -119,14 +119,23 @@ public final class LifecycleModule extends Module {
     Map<String, Object> attributes = person.attributes;
 
     attributes.put(Person.ID, person.randUUID().toString());
-    attributes.put(Person.BIRTHDATE, time);
-    String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    String firstName = Names.fakeFirstName(gender, language, person);
-    String lastName = Names.fakeLastName(language, person);
-    attributes.put(Person.FIRST_NAME, firstName);
-    attributes.put(Person.LAST_NAME, lastName);
-    attributes.put(Person.NAME, firstName + " " + lastName);
+    if (attributes.get(Person.ENTITY_INDIVIDUAL_ID) == null) {
+      attributes.put(Person.BIRTHDATE, time);
+      String gender = (String) attributes.get(Person.GENDER);
+      String firstName = Names.fakeFirstName(gender, language, person);
+      String lastName = Names.fakeLastName(language, person);
+      attributes.put(Person.FIRST_NAME, firstName);
+      attributes.put(Person.LAST_NAME, lastName);
+      attributes.put(Person.NAME, firstName + " " + lastName);
+
+      String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
+          + ((person.randInt(9999 - 1000 + 1) + 1000));
+      attributes.put(Person.TELECOM, phoneNumber);
+
+      boolean hasStreetAddress2 = person.rand() < 0.5;
+      attributes.put(Person.ADDRESS, Names.fakeAddress(hasStreetAddress2, person));
+    }
 
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
@@ -134,26 +143,12 @@ public final class LifecycleModule extends Module {
     
     String fatherFirstName = Names.fakeFirstName("M", language, person);
     // this is anglocentric where the baby gets the father's last name
-    attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
+    attributes.put(Person.NAME_FATHER, fatherFirstName + " " + attributes.get(Person.LAST_NAME));
 
     double prevalenceOfTwins =
         (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
-    }
-
-    String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
-        + ((person.randInt(9999 - 1000 + 1) + 1000));
-    attributes.put(Person.TELECOM, phoneNumber);
-
-    boolean hasStreetAddress2 = person.rand() < 0.5;
-    attributes.put(Person.ADDRESS, Names.fakeAddress(hasStreetAddress2, person));
-
-    // If using FixedRecords, overwrite the person's attributes with the seed record attributes.
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      FixedRecordGroup recordGroup
-          = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
-      attributes.putAll(recordGroup.getSeedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
@@ -184,7 +179,8 @@ public final class LifecycleModule extends Module {
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.seed, time);
-    double weightPercentile = pgt.reverseWeightPercentile(gender, heightPercentile);
+    double weightPercentile = pgt.reverseWeightPercentile((String) attributes.get(Person.GENDER),
+        heightPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);

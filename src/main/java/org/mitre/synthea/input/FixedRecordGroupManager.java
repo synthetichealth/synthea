@@ -145,36 +145,6 @@ public class FixedRecordGroupManager {
     return this.householdsMap.get(householdId);
   }
 
-  /**
-   * Updates the person's address information from their Fixed Record that matches
-   * the current year.
-   * 
-   * @param person    The person to use.
-   * @param time      The time to update the records at.
-   * @param generator The generator used to extract the new address location.
-   */
-  public void updateFixedDemographicRecord(Person person, long time, Generator generator) {
-
-    FixedRecordGroup frg = Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person);
-    // Overwrite the person's biographical information with the new current variant
-    // record of the new fixed record group.
-    person.attributes.putAll(frg.getCurentVariantRecordAttributes());
-    /*
-     * Force update the person's provider based on their new seed record. and fixed
-     * record group. This is required so that a new health record is made for the
-     * start date of the new primary seed record and fixed record group which
-     * impacts the provider, care location, timing, and any change of address.
-     */
-    person.forceNewProvider(HealthRecord.EncounterType.WELLNESS, Utilities.getYear(time));
-    // Create a new health record with the person's new variant record attributes.
-    person.record = person.getHealthRecord(
-        person.getProvider(HealthRecord.EncounterType.WELLNESS, System.currentTimeMillis()),
-        System.currentTimeMillis());
-    // Reset the person's attributes to the seed record ones, since they are the true
-    // attributes.
-    person.attributes.putAll(frg.getSeedRecordAttributes());
-    frg.overwriteAddressWithSeedRecord(person, generator);
-  }
 
   /**
    * Adds the given person with the given household role to their household. If

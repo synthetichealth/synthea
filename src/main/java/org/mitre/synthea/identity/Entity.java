@@ -1,6 +1,11 @@
 package org.mitre.synthea.identity;
 
+import jdk.vm.ci.meta.Local;
+
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +29,11 @@ public class Entity {
 
   public Seed seedAt(LocalDate date) {
     return seeds.stream().filter(s -> s.getPeriod().contains(date)).findFirst().orElse(null);
+  }
+
+  public Seed seedAt(long timestamp) {
+    LocalDate date = LocalDate.from(Instant.ofEpochMilli(timestamp));
+    return seedAt(date);
   }
 
   public LocalDate getDateOfBirth() {

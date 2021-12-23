@@ -654,8 +654,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     if (this.attributes.get(Person.HOUSEHOLD) != null) {
       // Set to a new variant record because there is a new provider.
-      FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
-      this.attributes.putAll(vr.getFixedRecordAttributes());
+      //FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
+      //this.attributes.putAll(vr.getFixedRecordAttributes());
     }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
