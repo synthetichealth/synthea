@@ -151,6 +151,7 @@ public abstract class TestHelper {
       int numberOfPeople = 10;
       Generator generator = new Generator(numberOfPeople);
       generator.options.overflow = false;
+      exportOff();
       Person[] people = new Person[10];
       for (int i = 0; i < numberOfPeople; i++) {
         people[i] = generator.generatePerson(i);
