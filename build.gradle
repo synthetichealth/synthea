@@ -79,6 +79,13 @@ dependencies {
   implementation "org.slf4j:slf4j-api:1.7.9"
   // compile "org.slf4j:slf4j-nop:1.6.1" // SLF4J seems to already be provided by org.apache.logging.log4j
   
+  // ensure transitive dependencies do not use vulnerable log4j 
+  implementation "org.apache.logging.log4j:log4j-core", {
+        version {
+            strictly '2.17.0'
+        }
+    }
+  
   // Physiology simulation dependencies
   implementation files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
   implementation 'org.sbml.jsbml:jsbml:1.5', {
