@@ -136,6 +136,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.input.Household;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Payer;
@@ -260,10 +261,6 @@ public class FhirR4 {
       bundle.setType(BundleType.TRANSACTION);
     } else {
       bundle.setType(BundleType.COLLECTION);
-    }
-
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
-      person.attributes.putAll(person.record.demographicsAtRecordCreation);
     }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
@@ -414,15 +411,16 @@ public class FhirR4 {
     }
 
     
-    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+    if (person.attributes.get(Person.ENTITY) != null) {
+      Entity entity = (Entity) person.attributes.get(Person.ENTITY);
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/record_id")
-          .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_RECORD_ID))));
+          .setValue(entity.getIndividualId());
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/seed_record_id")
-          .setValue(String.valueOf((person.attributes.get(Person.IDENTIFIER_SEED_ID))));
+          .setValue(String.valueOf(person.attributes.get(Person.IDENTIFIER_SEED_ID)));
       patientResource.addIdentifier()
-          .setSystem("http://mitre.org/household_id")
+          .setSystem("http://mitre.org/variant_record_id")
           .setValue(String.valueOf((String) person.attributes.get(Person.HOUSEHOLD)));
     }
 

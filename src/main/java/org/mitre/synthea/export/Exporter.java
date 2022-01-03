@@ -26,6 +26,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.identity.Entity;
+import org.mitre.synthea.identity.Seed;
+import org.mitre.synthea.identity.Variant;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
@@ -140,6 +143,12 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
+          if (person.attributes.get(Person.ENTITY) != null) {
+            Entity entity = (Entity) person.attributes.get(Person.ENTITY);
+            Seed seed = entity.seedAt(person.record.lastEncounterTime());
+            Variant variant = seed.selectVariant(person);
+            person.attributes.putAll(variant.demographicAttributesForPerson());
+          }
           exportRecord(person, Integer.toString(i), stopTime, options);
           i++;
         }

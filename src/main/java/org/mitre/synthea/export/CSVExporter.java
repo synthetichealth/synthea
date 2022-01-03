@@ -445,12 +445,6 @@ public class CSVExporter {
    */
   public void export(Person person, long time) throws IOException {
 
-    // Set the person's birthdate temporarily to the accurate seed record version of the birthdate.
-    long originalBirthDate = (long) person.attributes.get(Person.BIRTHDATE);
-    if (Generator.fixedRecordGroupManager != null) {
-      person.attributes.put(Person.BIRTHDATE, Generator.fixedRecordGroupManager.getCurrentRecordGroupFor(person).getSeedBirthdate());
-    }
-
     String personID = patient(person, time);
 
     for (Encounter encounter : person.record.encounters) {
@@ -561,9 +555,6 @@ public class CSVExporter {
     supplies.flush();
     claims.flush();
     claimsTransactions.flush();
-
-    // Reset the person's birthdate to the variant version (to prevent contaminating the FHIR export).
-    person.attributes.put(Person.BIRTHDATE, originalBirthDate);
   }
 
   /**

@@ -45,11 +45,6 @@ public class Names {
       choices = (List<String>) names.get("english." + gender);
     }
 
-    // Temporary fix for name issue.
-    if(Generator.fixedRecordGroupManager != null){
-      return "";
-    }
-
     // pick a random item from the list
     String name = choices.get(person.randInt(choices.size()));
 

@@ -1077,7 +1077,7 @@ public class HealthRecord implements Serializable {
   }
 
   public long lastEncounterTime() {
-    return encounters.stream().mapToLong(e -> e.stop).max().getAsLong();
+    return encounters.stream().mapToLong(e -> e.stop).max().orElse(Long.MIN_VALUE);
   }
 
   /**

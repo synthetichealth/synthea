@@ -1,8 +1,13 @@
 package org.mitre.synthea.identity;
 
+import org.mitre.synthea.world.agents.Person;
+
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Variant implements IdentityRecord {
   private String variantId;
@@ -143,5 +148,21 @@ public class Variant implements IdentityRecord {
   @Override
   public long birthdateTimestamp() {
     return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+  }
+
+  public Map<String, Object> demographicAttributesForPerson() {
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.IDENTIFIER_SEED_ID, this.getSeed().getSeedId());
+    attributes.put(Person.FIRST_NAME, this.getGivenName());
+    attributes.put(Person.LAST_NAME, this.getFamilyName());
+    attributes.put(Person.NAME, this.getGivenName() + " " + this.getFamilyName());
+    attributes.put(Person.TELECOM, this.getPhone());
+    attributes.put(Person.GENDER, this.getGender());
+    attributes.put(Person.STATE, this.getState());
+    attributes.put(Person.CITY, this.getCity());
+    attributes.put(Person.ADDRESS, this.getAddressLines().stream()
+        .collect(Collectors.joining("\n")));
+    attributes.put(Person.ZIP, this.getZipCode());
+    return attributes;
   }
 }

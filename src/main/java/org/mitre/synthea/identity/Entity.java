@@ -1,7 +1,5 @@
 package org.mitre.synthea.identity;
 
-import jdk.vm.ci.meta.Local;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +30,10 @@ public class Entity {
   }
 
   public Seed seedAt(long timestamp) {
-    LocalDate date = LocalDate.from(Instant.ofEpochMilli(timestamp));
+    if (timestamp == Long.MIN_VALUE) {
+      return seeds.get(0);
+    }
+    LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp).atZone(ZoneId.of("Z"))).toLocalDate();
     return seedAt(date);
   }
 
