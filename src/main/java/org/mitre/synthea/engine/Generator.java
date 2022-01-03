@@ -662,9 +662,8 @@ public class Generator implements RandomNumberGenerator {
     while (person.alive(time) && time < stop) {
 
       // If fixed demographics are in use then check to update the person's current fixed record.
-      String entityId = (String) person.attributes.get(Person.ENTITY_INDIVIDUAL_ID);
-      if (entityId != null) {
-        Entity entity = entityManager.findEntity(entityId);
+      Entity entity = (Entity) person.attributes.get(Person.ENTITY);
+      if (entity != null) {
         Seed currentSeed = entity.seedAt(time);
         // Check to see if the seed has changed
         if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
@@ -835,7 +834,7 @@ public class Generator implements RandomNumberGenerator {
 
     // Overwrite the person's attributes with the seed of the fixed record group.
     demoAttributes.putAll(firstSeed.demographicAttributesForPerson());
-    demoAttributes.put(Person.ENTITY_INDIVIDUAL_ID, entity.getIndividualId());
+    demoAttributes.put(Person.ENTITY, entity);
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     demoAttributes.put(Person.BIRTHDATE, firstSeed.birthdateTimestamp());
 

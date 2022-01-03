@@ -120,7 +120,7 @@ public final class LifecycleModule extends Module {
 
     attributes.put(Person.ID, person.randUUID().toString());
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    if (attributes.get(Person.ENTITY_INDIVIDUAL_ID) == null) {
+    if (attributes.get(Person.ENTITY) == null) {
       attributes.put(Person.BIRTHDATE, time);
       String gender = (String) attributes.get(Person.GENDER);
       String firstName = Names.fakeFirstName(gender, language, person);

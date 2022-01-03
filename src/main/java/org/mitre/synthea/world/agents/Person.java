@@ -29,6 +29,7 @@ import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.CoverageRecord;
@@ -104,7 +105,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String HOUSEHOLD_ROLE = "household_role";
   public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";
   public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
-  public static final String ENTITY_INDIVIDUAL_ID = "ENTITY_INDIVIDUAL_ID";
+  public static final String ENTITY = "ENTITY";
 
   private final Random random;
   public final long seed;
@@ -641,6 +642,19 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     String key = PREFERREDYPROVIDER + type;
     if (!attributes.containsKey(key)) {
       setProvider(type, time);
+    } else {
+      Entity entity = (Entity) attributes.get(ENTITY);
+      // check to see if this is a fixed identity
+      if (entity != null) {
+        Provider provider = (Provider) attributes.get(key);
+        HealthRecord healthRecord = getHealthRecord(provider, time);
+        long lastEncounterTime = healthRecord.lastEncounterTime();
+        // check to see if the provider is valid for this see range
+        if (!entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
+          // The provider is not in the seed range. Force finding a new provider.
+          setProvider(type, time);
+        }
+      }
     }
     return (Provider) attributes.get(key);
   }
@@ -652,11 +666,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     if (provider == null) {
       throw new RuntimeException("Unable to find provider: " + type);
     }
-    if (this.attributes.get(Person.HOUSEHOLD) != null) {
-      // Set to a new variant record because there is a new provider.
-      //FixedRecord vr = Generator.fixedRecordGroupManager.updatePersonVariantRecord(this);
-      //this.attributes.putAll(vr.getFixedRecordAttributes());
-    }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
   }
@@ -667,15 +676,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
-    setProvider(type, provider);
-  }
-
-  /**
-   * Force find a new provider that does not already have a healthrecord for the person.
-   */
-  public void forceNewProvider(EncounterType type, long time) {
-    Provider provider = Provider.findServiceNewProvider(this, type, time, this.records.values()
-        .stream().map(record -> record.provider.uuid).collect(Collectors.toList()));
     setProvider(type, provider);
   }
 

@@ -1076,6 +1076,10 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  public long lastEncounterTime() {
+    return encounters.stream().mapToLong(e -> e.stop).max().getAsLong();
+  }
+
   /**
    * Create a new immunization and add it to the current encounter.
    * @param time the time of the immunization.
