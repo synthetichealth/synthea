@@ -73,6 +73,10 @@ public class MetadataExporter {
     String javaVersion = System.getProperty("java.version"); // something like "12" or "1.8.0_201"
     metadata.put("javaVersion", javaVersion);
 
+    // Number of generator threads
+    metadata.put("generate.thread_pool_size", generator.options.threadPoolSize);
+    metadata.put("generatorThreads", generator.threadPoolSize);
+
     // Actual Date/Time of execution.
     String runStartTime = ExportHelper.iso8601Timestamp(opts.runStartTime);
     metadata.put("runStartTime", runStartTime);
