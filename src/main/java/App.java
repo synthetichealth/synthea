@@ -39,7 +39,7 @@ public class App {
     System.out.println("run_synthea Massachusetts");
     System.out.println("run_synthea Alaska Juneau");
     System.out.println("run_synthea -s 12345");
-    System.out.println("run_synthea -p 1000)");
+    System.out.println("run_synthea -p 1000");
     System.out.println("run_synthea -s 987 Washington Seattle");
     System.out.println("run_synthea -s 21 -p 100 Utah \"Salt Lake City\"");
     System.out.println("run_synthea -g M -a 60-65");
