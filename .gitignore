@@ -13,6 +13,8 @@ bin/**
 /output/
 /out/
 
+**/*.log
+
 # don't commit the autobuilt version file
 src/main/resources/version.txt
 
