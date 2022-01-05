@@ -104,8 +104,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 45,
+        "low": 12,
+        "high": 16,
         "unit": "minutes"
       },
       "direct_transition": "Device"
@@ -120,8 +120,8 @@
         }
       ],
       "duration": {
-        "low": 20,
-        "high": 60,
+        "low": 8,
+        "high": 20,
         "unit": "minutes"
       },
       "direct_transition": "IABP Stop"

@@ -82,8 +82,8 @@
         }
       ],
       "duration": {
-        "low": 15,
-        "high": 30,
+        "low": 6,
+        "high": 10,
         "unit": "minutes"
       },
       "direct_transition": "Administer Anesthesia"
@@ -103,8 +103,8 @@
         }
       ],
       "duration": {
-        "low": 15,
-        "high": 30,
+        "low": 6,
+        "high": 10,
         "unit": "minutes"
       },
       "direct_transition": "Prep Patient"
@@ -119,8 +119,8 @@
         }
       ],
       "duration": {
-        "low": 15,
-        "high": 30,
+        "low": 6,
+        "high": 10,
         "unit": "minutes"
       },
       "distributed_transition": [
@@ -144,8 +144,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "CPB"
@@ -172,8 +172,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "Placement of Aortic Cross Clamp"
@@ -188,8 +188,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "Induced cardioplegia"
@@ -204,8 +204,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "Call CABG_Details On Pump"
@@ -220,8 +220,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "Vascular Cannula Removal"
@@ -236,8 +236,8 @@
         }
       ],
       "duration": {
-        "low": 10,
-        "high": 30,
+        "low": 2,
+        "high": 6,
         "unit": "minutes"
       },
       "direct_transition": "History_of_CABG"
@@ -290,8 +290,8 @@
         }
       ],
       "duration": {
-        "low": 20,
-        "high": 60,
+        "low": 8,
+        "high": 20,
         "unit": "minutes"
       },
       "direct_transition": "Finish_Surgery"

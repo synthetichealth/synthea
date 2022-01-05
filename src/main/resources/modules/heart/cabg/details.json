@@ -111,7 +111,14 @@
         }
       ],
       "assign_to_attribute": "cabg_operative_approach",
-      "direct_transition": "Pick Number of Grafts"
+      "direct_transition": "Pick Number of Grafts",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 6
+        }
+      },
+      "unit": "minutes"
     },
     "Graft_No_1": {
       "type": "SetAttribute",
@@ -195,7 +202,14 @@
         }
       ],
       "assign_to_attribute": "cabg_operative_approach",
-      "direct_transition": "Pick Number of Grafts"
+      "direct_transition": "Pick Number of Grafts",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 6
+        }
+      },
+      "unit": "minutes"
     },
     "Anything Else": {
       "type": "Procedure",
@@ -207,8 +221,15 @@
         }
       ],
       "assign_to_attribute": "cabg_operative_approach",
-      "direct_transition": "Pick Number of Grafts"
-    },    
+      "direct_transition": "Pick Number of Grafts",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 6
+        }
+      },
+      "unit": "minutes"
+    },
     "Graft_Obs_1": {
       "type": "Observation",
       "category": "procedure",
@@ -220,7 +241,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 1" },
+      "exact": {
+        "quantity": "CABG Grafts: 1"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Graft_Obs_2": {
@@ -234,7 +257,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 2" },
+      "exact": {
+        "quantity": "CABG Grafts: 2"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Graft_Obs_3": {
@@ -248,7 +273,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 3" },
+      "exact": {
+        "quantity": "CABG Grafts: 3"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Graft_Obs_4": {
@@ -262,7 +289,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 4" },
+      "exact": {
+        "quantity": "CABG Grafts: 4"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Graft_Obs_5": {
@@ -276,7 +305,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 5" },
+      "exact": {
+        "quantity": "CABG Grafts: 5"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Graft_Obs_6": {
@@ -290,7 +321,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Grafts: 6" },
+      "exact": {
+        "quantity": "CABG Grafts: 6"
+      },
       "direct_transition": "Pick Number of CABG Arterial Conduits"
     },
     "Art_Cond_Obs_1": {
@@ -304,7 +337,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 1" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 1"
+      },
       "direct_transition": "Terminal"
     },
     "Art_Cond_Obs_2": {
@@ -318,7 +353,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 2" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 2"
+      },
       "direct_transition": "Terminal"
     },
     "Art_Cond_Obs_3": {
@@ -332,7 +369,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 3" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 3"
+      },
       "direct_transition": "Terminal"
     },
     "Art_Cond_Obs_4": {
@@ -346,7 +385,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 4" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 4"
+      },
       "direct_transition": "Terminal"
     },
     "Art_Cond_Obs_5": {
@@ -360,7 +401,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 5" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 5"
+      },
       "direct_transition": "Terminal"
     },
     "Art_Cond_Obs_6": {
@@ -374,7 +417,9 @@
           "display": "Procedure Narrative"
         }
       ],
-      "exact": { "quantity": "CABG Arterial Conduits: 6" },
+      "exact": {
+        "quantity": "CABG Arterial Conduits: 6"
+      },
       "direct_transition": "Terminal"
     }
   },

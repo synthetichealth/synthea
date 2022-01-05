@@ -48,7 +48,7 @@
     },
     "CABG Surgery": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "Abnormal Findings",
       "codes": [
         {

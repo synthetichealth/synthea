@@ -313,7 +313,14 @@
           "display": "Continuous subcutaneous infusion of insulin (procedure)"
         }
       ],
-      "direct_transition": "Insulin_Infusion_Rx"
+      "direct_transition": "Insulin_Infusion_Rx",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 3
+        }
+      },
+      "unit": "minutes"
     },
     "Insulin_Infusion_Rx": {
       "type": "MedicationOrder",
