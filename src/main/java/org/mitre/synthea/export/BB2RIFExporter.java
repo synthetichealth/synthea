@@ -1160,6 +1160,7 @@ public class BB2RIFExporter {
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = "";
+          String ndcCode = "";
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
               if (hcpcsCodeMapper.canMap(code.code)) {
@@ -1171,6 +1172,7 @@ public class BB2RIFExporter {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
             }
           }
           // TBD: decide whether line item skip logic is needed here and in other files
@@ -1184,6 +1186,7 @@ public class BB2RIFExporter {
           } else {
             fieldValues.put(CARRIER.BETOS_CD, "");
           }
+          fieldValues.put(CARRIER.LINE_NDC_CD, ndcCode);
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
