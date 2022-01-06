@@ -237,10 +237,8 @@ public class CMSStateCodeMapper {
     }
     for (LinkedHashMap<String, String> row : csvData) {
       String zipcode = row.get("zip");
-      if (zipcode.length() > 3) {
-        if (zipcode.length() == 4) {
-          zipcode = "0" + zipcode;
-        }
+      if (zipcode.length() == 4) {
+        zipcode = "0" + zipcode;
       }
       String ssaCode = row.get("ssacounty");
       ssaTable.put(zipcode, ssaCode);
@@ -269,13 +267,11 @@ public class CMSStateCodeMapper {
     }
     for (LinkedHashMap<String, String> row : csvData) {
       String zipcode = row.get("zip");
-      if (zipcode.length() > 3) {
-        if (zipcode.length() == 4) {
-          zipcode = "0" + zipcode;
-        }
+      if (zipcode.length() == 4) {
+        zipcode = "0" + zipcode;
       }
-      String ssaCode = row.get("fipscounty");
-      fipsTable.put(zipcode, ssaCode);
+      String fipsCode = row.get("fipscounty");
+      fipsTable.put(zipcode, fipsCode);
     }
     return fipsTable;
   }
