@@ -5,6 +5,7 @@ import java.util.List;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
@@ -54,7 +55,7 @@ public interface IPayerFinder {
    */
   public default Payer chooseRandomlyFromList(List<Payer> options, RandomNumberGenerator rand) {
     if (options.isEmpty()) {
-      return Payer.noInsurance;
+      return PayerController.noInsurance;
     } else if (options.size() == 1) {
       return options.get(0);
     } else {

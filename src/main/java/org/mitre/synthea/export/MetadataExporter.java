@@ -17,7 +17,7 @@ import java.util.Map;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Provider;
 
 public class MetadataExporter {
@@ -66,7 +66,7 @@ public class MetadataExporter {
     int providerCount = Provider.getProviderList().size();
     metadata.put("providerCount", providerCount);
 
-    int payerCount = Payer.getAllPayers().size();
+    int payerCount = PayerController.getAllPayers().size();
     metadata.put("payerCount", payerCount);
 
     // Java version,

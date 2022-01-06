@@ -23,6 +23,7 @@ import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -71,10 +72,10 @@ public class ValueSetCodeResolverTest {
     location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, 1L);
 
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     encounter = person.encounterStart(time, EncounterType.WELLNESS);
     String reasonCode = "275926002";

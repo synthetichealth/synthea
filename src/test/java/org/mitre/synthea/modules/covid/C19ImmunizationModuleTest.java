@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -67,8 +68,8 @@ public class C19ImmunizationModuleTest {
     Provider.loadProviders(here, 1L);
     person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
-    Payer.loadPayers(here);
-    person.coverage.setPayerAtTime(decemberFifteenth, Payer.getGovernmentPayer("Medicare"));
+    PayerController.loadPayers(here);
+    person.coverage.setPayerAtTime(decemberFifteenth, PayerController.getGovernmentPayer("Medicare"));
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());

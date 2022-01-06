@@ -15,6 +15,7 @@ import org.mitre.synthea.helpers.TransitionMetrics.Metric;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -93,13 +94,13 @@ public class TransitionMetricsTest {
 
   private long run(Person person, Module singleModule, long start) {
     long time = start;
-    Payer.loadNoInsurance();
+    PayerController.loadNoInsurance();
     // run until the module completes (it has no loops so it is guaranteed to)
     // reminder that process returns true when the module is "done"
     while (person.alive(time) && !singleModule.process(person, time)) {
       time += Utilities.convertTime("years", 1);
       // Give the person No Insurance to prevent null pointers.
-      person.coverage.setPayerAtTime(time, Payer.noInsurance);
+      person.coverage.setPayerAtTime(time, PayerController.noInsurance);
       // hack the wellness encounter just in case
       person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + singleModule.name,
           true);

@@ -8,6 +8,7 @@ import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
 
@@ -64,12 +65,12 @@ public class HealthInsuranceModule extends Module {
       }
       // Determine the insurance for this person at this time.
       Payer newPayer = determineInsurance(person, time);
-      Payer secondaryPayer = Payer.noInsurance;
+      Payer secondaryPayer = PayerController.noInsurance;
 
       // If the payer is Medicare, they may buy supplemental insurance.
-      if (Payer.getGovernmentPayer(MEDICARE) == newPayer && (person.rand() <= 0.8)) {
+      if (PayerController.getGovernmentPayer(MEDICARE) == newPayer && (person.rand() <= 0.8)) {
         // Buy supplemental insurance if it is affordable
-        secondaryPayer = Payer.findPayer(person, null, time);
+        secondaryPayer = PayerController.findPayer(person, null, time);
       }
 
       // Set this new payer at the current time for the person.
@@ -77,15 +78,15 @@ public class HealthInsuranceModule extends Module {
 
       // Update the new Payer's customer statistics.
       newPayer.incrementCustomers(person);
-      if (Payer.noInsurance != secondaryPayer) {
+      if (PayerController.noInsurance != secondaryPayer) {
         secondaryPayer.incrementCustomers(person);
       }
 
       // Set insurance attribute for module access
       String insuranceStatus = null;
-      if (newPayer == Payer.noInsurance) {
+      if (newPayer == PayerController.noInsurance) {
         insuranceStatus = "none";
-      } else if (Payer.getGovernmentPayers().contains(newPayer)) {
+      } else if (PayerController.getGovernmentPayers().contains(newPayer)) {
         insuranceStatus = "medicare"; // default to medicare when government payer
         if (newPayer.getName().equalsIgnoreCase("Medicaid")) {
           insuranceStatus = "medicaid";
@@ -112,9 +113,9 @@ public class HealthInsuranceModule extends Module {
    */
   private Payer determineInsurance(Person person, long time) {
     // Government payers
-    Payer medicare = Payer.getGovernmentPayer(MEDICARE);
-    Payer medicaid = Payer.getGovernmentPayer(MEDICAID);
-    Payer dualPayer = Payer.getGovernmentPayer(DUAL_ELIGIBLE);
+    Payer medicare = PayerController.getGovernmentPayer(MEDICARE);
+    Payer medicaid = PayerController.getGovernmentPayer(MEDICAID);
+    Payer dualPayer = PayerController.getGovernmentPayer(DUAL_ELIGIBLE);
 
     Payer payerAtTime = person.coverage.getPayerAtTime(time);
 
@@ -134,7 +135,7 @@ public class HealthInsuranceModule extends Module {
     } else {
       // Randomly choose one of the remaining private payers.
       // Returns no_insurance if a person cannot afford any of them.
-      return Payer.findPayer(person, null, time);
+      return PayerController.findPayer(person, null, time);
     }
   }
 

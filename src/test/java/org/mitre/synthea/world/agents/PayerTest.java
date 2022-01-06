@@ -3,10 +3,10 @@ package org.mitre.synthea.world.agents;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -70,14 +70,14 @@ public class PayerTest {
   @Before
   public void before() {
     // Clear any Payers that may have already been statically loaded.
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
     // Load in the .csv list of Payers.
-    Payer.loadPayers(new Location(testState, null));
+    PayerController.loadPayers(new Location(testState, null));
     // Load the two test payers.
-    testPrivatePayer1 = Payer.getPrivatePayers().get(0);
-    testPrivatePayer2 = Payer.getPrivatePayers().get(1);
+    testPrivatePayer1 = PayerController.getPrivatePayers().get(0);
+    testPrivatePayer2 = PayerController.getPrivatePayers().get(1);
     // Force medicare for test settings
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
@@ -251,9 +251,9 @@ public class PayerTest {
     // Their previous payer must not be null to prevent nullPointerExceptions.
     person.coverage.setPayerAtTime(olderThanSixtyFiveTime
         - Utilities.convertTime("years", 1), testPrivatePayer1);
-    // At time olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
+    // At olderThanSixtyFiveTime, the person is 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, olderThanSixtyFiveTime);
-    assertEquals("Dual Eligible",
+    assertEquals(HealthInsuranceModule.DUAL_ELIGIBLE,
         person.coverage.getPayerAtTime(olderThanSixtyFiveTime).getName());
     assertTrue(person.coverage.getPayerAtTime(olderThanSixtyFiveTime)
         .accepts(person, olderThanSixtyFiveTime));
@@ -318,33 +318,33 @@ public class PayerTest {
 
   @Test
   public void loadGovernmentPayers() {
-    assertTrue(Payer.getGovernmentPayer("Medicare")
-        != null && Payer.getGovernmentPayer("Medicaid") != null);
+    assertNotNull(PayerController.getGovernmentPayer(HealthInsuranceModule.MEDICARE));
+    assertNotNull(PayerController.getGovernmentPayer(HealthInsuranceModule.MEDICAID));
 
-    for (Payer payer : Payer.getGovernmentPayers()) {
-      assertEquals("Government", payer.getOwnership());
+    for (Payer payer : PayerController.getGovernmentPayers()) {
+      assertEquals(PayerController.GOV_OWNERSHIP, payer.getOwnership());
     }
   }
 
   @Test
   public void invalidGovernmentPayer() {
-    assertNull(Payer.getGovernmentPayer("Hollywood Healthcare"));
+    assertNull(PayerController.getGovernmentPayer("Hollywood Healthcare"));
   }
 
   @Test
   public void loadAllPayers() {
-    int numGovernmentPayers = Payer.getGovernmentPayers().size();
-    int numPrivatePayers = Payer.getPrivatePayers().size();
-    assertEquals(numGovernmentPayers + numPrivatePayers, Payer.getAllPayers().size());
+    int numGovernmentPayers = PayerController.getGovernmentPayers().size();
+    int numPrivatePayers = PayerController.getPrivatePayers().size();
+    assertEquals(numGovernmentPayers + numPrivatePayers, PayerController.getAllPayers().size());
   }
 
   @Test(expected = RuntimeException.class)
   public void nullPayerName() {
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/bad_test_payers.csv");
-    Payer.loadPayers(new Location("Massachusetts", null));
-    Payer.clear();
+    PayerController.loadPayers(new Location("Massachusetts", null));
+    PayerController.clear();
   }
 
   @Test
@@ -463,9 +463,9 @@ public class PayerTest {
   @Test
   public void costsUncoveredByNoInsurance() {
     Costs.loadCostData();
-    Payer.loadNoInsurance();
+    PayerController.loadNoInsurance();
     person = new Person(0L);
-    person.coverage.setPayerAtTime(0L, Payer.noInsurance);
+    person.coverage.setPayerAtTime(0L, PayerController.noInsurance);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
@@ -473,9 +473,9 @@ public class PayerTest {
     double totalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
     // The No Insurance payer should have $0.0 coverage.
-    assertEquals(0, Payer.noInsurance.getAmountCovered(), 0.001);
+    assertEquals(0, PayerController.noInsurance.getAmountCovered(), 0.001);
     // The No Insurance's uncovered costs should equal the total cost.
-    assertEquals(totalCost, Payer.noInsurance.getAmountUncovered(), 0.001);
+    assertEquals(totalCost, PayerController.noInsurance.getAmountUncovered(), 0.001);
     // The person's expenses shoudl equal the total cost.
     assertEquals(totalCost, person.coverage.getTotalExpenses(), 0.001);
   }

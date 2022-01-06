@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -37,8 +37,8 @@ public class EncounterModuleTest {
     Provider.loadProviders(location, 1L);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(System.currentTimeMillis(), Payer.noInsurance);
+    PayerController.loadNoInsurance();
+    person.coverage.setPayerAtTime(System.currentTimeMillis(), PayerController.noInsurance);
   }
 
   @Test

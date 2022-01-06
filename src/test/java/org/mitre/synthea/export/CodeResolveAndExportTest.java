@@ -50,6 +50,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -123,10 +124,10 @@ public class CodeResolveAndExportTest {
     location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, 1L);
 
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);
     stu3OutputPath = stu3OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));

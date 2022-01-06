@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -19,8 +20,8 @@ public class HealthRecordTest {
    */
   @Before
   public void setup() {
-    Payer.loadNoInsurance();
-    noInsurance = Payer.noInsurance;
+    PayerController.loadNoInsurance();
+    noInsurance = PayerController.noInsurance;
     time = 0L;
   }
 

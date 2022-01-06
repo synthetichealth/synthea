@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -24,8 +25,8 @@ public class CostsTest {
   public void setup() {
     Costs.loadCostData();
     person = new Person(System.currentTimeMillis());
-    Payer.loadNoInsurance();
-    noInsurance = Payer.noInsurance;
+    PayerController.loadNoInsurance();
+    noInsurance = PayerController.noInsurance;
     time = 0L;
     person.coverage.setPayerAtTime(time, noInsurance);
   }

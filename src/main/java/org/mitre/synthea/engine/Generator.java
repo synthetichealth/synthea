@@ -45,7 +45,7 @@ import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -251,7 +251,7 @@ public class Generator implements RandomNumberGenerator {
     // initialize hospitals
     Provider.loadProviders(location, options.clinicianSeed);
     // Initialize Payers
-    Payer.loadPayers(location);
+    PayerController.loadPayers(location);
     // ensure modules load early
     if (options.localModuleDir != null) {
       Module.addModules(options.localModuleDir);

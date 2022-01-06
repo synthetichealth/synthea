@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -36,7 +37,7 @@ public class PayerFinderBestRates implements IPayerFinder {
     HealthRecord.Encounter dummy =
         person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
-    Payer bestRatePayer = Payer.noInsurance;
+    Payer bestRatePayer = PayerController.noInsurance;
     double bestExpectedRate = Double.MAX_VALUE;
 
     for (Payer payer : payers) {

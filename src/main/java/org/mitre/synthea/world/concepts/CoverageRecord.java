@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 
 public class CoverageRecord implements Serializable {
@@ -73,7 +74,7 @@ public class CoverageRecord implements Serializable {
    * Secondary insurance is not applicable.
    */
   public void setPayerAtTime(long time, Payer newPayer) {
-    this.setPayerAtTime(time, newPayer, Payer.noInsurance);
+    this.setPayerAtTime(time, newPayer, PayerController.noInsurance);
   }
 
   /**
@@ -202,7 +203,7 @@ public class CoverageRecord implements Serializable {
       results[0] = lastPlan.owner;
       results[1] = lastPlan.ownerName;
       results[2] = lastPlan.id;
-    } else if (payer.equals(Payer.noInsurance)) {
+    } else if (payer.equals(PayerController.noInsurance)) {
       // No owner for no insurance.
       results[0] = null;
       results[1] = null;

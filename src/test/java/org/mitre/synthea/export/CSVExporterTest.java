@@ -18,6 +18,7 @@ import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.geography.Location;
 
 public class CSVExporterTest {
@@ -53,10 +54,10 @@ public class CSVExporterTest {
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
 
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -103,10 +104,10 @@ public class CSVExporterTest {
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
 
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -173,10 +174,10 @@ public class CSVExporterTest {
     Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers");
     CSVExporter.getInstance().init();
 
-    Payer.clear();
+    PayerController.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();

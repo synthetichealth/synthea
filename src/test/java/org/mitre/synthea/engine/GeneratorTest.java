@@ -27,6 +27,7 @@ import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.geography.Location;
@@ -53,7 +54,7 @@ public class GeneratorTest {
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
     Provider.clear();
-    Payer.clear();
+    PayerController.clear();
   }
 
   @Test

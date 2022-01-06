@@ -26,6 +26,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -63,8 +64,8 @@ public class LogicTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(time, Payer.noInsurance);
+    PayerController.loadNoInsurance();
+    person.coverage.setPayerAtTime(time, PayerController.noInsurance);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");

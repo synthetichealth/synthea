@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -87,7 +88,7 @@ public class Claim implements Serializable {
       this.payer = this.person.coverage.getLastPayer();
     }
     if (this.payer == null) {
-      this.payer = Payer.noInsurance;
+      this.payer = PayerController.noInsurance;
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);
@@ -111,7 +112,7 @@ public class Claim implements Serializable {
     }
     if (plan == null) {
       person.coverage.setPayerAtTime(mainEntry.entry.start,
-          Payer.noInsurance);
+          PayerController.noInsurance);
       plan = person.coverage.getLastPlan();
     }
     assignCosts(mainEntry, plan);
@@ -172,7 +173,7 @@ public class Claim implements Serializable {
       }
       if (remaining > 0) {
         // If secondary insurance, payer covers remainder, not patient.
-        if (Payer.noInsurance != plan.secondaryPayer) {
+        if (PayerController.noInsurance != plan.secondaryPayer) {
           claimEntry.secondaryPayer = remaining;
           remaining -= claimEntry.secondaryPayer;
         }

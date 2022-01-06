@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.input.FixedRecordGroup;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Provider;
 
 
@@ -30,7 +30,7 @@ public class FixedRecordGroupTest {
     Config.set("generate.only_dead_patients", "false");
     Config.set("exporter.split_records", "true");
     Provider.clear();
-    Payer.clear();
+    PayerController.clear();
     // Create a generator with the preset fixed demographics test file.
     GeneratorOptions go = new GeneratorOptions();
     go.fixedRecordPath = new File(

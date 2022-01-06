@@ -750,7 +750,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       return true;
     }
     // Person no longer has income for the year. They will switch to No Insurance.
-    this.coverage.setPayerAtTime(time, Payer.noInsurance);
+    this.coverage.setPayerAtTime(time, PayerController.noInsurance);
     return false;
   }
 

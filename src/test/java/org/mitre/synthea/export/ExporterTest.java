@@ -11,6 +11,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -51,10 +52,10 @@ public class ExporterTest {
     Provider.loadProviders(location, 1L);
     record = patient.record;
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
+    PayerController.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - years(i);
-      patient.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
+      patient.coverage.setPayerAtTime(yearTime, PayerController.noInsurance);
     }
   }
 
