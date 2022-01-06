@@ -10,7 +10,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
+import org.mitre.synthea.world.agents.behaviors.payer_finder.IPayerFinder;
 
 public class HealthInsuranceModule extends Module {
 
@@ -22,13 +22,13 @@ public class HealthInsuranceModule extends Module {
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
   public static double medicaidLevel = 1.33
           * Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
-  public static String MEDICARE =
+  public static final String MEDICARE =
       Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-  public static String MEDICAID =
+  public static final String MEDICAID =
       Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-  public static String DUAL_ELIGIBLE =
+  public static final String DUAL_ELIGIBLE =
       Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-  public static String INSURANCE_STATUS = "insurance_status";
+  public static final String INSURANCE_STATUS = "insurance_status";
 
   /**
    * HealthInsuranceModule constructor.

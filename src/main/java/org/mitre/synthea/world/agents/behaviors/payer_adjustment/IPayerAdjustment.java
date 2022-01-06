@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.payer_adjustment;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;

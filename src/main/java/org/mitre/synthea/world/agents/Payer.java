@@ -18,8 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.world.agents.behaviors.IPayerAdjustment;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
+import org.mitre.synthea.world.agents.behaviors.payer_adjustment.IPayerAdjustment;
+import org.mitre.synthea.world.agents.behaviors.payer_eligibility.IPayerEligibility;
+import org.mitre.synthea.world.agents.behaviors.payer_eligibility.PayerEligibilityFactory;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -32,6 +34,8 @@ public class Payer implements Serializable {
 
   /* Payer Adjustment strategy. */
   private IPayerAdjustment payerAdjustment;
+  /* Payer Eligibilty strategy. */
+  private transient IPayerEligibility payerEligibility;
 
   /* Payer Attributes. */
   private final Map<String, Object> attributes;
@@ -131,6 +135,9 @@ public class Payer implements Serializable {
     this.costsUncovered = 0.0;
     this.revenue = 0.0;
     this.totalQOLS = 0.0;
+
+    // Set the payer's eligiblty criteria.
+    this.payerEligibility = PayerEligibilityFactory.getPayerEligibilityAlgorithm(this.name);
   }
 
   /**
@@ -191,36 +198,8 @@ public class Payer implements Serializable {
    * @return whether or not the payer will accept this patient as a customer
    */
   public boolean accepts(Person person, long time) {
-    
-    // TODO - These criteria for eligibility should be part of an acceptance/eligibility strategy algorithm design pattern.
-    // Medicare Selection algorithm
-    // Medicaid Selection algorithm
-    // Generic Selection algorithm (maybe takes prameters to dictate certain eligibilty)
-    // How does the relationship between Dual Eligibil work? Medicare Advantage plans? There probably shouldn't be a Dual Eligible payer.
-
-    // For now, assume that all payers accept all patients EXCEPT Medicare/Medicaid.
-    if (this.name.equals("Medicare")) {
-      boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
-          && (boolean) person.attributes.get("end_stage_renal_disease"));
-      boolean sixtyFive = (person.ageInYears(time) >= 65);
-
-      boolean medicareEligible = sixtyFive || esrd;
-      return medicareEligible;
-
-    } else if (this.name.equals("Medicaid")) {
-      boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-      boolean pregnant = (person.attributes.containsKey("pregnant")
-          && (boolean) person.attributes.get("pregnant"));
-      boolean blind = (person.attributes.containsKey("blindness")
-          && (boolean) person.attributes.get("blindness"));
-      int income = (Integer) person.attributes.get(Person.INCOME);
-      boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
-
-      boolean medicaidEligible = (female && pregnant) || blind || medicaidIncomeEligible;
-      return medicaidEligible;
-    }
-    // The payer is not Medicare/Medicaid so they will accept any and every person. For now.
-    return true;
+    // How does the relationship between Dual Eligible work? Medicare Advantage plans? There probably shouldn't be a Dual Eligible payer.
+    return this.payerEligibility.isPersonEligible(person, time);
   }
 
   /**

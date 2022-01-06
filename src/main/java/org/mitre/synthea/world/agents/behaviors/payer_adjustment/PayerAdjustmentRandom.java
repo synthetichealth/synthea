@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.payer_adjustment;
 
 import java.io.Serializable;
 

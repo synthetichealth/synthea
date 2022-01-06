@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.payer_finder;
 
 import java.util.ArrayList;
 import java.util.List;

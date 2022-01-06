@@ -82,9 +82,6 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
     Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-    HealthInsuranceModule.MEDICARE = "Medicare";
-    HealthInsuranceModule.MEDICAID = "Medicaid";
-    HealthInsuranceModule.DUAL_ELIGIBLE = "Dual Eligible";
   }
 
   /**
@@ -95,9 +92,6 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", medicareName);
     Config.set("generate.payers.insurance_companies.medicaid", medicaidName);
     Config.set("generate.payers.insurance_companies.dual_eligible", dualName);
-    HealthInsuranceModule.MEDICARE = medicareName;
-    HealthInsuranceModule.MEDICAID = medicaidName;
-    HealthInsuranceModule.DUAL_ELIGIBLE = dualName;
   }
 
   @Test
