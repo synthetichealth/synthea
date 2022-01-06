@@ -602,4 +602,23 @@ public class Payer implements Serializable {
     return this.ownership.equals(PayerController.GOV_OWNERSHIP);
   }
 
+  /**
+   * Returns the insurance status that this payer would provide it's customers.
+   * @return
+   */
+  public String getAssociatedInsuranceStatus() {
+    String insuranceStatus;
+    if (this == PayerController.noInsurance) {
+      insuranceStatus = "none";
+    } else if (this.isGovernmentPayer()) {
+      insuranceStatus = "medicare"; // default to medicare when government payer
+      if (this.getName().equalsIgnoreCase(HealthInsuranceModule.MEDICAID)) {
+        insuranceStatus = "medicaid";
+      }
+    } else {
+      insuranceStatus = "private";
+    }
+    return insuranceStatus;
+  }
+
 }

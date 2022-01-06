@@ -3,7 +3,10 @@ package org.mitre.synthea.world.agents.behaviors.payer_eligibility;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 
-public class MedicaidEligibility implements IPayerEligibility {
+/**
+ * An algorithm that dictates the standard medicaid elgibilty criteria.
+ */
+public class StandardMedicaidEligibility implements IPayerEligibility {
 
     @Override
     public boolean isPersonEligible(Person person, long time) {

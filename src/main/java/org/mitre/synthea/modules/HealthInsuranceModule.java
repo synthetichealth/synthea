@@ -83,17 +83,7 @@ public class HealthInsuranceModule extends Module {
       }
 
       // Set insurance attribute for module access
-      String insuranceStatus = null;
-      if (newPayer == PayerController.noInsurance) {
-        insuranceStatus = "none";
-      } else if (PayerController.getGovernmentPayers().contains(newPayer)) {
-        insuranceStatus = "medicare"; // default to medicare when government payer
-        if (newPayer.getName().equalsIgnoreCase("Medicaid")) {
-          insuranceStatus = "medicaid";
-        }
-      } else {
-        insuranceStatus = "private";
-      }
+      String insuranceStatus = newPayer.getAssociatedInsuranceStatus();
       person.attributes.put(INSURANCE_STATUS, insuranceStatus);
     }
 

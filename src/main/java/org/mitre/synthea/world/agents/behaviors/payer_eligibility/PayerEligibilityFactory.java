@@ -8,8 +8,8 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
  */
 public class PayerEligibilityFactory {
 
-    private static IPayerEligibility medicareEligibilty = new MedicareEligibility();
-    private static IPayerEligibility medicaidEligibility = new MedicaidEligibility();
+    private static IPayerEligibility medicareEligibilty = new StandardMedicareEligibility();
+    private static IPayerEligibility medicaidEligibility = new StandardMedicaidEligibility();
     private static IPayerEligibility genericEligibility = new GenericPayerEligibilty();
 
     /**
