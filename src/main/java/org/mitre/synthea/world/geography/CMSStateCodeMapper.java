@@ -18,6 +18,7 @@ public class CMSStateCodeMapper {
   private Map<String, String> stateToAbbrev = this.buildStateAbbrevTable();
   private final Map<String, String> abbrevToState;
   private final HashMap<String, String> ssaTable;
+  private final HashMap<String, String> fipsTable;
 
   /**
    * Create a new instance.
@@ -31,6 +32,7 @@ public class CMSStateCodeMapper {
       this.abbrevToState.put(entry.getValue(), entry.getKey());
     }
     this.ssaTable = buildSSATable();
+    this.fipsTable = buildFipsTable();
   }
 
   // support two-way conversion between state name and abbreviations
@@ -244,6 +246,38 @@ public class CMSStateCodeMapper {
       ssaTable.put(zipcode, ssaCode);
     }
     return ssaTable;
+  }
+
+  /**
+   * Get the FIPS county code for a given zipcode.
+   * @param zipcode the ZIP
+   * @return fips county code
+   */
+  public String zipToFipsCountyCode(String zipcode) {
+    // FIPS county codes are optional, so return blank if a match isn't found.
+    return fipsTable.getOrDefault(zipcode, "");
+  }
+
+  private HashMap<String, String> buildFipsTable() {
+    HashMap<String, String> fipsTable = new HashMap<String, String>();
+    List<LinkedHashMap<String, String>> csvData;
+    try {
+      String csv = Utilities.readResourceAndStripBOM("geography/fipscodes.csv");
+      csvData = SimpleCSV.parse(csv);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    for (LinkedHashMap<String, String> row : csvData) {
+      String zipcode = row.get("zip");
+      if (zipcode.length() > 3) {
+        if (zipcode.length() == 4) {
+          zipcode = "0" + zipcode;
+        }
+      }
+      String ssaCode = row.get("fipscounty");
+      fipsTable.put(zipcode, ssaCode);
+    }
+    return fipsTable;
   }
 
   private String capitalizeWords(String str) {

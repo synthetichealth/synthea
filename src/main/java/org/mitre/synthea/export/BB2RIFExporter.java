@@ -384,6 +384,10 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.BENE_ZIP_CD, zipCode);
         fieldValues.put(BENEFICIARY.BENE_COUNTY_CD,
                 locationMapper.zipToCountyCode(zipCode));
+        for (int i = 0; i < monthCount; i++) {
+          fieldValues.put(BB2RIFStructure.beneficiaryFipsStateCntyFields[i],
+              locationMapper.zipToFipsCountyCode(zipCode));
+        }
         fieldValues.put(BENEFICIARY.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
         fieldValues.put(BENEFICIARY.BENE_RACE_CD,
