@@ -2301,8 +2301,8 @@ public class BB2RIFExporter {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
           fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine));
-          // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health
-          // or hospice setting”
+          // G0299: "direct skilled nursing services of a registered nurse (RN) in the home health
+          // or hospice setting"
           fieldValues.put(SNF.HCPCS_CD, "G0299");
           rifWriters.writeValues(SNF.class, fieldValues);
         }
