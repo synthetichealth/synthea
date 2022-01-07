@@ -130,6 +130,7 @@ public class BB2RIFExporter {
   CodeMapper dmeCodeMapper;
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
+  private Map<String, RandomCollection<String>> externalCodes;
 
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -166,6 +167,7 @@ public class BB2RIFExporter {
     hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
     betosCodeMapper = new CodeMapper("export/betos_code_map.json");
     locationMapper = new CMSStateCodeMapper();
+    externalCodes = loadExternalCodes();
     try {
       String csv = Utilities.readResourceAndStripBOM("payers/carriers.csv");
       carrierLookup = SimpleCSV.parse(csv);
@@ -180,6 +182,26 @@ public class BB2RIFExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+  }
+
+  private Map<String, RandomCollection<String>> loadExternalCodes() {
+    Map<String, RandomCollection<String>> data = new HashMap<String, RandomCollection<String>>();
+    try {
+      String fileData = Utilities.readResourceAndStripBOM("export/external_codes.csv");
+      List<LinkedHashMap<String, String>> csv = SimpleCSV.parse(fileData);
+      for (LinkedHashMap<String, String> row : csv) {
+        String primary = row.get("primary");
+        String external = row.get("external");
+        double count = Double.parseDouble(row.get("count"));
+        if (!data.containsKey(primary)) {
+          data.put(primary, new RandomCollection<String>());
+        }
+        data.get(primary).add(count, external);
+      }
+    } catch (Exception e) {
+      return null;
+    }
+    return data;
   }
 
   private static CLIA[] initCliaLabNumbers() {
@@ -808,7 +830,16 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
-
+      // Check for external code...
+      String primary = fieldValues.get(OUTPATIENT.PRNCPAL_DGNS_CD);
+      if (primary != null) {
+        String prefix = primary.substring(0, 3);
+        if (externalCodes != null && externalCodes.containsKey(prefix)) {
+          String externalCode = externalCodes.get(prefix).next(person);
+          fieldValues.put(OUTPATIENT.ICD_DGNS_E_CD1, externalCode);
+          fieldValues.put(OUTPATIENT.ICD_DGNS_E_VRSN_CD1, "0");
+        }
+      }
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
@@ -1039,6 +1070,18 @@ public class BB2RIFExporter {
         String icdCode = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
         if (drgCodeMapper.canMap(icdCode)) {
           fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
+        }
+        // Check for external code...
+        String primary = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
+        if (primary != null) {
+          String prefix = primary.substring(0, 3);
+          if (externalCodes != null && externalCodes.containsKey(prefix)) {
+            String externalCode = externalCodes.get(prefix).next(person);
+            fieldValues.put(INPATIENT.ICD_DGNS_E_CD1, externalCode);
+            fieldValues.put(INPATIENT.ICD_DGNS_E_VRSN_CD1, "0");
+            String present = presentOnAdmission.contains(primary) ? "Y" : "U";
+            fieldValues.put(INPATIENT.CLM_E_POA_IND_SW1, present);
+          }
         }
       }
       // Use the procedures in this encounter to enter mapped values
@@ -1955,7 +1998,16 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HHA.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
-
+      // Check for external code...
+      String primary = fieldValues.get(HHA.PRNCPAL_DGNS_CD);
+      if (primary != null) {
+        String prefix = primary.substring(0, 3);
+        if (externalCodes != null && externalCodes.containsKey(prefix)) {
+          String externalCode = externalCodes.get(prefix).next(person);
+          fieldValues.put(HHA.ICD_DGNS_E_CD1, externalCode);
+          fieldValues.put(HHA.ICD_DGNS_E_VRSN_CD1, "0");
+        }
+      }
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
@@ -2121,7 +2173,16 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HOSPICE.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HOSPICE.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
-
+      // Check for external code...
+      String primary = fieldValues.get(HOSPICE.PRNCPAL_DGNS_CD);
+      if (primary != null) {
+        String prefix = primary.substring(0, 3);
+        if (externalCodes != null && externalCodes.containsKey(prefix)) {
+          String externalCode = externalCodes.get(prefix).next(person);
+          fieldValues.put(HOSPICE.ICD_DGNS_E_CD1, externalCode);
+          fieldValues.put(HOSPICE.ICD_DGNS_E_VRSN_CD1, "0");
+        }
+      }
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
@@ -2339,6 +2400,17 @@ public class BB2RIFExporter {
         if (!fieldValues.containsKey(SNF.PRNCPAL_DGNS_CD)) {
           fieldValues.put(SNF.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
           fieldValues.put(SNF.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
+        }
+      }
+
+      // Check for external code...
+      String primary = fieldValues.get(SNF.PRNCPAL_DGNS_CD);
+      if (primary != null) {
+        String prefix = primary.substring(0, 3);
+        if (externalCodes != null && externalCodes.containsKey(prefix)) {
+          String externalCode = externalCodes.get(prefix).next(person);
+          fieldValues.put(SNF.ICD_DGNS_E_CD1, externalCode);
+          fieldValues.put(SNF.ICD_DGNS_E_VRSN_CD1, "0");
         }
       }
 
