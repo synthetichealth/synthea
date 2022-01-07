@@ -56,18 +56,18 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 54	CLM_DISP_CD	N/A	N/A	N/A	N/A	1	N/A	1	N/A	N/A	N/A	FALSE	
 55	CLM_DRG_CD	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	Coded	TRUE	
 56	CLM_DRG_OUTLIER_STAY_CD	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
-57	CLM_E_POA_IND_SW1	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-58	CLM_E_POA_IND_SW10	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-59	CLM_E_POA_IND_SW11	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-60	CLM_E_POA_IND_SW12	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-61	CLM_E_POA_IND_SW2	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-62	CLM_E_POA_IND_SW3	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-63	CLM_E_POA_IND_SW4	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-64	CLM_E_POA_IND_SW5	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-65	CLM_E_POA_IND_SW6	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-66	CLM_E_POA_IND_SW7	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-67	CLM_E_POA_IND_SW8	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-68	CLM_E_POA_IND_SW9	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+57	CLM_E_POA_IND_SW1	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+58	CLM_E_POA_IND_SW10	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+59	CLM_E_POA_IND_SW11	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+60	CLM_E_POA_IND_SW12	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+61	CLM_E_POA_IND_SW2	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+62	CLM_E_POA_IND_SW3	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+63	CLM_E_POA_IND_SW4	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+64	CLM_E_POA_IND_SW5	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+65	CLM_E_POA_IND_SW6	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+66	CLM_E_POA_IND_SW7	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+67	CLM_E_POA_IND_SW8	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+68	CLM_E_POA_IND_SW9	N/A	N/A	[Blank]	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 69	CLM_FAC_TYPE_CD	N/A	N/A	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	"1 (1=Hospital, 2=SNF, 7=Dialysis)"	N/A	N/A	N/A	3 (3=HHA)	8 (8=Hospice)	2 (2=SNF)	FALSE	
 70	CLM_FREQ_CD	N/A	N/A	"1 (1=Admit-Discharge, 9=Final)"	"1 (1=Admit-Discharge, 9=Final)"	N/A	N/A	N/A	"1,9 (1=Admit-Dischage, 9=Final)"	"1,9 (1=Admit-Dischage, 9=Final)"	"1,9 (1=Admit-Discharge, 9=Final)"	FALSE	
 71	CLM_FROM_DT	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	FALSE	
@@ -226,30 +226,30 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 224	ICD_DGNS_CD7	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 225	ICD_DGNS_CD8	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 226	ICD_DGNS_CD9	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
-227	ICD_DGNS_E_CD1	N/A	N/A			N/A	N/A	N/A				TRUE	
-228	ICD_DGNS_E_CD10	N/A	N/A			N/A	N/A	N/A				TRUE	
-229	ICD_DGNS_E_CD11	N/A	N/A			N/A	N/A	N/A				TRUE	
-230	ICD_DGNS_E_CD12	N/A	N/A			N/A	N/A	N/A				TRUE	
-231	ICD_DGNS_E_CD2	N/A	N/A			N/A	N/A	N/A				TRUE	
-232	ICD_DGNS_E_CD3	N/A	N/A			N/A	N/A	N/A				TRUE	
-233	ICD_DGNS_E_CD4	N/A	N/A			N/A	N/A	N/A				TRUE	
-234	ICD_DGNS_E_CD5	N/A	N/A			N/A	N/A	N/A				TRUE	
-235	ICD_DGNS_E_CD6	N/A	N/A			N/A	N/A	N/A				TRUE	
-236	ICD_DGNS_E_CD7	N/A	N/A			N/A	N/A	N/A				TRUE	
-237	ICD_DGNS_E_CD8	N/A	N/A			N/A	N/A	N/A				TRUE	
-238	ICD_DGNS_E_CD9	N/A	N/A			N/A	N/A	N/A				TRUE	
-239	ICD_DGNS_E_VRSN_CD1	N/A	N/A			N/A	N/A	N/A				TRUE	
-240	ICD_DGNS_E_VRSN_CD10	N/A	N/A			N/A	N/A	N/A				TRUE	
-241	ICD_DGNS_E_VRSN_CD11	N/A	N/A			N/A	N/A	N/A				TRUE	
-242	ICD_DGNS_E_VRSN_CD12	N/A	N/A			N/A	N/A	N/A				TRUE	
-243	ICD_DGNS_E_VRSN_CD2	N/A	N/A			N/A	N/A	N/A				TRUE	
-244	ICD_DGNS_E_VRSN_CD3	N/A	N/A			N/A	N/A	N/A				TRUE	
-245	ICD_DGNS_E_VRSN_CD4	N/A	N/A			N/A	N/A	N/A				TRUE	
-246	ICD_DGNS_E_VRSN_CD5	N/A	N/A			N/A	N/A	N/A				TRUE	
-247	ICD_DGNS_E_VRSN_CD6	N/A	N/A			N/A	N/A	N/A				TRUE	
-248	ICD_DGNS_E_VRSN_CD7	N/A	N/A			N/A	N/A	N/A				TRUE	
-249	ICD_DGNS_E_VRSN_CD8	N/A	N/A			N/A	N/A	N/A				TRUE	
-250	ICD_DGNS_E_VRSN_CD9	N/A	N/A			N/A	N/A	N/A				TRUE	
+227	ICD_DGNS_E_CD1	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+228	ICD_DGNS_E_CD10	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+229	ICD_DGNS_E_CD11	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+230	ICD_DGNS_E_CD12	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+231	ICD_DGNS_E_CD2	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+232	ICD_DGNS_E_CD3	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+233	ICD_DGNS_E_CD4	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+234	ICD_DGNS_E_CD5	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+235	ICD_DGNS_E_CD6	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+236	ICD_DGNS_E_CD7	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+237	ICD_DGNS_E_CD8	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+238	ICD_DGNS_E_CD9	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+239	ICD_DGNS_E_VRSN_CD1	N/A	N/A	Coded	Coded	N/A	N/A	N/A	Coded	Coded	Coded	TRUE	
+240	ICD_DGNS_E_VRSN_CD10	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+241	ICD_DGNS_E_VRSN_CD11	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+242	ICD_DGNS_E_VRSN_CD12	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+243	ICD_DGNS_E_VRSN_CD2	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+244	ICD_DGNS_E_VRSN_CD3	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+245	ICD_DGNS_E_VRSN_CD4	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+246	ICD_DGNS_E_VRSN_CD5	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+247	ICD_DGNS_E_VRSN_CD6	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+248	ICD_DGNS_E_VRSN_CD7	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+249	ICD_DGNS_E_VRSN_CD8	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
+250	ICD_DGNS_E_VRSN_CD9	N/A	N/A	[Blank]	[Blank]	N/A	N/A	N/A	[Blank]	[Blank]	[Blank]	TRUE	
 251	ICD_DGNS_VRSN_CD1	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 252	ICD_DGNS_VRSN_CD10	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
 253	ICD_DGNS_VRSN_CD11	N/A	N/A	Coded	Coded	Coded	N/A	Coded	Coded	Coded	Coded	TRUE	
