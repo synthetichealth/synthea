@@ -875,6 +875,8 @@ public class BB2RIFExporter {
       // Check for external code...
       setExternalCode(person, fieldValues,
           OUTPATIENT.PRNCPAL_DGNS_CD, OUTPATIENT.ICD_DGNS_E_CD1, OUTPATIENT.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          OUTPATIENT.PRNCPAL_DGNS_CD, OUTPATIENT.FST_DGNS_E_CD, OUTPATIENT.FST_DGNS_E_VRSN_CD);
 
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
@@ -1108,11 +1110,11 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
         }
         // Check for external code...
-        // Check for external code...
         setExternalCode(person, fieldValues,
             INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.ICD_DGNS_E_CD1, INPATIENT.ICD_DGNS_E_VRSN_CD1,
             INPATIENT.CLM_E_POA_IND_SW1, presentOnAdmission);
-
+        setExternalCode(person, fieldValues,
+            INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.FST_DGNS_E_CD, INPATIENT.FST_DGNS_E_VRSN_CD);
       }
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
@@ -2032,6 +2034,8 @@ public class BB2RIFExporter {
       // Check for external code...
       setExternalCode(person, fieldValues,
           HHA.PRNCPAL_DGNS_CD, HHA.ICD_DGNS_E_CD1, HHA.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          HHA.PRNCPAL_DGNS_CD, HHA.FST_DGNS_E_CD, HHA.FST_DGNS_E_VRSN_CD);
 
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
@@ -2202,6 +2206,8 @@ public class BB2RIFExporter {
       // Check for external code...
       setExternalCode(person, fieldValues,
           HOSPICE.PRNCPAL_DGNS_CD, HOSPICE.ICD_DGNS_E_CD1, HOSPICE.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          HOSPICE.PRNCPAL_DGNS_CD, HOSPICE.FST_DGNS_E_CD, HOSPICE.FST_DGNS_E_VRSN_CD);
 
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
@@ -2426,6 +2432,8 @@ public class BB2RIFExporter {
       // Check for external code...
       setExternalCode(person, fieldValues,
           SNF.PRNCPAL_DGNS_CD, SNF.ICD_DGNS_E_CD1, SNF.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          SNF.PRNCPAL_DGNS_CD, SNF.FST_DGNS_E_CD, SNF.FST_DGNS_E_VRSN_CD);
 
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
