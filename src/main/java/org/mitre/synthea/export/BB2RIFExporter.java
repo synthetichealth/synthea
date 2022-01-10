@@ -452,6 +452,11 @@ public class BB2RIFExporter {
             }
           }
         }
+        String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+        for (int month = 0; month < monthCount; month++) {
+          fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
+                  dualEligibleStatusCode);
+        }
         rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
         if (year == (endYear - 1)) {
           entryStatus = RifEntryStatus.FINAL;
@@ -480,6 +485,32 @@ public class BB2RIFExporter {
     // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
     // premium subsidy and no copayment
     return "01";
+  }
+
+  private String getDualEligibilityCode(Person person, int year) {
+    // TBD add support for the following additional codes (%-ages in brackets are observed
+    // frequency in CMS data):
+    // 00 (15.6%) - Not enrolled in Medicare for the month
+    // 04 (0.5%) - SLMB and full Medicaid coverage, including prescription drugs
+    // 06 (0.8%) - Qualifying individuals (QI)
+    // 08 (2.9%) - Other dual eligible (not QMB, SLMB, QWDI, or QI) with full Medicaid coverage,
+    //             including prescription Drugs
+    // 09 (0.007%) - Other dual eligible, but without Medicaid coverage
+    // 99 (0.05%) - Unknown
+    // AA (0.04%) - [Not in Codebook]
+    // [Blank] (0.1%) - [Not in Codebook]
+    String partDCostSharingCode = getPartDCostSharingCode(person);
+    if (partDCostSharingCode.equals("03")) {
+      return "01"; // (2.2%) Qualified Medicare Beneficiary (QMB)-only
+    } else if (partDCostSharingCode.equals("02")) {
+      return "02"; // (8.2%) QMB and full Medicaid coverage, including prescription drugs
+    } else if (partDCostSharingCode.equals("01")) {
+      return "03"; // (1.3%) Specified Low-Income Medicare Beneficiary (SLMB)-only
+    } else if (hasESRD(person, year) || isBlind(person)) {
+      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+    } else {
+      return "NA"; // (68.3%) Non-Medicaid
+    }
   }
 
   private String getBB2SexCode(String sex) {
@@ -544,6 +575,11 @@ public class BB2RIFExporter {
     long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
     return mappedDiagnosisCodes.contains("N18.6");
+  }
+
+  private boolean isBlind(Person person) {
+    return person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true);
   }
 
   /**

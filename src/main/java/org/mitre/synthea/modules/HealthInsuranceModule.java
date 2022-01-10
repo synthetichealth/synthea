@@ -147,7 +147,7 @@ public class HealthInsuranceModule extends Module {
   public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = HealthInsuranceModule.class.getSimpleName();
     Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
-    Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.BLINDNESS, true, false, "Boolean");
     Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");
     Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
     Attributes.inventory(attributes, m, Person.OCCUPATION_LEVEL, true, false, "Low");
