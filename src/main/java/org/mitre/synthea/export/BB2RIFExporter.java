@@ -199,9 +199,50 @@ public class BB2RIFExporter {
         data.get(primary).add(count, external);
       }
     } catch (Exception e) {
+      if (Config.getAsBoolean("exporter.bfd.require_code_maps", true)) {
+        throw new MissingResourceException(
+            "Unable to read external code file 'external_codes.csv'",
+            "BB2RIFExporter", "external_codes.csv");
+      } else {
+        // For testing, the external codes are not present.
+        System.out.println("BB2RIFExporter is running without 'external_codes.csv'");
+      }
       return null;
     }
     return data;
+  }
+
+  private <E extends Enum<E>> void setExternalCode(Person person,
+      Map<E,String> fieldValues, E diagnosisCodeKey,
+      E externalCodeKey, E externalVersionKey,
+      E externalPOACodeKey, List<String> presentOnAdmission) {
+    // set the external code...
+    boolean set = setExternalCode(person, fieldValues, diagnosisCodeKey,
+        externalCodeKey, externalVersionKey);
+    // ... and also set the 'present on admission' flag...
+    if (set && externalPOACodeKey != null && presentOnAdmission != null) {
+      String primary = fieldValues.get(diagnosisCodeKey);
+      if (primary != null) {
+        String present = presentOnAdmission.contains(primary) ? "Y" : "U";
+        fieldValues.put(externalPOACodeKey, present);
+      }
+    }
+  }
+
+  private <E extends Enum<E>> boolean setExternalCode(Person person,
+      Map<E,String> fieldValues, E diagnosisCodeKey,
+      E externalCodeKey, E externalVersionKey) {
+    String primary = fieldValues.get(diagnosisCodeKey);
+    if (primary != null) {
+      String prefix = primary.substring(0, 3);
+      if (externalCodes != null && externalCodes.containsKey(prefix)) {
+        String externalCode = externalCodes.get(prefix).next(person);
+        fieldValues.put(externalCodeKey, externalCode);
+        fieldValues.put(externalVersionKey, "0");
+        return true;
+      }
+    }
+    return false;
   }
 
   private static CLIA[] initCliaLabNumbers() {
@@ -830,16 +871,11 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
+
       // Check for external code...
-      String primary = fieldValues.get(OUTPATIENT.PRNCPAL_DGNS_CD);
-      if (primary != null) {
-        String prefix = primary.substring(0, 3);
-        if (externalCodes != null && externalCodes.containsKey(prefix)) {
-          String externalCode = externalCodes.get(prefix).next(person);
-          fieldValues.put(OUTPATIENT.ICD_DGNS_E_CD1, externalCode);
-          fieldValues.put(OUTPATIENT.ICD_DGNS_E_VRSN_CD1, "0");
-        }
-      }
+      setExternalCode(person, fieldValues,
+          OUTPATIENT.PRNCPAL_DGNS_CD, OUTPATIENT.ICD_DGNS_E_CD1, OUTPATIENT.ICD_DGNS_E_VRSN_CD1);
+
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
@@ -1072,17 +1108,11 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
         }
         // Check for external code...
-        String primary = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
-        if (primary != null) {
-          String prefix = primary.substring(0, 3);
-          if (externalCodes != null && externalCodes.containsKey(prefix)) {
-            String externalCode = externalCodes.get(prefix).next(person);
-            fieldValues.put(INPATIENT.ICD_DGNS_E_CD1, externalCode);
-            fieldValues.put(INPATIENT.ICD_DGNS_E_VRSN_CD1, "0");
-            String present = presentOnAdmission.contains(primary) ? "Y" : "U";
-            fieldValues.put(INPATIENT.CLM_E_POA_IND_SW1, present);
-          }
-        }
+        // Check for external code...
+        setExternalCode(person, fieldValues,
+            INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.ICD_DGNS_E_CD1, INPATIENT.ICD_DGNS_E_VRSN_CD1,
+            INPATIENT.CLM_E_POA_IND_SW1, presentOnAdmission);
+
       }
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
@@ -1998,16 +2028,11 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HHA.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
+
       // Check for external code...
-      String primary = fieldValues.get(HHA.PRNCPAL_DGNS_CD);
-      if (primary != null) {
-        String prefix = primary.substring(0, 3);
-        if (externalCodes != null && externalCodes.containsKey(prefix)) {
-          String externalCode = externalCodes.get(prefix).next(person);
-          fieldValues.put(HHA.ICD_DGNS_E_CD1, externalCode);
-          fieldValues.put(HHA.ICD_DGNS_E_VRSN_CD1, "0");
-        }
-      }
+      setExternalCode(person, fieldValues,
+          HHA.PRNCPAL_DGNS_CD, HHA.ICD_DGNS_E_CD1, HHA.ICD_DGNS_E_VRSN_CD1);
+
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
@@ -2173,16 +2198,11 @@ public class BB2RIFExporter {
       if (!fieldValues.containsKey(HOSPICE.PRNCPAL_DGNS_CD)) {
         fieldValues.put(HOSPICE.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
+
       // Check for external code...
-      String primary = fieldValues.get(HOSPICE.PRNCPAL_DGNS_CD);
-      if (primary != null) {
-        String prefix = primary.substring(0, 3);
-        if (externalCodes != null && externalCodes.containsKey(prefix)) {
-          String externalCode = externalCodes.get(prefix).next(person);
-          fieldValues.put(HOSPICE.ICD_DGNS_E_CD1, externalCode);
-          fieldValues.put(HOSPICE.ICD_DGNS_E_VRSN_CD1, "0");
-        }
-      }
+      setExternalCode(person, fieldValues,
+          HOSPICE.PRNCPAL_DGNS_CD, HOSPICE.ICD_DGNS_E_CD1, HOSPICE.ICD_DGNS_E_VRSN_CD1);
+
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
@@ -2404,15 +2424,8 @@ public class BB2RIFExporter {
       }
 
       // Check for external code...
-      String primary = fieldValues.get(SNF.PRNCPAL_DGNS_CD);
-      if (primary != null) {
-        String prefix = primary.substring(0, 3);
-        if (externalCodes != null && externalCodes.containsKey(prefix)) {
-          String externalCode = externalCodes.get(prefix).next(person);
-          fieldValues.put(SNF.ICD_DGNS_E_CD1, externalCode);
-          fieldValues.put(SNF.ICD_DGNS_E_VRSN_CD1, "0");
-        }
-      }
+      setExternalCode(person, fieldValues,
+          SNF.PRNCPAL_DGNS_CD, SNF.ICD_DGNS_E_CD1, SNF.ICD_DGNS_E_VRSN_CD1);
 
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
