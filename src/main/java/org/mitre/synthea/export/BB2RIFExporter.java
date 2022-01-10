@@ -1657,8 +1657,6 @@ public class BB2RIFExporter {
       fieldValues.put(DME.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(DME.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(DME.LINE_SRVC_CNT, "" + encounter.claim.items.size());
-      fieldValues.put(DME.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
 
       // OPTIONAL
       if (encounter.reason != null) {
@@ -1688,11 +1686,38 @@ public class BB2RIFExporter {
         fieldValues.put(DME.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
+      // preprocess some subtotals...
+      ClaimEntry subTotals = (encounter.claim).new ClaimEntry(null);
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        if (lineItem.entry instanceof Device || lineItem.entry instanceof Supply) {
+          subTotals.addCosts(lineItem);
+        }
+      }
+      fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
+          String.format("%.2f", subTotals.deductible));
+      fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+      fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
+          String.format("%.2f", subTotals.cost - subTotals.adjustment));
+      fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
+          String.format("%.2f", subTotals.cost));
+      fieldValues.put(DME.NCH_CLM_PRVDR_PMT_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+      fieldValues.put(DME.CLM_PMT_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
+        // Now generate the line items...
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device || lineItem.entry instanceof Supply)) {
             continue;
+          }
+          if (lineItem.entry instanceof Supply) {
+            Supply supply = (Supply) lineItem.entry;
+            fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "" + supply.quantity);
+          } else {
+            fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "");
           }
           if (!dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
             System.err.println(" *** Possibly Missing DME Code: "
@@ -1716,7 +1741,7 @@ public class BB2RIFExporter {
           fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(DME.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.coinsurance));
+                  String.format("%.2f", lineItem.getCoinsurancePaid()));
           fieldValues.put(DME.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.pocket));
           fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
@@ -1725,7 +1750,10 @@ public class BB2RIFExporter {
               String.format("%.2f", lineItem.cost));
           fieldValues.put(DME.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
-
+          fieldValues.put(DME.LINE_PRMRY_ALOWD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost - lineItem.adjustment));
+          fieldValues.put(DME.LINE_NCH_PMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
 
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
