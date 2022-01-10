@@ -52,6 +52,20 @@ public class Claim implements Serializable {
       this.secondaryPayer += other.secondaryPayer;
       this.pocket += other.pocket;
     }
+
+    /**
+     * Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
+     * of pocket.
+     * @return the amount of coinsurance paid
+     */
+    public double getCoinsurancePaid() {
+      if (this.secondaryPayer > 0) {
+        return this.secondaryPayer;
+      } else if (this.coinsurance > 0) {
+        return this.pocket;
+      }
+      return 0;
+    }
   }
 
   public Payer payer;
