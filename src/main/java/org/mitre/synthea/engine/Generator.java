@@ -81,6 +81,7 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   private List<FixedRecordGroup> recordGroups;
+  public final int threadPoolSize;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -102,7 +103,8 @@ public class Generator implements RandomNumberGenerator {
    * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
-    public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
+    public int population = Config.getAsInteger("generate.default_population", 1);
+    public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
     public long seed = System.currentTimeMillis();
     public long clinicianSeed = seed;
     /** Population as exclusively live persons or including deceased.
@@ -192,6 +194,14 @@ public class Generator implements RandomNumberGenerator {
     if (options.updatedPopulationSnapshotPath != null) {
       exporterRuntimeOptions.deferExports = true;
       internalStore = Collections.synchronizedList(new LinkedList<>());
+    }
+    if (options.threadPoolSize == -1) {
+      threadPoolSize = Runtime.getRuntime().availableProcessors();
+    } else if (options.threadPoolSize > 0) {
+      threadPoolSize = options.threadPoolSize;
+    } else {
+      throw new IllegalArgumentException(String.format(
+              "Illegal thread pool size (%d)", options.threadPoolSize));
     }
     init();
   }
@@ -324,7 +334,7 @@ public class Generator implements RandomNumberGenerator {
       Config.set("generate.append_numbers_to_person_names", "false");
     }
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(8);
+    ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;
