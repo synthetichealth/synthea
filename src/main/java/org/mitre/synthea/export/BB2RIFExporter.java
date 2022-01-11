@@ -925,9 +925,6 @@ public class BB2RIFExporter {
           icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, icdReasonCode);
           fieldValues.put(INPATIENT.ADMTG_DGNS_CD, icdReasonCode);
-          if (drgCodeMapper.canMap(icdReasonCode)) {
-            fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdReasonCode, person));
-          }
         }
       }
       // Use the active condition diagnoses to enter mapped values
@@ -948,6 +945,12 @@ public class BB2RIFExporter {
         }
         if (!fieldValues.containsKey(INPATIENT.PRNCPAL_DGNS_CD)) {
           fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        }
+      }
+      if (fieldValues.containsKey(INPATIENT.PRNCPAL_DGNS_CD)) {
+        String icdCode = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
+        if (drgCodeMapper.canMap(icdCode)) {
+          fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
         }
       }
       // Use the procedures in this encounter to enter mapped values
