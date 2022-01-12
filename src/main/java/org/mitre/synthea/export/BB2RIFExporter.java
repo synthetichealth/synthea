@@ -1104,8 +1104,10 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
+
       if (fieldValues.containsKey(INPATIENT.PRNCPAL_DGNS_CD)) {
         String icdCode = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
+        // Add a DRG code, if applicable
         if (drgCodeMapper.canMap(icdCode)) {
           fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
         }
@@ -1116,6 +1118,7 @@ public class BB2RIFExporter {
         setExternalCode(person, fieldValues,
             INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.FST_DGNS_E_CD, INPATIENT.FST_DGNS_E_VRSN_CD);
       }
+
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
