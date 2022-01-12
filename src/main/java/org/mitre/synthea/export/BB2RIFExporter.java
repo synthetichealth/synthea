@@ -343,11 +343,15 @@ public class BB2RIFExporter {
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
     int endYear = Utilities.getYear(stopTime);
     int endMonth = Utilities.getMonth(stopTime);
-    long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
-            : (long) person.attributes.get(Person.DEATHDATE);
-    if (deathDate != -1) {
-      endYear = Utilities.getYear(deathDate);
-      endMonth = Utilities.getMonth(deathDate);
+    long deathDate = -1;
+    if (person.attributes.get(Person.DEATHDATE) != null) {
+      deathDate = (long)person.attributes.get(Person.DEATHDATE);
+      if (deathDate > stopTime) {
+        deathDate = -1; // Ignore future death date that may have been set by a module
+      } else {
+        endYear = Utilities.getYear(deathDate);
+        endMonth = Utilities.getMonth(deathDate);
+      }
     }
 
     PartDContractHistory partDContracts = new PartDContractHistory(person,
@@ -580,7 +584,13 @@ public class BB2RIFExporter {
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
-    String terminationCode = (person.attributes.get(Person.DEATHDATE) == null) ? "0" : "1";
+    String terminationCode = "0";
+    if (person.attributes.get(Person.DEATHDATE) != null) {
+      long deathDate = (long)person.attributes.get(Person.DEATHDATE);
+      if (deathDate <= stopTime) {
+        terminationCode = "1"; // Ignore future death date that may have been set by a module
+      }
+    }
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
     int year = Utilities.getYear(stopTime);
