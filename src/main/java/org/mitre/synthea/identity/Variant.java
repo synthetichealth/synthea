@@ -163,6 +163,7 @@ public class Variant implements IdentityRecord {
     attributes.put(Person.ADDRESS, this.getAddressLines().stream()
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.getZipCode());
+    attributes.put(Person.IDENTIFIER_VARIANT_ID, this.getVariantId());
     return attributes;
   }
 }
