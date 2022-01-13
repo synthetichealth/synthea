@@ -15,7 +15,7 @@ import org.mitre.synthea.helpers.Config;
 
 public class DemographicsTest {
   public static String demographicsFile;
-  public static Demographics philly;
+  public static Demographics bedford;
   public static Random random;
 
   /**
@@ -26,9 +26,9 @@ public class DemographicsTest {
   public static void setUp() throws IOException {
     demographicsFile = Config.get("generate.demographics.default_file");
     Config.set("generate.demographics.default_file", "geography/test_demographics.csv");
-    Table pa = Demographics.load("Pennsylvania");
-    philly = (Demographics) pa.get("Pennsylvania", "27237");
-    random = new Random();
+    Table ma = Demographics.load("Massachusetts");
+    bedford = (Demographics) ma.get("Massachusetts", "11260");
+    random = new Random(0);
   }
 
   @AfterClass
@@ -40,35 +40,35 @@ public class DemographicsTest {
   public void pickRace() {
     HashMap<String, Integer> raceMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
-      String race = philly.pickRace(random);
+      String race = bedford.pickRace(random);
       if (raceMap.containsKey(race)) {
         raceMap.put(race, raceMap.get(race) + 1);
       } else {
         raceMap.put(race, 1);
       }
     }
-    assertTrue(raceMap.get("white") > 4300 && raceMap.get("white") < 4800);
-    assertTrue(raceMap.get("black") > 4100 && raceMap.get("black") < 4700);
-    assertTrue(raceMap.get("asian") > 500 && raceMap.get("asian") < 900);
+    assertTrue(raceMap.get("white") > 7900 && raceMap.get("white") < 8100);
+    assertTrue(raceMap.get("black") > 400 && raceMap.get("black") < 600);
+    assertTrue(raceMap.get("asian") > 1000 && raceMap.get("asian") < 1200);
   }
 
   @Test
   public void pickEthnicity() {
     int hispanic = 0;
     for (int i = 0; i < 10000; i++) {
-      String ethnicity = philly.pickEthnicity(random);
+      String ethnicity = bedford.pickEthnicity(random);
       if (ethnicity.equals("hispanic")) {
         hispanic++;
       }
     }
-    assertTrue(hispanic > 1000 && hispanic < 1600);
+    assertTrue(hispanic > 600 && hispanic < 800);
   }
 
   @Test
   public void languageFromRaceAndEthnicity() {
     HashMap<String, Integer> languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
-      String language = philly.languageFromRaceAndEthnicity("white", "hispanic", random);
+      String language = bedford.languageFromRaceAndEthnicity("white", "hispanic", random);
       if (languageMap.containsKey(language)) {
         languageMap.put(language, languageMap.get(language) + 1);
       } else {
@@ -80,7 +80,7 @@ public class DemographicsTest {
 
     languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
-      String language = philly.languageFromRaceAndEthnicity("white", "nonhispanic", random);
+      String language = bedford.languageFromRaceAndEthnicity("white", "nonhispanic", random);
       if (languageMap.containsKey(language)) {
         languageMap.put(language, languageMap.get(language) + 1);
       } else {
@@ -91,7 +91,7 @@ public class DemographicsTest {
 
     languageMap = new HashMap<String, Integer>();
     for (int i = 0; i < 10000; i++) {
-      String language = philly.languageFromRaceAndEthnicity("asian", "nonhispanic", random);
+      String language = bedford.languageFromRaceAndEthnicity("asian", "nonhispanic", random);
       if (languageMap.containsKey(language)) {
         languageMap.put(language, languageMap.get(language) + 1);
       } else {
