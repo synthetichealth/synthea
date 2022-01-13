@@ -48,6 +48,7 @@ import org.mitre.synthea.export.BB2RIFStructure.OUTPATIENT;
 import org.mitre.synthea.export.BB2RIFStructure.PDE;
 import org.mitre.synthea.export.BB2RIFStructure.SNF;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -452,6 +453,11 @@ public class BB2RIFExporter {
             }
           }
         }
+        String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+        for (int month = 0; month < monthCount; month++) {
+          fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
+                  dualEligibleStatusCode);
+        }
         rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
         if (year == (endYear - 1)) {
           entryStatus = RifEntryStatus.FINAL;
@@ -480,6 +486,73 @@ public class BB2RIFExporter {
     // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
     // premium subsidy and no copayment
     return "01";
+  }
+
+  // Income level < 0.3
+  private static final RandomCollection<String> incomeBandOneDualCodes = new RandomCollection<>();
+  // 0.3 <= Income level < 0.6
+  private static final RandomCollection<String> incomeBandTwoDualCodes = new RandomCollection<>();
+  // 0.6 <= Income level < 1.0
+  private static final RandomCollection<String> incomeBandThreeDualCodes = new RandomCollection<>();
+
+  static {
+    // Specified Low-Income Medicare Beneficiary (SLMB)-only
+    incomeBandOneDualCodes.add(1.3, "03");
+    // SLMB and full Medicaid coverage, including prescription drugs
+    incomeBandOneDualCodes.add(0.5, "04");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandOneDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandOneDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.1, "");
+
+    // QMB and full Medicaid coverage, including prescription drugs
+    incomeBandTwoDualCodes.add(8.2, "02");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandTwoDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandTwoDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.1, "");
+
+    // Qualified Medicare Beneficiary (QMB)-only
+    incomeBandThreeDualCodes.add(2.2, "01");
+    // Qualifying individuals (QI)
+    incomeBandThreeDualCodes.add(0.8, "06");
+    // Other dual eligible (not QMB, SLMB, QWDI, or QI) with full Medicaid coverage, including
+    // prescription Drugs
+    incomeBandThreeDualCodes.add(2.9, "08");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandThreeDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandThreeDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.1, "");
+  }
+
+  private String getDualEligibilityCode(Person person, int year) {
+    // TBD add support for the following additional code (%-age in brackets is observed
+    // frequency in CMS data):
+    // 00 (15.6%) - Not enrolled in Medicare for the month
+    String partDCostSharingCode = getPartDCostSharingCode(person);
+    if (partDCostSharingCode.equals("03")) {
+      return incomeBandThreeDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("02")) {
+      return incomeBandTwoDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("01")) {
+      return incomeBandOneDualCodes.next(person);
+    } else if (hasESRD(person, year) || isBlind(person)) {
+      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+    } else {
+      return "NA"; // (68.3%) Non-Medicaid
+    }
   }
 
   private String getBB2SexCode(String sex) {
@@ -544,6 +617,11 @@ public class BB2RIFExporter {
     long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
     return mappedDiagnosisCodes.contains("N18.6");
+  }
+
+  private boolean isBlind(Person person) {
+    return person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true);
   }
 
   /**

@@ -447,8 +447,8 @@ public class Payer implements Serializable {
       boolean female = (person.attributes.get(Person.GENDER).equals("F"));
       boolean pregnant = (person.attributes.containsKey("pregnant")
           && (boolean) person.attributes.get("pregnant"));
-      boolean blind = (person.attributes.containsKey("blindness")
-          && (boolean) person.attributes.get("blindness"));
+      boolean blind = (person.attributes.containsKey(Person.BLINDNESS)
+          && (boolean) person.attributes.get(Person.BLINDNESS));
       int income = (Integer) person.attributes.get(Person.INCOME);
       boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
 
