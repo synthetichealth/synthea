@@ -1581,7 +1581,7 @@
           }
         },
         {
-          "transition": "Non_Continuous_ART_Decline"
+          "transition": "HIV Viral Load Group Check"
         }
       ]
     },
@@ -1590,9 +1590,131 @@
       "attribute": "hiv_cd4",
       "action": "decrement",
       "amount": 40,
+      "direct_transition": "Sanity Check"
+    },
+    "HIV Viral Load Group Check": {
+      "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Sanity Check",
+          "transition": "Non_Continuous_ART_Decline",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_viral_load_group",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_viral_load",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline Group Check"
+        }
+      ]
+    },
+    "Non_Continuous_ART_Decline Group Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Non_Continuous_ART_Decline_A",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "a"
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline_B",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "b"
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline_C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "c"
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline_D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "d"
+          }
+        },
+        {
+          "transition": "Non_Continuous_ART_Decline_E_and_F"
+        }
+      ]
+    },
+    "Non_Continuous_ART_Decline_A": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 36,
+      "direct_transition": "Sanity Check"
+    },
+    "Non_Continuous_ART_Decline_B": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 45,
+      "direct_transition": "Sanity Check"
+    },
+    "Non_Continuous_ART_Decline_C": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 55,
+      "direct_transition": "Sanity Check"
+    },
+    "Non_Continuous_ART_Decline_D": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 65,
+      "direct_transition": "Sanity Check"
+    },
+    "Non_Continuous_ART_Decline_E_and_F": {
+      "type": "Counter",
+      "attribute": "hiv_cd4",
+      "action": "decrement",
+      "amount": 77,
+      "direct_transition": "Sanity Check"
+    },
+    "Set Minimal Values": {
+      "type": "SetAttribute",
+      "attribute": "hiv_cd4",
+      "direct_transition": "Set CD4 Complete",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 49,
+          "low": 0
+        }
+      }
+    },
+    "Sanity Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Minimal Values",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "hiv_cd4",
@@ -1604,19 +1726,6 @@
           "transition": "Set CD4 Complete"
         }
       ]
-    },
-    "Sanity Check": {
-      "type": "SetAttribute",
-      "attribute": "hiv_cd4",
-      "direct_transition": "Set CD4 Complete",
-      "distribution": {
-        "kind": "UNIFORM",
-        "round": true,
-        "parameters": {
-          "high": 200,
-          "low": 5
-        }
-      }
     }
   },
   "gmf_version": 2

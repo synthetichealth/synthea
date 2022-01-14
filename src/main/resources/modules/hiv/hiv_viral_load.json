@@ -1,7 +1,16 @@
 {
   "name": "hiv_viral_load",
   "remarks": [
-    "Measure and record HIV viral load."
+    "Set and update HIV viral load.",
+    "",
+    "The notion of \"Viral Load Group\" is an artificial construct to bin patients into different baseline levels.",
+    "",
+    "Group A == <= 1500 [copies]/mL",
+    "Group B == 1501-7000",
+    "Group C == 7001-20000",
+    "Group D == 20001-55000",
+    "Group E == 55001-100000",
+    "Group F == > 100000"
   ],
   "states": {
     "Initial": {
@@ -33,6 +42,14 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Set Viral Load Group",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "is nil"
+          }
+        },
+        {
           "transition": "Set Viral Load",
           "condition": {
             "condition_type": "Attribute",
@@ -41,12 +58,28 @@
           }
         },
         {
-          "transition": "Decrease Viral Load",
+          "transition": "Suppression Check",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hiv_continuous_art",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_continuous_art",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "PriorState",
+                  "name": "Set Viral Load Group",
+                  "within": {
+                    "quantity": 3,
+                    "unit": "months"
+                  }
+                }
+              }
+            ]
           }
         },
         {
@@ -58,34 +91,60 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "CD4 < 200",
+          "transition": "CD4_Group_A",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "hiv_cd4",
-            "operator": "<",
-            "value": 200
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "a"
           }
         },
         {
-          "transition": "CD4 >= 500",
+          "transition": "CD4_Group_B",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "hiv_cd4",
-            "operator": ">=",
-            "value": 500
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "b"
           }
         },
         {
-          "transition": "200 >= CD4 < 500"
+          "transition": "CD4_Group_C",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "c"
+          }
+        },
+        {
+          "transition": "CD4_Group_D",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "d"
+          }
+        },
+        {
+          "transition": "CD4_Group_E",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "e"
+          }
+        },
+        {
+          "transition": "CD4_Group_F",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_load_group",
+            "operator": "==",
+            "value": "f"
+          }
         }
       ]
-    },
-    "Decrease Viral Load": {
-      "type": "Counter",
-      "attribute": "hiv_viral_load",
-      "action": "decrement",
-      "direct_transition": "Sanity Check",
-      "amount": 10000
     },
     "Measure Viral Load": {
       "type": "Procedure",
@@ -151,44 +210,229 @@
         }
       }
     },
-    "CD4 >= 500": {
+    "CD4_Group_B": {
       "type": "SetAttribute",
       "attribute": "hiv_viral_load",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "UNIFORM",
         "round": true,
         "parameters": {
-          "mean": 16649,
-          "standardDeviation": 13302
+          "high": 7000,
+          "low": 1501
         }
       },
       "direct_transition": "Sanity Check"
     },
-    "200 >= CD4 < 500": {
+    "CD4_Group_A": {
       "type": "SetAttribute",
       "attribute": "hiv_viral_load",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "UNIFORM",
         "round": true,
         "parameters": {
-          "mean": 38497,
-          "standardDeviation": 24127
+          "high": 1500,
+          "low": 1000
         }
       },
       "direct_transition": "Sanity Check"
     },
-    "CD4 < 200": {
+    "CD4_Group_C": {
       "type": "SetAttribute",
       "attribute": "hiv_viral_load",
-      "direct_transition": "Sanity Check",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "UNIFORM",
         "round": true,
         "parameters": {
-          "mean": 119000,
-          "standardDeviation": 74380
+          "high": 20000,
+          "low": 7001
         }
-      }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "CD4_Group_D": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 55000,
+          "low": 20001
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "CD4_Group_E": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 100000,
+          "low": 55001
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "CD4_Group_F": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 10000000,
+          "low": 100001
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "Set Viral Load Group": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set_Group_A",
+          "distribution": 0.07
+        },
+        {
+          "transition": "Set_Group_B",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Set_Group_C",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Set_Group_D",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Set_Group_E",
+          "distribution": 0.18
+        },
+        {
+          "transition": "Set_Group_F",
+          "distribution": 0.02
+        }
+      ]
+    },
+    "Set_Group_A": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "direct_transition": "Set Viral Load",
+      "value": "a"
+    },
+    "Set_Group_B": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "value": "b",
+      "direct_transition": "Set Viral Load"
+    },
+    "Set_Group_C": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "value": "c",
+      "direct_transition": "Set Viral Load"
+    },
+    "Set_Group_D": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "value": "d",
+      "direct_transition": "Set Viral Load"
+    },
+    "Set_Group_E": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "value": "e",
+      "direct_transition": "Set Viral Load"
+    },
+    "Set_Group_F": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load_group",
+      "value": "f",
+      "direct_transition": "Set Viral Load"
+    },
+    "Suppression Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_viral_suppression",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Suppression"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Suppression",
+              "distribution": 0.9
+            },
+            {
+              "transition": "Suppressed_Viral_Load_B",
+              "distribution": 0.1
+            }
+          ]
+        }
+      ]
+    },
+    "Suppression": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_suppression",
+      "value": true,
+      "distributed_transition": [
+        {
+          "transition": "Undetectable_Viral_Load",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Suppressed_Viral_Load_A",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Undetectable_Viral_Load": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 49,
+          "low": 0
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "Suppressed_Viral_Load_B": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 999,
+          "low": 200
+        }
+      },
+      "direct_transition": "Sanity Check"
+    },
+    "Suppressed_Viral_Load_A": {
+      "type": "SetAttribute",
+      "attribute": "hiv_viral_load",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 199,
+          "low": 50
+        }
+      },
+      "direct_transition": "Sanity Check"
     }
   },
   "gmf_version": 2

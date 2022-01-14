@@ -1859,7 +1859,7 @@
           "distribution": 0.15
         },
         {
-          "transition": "CD4 Check",
+          "transition": "Viral Load Check",
           "distribution": 0.85
         }
       ]
@@ -1898,40 +1898,23 @@
           "display": "Toxoplasma gondii antibody positive (finding)"
         }
       ],
-      "direct_transition": "CD4 Check"
-    },
-    "CD4 Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "CD4 Submodule",
-          "condition": {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1993,
-            "value": 0
-          }
-        },
-        {
-          "transition": "Medication Submodule"
-        }
-      ]
+      "direct_transition": "Viral Load Check"
     },
     "CD4 Submodule": {
       "type": "CallSubmodule",
       "submodule": "hiv/hiv_cd4",
       "conditional_transition": [
         {
-          "transition": "HIV Viral Load Submodule",
+          "transition": "Medication Submodule",
           "condition": {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1996,
-            "value": 0
+            "condition_type": "Attribute",
+            "attribute": "hiv_rapid_start",
+            "operator": "==",
+            "value": true
           }
         },
         {
-          "transition": "Medication Submodule"
+          "transition": "PRAPARE"
         }
       ]
     },
@@ -1945,8 +1928,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 363779003,
-          "display": "Genotype determination (procedure)"
+          "code": 446987006,
+          "display": "Determination of susceptibility of Human immunodeficiency virus 1 to panel of antiretroviral drugs using genotypic technique (procedure)"
         }
       ],
       "distribution": {
@@ -1957,12 +1940,12 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Medication Submodule",
+      "direct_transition": "CD4 Submodule",
       "reason": "hiv_diagnosis"
     },
     "Medication Submodule": {
       "type": "Simple",
-      "direct_transition": "Education"
+      "direct_transition": "PRAPARE"
     },
     "Education": {
       "type": "Procedure",
@@ -2035,6 +2018,103 @@
       ],
       "direct_transition": "CarePlan Coordination",
       "reason": "hiv_diagnosis"
+    },
+    "Viral Load Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "HIV Viral Load Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1996,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Medication Submodule"
+        }
+      ]
+    },
+    "PRAPARE": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/sdoh_hrsn",
+      "direct_transition": "Depression_Screening"
+    },
+    "Depression_Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/depression_screening",
+      "direct_transition": "Anxiety_Screening"
+    },
+    "Anxiety_Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/anxiety_screening",
+      "direct_transition": "Substance_Use_Screening"
+    },
+    "Substance_Use_Screening": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/substance_use_screening",
+      "direct_transition": "Assessment of Social Support"
+    },
+    "Assessment of Social Support": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 711018006,
+          "display": "Assessment of social support (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Assessment of Disclosure Readiness",
+      "reason": "hiv_diagnosis"
+    },
+    "Assessment of Disclosure Readiness": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709506004,
+          "display": "Assessment of readiness for disclosure of health status (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Assessment of Self-Management Readiness"
+    },
+    "Assessment of Self-Management Readiness": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 733863009,
+          "display": "Assessment of readiness for self-management (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 25,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Education"
     }
   },
   "gmf_version": 2
