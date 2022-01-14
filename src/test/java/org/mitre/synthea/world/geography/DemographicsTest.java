@@ -28,7 +28,7 @@ public class DemographicsTest {
     Config.set("generate.demographics.default_file", "geography/test_demographics.csv");
     Table pa = Demographics.load("Pennsylvania");
     philly = (Demographics) pa.get("Pennsylvania", "27237");
-    random = new Random();
+    random = new Random(0);
   }
 
   @AfterClass
