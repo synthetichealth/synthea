@@ -1,5 +1,5 @@
 {
-  "name": "hiv_treatment",
+  "name": "hiv_care",
   "remarks": [
     "Placeholder."
   ],
@@ -36,12 +36,12 @@
         {
           "transition": "Continuous_ART",
           "default_probability": 0.645,
-          "lookup_table_name": "hiv_treatment.csv"
+          "lookup_table_name": "hiv_care.csv"
         },
         {
           "transition": "Non_Continuous_ART",
           "default_probability": 0.355,
-          "lookup_table_name": "hiv_treatment.csv"
+          "lookup_table_name": "hiv_care.csv"
         }
       ]
     },
