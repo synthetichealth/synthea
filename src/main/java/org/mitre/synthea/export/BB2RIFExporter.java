@@ -141,18 +141,21 @@ public class BB2RIFExporter {
   private static final String BB2_MBI = "BB2_MBI";
 
   /**
-   * Day-Month-Year date format.
+   * Day-Month-Year date format. Note that SimpleDateFormat is not thread safe so we need one
+   * per generator thread.
    */
-  private static final SimpleDateFormat BB2_DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
+  private static final ThreadLocal<SimpleDateFormat> BB2_DATE_FORMAT = new ThreadLocal<>();
 
   /**
    * Get a date string in the format DD-MMM-YY from the given time stamp.
    */
   private static String bb2DateFromTimestamp(long time) {
-    synchronized (BB2_DATE_FORMAT) {
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
-      return BB2_DATE_FORMAT.format(new Date(time));
+    SimpleDateFormat dateFormat = BB2_DATE_FORMAT.get();
+    if (dateFormat == null) {
+      dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+      BB2_DATE_FORMAT.set(dateFormat);
     }
+    return dateFormat.format(new Date(time));
   }
 
   /**
@@ -375,19 +378,21 @@ public class BB2RIFExporter {
    * Export a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param yearsOfHistory number of years of claims to export
    * @throws IOException if something goes wrong
    */
-  public void export(Person person, long stopTime) throws IOException {
+  public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     exportBeneficiary(person, stopTime);
     exportBeneficiaryHistory(person, stopTime);
-    exportInpatient(person, stopTime);
-    exportOutpatient(person, stopTime);
-    exportCarrier(person, stopTime);
-    exportPrescription(person, stopTime);
-    exportDME(person, stopTime);
-    exportHome(person, stopTime);
-    exportHospice(person, stopTime);
-    exportSNF(person, stopTime);
+    long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
+    exportInpatient(person, startTime, stopTime);
+    exportOutpatient(person, startTime, stopTime);
+    exportCarrier(person, startTime, stopTime);
+    exportPrescription(person, startTime, stopTime);
+    exportDME(person, startTime, stopTime);
+    exportHome(person, startTime, stopTime);
+    exportHospice(person, startTime, stopTime);
+    exportSNF(person, startTime, stopTime);
   }
 
   /**
@@ -764,14 +769,18 @@ public class BB2RIFExporter {
   /**
    * Export outpatient claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long stopTime)
+  private void exportOutpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
@@ -967,16 +976,20 @@ public class BB2RIFExporter {
   /**
    * Export inpatient claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long stopTime)
+  private void exportInpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<INPATIENT, String> fieldValues = new HashMap<>();
 
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
@@ -1216,15 +1229,19 @@ public class BB2RIFExporter {
   /**
    * Export carrier claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportCarrier(Person person, long stopTime) throws IOException {
+  private void exportCarrier(Person person, long startTime, long stopTime) throws IOException {
     HashMap<CARRIER, String> fieldValues = new HashMap<>();
 
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
 
@@ -1683,10 +1700,11 @@ public class BB2RIFExporter {
   /**
    * Export prescription claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long stopTime)
+  private void exportPrescription(Person person, long startTime, long stopTime)
         throws IOException {
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
@@ -1696,6 +1714,9 @@ public class BB2RIFExporter {
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       PartDContractID partDContractID = partDContracts.getContractID(encounter.start);
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
@@ -1779,14 +1800,18 @@ public class BB2RIFExporter {
   /**
    * Export DME details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportDME(Person person, long stopTime)
+  private void exportDME(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
@@ -1935,13 +1960,17 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportHome(Person person, long stopTime) throws IOException {
+  private void exportHome(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HHA, String> fieldValues = new HashMap<>();
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       if (!encounter.type.equals(EncounterType.HOME.toString())) {
         continue;
       }
@@ -2107,12 +2136,16 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportHospice(Person person, long stopTime) throws IOException {
+  private void exportHospice(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
         continue;
       }
@@ -2292,15 +2325,19 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportSNF(Person person, long stopTime) throws IOException {
+  private void exportSNF(Person person, long startTime, long stopTime) throws IOException {
     HashMap<SNF, String> fieldValues = new HashMap<>();
     boolean previousEmergency;
     boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       previousEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
 
