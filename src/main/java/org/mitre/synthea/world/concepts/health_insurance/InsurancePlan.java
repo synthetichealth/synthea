@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.concepts.health_insurance;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -19,13 +20,15 @@ public class InsurancePlan implements Serializable {
     private final double defaultCopay;
     private final double defaultCoinsurance;
     private final double monthlyPremium;
+    private final Set<String> servicesCovered;
 
-    public InsurancePlan(Payer payer, double deductible, double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
+    public InsurancePlan(Payer payer, Set<String> servicesCovered, double deductible, double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
         this.payer = payer;
         this.deductible = deductible;
         this.defaultCoinsurance = defaultCoinsurance;
         this.defaultCopay = defaultCopay;
         this.monthlyPremium = monthlyPremium;
+        this.servicesCovered = servicesCovered;
     }
 
     public double determineCopay(HealthRecord.Entry recordEntry) {
@@ -80,5 +83,11 @@ public class InsurancePlan implements Serializable {
 
     public void incrementCustomers(Person person) {
         this.payer.incrementCustomers(person);
+    }
+
+    public boolean coversService(String service) {
+        return service == null
+            || this.servicesCovered.contains(service)
+            || this.servicesCovered.contains("*");
     }
 }

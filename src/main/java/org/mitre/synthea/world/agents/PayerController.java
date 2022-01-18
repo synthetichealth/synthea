@@ -188,7 +188,9 @@ public class PayerController {
             // newPayer.attributes.put(e.getKey(), e.getValue());
         }
 
-        Payer newPayer = new Payer(payerName, payerId, statesCovered, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium, ownership);
+        Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
+        // Temporary single plan per payer.
+        newPayer.createPlan(servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
 
         return newPayer;
     }
@@ -212,7 +214,8 @@ public class PayerController {
         // noInsurance 'covers' all states.
         Set<String> statesCovered = new HashSet<String>();
         statesCovered.add("*");
-        PayerController.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, NO_INSURANCE);
+        PayerController.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE);
+        PayerController.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0);
         PayerController.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
     }
 

@@ -46,8 +46,6 @@ public class Payer implements Serializable {
   private String ownership;
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
-  // The services that this payer covers. May be moved to a potential plans class.
-  private final Set<String> servicesCovered;
 
   /* Payer Statistics. */
   private double revenue;
@@ -110,25 +108,22 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Payer Constructor.
+   * Payer constructor.
+   * @param name
+   * @param id
+   * @param statesCovered
+   * @param ownership
    */
-  Payer(String name, String id, Set<String> statesCovered, Set<String> servicesCovered, double deductible, double defaultCoinsurance, double defaultCopay, double monthlyPremium, String ownership) {
+  public Payer(String name, String id, Set<String> statesCovered, String ownership) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
     this.name = name;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
-    this.servicesCovered = servicesCovered;
-
-    // Temporary Insurance Plan initialization. Will be expanded in future to support multiple plans.
     this.plans = new HashSet<InsurancePlan>();
-    InsurancePlan singlePlan = new InsurancePlan(this, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
-    this.plans.add(singlePlan);
-
     this.ownership = ownership;
     this.attributes = new LinkedTreeMap<>();
-
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = 0.0;
@@ -138,6 +133,19 @@ public class Payer implements Serializable {
 
     // Set the payer's eligiblty criteria.
     this.payerEligibility = PayerEligibilityFactory.getPayerEligibilityAlgorithm(this.name);
+  }
+
+  /**
+   * Creates and adds a new plan with the given attributes to this payer.
+   * @param servicesCovered
+   * @param deductible
+   * @param defaultCoinsurance
+   * @param defaultCopay
+   * @param monthlyPremium
+   */
+  public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
+    InsurancePlan newPlan = new InsurancePlan(this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
+    this.plans.add(newPlan);
   }
 
   /**
@@ -188,9 +196,7 @@ public class Payer implements Serializable {
    * @return whether the payer covers the given service
    */
   public boolean coversService(String service) {
-    return service == null
-        || this.servicesCovered.contains(service)
-        || this.servicesCovered.contains("*");
+    return this.plans.iterator().next().coversService(service);
   }
 
   /**
@@ -471,7 +477,6 @@ public class Payer implements Serializable {
     hash = 53 * hash + Objects.hashCode(this.uuid);
     hash = 53 * hash + Objects.hashCode(this.ownership);
     hash = 53 * hash + Objects.hashCode(this.statesCovered);
-    hash = 53 * hash + Objects.hashCode(this.servicesCovered);
     hash = 53 * hash + (int) (Double.doubleToLongBits(this.revenue)
             ^ (Double.doubleToLongBits(this.revenue) >>> 32));
     hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsCovered)
@@ -527,9 +532,6 @@ public class Payer implements Serializable {
       return false;
     }
     if (!Objects.equals(this.statesCovered, other.statesCovered)) {
-      return false;
-    }
-    if (!Objects.equals(this.servicesCovered, other.servicesCovered)) {
       return false;
     }
     return true;
