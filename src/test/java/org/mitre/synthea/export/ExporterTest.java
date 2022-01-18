@@ -55,7 +55,7 @@ public class ExporterTest {
     PayerController.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - years(i);
-      patient.coverage.setPayerAtTime(yearTime, PayerController.noInsurance);
+      patient.coverage.setPlanAtTime(yearTime, PayerController.noInsurance.getNoInsurancePlan());
     }
   }
 

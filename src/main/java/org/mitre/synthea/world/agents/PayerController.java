@@ -18,10 +18,11 @@ import org.mitre.synthea.world.agents.behaviors.payer_adjustment.IPayerAdjustmen
 import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentFixed;
 import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentNone;
 import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentRandom;
-import org.mitre.synthea.world.agents.behaviors.payer_finder.IPayerFinder;
-import org.mitre.synthea.world.agents.behaviors.payer_finder.PayerFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.payer_finder.PayerFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.plan_finder.IPlanFinder;
+import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderBestRates;
+import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 public class PayerController {
@@ -32,7 +33,7 @@ public class PayerController {
 
     public static final String GOV_OWNERSHIP = "GOVERNMENT";
     public static final String PRIVATE_OWNERSHIP = "PRIVATE";
-    private static final String NO_INSURANCE = "NO_INSURANCE";
+    public static final String NO_INSURANCE = "NO_INSURANCE";
 
     /* ArrayList of all Private Payers imported. */
     private static List<Payer> privatePayers = new ArrayList<Payer>();
@@ -45,7 +46,7 @@ public class PayerController {
     private static Set<String> statesLoaded = new HashSet<String>();
 
     /* Payer Finder. */
-    private static IPayerFinder payerFinder;
+    private static IPlanFinder payerFinder;
     // Payer selection algorithm choices:
     private static final String RANDOM = "random";
     private static final String BESTRATE = "best_rate";
@@ -80,18 +81,18 @@ public class PayerController {
     /**
      * Determines the algorithm to use for patients to find a Payer.
      */
-    private static IPayerFinder buildPayerFinder() {
-        IPayerFinder finder;
+    private static IPlanFinder buildPayerFinder() {
+        IPlanFinder finder;
         String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
         switch (behavior) {
             case BESTRATE:
-                finder = new PayerFinderBestRates();
+                finder = new PlanFinderBestRates();
                 break;
             case RANDOM:
-                finder = new PayerFinderRandom();
+                finder = new PlanFinderRandom();
                 break;
             default:
-                throw new RuntimeException("Not a valid Payer Selection Algorithm: " + behavior);
+            throw new RuntimeException("Not a valid Payer Selection Algorithm: " + behavior);
         }
         return finder;
     }
@@ -145,7 +146,7 @@ public class PayerController {
 
                 // Put the payer in their correct List/Map based on Government/Private.
                 if (parsedPayer.isGovernmentPayer()) {
-                    // Government payers go in a map, allowing for easy retrieval of specific gov
+                    // Government payers go in a map, allowing for easy retrieval of specific government
                     // payers.
                     PayerController.governmentPayers.put(parsedPayer.getName(), parsedPayer);
                 } else {
@@ -268,7 +269,11 @@ public class PayerController {
    * @param time the time that the person requires insurance.
    * @return a payer who the person can accept and vice versa.
    */
-  public static Payer findPayer(Person person, EncounterType service, long time) {
+  public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
     return PayerController.payerFinder.find(PayerController.getPrivatePayers(), person, service, time);
   }
+
+    public static InsurancePlan getNoInsurancePlan() {
+        return noInsurance.getNoInsurancePlan();
+    }
 }

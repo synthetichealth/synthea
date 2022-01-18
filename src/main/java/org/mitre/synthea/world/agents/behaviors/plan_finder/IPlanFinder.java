@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.payer_finder;
+package org.mitre.synthea.world.agents.behaviors.plan_finder;
 
 import java.util.List;
 
@@ -8,11 +8,12 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
 
 /**
  * Find a particular provider by service.
  */
-public interface IPayerFinder {
+public interface IPlanFinder {
 
   /**
    * Find a payer that meets the person's and simulation's requirements.
@@ -23,7 +24,7 @@ public interface IPayerFinder {
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public Payer find(List<Payer> payers, Person person, EncounterType service, long time);
+  public InsurancePlan find(List<Payer> payers, Person person, EncounterType service, long time);
 
   /**
    * Determine whether or not the given payer meets the person's basic requirements.
@@ -53,9 +54,9 @@ public interface IPayerFinder {
    * @param options the list of acceptable payer options that the person can recieve.
    * @return a random payer from the given list of options.
    */
-  public default Payer chooseRandomlyFromList(List<Payer> options, RandomNumberGenerator rand) {
+  public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options, RandomNumberGenerator rand) {
     if (options.isEmpty()) {
-      return PayerController.noInsurance;
+      return PayerController.noInsurance.getNoInsurancePlan();
     } else if (options.size() == 1) {
       return options.get(0);
     } else {

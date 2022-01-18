@@ -22,7 +22,6 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -65,6 +64,7 @@ public class ValueSetCodeResolverTest {
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2014-09-25").getTime();
+    person.attributes.put(Person.BIRTHDATE, time);
 
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");

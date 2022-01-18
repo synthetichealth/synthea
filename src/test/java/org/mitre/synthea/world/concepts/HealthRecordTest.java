@@ -28,7 +28,8 @@ public class HealthRecordTest {
   @Test
   public void testReportAllObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -46,7 +47,8 @@ public class HealthRecordTest {
   @Test
   public void testReportSomeObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -63,7 +65,8 @@ public class HealthRecordTest {
   @Test
   public void testReportTooManyObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");

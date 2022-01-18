@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -18,38 +19,35 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.agents.behaviors.payer_adjustment.IPayerAdjustment;
 import org.mitre.synthea.world.agents.behaviors.payer_eligibility.IPayerEligibility;
 import org.mitre.synthea.world.agents.behaviors.payer_eligibility.PayerEligibilityFactory;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
-import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.health_insurance.Claim.ClaimEntry;
 
 public class Payer implements Serializable {
 
-  /* Payer Adjustment strategy. */
+  // Payer Adjustment strategy.
   private IPayerAdjustment payerAdjustment;
-  /* Payer Eligibilty strategy. */
+  // Payer Eligibilty strategy.
   private transient IPayerEligibility payerEligibility;
 
   /* Payer Attributes. */
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
-  private double deductible;
-  private double defaultCopay;
-  private double defaultCoinsurance;
-  private double monthlyPremium;
+  public final Set<InsurancePlan> plans;  // TODO - make private
   private String ownership;
   // The States that this payer covers & operates in.
-  private Set<String> statesCovered;
+  private final Set<String> statesCovered;
   // The services that this payer covers. May be moved to a potential plans class.
-  private Set<String> servicesCovered;
+  private final Set<String> servicesCovered;
 
   /* Payer Statistics. */
   private double revenue;
@@ -122,10 +120,12 @@ public class Payer implements Serializable {
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
     this.servicesCovered = servicesCovered;
-    this.deductible = deductible;
-    this.defaultCoinsurance = defaultCoinsurance;
-    this.defaultCopay = defaultCopay;
-    this.monthlyPremium = monthlyPremium;
+
+    // Temporary Insurance Plan initialization. Will be expanded in future to support multiple plans.
+    this.plans = new HashSet<InsurancePlan>();
+    InsurancePlan singlePlan = new InsurancePlan(this, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
+    this.plans.add(singlePlan);
+
     this.ownership = ownership;
     this.attributes = new LinkedTreeMap<>();
 
@@ -152,27 +152,6 @@ public class Payer implements Serializable {
    */
   public String getName() {
     return this.name;
-  }
-
-  /**
-   * Returns the monthly premium of the payer.
-   */
-  public double getMonthlyPremium() {
-    return this.monthlyPremium;
-  }
-
-  /**
-   * Returns the yearly deductible of this payer.
-   */
-  public double getDeductible() {
-    return this.deductible;
-  }
-
-  /**
-   * Returns the Coinsurance of this payer.
-   */
-  public double getCoinsurance() {
-    return this.defaultCoinsurance;
   }
 
   /**
@@ -243,15 +222,12 @@ public class Payer implements Serializable {
    * copays depending on the encounter type covered. If the entry is a wellness visit
    * and the time is after the mandate year, then the copay is $0.00.
    *
-   * @param entry the entry to calculate the copay for.
+   * @param recordEntry the health record entry to calculate the copay for.
    */
-  public double determineCopay(Entry entry) {
-    double copay = this.defaultCopay;
-    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
-        && entry.start > HealthInsuranceModule.mandateTime) {
-      copay = 0.0;
-    }
-    return copay;
+  public double determineCopay(HealthRecord.Entry recordEntry) {
+    // This will need to be updated to pull the correct plan from the payer for this person.
+    // Placeholder since currently there is only one plan per payer.
+    return this.plans.iterator().next().determineCopay(recordEntry);
   }
 
   /**
@@ -264,16 +240,6 @@ public class Payer implements Serializable {
    */
   public double adjustClaim(ClaimEntry claimEntry, Person person) {
     return payerAdjustment.adjustClaim(claimEntry, person);
-  }
-
-  /**
-   * Pays the given premium to the Payer, increasing their revenue.
-   *
-   * @return the monthly premium amount.
-   */
-  public double payMonthlyPremium() {
-    this.revenue += this.monthlyPremium;
-    return this.monthlyPremium;
   }
 
   /**
@@ -503,14 +469,6 @@ public class Payer implements Serializable {
     hash = 53 * hash + Objects.hashCode(this.attributes);
     hash = 53 * hash + Objects.hashCode(this.name);
     hash = 53 * hash + Objects.hashCode(this.uuid);
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.deductible)
-            ^ (Double.doubleToLongBits(this.deductible) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCopay)
-            ^ (Double.doubleToLongBits(this.defaultCopay) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCoinsurance)
-            ^ (Double.doubleToLongBits(this.defaultCoinsurance) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.monthlyPremium)
-            ^ (Double.doubleToLongBits(this.monthlyPremium) >>> 32));
     hash = 53 * hash + Objects.hashCode(this.ownership);
     hash = 53 * hash + Objects.hashCode(this.statesCovered);
     hash = 53 * hash + Objects.hashCode(this.servicesCovered);
@@ -537,22 +495,6 @@ public class Payer implements Serializable {
       return false;
     }
     final Payer other = (Payer) obj;
-    if (Double.doubleToLongBits(this.deductible)
-            != Double.doubleToLongBits(other.deductible)) {
-      return false;
-    }
-    if (Double.doubleToLongBits(this.defaultCopay)
-            != Double.doubleToLongBits(other.defaultCopay)) {
-      return false;
-    }
-    if (Double.doubleToLongBits(this.defaultCoinsurance)
-            != Double.doubleToLongBits(other.defaultCoinsurance)) {
-      return false;
-    }
-    if (Double.doubleToLongBits(this.monthlyPremium)
-            != Double.doubleToLongBits(other.monthlyPremium)) {
-      return false;
-    }
     if (Double.doubleToLongBits(this.revenue)
             != Double.doubleToLongBits(other.revenue)) {
       return false;
@@ -567,6 +509,9 @@ public class Payer implements Serializable {
     }
     if (Double.doubleToLongBits(this.totalQOLS)
             != Double.doubleToLongBits(other.totalQOLS)) {
+      return false;
+    }
+    if (!Objects.equals(this.plans, other.plans)) {
       return false;
     }
     if (!Objects.equals(this.name, other.name)) {
@@ -619,6 +564,49 @@ public class Payer implements Serializable {
       insuranceStatus = "private";
     }
     return insuranceStatus;
+  }
+
+  public double getYearlyCost() {
+    // Will need to be updated to get a yearly cost for a specific plan.
+    InsurancePlan singlePlan = this.plans.iterator().next();
+    double yearlyPremiumTotal = singlePlan.getMonthlyPremium() * 12;
+    double yearlyDeductible = singlePlan.getDeductible();
+    return yearlyPremiumTotal + yearlyDeductible;
+  }
+
+  /**
+   * Returns the coinsurance for the given person. TODO - currently just has one plan.
+   * @param person
+   * @return
+   */
+  public double getCoinsurance(Person person) {
+    // TODO - this should get the plan associated with this person.
+    return this.plans.iterator().next().getCoinsurance();
+  }
+
+  /**
+   * Adds the given revenue to the payer.
+   * @param revenue
+   */
+  public void addRevenue(double revenue) {
+    this.revenue += revenue;
+  }
+
+  public InsurancePlan getNoInsurancePlan() {
+    // TODO - This is bad design, reimplement using inheritance?
+    if(!this.name.equals(PayerController.NO_INSURANCE)){
+      throw new RuntimeException("Only the no insurance payer can call getNoInsurancePlan().");
+    }
+    return this.plans.iterator().next();
+  }
+
+  public InsurancePlan getGovernmentPayerPlan() {
+    // TODO - This is bad design, reimplement using inheritance?
+    // Or should each gov payer have multiple plan options? Or just one?
+    if(!this.ownership.equals(PayerController.GOV_OWNERSHIP)){
+      throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
+    }
+    return this.plans.iterator().next();
   }
 
 }

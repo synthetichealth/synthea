@@ -28,12 +28,12 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
-import org.mitre.synthea.world.concepts.CoverageRecord;
-import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.health_insurance.CoverageRecord;
+import org.mitre.synthea.world.concepts.health_insurance.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
@@ -724,9 +724,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public boolean canAffordPayer(Payer payer) {
     int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
-    double yearlyDeductible = payer.getDeductible();
-    return income > (yearlyPremiumTotal + yearlyDeductible);
+    double yearlyCost = payer.getYearlyCost();
+    return income > yearlyCost;
   }
 
   /**
@@ -737,7 +736,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    CoverageRecord.Plan plan = coverage.getPlanAtTime(time);
+    CoverageRecord.PlanRecord plan = coverage.getPlanRecordAtTime(time);
     double currentYearlyExpenses;
     if (plan != null) {
       currentYearlyExpenses = plan.totalExpenses;
@@ -750,7 +749,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       return true;
     }
     // Person no longer has income for the year. They will switch to No Insurance.
-    this.coverage.setPayerAtTime(time, PayerController.noInsurance);
+    this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     return false;
   }
 
@@ -774,10 +773,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      Plan plan = this.coverage.getPlanAtTime(time);
-      plan.totalExpenses += (plan.payer.payMonthlyPremium());
-      // Pay secondary insurance, if applicable
-      plan.totalExpenses += (plan.secondaryPayer.payMonthlyPremium());
+      PlanRecord plan = this.coverage.getPlanRecordAtTime(time);
+      plan.payMonthlyPremiums();
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.payer_finder;
+package org.mitre.synthea.world.agents.behaviors.plan_finder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,12 @@ import java.util.List;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
 
 /**
  * Find a particular provider by service.
  */
-public class PayerFinderRandom implements IPayerFinder {
+public class PlanFinderRandom implements IPlanFinder {
   /**
    * Find a provider with a specific service for the person.
    *
@@ -21,15 +22,15 @@ public class PayerFinderRandom implements IPayerFinder {
    * @return Service provider or null if none is available.
    */
   @Override
-  public Payer find(List<Payer> payers, Person person, EncounterType service, long time) {
-    List<Payer> options = new ArrayList<Payer>();
+  public InsurancePlan find(List<Payer> payers, Person person, EncounterType service, long time) {
+    List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
 
     for (Payer payer : payers) {
-      if (IPayerFinder.meetsBasicRequirements(payer, person, service, time)) {
-        options.add(payer);
+      if (IPlanFinder.meetsBasicRequirements(payer, person, service, time)) {
+        eligiblePlans.addAll(payer.plans);
       }
     }
-    // Choose a payer from the list of options.
-    return chooseRandomlyFromList(options, person);
+    // Choose a random payer from the list of options.
+    return chooseRandomPlan(eligiblePlans, person);
   }
 }

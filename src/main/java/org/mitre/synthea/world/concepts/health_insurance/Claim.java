@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.concepts;
+package org.mitre.synthea.world.concepts.health_insurance;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,10 +7,11 @@ import java.util.List;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
+import org.mitre.synthea.world.concepts.health_insurance.CoverageRecord.PlanRecord;
 
 public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;
@@ -29,11 +30,11 @@ public class Claim implements Serializable {
     /** coinsurance paid by payer. */
     public double coinsurance;
     /** otherwise paid by payer. */
-    public double payer;
+    public double paidByPayer;
     /** otherwise paid by secondary payer. */
     public double secondaryPayer;
     /** otherwise paid by patient out of pocket. */
-    public double pocket;
+    public double paidByPatient;
 
     public ClaimEntry(Entry entry) {
       this.entry = entry;
@@ -49,9 +50,9 @@ public class Claim implements Serializable {
       this.deductible += other.deductible;
       this.adjustment += other.adjustment;
       this.coinsurance += other.coinsurance;
-      this.payer += other.payer;
+      this.paidByPayer += other.paidByPayer;
       this.secondaryPayer += other.secondaryPayer;
-      this.pocket += other.pocket;
+      this.paidByPatient += other.paidByPatient;
     }
   }
 
@@ -76,10 +77,10 @@ public class Claim implements Serializable {
     // Set the Person.
     this.person = person;
     // Set the Payer(s)
-    Plan plan = this.person.coverage.getPlanAtTime(entry.start);
-    if (plan != null) {
-      this.payer = plan.payer;
-      this.secondaryPayer = plan.secondaryPayer;
+    PlanRecord planRecord = this.person.coverage.getPlanRecordAtTime(entry.start);
+    if (planRecord != null) {
+      this.payer = planRecord.plan.getPayer();
+      this.secondaryPayer = planRecord.secondaryPlan.getPayer();
     }
     if (this.payer == null) {
       // This can rarely occur when an death certification encounter
@@ -106,87 +107,87 @@ public class Claim implements Serializable {
    * Assign costs between the payer and patient.
    */
   public void assignCosts() {
-    Plan plan = person.coverage.getPlanAtTime(mainEntry.entry.start);
-    if (plan == null) {
-      plan = person.coverage.getLastPlan();
+    PlanRecord planRecord = person.coverage.getPlanRecordAtTime(mainEntry.entry.start);
+    if (planRecord == null) {
+      planRecord = person.coverage.getLastPlan();
     }
-    if (plan == null) {
-      person.coverage.setPayerAtTime(mainEntry.entry.start,
-          PayerController.noInsurance);
-      plan = person.coverage.getLastPlan();
+    if (planRecord == null) {
+      person.coverage.setPlanAtTime(mainEntry.entry.start, PayerController.getNoInsurancePlan());
+      planRecord = person.coverage.getLastPlan();
     }
-    assignCosts(mainEntry, plan);
+    assignCosts(mainEntry, planRecord);
     totals = new ClaimEntry(mainEntry.entry);
     totals.addCosts(mainEntry);
     for (ClaimEntry item : items) {
-      assignCosts(item, plan);
+      assignCosts(item, planRecord);
       totals.addCosts(item);
     }
-    plan.totalExpenses += (totals.copay + totals.deductible + totals.pocket);
-    plan.totalCoverage += (totals.coinsurance + totals.payer + totals.secondaryPayer);
-    plan.payer.addCoveredCost(totals.coinsurance);
-    plan.payer.addCoveredCost(totals.payer);
-    plan.payer.addUncoveredCost(totals.copay);
-    plan.payer.addUncoveredCost(totals.deductible);
-    plan.payer.addUncoveredCost(totals.pocket);
-    plan.secondaryPayer.addCoveredCost(totals.secondaryPayer);
+    // TODO - This should be refactored to better adhere to OO design principles. Too much getPayer(), redundant calls to the same objects, etc.
+    planRecord.totalExpenses += (totals.copay + totals.deductible + totals.paidByPatient);
+    planRecord.totalCoverage += (totals.coinsurance + totals.paidByPayer + totals.secondaryPayer);
+    planRecord.plan.getPayer().addCoveredCost(totals.coinsurance);
+    planRecord.plan.getPayer().addCoveredCost(totals.paidByPayer);
+    planRecord.plan.getPayer().addUncoveredCost(totals.copay);
+    planRecord.plan.getPayer().addUncoveredCost(totals.deductible);
+    planRecord.plan.getPayer().addUncoveredCost(totals.paidByPatient);
+    planRecord.secondaryPlan.getPayer().addCoveredCost(totals.secondaryPayer);
   }
 
-  private void assignCosts(ClaimEntry claimEntry, Plan plan) {
+  private void assignCosts(ClaimEntry claimEntry, PlanRecord plan) {
     claimEntry.cost = claimEntry.entry.getCost().doubleValue();
-    double remaining = claimEntry.cost;
+    double remainingUnpaid = claimEntry.cost;
     if (payer.coversCare(claimEntry.entry)) {
       payer.incrementCoveredEntries(claimEntry.entry);
       // Apply copay to Encounters and Medication claims only
       if ((claimEntry.entry instanceof HealthRecord.Encounter)
           || (claimEntry.entry instanceof HealthRecord.Medication)) {
         claimEntry.copay = payer.determineCopay(claimEntry.entry);
-        remaining -= claimEntry.copay;
+        remainingUnpaid -= claimEntry.copay;
       }
       // Check if the patient has remaining deductible
-      if (remaining > 0 && plan.remainingDeductible > 0) {
-        if (plan.remainingDeductible >= remaining) {
-          claimEntry.deductible = remaining;
+      if (remainingUnpaid > 0 && plan.remainingDeductible > 0) {
+        if (plan.remainingDeductible >= remainingUnpaid) {
+          claimEntry.deductible = remainingUnpaid;
         } else {
           claimEntry.deductible = plan.remainingDeductible;
         }
-        remaining -= claimEntry.deductible;
+        remainingUnpaid -= claimEntry.deductible;
         plan.remainingDeductible -= claimEntry.deductible;
       }
-      if (remaining > 0) {
+      if (remainingUnpaid > 0) {
         // Check if the payer has an adjustment
         double adjustment = payer.adjustClaim(claimEntry, person);
-        remaining -= adjustment;
+        remainingUnpaid -= adjustment;
       }
-      if (remaining > 0) {
+      if (remainingUnpaid > 0) {
         // Check if the patient has coinsurance
-        double coinsurance = payer.getCoinsurance();
+        double coinsurance = payer.getCoinsurance(person);
         if (coinsurance > 0) {
           // Payer covers some
-          claimEntry.coinsurance = (coinsurance * remaining);
-          remaining -= claimEntry.coinsurance;
+          claimEntry.coinsurance = (coinsurance * remainingUnpaid);
+          remainingUnpaid -= claimEntry.coinsurance;
         } else {
           // Payer covers all
-          claimEntry.payer = remaining;
-          remaining -= claimEntry.payer;
+          claimEntry.paidByPayer = remainingUnpaid;
+          remainingUnpaid -= claimEntry.paidByPayer;
         }
       }
-      if (remaining > 0) {
+      if (remainingUnpaid > 0) {
         // If secondary insurance, payer covers remainder, not patient.
-        if (PayerController.noInsurance != plan.secondaryPayer) {
-          claimEntry.secondaryPayer = remaining;
-          remaining -= claimEntry.secondaryPayer;
+        if (PayerController.noInsurance != plan.secondaryPlan.getPayer()) {
+          claimEntry.secondaryPayer = remainingUnpaid;
+          remainingUnpaid -= claimEntry.secondaryPayer;
         }
       }
-      if (remaining > 0) {
+      if (remainingUnpaid > 0) {
         // Patient amount
-        claimEntry.pocket = remaining;
-        remaining -= claimEntry.pocket;
+        claimEntry.paidByPatient = remainingUnpaid;
+        remainingUnpaid -= claimEntry.paidByPatient;
       }
     } else {
       payer.incrementUncoveredEntries(claimEntry.entry);
       // Payer does not cover care
-      claimEntry.pocket = remaining;
+      claimEntry.paidByPatient = remainingUnpaid;
     }
   }
 
@@ -201,7 +202,7 @@ public class Claim implements Serializable {
    * Returns the total cost that the Payer covered for this claim.
    */
   public double getCoveredCost() {
-    return (this.totals.coinsurance + this.totals.payer);
+    return (this.totals.coinsurance + this.totals.paidByPayer);
   }
 
   public double getDeductiblePaid() {
@@ -221,7 +222,7 @@ public class Claim implements Serializable {
     if (this.totals.secondaryPayer > 0) {
       return this.totals.secondaryPayer;
     } else if (this.totals.coinsurance > 0) {
-      return this.totals.pocket;
+      return this.totals.paidByPatient;
     }
     return 0;
   }
@@ -230,6 +231,6 @@ public class Claim implements Serializable {
    * Returns the total cost to the patient, including copay, coinsurance, and deductible.
    */
   public double getPatientCost() {
-    return this.totals.pocket + this.totals.copay + this.totals.deductible;
+    return this.totals.paidByPatient + this.totals.copay + this.totals.deductible;
   }
 }

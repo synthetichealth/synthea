@@ -15,6 +15,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
+import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 /**
@@ -103,7 +104,8 @@ public class ClinicalNoteExporter {
       }
     }
 
-    Payer payer = person.coverage.getPayerAtTime(encounter.start);
+    InsurancePlan plan = person.coverage.getPlanAtTime(encounter.start);
+    Payer payer = plan.getPayer();
     if (payer == null) {
       person.attributes.put("ehr_insurance", "unknown insurance coverage");
     } else {

@@ -3,7 +3,7 @@ package org.mitre.synthea.world.agents.behaviors.payer_adjustment;
 import java.io.Serializable;
 
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.health_insurance.Claim.ClaimEntry;
 
 /**
  * Randomized payment adjustment strategy.

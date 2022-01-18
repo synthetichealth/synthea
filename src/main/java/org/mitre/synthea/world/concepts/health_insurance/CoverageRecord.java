@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.concepts;
+package org.mitre.synthea.world.concepts.health_insurance;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,17 +9,20 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * A class that manages a history of coverage.
+ */
 public class CoverageRecord implements Serializable {
   private static final long serialVersionUID = 771457063723016307L;
 
-  public static class Plan implements Serializable {
+  public static class PlanRecord implements Serializable {
     private static final long serialVersionUID = -547445624583743525L;
 
     public String id;
     public long start;
     public long stop;
-    public Payer payer;
-    public Payer secondaryPayer;
+    public InsurancePlan plan;
+    public InsurancePlan secondaryPlan;
     public String owner;
     public String ownerName;
     public Double totalExpenses;
@@ -31,18 +34,41 @@ public class CoverageRecord implements Serializable {
      * @param time The time the plan starts.
      * @param payer The payer associated with the Plan.
      */
-    public Plan(long time, Payer payer) {
+    public PlanRecord(long time, InsurancePlan plan) {
       this.start = time;
       this.stop = time + Utilities.convertTime("years", 1);
-      this.payer = payer;
+      this.plan = plan;
       this.totalExpenses = 0.0;
       this.totalCoverage = 0.0;
-      this.remainingDeductible = payer.getDeductible();
+      this.remainingDeductible = plan.getDeductible();
+    }
+
+    /**
+     * Pay monthly premiums associated with this plan.
+     * @return  Cost of the premiums.
+     */
+    public double payMonthlyPremiums() {
+      double premiumPrice = (this.plan.payMonthlyPremium()) + (this.secondaryPlan.payMonthlyPremium());
+      this.totalExpenses += premiumPrice;
+      return premiumPrice;
+    }
+
+    public void updateStopTime(long updatedStopTime) {
+      this.stop = updatedStopTime;
+    }
+
+    @Override
+    public String toString(){
+      StringBuilder sb = new StringBuilder();
+      sb.append("[PlanRecord:");
+      sb.append(" Start: " + start);
+      sb.append(" Stop: " + stop + "]");
+      return sb.toString();
     }
   }
 
   private Person person;
-  private List<Plan> planHistory;
+  private List<PlanRecord> planHistory;
 
   /**
    * Create a new CoverageRecord for the given Person.
@@ -50,56 +76,58 @@ public class CoverageRecord implements Serializable {
    */
   public CoverageRecord(Person person) {
     this.person = person;
-    this.planHistory = new ArrayList<Plan>();
-  }
-
-  /**
-   * Get the person associated with this CoverageRecord.
-   * @return the person.
-   */
-  public Person getPerson() {
-    return person;
+    this.planHistory = new ArrayList<PlanRecord>();
   }
 
   /**
    * Get the plan history associated with this CoverageRecord.
    * @return the play history.
    */
-  public List<Plan> getPlanHistory() {
+  public List<PlanRecord> getPlanHistory() {
     return planHistory;
   }
 
   /**
-   * Sets the person's payer history at the given time to the given payer.
-   * Secondary insurance is not applicable.
+   * Sets the person's payer history at the given time to the given payers.
+   * @param time the current simulation time.
+   * @param newPayer the primary payer.
+   * @param secondaryPayer the secondary payer (for example, Medicare Supplemental Insurance).
    */
-  public void setPayerAtTime(long time, Payer newPayer) {
-    this.setPayerAtTime(time, newPayer, PayerController.noInsurance);
+  public void setPlanAtTime(long time, InsurancePlan newPlan, InsurancePlan secondaryPlan) {
+    if(this.planHistory.isEmpty()){
+      if(person.age(time).getYears() > Utilities.convertTime("years", 1)) {
+        throw new RuntimeException("Person was greater than the age of 1 when recieving their initial insurance plan.");
+      }
+      // If this is the person's first plan, set the start date to their birthdate.
+      time = (long) person.attributes.get(Person.BIRTHDATE);
+    } else {
+      // Set the new stop date of the last insurance plan to prevent any gaps.
+      PlanRecord planRecord = this.getLastPlan();
+      planRecord.updateStopTime(time);
+    }
+
+    PlanRecord planRecord = new PlanRecord(time, newPlan);
+    planRecord.secondaryPlan = secondaryPlan;
+    String[] ownership = determinePlanOwnership(time, newPlan);
+    planRecord.owner = ownership[0];
+    planRecord.ownerName = ownership[1];
+    if (ownership[0] == null) {
+      planRecord.id = null; // no insurance, no id.
+    } else if (ownership[2] != null) {
+      planRecord.id = ownership[2]; // use previous id.
+    } else {
+      planRecord.id = person.randUUID().toString(); // new id required.
+    }
+    this.planHistory.add(planRecord);
   }
 
   /**
    * Sets the person's payer history at the given time to the given payer.
    * @param time the current simulation time.
    * @param newPayer the primary payer.
-   * @param secondaryPayer the secondary payer (for example, Medicare Supplemental Insurance).
    */
-  public void setPayerAtTime(long time, Payer newPayer, Payer secondaryPayer) {
-    if (!this.planHistory.isEmpty()) {
-      this.planHistory.get(this.planHistory.size() - 1).stop = time;
-    }
-    Plan plan = new Plan(time, newPayer);
-    plan.secondaryPayer = secondaryPayer;
-    String[] ownership = determinePayerOwnership(time, newPayer);
-    plan.owner = ownership[0];
-    plan.ownerName = ownership[1];
-    if (ownership[0] == null) {
-      plan.id = null; // no insurance, no id.
-    } else if (ownership[2] != null) {
-      plan.id = ownership[2]; // use previous id.
-    } else {
-      plan.id = person.randUUID().toString(); // new id required.
-    }
-    this.planHistory.add(plan);
+  public void setPlanAtTime(long time, InsurancePlan newPlan) {
+    this.setPlanAtTime(time, newPlan, PayerController.getNoInsurancePlan());
   }
 
   /**
@@ -107,38 +135,37 @@ public class CoverageRecord implements Serializable {
    * @param time the time.
    * @return the active plan.
    */
-  public Plan getPlanAtTime(long time) {
-    Plan plan = null;
-    for (Plan p : this.planHistory) {
-      if (p.start <= time && time < p.stop) {
-        plan = p;
+  public PlanRecord getPlanRecordAtTime(long time) {
+    for (PlanRecord planRecord : this.planHistory) {
+      if (planRecord.start <= time && time < planRecord.stop) {
+        return planRecord;
       }
     }
-    return plan;
+    return null;
   }
 
   /**
-   * Returns the person's Payer at the given time.
+   * Returns this coverage record history's record of the plan at the given time.
+   * @param time
+   * @return
    */
-  public Payer getPayerAtTime(long time) {
-    Payer payer = null;
-    Plan plan = getPlanAtTime(time);
-    if (plan != null) {
-      payer = plan.payer;
+  public InsurancePlan getPlanAtTime(long time) {
+    PlanRecord planRecord = getPlanRecordAtTime(time);
+    if (planRecord != null) {
+      return planRecord.plan;
     }
-    return payer;
+    return null;
   }
 
   /**
    * Get the last plan.
    * @return the last plan.
    */
-  public Plan getLastPlan() {
-    Plan plan = null;
+  public PlanRecord getLastPlan() {
     if (!this.planHistory.isEmpty()) {
-      plan = this.planHistory.get(this.planHistory.size() - 1);
+      return this.planHistory.get(this.planHistory.size() - 1);
     }
-    return plan;
+    return null;
   }
 
   /**
@@ -147,9 +174,9 @@ public class CoverageRecord implements Serializable {
    */
   public Payer getLastPayer() {
     Payer payer = null;
-    Plan plan = getLastPlan();
-    if (plan != null) {
-      payer = plan.payer;
+    PlanRecord planRecord = getLastPlan();
+    if (planRecord != null) {
+      payer = planRecord.plan.getPayer();
     }
     return payer;
   }
@@ -159,7 +186,7 @@ public class CoverageRecord implements Serializable {
    */
   public String getPlanOwner(long time) {
     String owner = null;
-    Plan plan = getPlanAtTime(time);
+    PlanRecord plan = getPlanRecordAtTime(time);
     if (plan != null) {
       owner = plan.owner;
     }
@@ -171,7 +198,7 @@ public class CoverageRecord implements Serializable {
    */
   public double getTotalExpenses() {
     double total = 0;
-    for (Plan plan : planHistory) {
+    for (PlanRecord plan : planHistory) {
       total += plan.totalExpenses;
     }
     return total;
@@ -182,7 +209,7 @@ public class CoverageRecord implements Serializable {
    */
   public double getTotalCoverage() {
     double total = 0;
-    for (Plan plan : planHistory) {
+    for (PlanRecord plan : planHistory) {
       total += plan.totalCoverage;
     }
     return total;
@@ -191,14 +218,17 @@ public class CoverageRecord implements Serializable {
   /**
    * Determines and returns what the ownership of the person's insurance at this age.
    */
-  private String[] determinePayerOwnership(long time, Payer payer) {
+  private String[] determinePlanOwnership(long time, InsurancePlan plan) {
+
+    Payer payer = plan.getPayer();
+
     String[] results = new String[3];
     // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
     int age = this.person.ageInYears(time);
-    Plan lastPlan = this.getLastPlan();
+    PlanRecord lastPlan = this.getLastPlan();
     if (lastPlan != null
-        && lastPlan.payer != null
-        && lastPlan.payer.equals(payer)
+        && lastPlan.plan != null
+        && lastPlan.plan.equals(plan)
         && age != 18) {
       results[0] = lastPlan.owner;
       results[1] = lastPlan.ownerName;

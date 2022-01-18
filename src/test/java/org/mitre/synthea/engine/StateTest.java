@@ -89,7 +89,7 @@ public class StateTest {
     PayerController.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPayerAtTime(yearTime, PayerController.noInsurance);
+      person.coverage.setPlanAtTime(yearTime, PayerController.noInsurance.getNoInsurancePlan());
     }
 
     // Ensure Physiology state is enabled by default

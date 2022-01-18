@@ -14,11 +14,11 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.payer_finder.PayerFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.payer_finder.PayerFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderBestRates;
+import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderRandom;
 import org.mitre.synthea.world.geography.Location;
 
-public class PayerFinderTest {
+public class PlanFinderTest {
 
   private Person person;
 
@@ -43,9 +43,9 @@ public class PayerFinderTest {
     Config.set("generate.payers.selection_behavior", "random");
     PayerController.clear();
     PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
-    PayerFinderRandom finder = new PayerFinderRandom();
+    PlanFinderRandom finder = new PlanFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
-    Payer payer = finder.find(options, person, null, 0L);
+    Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertEquals("NO_INSURANCE", payer.getName());
   }
@@ -55,8 +55,8 @@ public class PayerFinderTest {
     Config.set("generate.payers.selection_behavior", "random");
     PayerController.clear();
     PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
-    PayerFinderRandom finder = new PayerFinderRandom();
-    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L);
+    PlanFinderRandom finder = new PlanFinderRandom();
+    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L).getPayer();
     assertNotNull(payer);
     assertNotEquals("NO_INSURANCE", payer.getName());
   }
@@ -66,9 +66,9 @@ public class PayerFinderTest {
     Config.set("generate.payers.selection_behavior", "best_rate");
     PayerController.clear();
     PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
-    PayerFinderBestRates finder = new PayerFinderBestRates();
+    PlanFinderBestRates finder = new PlanFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
-    Payer payer = finder.find(options, person, null, 0L);
+    Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertEquals("NO_INSURANCE", payer.getName());
   }
@@ -78,8 +78,8 @@ public class PayerFinderTest {
     Config.set("generate.payers.selection_behavior", "best_rate");
     PayerController.clear();
     PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
-    PayerFinderBestRates finder = new PayerFinderBestRates();
-    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L);
+    PlanFinderBestRates finder = new PlanFinderBestRates();
+    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L).getPayer();
     assertNotNull(payer);
     assertNotEquals("NO_INSURANCE", payer.getName());
   }

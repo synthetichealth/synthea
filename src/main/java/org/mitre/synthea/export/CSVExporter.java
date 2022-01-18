@@ -42,9 +42,6 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.Claim;
-import org.mitre.synthea.world.concepts.CoverageRecord;
-import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -57,6 +54,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Supply;
+import org.mitre.synthea.world.concepts.health_insurance.Claim;
+import org.mitre.synthea.world.concepts.health_insurance.CoverageRecord.PlanRecord;
 
 
 /**
@@ -427,7 +426,7 @@ public class CSVExporter {
    * @throws IOException if any IO errors occur.
    */
   private void exportPayerTransitions(Person person, long stopTime) throws IOException {
-    for (CoverageRecord.Plan plan : person.coverage.getPlanHistory()) {
+    for (PlanRecord plan : person.coverage.getPlanHistory()) {
       if (plan.start <= stopTime) {
         payerTransition(person, plan);
       }
@@ -1266,39 +1265,39 @@ public class CSVExporter {
    * Write a single range of unchanged payer history to payer_transitions.csv
    *
    * @param person The person whose payer history to write.
-   * @param plan The plan
+   * @param planRecord The plan
    * @throws IOException if any IO error occurs
    */
-  private void payerTransition(Person person, Plan plan) throws IOException {
+  private void payerTransition(Person person, PlanRecord planRecord) throws IOException {
     // PATIENT_ID,MEMBER_ID,START_YEAR,END_YEAR,PAYER_ID,SECONDARY_PAYER_ID,OWNERSHIP,OWNERNAME
 
     StringBuilder s = new StringBuilder();
     // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
     // MEMBER_ID
-    if (plan.id != null) {
-      s.append(plan.id);
+    if (planRecord.id != null) {
+      s.append(planRecord.id);
     }
     s.append(",");
     // START_YEAR
-    s.append(iso8601Timestamp(plan.start)).append(',');
+    s.append(iso8601Timestamp(planRecord.start)).append(',');
     // END_YEAR
-    s.append(iso8601Timestamp(plan.stop)).append(',');
+    s.append(iso8601Timestamp(planRecord.stop)).append(',');
     // PAYER_ID
-    s.append(plan.payer.getResourceID()).append(',');
+    s.append(planRecord.plan.getPayer().getResourceID()).append(',');
     // SECONDARY_PAYER_ID
-    if (plan.secondaryPayer != null && plan.secondaryPayer != PayerController.noInsurance) {
-      s.append(plan.secondaryPayer.getResourceID());
+    if (planRecord.secondaryPlan.getPayer() != null && planRecord.secondaryPlan.getPayer() != PayerController.noInsurance) {
+      s.append(planRecord.secondaryPlan.getPayer().getResourceID());
     }
     s.append(',');
     // OWNERSHIP
-    if (plan.owner != null) {
-      s.append(plan.owner);
+    if (planRecord.owner != null) {
+      s.append(planRecord.owner);
     }
     s.append(',');
     // OWNERNAME
-    if (plan.ownerName != null) {
-      s.append(plan.ownerName);
+    if (planRecord.ownerName != null) {
+      s.append(planRecord.ownerName);
     }
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
@@ -1589,7 +1588,7 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    double payerAmount = (claimEntry.payer + claimEntry.coinsurance);
+    double payerAmount = (claimEntry.paidByPayer + claimEntry.coinsurance);
     if (payerAmount > 0) {
       // PAYMENT FROM INSURANCE
       remainder -= payerAmount;
@@ -1744,7 +1743,7 @@ public class CSVExporter {
       this.claimId = claimId;
       this.chargeId = chargeId;
       this.patientId = (String) claim.person.attributes.get(Person.ID);
-      Plan plan = claim.person.coverage.getPlanAtTime(encounter.start);
+      PlanRecord plan = claim.person.coverage.getPlanRecordAtTime(encounter.start);
       if (plan != null) {
         this.memberId = plan.id;
       }

@@ -69,7 +69,7 @@ public class C19ImmunizationModuleTest {
     person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     PayerController.loadPayers(here);
-    person.coverage.setPayerAtTime(decemberFifteenth, PayerController.getGovernmentPayer("Medicare"));
+    person.coverage.setPlanAtTime(decemberFifteenth, PayerController.getGovernmentPayer("Medicare").getGovernmentPayerPlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());
