@@ -187,8 +187,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/BB2RIFExporter.html#export-org.mitre.synthea.world.agents.Person-long-">export</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-      long&nbsp;stopTime)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/BB2RIFExporter.html#export-org.mitre.synthea.world.agents.Person-long-int-">export</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+      long&nbsp;stopTime,
+      int&nbsp;yearsOfHistory)</code>
 <div class="block">Export a single person.</div>
 </td>
 </tr>
@@ -285,20 +286,22 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="export-org.mitre.synthea.world.agents.Person-long-">
+<a name="export-org.mitre.synthea.world.agents.Person-long-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>export</h4>
 <pre>public&nbsp;void&nbsp;export(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-                   long&nbsp;stopTime)
+                   long&nbsp;stopTime,
+                   int&nbsp;yearsOfHistory)
             throws java.io.IOException</pre>
 <div class="block">Export a single person.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - the person to export</dd>
 <dd><code>stopTime</code> - end time of simulation</dd>
+<dd><code>yearsOfHistory</code> - number of years of claims to export</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if something goes wrong</dd>
 </dl>
