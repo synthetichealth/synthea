@@ -90,4 +90,12 @@ public class InsurancePlan implements Serializable {
             || this.servicesCovered.contains(service)
             || this.servicesCovered.contains("*");
     }
+
+    public void addCoveredCost(double coveredCosts) {
+        this.payer.addCoveredCost(coveredCosts);
+    }
+
+    public void addUncoveredCost(double uncoveredCosts) {
+        this.payer.addUncoveredCost(uncoveredCosts);
+    }
 }

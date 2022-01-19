@@ -49,6 +49,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -115,6 +116,7 @@ public class CodeResolveAndExportTest {
     person.attributes.put(Person.ETHNICITY, "other");
     person.attributes.put(Person.SEXUAL_ORIENTATION, "bisexual");
     person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.EDUCATION, "Middle");
 
     TestHelper.loadTestProperties();
@@ -141,6 +143,10 @@ public class CodeResolveAndExportTest {
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    // Must process health insurance module at birth and time of encounter to prevent null pointers.
+    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    healthInsuranceModule.process(person, (long) person.attributes.get(Person.BIRTHDATE));
+    healthInsuranceModule.process(person, time);
     Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";

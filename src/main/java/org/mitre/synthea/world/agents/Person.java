@@ -736,21 +736,12 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    CoverageRecord.PlanRecord plan = coverage.getPlanRecordAtTime(time);
-    double currentYearlyExpenses;
-    if (plan != null) {
-      currentYearlyExpenses = plan.totalExpenses;
-    } else {
-      currentYearlyExpenses = 0.0;
+    boolean stillHasIncome = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
+    if(!stillHasIncome) {
+      // Person no longer has income for the year. They will switch to No Insurance.
+      this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     }
-
-    if ((int) this.attributes.get(Person.INCOME) - currentYearlyExpenses > 0) {
-      // Person has remaining income for the year.
-      return true;
-    }
-    // Person no longer has income for the year. They will switch to No Insurance.
-    this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
-    return false;
+    return stillHasIncome;
   }
 
   /**
@@ -773,8 +764,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      PlanRecord plan = this.coverage.getPlanRecordAtTime(time);
-      plan.payMonthlyPremiums();
+      PlanRecord planRecord = this.coverage.getPlanRecordAtTime(time);
+      planRecord.payMonthlyPremiums();
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

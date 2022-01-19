@@ -25,8 +25,8 @@ public class CoverageRecord implements Serializable {
     public InsurancePlan secondaryPlan;
     public String owner;
     public String ownerName;
-    public Double totalExpenses;
-    public Double totalCoverage;
+    private Double totalExpenses;
+    private Double totalCoverage;
     public Double remainingDeductible;
 
     /**
@@ -64,6 +64,14 @@ public class CoverageRecord implements Serializable {
       sb.append(" Start: " + start);
       sb.append(" Stop: " + stop + "]");
       return sb.toString();
+    }
+
+    public void incrementExpenses(double expenses) {
+      this.totalExpenses += expenses;
+    }
+
+    public void incrementCoverage(double coverage) {
+      this.totalCoverage += coverage;
     }
   }
 
@@ -278,5 +286,22 @@ public class CoverageRecord implements Serializable {
       results[1] = (String) person.attributes.get(Person.NAME);
     }
     return results;
+  }
+
+  /**
+   * Determines whether the given income can afford the coverage based on its expenses.
+   * @param yearlyIncome  The yearly income.
+   * @param time  The time to check for.
+   * @return
+   */
+  public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
+    CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
+    double currentYearlyExpenses;
+    if (planRecord != null) {
+      currentYearlyExpenses = planRecord.totalExpenses;
+    } else {
+      currentYearlyExpenses = 0.0;
+    }
+    return (yearlyIncome - currentYearlyExpenses) > 0;
   }
 }

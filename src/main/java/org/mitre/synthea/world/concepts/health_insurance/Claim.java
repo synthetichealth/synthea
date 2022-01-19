@@ -123,14 +123,13 @@ public class Claim implements Serializable {
       totals.addCosts(item);
     }
     // TODO - This should be refactored to better adhere to OO design principles. Too much getPayer(), redundant calls to the same objects, etc.
-    planRecord.totalExpenses += (totals.copay + totals.deductible + totals.paidByPatient);
-    planRecord.totalCoverage += (totals.coinsurance + totals.paidByPayer + totals.secondaryPayer);
-    planRecord.plan.getPayer().addCoveredCost(totals.coinsurance);
-    planRecord.plan.getPayer().addCoveredCost(totals.paidByPayer);
-    planRecord.plan.getPayer().addUncoveredCost(totals.copay);
-    planRecord.plan.getPayer().addUncoveredCost(totals.deductible);
-    planRecord.plan.getPayer().addUncoveredCost(totals.paidByPatient);
-    planRecord.secondaryPlan.getPayer().addCoveredCost(totals.secondaryPayer);
+    planRecord.incrementExpenses(totals.copay + totals.deductible + totals.paidByPatient);
+    planRecord.incrementCoverage(totals.coinsurance + totals.paidByPayer + totals.secondaryPayer);
+    double coveredCosts = totals.coinsurance + totals.paidByPayer;
+    planRecord.plan.addCoveredCost(coveredCosts);
+    double uncoveredCosts = totals.copay + totals.deductible + totals.paidByPatient;
+    planRecord.plan.addUncoveredCost(uncoveredCosts);
+    planRecord.secondaryPlan.addCoveredCost(totals.secondaryPayer);
   }
 
   private void assignCosts(ClaimEntry claimEntry, PlanRecord plan) {
