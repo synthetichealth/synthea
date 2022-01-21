@@ -1,12 +1,21 @@
 package org.mitre.synthea.export;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 
@@ -17,18 +26,38 @@ public class JSONExporterTest {
   @Test
   public void export() throws Exception {
     TestHelper.loadTestProperties();
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
-    for (int i = 0; i < numberOfPeople; i++) {
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       Config.set("exporter.json.export", "true");
+      boolean moduleExport = person.randBoolean();
+      Config.set("exporter.json.include_module_history", String.valueOf(moduleExport));
       String personJson = JSONExporter.export(person);
       assertNotNull(personJson);
-    }
+      JsonElement parsedPerson = JsonParser.parseString(personJson);
+      JsonObject attributes = parsedPerson.getAsJsonObject()
+          .get("attributes").getAsJsonObject();
+      String gender = attributes.get("gender").getAsString();
+      assertEquals(person.attributes.get(Person.GENDER), gender);
+      if (moduleExport) {
+        attributes.keySet().forEach((attributeName) -> {
+          if (attributeName.endsWith("Module")) {
+            attributes.get(attributeName).getAsJsonArray().forEach((stateElement) -> {
+              if (stateElement.getAsJsonObject().get("state_name") == null) {
+                validationErrors.add(String.format("Module %s does not have a state name in "
+                        + "exported module history", attributeName));
+              }
+              if (stateElement.getAsJsonObject().get("entered") == null) {
+                validationErrors.add(String.format("Module %s does not have an entered time in "
+                        + "exported module history", attributeName));
+              }
+            });
+          }
+        });
+      }
+      return validationErrors;
+    });
+    assertTrue("Validation of exported JSON bundle failed: "
+        + String.join("|", errors), errors.size() == 0);
   }
 }
