@@ -13,6 +13,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Random;
 
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -39,6 +40,7 @@ public class JSONExporter {
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
         .registerTypeHierarchyAdapter(Person.class, new PersonSerializer())
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
+        .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
         .create();
     return gson.toJson(person);
   }
@@ -53,6 +55,13 @@ public class JSONExporter {
       payerOut.add("name", new JsonPrimitive(src.getName()));
       payerOut.add("uuid", new JsonPrimitive(src.uuid));
       return payerOut;
+    }
+  }
+
+  public static class RandomSerializer implements JsonSerializer<Random> {
+    @Override
+    public JsonElement serialize(Random src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString());
     }
   }
 
