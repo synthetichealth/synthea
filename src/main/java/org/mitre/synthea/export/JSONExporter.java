@@ -33,6 +33,7 @@ public class JSONExporter {
    */
   public static String export(Person person) {
     Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
         .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
         .addSerializationExclusionStrategy(new SyntheaExclusionStrategy())
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
