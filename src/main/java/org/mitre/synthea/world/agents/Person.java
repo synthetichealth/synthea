@@ -650,8 +650,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         HealthRecord healthRecord = getHealthRecord(provider, time);
         long lastEncounterTime = healthRecord.lastEncounterTime();
         // check to see if the provider is valid for this see range
-        if (!entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
+        if (lastEncounterTime != Long.MIN_VALUE &&
+            !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
           // The provider is not in the seed range. Force finding a new provider.
+          System.out.println("Move reset for " + type);
           setProvider(type, time);
         }
       }

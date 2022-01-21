@@ -1,10 +1,11 @@
 package org.mitre.synthea.identity;
 
+import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
+
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +127,7 @@ public class Seed implements IdentityRecord {
 
   @Override
   public long birthdateTimestamp() {
-    return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+    return localDateToTimestamp(this.getDateOfBirth());
   }
 
   public void setEntity(Entity entity) {

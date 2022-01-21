@@ -12,6 +12,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
@@ -107,6 +109,10 @@ public class Utilities {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.MONTH) + 1;
+  }
+
+  public static long localDateToTimestamp(LocalDate date) {
+    return date.atStartOfDay().toInstant(OffsetDateTime.now().getOffset()).toEpochMilli();
   }
 
   /**

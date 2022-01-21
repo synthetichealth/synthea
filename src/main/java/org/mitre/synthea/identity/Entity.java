@@ -33,8 +33,14 @@ public class Entity {
     if (timestamp == Long.MIN_VALUE) {
       return seeds.get(0);
     }
-    LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp).atZone(ZoneId.of("Z"))).toLocalDate();
+    LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp)
+        .atZone(ZoneId.systemDefault())).toLocalDate();
     return seedAt(date);
+  }
+
+  public boolean isBeforeOrDuringFirstSeed(long timestamp) {
+    Seed firstSeed = seeds.get(0);
+    return firstSeed.getPeriod().isBefore(timestamp) || firstSeed.getPeriod().contains(timestamp);
   }
 
   public LocalDate getDateOfBirth() {

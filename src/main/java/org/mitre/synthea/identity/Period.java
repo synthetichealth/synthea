@@ -1,7 +1,8 @@
 package org.mitre.synthea.identity;
 
+import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
+
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 
 public class Period {
   private LocalDate start;
@@ -22,8 +23,14 @@ public class Period {
   }
 
   public boolean contains(long timestamp) {
-    return (this.start.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli() <= timestamp)
+    return (localDateToTimestamp(this.start) <= timestamp)
         && ((this.end == null) ||
-            (this.end.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli() <= timestamp));
+            (localDateToTimestamp(this.end) >= timestamp));
   }
+
+  public boolean isBefore(long timestamp) {
+    long startStamp = localDateToTimestamp(this.start);
+    return timestamp <= startStamp;
+  }
+
 }
