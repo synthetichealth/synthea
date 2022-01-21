@@ -38,7 +38,8 @@ public class JSONExporter {
         .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
         .addSerializationExclusionStrategy(new SyntheaExclusionStrategy())
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
-        .registerTypeHierarchyAdapter(Person.class, new PersonSerializer())
+        .registerTypeHierarchyAdapter(Person.class,
+            new PersonSerializer(!Config.getAsBoolean("exporter.json.include_module_history")))
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
         .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
         .create();
@@ -66,6 +67,12 @@ public class JSONExporter {
   }
 
   public static class PersonSerializer implements JsonSerializer<Person> {
+    private boolean includeModuleHistory;
+
+    public PersonSerializer(boolean includeModuleHistory) {
+      this.includeModuleHistory = includeModuleHistory;
+    }
+
     @Override
     public JsonElement serialize(Person src, Type typeOfSrc, JsonSerializationContext context) {
       JsonObject personOut = new JsonObject();
@@ -77,8 +84,7 @@ public class JSONExporter {
         boolean keepEntry = true;
         if (key.startsWith("ehr_") || key.contains("lookup") || key.contains("UUID")) {
           keepEntry = false;
-        } else if ((!Config.getAsBoolean("exporter.json.include_module_history"))
-            && isModuleHistory(value)) {
+        } else if (this.includeModuleHistory && isModuleHistory(value)) {
           keepEntry = false;
         }
 
