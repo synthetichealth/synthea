@@ -785,13 +785,17 @@ public class BB2RIFExporter {
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      if (isVA || isIHSCenter || isPrimary || isUrgent || !(isAmbulatory || isOutpatient)) {
+        continue;
+      }
+
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
-
-      if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent)) {
-        continue;
-      }
 
       staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
 
@@ -992,14 +996,18 @@ public class BB2RIFExporter {
       }
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
-      long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
-      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
-
-      if (!(isInpatient || isEmergency)) {
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter || !(isInpatient || isEmergency)) {
         previousEmergency = false;
         continue;
       }
+
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, INPATIENT.class, person);
@@ -1242,10 +1250,15 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
+
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
-
-      if (!isPrimary && !isWellness) {
+      boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      if (isVA || !(isIHSCenter || isPrimary || isWellness || isUrgent)) {
         continue;
       }
 
@@ -1717,6 +1730,15 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter) {
+        continue;
+      }
+
       PartDContractID partDContractID = partDContracts.getContractID(encounter.start);
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
@@ -1812,6 +1834,15 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter) {
+        continue;
+      }
+
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
@@ -1971,7 +2002,14 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
-      if (!encounter.type.equals(EncounterType.HOME.toString())) {
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      boolean isHome = encounter.type.equals(EncounterType.HOME.toString());
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+
+      if (isVA || isIHSCenter || !isHome) {
         continue;
       }
 
@@ -2146,9 +2184,16 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
-      if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isHospice = encounter.type.equals(EncounterType.HOSPICE.toString());
+      if (isVA || isIHSCenter || !isHospice) {
         continue;
       }
+
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
@@ -2338,12 +2383,19 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isSNF = encounter.type.equals(EncounterType.SNF.toString());
+      if (isVA || isIHSCenter || !isSNF) {
+        continue;
+      }
+
       previousEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
 
-      if (!encounter.type.equals(EncounterType.SNF.toString())) {
-        continue;
-      }
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
