@@ -1715,6 +1715,10 @@
 <dd>
 <div class="block">Export the hospital in FHIR STU3 format.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.html#export-org.mitre.synthea.world.agents.Person-">export(Person)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.html" title="class in org.mitre.synthea.export">JSONExporter</a></dt>
+<dd>
+<div class="block">Export the given Person object into a String full of JSON.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/SymptomCSVExporter.html#export-org.mitre.synthea.world.agents.Person-long-">export(Person, long)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/SymptomCSVExporter.html" title="class in org.mitre.synthea.export">SymptomCSVExporter</a></dt>
 <dd>
 <div class="block">Add a single Person's condition symptoms info to the CSV records.</div>
@@ -3569,6 +3573,30 @@
 <dl>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19ImmunizationModule.html#JANSSEN_APPROVED">JANSSEN_APPROVED</a></span> - Static variable in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19ImmunizationModule.html" title="class in org.mitre.synthea.modules.covid">C19ImmunizationModule</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">Class that manages the export of a Synthea Person and their related information into a JSON
+ format.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.html#JSONExporter--">JSONExporter()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.html" title="class in org.mitre.synthea.export">JSONExporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.PersonSerializer</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.RandomSerializer</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.ShortPayerSerializer</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">Trimming down the attributes that are serialized out when exporting the Person record.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.StateSerializer</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.SyntheaExclusionStrategy</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/JSONSkip.html" title="annotation in org.mitre.synthea.export"><span class="typeNameLink">JSONSkip</span></a> - Annotation Type in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">This interface is a marker interface indicating that a field should be skipped in the
+ JSON export.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html#justAfter-long-">justAfter(long)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory</a></dt>
 <dd>
 <div class="block">Finds the closest point occurring after the given time.</div>
@@ -4477,6 +4505,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html#PersonChartConfig--">PersonChartConfig()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.PersonChartConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html#PersonSerializer-boolean-">PersonSerializer(boolean)</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.PersonSerializer</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.PersonSeriesConfig.html#PersonSeriesConfig--">PersonSeriesConfig()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.PersonSeriesConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.PersonSeriesConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#phone">phone</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
@@ -5058,6 +5088,8 @@
 </dd>
 <dt><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers"><span class="typeNameLink">RandomNumberGenerator</span></a> - Interface in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html#RandomSerializer--">RandomSerializer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.RandomSerializer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/helpers/RandomValueGenerator.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">RandomValueGenerator</span></a> - Class in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
 <dd>
 <div class="block">Generate random values within a defined range.</div>
@@ -5313,6 +5345,14 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/SerializableTypeAdapter.html#SerializableTypeAdapter--">SerializableTypeAdapter()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SerializableTypeAdapter.html" title="class in org.mitre.synthea.helpers">SerializableTypeAdapter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html#serialize-org.mitre.synthea.world.agents.Person-java.lang.reflect.Type-com.google.gson.JsonSerializationContext-">serialize(Person, Type, JsonSerializationContext)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.PersonSerializer</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html#serialize-java.util.Random-java.lang.reflect.Type-com.google.gson.JsonSerializationContext-">serialize(Random, Type, JsonSerializationContext)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.RandomSerializer</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html#serialize-org.mitre.synthea.world.agents.Payer-java.lang.reflect.Type-com.google.gson.JsonSerializationContext-">serialize(Payer, Type, JsonSerializationContext)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.ShortPayerSerializer</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html#serialize-org.mitre.synthea.engine.State-java.lang.reflect.Type-com.google.gson.JsonSerializationContext-">serialize(State, Type, JsonSerializationContext)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.StateSerializer</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html#serialNumber">serialNumber</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.SampledData.html#series">series</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.SampledData.html" title="class in org.mitre.synthea.engine">Components.SampledData</a></dt>
@@ -5544,6 +5584,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#SEXUAL_ORIENTATION">SEXUAL_ORIENTATION</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html#ShortPayerSerializer--">ShortPayerSerializer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.ShortPayerSerializer</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html#shouldRun-org.mitre.synthea.world.agents.Person-org.mitre.synthea.world.concepts.HealthRecord-long-">shouldRun(Person, HealthRecord, long)</a></span> - Method in class org.mitre.synthea.editors.<a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html" title="class in org.mitre.synthea.editors">GrowthDataErrorsEditor</a></dt>
 <dd>
 <div class="block">Checks to see if the person is under MAX_AGE.</div>
@@ -5552,6 +5594,10 @@
 <dd>
 <div class="block">Determine whether the editor should be run at the given time step.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html#shouldSkipClass-java.lang.Class-">shouldSkipClass(Class&lt;?&gt;)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html" title="class in org.mitre.synthea.export">JSONExporter.SyntheaExclusionStrategy</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html#shouldSkipField-com.google.gson.FieldAttributes-">shouldSkipField(FieldAttributes)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html" title="class in org.mitre.synthea.export">JSONExporter.SyntheaExclusionStrategy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html#sigma-java.lang.String-double-">sigma(String, double)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory</a></dt>
 <dd>
 <div class="block">Calculate the parameter needed to model the half normal distribution for BMI values at or above
@@ -5812,6 +5858,8 @@
 <dd>
 <div class="block">The VitalSign state type indicates a point in the module where a patient's vital sign is set.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html#StateSerializer--">StateSerializer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.StateSerializer</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/BB2RIFExporter.StaticFieldConfig.html#StaticFieldConfig--">StaticFieldConfig()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFExporter.StaticFieldConfig.html" title="class in org.mitre.synthea.export">BB2RIFExporter.StaticFieldConfig</a></dt>
 <dd>
 <div class="block">Default constructor that parses the TSV config writer.</div>
@@ -5896,6 +5944,8 @@
 <dd>
 <div class="block">The version identifier from the current version of Synthea.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html#SyntheaExclusionStrategy--">SyntheaExclusionStrategy()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html" title="class in org.mitre.synthea.export">JSONExporter.SyntheaExclusionStrategy</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html#system">system</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></dt>
 <dd>
 <div class="block">Code System (e.g.</div>
