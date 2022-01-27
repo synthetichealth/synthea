@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomInfo;
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomSource;
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.world.agents.Person;
 
 public class ExpressedConditionRecord implements Cloneable, Serializable {
@@ -291,6 +292,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
 
   // a map:  module.name -> Conditions
   private Map<String, ModuleConditions> sources;
+  @JSONSkip
   Person person;
 
   public ExpressedConditionRecord(Person person) {

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -121,6 +122,7 @@ public class HealthRecord implements Serializable {
    */
   public class Entry implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
+    @JSONSkip
     HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
@@ -231,6 +233,7 @@ public class HealthRecord implements Serializable {
     public String category;
     public String unit;
     public List<Observation> observations;
+    @JSONSkip
     public Report report;
 
     /**
@@ -681,9 +684,11 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  @JSONSkip
   private Person person;
   public Provider provider;
   public List<Encounter> encounters;
+  @JSONSkip
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
