@@ -445,7 +445,6 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
-        fieldValues.put(BENEFICIARY.RDS_MO_CNT, monthCountStr);
         int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
         fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
         fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
@@ -463,10 +462,11 @@ public class BB2RIFExporter {
         }
         fieldValues.put(BENEFICIARY.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(BENEFICIARY.BENE_RACE_CD,
-                bb2RaceCode(
-                        (String)person.attributes.get(Person.ETHNICITY),
-                        (String)person.attributes.get(Person.RACE)));
+        String raceCode = bb2RaceCode(
+                (String)person.attributes.get(Person.ETHNICITY),
+                (String)person.attributes.get(Person.RACE));
+        fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
+        fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI alogorithm
         fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
                 (String)person.attributes.get(Person.LAST_NAME));
         String givenName = (String)person.attributes.get(Person.FIRST_NAME);
@@ -503,24 +503,37 @@ public class BB2RIFExporter {
 
         // TODO: make claim copay match the designated cost sharing code
         String partDCostSharingCode = getPartDCostSharingCode(person);
+        int rdsMonthCount = 0;
         for (PartDContractHistory.PartDContractPeriod period:
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
+          String partDDrugSubsidyIndicator =
+                  partDContracts.getEmployeePDPIndicator(partDContractID);
           if (partDContractID != null) {
             String partDContractIDStr = partDContractID.toString();
-            for (int i: period.getCoveredMonths(year)) {
+            List<Integer> coveredMonths = period.getCoveredMonths(year);
+            if (partDDrugSubsidyIndicator.equals("Y")) {
+              rdsMonthCount += coveredMonths.size();
+            }
+            for (int i: coveredMonths) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
                       partDContractIDStr);
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
                       partDCostSharingCode);
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           } else {
             for (int i: period.getCoveredMonths(year)) {
               // Not enrolled this month
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           }
         }
+        fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
+
         String dualEligibleStatusCode = getDualEligibilityCode(person, year);
         for (int month = 0; month < monthCount; month++) {
           fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
@@ -536,7 +549,7 @@ public class BB2RIFExporter {
     }
   }
 
-  private String getPartDCostSharingCode(Person person) {
+  private static String getPartDCostSharingCode(Person person) {
     double incomeLevel = Double.parseDouble(
             person.attributes.get(Person.INCOME_LEVEL).toString());
     if (incomeLevel >= 1.0) {
@@ -1456,28 +1469,33 @@ public class BB2RIFExporter {
   static class PartDContractHistory {
     private static final PartDContractID[] partDContractIDs = initContractIDs();
     private List<PartDContractPeriod> contractPeriods;
+    private boolean employeePDP;
 
     /**
      * Create a new random Part D contract history.
-     * @param rand source of randomness
+     * @param person source of randomness
      * @param stopTime when the history should end (as ms since epoch)
      * @param yearsOfHistory how many years should be covered
      */
-    public PartDContractHistory(RandomNumberGenerator rand, long stopTime, int yearsOfHistory) {
+    public PartDContractHistory(Person person, long stopTime, int yearsOfHistory) {
       int endYear = Utilities.getYear(stopTime);
       int endMonth = 12;
+
+      // 1% chance of being enrolled in employer PDP if person's income is above threshold
+      // TBD determine real % of employer PDP enrollment
+      employeePDP = getPartDCostSharingCode(person).equals("09") && person.randInt(100) == 1;
       contractPeriods = new ArrayList<>();
       PartDContractPeriod currentContractPeriod =
-              new PartDContractPeriod(endYear - yearsOfHistory, rand);
+              new PartDContractPeriod(endYear - yearsOfHistory, person);
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         if (year == endYear) {
           endMonth = Utilities.getMonth(stopTime);
         }
         for (int month = 1; month <= endMonth; month++) {
-          if ((month == 1 && rand.randInt(10) < 2) || rand.randInt(100) == 1) {
+          if ((month == 1 && person.randInt(10) < 2) || person.randInt(100) == 1) {
             // 20% chance of changing policy at open enrollment
             // 1% chance of changing policy Feb - Dec
-            PartDContractPeriod newContractPeriod = new PartDContractPeriod(year, month, rand);
+            PartDContractPeriod newContractPeriod = new PartDContractPeriod(year, month, person);
             PartDContractID currentContractID = currentContractPeriod.getContractID();
             PartDContractID newContractID = newContractPeriod.getContractID();
             if ((currentContractID != null && !currentContractID.equals(newContractID))
@@ -1491,6 +1509,30 @@ public class BB2RIFExporter {
       }
       currentContractPeriod.setEnd(stopTime);
       contractPeriods.add(currentContractPeriod);
+    }
+
+    /**
+     * Check if person has employer sponsored PDP.
+     * @return true if has employer PDP, false otherwise.
+     */
+    public boolean hasEmployeePDP() {
+      return employeePDP;
+    }
+
+    /**
+     * Get the RDS indicator based on whether person is enrolled in Part D and has employee
+     * coverage.
+     * @param contractID Part D contract ID or null if not enrolled
+     * @return the RDS indicator code
+     */
+    public String getEmployeePDPIndicator(PartDContractID contractID) {
+      if (!hasEmployeePDP()) {
+        return "N";
+      } else if (contractID == null) {
+        return "*";
+      } else {
+        return "Y";
+      }
     }
 
     /**

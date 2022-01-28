@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mitre.synthea.world.agents.Person.INCOME_LEVEL;
 
 import java.io.File;
 import java.io.IOException;
@@ -204,7 +205,8 @@ public class BB2RIFExporterTest {
 
   @Test
   public void testPartDContractPeriod() {
-    RandomNumberGenerator rand = new Person(System.currentTimeMillis());
+    Person rand = new Person(System.currentTimeMillis());
+    rand.attributes.put(INCOME_LEVEL, "1.5");
     LocalDate start = LocalDate.of(2020, Month.MARCH, 15);
     LocalDate end = LocalDate.of(2021, Month.JUNE, 15);
     BB2RIFExporter.PartDContractHistory history
