@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -267,12 +267,18 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i14" class="altColor">
+<td class="colFirst"><code>static org.apache.commons.lang3.Range&lt;java.lang.Long&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#parseDateRange-java.lang.String-">parseDateRange</a></span>(java.lang.String&nbsp;range)</code>
+<div class="block">Parse a range of Synthea timestamps (milliseconds since the epoch) from a String.</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#primitive-com.google.gson.JsonPrimitive-">primitive</a></span>(com.google.gson.JsonPrimitive&nbsp;p)</code>
 <div class="block">Converts a JsonPrimitive into a primitive Boolean, Double, or String.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#randomDicomUid-org.mitre.synthea.helpers.RandomNumberGenerator-long-int-int-">randomDicomUid</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random,
               long&nbsp;time,
@@ -281,32 +287,32 @@ extends java.lang.Object</pre>
 <div class="block">Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResource-java.lang.String-">readResource</a></span>(java.lang.String&nbsp;filename)</code>
 <div class="block">Read the entire contents of a file in resources into a String.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResourceAndStripBOM-java.lang.String-">readResourceAndStripBOM</a></span>(java.lang.String&nbsp;filename)</code>
 <div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#strToObject-java.lang.Class-java.lang.String-">strToObject</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.util.function.BiConsumer-">walkAllModules</a></span>(java.util.function.BiConsumer&lt;java.nio.file.Path,java.nio.file.Path&gt;&nbsp;action)</code>
 <div class="block">Walk the directory structure of the modules, and apply the given function for every module.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.nio.file.Path-java.util.function.Consumer-">walkAllModules</a></span>(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code>
@@ -560,6 +566,35 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Codes.
  Supported operators are: !=, is nil, is not nil. Only lhs is checked for
  is nil and is not nil.</div>
+</li>
+</ul>
+<a name="parseDateRange-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parseDateRange</h4>
+<pre>public static&nbsp;org.apache.commons.lang3.Range&lt;java.lang.Long&gt;&nbsp;parseDateRange(java.lang.String&nbsp;range)
+                                                                     throws java.lang.IllegalArgumentException</pre>
+<div class="block">Parse a range of Synthea timestamps (milliseconds since the epoch) from a String. The string
+ can be in one of two formats:
+ <p>
+ "milliseconds start-milliseconds end" example: "1599264000000-1627948800000"
+ or
+ "ISO date start-ISO date end" example: "2020-09-05-2021-08-03"
+ </p><p>
+ If using the ISO date format, the time range will be from the start of the day at the beginning
+ of the range until the end of the day for the last day of the range.
+ </p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>range</code> - String containing the range</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A Range with the min and max set to Synthea timestamps, longs containing milliseconds
+     since the epoch</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalArgumentException</code> - If the string is not in one of the expected formats</dd>
+</dl>
 </li>
 </ul>
 <a name="readResource-java.lang.String-">
