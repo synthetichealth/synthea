@@ -8,9 +8,6 @@
       "type": "Initial",
       "direct_transition": "Aspirin Check"
     },
-    "Terminal": {
-      "type": "Terminal"
-    },
     "Aspirin Check": {
       "type": "Simple",
       "remarks": ["TODO: fix to Active Allergy after merging"],
@@ -174,8 +171,7 @@
           "display": "aspirin 81 MG Oral Tablet"
         }
       ],
-      "direct_transition": "BB Check",
-      "chronic": true
+      "direct_transition": "BB Check"
     },
     "BB Submodule": {
       "type": "CallSubmodule",
@@ -203,7 +199,7 @@
           "display": "Medication management note"
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "End_Prior_Antiplatelet",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 702566000,
@@ -214,6 +210,14 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "acs_antiplatelet",
+            "operator": "is nil"
+          }
+        },
+        {
           "transition": "Ticagrelor",
           "condition": {
             "condition_type": "Active Medication",
@@ -221,7 +225,7 @@
               {
                 "system": "RxNorm",
                 "code": 1116635,
-                "display": "ticagrelor 90 MG Oral Tablet​"
+                "display": "ticagrelor 90 MG Oral Tablet"
               }
             ]
           }
@@ -233,8 +237,8 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": 309362,
-                "display": "clopidogrel 75 MG Oral Tablet​"
+                "code": 749196,
+                "display": "clopidogrel 300 MG Oral Tablet"
               }
             ]
           }
@@ -247,14 +251,11 @@
               {
                 "system": "RxNorm",
                 "code": 855812,
-                "display": "prasugrel 10 MG Oral Tablet​"
+                "display": "prasugrel 10 MG Oral Tablet"
               }
             ]
           }
         }
-      ],
-      "remarks": [
-        "This state takes the antiplatelet that was administered in acs_antiplatelet and converts it into a chronic medication"
       ]
     },
     "Prasugrel": {
@@ -263,11 +264,10 @@
         {
           "system": "RxNorm",
           "code": 855812,
-          "display": "prasugrel 10 MG Oral Tablet​"
+          "display": "prasugrel 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Terminal",
-      "chronic": true
+      "direct_transition": "End_Prior_Antiplatelet"
     },
     "Clopidogrel": {
       "type": "MedicationOrder",
@@ -275,11 +275,10 @@
         {
           "system": "RxNorm",
           "code": 309362,
-          "display": "clopidogrel 75 MG Oral Tablet​"
+          "display": "clopidogrel 75 MG Oral Tablet"
         }
       ],
-      "direct_transition": "Terminal",
-      "chronic": true
+      "direct_transition": "End_Prior_Antiplatelet"
     },
     "Ticagrelor": {
       "type": "MedicationOrder",
@@ -287,11 +286,22 @@
         {
           "system": "RxNorm",
           "code": 1116635,
-          "display": "ticagrelor 90 MG Oral Tablet​"
+          "display": "ticagrelor 90 MG Oral Tablet"
         }
       ],
+      "direct_transition": "End_Prior_Antiplatelet"
+    },
+    "End_Prior_Antiplatelet": {
+      "type": "MedicationEnd",
       "direct_transition": "Terminal",
-      "chronic": true
+      "referenced_by_attribute": "acs_antiplatelet",
+      "remarks": [
+        "End the acs_antiplatelet here, so that we can use the Active Medication logic to pick the same one in the previous steps",
+        ""
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
     }
   },
   "gmf_version": 2

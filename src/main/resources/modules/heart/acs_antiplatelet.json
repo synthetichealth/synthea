@@ -45,7 +45,8 @@
         }
       ],
       "direct_transition": "GP IIb-IIIa Check",
-      "administration": true
+      "administration": true,
+      "assign_to_attribute": "acs_antiplatelet"
     },
     "Clopidogrel": {
       "type": "MedicationOrder",
@@ -57,7 +58,8 @@
         }
       ],
       "direct_transition": "GP IIb-IIIa Check",
-      "administration": true
+      "administration": true,
+      "assign_to_attribute": "acs_antiplatelet"
     },
     "Ticagrelor": {
       "type": "MedicationOrder",
@@ -69,7 +71,8 @@
         }
       ],
       "direct_transition": "GP IIb-IIIa Check",
-      "administration": true
+      "administration": true,
+      "assign_to_attribute": "acs_antiplatelet"
     },
     "GP IIb-IIIa Check": {
       "type": "Simple",
@@ -160,7 +163,8 @@
         }
       ],
       "direct_transition": "Terminal",
-      "administration": true
+      "administration": true,
+      "assign_to_attribute": "acs_antiplatelet"
     },
     "Consider_Medications": {
       "type": "Simple",
