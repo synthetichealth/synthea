@@ -69,11 +69,11 @@ public class LocationTest {
     String demoFileContents =
         Utilities.readResource(Config.get("generate.demographics.default_file"));
     List<LinkedHashMap<String, String>> demographics = SimpleCSV.parse(demoFileContents);
-    
+
     String zipFileContents =
         Utilities.readResource(Config.get("generate.geography.zipcodes.default_file"));
     List<LinkedHashMap<String, String>> zips = SimpleCSV.parse(zipFileContents);
-    
+
     // parse all the locations from the zip codes and put them in a a set.
     Set<String> zipLocations = new HashSet<>();
     for (Map<String,String> line : zips) {
@@ -88,7 +88,7 @@ public class LocationTest {
     for (LinkedHashMap<String,String> line : demographics) {
       String city = line.get("NAME");
       String state = line.get("STNAME");
-      
+
       String key = (city + ", " + state).toUpperCase();
       demoLocations.add(key);
     }

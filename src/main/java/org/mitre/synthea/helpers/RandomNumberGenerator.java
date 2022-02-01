@@ -31,7 +31,7 @@ public interface RandomNumberGenerator {
   /**
    * Helper function to get a random number based on an array of [min, max]. This
    * should be used primarily when pulling ranges from YML.
-   * 
+   *
    * @param range array [min, max]
    * @return random double between min and max
    */
@@ -51,7 +51,7 @@ public interface RandomNumberGenerator {
 
   /**
    * Return one of the options randomly with uniform distribution.
-   * 
+   *
    * @param choices The options to be returned.
    * @return One of the options randomly selected.
    */
@@ -63,7 +63,7 @@ public interface RandomNumberGenerator {
   /**
    * Helper function to get a random number based on an integer array of [min,
    * max]. This should be used primarily when pulling ranges from YML.
-   * 
+   *
    * @param range array [min, max]
    * @return random double between min and max
    */
@@ -84,7 +84,7 @@ public interface RandomNumberGenerator {
   /** Returns a random boolean. */
   public boolean randBoolean();
 
-  /** 
+  /**
    * Returns a double between from a normal distribution
    * with mean of 0 and standard deviation of 1.
    */
@@ -98,7 +98,7 @@ public interface RandomNumberGenerator {
 
   /** Return a random long. */
   public long randLong();
-  
+
   /** Return a random UUID. */
   public UUID randUUID();
 }

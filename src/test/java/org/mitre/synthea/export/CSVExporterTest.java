@@ -26,7 +26,7 @@ public class CSVExporterTest {
    */
   @ClassRule
   public static TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   private static File exportDir;
 
   private static final int NUMBER_OF_FILES = 18;
@@ -46,13 +46,13 @@ public class CSVExporterTest {
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
   }
-  
+
   @Test
   public void testDeferredCSVExport() throws Exception {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
-    
+
     Payer.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
@@ -96,7 +96,7 @@ public class CSVExporterTest {
     assertEquals("Expected " + NUMBER_OF_FILES
         + " CSV files in the output directory, found " + count, NUMBER_OF_FILES, count);
   }
-  
+
   @Test
   public void testCSVExportIncludes() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv,medications.csv,procedures.csv");
@@ -130,7 +130,7 @@ public class CSVExporterTest {
     boolean foundPatients = false;
     boolean foundMedications = false;
     boolean foundProcedures = false;
-    
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
       if (!csvFile.getName().endsWith(".csv")) {
@@ -150,7 +150,7 @@ public class CSVExporterTest {
         default:
           // do nothing
       }
-      
+
       String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
@@ -166,9 +166,9 @@ public class CSVExporterTest {
     assertTrue("medications.csv file missing but should have been included", foundMedications);
     assertTrue("procedures.csv file missing but should have been included", foundProcedures);
   }
-  
+
   @Test
-  public void testCSVExportExcludes() throws Exception {  
+  public void testCSVExportExcludes() throws Exception {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers");
     CSVExporter.getInstance().init();
@@ -201,7 +201,7 @@ public class CSVExporterTest {
     boolean foundMedications = false;
     boolean foundPayers = false;
     boolean foundProviders = false;
-    
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
       if (!csvFile.getName().endsWith(".csv")) {
@@ -224,7 +224,7 @@ public class CSVExporterTest {
         default:
           // do nothing
       }
-      
+
       String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
@@ -243,6 +243,6 @@ public class CSVExporterTest {
     assertTrue("payers.csv is present but should have been excluded", !foundPayers);
     assertTrue("providers.csv is present but should have been excluded", !foundProviders);
   }
-  
-  
+
+
 }

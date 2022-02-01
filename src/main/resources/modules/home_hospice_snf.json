@@ -1,0 +1,805 @@
+{
+  "name": "Home Hospice SNF",
+  "remarks": [
+    "Module that launches home health, hospice, or skilled nursing facility visits based on events or probability."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait Until 65"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait Until 65": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 65,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Check for Events": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check for SNF",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "91302008",
+                    "display": "Sepsis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "covid19_bacterial_infection",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "233604007",
+                    "display": "Pneumonia"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "38822007",
+                    "display": "Urinary Tract Infection"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "10509002",
+                    "display": "Acute Bronchitis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hypertension_severe",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "LOINC",
+                    "code": "55277-8",
+                    "display": "HIV Positive Status"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "26929004",
+                    "display": "Alzheimers"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "254837009",
+                    "display": "Breast Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "lung_cancer",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "126906006",
+                    "display": "Prostate Cancer"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "93761005",
+                    "display": "Colorectal Cancer Stage I"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "109838007",
+                    "display": "Colorectal Cancer Stage II"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "363406005",
+                    "display": "Colorectal Cancer Stage III"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "94260004",
+                    "display": "Colorectal Cancer Stage IV"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "88805009",
+                    "display": "Chronic Congestive Heart Failure"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "22298006",
+                    "display": "Myocardial Infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "399211009",
+                    "display": "History of myocardial infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "234466008",
+                    "display": "Acquired coagulation disorder"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "burn_injury",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1734006",
+                    "display": "Fracture of the vertebral column with spinal cord injury"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "58150001",
+                    "display": "Broken Clavicle"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "359817006",
+                    "display": "Closed Fracture of Hip"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "33737001",
+                    "display": "Fracture of Rib"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "16114001",
+                    "display": "Fracture of Ankle"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65966004",
+                    "display": "Fracture of Forearm"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "263102004",
+                    "display": "Fracture Subluxation of Wrist"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "110030002",
+                    "display": "Concussion injury of brain"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "laceration_injury",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "190905008",
+                    "display": "Cystic Fibrosis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "87433001",
+                    "display": "Pulmonary Emphysema"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "185086009",
+                    "display": "Chronic Obstructive Bronchitis"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "65710008",
+                    "display": "Acute respiratory failure (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "joint_replacement",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "161622006",
+                    "display": "History of Lower Limb Amputation"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "429280009",
+                    "display": "History of Amputation of Foot"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "161621004",
+                    "display": "History of Upper Limb Amputation"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "698423002",
+                    "display": "History of Disarticulation at Wrist"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "200936003",
+                    "display": "Lupus erythematosus"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "69896004",
+                    "display": "Rheumatoid arthritis"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check for Home Visits"
+        }
+      ]
+    },
+    "Initiate Home Health Visits": {
+      "type": "SetAttribute",
+      "attribute": "home_health",
+      "value": true,
+      "direct_transition": "Wait for Next Decade"
+    },
+    "Wait for Next Decade": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait Until 75",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Wait Until 85",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Random Delay": {
+      "type": "Delay",
+      "range": {
+        "high": 9,
+        "low": 0,
+        "unit": "years"
+      },
+      "direct_transition": "Initiate Home Health Visits"
+    },
+    "Wait Until 75": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 75,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Wait Until 85": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 85,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Hospice Check"
+    },
+    "Initiate SNF": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Wait for Next Decade"
+    },
+    "Check for Home Visits": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Wait for Next Decade"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.32,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.68,
+              "transition": "Wait for Next Decade"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 85,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.24,
+              "transition": "Random Delay"
+            },
+            {
+              "distribution": 0.76,
+              "transition": "Wait for Next Decade"
+            }
+          ]
+        }
+      ]
+    },
+    "Check for SNF": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 75,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.76
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 85,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.33
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.6699999999999999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 90,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.82
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 90,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Initiate SNF",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Check for Home Visits",
+              "distribution": 0.85
+            }
+          ]
+        }
+      ]
+    },
+    "Hospice Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Alzheimers",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Type of Alzheimer's",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "COPD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "copd_variant",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CHF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Heart Disease",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 53741008,
+                "display": "Coronary Heart Disease"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "CF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Cystic_Fibrosis",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "CKD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dialysis_reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Lung Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Lung Cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Breast Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_condition",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Prostate Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "prostate_cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Colorectal Cancer",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "colorectal_cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Check for Events"
+        }
+      ]
+    },
+    "Initiate Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Wait for Next Decade",
+      "value": true
+    },
+    "Alzheimers": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "COPD",
+      "value_attribute": "Type of Alzheimer's"
+    },
+    "COPD": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "copd_variant",
+      "direct_transition": "Initiate Hospice"
+    },
+    "CHF": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "chf",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Heart Disease": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Initiate Hospice",
+      "value_code": {
+        "system": "SNOMED",
+        "code": "53741008",
+        "display": "Coronary Heart Disease"
+      }
+    },
+    "CKD": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "dialysis_reason",
+      "direct_transition": "Initiate Hospice"
+    },
+    "CF": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "Cystic_Fibrosis",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Breast Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "breast_cancer_condition",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Lung Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "Lung Cancer",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Prostate Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "prostate_cancer",
+      "direct_transition": "Initiate Hospice"
+    },
+    "Colorectal Cancer": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "colorectal_cancer",
+      "direct_transition": "Initiate Hospice"
+    }
+  },
+  "gmf_version": 1
+}

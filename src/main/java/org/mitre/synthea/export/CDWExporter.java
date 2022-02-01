@@ -38,8 +38,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 
 /**
- * This exporter attempts to export synthetic patient data into 
- * comma-separated value (CSV) files that align with the Veteran's 
+ * This exporter attempts to export synthetic patient data into
+ * comma-separated value (CSV) files that align with the Veteran's
  * Health Administration (VHA) Corporate Data Warehouse (CDW).
  * <p></p>
  * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
@@ -144,7 +144,7 @@ public class CDWExporter {
    * Writers for vital sign Observation data.
    */
   private OutputStreamWriter vitalSign;
-  
+
   /**
    * Charset for specifying the character set of the output files.
    */
@@ -161,7 +161,7 @@ public class CDWExporter {
    */
   private CDWExporter() {
     sids = new HashMap<OutputStreamWriter,AtomicInteger>();
-    
+
     try {
       File output = Exporter.getOutputFolder("cdw", null);
       output.mkdirs();
@@ -657,11 +657,11 @@ public class CDWExporter {
     if (person.attributes.get(Person.GENDER).equals("M")) {
       s.append(",M,Male");
     } else {
-      s.append(",F,Female");      
+      s.append(",F,Female");
     }
-    
+
     s.append(",None"); // Religion
-    
+
     // Currently there are no divorces or widows
     // Legal codes: (D)ivorced, (N)ever Married, (S)eperated, (W)idowed, (M)arried, (U)nknown
     String marital = ((String) person.attributes.get(Person.MARITAL_STATUS));
@@ -677,12 +677,12 @@ public class CDWExporter {
       s.append(",Unknown");
     }
     s.append(',').append(maritalStatus.addFact(marital, marital));
-    
+
     // TODO Need an enlistment date or date they became a veteran.
     s.append(',').append(iso8601Timestamp(time - Utilities.convertTime("years", 10)));
     s.append(NEWLINE);
     write(s.toString(), spatient);
-    
+
     //  spatientaddress.write("SPatientAddressSID,PatientSID,AddressType,NameOfContact,"
     //  + "RelationshipToPatient,StreetAddress1,StreetAddress2,StreetAddress3,"
     //  + "City,State,Zip,PostalCode,Country,GISMatchScore,GISStreetSide,"
@@ -708,7 +708,7 @@ public class CDWExporter {
     }
     s.append(NEWLINE);
     write(s.toString(), spatientaddress);
-    
+
     //spatientphone.write("SPatientPhoneSID,PatientSID,PatientContactType,NameOfContact,"
     //  + "RelationshipToPatient,PhoneNumber,WorkPhoneNumber,EmailAddress");
     s.setLength(0);
@@ -1616,7 +1616,7 @@ public class CDWExporter {
       return sids.computeIfAbsent(table, k -> new AtomicInteger(sidStart)).getAndIncrement();
     }
   }
-  
+
   /**
    * Replaces commas and line breaks in the source string with a single space.
    * Null is replaced with the empty string.

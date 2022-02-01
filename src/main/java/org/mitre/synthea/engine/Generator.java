@@ -56,7 +56,7 @@ import org.mitre.synthea.world.geography.Location;
 public class Generator implements RandomNumberGenerator {
 
   /**
-   * Unique ID for this instance of the Generator. 
+   * Unique ID for this instance of the Generator.
    * Even if the same settings are used multiple times, this ID should be unique.
    */
   public final UUID id = UUID.randomUUID();
@@ -78,6 +78,7 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   public static EntityManager entityManager;
+  public final int threadPoolSize;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -99,7 +100,8 @@ public class Generator implements RandomNumberGenerator {
    * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
-    public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
+    public int population = Config.getAsInteger("generate.default_population", 1);
+    public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
     public long seed = System.currentTimeMillis();
     public long clinicianSeed = seed;
     /** Population as exclusively live persons or including deceased.
@@ -145,7 +147,7 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Create a Generator, with the given population size and seed.
    * All other settings are left as defaults.
-   * 
+   *
    * @param population Target population size
    */
   public Generator(int population) {
@@ -190,6 +192,14 @@ public class Generator implements RandomNumberGenerator {
     if (options.updatedPopulationSnapshotPath != null) {
       exporterRuntimeOptions.deferExports = true;
       internalStore = Collections.synchronizedList(new LinkedList<>());
+    }
+    if (options.threadPoolSize == -1) {
+      threadPoolSize = Runtime.getRuntime().availableProcessors();
+    } else if (options.threadPoolSize > 0) {
+      threadPoolSize = options.threadPoolSize;
+    } else {
+      throw new IllegalArgumentException(String.format(
+              "Illegal thread pool size (%d)", options.threadPoolSize));
     }
     init();
   }
@@ -255,7 +265,7 @@ public class Generator implements RandomNumberGenerator {
       Module.addModules(options.localModuleDir);
     }
     List<String> coreModuleNames = getModuleNames(Module.getModules(path -> false));
-    List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate)); 
+    List<String> moduleNames = getModuleNames(Module.getModules(modulePredicate));
 
     if (options.keepPatientsModulePath != null) {
       try {
@@ -335,7 +345,7 @@ public class Generator implements RandomNumberGenerator {
 
     }
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(8);
+    ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;
@@ -405,10 +415,10 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Generate a completely random Person. The returned person will be alive at the end of the
    * simulation. This means that if in the course of the simulation the person dies, a new person
-   * will be started to replace them. 
+   * will be started to replace them.
    * The seed used to generate the person is randomized as well.
    * Note that this method is only used by unit tests.
-   * 
+   *
    * @param index Target index in the whole set of people to generate
    * @return generated Person
    */
@@ -424,7 +434,7 @@ public class Generator implements RandomNumberGenerator {
    * person will be started to replace them. Note also that if the person dies, the seed to produce
    * them can't be re-used (otherwise the new person would die as well) so a new seed is picked,
    * based on the given seed.
-   * 
+   *
    * @param index
    *          Target index in the whole set of people to generate
    * @param personSeed
@@ -434,7 +444,7 @@ public class Generator implements RandomNumberGenerator {
   public Person generatePerson(int index, long personSeed) {
 
     Person person = null;
-    
+
     try {
       int tryNumber = 0; // Number of tries to create these demographics
       Random randomForDemographics = new Random(personSeed);
@@ -467,7 +477,7 @@ public class Generator implements RandomNumberGenerator {
               && tryNumber >= this.maxAttemptsToKeepPatient) {
             // we've tried and failed to produce a patient that meets the criteria
             // throw an exception to halt processing in this slot
-            String msg = "Failed to produce a matching patient after " 
+            String msg = "Failed to produce a matching patient after "
                 + tryNumber + " attempts. "
                 + "Ensure that it is possible for all "
                 + "requested demographics to meet the criteria. "
@@ -537,7 +547,7 @@ public class Generator implements RandomNumberGenerator {
     }
     return person;
   }
-  
+
   /**
    * Helper class to keep track of patient criteria.
    * Caches results in booleans so different combinations are quick to check
@@ -575,7 +585,7 @@ public class Generator implements RandomNumberGenerator {
    * If a patient does not meet the criteria the process will be repeated so a new one is generated
    * @param person the patient to check if we want to export them
    * @param finishTime the time simulation finished
-   * @param index Target index in the whole set of people to generate 
+   * @param index Target index in the whole set of people to generate
    * @param isAlive Whether the patient is alive at end of simulation.
    * @return CriteriaCheck to determine if the patient should be exported/re-simulated
    */
@@ -714,7 +724,7 @@ public class Generator implements RandomNumberGenerator {
    * @param isAlive Whether the person to print is alive.
    */
   private synchronized void writeToConsole(Person person, int index, long time, boolean isAlive) {
-    // this is synchronized to ensure all lines for a single person are always printed 
+    // this is synchronized to ensure all lines for a single person are always printed
     // consecutively
     String deceased = isAlive ? "" : "DECEASED";
     System.out.format("%d -- %s (%d y/o %s) %s, %s %s\n", index + 1,
@@ -803,7 +813,7 @@ public class Generator implements RandomNumberGenerator {
     // Generate the person's age data.
     int targetAge;
     if (options.ageSpecified) {
-      targetAge = 
+      targetAge =
           (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
     } else {
       targetAge = city.pickAge(random);
@@ -812,7 +822,7 @@ public class Generator implements RandomNumberGenerator {
 
     long birthdate = birthdateFromTargetAge(targetAge, random);
     demographicsOutput.put(Person.BIRTHDATE, birthdate);
-    
+
     // Return the generated demographics.
     return demographicsOutput;
   }
@@ -850,7 +860,7 @@ public class Generator implements RandomNumberGenerator {
   private long birthdateFromTargetAge(long targetAge, Random random) {
     long earliestBirthdate = referenceTime - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = referenceTime - TimeUnit.DAYS.toMillis(targetAge * 365L);
-    return 
+    return
         (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
   }
 
@@ -883,12 +893,12 @@ public class Generator implements RandomNumberGenerator {
 
     totalGeneratedPopulation.incrementAndGet();
   }
-  
+
   private Predicate<String> getModulePredicate() {
     if (options.enabledModules == null) {
       return path -> true;
     }
-    FilenameFilter filenameFilter = new WildcardFileFilter(options.enabledModules, 
+    FilenameFilter filenameFilter = new WildcardFileFilter(options.enabledModules,
         IOCase.INSENSITIVE);
     return path -> filenameFilter.accept(null, path);
   }
@@ -934,12 +944,12 @@ public class Generator implements RandomNumberGenerator {
   public long randLong() {
     return random.nextLong();
   }
-  
+
   /**
    * Return a random UUID.
    */
   public UUID randUUID() {
     return new UUID(randLong(), randLong());
   }
-  
+
 }

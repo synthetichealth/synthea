@@ -21,7 +21,7 @@ public class SymptomCSVExporterTest {
    */
   @ClassRule
   public static TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   private static File exportDir;
 
   /**
@@ -35,7 +35,7 @@ public class SymptomCSVExporterTest {
     Config.set("exporter.symptoms.csv.export", "true");
     Config.set("exporter.symptoms.csv.folder_per_run", "false");
     exportDir = tempFolder.newFolder();
-    Config.set("exporter.baseDirectory", exportDir.toString());    
+    Config.set("exporter.baseDirectory", exportDir.toString());
   }
 
 

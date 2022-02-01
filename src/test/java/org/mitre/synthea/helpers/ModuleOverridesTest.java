@@ -64,7 +64,7 @@ public class ModuleOverridesTest {
     List<String> overrides = mo.generateOverrides();
     assertNotNull(overrides);
     assertTrue(overrides.size() > 0);
-    // note: this is an easy example module, should == 1, 
+    // note: this is an easy example module, should == 1,
     // but i don't want to tie the test too tightly to a real module that may change
     String fullFileContent = String.join(System.lineSeparator(), overrides);
     Properties props = new Properties();

@@ -32,7 +32,7 @@ public abstract class HospitalExporterDstu2 {
    */
   public static void export(long stop) {
     if (Config.getAsBoolean("exporter.hospital.fhir_dstu2.export")) {
-      
+
       Bundle bundle = new Bundle();
       if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
         bundle.setType(BundleTypeEnum.BATCH);

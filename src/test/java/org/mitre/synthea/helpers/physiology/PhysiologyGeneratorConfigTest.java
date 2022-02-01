@@ -4,14 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PhysiologyGeneratorConfigTest {
-  
+
   PhysiologyGeneratorConfig config;
-  
+
   @Before
   public void setup() {
     config = new PhysiologyGeneratorConfig();
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void testValidate() {
     config.setLeadTime(4);

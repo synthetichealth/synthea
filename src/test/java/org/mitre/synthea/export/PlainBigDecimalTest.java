@@ -9,7 +9,7 @@ import org.junit.Test;
  * @author mhadley
  */
 public class PlainBigDecimalTest {
-  
+
   /**
    * Test of toString method, of class PlainBigDecimal.
    * Should produce 5 significant digits, no trailing zeros and no scientific notation.
@@ -29,5 +29,5 @@ public class PlainBigDecimalTest {
     bd = new PlainBigDecimal(0.00123456);
     assertEquals("0.0012346", bd.toString());
   }
-  
+
 }

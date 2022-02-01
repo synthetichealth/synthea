@@ -18,23 +18,23 @@ import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 public class CCDAExporter {
 
   private static final Configuration TEMPLATES = templateConfiguration();
-  
+
   /**
    * This is a dummy class and object for FreeMarker templates that create IDs.
    */
   private static class UUIDGenerator implements Serializable {
     private RandomNumberGenerator rand;
-    
+
     public UUIDGenerator(RandomNumberGenerator rand) {
       this.rand = rand;
     }
-    
+
     @Override
     public String toString() {
       return rand.randUUID().toString();
     }
   }
-  
+
   private static Configuration templateConfiguration() {
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
     configuration.setDefaultEncoding("UTF-8");

@@ -15,6 +15,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.WordUtils;
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -32,17 +33,22 @@ public class Location implements Serializable {
   private long totalPopulation;
 
   // cache the population by city name for performance
+  @JSONSkip
   private Map<String, Long> populationByCity;
+  @JSONSkip
   private Map<String, Long> populationByCityId;
+  @JSONSkip
   private Map<String, List<Place>> zipCodes;
 
   public final String city;
   private Demographics fixedCity;
   public final String state;
   /** Map of CityId to Demographics. */
+  @JSONSkip
   private Map<String, Demographics> demographics;
 
   /** Map of County Name to attributes and probabilities. */
+  @JSONSkip
   private Map<String, Map<String, Double>> socialDeterminantsOfHealth;
 
   /**
@@ -56,16 +62,16 @@ public class Location implements Serializable {
     try {
       this.city = city;
       this.state = state;
-      
+
       Table<String,String,Demographics> allDemographics = Demographics.load(state);
-      
+
       // this still works even if only 1 city given,
       // because allDemographics will only contain that 1 city
       // we copy the Map returned by the Google Table.row since the implementing
       // class is not serializable
       this.demographics = new HashMap<String, Demographics>(allDemographics.row(state));
 
-      if (city != null 
+      if (city != null
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
         throw new Exception("The city " + city
             + " was not found in the demographics file for state " + state + ".");
@@ -86,7 +92,7 @@ public class Location implements Serializable {
         if (populationByCity.containsKey(d.city)) {
           populationByCity.put(d.city, pop + populationByCity.get(d.city));
         } else {
-          populationByCity.put(d.city, pop);          
+          populationByCity.put(d.city, pop);
         }
         populationByCityId.put(d.id, pop);
       }
@@ -107,11 +113,11 @@ public class Location implements Serializable {
       zipCodes = new HashMap<>();
       for (Map<String,String> line : ziplist) {
         Place place = new Place(line);
-        
+
         if (!place.sameState(state)) {
           continue;
         }
-        
+
         if (!zipCodes.containsKey(place.name)) {
           zipCodes.put(place.name, new ArrayList<Place>());
         }
@@ -170,12 +176,12 @@ public class Location implements Serializable {
       socialDeterminantsOfHealth.put("AVERAGE", averages);
     }
   }
-  
-  
+
+
   /**
-   * Get the zip code for the given city name. 
+   * Get the zip code for the given city name.
    * If a city has more than one zip code, this picks a random one.
-   * 
+   *
    * @param cityName Name of the city
    * @param random Used for a source of repeatable randomness when selecting
    *               a zipcode when multiple exist for a location
@@ -222,7 +228,7 @@ public class Location implements Serializable {
   /**
    * Pick the name of a random city from the current "world".
    * If only one city was selected, this will return that one city.
-   * 
+   *
    * @param random The source of randomness.
    * @return Demographics of a random city.
    */
@@ -285,8 +291,8 @@ public class Location implements Serializable {
 
     // should never happen
     throw new RuntimeException("Unable to select a random city id.");
-  }  
-  
+  }
+
   private String randomCityId(Random random) {
     long targetPop = (long) (random.nextDouble() * totalPopulation);
 
@@ -356,7 +362,7 @@ public class Location implements Serializable {
    * Assign a geographic location to the given Person. Location includes City, State, Zip, and
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
-   * 
+   *
    * @param person Person to assign location information
    * @param cityName Name of the city, or null to choose one randomly
    */
@@ -378,7 +384,7 @@ public class Location implements Serializable {
             + cityName + " in state " + this.state + ".");
       }
     }
-    
+
     Place place;
     if (zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
@@ -393,7 +399,7 @@ public class Location implements Serializable {
             .orElse(zipsForCity.get(person.randInt(zipsForCity.size())));
       }
     }
-    
+
     if (place != null) {
       // Get the coordinate of the city/town
       Point2D.Double coordinate = new Point2D.Double();
@@ -413,7 +419,7 @@ public class Location implements Serializable {
    * Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
    * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
    * that city. If cityName is not given, then picks a random city from the list of all cities.
-   * 
+   *
    * @param clinician Clinician to assign location information
    * @param cityName Name of the city, or null to choose one randomly
    */
@@ -429,7 +435,7 @@ public class Location implements Serializable {
     if (zipsForCity == null) {
       zipsForCity = zipCodes.get(cityName + " Town");
     }
-    
+
     Place place = null;
     if (zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
@@ -437,7 +443,7 @@ public class Location implements Serializable {
       // pick a random one
       place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
     }
-    
+
     if (place != null) {
       // Get the coordinate of the city/town
       Point2D.Double coordinate = new Point2D.Double();
@@ -471,7 +477,7 @@ public class Location implements Serializable {
       }
     }
   }
-  
+
   private static LinkedHashMap<String, String> loadAbbreviations() {
     LinkedHashMap<String, String> abbreviations = new LinkedHashMap<String, String>();
     String filename = null;
@@ -500,7 +506,7 @@ public class Location implements Serializable {
   public static String getAbbreviation(String state) {
     return stateAbbreviations.get(state);
   }
-  
+
   /**
    * Get the index for a state. This maybe useful for
    * exporters where you want to generate a list of unique

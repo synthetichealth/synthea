@@ -23,7 +23,7 @@ public abstract class Components {
   /**
    * A Range of values, with a low and a high.
    * Values must be numeric. (ex, Integer, Long, Double)
-   * 
+   *
    * @param <R> Type of range
    */
   public static class Range<R extends Number> implements Serializable {
@@ -31,18 +31,18 @@ public abstract class Components {
      * Minimum value of the range.
      */
     public R low;
-    
+
     /**
      * Maximum value of the range.
      */
     public R high;
-    
+
     /**
      * Decimal places for value within the range.
      */
     public Integer decimals;
   }
-  
+
   /**
    * Variant of the Range class, where a unit is required.
    * Defining this in a separate class makes it easier to define
@@ -56,11 +56,11 @@ public abstract class Components {
      */
     public String unit;
   }
-  
+
   /**
    * An Exact quantity representing a single fixed value. Note that "quantity" here may be a bit of
    * a misnomer as the value does not have to be numeric. Ex, it may be a String or Code.
-   * 
+   *
    * @param <T>
    *          Type of quantity
    */
@@ -70,12 +70,12 @@ public abstract class Components {
      */
     public T quantity;
   }
-  
+
   /**
    * Variant of the Exact class, where a unit is required.
    * Defining this in a separate class makes it easier to define
    * where units are and are not required.
-   * 
+   *
    * @param <T> Type of quantity
    */
   public static class ExactWithUnit<T> extends Exact<T> implements Serializable {
@@ -84,7 +84,7 @@ public abstract class Components {
      */
     public String unit;
   }
-  
+
   public static class DateInput implements Serializable {
     public int year;
     public int month;
@@ -94,7 +94,7 @@ public abstract class Components {
     public int second;
     public int millisecond;
   }
-  
+
   public static class SampledData implements Serializable {
     public double originValue; // Zero value
     public Double factor; // Multiply data by this before adding to origin
@@ -102,13 +102,13 @@ public abstract class Components {
     public Double upperLimit; // Upper limit of detection
     public List<String> attributes; // Person attributes containing TimeSeriesData objects
     public transient List<TimeSeriesData> series; // List of actual series data collections
-    
+
     // Format for the output decimal numbers
     // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
     public String decimalFormat;
 
     public SampledData() {}
-  
+
     /**
      * Copy constructor for SampledData.
      * @param other data to copy
@@ -121,7 +121,7 @@ public abstract class Components {
       attributes = other.attributes;
       series = other.series;
     }
-    
+
     /**
      * Retrieves the actual data lists from the given Person according to
      * the provided timeSeriesAttributes values.
@@ -131,7 +131,7 @@ public abstract class Components {
       int dataLen = 0;
       double dataPeriod = 0;
       series = new ArrayList<TimeSeriesData>(attributes.size());
-      
+
       for (String attr : attributes) {
         TimeSeriesData data = (TimeSeriesData) person.attributes.get(attr);
         if (dataLen == 0) {
@@ -144,7 +144,7 @@ public abstract class Components {
                 + StringUtils.join(attributes, ", ")
                 + "] have inconsistent lengths!");
           }
-          
+
           // Verify that each series has identical period
           if (data.getPeriod() != dataPeriod) {
             throw new IllegalArgumentException("Provided series ["
@@ -177,11 +177,11 @@ public abstract class Components {
     public int pages; // Number of printed pages
     public PersonChartConfig chart; // Configuration to generate a chart image
     public Boolean validated; // Whether this Attachment has been validated
-  
+
     public Attachment() {
       validated = false;
     }
-    
+
     /**
      * Copy constructor for Attachments.
      * @param other Attachment to copy.
@@ -204,7 +204,7 @@ public abstract class Components {
       validated = other.validated;
     }
 
-  
+
     /**
      * Processes the attachment for the given person. Generates a chart image if
      * the chart configuration is provided. Populates the hash field based on
@@ -227,11 +227,11 @@ public abstract class Components {
         title = chart.getTitle();
         contentType = "image/png";
       }
-      
+
       if (renderedChart != null) {
         data = renderedChart.getEncodedBytes();
         size = renderedChart.getUnencodedLength();
-        
+
         // Generate the SHA-1 hash if it hasn't been provided
         if (hash == null) {
           MessageDigest md;
@@ -245,7 +245,7 @@ public abstract class Components {
         }
       }
     }
-  
+
     /**
      * Validates that attachment parameters are valid.
      */
@@ -261,13 +261,13 @@ public abstract class Components {
             + "2. \"url\": media location URL\n"
             + "3. \"data\": base64 encoded binary data");
       }
-      
+
       if (chart != null && (url != null || data != null)) {
         throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
       } else if (url != null && data != null) {
         throw new RuntimeException("Only 1 of \"chart\", \"url\", or \"data\" must be defined.");
       }
-      
+
       if (data != null && !Base64.isBase64(data)) {
         throw new RuntimeException("Invalid Attachment data \"" + data
             + "\". If provided, this must be a Base64 encoded string.");

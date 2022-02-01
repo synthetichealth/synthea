@@ -53,8 +53,8 @@ public class PayerTest {
     testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
-    double povertyLevel = Double
-        .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    double povertyLevel =
+            Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
     medicaidLevel = 1.33 * povertyLevel;
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
@@ -214,7 +214,7 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put("blindness", false);
+    person.attributes.put(Person.BLINDNESS, false);
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     healthInsuranceModule.process(person, 0L);
@@ -224,7 +224,7 @@ public class PayerTest {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
-    person.attributes.put("blindness", true);
+    person.attributes.put(Person.BLINDNESS, true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
@@ -275,8 +275,8 @@ public class PayerTest {
     // Set the medicaid poverty level to be lower than their income
     Config.set("generate.demographics.socioeconomic.income.poverty",
         Integer.toString((int) totalYearlyCost - 2));
-    HealthInsuranceModule.medicaidLevel = Double.parseDouble(
-        Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+    HealthInsuranceModule.medicaidLevel = Config.getAsDouble(
+            "generate.demographics.socioeconomic.income.poverty", 11000);
 
     healthInsuranceModule.process(person, 0L);
     assertEquals("NO_INSURANCE", person.coverage.getPayerAtTime(0L).getName());
@@ -381,7 +381,7 @@ public class PayerTest {
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     person.checkToPayMonthlyPremium(0L);
   }
-  
+
   @Test
   public void costsCoveredByPayer() {
     long time = 0L;
@@ -404,6 +404,12 @@ public class PayerTest {
         + fakeEncounter.claim.totals.payer
         + fakeEncounter.claim.totals.pocket;
     assertEquals(totalCost, result, 0.001);
+    // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
+    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+        + fakeEncounter.claim.getPatientCost(), 0.001);
+    // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
+    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+        + testPrivatePayer1.getAmountUncovered(), 0.001);
     // The total coverage by the payer should equal the person's covered costs.
     assertEquals(person.coverage.getTotalCoverage(), testPrivatePayer1.getAmountCovered(), 0.001);
   }

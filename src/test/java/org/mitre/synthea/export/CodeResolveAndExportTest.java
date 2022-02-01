@@ -230,7 +230,7 @@ public class CodeResolveAndExportTest {
         .findFirst();
     assertTrue(maybeEncounterEntry.isPresent());
 
-    org.hl7.fhir.r4.model.Encounter encounterResource = 
+    org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) maybeEncounterEntry.get().getResource();
     assertEquals(encounterResource.getReasonCode().size(), 1);
     org.hl7.fhir.r4.model.CodeableConcept encounterReason = encounterResource.getReasonCode()
@@ -243,7 +243,7 @@ public class CodeResolveAndExportTest {
     assertEquals(EXPECTED_REASON_CODE, reasonCoding.getCode());
     assertEquals(EXPECTED_REASON_DISPLAY, reasonCoding.getDisplay());
 
-    Optional<org.hl7.fhir.r4.model.Bundle.BundleEntryComponent> maybeObservationEntry = 
+    Optional<org.hl7.fhir.r4.model.Bundle.BundleEntryComponent> maybeObservationEntry =
         bundle.getEntry().stream()
         .filter(entry -> entry.getResource().getResourceType().equals(
             org.hl7.fhir.r4.model.ResourceType.Observation))
@@ -264,7 +264,7 @@ public class CodeResolveAndExportTest {
     assertEquals(OBSERVATION_DISPLAY, observationTypeCoding.getDisplay());
 
     // Find observation value code.
-    org.hl7.fhir.r4.model.CodeableConcept observationValue = 
+    org.hl7.fhir.r4.model.CodeableConcept observationValue =
         observationResource.getValueCodeableConcept();
     assertNotNull(observationValue);
     assertEquals(observationValue.getCoding().size(), 1);
@@ -279,7 +279,7 @@ public class CodeResolveAndExportTest {
 
   private void verifyEncounterCodeDstu2() throws IOException {
     InputStream inputStream = new FileInputStream(dstu2OutputPath.toFile().getAbsolutePath());
-    ca.uhn.fhir.model.dstu2.resource.Bundle bundle = 
+    ca.uhn.fhir.model.dstu2.resource.Bundle bundle =
         (ca.uhn.fhir.model.dstu2.resource.Bundle) FhirDstu2.getContext().newJsonParser()
             .parseResource(inputStream);
 
@@ -290,7 +290,7 @@ public class CodeResolveAndExportTest {
         .findFirst();
     assertTrue(maybeEncounterEntry.isPresent());
 
-    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource = 
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
         (ca.uhn.fhir.model.dstu2.resource.Encounter) maybeEncounterEntry.get().getResource();
     assertEquals(encounterResource.getReason().size(), 1);
     CodeableConceptDt encounterReason = encounterResource.getReason().get(0);
@@ -360,7 +360,7 @@ public class CodeResolveAndExportTest {
     assertEquals(EXPECTED_REASON_DISPLAY, display);
 
     // Find the observation type code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section" 
+    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
         + "/entry/organizer/component/observation/code");
 
     nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
@@ -410,7 +410,7 @@ public class CodeResolveAndExportTest {
     if (isHttpRecordingEnabled()) {
       WireMock.stopRecording();
     }
-    
+
     List<Path> pathsToDelete =
         Arrays.asList(stu3OutputPath, r4OutputPath, dstu2OutputPath, ccdaOutputPath);
     for (Path outputPath : pathsToDelete) {

@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -46,13 +47,13 @@ import org.mockito.Mockito;
  */
 public class FHIRDSTU2ExporterTest {
   private boolean physStateEnabled;
-  
+
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   /**
    * Setup state for exporter test.
    */
@@ -62,7 +63,7 @@ public class FHIRDSTU2ExporterTest {
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
   }
-  
+
   /**
    * Reset state after exporter test.
    */
@@ -105,15 +106,8 @@ public class FHIRDSTU2ExporterTest {
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
 
-    List<String> validationErrors = new ArrayList<String>();
-
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
-      TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       Config.set("exporter.fhir_dstu2.export", "true");
       FhirDstu2.TRANSACTION_BUNDLE = person.randBoolean();
       String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
@@ -146,17 +140,17 @@ public class FHIRDSTU2ExporterTest {
           }
         }
       }
-      
-      int y = validationErrors.size();
-      if (x != y) {
+
+      if (! validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
 
-    assertTrue("Validation of exported FHIR bundle failed: " 
-        + String.join("|", validationErrors), validationErrors.size() == 0);
+    assertTrue("Validation of exported FHIR bundle failed: "
+        + String.join("|", errors), errors.size() == 0);
   }
-  
+
   @Test
   public void testSampledDataExport() throws Exception {
 
@@ -187,26 +181,26 @@ public class FHIRDSTU2ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State sampleObs = module.getState("SampledDataObservation");
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
-    
+
     FhirContext ctx = FhirDstu2.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Observation) {
         Observation obs = (Observation) entry.getResource();
@@ -217,7 +211,7 @@ public class FHIRDSTU2ExporterTest {
       }
     }
   }
-  
+
   @Test
   public void testObservationAttachment() throws Exception {
 
@@ -251,30 +245,30 @@ public class FHIRDSTU2ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State chartState = module.getState("ChartObservation");
     assertTrue(chartState.process(person, time));
     person.history.add(chartState);
-    
+
     State urlState = module.getState("UrlObservation");
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
-    
+
     FhirContext ctx = FhirDstu2.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();

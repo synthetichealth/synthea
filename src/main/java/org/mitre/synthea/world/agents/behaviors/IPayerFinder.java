@@ -15,7 +15,7 @@ public interface IPayerFinder {
 
   /**
    * Find a payer that meets the person's and simulation's requirements.
-   * 
+   *
    * @param payers The list of eligible payers (determined by state currently).
    * @param person The patient who requires a payer.
    * @param service The service required.
@@ -26,7 +26,7 @@ public interface IPayerFinder {
 
   /**
    * Determine whether or not the given payer meets the person's basic requirements.
-   * 
+   *
    * @param payer The payer to check.
    * @param person The patient who requires a payer.
    * @param service The service required.
@@ -48,7 +48,7 @@ public interface IPayerFinder {
 
   /**
    * Choose a random payer from a list of payers.
-   * 
+   *
    * @param options the list of acceptable payer options that the person can recieve.
    * @return a random payer from the given list of options.
    */

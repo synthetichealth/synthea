@@ -29,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
  * Generates random codes based upon ValueSet URIs, with the help of a FHIR
  * terminology service API.
  *
- * 
+ *
  * <p>The URL for the terminology service is configured using the
  * <code>generate.terminology_service_url</code> property.
  */

@@ -18,7 +18,7 @@ public class Clinician implements Serializable, QuadTreeElement {
   public static final String INPATIENT = "inpatient";
   public static final String EMERGENCY = "emergency";
   public static final String URGENTCARE = "urgent care";
-  
+
   public static final String FIRST_NAME = "first_name";
   public static final String LAST_NAME = "last_name";
   public static final String NAME_PREFIX = "name_prefix";
@@ -28,17 +28,18 @@ public class Clinician implements Serializable, QuadTreeElement {
   public static final String GENDER = "gender";
   public static final String EDUCATION = "education";
   public static final String SPECIALTY = "specialty";
-  
+
   public static final String ADDRESS = "address";
   public static final String CITY = "city";
   public static final String STATE = "state";
   public static final String ZIP = "zip";
   public static final String LOCATION = "location";
-  
-  
+
+
   public final Random random;
   public final long identifier;
   public final String uuid;
+  public final String npi;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
   private Provider organization;
@@ -59,9 +60,18 @@ public class Clinician implements Serializable, QuadTreeElement {
     this.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     this.random = clinicianRand;
     this.identifier = identifier;
+    this.npi = toClinicianNPI(this.identifier);
     this.organization = organization;
     attributes = new ConcurrentHashMap<String, Object>();
     servicesProvided = new ArrayList<String>();
+  }
+
+  private static String toClinicianNPI(long id) {
+    if (id > 999_999_999L) {
+      throw new IllegalArgumentException(
+              String.format("Supplied id (%d) is too big, max is %d", id, 999_999_999L));
+    }
+    return Provider.toNPI(999_999_999L - id);
   }
 
   /**
@@ -93,11 +103,11 @@ public class Clinician implements Serializable, QuadTreeElement {
   public double rand() {
     return random.nextDouble();
   }
-  
+
   public Map<String, Object> getAttributes() {
     return attributes;
   }
-  
+
   public boolean hasService(String service) {
     return servicesProvided.contains(service);
   }

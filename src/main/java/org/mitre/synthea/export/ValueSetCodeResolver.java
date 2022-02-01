@@ -26,7 +26,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * random codes using the ValueSet URI if one has been supplied.
  */
 public class ValueSetCodeResolver {
-  
+
   private final Person person;
 
   public ValueSetCodeResolver(@Nonnull Person person) {
@@ -35,7 +35,7 @@ public class ValueSetCodeResolver {
 
   /**
    * Generates random codes in any coded fields that have specified a ValueSet URI.
-   * 
+   *
    * @return the updated Person object
    */
   public Person resolve() {
@@ -71,10 +71,10 @@ public class ValueSetCodeResolver {
     if (entry == null) {
       return;
     }
-    
+
     // Resolve codes in any Code-types Entry fields.
     entry.codes = resolveCodes(entry.codes);
-    
+
     // Resolve codes in any fields specific to subtypes of Entry.
     Class<? extends Entry> entryClass = entry.getClass();
     if (entryClass.equals(Encounter.class)) {
@@ -161,7 +161,7 @@ public class ValueSetCodeResolver {
            ? RandomCodeGenerator.getCode(code.valueSet, person.seed, code)
            : code;
   }
-  
+
   private List<Code> resolveCodes(@Nullable List<Code> codes) {
     if (codes == null) {
       return null;

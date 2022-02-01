@@ -6,7 +6,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 
 /**
- * Generate realistic blood pressure vital signs. 
+ * Generate realistic blood pressure vital signs.
  * Can reproducibly look a few days into the past and future.
  * <p></p>
  * See <a href="https://raywinstead.com/bp/thrice.htm">https://raywinstead.com/bp/thrice.htm</a>
@@ -30,7 +30,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   // How far into the past or into the future can this generator look reproducibly?
   private static final long TIMETRAVEL_DURATION = 10 * ONE_DAY;
-  
+
 
   // Use a ringbuffer to reproducibly travel back in time for a bit, but not keep
   // a full history per patient.
@@ -79,7 +79,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   /**
    * Return a matching value generator for the given time.
-   * 
+   *
    * @param time find a value generator for which time stamp?
    * @param createNewGenerators should a new generator be created when no match can be found?
    * @return a value generator, or potentially null (if none exists and none should be created)
@@ -104,7 +104,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   /**
    * Fill the ring buffer with a few new trending sections.
-   * 
+   *
    * @param time a timestamp which shall be covered by the generators in the buffer
    * @param previousValueGenerator a previous generator, for potential continuity
    */
@@ -145,7 +145,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
 
     while (generatePeriod > 0L) {
-      final int days = minTrendDuration() 
+      final int days = minTrendDuration()
           + person.randInt(maxTrendDuration() - minTrendDuration() + 1);
       long duration = ONE_DAY * days;
       double endValue;

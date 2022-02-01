@@ -461,7 +461,7 @@
           "display": "Chronic sinusitis (disorder)"
         }
       ],
-      "direct_transition": "End_Chronic_Followup"
+      "direct_transition": "Nebulizer"
     },
     "End_Chronic_Followup": {
       "type": "EncounterEnd",
@@ -502,7 +502,7 @@
     "Chronic_Sinusisitis_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Diagnose_Chronic_Sinusitis",
-      "direct_transition": "Sinusitis_Ends"
+      "direct_transition": "End Nebulizer"
     },
     "Chronic_Sinusitis_Followup_without_action": {
       "type": "EncounterEnd",
@@ -540,6 +540,20 @@
         }
       ],
       "direct_transition": "End_Encounter"
+    },
+    "Nebulizer": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 170615005,
+        "display": "Home nebulizer (physical object)"
+      },
+      "direct_transition": "End_Chronic_Followup"
+    },
+    "End Nebulizer": {
+      "type": "DeviceEnd",
+      "direct_transition": "Sinusitis_Ends",
+      "device": "Nebulizer"
     }
   },
   "gmf_version": 2

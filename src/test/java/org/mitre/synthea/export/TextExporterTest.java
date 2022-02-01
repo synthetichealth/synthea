@@ -19,14 +19,14 @@ public class TextExporterTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   @Test
   public void testTextExport() throws Exception {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
-    
+
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);
     generator.options.overflow = false;
@@ -39,21 +39,21 @@ public class TextExporterTest {
     }
 
     // if we get here we at least had no exceptions
-    
+
     File expectedExportFolder = tempOutputFolder.toPath().resolve("text").toFile();
-    
+
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());
-    
+
     int count = 0;
     for (File txtFile : expectedExportFolder.listFiles()) {
       if (!txtFile.getName().endsWith(".txt")) {
         continue;
       }
-      
+
       count++;
     }
-    
-    assertEquals("Expected " + numberOfPeople + " files in the output directory, found " + count, 
+
+    assertEquals("Expected " + numberOfPeople + " files in the output directory, found " + count,
         numberOfPeople, count);
   }
 }

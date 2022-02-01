@@ -403,7 +403,7 @@
         "Life expectency depends on many factors, but for patients > 40 it's generally less than 10 years with dialysis",
         "http://link.springer.com/article/10.1007/s00467-016-3383-8 (Table 2"
       ],
-      "direct_transition": "Set_CKD_5 Damage"
+      "direct_transition": "Set ESRD"
     },
     "Retinopathy_Progression": {
       "type": "Simple",
@@ -1169,31 +1169,11 @@
         "high": 100
       }
     },
-    "Attempt_YMCA_Diabetes_Prevention_Program": {
-      "type": "CallSubmodule",
-      "submodule": "diabetes/ymca_diabetes_prevention_program",
-      "conditional_transition": [
-        {
-          "transition": "YMCA_Diabetes_Program_Success",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ymca_diabetes_program",
-            "operator": "==",
-            "value": "successful"
-          }
-        },
-        {
-          "transition": "YMCA_Diabetes_Program_Non-Success"
-        }
-      ]
-    },
-    "YMCA_Diabetes_Program_Success": {
-      "type": "Simple",
-      "direct_transition": "No_Diabetes"
-    },
-    "YMCA_Diabetes_Program_Non-Success": {
-      "type": "Simple",
-      "direct_transition": "Delay_before_Diabetes"
+    "Set ESRD": {
+      "type": "SetAttribute",
+      "attribute": "end_stage_renal_disease",
+      "direct_transition": "Set_CKD_5 Damage",
+      "value": true
     }
   },
   "gmf_version": 1

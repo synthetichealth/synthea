@@ -1,0 +1,439 @@
+,id,name,address,city,state,zip,county,phone,type,ownership,emergency,quality,LAT,LON
+0,20000,Cherry Creek Health Station,317 Main,Eagle Butte,SD,57625,,605-964-8917,IHS Facility,,No,,44.99975509999999,-101.2343192
+1,20001,Minni-Tohe Health Center,1 Minne-Tohe Drive,New Town,ND,58763,,701-627-4701,IHS Facility,,No,,47.981652,-102.57674
+2,20002,Spirit Lake Health Center,3883 74th Avenue NE,Fort Totten,ND,58335,,701-766-1600,IHS Facility,,No,,47.9758077,-98.9967441
+3,20003,Manderson Health Station,P.O. Box 350 Wounded Knee Dist,Manderson,SD,57756,,605-867-5131,IHS Facility,,No,,43.2345917,-102.4896554
+4,20004,Wahpeton Health Center,832 8th Street North,Wahpeton,ND,N/A,,N/A,IHS Facility,,No,,46.2740666,-96.6118578
+5,20005,Red Scaffold Health Station,317 Main,Eagle Butte,SD,57625,,605-964-8917,IHS Facility,,No,,44.99975509999999,-101.2343192
+6,20006,Mandaree Health Station Satellite of Minnetohe Health Center Fort Berthold,305 Main Street,Mandaree,ND,58757,,701-627-4701,IHS Facility,,No,,47.72823529999999,-102.6779318
+7,20007,Santee Clinic Health Station,110 S Visiting Eagle St,Niobrara,NE,68760,,N/A,IHS Facility,,No,,42.8359683,-97.8563554
+8,20008,Ponca Hills Health and Wellness Center,1800 Syracuse Avenue,Norfolk,NE,68701,,402-371-8720,IHS Facility,,No,,42.0493172,-97.4325716
+9,20009,Carl T Curtis Health Education Center and Nursing Home,100 Indian Hills Drive,Macy,NE,68039,,402-837-5381,IHS Facility,,No,,42.1186175,-96.3595921
+10,20010,Albuquerque Indian Health Center,801 Vassar Dr NE,Albuquerque,NM,87106,,505-248-4000,IHS Facility,,No,,35.0879311,-106.6146016
+11,20011,Santa Ana Health Station,"02-C Dove Rd Pueblo, Station A",Bernalillo,NM,87004,,505-867-2497,IHS Facility,,No,,35.3160954,-106.5384756
+12,20012,Sandia Health Station,203 Sandia Day School Road,Bernalillo,NM,87004,,505-867-4696,IHS Facility,,No,,35.2593191,-106.5724837
+13,20013,Zia Pueblo Health Station,155 Capital Square,Zia Pueblo,NM,87053,,505-867-5258,IHS Facility,,No,,35.4984851,-106.7294472
+14,20014,Laguna Health Center,"Interstate 40 @ Exit 108, State Road 124 ",New Laguna,NM,87049,,505-552-6644,IHS Facility,,No,,35.434243,-97.40806479999999
+15,20015,Santa Clara Health Center,RR5 Box 446,Espanola,NM,87532,,505-753-9421,IHS Facility,,No,,35.9910383,-106.0818233
+16,20016,Santo Domingo Health Center,W 85 Hwy 22,Santo Domingo Pueblo,NM,87052,,505-465-3060,IHS Facility,,No,,35.4803241,-106.3130075
+17,20017,Cochiti Health Station,255 Cochiti St,Cochiti Pueblo,NM,87072,,505-465-2587,IHS Facility,,No,,35.6082174,-106.3482864
+18,20018,San Felipe Health Station,127 Hagen Road,San Felipe,NM,87001,,505-867-2739,IHS Facility,,No,,35.4141885,-106.3989815
+19,20019,Southern Ute Health Center,123 Weeminuche,Ignacio,CO,81137,,970-563-4581,IHS Facility,,No,,37.1319145,-107.635884
+20,20020,Ute Mountain Health Center,"232 Rustling Willow St, Complex D",Towaoc,CO,81334,,970-565-4441,IHS Facility,,No,,37.2025833,-108.7327349
+21,20021,White Mesa Health Station,14 Willow Street,Towaoc,CO,81334,,435-678-2261,IHS Facility,,No,,37.202447,-108.733839
+22,20022,Dulce Health Center,12000 Stone Lake Rd,Dulce,NM,87528,,575-759-3291,IHS Facility,,No,,36.9171612,-106.9740463
+23,20023,Taos Picuris Health Center,1090 Goat Springs Rd,Taos Pueblo,NM,87571,,575-758-4224,IHS Facility,,No,,36.4130943,-105.5595504
+24,20024,Isleta Pueblo Health Center,31 Sagebrush St,Albuquerque,NM,87105,,505-869-3200,IHS Facility,,No,,34.9028947,-106.7194981
+25,20025,Jemez Health Center,110 Sheepsprings Rd,Jemez Pueblo,NM,87024,,575-834-7413,IHS Facility,,No,,35.6012083,-106.7302651
+26,20026,Alamo Health Center,Indiann Service Route 54,Alamo,NM,87825,,575-854-2626,IHS Facility,,No,,34.4708589,-107.5263351
+27,20027,First Nations Community Health Source,5608 Zuni Rd SE,Albuquerque,NM,87108,,505-262-2481,IHS Facility,,No,,35.0725906,-106.5834062
+28,20028,Pine Hill Health Center,BIA Route 125,Pine Hill,NM,87357,,505-775-3271,IHS Facility,,No,,34.9010271,-108.3698737
+29,20029,Ysleta Del Sur Health Station,9314 Juanchido Lane,El Paso,TX,79907,,915-858-1076,IHS Facility,,No,,31.6840202,-106.322144
+30,20030,Denver Indian Health and Family Services,"1633 Fillmore St., Suite GL-1",Denver,CO,80206,,303-953-6600,IHS Facility,,No,,39.7427648,-104.9538072
+31,20031,Ponemah Health Center,19155 Nodin St,Ponemah,MN,56666,,218-679-3712,IHS Facility,,No,,48.02051489999999,-94.9138766
+32,20032,White Earth Health Center,25519 State Hwy 224,White Earth,MN,56591,,218-983-4300,IHS Facility,,No,,47.0965867,-95.84399540000001
+33,20033,Pine Point Health Station,Hwy 47 & Hwy 55,Ponsford,MN,56575,,218-983-4300,IHS Facility,,No,,46.9699602,-95.38391879999999
+34,20034,Hannaville Health Center,N15019 Hannahville B-1 Road,Wilson,MI,49896,,906-466-2782,IHS Facility,,No,,45.6579152,-87.34744549999999
+35,20035,White Earth Tribal Health Services,Hwy 224,White Earth,MN,56591,,218-983-3286,IHS Facility,,No,,47.09658290000001,-95.8434635
+36,20036,St. Ignatius Health Center,"308 Mission Drive, 51383 Highway 93 North",St. Ignatius,MT,59865,,406-676-8778,IHS Facility,,No,,47.3159499,-114.1006342
+37,20037,Rocky Boy Health Center,535 Clinic Rd E,Box Elder,MT,59521,,406-395-5100,IHS Facility,,No,,48.26082,-109.7853728
+38,20038,Polson Health Center,#5 4th Ave East,Polson,MT,59860,,405-745-3396,IHS Facility,,No,,47.6925733,-114.162085
+39,20039,Flathead Tribal Health Center,"308 Mission Drive, 51383 Highway 93 North",St. Ignatius,MT,59865,,406-676-8778,IHS Facility,,No,,47.3159499,-114.1006342
+40,20040,Elmo Health Station,208 Main St,Elmo,MT,59915,,406-745-3525,IHS Facility,,No,,47.82759350000001,-114.3482901
+41,20041,Ronan Health Clinic,26 Round Butte Rd W,Ronan,MT,59864,,406-676-8778,IHS Facility,,No,,47.5297928,-114.0974697
+42,20042,Arlee Health Station,Arlee Health Station,Arlee,MT,59821,,(406) 726-3224,IHS Facility,,No,,47.1685052,-114.0904835
+43,20043,Rocky Boy Tribal (Chippewa-Cree) Health Center,535 Clinic Rd E,Box Elder,MT,59521,,406-395-5100,IHS Facility,,No,,48.26082,-109.7853728
+44,20044,Indian Family Health Clinic,"1220 Central Avenue, #2-B",Great Falls,MT,N/A,,406-268-1587 Ext 16,IHS Facility,,No,,47.505028,-111.2856201
+45,20045,Oneida Health Center,525 Airport Rd,Oneida,WI,54155,,920-869-2711,IHS Facility,,No,,44.4966348,-88.1674659
+46,20046,Stockbridge-Munsee Health Center,West 12802 County Hwy A,Bowler,WI,54416,,715-793-5007,IHS Facility,,No,,44.8699989,-88.8975431
+47,20047,Black River Falls Health Center,N6520 Guy Rd,Black River Falls,WI,54615,,715-84-9851,IHS Facility,,No,,44.3087313,-90.8031406
+48,20048,Cherokee Nation Tahlequah Outpatient Clinic,124 E Choctaw St,Tahlequah,OK,74464,,N/A,IHS Facility,,No,,35.9104605,-94.97098009999999
+49,20049,John Anderson Health Center ( Broken Bow),1300 Martin Luther King Drive,Broken Bow,OK,74728,,(580) 584-2766,IHS Facility,,No,,34.0275033,-94.7209374
+50,20050,Hugo Health Center,410 North M Street,Hugo,OK,74743,,(580) 326-7561,IHS Facility,,No,,34.0148484,-95.5261752
+51,20051,McAlester Health Center,1127 S George Nigh Expy. ,McAlester,OK,74501,,(918) 423-8440,IHS Facility,,No,,34.9002833,-95.7600191
+52,20052,Rubin White Health Center,109 Kerr Ave,Poteau,OK,74953,,918-649-1100,IHS Facility,,No,,35.0215324,-94.6596871
+53,20053,Stigler Choctaw Health Center,2204 East Main Street,Stigler,OK,74462,,(918) 967-9200,IHS Facility,,No,,35.2511687,-95.1146401
+54,20054,Idabel Health Center,902 East Lincoln Road,Idabel,OK,74745,,(580) 286-2600,IHS Facility,,No,,33.8800284,-94.8158583
+55,20055,Atoka Choctaw Nation Health Center,1201 W Liberty Road,Atoka,OK,74525,,(918)-567-7000,IHS Facility,,No,,34.3959447,-96.1514558
+56,20056,Tishomingo Indian Health Clinic,815 E 6th St,Tishomingo,OK,73460,,580-371-2361 or 877-240-2720,IHS Facility,,No,,34.2344659,-96.66506489999999
+57,20057,Ardmore Health Center,2510 Chickasaw Blvd.,Ardmore,OK,73401,,(580) 226-8181 or (877) 242-4347,IHS Facility,,No,,34.2004302,-97.139934
+58,20058,Durant Indian Health Clinic,1600 N Washington,Durant,OK,74701,,580-920-2100,IHS Facility,,No,,34.008786,-96.3899773
+59,20059,Chickasaw Nation Family Practice Center,1001 Country Club Rd,Ada,OK,74820,,N/A,IHS Facility,,No,,34.7852923,-96.6529963
+60,20060,Peach Springs Indian Health Center,940 Hualapai Way,Peach Springs,AZ,86434,,928-669-2137,IHS Facility,,No,,35.5381471,-113.4200304
+61,20061,Fort Mohave Health Station,1607 Plantation Dr,Mohave Valley,AZ,86440,,N/A,IHS Facility,,No,,34.8651344,-114.6102381
+62,20062,Chemehuevi Health Station,1970 Palo Verde Drive ,Havasu Lake,CA,92363,,(928) 669-3323,IHS Facility,,No,,34.515844,-114.3957864
+63,20063,Salt River Health Center,"PHARMACY C/O SRP-MIC WAREHOUSE, 10005 E. OSBORN ROAD",Scottsdale,AZ,85256,,480 946-9066,IHS Facility,,No,,33.4854456,-111.8612269
+64,20064,Gila Bend Health Station,100 North Gila Bend Boulevard,Gila Bend,AZ,85337,,928-683-2269,IHS Facility,,No,,32.944119,-112.736002
+65,20065,Fort McDermitt Health Station,112 North Reservation Road,McDermitt,NV,89421,,775-532-8522,IHS Facility,,No,,41.9729459,-117.6236343
+66,20066,Shivwits Clinic,6709 West 3700 North,Ivins,UT,84738,,N/A,IHS Facility,,No,,37.1868176,-113.7336019
+67,20067,Cedar Band Clinic,440 N Paiute Dr,Cedar City,UT,84721,,N/A,IHS Facility,,No,,37.6850736,-113.0575099
+68,20068,Koosharem Clinic,826 North 100 East,Richfield,UT,84701,,N/A,IHS Facility,,No,,38.7750253,-112.0826933
+69,20069,Kanosh Clinic,157 North Paiute Dr,Kanosh,UT,84637,,N/A,IHS Facility,,No,,37.6809305,-113.0593378
+70,20070,Duckwater Health Station (includes Alcohol Program),511 Duckwater Falls Rd,Duckwater,NV,89314,,775-863-0222,IHS Facility,,No,,38.9322773,-115.7158053
+71,20071,Newe Medical Clinic,400 A Newe View,Ely,NV,89301,,775-289-4133,IHS Facility,,No,,39.2369394,-114.8698769
+72,20072,Goshute Health Station,195 Tribal Center Road,Ibapah,UT,84034,,435-234-1194,IHS Facility,,No,,40.042709,-113.9060624
+73,20073,Fort Mohave Health Center,500 Merriman Avenue,Needles,CA,92363,,928-346-4679,IHS Facility,,No,,34.8524871,-114.6156712
+74,20074,CRIT Tribe Health Center,12033 Agency Road,Parker,AZ,85344,,N/A,IHS Facility,,No,,34.1472228,-114.3013295
+75,20075,Inchelium Health Center,1221 Moccasin Run,Inchelium,WA,99138,,N/A,IHS Facility,,No,,48.2999164,-118.1946991
+76,20076,Keller Health Station,39 Shortcut Rd,Inchelium,WA,99138,,(509) 722-7006,IHS Facility,,No,,48.2992341,-118.2048541
+77,20077,Kootenai Health Station,100 Circle Dr,Bonners Ferry,ID,83805,,(208) 267-3519,IHS Facility,,No,,48.7079974,-116.3689334
+78,20078,Muckleshoot Tribal Clinic,17500 SE 392nd St,Auburn,WA,98002,,(253) 939-6648,IHS Facility,,No,,47.2510701,-122.1077241
+79,20079,Sault Saint Marie Tribal Health Center,28641 Ashmun St,Sault Ste Marie,MI,49783,,906-632-5257,IHS Facility,,No,,46.4826852,-84.3537037
+80,20080,Marquette Tribal Community Health Center,"706 Chippewa Square, Suite 206",Marquette,MI,59895,,906-632-5257,IHS Facility,,No,,46.5392568,-87.4074789
+81,20081,NHBP Health Clinic,4415 Byron Center SW,Wyoming,MI,49519,,269-729-4422,IHS Facility,,No,,42.8844016,-85.72471320000001
+82,20082,Nimkee Memorial Health Center,2591 S Leaton Rd,Mt. Pleasant,MI,48858,,989-775-4600,IHS Facility,,No,,43.6019781,-84.7074313
+83,20083,Bay Mills Ellen Marshall Memorial Center,12124 W Lakeshore Drive,Brimley,MI,49715,,906-248-8315,IHS Facility,,No,,46.45193709999999,-84.600871
+84,20084,Hessel Community Health Center,3355 N. 3 Mile Rd.,Hessel,MI,49745,,906-632-5257,IHS Facility,,No,,46.0533955,-84.4268682
+85,20085,Sault Tribal Center Health Station,2864 Ashmun St,Sault St Marie,MI,49783,,906-632-5257,IHS Facility,,No,,46.46728419999999,-84.35529799999999
+86,20086,Pokagon Potawatomi Health Center,57392 M-51 South,Dowagiac,MI,49047,,269-782-4141 x31,IHS Facility,,No,,41.9693034,-86.14072519999999
+87,20087,Manistique Tribal Health Center,6596 W US Hwy 2,Manistique,MI,49854,,906-632-5257,IHS Facility,,No,,45.9646417,-86.20896669999999
+88,20088,Newberry Community Health Center,4935 Zee Ba Tik Lane,Newberry,MI,49868,,906-632-5257,IHS Facility,,No,,46.3549984,-85.50955859999999
+89,20089,Min-No-Aya-Win Health Center,927 Trettel Lane,Cloquet,MN,55720,,218-879-1227,IHS Facility,,No,,46.7136079,-92.4923565
+90,20090,Dennehotso Health Station,Highway 160,Dennehotso,AZ,86535,,928-658-3377,IHS Facility,,No,,36.8420748,-109.8422622
+91,20091,Red Lake Comprehensive Health ,24760 Hospital Drive,Red Lake,MN,56671,,218-679-3316,IHS Facility,,No,,47.87787609999999,-95.0295792
+92,20092,Watersmeet Health Center,E23970 Pow Wow Trail,Watersmeet,MI,49969,,906-358-4588,IHS Facility,,No,,46.2684898,-89.17795559999999
+93,20093,Helena Indian Alliance (HIA),435 N Last Chance Gulch,Helena,MT,59601,,406-449-5796,IHS Facility,,No,,46.5915301,-112.0369196
+94,20094,Missoula Indian Center (MIC),"Building #33, Fort Missoula Road",Missoula,MT,59804,,406-829-9515,IHS Facility,,No,,46.8433816,-114.0579802
+95,20095,"Indian Health Board, Billings",1127 Alderson Avenue,Billings,MT,59102,,N/A,IHS Facility,,No,,45.7832515,-108.5447993
+96,20096,North American Indian Alliance,55 East Galena,Butte,MT,59701,,406-782-0461,IHS Facility,,No,,46.0124096,-112.5339257
+97,20097,Torres-Martinez Health Clinic,66-735 Martinez Road,Thermal ,CA,92274,,760-397-4476 ,IHS Facility,,No,,33.5620918,-116.1537142
+98,20098,Dzilth Na O-Dith-Hle Health Center,6 Road 7586 (PHS/IHS Drive),Bloomfield,NM,87413,,505-960-1801,IHS Facility,,No,,36.3926315,-107.8374252
+99,20099,Four Corners Regional Health Center,US Hwy 160 Navajo Route 35,Teec Nos Pos,AZ,86514,,928-656-5000,IHS Facility,,No,,36.9211097,-109.0856582
+100,20100,Dinnebito Health Station,Rocky Ridge School -10 Miles  NE of 264,Tuba City,AZ,86045,,928-725-3110,IHS Facility,,No,,36.0730857,-110.592247
+101,20101,Winslow Health Center,500 N Indiana Ave,Winslow,AZ,86047,,928-289-6233,IHS Facility,,No,,35.0329464,-110.714854
+102,20102,Dilkon Health Center,500 N Indiana Ave,Dilkon,AZ,86047,,928-657-3800,IHS Facility,,No,,35.0322353,-110.71442
+103,20103,Leupp Health Center,"Hwy 99, 28 mi NW of Winslow (PHS/IHS DRIVE)",Leupp,AZ,86035,,928-686-6567,IHS Facility,,No,,35.0206857,-110.6977091
+104,20104,"Native Americans for Community Action, Inc., Family Health Center","2717 North Steves Blvd, Suite 11",Flagstaff,AZ,86004,,928-773-1245,IHS Facility,,No,,35.2118988,-111.6063995
+105,20105,Montezuma Creek Clinic,East Highway 262  Next to LDS Chapel,Montezuma Creek,UT,84534,,435-651-3291,IHS Facility,,No,,37.2591156,-109.3000271
+106,20106,Watonga Health Center,"Route 1, Box 34-A",Watonga,OK,73772,,(580) 623-4991,IHS Facility,,No,,35.8433218,-98.4131165
+107,20107,El Reno Health Center,1631-A East Highway 66,El Reno,OK,73036,,(405) 262-7631,IHS Facility,,No,,35.50824,-97.94183059999999
+108,20108,White Eagle Health Center,200 White Eagle Drive,Ponca City,OK,74601,,(580) 765-2501,IHS Facility,,No,,36.6006618,-97.0815293
+109,20109,Perkins Family Clinic,509 East Highway 33,Perkins,OK,74059,,(405) 547-2473,IHS Facility,,No,,35.9864315,-97.02811
+110,20110,Kanza Health Center,3151 East River Rd,Newkirk,OK,74647,,(580) 362-1039,IHS Facility,,No,,36.8826358,-97.02902279999999
+111,20111,Oklahoma City Indian Clinic,4913 W Reno ,Oklahoma City,OK,73127,,(405) 948-4900,IHS Facility,,No,,35.4651701,-97.60766129999999
+112,20112,Black Hawk Health Center,356 110 E 930 Rd,Stroud,OK,74079,,(918) 968-9531,IHS Facility,,No,,35.6667969,-96.65999079999999
+113,20113,Little Axe Health Center,15702 E State Hightway 9,Norman,OK,73026,,405-447-0300,IHS Facility,,No,,35.1892581,-97.3240629
+114,20114,Kickapoo Health Center (McLoud),407 N Highway 102,McLoud,OK,74851,,(405) 964-2081,IHS Facility,,No,,35.431751,-97.08982780000001
+115,20115,Citizen Potawatomi Health Center,2307 S Gordon Cooper Dr,Shawnee,OK,74801,,405-273-5236,IHS Facility,,No,,35.2924154,-96.92481289999999
+116,20116,Eufaula Health Center,800 Forest Ave,Eufaula,OK,74432,,(918)689-2547,IHS Facility,,No,,35.2831988,-95.591146
+117,20117,Cherokee Nation Redbird Smith Health Center ,301 South J.T. Stites Boulevard,Sallisaw,OK,74955,,(918) 775-9150 • Toll Free: 888-797-9159,IHS Facility,,No,,35.4557267,-94.81537250000001
+118,20118,Cherokee Nation Willma P. Mankiller Health Center,Rt 6 Box 840 ,Stilwell,OK,74960,, (918) 696-8800 • Toll Free: 877-747-8800,IHS Facility,,No,,35.7977558,-94.63076079999999
+119,20119,Cherokee Nation Three Rivers Health Center,1001 South 41st Street East ,Muskogee,OK,74403,,(918) 781-6500,IHS Facility,,No,,35.7318092,-95.3118841
+120,20120,Clinton Indian Health Center,10321 N 2274 Road ,Clinton,OK,73601,,(580) 323-2884,IHS Facility,,No,,35.5200973,-98.93583249999999
+121,20121,White Cloud Health Station,3313B Thrasher Rd,White Cloud,KS,66094,,(785) 595-3450,IHS Facility,,No,,39.9887175,-95.3682053
+122,20122,Anadarko Health Center,115 Northeast Old Town Drive,Anadarko,OK,73005,,405-247-2458,IHS Facility,,No,,35.0835874,-98.24162059999999
+123,20123,Carnegie Health Center,212 E 4th St ,Carnegie,OK,73015,,580-654-1100,IHS Facility,,No,,35.1013048,-98.599792
+124,20124,Pawnee Health Center,1201 Heritage Circle,Pawnee,OK,74058,,(918) 762-2517,IHS Facility,,No,,36.3354913,-96.7860966
+125,20125,Wewoka Indian Health Center,State Highway 56 & 270 Junction,Wewoka,OK,74884,,(405) 257-6282,IHS Facility,,No,,35.1569581,-96.49315980000002
+126,20126,Haskell Health Center (Lawrence),2415 Massachusetts Street,Lawrence,KS,66046,,(785) 843-3750,IHS Facility,,No,,38.9398048,-95.2363745
+127,20127,Cherokee Nation Sam Hider Community Clinic ,1015 W Washbourne Street,Jay,OK,74346,,(918) 253-4271 • Toll Free: 877-293-4271,IHS Facility,,No,,36.4219174,-94.80452369999999
+128,20128,Okemah Health Center,309 North 14th St,Okemah,OK,74859,,918-623-1424,IHS Facility,,No,,35.4338507,-96.3181628
+129,20129,Okmulgee Health Center,1313 E 20th Street,Okmulgee,OK,74447,,(918)758-1926,IHS Facility,,No,,35.6105352,-95.955545
+130,20130,Northeastern Tribal Health System,2301 S Eight Tribes Trail,Miami,OK,74354,, 918-542-1655  ,IHS Facility,,No,,36.8746054,-94.8463599
+131,20131,Indian Health Care Resource Health Center,550 S Peoria,Tulsa,OK,74120,,(918) 588-1900,IHS Facility,,No,,36.1531113,-95.9771028
+132,20132,Cherokee Nation A-MO Health Center,900 North Owen Walters Boulevard,Salina,OK,74365,, (918) 434-8500 • Toll Free: 877-434-8500,IHS Facility,,No,,36.3008647,-95.1455688
+133,20133,Cherokee Nation Will Rogers Health Center,1020 Lenape Drive,Nowata,OK,74048,,(918) 273-7500 • Toll Free: 877-373-0192,IHS Facility,,No,,36.683361,-95.6361465
+134,20134,Bearskin Health Center,1 Turtle Dr,Wyandotte,OK,74370,,(918) 678-2282 or 1-888-864-0725,IHS Facility,,No,,36.8015168,-94.72767189999999
+135,20135,Cherokee Nation Bartlesville Health Clinc,501 East 5th Street,Bartlesville,OK,74003,,(918) 336-0823,IHS Facility,,No,,36.7476925,-95.97227699999999
+136,20136,Cherokee Nation Vinita Health Center,525 South Wilson,Vinita,OK,74301,, (918) 323-0191,IHS Facility,,No,,36.6290781,-95.16067939999999
+137,20137,Koweta Health Center,31870 East Highway 51,Coweta,OK,74429,,(918)279-3200,IHS Facility,,No,,35.9668538,-95.6569128
+138,20138,Sapulpa Health Center,1125 E Cleaveland Ave,Sapulpa,OK,74066,,(918) 224-9310,IHS Facility,,No,,35.99248559999999,-96.09748440000001
+139,20139,Potawatomi Nation Health & Wellness Center,11400 Road 158,Mayetta,KS,66509,,785-966-8302,IHS Facility,,No,,39.3391585,-95.7227399
+140,20140,Kickapoo Nation Health Center,1117 Gold Finch Road,Horton,KS,66439,,(785) 486-2154,IHS Facility,,No,,39.6691606,-95.64016769999999
+141,20141,Purcell Indian Health Clinic,1438 Hardcastle Blvd,Purcell,OK,73080,,405-527-4700 or 877-584-3289,IHS Facility,,No,,34.9952264,-97.3697619
+142,20142,Eagle Pass Health Center,Rosita Valley Rd,Eagle Pass,TX,78852,,(830) 757-0322,IHS Facility,,No,,28.6244536,-100.4312685
+143,20143,Urban Inter-Tribal Center of Texas,1261 Record Crossing Road,Dallas,TX,75235,,214-941-1050,IHS Facility,,No,,32.8157592,-96.8620626
+144,20144,Hunter Health Center ,2318 East Central,Wichita,KS,67214,,(316) 303-9595 ?,IHS Facility,,No,,37.6939226,-97.3083616
+145,20145,Fort Duchesne Health Center,2 Miles South of Bottlehollow,Fort Duchesne,UT,84026,,435-722-5122,IHS Facility,,No,,40.288571,-109.8587569
+146,20146,Elko Health Center,515 Shoshone Circle,Elko,NV,89801,,775-748-1416,IHS Facility,,No,,40.8476541,-115.7655168
+147,20147,Ely Health Station,400 Newe View Dr,Ely,NV,89301,,775-289-2134,IHS Facility,,No,,39.2369394,-114.8698769
+148,20148,Ball Club Tribal Health Station,30995 Arctic Road,Deer River,MN,56636,,218-335-4500,IHS Facility,,No,,47.3243344,-93.9361277
+149,20149,Bemidji Tribal Health Station,616 America Ave,Bemidji,MN,56601,,218-335-4500,IHS Facility,,No,,47.47417739999999,-94.88382299999999
+150,20150,Cass Lake Tribal Health Station,6055 161st St NW,Cass Lake,MN,56633,,218-335-4500,IHS Facility,,No,,47.3869409,-94.63027799999999
+151,20151,Bad River Health Services Health Center,315 Oak St,Odanah,WI,54861,,715-682-7137,IHS Facility,,No,,46.5981456,-90.65483359999999
+152,20152,Red Cliff Health Station,88455 Pike Rd,Bayfield,WI,54814,,715-779-3707,IHS Facility,,No,,46.8513935,-90.7924572
+153,20153,St. Croix Health Center,4404 State Rd 70,Webster,WI,54893,,715-793-5007,IHS Facility,,No,,45.8088754,-92.21623579999999
+154,20154,Peter Christensen Health Center,450 Old Abe Rd,Lac du Flambeau,WI,54538,,715-588-4266,IHS Facility,,No,,45.9731247,-89.8928609
+155,20155,Sokaogon Chippewa Health Clinic,3163 State Hwy 55,Crandon,WI,54520,,715-478-5185,IHS Facility,,No,,45.4873366,-88.9681439
+156,20156,Potawatomi Health Center,5409 Everybody's Road,Crandon,WI,54520,,218-478-4300,IHS Facility,,No,,45.5691454,-88.8454343
+157,20157,Vermillion Lake Health Station,1610 Farm Rd South,Tower,MN,55790,,218-757-3295,IHS Facility,,No,,47.8233349,-92.319153
+158,20158,Wassaja Memorial Health Center,16240 North Fort McDowell Road ,Fort McDowell,AZ,85264,,480-789-7520,IHS Facility,,No,,33.6336313,-111.6749107
+159,20159,Yavapai Apache Health Station and Alcohol Center,2400 W Datsi St,Camp Verde,AZ,86322,,N/A,IHS Facility,,No,,34.6274698,-111.8922945
+160,20160,Ak Chin Health Station,48203 W Farrel Rd,Ak-Chin Village,AZ,85238,,520-568-2221,IHS Facility,,No,,33.0274338,-112.0858984
+161,20161,Komatke Health Center,17487 S Health Care Drive,Laveen,AZ,85339,,520-550-6000,IHS Facility,,No,,33.288186,-112.1556661
+162,20162,Jackson Rancheria Health Center,12140 New York Ranch Road,Jackson,CA,95642,, 209-257-2400 ,IHS Facility,,No,,38.3851107,-120.7387599
+163,20163,Buffalo Health Station,3 Gates Circle,Buffalo,NY,14209,,716-887-4125,IHS Facility,,No,,42.9195824,-78.8668387
+164,20164,St. Regis Mohawk Health Service,412 State Route 37,Akwesasne,NY,13655,,518-358-3141,IHS Facility,,No,,44.9664553,-74.653818
+165,20165,Penobscot Health Center,23 Wabanaki Way,Indian Island,ME,4468,,207-827-6101,IHS Facility,,No,,44.9522021,-68.6464436
+166,20166,Washoe Tribal Health Center,1559 Watasheamu Rd,Gardnerville,NV,89460,,775-265-4215,IHS Facility,,No,,38.900566,-119.7184064
+167,20167,Fallon Tribal Health Clinic,1001 Rio Vista Dr,Fallon,NV,89406,,775-423-3634,IHS Facility,,No,,39.4837557,-118.7590175
+168,20168,Yerington Tribal Health Center,171 Campbell Lane,Yerington,NV,89447,,775-463-3335,IHS Facility,,No,,39.07047379999999,-119.1861689
+169,20169,Owyhee Community Health Facility,US PHS Nevada HWY 225,Owyhee,NV,89832,,775-757-2415,IHS Facility,,No,,41.94375520000001,-116.0968542
+170,20170,Omak Indian Health Clinic,617 Benton St,Omak,WA,98841,,(509) 422-7416,IHS Facility,,No,,48.4027044,-119.5245717
+171,20171,Not-Tsoo Gah-Nee Indian Health Center,427 NW Main St,Pocatello,ID,83204,,208-238-5455,IHS Facility,,No,,42.8645483,-112.4540053
+172,20172,Mashpee Health Service,33 Great Neck Rd South ,Mashpee,MA,2649,,508-477-6967,IHS Facility,,No,,41.6161693,-70.48714489999999
+173,20173,CIHA Snowbird Health Station,50 Indian School House Road,Robbinsville,NC,28771,,828-497-9163,IHS Facility,,No,,35.3684366,-83.69279639999999
+174,20174,CIHA Murphy Clinic,328 Airport Road,Marble,NC,28905,,N/A,IHS Facility,,No,,35.1607322,-83.9452754
+175,20175,Red Water Health Station,1930 N Pearl Street,Carthage,MS,39051,,601-267-8368,IHS Facility,,No,,32.7643323,-89.5363027
+176,20176,Poarch Creek Health Center,5811 Jack Springs Rd,Atmore,AL,36502,,251-368-9136,IHS Facility,,No,,31.0961385,-87.5529892
+177,20177,Brighton Health Center,17201 Civic Street,Okeechobee,FL,34974,,863-763-0271,IHS Facility,,No,,27.081163,-81.0764415
+178,20178,Tsaile Health Center,"Route 64 @ Indian Road 12, (NCC) (COLLEGE)",Tsaile,AZ,86556,,928-724-3716,IHS Facility,,No,,36.2938846,-109.2161569
+179,20179,Eklutna Village Clinic,26339 Eklutna Village Road,Chugiak,AK,99567,,907-688-6031,IHS Facility,,No,,61.45851719999999,-149.3610361
+180,20180,Valley Native Primary Care Center,"1830 E Parks Highway, Suite A134",Wasilla,AK,99654,,907-352-6000,IHS Facility,,No,,61.57396670000001,-149.4035768
+181,20181,Akutan,P.O. Box 113,Akutan,AK,99553,,907-698-2208,IHS Facility,,No,,54.1173298,-165.8149882
+182,20182,Cordova (Ilanka Community Health Center),509 Chase Street,Cordova,AK,99574,,907-424-3622,IHS Facility,,No,,60.54103,-145.7534699
+183,20183,Seldovia Health Center in Homer,880 East End Road,Homer,AK,99603,,907-226-2228,IHS Facility,,No,,59.6504141,-151.5218736
+184,20184,Kenai  (Dena'ina Health Center),"416 Frontage Road, Suite 200",Kenai,AK,99611,,907-335-7300,IHS Facility,,No,,60.5561362,-151.2427091
+185,20185,King Cove Health Clinic,P.O. Box 9,King Cove,AK,99612,,907-497-2311,IHS Facility,,No,,55.0592921,-162.3137679
+186,20186,Kodiak  (Alutiiq Enwia Clinic),3449 E Rezanof Drive,Kodiak,AK,99615,,907-486-9870,IHS Facility,,No,,57.8117652,-152.3550498
+187,20187,McGrath Sub-Regional Health Center,P.O. Box 10,McGrath,AK,99627,,907-524-3299,IHS Facility,,No,,62.9532043,-155.5959922
+188,20188,Woodrow Wilson Keeble Memorial Health Care Center,100 Lake Traverse Drive,Sisseton,SD,57262,,605-698-7606,IHS Facility,,No,,45.6564254,-97.01651
+189,20189,Karuk Community Health Clinic,64236 Second Avenue,Happy Camp,CA,96039,,(530) 493-5257,IHS Facility,,No,,41.78955879999999,-123.3830367
+190,20190,Grand Ronde Health & Wellness Center,9615 Grand Ronde Rd,Grand Ronde,OR,97347,,(503) 879-5211,IHS Facility,,No,,45.0754005,-123.6152577
+191,20191,David C Wyncoop Memorial Clinic,6203 Agency Loop Road,Wellpinit,WA,99040,,(509) 258-4517,IHS Facility,,No,,47.8892173,-117.988021
+192,20192,"Pit River Health Service, Inc. (Burney)",36977 Park Ave ,Burney,CA,96013,,530-335-3651 ,IHS Facility,,No,,40.8758018,-121.6721917
+193,20193,Quileute Tribal Health Facility,560 Quileute Heights,LaPush,WA,98350,,(360) 374-9035,IHS Facility,,No,,47.8990616,-124.621474
+194,20194,Lower Elwha Tribe Health Clinic,243511 Hwy 101 West,Port Angeles,WA,98363,,(360) 452-6252,IHS Facility,,No,,48.1037502,-123.3573497
+195,20195,Roger Saux Health Center,1505 Kla-ook-wa Dr,Taholah,WA,98587,,(360) 276-4405,IHS Facility,,No,,47.3393971,-124.2810023
+196,20196,Siletz Community Health Clinic,107 SE Swan,Siletz,OR,97380,,(541) 444-2532,IHS Facility,,No,,44.7198801,-123.9176139
+197,20197,Tulalip Health Center,"7627 41st Ave, NW",Marysville,WA,98271,,N/A,IHS Facility,,No,,48.0656427,-122.2874954
+198,20198,Wadatika Health Center Burns Paiute,50 Pasigo St.,Burns,OR,97720,,(541) 573-2088,IHS Facility,,No,,43.6116344,-119.0715117
+199,20199,Warm Springs Health & Wellness,1270 Kotnum Rd,Warm Springs,OR,97761,,(541) 553-1196,IHS Facility,,No,,44.7537571,-121.2740937
+200,20200,White Swan Health Clinic,80 Birdsong Lane,White Swan,WA,98952,,(509) 874-2979,IHS Facility,,No,,46.38290370000001,-120.7311801
+201,20201,Inchelium Tribal Health Clinic,39 Shortcut Rd,Inchelium,WA,99138,,(509) 634-7300,IHS Facility,,No,,48.2992341,-118.2048541
+202,20202,Jamestown S'Klallam Family Health Center,77 N 5th Ave,Sequim,WA,98382,,(360) 582-2880,IHS Facility,,No,,48.0869885,-123.1130615
+203,20203,Lummi Indian Health Center (Bellingham),2592 Kwina Road,Bellingham,WA,98226,,(360) 384-0464,IHS Facility,,No,,48.794562,-122.6213811
+204,20204,Kamiah Health Center,313 3rd St,Kamiah,ID,83536,,(208) 935-0733,IHS Facility,,No,,46.2286709,-116.0246472
+205,20205,Nimiipuu Health Center Nez Perce,111 Beaver Grade Road,Lapwai,ID,83540,,(208) 843-2271,IHS Facility,,No,,46.40040399999999,-116.8057439
+206,20206,Nooksack Tribal Health Center,6760 Mission Rd,Everson,WA,98247,,(360) 966-2106,IHS Facility,,No,,48.8857016,-122.3525669
+207,20207,Port Gamble S'Klallam Tribe Health Facility,31912 Little Boston Road SE,Kingston,WA,98346,,(360) 297-9661,IHS Facility,,No,,47.8518965,-122.569328
+208,20208,Stebbins  (Taprarmiut Yungcarviat Village Clinic),P.O. Box 50,Stebbins,AK,99671,,907-934-3311,IHS Facility,,No,,63.5201678,-162.286065
+209,20209,Pinon Health Center,NR 4- 2 Miles East of Pinon,Pinon,AZ,86510,,928-725-9637,IHS Facility,,No,,36.1008342,-110.2259609
+210,20210,Rock Point Health Station,Hwy 191,Rock Point,AZ,N/A,,928-659-4430,IHS Facility,,No,,36.7170592,-109.6178319
+211,20211,Thoreau Health Station,Hwy 371 & I-40,Thoreau,NM,87323,,505-786-8250,IHS Facility,,No,,35.4044769,-108.2194779
+212,20212,Pueblo Pintado Health Center,"43 miles west of Cuba, NM on Navajo HWY 9",Pueblo Pintado,NM,87313,,505-655-3301,IHS Facility,,No,,35.9515001,-107.627451
+213,20213,Nahata Dziil Health Center,Chiih'Toh Blvd,Sanders,AZ,86512,,928-688-5600,IHS Facility,,No,,35.193737,-109.3175582
+214,20214,Tohatchi Health Center,07 Choosgai Drive,Tohatchi,NM,87325,,505-733-8100,IHS Facility,,No,,35.8583149,-108.7622079
+215,20215,Kayenta Health Center,"Highway 163, PHS/IHS Dr",Kayenta,AZ,86033,,928-697-4000,IHS Facility,,No,,36.7040451,-110.2337862
+216,20216,Inscription House Health Center,Hwy 98 &  Navajo Route 1,Tonalea,AZ,86044,,928-672-3000,IHS Facility,,No,,36.1192718,-111.2293194
+217,20217,Sophie Trettevick Indian Health Center-Makah,250 Fort St,Neah Bay,WA,98357,,(360) 645-2233,IHS Facility,,No,,48.3679382,-124.626916
+218,20218,The Klamath Tribes Health & Wellness Center,330 Chiloquin Blvd,Chiloquin,OR,97624,,(800) 246-7894,IHS Facility,,No,,42.5767788,-121.8755334
+219,20219,Takopid Health Center,2209 E 32nd St,Tacoma,WA,98404,,(253) 593-0232,IHS Facility,,No,,47.2361183,-122.3998098
+220,20220,NARA Indian Health Clinic,15 North Morris Street,Portland,OR,97227,,503-230-9875,IHS Facility,,No,,45.544781,-122.6667977
+221,20221,Seattle Indian Health Board Health Center,611 12th Ave South,Seattle,WA,98114,,N/A,IHS Facility,,No,,47.5972287,-122.3180895
+222,20222,Santa Rosa Health Clinic,"Federal Route 15, MM 12",Santa Rosa,AZ,85634,,520-361-2261 or 520-383-5570 ,IHS Facility,,No,,32.3236779,-112.0412468
+223,20223,San Xavier Health Center,7900 SOUTH J STOCK ROAD,Tucson,AZ,85746,,520-295-2550,IHS Facility,,No,,32.1086556,-110.9815628
+224,20224,San Simon Health Center,"W HWY 86, MM 74",Sells,AZ,85634,,520-362-7007,IHS Facility,,No,,31.9183669,-111.8795232
+225,20225,Pascua Yaqui Health Center,7474 Camino de Oeste,Tucson,AZ,85757,,520-670-6008,IHS Facility,,No,,32.1165976,-111.0642485
+226,20226,El Rio Yaqui,839 W Congress St,Tucson,AZ,85745,,520-670-3707,IHS Facility,,No,,32.2206781,-110.9859637
+227,20227,Adak Health Center,P.O. Box 2105,Adak,AK,99546,,907-592-8383,IHS Facility,,No,,51.8411304,-176.631103
+228,20228,Iliamna  (Nilavena Subregional Clinic),101 Airport Road,Iliamna,AK,99606,,907-571-1818,IHS Facility,,No,,59.4370083,-154.7920984
+229,20229,Sand Point Health Center,527 Red Cove Road,Sand Point,AK,99661,,907-383-3451,IHS Facility,,No,,55.3475121,-160.4840639
+230,20230,Seldovia Medical Clinic,206 Main Street,Seldovia,AK,99663,,907-435-3262,IHS Facility,,No,,59.4370364,-151.711978
+231,20231,Seward  (North Star Health Clinic),201 3rd Avenue,Seward,AK,99664,,907-224-3076  or 1-800-224-3076,IHS Facility,,No,,60.1013767,-149.4425644
+232,20232,Ninilchik Community Clinic,P.O. Box 39368,Ninilchik,AK,99639,,907-567-3970,IHS Facility,,No,,60.05138890000001,-151.6688889
+233,20233,Hooper Bay Sub-Regional Clinic,P.O. Box 49,Hooper Bay,AK,99604,,907-758-3500,IHS Facility,,No,,61.52684319999999,-166.1124771
+234,20234,Aniak Subregional Clinic,P.O. Box 269,Aniak,AK,99557,,907-675-4556,IHS Facility,,No,,61.5827629,-159.5407304
+235,20235,Emmonak  (Pearl E. Johnson Sub-Regional Clinic),P.O. Box 246,Emmonak,AK,99581,,907-949-3500,IHS Facility,,No,,62.7737206,-164.5026608
+236,20236,Saint Mary's Sub-Regional Clinic,P.O. Box 130,Saint Mary's,AK,99658,,907-438-3500,IHS Facility,,No,,62.0711223,-163.2586855
+237,20237,Toksook Bay Sub-Regional Clinic,P.O. Box 37028,Toksook Bay,AK,99637,,907-427-3500,IHS Facility,,No,,60.5302778,-165.1025001
+238,20238,Togiak Sub-Regional Clinic,General Delivery,Togiak,AK,99678,,907-493-5511,IHS Facility,,No,,59.05832580000001,-160.3812836
+239,20239,Parshall Clinic,107 3rd Street Southeast,Parshall,ND,58770,,701-627-4701,IHS Facility,,No,,47.95230400000001,-102.1384752
+240,20240,Pechanga Indian Health Center,12784 Pechanga Rd,Temecula,CA,92390,,(951) 676-6810,IHS Facility,,No,,33.447944,-117.0888262
+241,20241,Pierre Urban Indian Clinic,1714 Abbey Rd,Pierre,SD,57501,,605-224-8841,IHS Facility,,No,,44.3816412,-100.321593
+242,20242,"Central Valley Indian Health, Prather Clinic","29369 Auberry Road, Suite 102",Prather,CA,93651,,559-855-5395,IHS Facility,,No,,37.0389993,-119.5177268
+243,20243,Red Bluff Clinic,1425 Montgomery Road,Red Bluff,CA,96080,,530-284-6135 ,IHS Facility,,No,,40.1578088,-122.2255473
+244,20244,Redding Rancheria Indian Health Clinic,3184 Churn Creek Rd ,Redding,CA,96002,,530-224-2700 ,IHS Facility,,No,,40.56135159999999,-122.3536345
+245,20245,Round Valley Indian Health Center,Hwy 162 & Biggar Lane,Covelo,CA,95428,,707-983-6404 ,IHS Facility,,No,,39.8097641,-123.2481198
+246,20246,Sacramento Native American Health Center ,2020 J Street,Sacramento,CA,95811,,916-341-0575 ,IHS Facility,,No,,38.5761075,-121.4790916
+247,20247,San Andreas Community Clinic,265 West St. Charles Street,San Andreas,CA,95249,, 209-755-1400 ,IHS Facility,,No,,38.19737800000001,-120.686445
+248,20248,San Diego American Indian Health Center,2630 First Ave ,San Diego,CA,92103,,619-234-2158 ,IHS Facility,,No,,32.7328551,-117.1642269
+249,20249,San Manuel Health Clinic,2210 E Highland Ave. Suite # 200,San Bernardino,CA,92404,,909-864-1097 ,IHS Facility,,No,,34.1363956,-117.239824
+250,20250,Santa Ynez Tribal Health Clinic,90 Via Juana Lane,Santa Ynez ,CA,93460,,805-688-7070 ,IHS Facility,,No,,34.6045891,-120.0931061
+251,20251,Sioux Falls Urban Indian Clinic,711 N Lake Ave,Sioux Falls,SD,57104,,605-339-0420,IHS Facility,,No,,43.5558287,-96.74567750000001
+252,20252,Soboba Health Clinic,607 Donna Way,San Jacinto,CA,92583,,951-654-0803 ,IHS Facility,,No,,33.7819137,-116.9367634
+253,20253,Chignik Bay Subregional Clinic,P.O. Box 90,Chignik Bay,AK,99564,,907-749-2282,IHS Facility,,No,,56.30460420000001,-158.4079067
+254,20254,Juneau  (SEARHC Ethel Lund Medical Center),1200 Salmon Creek Lane,Juneau,AK,99801,,907-463-4040,IHS Facility,,No,,58.3313868,-134.4671836
+255,20255,KIC Tribal Health Center (Ketchikan),"2960 Tongass Avenue, 3rd floor",Ketchikan,AK,99901,,907-228-9200,IHS Facility,,No,,55.35266189999999,-131.6848485
+256,20256,Front Street Clinic - Juneau,"222 Front Street, #202",Juneau,AK,99801,,907-463-4201,IHS Facility,,No,,58.30076049999999,-134.4066402
+257,20257,Yakutat Health Center,712 Ocean Cape Road,Yakutat,AK,99689,,907-784-3275,IHS Facility,,No,,59.54395770000001,-139.7318118
+258,20258,Angoon,725 Relay Road,Angoon,AK,99820,,907-788-4600,IHS Facility,,No,,57.49909100000001,-134.5802606
+259,20259,SEARHC Haines Medical Center,131 First Avenue South,Haines,AK,99827,,907-766-6300,IHS Facility,,No,,59.2333925,-135.4449453
+260,20260,Hoonah  (Trudy Wolfe Health Center),568 Raven Drive,Hoonah,AK,99829,,907-945-3235,IHS Facility,,No,,58.1109239,-135.4382455
+261,20261,Klawock (Alicia Roberts Health Center),7300 Klawock-Hollis Highway,Klawock,AK,99925,,907-755-4800,IHS Facility,,No,,55.5470864,-133.0964469
+262,20262,Chief Andrew Isaac Health Center,1408  19th Avenue,Fairbanks,AK,99701,,907-451-6682 or toll free 800-478-6682,IHS Facility,,No,,64.8314652,-147.7393126
+263,20263,Tanana Health Center,P.O. Box 77150,Tanana,AK,99777,,907-366-7223,IHS Facility,,No,,65.17114889999999,-152.0882941
+264,20264,Metlakatla  (Annette Island SU Health Center),Brendible Street ,Metlakatla,AK,N/A,,907-886-4741,IHS Facility,,No,,55.1243382,-131.5757094
+265,20265,Savoonga Village Clinic,P.O. Box 151,Savoonga,AK,99769,,907-984-6513,IHS Facility,,No,,63.6953,-170.4979
+266,20266,Unalakleet (Anikkan Inuit Iluaqutaat Sub-Regional Clinic),P.O. Box 189,Unalakleet,AK,99684,,907-624-3535,IHS Facility,,No,,63.87305559999999,-160.7880555
+267,20267,Brevig Mission Village Clinic,P.O. Box 85058,Brevig Mission,AK,99785,,907-642-4311,IHS Facility,,No,,65.3347222,-166.4891666
+268,20268,Fred Leroy Health and Wellness Center,2602 J Street,Omaha,NE,68107,,402-734-5275,IHS Facility,,No,,41.2148822,-95.95034249999999
+269,20269,Agua Caliente Outreach Office,901 E Tahquitz Way ,Palm Springs,CA,92262,,(760) 323-9496,IHS Facility,,No,,33.8223811,-116.5377789
+270,20270,Allen Health Station,100 West Main St,Allen,SD,57714,,N/A,IHS Facility,,No,,33.1031954,-96.6702672
+271,20271,Anza Indian Health / Outreach Office,"39100 Contreras Road, Suite C",Anza,CA,92539,,(951) 763-4835,IHS Facility,,No,,33.5539017,-116.6743569
+272,20272,Bakersfield American Indian Health Project,1617 30th St,Bakersfield,CA,93301,, 661-327-4030 ,IHS Facility,,No,,35.3865129,-119.0205066
+273,20273,Barstow Outreach Office,"705 E. Virginia Way, Suite A",Barstow,CA,92311,,(760) 256-9016,IHS Facility,,No,,34.8883083,-117.0184466
+274,20274,Central Valley Indian Health Clinic,20 N. DeWitt Avenue,Clovis,CA,93612,, 559-299-2578 ,IHS Facility,,No,,36.830625,-119.7048668
+275,20275,Chapa-De Indian Health Program,11670 Atwood Road,Auburn,CA,95603,,530-887-2800,IHS Facility,,No,,38.9344973,-121.098847
+276,20276,Grass Valley Clinic,1350 East Main Street,Grass Valley,CA,95945,,530-477-8545,IHS Facility,,No,,39.2330282,-121.0461413
+277,20277,Dunseith Health Location,215 Main Street NE,Dunseith,ND,58329,,701-477-6111,IHS Facility,,No,,48.8107986,-100.061121
+278,20278,"Feather River Tribal Health, Inc.",2145 5th Ave,Oroville,CA,95965,, 530-534-5394 ,IHS Facility,,No,,39.5036595,-121.5631101
+279,20279,Fort Thompson Health Center,1323 BIA Route 4,Fort Thompson,SD,57339,,605-245-1500,IHS Facility,,No,,44.0654692,-99.4394009
+280,20280,Fortuna Health Center,940 Main Street,Fortuna,CA,95540,,707-725-7988 ,IHS Facility,,No,,40.5981814,-124.1568629
+281,20281,Fresno American Indian Health Project,"1535 E Shaw Ave, Suite #105",Fresno,CA,93710,,559-320-0490 ,IHS Facility,,No,,36.8082722,-119.7600638
+282,20282,Howonquet Health Station,501 North Indian Road,Smith River,CA,95567,,707-487-0215 ,IHS Facility,,No,,41.9575741,-124.2045841
+283,20283,Indian Health Center of Santa Clara Valley,1333 Meridian Ave,San Jose,CA,95125,,(408) 445-3400,IHS Facility,,No,,37.3018074,-121.9141096
+284,20284,Klamath Health Center,241 Salmon Avenue,Klamath,CA,95548,,707-482-2181 ,IHS Facility,,No,,41.5322981,-124.0415983
+285,20285,Kyle Health Center,1000 Health Center Road,Kyle,SD,57752,,605-455-2451,IHS Facility,,No,,43.4217315,-102.184447
+286,20286,Lassen Indian Health Center,795 Joaquin Street,Susanville,CA,96130,,530-257-2542,IHS Facility,,No,,40.4265688,-120.6567039
+287,20287,Lower Brule Health Center,601 Gall St,Lower Brule,SD,57548,,605-473-5544,IHS Facility,,No,,44.0748357,-99.58301809999999
+288,20288,Mandaree Health Station,305 Main Street,Mandaree,ND,58757,,701-627-4701,IHS Facility,,No,,47.72823529999999,-102.6779318
+289,20289,Mariposa Indian Health Center,5192 Hospital Road ,Mariposa,CA,95338,, 209-742-6144 ,IHS Facility,,No,,37.5009741,-119.9768989
+290,20290,Mathiesen Memorial Health Clinic,18144 Seco St,Jamestown,CA,95327,,209-984-4820,IHS Facility,,No,,37.9518909,-120.4218319
+291,20291,McLaughlin Health Center,701 East Sixth St,McLaughlin,SD,57642,,605-823-4458,IHS Facility,,No,,45.8092047,-100.81072
+292,20292,Meskwaki Health Center,307 Meskwaki Rd,Tama,IA,52339,,641-484-4094,IHS Facility,,No,,41.9881552,-92.6520628
+293,20293,Elbowoods Memorial Health Center,1 Minne-Tohe Drive,Newtown,ND,58763,,701-627-4701,IHS Facility,,No,,47.981652,-102.57674
+294,20294,"Native American Health Center, San Francisco",160 Capp St ,San Francisco,CA,94110,,415.621.8051,IHS Facility,,No,,37.7640268,-122.4187891
+295,20295,Native Women's Health Care,"640 Slormann St, Suite 400",Rapid City,SD,57702,,6305-342-7460,IHS Facility,,No,,44.065023,-103.2287125
+296,20296,North Fork Indian Health Center,"32938 Road 222, Suite 2",North Fork ,CA,93643,,559-877-4676 ,IHS Facility,,No,,37.2262428,-119.5100577
+297,20297,Northern Valley Indian Health - Chico,845 W East Ave,Chico,CA,95926,,530-896-9400 ,IHS Facility,,No,,39.7474001,-121.8762205
+298,20298,Northern Valley Indian Health - Willows,207 N Butte Street ,Willows ,CA,95988,,530-934-4641 ,IHS Facility,,No,,39.522178,-122.1958007
+299,20299,Sonoma County Indian Health,144 Stony Point Road ,Santa Rosa,CA,95401,,707-521-4545 ,IHS Facility,,No,,38.4406188,-122.743663
+300,20300,Sonora Indian Health Center,"13975 Mono Way, Suite G",Sonora,CA,95370,,209-533-9600 ,IHS Facility,,No,,37.9778879,-120.3396379
+301,20301,"Southern Indian Health Council, Inc",4058 Willows Road,Alpine,CA,91901,,619-445-1188 ,IHS Facility,,No,,32.83579080000001,-116.7256569
+302,20302,Sycuan Medical Dental Center,5442 Sycuan Road,El Cajon,CA,92019,,619-445-0707 ,IHS Facility,,No,,32.784519,-116.8363212
+303,20303,Tuolumne Me-Wuk Health and Wellness Center,"19969 Greenly Rd, Suite B",Sonora,CA,95370,,209-532-0028,IHS Facility,,No,,37.984984,-120.3662947
+304,20304,Tuolumne Me-Wuk Indian Health Center,18880 Cherry Valley Road ,Tuolumne,CA,95379,,209-928-5400,IHS Facility,,No,,37.9653179,-120.2404097
+305,20305,Toiyabe Indian Health Project -Bishop Clinic,52 Tu Su Lane,Bishop,CA,93514,,760-873-8461 ,IHS Facility,,No,,37.3615675,-118.4186606
+306,20306,Trenton Community Clinic,Highway 1804 West,Trenton,ND,58853,,701-774-0461,IHS Facility,,No,,47.6461854,-102.1168087
+307,20307,"United American Indian Involvement, Inc - Los Angeles","1125 W 6th Street, Suite 103",Los Angeles,CA,90017,,213-202-3970 ,IHS Facility,,No,,34.05461,-118.2626665
+308,20308,UIHS-Potawot Health Village,1600 Weeot Way,Arcata ,CA,95521,,707-825-5000,IHS Facility,,No,,40.8966266,-124.0853733
+309,20309,Wagner Health Center,"111 Washington Street, NW",Wagner,SD,57380,,605-384-3621,IHS Facility,,No,,43.0827442,-98.29815169999999
+310,20310,Wanblee Health Center,100 Clinic Road,Wanblee,SD,57577,,605-642-6155,IHS Facility,,No,,43.5694425,-101.6604244
+311,20311,Weitchpec Indian Health Station,"Weitchpec Route, Libby Nix Community Center ",Hoopa,CA,95546,,(707) 445-2360,IHS Facility,,No,,41.1867338,-123.7029251
+312,20312,White Shield Health Station,2 Central Main Street B,White Shield,ND,58775,,701-627-4701,IHS Facility,,No,,47.66154969999999,-101.8427984
+313,20313,Yreka - Karuk Tribal Health Clinic,1519 S Oregon St,Yreka,CA,96097,,530-842-9200 ,IHS Facility,,No,,41.7169625,-122.6428478
+314,20314,Yuba City Indian Health Station,1231 Plumas Street,Yuba City,CA,95991,,530-751-8454 ,IHS Facility,,No,,39.1480645,-121.6174623
+315,20315,Chemawa Indian Health Center,3750 Chemawa Road NE,Salem,OR,97305,,(503) 304-7600,IHS Facility,,No,,44.9995616,-122.9830514
+316,20316,Chemawa Indian School,3700 Chemawa Road NE,Salem,OR,97305,,N/A,IHS Facility,,No,,44.99922249999999,-122.9858529
+317,20317,Chitimacha Health Clinic,3231 Chitimacha Trail,Charenton,LA,70523,,337-923-9955,IHS Facility,,No,,29.8885298,-91.526404
+318,20318,Bogue Chitto Health Station,124 Big Creek Circle,Philadelphia,MS,39350,,601-656-5442,IHS Facility,,No,,32.8326982,-88.93269459999999
+319,20319,Conehatta Health Station,376 Campus Road,Conehatta,MS,39057,,601-775-3446,IHS Facility,,No,,32.4606822,-89.27128599999999
+320,20320,Bogue Homa Health Station,109 McFarlane Road,Heidelberg,MS,39439,,601-425-1991,IHS Facility,,No,,31.7956928,-88.9896177
+321,20321,Coushatta Health Station,2003 CC Bel Road,Elton,LA,70532,,337-584-1439,IHS Facility,,No,,30.5244489,-92.7157213
+322,20322,Alabama-Coushatta Health Center,129 Daycare Road,Livingston,TX,77351,,936-563-2058,IHS Facility,,No,,30.7190222,-94.7081346
+323,20323,Catawba Health Service,2893 Sturgis Rd,Rock Hill,SC,29730,,803-366-9090,IHS Facility,,No,,34.9438901,-80.9113979
+324,20324,Cattaraugus I.R. Health Center ,36 Thomas Indian School Drive,Irving,NY,14081,,716-532-5582,IHS Facility,,No,,42.5390817,-78.9939504
+325,20325,Lionel John/Allegany I.R. Health Center,987 R.C. Hoag Drive,Salamanca,NY,14779,,716-945-5894,IHS Facility,,No,,42.1584322,-78.7551481
+326,20326,Mashantucket Pequot Health Center ,75 Norwich-Westerly Road,Ledyard,CT,6339,,860-312-8029,IHS Facility,,No,,41.4773942,-71.95919049999999
+327,20327,Narragansett Health Center,4533 S County Trail,Charlestown,RI,2813,,401-364-1268,IHS Facility,,No,,41.41608069999999,-71.64937379999999
+328,20328,Oneida Indian Nation Health Services,2 Territory Rd,Oneida,NY,13421,,315-829-8700,IHS Facility,,No,,43.0409625,-75.6218949
+329,20329,Micmac Health Services,8 Northern Road,Presque Isle,ME,4769,,207-764-6968,IHS Facility,,No,,46.6969541,-68.0335226
+330,20330,Indian Township (Peter Dana Point) Health Center,401 Peter Dana Point Road,Princeton,ME,N/A,,207-796-2321,IHS Facility,,No,,45.21566869999999,-67.6326441
+331,20331,Houlton Health Center,3 Clover Circle,Houlton,ME,4730,,207-532-2240,IHS Facility,,No,,46.162292,-67.80914349999999
+332,20332,Pleasant Point Health Center,11 Back Road ,Perry ,ME,4667,,207-853-0644,IHS Facility,,No,,44.95623,-67.0422396
+333,20333,Big Cypress Health Center,30581 Buffalo Jim Loop Rd,Clewiston,FL,33440,,863-983-5151,IHS Facility,,No,,26.3144675,-80.9910037
+334,20334,Immokalee Health Center,1120 S First Street,Immokalee,FL,34142,,239-867-3400,IHS Facility,,No,,26.3995361,-81.416646
+335,20335,Miccosukee Health Station,US 41 - Mile Marker 70,Miami,FL,33144,,305-223-8380,IHS Facility,,No,,25.7633942,-80.2935172
+336,20336,Hollywood Health Center,3006 Josie Billie Ave,Hollywood,FL,33024,,954-962-2009,IHS Facility,,No,,26.0364003,-80.2184065
+337,20337,Canoncito Health Center,Interstate 40 @ Exit 131,Canoncito,NM,87026,,505-908-2307,IHS Facility,,No,,34.9991206,-107.064088
+338,20338,Colusa Indian Health Clinic,3710 Hwy 45,Colusa,CA,95932,, 530-458-5501 ,IHS Facility,,No,,39.2505977,-122.0311366
+339,20339,Confederated Umatilla Tribes Yellowhawk Clinic,73265 Confederated Way,Pendleton,OR,97801,,(541) 278-7500,IHS Facility,,No,,45.66513080000001,-118.6615386
+340,20340,Coquille Community Health Center,600 Miluk Dr,Coos Bay,OR,97420,,(541) 888-9494,IHS Facility,,No,,43.359715,-124.2969013
+341,20341,Cow Creek Health & Wellness Center,"2371 NE Stephens, Suite #200",Roseburg,OR,97470,,(541) 672-8533,IHS Facility,,No,,43.2387322,-123.3520619
+342,20342,Sauk-Suiattle Tribal Health Clinic,5318 Chief Brown Lane,Darrington,WA,98241,,(360) 436-2210,IHS Facility,,No,,48.3220809,-121.5524762
+343,20343,Shoalwater Bay Tribal Clinic,2373 Tokeland Rd,Tokeland,WA,98590,,(360) 267-0119,IHS Facility,,No,,46.7209903,-124.0149259
+344,20344,Stilaguamish Health Center,3439 Stoluckguamish Lane,Arlington,WA,98923,,N/A,IHS Facility,,No,,48.214878,-122.1852941
+345,20345,Swinomish Tribal Health Center,17400 Reservation Rd,La Conner,WA,98257,,(360) 466-3167,IHS Facility,,No,,48.3932668,-122.5019217
+346,20346,Tolt Community Clinic - Snoqualmie,8130 Railroad Ave Suite 103,Snoqualmie,WA,98065,,(425) 333-5426,IHS Facility,,No,,47.5275386,-121.8243084
+347,20347,Upper Skagit Tribal Clinic,2284 Community Plaza Way,Sedro Wolley,WA,98284,,(360) 854-7070,IHS Facility,,No,,48.53982120000001,-122.1845579
+348,20348,Bullhead Health Station,102 Tasunka Street,Bullhead,SD,57621,,701-854-3831,IHS Facility,,No,,45.7671286,-101.0841534
+349,20349,Flandreau Santee Sioux Tribal Health Center,701 West Broad Ave,Flandreau,SD,57028,,605-997-3891,IHS Facility,,No,,44.0436839,-96.6056163
+350,20350,Santee Sioux Health Center,110 South Visiting Eagle Street,Niobrara,NE,68760,,N/A,IHS Facility,,No,,42.8359683,-97.8563554
+351,20351,Whitehorse Health Station,317 Main,Eagle Butte,SD,57661,,605-964-8917,IHS Facility,,No,,44.9886537,-101.2224805
+352,20352,Santa Ysabel Community Health Center,110-1/2 School House Canyon Road ,Santa Ysabel,CA,92070,, 760-789-9060 ,IHS Facility,,No,,33.1553524,-116.6718629
+353,20353,Skokomish Tribe,80 North Tribal Center Rd,Skokomish,WA,98584,,(360) 426-5755,IHS Facility,,No,,47.3221601,-123.1456352
+354,20354,Camas Center Clinic,1821 N LeClerec Rd #1,Cusick,WA,99119,,509-447-7262,IHS Facility,,No,,48.3438702,-117.272454
+355,20355,Anava Tribal Health Clinic,9024 Sniktaw Lane ,Fort Jones,CA,96032,,530-468-4470,IHS Facility,,No,,41.5994685,-122.9765744
+356,20356,Clarence Wesley Health Center,101 Medical Dr,Bylas,AZ,85530,,928-475-2371,IHS Facility,,No,,33.1258926,-110.1142756
+357,20357,Campo Medical / Dental Clinic,36350 Church Road,Campo,CA,91906,,619-478-2225 ,IHS Facility,,No,,32.6573321,-116.3671408
+358,20358,Chehalis Community Clinic,21 Neiderman Rd,Oakville,WA,98568,,(360) 273-5504,IHS Facility,,No,,46.8136529,-123.1705608
+359,20359,Chief Klai Health & Wellness - Hoh,2269 Lower Hoh Road ,Forks,WA,98331,,(360) 374-6582,IHS Facility,,No,,47.7408172,-124.413295
+360,20360,Cibecue Health Center,2 W 3rd St,Cibecue,AZ,85911,,(928) 338-3555,IHS Facility,,No,,34.0513394,-110.4851112
+361,20361,Colville Indian Health Center Nespelem,19 Lakes St,Nespelem,WA,99155,,(509) 634-2900,IHS Facility,,No,,48.1316418,-118.974338
+362,20362,Cowlitz Tribal Health Clinic,1055 9th Ave Suite A,Longview,WA,98632,,(360) 575-8275,IHS Facility,,No,,46.1320893,-122.9318146
+363,20363,Elk Valley Health Station,2298 Norris Avenue,Crescent City,CA,95531,,707-464-2919 ,IHS Facility,,No,,41.76196580000001,-124.1590554
+364,20364,Greenville Rancheria Indian Health,410 Main Street ,Greenville,CA,95947,, 530-284-7990 ,IHS Facility,,No,,40.1409761,-120.9506573
+365,20365,K'ima:w Medical Center,1200 Airport Road,Hoopa,CA,95546,,(530) 625-4261,IHS Facility,,No,,41.0414888,-123.6648554
+366,20366,"Indian Health Council, Inc.- Valley Center",50100 Golsh Road,Valley Center,CA,92082,,(760) 749-1410,IHS Facility,,No,,33.2774654,-116.9617442
+367,20367,Klamath Tribal Health Clinic,3949 S 6th Street,Klamath Falls,OR,97603,,N/A,IHS Facility,,No,,42.2069053,-121.7399613
+368,20368,Lake County Tribal Health Consortium,925 Bevins Court,Lakeport,CA,95453,, 707-263-8382 ,IHS Facility,,No,,39.0371219,-122.921734
+369,20369,Lone Pine Indian Health Clinic,1150 South Goodwin Lane,Lone Pine,CA,93454,,(760) 876-4795,IHS Facility,,No,,36.5944493,-118.0508325
+370,20370,Morongo Clinic,11555-1/2 Portrero Road,Banning,CA,92220,,951-849-4761 ,IHS Facility,,No,,33.9527257,-116.8290602
+371,20371,Nisqually Health Clinic,4816-B She-Nah-Num Drive SE,Olympia,WA,98513,,(360) 459-5312,IHS Facility,,No,,47.0036763,-122.6704878
+372,20372,Karuk Tribe of California Clinic - Orleans,39051 Highway 96,Orleans,CA,95556,, 530-627-3452,IHS Facility,,No,,41.305408,-123.5275201
+373,20373,Pyramid Lake Tribal Health Center,705 Hwy 446,Nixon,NV,89424,,775-574-1018,IHS Facility,,No,,39.8217038,-119.3633712
+374,20374,Quinault Nation Tribal Health Facility,173 Queets Ave,Queets,WA,98331,,(360) 962-2245,IHS Facility,,No,,47.5400773,-124.331881
+375,20375,Reno/Sparks Tribal Health Clinic,1715 Kuenzli St,Reno,NV,89502,,"(775) 329-5162, ext. 1996",IHS Facility,,No,,39.529711,-119.791574
+376,20376,Shingle Springs Tribal Health Program,5168 Honpie Rd,Placerville,CA,95667,,530-672-8059 ,IHS Facility,,No,,38.6932221,-120.903627
+377,20377,Squaxin Island Health Clinic,90 SE Klah-Ce-Min Dr,Shelton,WA,98584,,(360) 427-9006,IHS Facility,,No,,47.1221565,-123.0825148
+378,20378,Table Mountain Rancheria Medical Center,23638 Sky Harbour Dr. ,Friant,CA,93626,,559-822-3785 ,IHS Facility,,No,,37.00349080000001,-119.6351534
+379,20379,Tachi Medical Center,"16835 Alkali Drive, Suite M ",Lemoor,CA,93245,, 559-924-1541 ,IHS Facility,,No,,36.23824219999999,-119.7596594
+380,20380,"Tule River Indian Health Center, Inc",380 N Reservation Rd,Porterville,CA,93257,,559-784-2316,IHS Facility,,No,,36.0284957,-118.7974015
+381,20381,Warner Mountain Indian Health Clinic,132 Mee Thee-Uh Road,Fort Bidwell,CA,96112,,530-279-6194 ,IHS Facility,,No,,41.8605328,-120.15207
+382,20382,X-L Ranch Reservation Clinic,1034 Lakeview Highway,Alturas,CA,96101,,530-223-3223,IHS Facility,,No,,42.1934529,-120.3518141
+383,20383,Yakama Indian Health Clinic,401 Buster Road,Toppenish,WA,98948,,(509) 865-2102,IHS Facility,,No,,46.3757958,-120.3430817
+384,20384,Center for American Indian Resources,211 W 4th Street,Duluth,MN,55806,,218-879-1227,IHS Facility,,No,,46.7875447,-92.105796
+385,20385,East Lake Health Station,36666 Hwy 65,McGregor,MN,55760,,320-532-4163 x7575,IHS Facility,,No,,46.542973,-93.28115149999999
+386,20386,Escanaba Tribal Health ,524 Ludington St,Escanaba,MI,49829,,906-632-5257,IHS Facility,,No,,45.7460222,-87.0548948
+387,20387,Grand Portage Health Center,62 Upper Rd,Grand Portage,MN,55605,,218-475-2235,IHS Facility,,No,,47.9668065,-89.6803309
+388,20388,Grand Traverse Band Family Health Clinic,"2300 N Stallman Rd, Suite A",Suttons Bay,MI,49682,,231-534-7477,IHS Facility,,No,,45.017202,-85.6145305
+389,20389,Ho-Chunk House of Wellness Health Center,S2845 White Eagle Road,Baraboo,WI,53913,,608-355-1240,IHS Facility,,No,,43.5414814,-89.7617471
+390,20390,Inger Tribal Health Station,Highway 46 ,Inger,MN,56636,,218-335-4500,IHS Facility,,No,,47.5271406,-94.04283060000002
+391,20391,Keweenaw Bay Health Center,102 Superior Ave,Baraga,MI,49908,,906-353-8666,IHS Facility,,No,,46.7799609,-88.4875167
+392,20392,Kinross Community Clinic,302 Watertower Dr,Kincheloe,MI,49788,,906-632-5257,IHS Facility,,No,,46.2719257,-84.4676681
+393,20393,Lac Courte Oreilles Health Center,13380 W Trepania Rd,Hayward,WI,54843,,715-638-5135,IHS Facility,,No,,45.9424864,-91.3607542
+394,20394,Lake Lena Health Station,45741 Grace Lake Rd,Sandstone,MN,55072,,320-532-4163 x7575,IHS Facility,,No,,46.061059,-92.4646429
+395,20395,Little River Band of Ottawa Indians Tribal Health Services,310 9th St,Manistee,MI,49660,,231-723-8299,IHS Facility,,No,,44.2378216,-86.3179072
+396,20396,Little Traverse Bay of Odawa Indians Outpatient Program,1080 Hager Drive,Petoskey,MI,49770,,231-242-1700,IHS Facility,,No,,45.3512346,-84.96052329999999
+397,20397,MBPI Health and Human Services,"1734 142nd Ave, Suite 8",Dorr,MI,49323,,616-681-0360,IHS Facility,,No,,42.7250767,-85.7159808
+398,20398,Menominee Health Center,W 3275 Wolf River Drive,Keshena,WI,54135,,715-799-3361 or 715-799-5789,IHS Facility,,No,,44.8853142,-88.6518553
+399,20399,Munising Health Station,622 W Superior St,Munising,MI,49862,,906-632-5257,IHS Facility,,No,,46.4150336,-86.66290060000001
+400,20400,Aberdeen Urban Indian Health Clinic,"1315 6th Ave SE,  Suite 6",Aberdeen,SD,57401,,605-225-1538,IHS Facility,,No,,45.4596133,-98.467766
+401,20401,American Indian Health & Services Corporation,4141 State Steet Suite B-11 ,Santa Barbara,CA,93110,,805-681-7356,IHS Facility,,No,,34.4393781,-119.761335
+402,20402,Lincoln Urban Indian Clinic,2331 Fairfield Street,Lincoln,NE,68521,,402-434-7177,IHS Facility,,No,,40.8472619,-96.68761649999999
+403,20403,North Bend Family Clinic - Snoquaimie,404 Main Ave South,North Bend,WA,98045,,(425) 888-5511,IHS Facility,,No,,47.4922307,-121.7873384
+404,20404,Naytahwaush Health Station,40520 County Hwy 34,Ogema,MN,56569,,218-983-4300,IHS Facility,,No,,47.0951522,-95.82995319999999
+405,20405,Ne-ia-shing Health Center,43500 Migizi Drive,Onamia,MN,56359,,320-532-4163 x7575,IHS Facility,,No,,46.1773254,-93.75120489999999
+406,20406,Nett Lake Health Center,5219 St. John Drive,Nett Lake,MN,55771,,218-757-3295,IHS Facility,,No,,48.1100603,-93.0968992
+407,20407,St Ignace Tribal Health Center,1140 N State St,St. Ignace,MI,49781,,906-632-5257,IHS Facility,,No,,45.8904627,-84.7308218
+408,20408,Arapahoe Health Center,14 Great Plains Road,Arapahoe,WY,82510,,307-856-9281,IHS Facility,,No,,42.9834446,-108.4847423
+409,20409,Fort Washakie Health Center,29 Black Coal Drive,Fort Washakie,WY,82514,,307-332-9416,IHS Facility,,No,,43.0043157,-108.8803008
+410,20410,Eagle Child Health Station,123 Whitecow Canyon Road,Hays,MT,59527,,406-353-3195,IHS Facility,,No,,47.9973744,-108.6886884
+411,20411,Heart Butte Health Station,81 Disney,Heart Butte,MT,59448,,406-338-2151,IHS Facility,,No,,48.2927025,-112.8353824
+412,20412,Lame Deer Health Center,100 Cheyenne Avenue,Lame Deer,MT,59043,,406-477-4454,IHS Facility,,No,,45.6298323,-106.66944
+413,20413,Lodge Grass Health Center,Harding Avenue,Lodge Grass,MT,59050,,406-638-3461,IHS Facility,,No,,45.3108792,-107.3683567
+414,20414,Poplar Health Center,107 H Street E,Poplar,MT,59255,,406-768-3491,IHS Facility,,No,,48.11517,-105.1936355
+415,20415,Pryor Health Station,Pryor Gap Road,Pryor,MT,59066,,406-638-3461,IHS Facility,,No,,45.3773195,-108.5622334
+416,20416,Wolf Point Health Center,550 6th Ave North,Wolf Point,MT,59201,,406-653-1641,IHS Facility,,No,,48.09494489999999,-105.64662
+417,20417,Benewah Medical Center,1115 B St,Plummer,ID,83851,,(208) 686-5072,IHS Facility,,No,,47.3358824,-116.8895294
+418,20418,Camp Verde Health Center,2121 West Reservation Loop Road,Camp Verde,AZ,86322,,N/A,IHS Facility,,No,,34.6196238,-111.8905576
+419,20419,Fort Yuma Health Center (Winterhaven),1 Indian Hill Road,Winterhaven,CA,92283,,760-572-0217,IHS Facility,,No,,32.7325382,-114.6153
+420,20420,Las Vegas Paiute Health Station,1257 PAIUTE CIRCLE,Las Vegas,NV,89106,,702-382-0784,IHS Facility,,No,,36.1844708,-115.1400167
+421,20421,Moapa Health Station,#1 Lincoln Street,Moapa,NV,89025,,N/A,IHS Facility,,No,,36.670058,-114.6533886
+422,20422,"Native American Community Health Center, Inc.","3008 N 3rd Street, Suite 310",Phoenix,AZ,N/A,,602-279-5262 ext. 3410,IHS Facility,,No,,33.4826577,-112.0698725
+423,20423,Supai Canyon Health Station,Main Street,Supai,AZ,86435,,928-669-2137,IHS Facility,,No,,36.2367003,-112.6884175
+424,20424,Gerald L Ignace Indian Health Center (Milwaukee),1711 South 11th Street,Milwaukee,WI,53204,,414-383-9526,IHS Facility,,No,,43.01176210000001,-87.9259203
+425,20425,American Indian Health and Family Services of SE Michigan,4880 Lawndale St,Detroit,MI,48210,,313-846-6030,IHS Facility,,No,,42.3281125,-83.1467849
+426,20426,American Indian Health Services of Chicago,4085 North Broadway,Chicago,IL,60613,,773-883-9100,IHS Facility,,No,,41.9567545,-87.6518098
+427,20427,Indian Health Board of Minneapolis,1315 E 24th St,Minneapolis,MN,55404,,612-721-9800,IHS Facility,,No,,44.9589069,-93.2554133
+428,20428,Native Health of Spokane,1803 West Maxwell Avenue,Spokane,WA,99201,,509-325-7535,IHS Facility,,No,,47.6705054,-117.4391216
+429,20429,"Native American Health Center, Oakland",3124 International Boulevard,Oakland,CA,94601,,510-535-4400,IHS Facility,,No,,37.7780604,-122.2262787
+430,20430,Gila River Criminal Justice Facility,669 W Seedfarm Rd,Sacaton,AZ,85147,,N/A,IHS Facility,,No,,33.074153,-111.7709611
+431,20431,Northern Valley Indian Health - Children's Center,277 Cohasset Road,Chico,CA,95926,,N/A,IHS Facility,,No,,39.7510841,-121.8512924
+432,20432,Manchester-Point Arena Clinic,24 Mamie Laiwa Rd,Point Arena,CA,95468,,N/A,IHS Facility,,No,,38.9367518,-123.6826011
+433,20433,Consolidated Tribal Health Program,6991 N State Street,Redwood Valley,CA,95470,,N/A,IHS Facility,,No,,39.2437941,-123.2057623
+434,20434,MBCI Outpatient Clinic,210 Hospital Circle,Choctaw,MS,39350,,601-656-2211,IHS Facility,,No,,32.7827195,-89.22966
+435,20435,Blanding Family Health Center,802 S 200W #B,Blanding,UT,N/A,,435-678-3601,IHS Facility,,No,,37.6126001,-109.4828322
+436,20436,Walker River Tribal Health Clinic,1025 Hospital Road,Schurz,NV,89427,,775-773-2345,IHS Facility,,No,,38.9537333,-118.8181892
+437,20437,Coleville Clinic,73 Camp Antelope Road,Coleville,CA,96107,,530-495-2151,IHS Facility,,No,,38.5290282,-119.4549525

@@ -22,7 +22,7 @@ public class SimRunner {
   private Map<VitalSign,Double> vitalSignResults = new HashMap<VitalSign,Double>();
   private Map<String,Double> modelInputs = new HashMap<String,Double>();
   boolean firstExecution;
-  
+
   /**
    * Handles execution of a PhysiologySimulator.
    * @param config simulation configuration
@@ -36,13 +36,13 @@ public class SimRunner {
         config.getStepSize(),
         config.getSimDuration()
     );
-    
+
     // All Patient parameters are set to the default Decimal type
     // TODO: May need to find a way to handle alternative types in the future
     for (IoMapper mapper : config.getInputs()) {
       mapper.initialize();
     }
-    
+
     for (String param : simulator.getParameters()) {
       // Assume all physiology model parameters are numeric
       // TODO: May need to handle alternative types in the future
@@ -53,7 +53,7 @@ public class SimRunner {
       mapper.initialize(paramTypes);
     }
   }
-  
+
   /**
    * Retrieves the simulation configuration.
    * @return simulation configuration
@@ -65,11 +65,11 @@ public class SimRunner {
   public double getVitalSignValue(VitalSign parameter) {
     return vitalSignResults.get(parameter);
   }
-  
+
   public boolean hasExecuted() {
     return firstExecution;
   }
-  
+
   /**
    * Sets the inputs to compare to the model default inputs.
    * Necessary to prevent initial execution if the initial input
@@ -80,7 +80,7 @@ public class SimRunner {
       prevInputs.put(mapper.getTo(), simulator.getParamDefault(mapper.getTo()));
     }
   }
-  
+
   /**
    * Sets up the model inputs for execution and determines if the simulation
    * needs to run due to sufficient change in inputs.
@@ -92,7 +92,7 @@ public class SimRunner {
     // Get our map of inputs
     for (IoMapper mapper : config.getInputs()) {
       double inputResult = mapper.toModelInputs(person, time, modelInputs);
-      
+
       // If we have previous results, check if there has been a sufficient
       // change in the input parameter
       if (!prevInputs.isEmpty() && Math.abs(inputResult
@@ -103,7 +103,7 @@ public class SimRunner {
     }
     return sufficientChange;
   }
-  
+
   /**
    * Executes the simulation if any input values are beyond the variance threshold.
    * @param time simulation time
@@ -112,9 +112,9 @@ public class SimRunner {
     // Copy our input parameters for future threshold checks
     prevInputs = new HashMap<String,Double>(modelInputs);
     MultiTable results = runSim(time, modelInputs);
-    
+
     firstExecution = true;
-    
+
     // Set all of the results
     for (IoMapper mapper : config.getOutputs()) {
       switch (mapper.getType()) {
@@ -136,7 +136,7 @@ public class SimRunner {
       }
     }
   }
-  
+
   /**
    * Runs the simulation and returns the results.
    * @param time simulation time

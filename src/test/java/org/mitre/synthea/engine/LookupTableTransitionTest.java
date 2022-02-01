@@ -33,7 +33,7 @@ public class LookupTableTransitionTest {
   private static ActiveCondition extremeLookuptablitis;
   // Modules (including lookuptablitis_test module)
   private static Map<String, Module.ModuleSupplier> modules;
- 
+
   /**
    * Initalizes the lookuptablitis module and conditions.
    */
@@ -235,7 +235,7 @@ public class LookupTableTransitionTest {
 
     Assert.assertNotEquals(silver, gold);
     Assert.assertNotEquals(gold, silver);
- 
+
     Set<LookupTableKey> set = new HashSet<LookupTableKey>();
     set.add(gold);
     Assert.assertFalse(set.contains(silver));

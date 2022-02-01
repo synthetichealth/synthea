@@ -41,6 +41,7 @@ public final class LifecycleModule extends Module {
       loadWeightForLengthChart();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
+  public static final String DAYS_UNTIL_DEATH = "days_until_death";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
   public static final String QUIT_SMOKING_AGE = "quit smoking age";
   public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
@@ -138,7 +139,7 @@ public final class LifecycleModule extends Module {
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
-    
+
     String fatherFirstName = Names.fakeFirstName("M", language, person);
     // this is anglocentric where the baby gets the father's last name
     attributes.put(Person.NAME_FATHER, fatherFirstName + " " + attributes.get(Person.LAST_NAME));
@@ -204,8 +205,7 @@ public final class LifecycleModule extends Module {
     boolean isRHNeg = person.rand() < 0.15;
     attributes.put("RH_NEG", isRHNeg);
 
-    double adherenceBaseline = Double
-        .parseDouble(Config.get("lifecycle.adherence.baseline", ".05"));
+    double adherenceBaseline = Config.getAsDouble("lifecycle.adherence.baseline", 0.05);
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
@@ -223,7 +223,7 @@ public final class LifecycleModule extends Module {
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
-    
+
     person.setVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE,
         new BloodPressureValueGenerator(person, SysDias.SYSTOLIC));
     person.setVitalSign(VitalSign.DIASTOLIC_BLOOD_PRESSURE,
@@ -231,7 +231,7 @@ public final class LifecycleModule extends Module {
 
     if (ENABLE_PHYSIOLOGY_GENERATORS) {
       List<PhysiologyValueGenerator> physioGenerators = PhysiologyValueGenerator.loadAll(person);
-      
+
       for (PhysiologyValueGenerator physioGenerator : physioGenerators) {
         person.setVitalSign(physioGenerator.getVitalSign(), physioGenerator);
       }
@@ -806,6 +806,13 @@ public final class LifecycleModule extends Module {
     if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
       person.recordDeath(time, LOSS_OF_CARE);
     }
+
+    if (person.attributes.containsKey(Person.DEATHDATE)) {
+      Long deathDate = (Long) person.attributes.get(Person.DEATHDATE);
+      long diff = deathDate - time;
+      long days = TimeUnit.MILLISECONDS.toDays(diff);
+      person.attributes.put(DAYS_UNTIL_DEATH, Long.valueOf(days));
+    }
   }
 
   protected static double likelihoodOfDeath(int age) {
@@ -846,7 +853,7 @@ public final class LifecycleModule extends Module {
   /**
    * Determines whether a person dies due to loss-of-care and lack of
    * necessary treatment.
-   * 
+   *
    * @param person the person to check for loss of care death.
    */
   public static boolean deathFromLossOfCare(Person person) {
@@ -876,8 +883,7 @@ public final class LifecycleModule extends Module {
       int year = Utilities.getYear(time);
       Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
       person.attributes.put(Person.SMOKER, smoker);
-      double quitSmokingBaseline = Double
-          .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+      double quitSmokingBaseline = Config.getAsDouble("lifecycle.quit_smoking.baseline", 0.01);
       person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quitSmokingBaseline);
     }
   }
@@ -912,8 +918,8 @@ public final class LifecycleModule extends Module {
       // assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);
-      double quitAlcoholismBaseline = Double
-          .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.05"));
+      double quitAlcoholismBaseline =
+              Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.05);
       person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quitAlcoholismBaseline);
     }
   }
@@ -932,10 +938,9 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.SMOKER, false);
           person.attributes.put(QUIT_SMOKING_AGE, age);
         } else {
-          double quitSmokingBaseline = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
-          double quitSmokingTimestepDelta = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+          double quitSmokingBaseline = Config.getAsDouble("lifecycle.quit_smoking.baseline", 0.01);
+          double quitSmokingTimestepDelta =
+                  Config.getAsDouble("lifecycle.quit_smoking.timestep_delta", -0.1);
           probability += quitSmokingTimestepDelta;
           if (probability < quitSmokingBaseline) {
             probability = quitSmokingBaseline;
@@ -961,10 +966,10 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.ALCOHOLIC, false);
           person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
         } else {
-          double quitAlcoholismBaseline = Double
-              .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
-          double quitAlcoholismTimestepDelta = Double
-              .parseDouble(Config.get("lifecycle.quit_alcoholism.timestep_delta", "-0.1"));
+          double quitAlcoholismBaseline =
+                  Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.01);
+          double quitAlcoholismTimestepDelta =
+                  Config.getAsDouble("lifecycle.quit_alcoholism.timestep_delta", -0.1);
           probability += quitAlcoholismTimestepDelta;
           if (probability < quitAlcoholismBaseline) {
             probability = quitAlcoholismBaseline;
@@ -984,10 +989,9 @@ public final class LifecycleModule extends Module {
   public static void adherence(Person person, long time) {
     if (person.attributes.containsKey(Person.ADHERENCE)) {
       double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
-      double adherenceBaseline = Double
-          .parseDouble(Config.get("lifecycle.adherence.baseline", "0.05"));
-      double adherenceTimestepDelta = Double
-          .parseDouble(Config.get("lifecycle.adherence.timestep_delta", "-.01"));
+      double adherenceBaseline = Config.getAsDouble("lifecycle.adherence.baseline", 0.05);
+      double adherenceTimestepDelta =
+              Config.getAsDouble("lifecycle.adherence.timestep_delta", -0.01);
       probability += adherenceTimestepDelta;
       if (probability < adherenceBaseline) {
         probability = adherenceBaseline;
@@ -1076,6 +1080,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, true, false, null);
     Attributes.inventory(attributes, m, Person.RACE, true, false, null);
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.DEATHDATE, true, false, "1046327126000");
     // Write
     Attributes.inventory(attributes, m, "pregnant", false, true, "Boolean");
     Attributes.inventory(attributes, m, "probability_of_fall_injury", false, true, "1.0");
@@ -1118,5 +1123,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, false, true, "1.0");
     Attributes.inventory(attributes, m, QUIT_SMOKING_AGE, false, true, "Numeric");
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, DAYS_UNTIL_DEATH, false, true, "42");
   }
 }

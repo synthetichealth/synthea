@@ -14,7 +14,7 @@ package org.mitre.synthea.helpers;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Modified extensively for the Synthea project, to no longer require registration of subtypes,
  * but only allow subtypes defined within the same class file. (ex. Class1$Subclass2)
  * Original source:
@@ -60,7 +60,7 @@ import org.apache.commons.lang3.NotImplementedException;
  *     Shape topShape;
  *   }
  * }</pre>
- * 
+ *
  * <p>Without additional type information, the serialized JSON is ambiguous. Is
  * the bottom shape in this drawing a rectangle or a diamond? <pre>   {@code
  *   {
@@ -146,7 +146,7 @@ public final class InnerClassTypeAdapterFactory<T> implements TypeAdapterFactory
               + " because it does not define a field named " + typeFieldName);
         }
         String label = labelJsonElement.getAsString();
-        
+
         try {
           String subclassName = baseType.getName() + "$" + label.replaceAll("\\s", "");
           Class<?> subclass = Class.forName(subclassName);

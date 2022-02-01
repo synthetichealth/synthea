@@ -14,6 +14,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
@@ -27,6 +31,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -45,13 +50,13 @@ import org.mockito.Mockito;
  */
 public class FHIRR4ExporterTest {
   private boolean physStateEnabled;
-  
+
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   /**
    * Setup state for exporter test.
    */
@@ -61,7 +66,7 @@ public class FHIRR4ExporterTest {
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
   }
-  
+
   /**
    * Reset state after exporter test.
    */
@@ -69,7 +74,7 @@ public class FHIRR4ExporterTest {
   public void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
-  
+
   @Test
   public void testDecimalRounding() {
     Integer i = 123456;
@@ -100,21 +105,16 @@ public class FHIRR4ExporterTest {
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationResources validator = new ValidationResources();
-    List<String> validationErrors = new ArrayList<String>();
 
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    
-    generator.options.overflow = false;
-
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
       FhirR4.USE_US_CORE_IG = person.randBoolean();
       FhirR4.USE_SHR_EXTENSIONS = false;
+
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)
       if (fhirJson.contains("SNOMED-CT")) {
@@ -130,6 +130,7 @@ public class FHIRR4ExporterTest {
       // is impossible.
       // As of 2021-01-05, validating the bundle didn't validate references anyway,
       // but at some point we may want to do that.
+
       Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
       for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
         ValidationResult eresult = validator.validateR4(entry.getResource());
@@ -137,7 +138,7 @@ public class FHIRR4ExporterTest {
           for (SingleValidationMessage emessage : eresult.getMessages()) {
             boolean valid = false;
             if (emessage.getSeverity() == ResultSeverityEnum.INFORMATION
-                    || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
+                || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
               /*
                * Ignore warnings.
                */
@@ -174,8 +175,8 @@ public class FHIRR4ExporterTest {
               valid = true; // ignore this error
             } else if (
                 emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
-                || emessage.getMessage().contains("Unknown extension http://synthetichealth")
-                || emessage.getMessage().contains("not be resolved, so has not been checked")) {
+                    || emessage.getMessage().contains("Unknown extension http://synthetichealth")
+                    || emessage.getMessage().contains("not be resolved, so has not been checked")) {
               /*
                * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
                * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
@@ -191,15 +192,15 @@ public class FHIRR4ExporterTest {
           }
         }
       }
-      int y = validationErrors.size();
-      if (x != y) {
+      if (! validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
     assertTrue("Validation of exported FHIR bundle failed: "
-        + String.join("|", validationErrors), validationErrors.size() == 0);
+        + String.join("|", errors), errors.size() == 0);
   }
-  
+
   @Test
   public void testSampledDataExport() throws Exception {
 
@@ -233,26 +234,26 @@ public class FHIRR4ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State sampleObs = module.getState("SampledDataObservation");
     assertTrue(sampleObs.process(person, time));
     person.history.add(sampleObs);
-    
+
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Observation) {
         Observation obs = (Observation) entry.getResource();
@@ -263,7 +264,7 @@ public class FHIRR4ExporterTest {
       }
     }
   }
-  
+
   @Test
   public void testObservationAttachment() throws Exception {
 
@@ -297,30 +298,30 @@ public class FHIRR4ExporterTest {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
     }
-    
+
     Module module = TestHelper.getFixture("observation.json");
-    
+
     State physiology = module.getState("Simulate_CVS");
     assertTrue(physiology.process(person, time));
     person.history.add(physiology);
-    
+
     State encounter = module.getState("SomeEncounter");
     assertTrue(encounter.process(person, time));
     person.history.add(encounter);
-    
+
     State chartState = module.getState("ChartObservation");
     assertTrue(chartState.process(person, time));
     person.history.add(chartState);
-    
+
     State urlState = module.getState("UrlObservation");
     assertTrue(urlState.process(person, time));
     person.history.add(urlState);
-    
+
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
     Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
-    
+
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource() instanceof Media) {
         Media media = (Media) entry.getResource();

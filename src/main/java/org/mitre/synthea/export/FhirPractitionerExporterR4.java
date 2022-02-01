@@ -27,7 +27,7 @@ import org.mitre.synthea.world.agents.Provider;
 
 public abstract class FhirPractitionerExporterR4 {
 
-  private static final String EXTENSION_URI = 
+  private static final String EXTENSION_URI =
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
   /**

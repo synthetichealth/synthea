@@ -54,7 +54,7 @@ public class DeathModuleTest {
      * death_certificate: { description: 'U.S. standard certificate of death - 2003 revision', code:
      * '69409-1' }, cause_of_death: { description: 'Cause of Death [US Standard Certificate of
      * Death]', code: '69453-9', value_type: 'condition' },
-     * 
+     *
      * death_certification: {description: 'Death Certification', codes: {'SNOMED-CT' =>
      * ['308646001']}, class: 'ambulatory'}
      */

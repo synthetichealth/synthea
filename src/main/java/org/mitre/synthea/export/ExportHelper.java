@@ -2,7 +2,11 @@ package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,15 +30,15 @@ public abstract class ExportHelper {
   /**
    * Helper to get a readable string representation of an Observation's value.
    * Units are not included.
-   * 
+   *
    * @param observation The observation to get the value from
    * @return A human-readable string representation of observation.value
    */
   public static String getObservationValue(Observation observation) {
     String value = null;
-    
+
     if (observation.value instanceof Condition) {
-      Code conditionCode = ((HealthRecord.Entry)observation.value).codes.get(0); 
+      Code conditionCode = ((HealthRecord.Entry)observation.value).codes.get(0);
       value = conditionCode.display;
     } else if (observation.value instanceof Code) {
       value = ((Code)observation.value).display;
@@ -57,7 +61,7 @@ public abstract class ExportHelper {
   /**
    * Helper to get a readable string representation of an Observation's value.
    * Units are not included.
-   * 
+   *
    * @param observation The observation to get the value from.
    * @param code The observation or component observation matching this code.
    * @return A human-readable string representation of observation with the given code.
@@ -84,7 +88,7 @@ public abstract class ExportHelper {
 
   /**
    * Helper to translate all SampledData values into string form.
-   * 
+   *
    * @param sampledData The SampledData object to export
    * @return stringified sampled data values
    */
@@ -110,10 +114,10 @@ public abstract class ExportHelper {
 
     return sb.toString().trim();
   }
-  
+
   /**
    * Helper to translate all Attachment values into string form.
-   * 
+   *
    * @param attachment The Attachment object to export
    * @return stringified Attachment data
    */
@@ -129,13 +133,13 @@ public abstract class ExportHelper {
 
   /**
    * Helper to get a readable string representation of an Observation's type.
-   * 
+   *
    * @param observation The observation to get the type from
    * @return A human-readable string representation of the type of observation.value
    */
   public static String getObservationType(Observation observation) {
     String type = null;
-    
+
     if (observation.value instanceof Condition) {
       type = "text";
     } else if (observation.value instanceof Code) {
@@ -147,7 +151,7 @@ public abstract class ExportHelper {
     } else if (observation.value != null) {
       type = "text";
     }
-    
+
     return type;
   }
 
@@ -189,6 +193,21 @@ public abstract class ExportHelper {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
       return ISO_DATE_FORMAT.format(new Date(time));
     }
+  }
+
+  /**
+   * Get the timestamp for next Friday.
+   */
+  public static long nextFriday(long time) {
+    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    c.setTimeInMillis(time);
+    LocalDate d = LocalDate.of(
+        c.get(Calendar.YEAR), 1 + c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+    d = d.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+    c.set(Calendar.YEAR, d.getYear());
+    c.set(Calendar.MONTH, d.getMonthValue() - 1);
+    c.set(Calendar.DAY_OF_MONTH, d.getDayOfMonth());
+    return c.getTimeInMillis();
   }
 
   private static final String SNOMED_URI = "http://snomed.info/sct";
@@ -240,7 +259,7 @@ public abstract class ExportHelper {
         return "Unknown";
     }
   }
-  
+
   /**
    * Build a FHIR search url for the specified type of resource and identifier. This method
    * hard codes the identifier type to "https://github.com/synthetichealth/synthea".
@@ -249,10 +268,10 @@ public abstract class ExportHelper {
    * @return FHIR search URL
    */
   public static String buildFhirSearchUrl(String resourceType, String identifier) {
-    return String.format("%s?identifier=%s|%s", resourceType, 
+    return String.format("%s?identifier=%s|%s", resourceType,
             "https://github.com/synthetichealth/synthea", identifier);
   }
-  
+
   /**
    * Build a FHIR search URL for a clinician using the clinician's NPI identifier.
    * @param clinician the Synthea clinician instance
@@ -262,12 +281,11 @@ public abstract class ExportHelper {
     if (clinician == null) {
       return null;
     } else {
-      return String.format("%s?identifier=%s|%s", "Practitioner", 
-              "http://hl7.org/fhir/sid/us-npi",
-              Long.toString(9_999_999_999L - clinician.identifier));
+      return String.format("%s?identifier=%s|%s", "Practitioner",
+              "http://hl7.org/fhir/sid/us-npi", clinician.npi);
     }
   }
-  
+
   /**
    * FHIR resources that should include an ifNoneExist precondition when outputting transaction
    * bundles.

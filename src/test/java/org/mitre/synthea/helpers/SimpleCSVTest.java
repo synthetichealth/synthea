@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 public class SimpleCSVTest {
-  
+
   private static final String TEST_CSV = "ID,NAME,AGE\n0,Alice,30\n1,Bob,25\n2,Charles,50\n";
 
   @Test public void testSimpleCSV() throws IOException {
@@ -27,5 +27,5 @@ public class SimpleCSVTest {
     // Valid
     assertTrue(SimpleCSV.isValid(csv));
   }
-  
+
 }
