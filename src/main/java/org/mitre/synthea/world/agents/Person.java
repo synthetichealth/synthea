@@ -30,7 +30,6 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.identity.Entity;
-import org.mitre.synthea.input.FixedRecord;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.CoverageRecord;
 import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
