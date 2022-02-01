@@ -28,7 +28,20 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Set Baseline"
+      "conditional_transition": [
+        {
+          "transition": "Set Baseline",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_30_day_linkage",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Record Over Thirty Day Linkage"
+        }
+      ]
     },
     "Check Treatment": {
       "type": "Simple",
@@ -280,7 +293,8 @@
       "value": true
     },
     "Within 30 Days": {
-      "type": "Simple",
+      "type": "SetAttribute",
+      "attribute": "hiv_30_day_linkage",
       "complex_transition": [
         {
           "condition": {
@@ -315,7 +329,8 @@
           "distributions": [],
           "transition": "Medium Encounter Delay"
         }
-      ]
+      ],
+      "value": true
     },
     "Rapid Start Check": {
       "type": "Simple",
@@ -358,19 +373,6 @@
         }
       ],
       "direct_transition": "Wait for Treatment"
-    },
-    "New_State_2": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
-        }
-      ],
-      "direct_transition": "New_State_2"
     },
     "Wait for Treatment": {
       "type": "Delay",
@@ -660,6 +662,25 @@
           "transition": "Monitoring CBC"
         }
       ]
+    },
+    "Record Over Thirty Day Linkage": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 373786007,
+          "display": "Reasons for treatment delay (finding)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Set Baseline",
+      "reason": "hiv_diagnosis"
     }
   },
   "gmf_version": 2

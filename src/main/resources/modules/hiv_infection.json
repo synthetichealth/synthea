@@ -248,7 +248,7 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Diagnosis Early Years"
+      "direct_transition": "Diagnosis_Submodule"
     },
     "Diagnosis_Encounter_End": {
       "type": "EncounterEnd",
@@ -262,6 +262,11 @@
     "Diagnosis_Encounter_End_Early_Years": {
       "type": "EncounterEnd",
       "direct_transition": "Mortality Check"
+    },
+    "Diagnosis_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_diagnosis",
+      "direct_transition": "Diagnosis Early Years"
     }
   },
   "gmf_version": 2
