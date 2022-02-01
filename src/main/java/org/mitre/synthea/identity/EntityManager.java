@@ -23,6 +23,11 @@ public class EntityManager {
     this.records = records;
   }
 
+  /**
+   * Find a particular Entity by Id.
+   * @param entityId The Id to look for
+   * @return The found Entity, or null if one does not exist with the given Id.
+   */
   public Entity findEntity(String entityId) {
     if (entityLookup == null) {
       buildLookup();
@@ -36,9 +41,15 @@ public class EntityManager {
 
   private void buildLookup() {
     entityLookup = new HashMap<>();
-    records.forEach(entity -> { entityLookup.put(entity.getIndividualId(), entity); });
+    records.forEach(entity -> entityLookup.put(entity.getIndividualId(), entity));
   }
 
+  /**
+   * Creates a new EntityManager by reading in the JSON containing all of the information on
+   * entities, seeds and variants.
+   * @param rawJSON the actual JSON
+   * @return an Entity Manager
+   */
   public static EntityManager fromJSON(String rawJSON) {
     GsonBuilder gson = new GsonBuilder();
     gson.registerTypeAdapter(Entity.class, new EntityDeserializer());

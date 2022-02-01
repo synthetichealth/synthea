@@ -686,8 +686,9 @@ public class CSVExporter {
       s.append(coding.code).append(',');
       // DESCRIPTION
       s.append(clean(coding.display)).append(',');
-    } catch(IndexOutOfBoundsException e) {
-      // Sometimes an encounter may not have a code. In this case, catch the error and add a bandaid.
+    } catch (IndexOutOfBoundsException e) {
+      // Sometimes an encounter may not have a code. In this case, catch the error
+      // and add a bandaid.
       System.out.println("Missing encounter code in CSV Exporter.");
       s.append("INVALID_CODE").append(',');
       s.append(clean("INVALID_CODE")).append(',');

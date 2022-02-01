@@ -413,9 +413,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = null;
-    try{
+    try {
       valueGenerator = vitalSigns.get(vitalSign);
-    } catch (NullPointerException e){
+    } catch (NullPointerException e) {
       System.out.println(vitalSign);
       e.printStackTrace();
     }
@@ -651,8 +651,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         HealthRecord healthRecord = getHealthRecord(provider, time);
         long lastEncounterTime = healthRecord.lastEncounterTime();
         // check to see if the provider is valid for this see range
-        if (lastEncounterTime != Long.MIN_VALUE &&
-            !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
+        if (lastEncounterTime != Long.MIN_VALUE
+            && !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
           // The provider is not in the seed range. Force finding a new provider.
           System.out.println("Move reset for " + type);
           setProvider(type, time);
@@ -841,7 +841,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   @Override
   public double getX() {
-    return getLonLat().getX(); 
+    return getLonLat().getX();
   }
 
   @Override
@@ -852,5 +852,5 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
-  
+
 }

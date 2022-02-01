@@ -398,7 +398,8 @@ public final class WeightLossModule extends Module {
       // If the person should be gaining weight, they should not start weight loss.
       return false;
     }
-    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null && ((boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS))) {
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null
+        && ((boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS))) {
       return true;
     }
     if (meetsWeightManagementThresholds(person, time)) {

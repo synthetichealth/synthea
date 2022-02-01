@@ -694,7 +694,7 @@ public class HealthRecord implements Serializable {
   public Long death;
   /** The person's demographics at the time of record creation. */
   public Map<String, Object> demographicsAtRecordCreation;
-  
+
   /**
    * Construct a health record for the supplied person.
    * @param person the person.

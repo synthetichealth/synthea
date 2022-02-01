@@ -2,14 +2,14 @@ package org.mitre.synthea.identity;
 
 import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
 
-import org.mitre.synthea.helpers.RandomNumberGenerator;
-import org.mitre.synthea.world.agents.Person;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.mitre.synthea.helpers.RandomNumberGenerator;
+import org.mitre.synthea.world.agents.Person;
 
 public class Seed implements IdentityRecord {
   private String seedId;
@@ -134,6 +134,11 @@ public class Seed implements IdentityRecord {
     this.entity = entity;
   }
 
+  /**
+   * Returns the attributes the Synthea Generator usually fills in for a person. These can be used
+   * to overwrite those attributes with information from the fixed record file
+   * @return a map of person attributes
+   */
   public Map<String, Object> demographicAttributesForPerson() {
     Map<String, Object> attributes = new HashMap<>();
     attributes.put(Person.IDENTIFIER_SEED_ID, this.seedId);

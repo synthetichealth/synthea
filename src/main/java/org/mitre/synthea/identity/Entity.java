@@ -29,6 +29,12 @@ public class Entity {
     return seeds.stream().filter(s -> s.getPeriod().contains(date)).findFirst().orElse(null);
   }
 
+  /**
+   * Find the seed at a particular time.
+   * @param timestamp the time to find a seed
+   * @return The seed that covers the time. If before the first seed, will still return the first
+   *     seed
+   */
   public Seed seedAt(long timestamp) {
     if (timestamp == Long.MIN_VALUE) {
       return seeds.get(0);

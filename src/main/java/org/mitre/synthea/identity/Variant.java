@@ -1,13 +1,13 @@
 package org.mitre.synthea.identity;
 
-import org.mitre.synthea.world.agents.Person;
-
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.mitre.synthea.world.agents.Person;
 
 public class Variant implements IdentityRecord {
   private String variantId;
@@ -38,6 +38,11 @@ public class Variant implements IdentityRecord {
     return seed.getPeriod();
   }
 
+  /**
+   * Gets the given name for the variant. If null, will return the given name of the associated
+   * seed
+   * @return the given name
+   */
   public String getGivenName() {
     if (givenName == null) {
       return seed.getGivenName();
@@ -49,6 +54,11 @@ public class Variant implements IdentityRecord {
     this.givenName = givenName;
   }
 
+  /**
+   * Gets the family name for the variant. If null, will return the family name of the associated
+   * seed
+   * @return the family name
+   */
   public String getFamilyName() {
     if (familyName == null) {
       return familyName;
@@ -60,6 +70,11 @@ public class Variant implements IdentityRecord {
     this.familyName = familyName;
   }
 
+  /**
+   * Gets the phone number for the variant. If null, will return the phone number of the associated
+   * seed
+   * @return the phone number
+   */
   public String getPhone() {
     if (phone == null) {
       return phone;
@@ -71,6 +86,11 @@ public class Variant implements IdentityRecord {
     this.phone = phone;
   }
 
+  /**
+   * Gets the address lines for the variant. If null, will return the address lines of the
+   * associated seed
+   * @return the address lines
+   */
   public List<String> getAddressLines() {
     if (addressLines == null || addressLines.isEmpty()) {
       return seed.getAddressLines();
@@ -82,6 +102,11 @@ public class Variant implements IdentityRecord {
     this.addressLines = addressLines;
   }
 
+  /**
+   * Gets the city for the variant. If null, will return the city of the associated
+   * seed
+   * @return the city
+   */
   public String getCity() {
     if (city == null) {
       return seed.getCity();
@@ -93,6 +118,11 @@ public class Variant implements IdentityRecord {
     this.city = city;
   }
 
+  /**
+   * Gets the state for the variant. If null, will return the state of the associated
+   * seed
+   * @return the state
+   */
   public String getState() {
     if (state == null) {
       return seed.getState();
@@ -104,6 +134,11 @@ public class Variant implements IdentityRecord {
     this.state = state;
   }
 
+  /**
+   * Gets the zip code for the variant. If null, will return the zip code of the associated
+   * seed
+   * @return the zip code
+   */
   public String getZipCode() {
     if (zipCode == null) {
       return seed.getZipCode();
@@ -115,6 +150,11 @@ public class Variant implements IdentityRecord {
     this.zipCode = zipCode;
   }
 
+  /**
+   * Gets the date of birth for the variant. If null, will return the date of birth of the
+   * associated seed
+   * @return the date of birth
+   */
   public LocalDate getDateOfBirth() {
     if (dateOfBirth == null) {
       return seed.getDateOfBirth();
@@ -126,6 +166,11 @@ public class Variant implements IdentityRecord {
     this.dateOfBirth = dateOfBirth;
   }
 
+  /**
+   * Gets the gender for the variant. If null, will return the gender of the associated
+   * seed
+   * @return the gender
+   */
   public String getGender() {
     if (gender == null) {
       return seed.getGender();
@@ -150,6 +195,11 @@ public class Variant implements IdentityRecord {
     return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
   }
 
+  /**
+   * Returns the attributes the Synthea Generator usually fills in for a person. These can be used
+   * to overwrite those attributes with information from the fixed record file
+   * @return a map of person attributes
+   */
   public Map<String, Object> demographicAttributesForPerson() {
     Map<String, Object> attributes = new HashMap<>();
     attributes.put(Person.IDENTIFIER_SEED_ID, this.getSeed().getSeedId());

@@ -159,7 +159,7 @@ public class Generator implements RandomNumberGenerator {
   /**
    * Create a Generator, with the given population size and seed. All other
    * settings are left as defaults.
-   * 
+   *
    * @param population Target population size
    * @param seed Seed used for randomness
    */
@@ -173,7 +173,7 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Create a Generator, with the given options.
-   * 
+   *
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
@@ -182,7 +182,7 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Create a Generator, with the given options.
-   * 
+   *
    * @param o Desired configuration options
    * @param ero Desired exporter options
    */
@@ -308,7 +308,7 @@ public class Generator implements RandomNumberGenerator {
 
   /**
    * Extracts a list of names from the supplied list of modules.
-   * 
+   *
    * @param modules A collection of modules
    * @return A list of module names.
    */
@@ -340,7 +340,8 @@ public class Generator implements RandomNumberGenerator {
         // We want full years of history.
         Config.set("exporter.years_of_history", "0");
       } catch (IOException ioe) {
-        throw new RuntimeException("Couldn't open the fixed patient demographics records file", ioe);
+        throw new RuntimeException("Couldn't open the fixed patient demographics "
+            + "records file", ioe);
       }
 
     }
@@ -411,7 +412,7 @@ public class Generator implements RandomNumberGenerator {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
     }
   }
-  
+
   /**
    * Generate a completely random Person. The returned person will be alive at the end of the
    * simulation. This means that if in the course of the simulation the person dies, a new person
@@ -461,7 +462,7 @@ public class Generator implements RandomNumberGenerator {
       }
 
       boolean patientMeetsCriteria;
-      
+
       do {
         tryNumber++;
         person = createPerson(personSeed, demoAttributes);
@@ -639,7 +640,7 @@ public class Generator implements RandomNumberGenerator {
    * @return the new person
    */
   public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
-    
+
     // Initialize person.
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;

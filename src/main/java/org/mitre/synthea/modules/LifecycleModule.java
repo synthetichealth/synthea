@@ -416,7 +416,6 @@ public final class LifecycleModule extends Module {
       // If there is active weight management,
       // changing of weight will be handled by the WeightLossModule
       if (weightManagement != null && ! (boolean) weightManagement) {
-      // if (weightManagement == null || ! (boolean) weightManagement) { // Should it be like this instead?
         if (age <= ADULT_MAX_WEIGHT_AGE) {
           // getting older and fatter
           double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
@@ -431,7 +430,8 @@ public final class LifecycleModule extends Module {
       Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
       if (kgToGain != null && ((double) kgToGain) > 0.0) {
         // We'll reuse the same adult weight gain used for standard adult weight gain.
-        // This will result in about double weight gained per year until target kilograms to gain has been reached.
+        // This will result in about double weight gained per year until target kilograms to gain
+        // has been reached.
         double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
         weight += adultWeightGain;
         // Update the weight they have yet to gain.

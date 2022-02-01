@@ -142,7 +142,7 @@ public final class EncounterModule extends Module {
     // create the encounter
     Encounter encounter = person.encounterStart(time, type);
 
-    
+
     if (code != null) {
       encounter.codes.add(code);
     }

@@ -409,7 +409,7 @@ public class FhirR4 {
           .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
     }
 
-    
+
     if (person.attributes.get(Person.ENTITY) != null) {
       Entity entity = (Entity) person.attributes.get(Person.ENTITY);
       patientResource.addIdentifier()

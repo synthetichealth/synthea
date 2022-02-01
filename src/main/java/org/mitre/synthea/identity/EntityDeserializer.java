@@ -20,7 +20,8 @@ public class EntityDeserializer implements JsonDeserializer<Entity> {
     JsonObject entityObject = json.getAsJsonObject();
     entity.setIndividualId(entityObject.getAsJsonPrimitive("individualId").getAsString());
     entity.setGender(entityObject.getAsJsonPrimitive("gender").getAsString());
-    entity.setDateOfBirth(LocalDate.parse(entityObject.getAsJsonPrimitive("dateOfBirth").getAsString(),
+    entity.setDateOfBirth(LocalDate.parse(
+        entityObject.getAsJsonPrimitive("dateOfBirth").getAsString(),
         DateTimeFormatter.ISO_LOCAL_DATE));
     List<Seed> seeds = new ArrayList<>();
     entityObject.getAsJsonArray("seeds").forEach(seedElement -> {
