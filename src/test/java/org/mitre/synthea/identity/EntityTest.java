@@ -1,19 +1,24 @@
 package org.mitre.synthea.identity;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mitre.synthea.helpers.Utilities;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mitre.synthea.helpers.Utilities;
 
 public class EntityTest {
   private Entity testEntity;
 
+  /**
+   * Sets up the test suite.
+   * @throws IOException If it can't the JSON fixture
+   */
   @Before
   public void setUp() throws IOException {
     String rawJSON = Utilities.readResource("identity/test_records.json");

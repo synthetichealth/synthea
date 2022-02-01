@@ -1,11 +1,12 @@
 package org.mitre.synthea.identity;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class PeriodTest {
 
