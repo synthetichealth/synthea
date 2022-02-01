@@ -535,9 +535,16 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
 
         String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+        String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
+                isBlind(person));
+        String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
         for (int month = 0; month < monthCount; month++) {
           fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
                   dualEligibleStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
+                  medicareStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
+                  buyInIndicator);
         }
         rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
         if (year == (endYear - 1)) {
@@ -546,6 +553,42 @@ public class BB2RIFExporter {
           entryStatus = RifEntryStatus.INTERIM;
         }
       }
+    }
+  }
+
+  private static String getEntitlementBuyIn(String dualEligibleStatusCode,
+          String medicareStatusCode) {
+    if (medicareStatusCode.equals("00")) {
+      return "0"; // not enrolled
+    } else {
+      if (dualEligibleStatusCode.equals("NA")) {
+        // not dual eligible
+        return "3"; // Part A and Part B
+      } else {
+        // dual eligible
+        return "C"; // Part A and Part B state buy-in
+      }
+    }
+
+  }
+
+  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean blind) {
+    if (medicareAge) {
+      if (esrd) {
+        return "11";
+      } else {
+        return "10";
+      }
+    } else if (blind) {
+      if (esrd) {
+        return "21";
+      } else {
+        return "20";
+      }
+    } else if (esrd) {
+      return "31";
+    } else {
+      return "00"; // Not enrolled
     }
   }
 
