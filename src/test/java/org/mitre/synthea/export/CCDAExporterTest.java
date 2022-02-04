@@ -17,7 +17,6 @@ import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Person;
 
 /**
  * Uses Model Driven Health Tools (MDHT) to validate exported CCDA R2.1.
