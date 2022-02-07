@@ -110,14 +110,13 @@ public class App {
             String[] values = value.split(File.pathSeparator);
             options.enabledModules = Arrays.asList(values);
           } else if (currArg.equalsIgnoreCase("-c")) {
-            // TODO: if the user specifies configuration options either here or
-            // using --config.setting, those values will not be used to
-            // initialize the Generator.GeneratorOptions options declared above.
-            // Currently only generate.default_population Config setting is used
-            // by Generator.GeneratorOptions so this should not be an issue.
             String value = argsQ.poll();
             File configFile = new File(value);
             Config.load(configFile);
+            // Any options that are automatically set by reading the configuration
+            // file during options initialization need to be reset here.
+            options.population = Config.getAsInteger("generate.default_population", 1);
+            options.threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
           } else if (currArg.equalsIgnoreCase("-d")) {
             String value = argsQ.poll();
             File localModuleDir = new File(value);
