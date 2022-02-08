@@ -1,93 +1,15 @@
 {
-  "name": "hiv_infection",
+  "name": "hiv_diagnosis",
   "remarks": [
-    "This module only determines infection and mortality from HIV. Clinical treatment is in a separate module."
+    "This module only determines diagnosed infections and mortality from HIV. Clinical treatment is in a separate module. Undiagnosed infections are not included."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Infection Check"
+      "direct_transition": "Diagnosis Check"
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "Infection Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Infection Check Later Years",
-          "condition": {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1993
-          }
-        },
-        {
-          "transition": "Infection Check Early Years",
-          "condition": {
-            "condition_type": "Date",
-            "operator": ">=",
-            "year": 1979,
-            "value": 0
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
-    },
-    "Wait_Until_Next_Infection_Check": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "EXACT",
-        "parameters": {
-          "value": 1
-        }
-      },
-      "unit": "years",
-      "direct_transition": "Infection Check"
-    },
-    "Infection Check Early Years": {
-      "type": "Simple",
-      "lookup_table_transition": [
-        {
-          "transition": "Infected_Early_Years",
-          "default_probability": 0.0001565,
-          "lookup_table_name": "hiv_infection_early.csv"
-        },
-        {
-          "transition": "Wait_Until_Next_Infection_Check",
-          "default_probability": 0.9998435,
-          "lookup_table_name": "hiv_infection_early.csv"
-        }
-      ]
-    },
-    "Infection Check Later Years": {
-      "type": "Simple",
-      "lookup_table_transition": [
-        {
-          "transition": "Infected_Later_Years",
-          "default_probability": 0.000097,
-          "lookup_table_name": "hiv_infection_later.csv"
-        },
-        {
-          "transition": "Wait_Until_Next_Infection_Check",
-          "default_probability": 0.999903,
-          "lookup_table_name": "hiv_infection_later.csv"
-        }
-      ]
-    },
-    "Infected_Early_Years": {
-      "type": "SetAttribute",
-      "attribute": "hiv_infection",
-      "direct_transition": "Diagnosis_Encounter_Early_Years",
-      "value": true
-    },
-    "Infected_Later_Years": {
-      "type": "SetAttribute",
-      "attribute": "hiv_infection",
-      "direct_transition": "Diagnosis_Encounter_Later_Years",
-      "value": true
     },
     "Mortality Check Later Years": {
       "type": "Simple",
@@ -236,7 +158,7 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Diagnosis Submodule"
+      "direct_transition": "Screening Submodule"
     },
     "Diagnosis_Encounter_Early_Years": {
       "type": "Encounter",
@@ -248,25 +170,103 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Diagnosis_Submodule"
+      "direct_transition": "Screening_Submodule"
     },
     "Diagnosis_Encounter_End": {
       "type": "EncounterEnd",
       "direct_transition": "Mortality Check Later Years"
     },
-    "Diagnosis Submodule": {
-      "type": "CallSubmodule",
-      "submodule": "hiv/hiv_diagnosis",
-      "direct_transition": "Diagnosis Later Years"
-    },
     "Diagnosis_Encounter_End_Early_Years": {
       "type": "EncounterEnd",
       "direct_transition": "Mortality Check"
     },
-    "Diagnosis_Submodule": {
+    "Screening Submodule": {
       "type": "CallSubmodule",
-      "submodule": "hiv/hiv_diagnosis",
+      "submodule": "hiv/hiv_screening",
+      "direct_transition": "Diagnosis Later Years"
+    },
+    "Screening_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_screening",
       "direct_transition": "Diagnosis Early Years"
+    },
+    "Diagnosed_Later_Years": {
+      "type": "SetAttribute",
+      "attribute": "hiv_infection",
+      "direct_transition": "Diagnosis_Encounter_Later_Years",
+      "value": true
+    },
+    "Diagnosed_Early_Years": {
+      "type": "SetAttribute",
+      "attribute": "hiv_infection",
+      "direct_transition": "Diagnosis_Encounter_Early_Years",
+      "value": true
+    },
+    "Wait_Until_Next_Diagnosis_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Diagnosis Check"
+    },
+    "Diagnosis Check Early Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Diagnosed_Early_Years",
+          "default_probability": 0.0001565,
+          "lookup_table_name": "hiv_diagnosis_early.csv"
+        },
+        {
+          "transition": "Wait_Until_Next_Diagnosis_Check",
+          "default_probability": 0.9998435,
+          "lookup_table_name": "hiv_diagnosis_early.csv"
+        }
+      ]
+    },
+    "Diagnosis Check Later Years": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Diagnosed_Later_Years",
+          "default_probability": 0.000097,
+          "lookup_table_name": "hiv_diagnosis_later.csv"
+        },
+        {
+          "transition": "Wait_Until_Next_Diagnosis_Check",
+          "default_probability": 0.999903,
+          "lookup_table_name": "hiv_diagnosis_later.csv"
+        }
+      ]
+    },
+    "Diagnosis Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Diagnosis Check Later Years",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1993
+          }
+        },
+        {
+          "transition": "Diagnosis Check Early Years",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1979,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     }
   },
   "gmf_version": 2

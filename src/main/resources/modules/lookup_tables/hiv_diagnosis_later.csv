@@ -1,4 +1,4 @@
-time,age,gender,Infected_Later_Years,Wait_Until_Next_Infection_Check
+time,age,gender,Diagnosed_Later_Years,Wait_Until_Next_Diagnosis_Check
 725846400922-757382400921,0-12,M,0.0000174,0.9999826
 725846400922-757382400921,0-12,F,0.0000143,0.9999857
 725846400922-757382400921,13-24,M,0.0003384,0.9996616

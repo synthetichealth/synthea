@@ -1,7 +1,7 @@
 {
-  "name": "hiv_diagnosis",
+  "name": "hiv_screening",
   "remarks": [
-    "Simple module containing HIV diagnosis procedures."
+    "Simple module containing HIV screening procedures."
   ],
   "states": {
     "Initial": {
