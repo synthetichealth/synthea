@@ -213,7 +213,8 @@ public class BB2RIFExporterTest {
             = new BB2RIFExporter.PartDContractHistory(
                     rand, java.time.Instant.now().toEpochMilli(), 10);
     BB2RIFExporter.PartDContractHistory.ContractPeriod period
-            = history.new ContractPeriod(start, end, null);
+            = history.new ContractPeriod(start, end, null,
+                    (BB2RIFExporter.PlanBenefitPackageID)null);
     assertNull(period.getContractID());
 
     assertFalse(period.coversYear(2019));

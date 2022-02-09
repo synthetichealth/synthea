@@ -508,10 +508,13 @@ public class BB2RIFExporter {
           PartCContractID partCContractID = period.getContractID();
           if (partCContractID != null) {
             String partCContractIDStr = partCContractID.toString();
+            String partCPBPIDStr = period.getPlanBenefitPackageID().toString();
             List<Integer> coveredMonths = period.getCoveredMonths(year);
             for (int i: coveredMonths) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartCContractFields[i - 1],
                       partCContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartCPBPFields[i - 1],
+                      partCPBPIDStr);
             }
           }
         }
@@ -526,6 +529,7 @@ public class BB2RIFExporter {
                   partDContracts.getEmployeePDPIndicator(partDContractID);
           if (partDContractID != null) {
             String partDContractIDStr = partDContractID.toString();
+            String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
             List<Integer> coveredMonths = period.getCoveredMonths(year);
             if (partDDrugSubsidyIndicator.equals("Y")) {
               rdsMonthCount += coveredMonths.size();
@@ -533,6 +537,9 @@ public class BB2RIFExporter {
             for (int i: coveredMonths) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
                       partDContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[i - 1],
+                      partDPBPIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
                       partDCostSharingCode);
               fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
@@ -1631,7 +1638,7 @@ public class BB2RIFExporter {
 
     /**
      * Initialize an array containing all of the configured contract IDs.
-     * @return
+     * @return the contract IDs
      */
     private static PartDContractID[] initContractIDs() {
       int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count", 10);
@@ -1651,6 +1658,7 @@ public class BB2RIFExporter {
    */
   abstract static class ContractHistory<T extends FixedLengthIdentifier> {
     private List<ContractPeriod> contractPeriods;
+    private static final PlanBenefitPackageID[] planBenefitPackageIDs = initPlanBenefitPackageIDs();
 
     /**
      * Create a new random contract history.
@@ -1744,12 +1752,44 @@ public class BB2RIFExporter {
     protected abstract T getRandomContractID(RandomNumberGenerator rand);
 
     /**
+     * Get a random plan benefit package ID or null if the supplied contract ID is null.
+     * @param rand a source of randomness
+     * @param contractID the contract ID
+     * @return a random plan benefit package ID
+     */
+    protected PlanBenefitPackageID getRandomPlanBenefitPackageID(RandomNumberGenerator rand,
+            T contractID) {
+      if (contractID == null) {
+        return null; // no benefit package if not on contract
+      } else {
+        return planBenefitPackageIDs[rand.randInt(planBenefitPackageIDs.length)];
+      }
+    }
+
+    /**
+     * Initialize an array containing all of the configured plan benefit package IDs.
+     * @return the package IDs
+     */
+    private static PlanBenefitPackageID[] initPlanBenefitPackageIDs() {
+      int numPackages = Config.getAsInteger("exporter.bfd.plan_benefit_package_count", 5);
+      PlanBenefitPackageID[] packageIDs = new PlanBenefitPackageID[numPackages];
+      PlanBenefitPackageID packageID = PlanBenefitPackageID.parse(
+              Config.get("exporter.bfd.plan_benefit_package_start", "800"));
+      for (int i = 0; i < numPackages; i++) {
+        packageIDs[i] = packageID;
+        packageID = packageID.next();
+      }
+      return packageIDs;
+    }
+
+    /**
      * Utility class that represents a period of time and an associated contract id.
      */
     public class ContractPeriod {
       private LocalDate startDate;
       private LocalDate endDate;
       private T contractID;
+      private PlanBenefitPackageID planBenefitPackageID;
 
       /**
        * Create a new contract period. Contract periods have a one month granularity so the
@@ -1758,8 +1798,10 @@ public class BB2RIFExporter {
        * @param start the start of the contract period
        * @param end the end of the contract period
        * @param contractID the contract id
+       * @param planBenefitPackageID the plan benefit package id
        */
-      public ContractPeriod(LocalDate start, LocalDate end, T contractID) {
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              PlanBenefitPackageID planBenefitPackageID) {
         if (start != null) {
           this.startDate = LocalDate.of(start.getYear(), start.getMonthValue(), 1);
         }
@@ -1768,6 +1810,21 @@ public class BB2RIFExporter {
                   .plusMonths(1).minusDays(1);
         }
         this.contractID = contractID;
+        this.planBenefitPackageID = planBenefitPackageID;
+      }
+
+      /**
+       * Create a new contract period. Contract periods have a one month granularity so the
+       * supplied start and end are adjusted to the first day of the start month and last day of
+       * the end month. A random plan benefit package ID is chosen
+       * @param start the start of the contract period
+       * @param end the end of the contract period
+       * @param contractID the contract id
+       * @param rand source of randomness
+       */
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              RandomNumberGenerator rand) {
+        this(start, end, contractID, getRandomPlanBenefitPackageID(rand, contractID));
       }
 
       /**
@@ -1778,7 +1835,7 @@ public class BB2RIFExporter {
        * @param rand source of randomness
        */
       public ContractPeriod(int year, int month, RandomNumberGenerator rand) {
-        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand));
+        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand), rand);
       }
 
       /**
@@ -1797,6 +1854,10 @@ public class BB2RIFExporter {
        */
       public T getContractID() {
         return contractID;
+      }
+
+      public PlanBenefitPackageID getPlanBenefitPackageID() {
+        return planBenefitPackageID;
       }
 
       /**
@@ -3353,6 +3414,29 @@ public class BB2RIFExporter {
 
     public PartCContractID next() {
       return new PartCContractID(value + 1);
+    }
+  }
+
+  /**
+   * Utility class for working with CMS Plan Benefit Package IDs.
+   */
+  static class PlanBenefitPackageID extends FixedLengthIdentifier {
+
+    private static final char[][] PBP_CONTRACT_FORMAT = {
+      NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTC_CONTRACT_ID = 0;
+    static final long MAX_PARTC_CONTRACT_ID = maxValue(PBP_CONTRACT_FORMAT);
+
+    public PlanBenefitPackageID(long value) {
+      super(value, PBP_CONTRACT_FORMAT);
+    }
+
+    static PlanBenefitPackageID parse(String str) {
+      return new PlanBenefitPackageID(parse(str, PBP_CONTRACT_FORMAT));
+    }
+
+    public PlanBenefitPackageID next() {
+      return new PlanBenefitPackageID(value + 1);
     }
   }
 
