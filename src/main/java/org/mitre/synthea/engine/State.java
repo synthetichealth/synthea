@@ -2163,4 +2163,27 @@ public abstract class State implements Cloneable, Serializable {
       }
     }
   }
+
+  /**
+   * The Vaccine state type indicates a point in the module where the patient is vaccinated.
+   */
+  public static class Vaccine extends State {
+    private List<Code> codes;
+
+    @Override
+    public Vaccine clone() {
+      Vaccine clone = (Vaccine) super.clone();
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      HealthRecord.Immunization entry = person.record.immunization(time, codes.get(0).display);
+      for (Code code : codes) {
+        entry.codes.add(code);
+      }
+      entry.series = 1;
+      return true;
+    }
+  }
 }
