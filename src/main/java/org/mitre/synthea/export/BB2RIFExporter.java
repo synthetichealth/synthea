@@ -1547,7 +1547,7 @@ public class BB2RIFExporter {
     /**
      * Get a random contract ID or null.
      * @param rand source of randomness
-     * @return a contract ID (70% or the time) or null (30% of the time)
+     * @return a contract ID (58% or the time) or null (42% of the time)
      */
     @Override
     protected PartCContractID getRandomContractID(RandomNumberGenerator rand) {
