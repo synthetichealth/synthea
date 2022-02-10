@@ -26,6 +26,7 @@
     },
     "Vaccine": {
       "type": "Vaccine",
+      "series": 1,
       "codes": [
         {
           "system": "CVX",

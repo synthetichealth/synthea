@@ -2168,6 +2168,7 @@ public abstract class State implements Cloneable, Serializable {
    * The Vaccine state type indicates a point in the module where the patient is vaccinated.
    */
   public static class Vaccine extends State {
+    private int series;
     private List<Code> codes;
 
     @Override
@@ -2182,7 +2183,7 @@ public abstract class State implements Cloneable, Serializable {
       for (Code code : codes) {
         entry.codes.add(code);
       }
-      entry.series = 1;
+      entry.series = this.series;
       return true;
     }
   }
