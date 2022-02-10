@@ -423,9 +423,11 @@ public class BB2RIFExporter {
       }
     }
 
+    PartCContractHistory partCContracts = new PartCContractHistory(person,
+            deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     PartDContractHistory partDContracts = new PartDContractHistory(person,
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
-    person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
+    person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts); // used in exportPrescription
 
     RifEntryStatus entryStatus = RifEntryStatus.INITIAL;
     String initialBeneEntitlementReason = null;
@@ -445,7 +447,6 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
-        fieldValues.put(BENEFICIARY.RDS_MO_CNT, monthCountStr);
         int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
         fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
         fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
@@ -463,10 +464,11 @@ public class BB2RIFExporter {
         }
         fieldValues.put(BENEFICIARY.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(BENEFICIARY.BENE_RACE_CD,
-                bb2RaceCode(
-                        (String)person.attributes.get(Person.ETHNICITY),
-                        (String)person.attributes.get(Person.RACE)));
+        String raceCode = bb2RaceCode(
+                (String)person.attributes.get(Person.ETHNICITY),
+                (String)person.attributes.get(Person.RACE));
+        fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
+        fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI alogorithm
         fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
                 (String)person.attributes.get(Person.LAST_NAME));
         String givenName = (String)person.attributes.get(Person.FIRST_NAME);
@@ -501,30 +503,70 @@ public class BB2RIFExporter {
           fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
         }
 
+        for (PartCContractHistory.ContractPeriod period:
+                partCContracts.getContractPeriods(year)) {
+          PartCContractID partCContractID = period.getContractID();
+          if (partCContractID != null) {
+            String partCContractIDStr = partCContractID.toString();
+            String partCPBPIDStr = period.getPlanBenefitPackageID().toString();
+            List<Integer> coveredMonths = period.getCoveredMonths(year);
+            for (int i: coveredMonths) {
+              fieldValues.put(BB2RIFStructure.beneficiaryPartCContractFields[i - 1],
+                      partCContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartCPBPFields[i - 1],
+                      partCPBPIDStr);
+            }
+          }
+        }
+
         // TODO: make claim copay match the designated cost sharing code
         String partDCostSharingCode = getPartDCostSharingCode(person);
-        for (PartDContractHistory.PartDContractPeriod period:
+        int rdsMonthCount = 0;
+        for (PartDContractHistory.ContractPeriod period:
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
+          String partDDrugSubsidyIndicator =
+                  partDContracts.getEmployeePDPIndicator(partDContractID);
           if (partDContractID != null) {
             String partDContractIDStr = partDContractID.toString();
-            for (int i: period.getCoveredMonths(year)) {
+            String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
+            List<Integer> coveredMonths = period.getCoveredMonths(year);
+            if (partDDrugSubsidyIndicator.equals("Y")) {
+              rdsMonthCount += coveredMonths.size();
+            }
+            for (int i: coveredMonths) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
                       partDContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[i - 1],
+                      partDPBPIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
                       partDCostSharingCode);
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           } else {
             for (int i: period.getCoveredMonths(year)) {
               // Not enrolled this month
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           }
         }
+        fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
+
         String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+        String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
+                isBlind(person));
+        String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
         for (int month = 0; month < monthCount; month++) {
           fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
                   dualEligibleStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
+                  medicareStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
+                  buyInIndicator);
         }
         rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
         if (year == (endYear - 1)) {
@@ -536,7 +578,43 @@ public class BB2RIFExporter {
     }
   }
 
-  private String getPartDCostSharingCode(Person person) {
+  private static String getEntitlementBuyIn(String dualEligibleStatusCode,
+          String medicareStatusCode) {
+    if (medicareStatusCode.equals("00")) {
+      return "0"; // not enrolled
+    } else {
+      if (dualEligibleStatusCode.equals("NA")) {
+        // not dual eligible
+        return "3"; // Part A and Part B
+      } else {
+        // dual eligible
+        return "C"; // Part A and Part B state buy-in
+      }
+    }
+
+  }
+
+  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean blind) {
+    if (medicareAge) {
+      if (esrd) {
+        return "11";
+      } else {
+        return "10";
+      }
+    } else if (blind) {
+      if (esrd) {
+        return "21";
+      } else {
+        return "20";
+      }
+    } else if (esrd) {
+      return "31";
+    } else {
+      return "00"; // Not enrolled
+    }
+  }
+
+  private static String getPartDCostSharingCode(Person person) {
     double incomeLevel = Double.parseDouble(
             person.attributes.get(Person.INCOME_LEVEL).toString());
     if (incomeLevel >= 1.0) {
@@ -1451,35 +1529,163 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Utility class to manage a beneficiary's part D contract history.
+   * Utility class to manage a beneficiary's part C contract history.
    */
-  static class PartDContractHistory {
-    private static final PartDContractID[] partDContractIDs = initContractIDs();
-    private List<PartDContractPeriod> contractPeriods;
+  static class PartCContractHistory extends ContractHistory<PartCContractID> {
+    private static final PartCContractID[] partCContractIDs = initContractIDs();
 
     /**
-     * Create a new random Part D contract history.
-     * @param rand source of randomness
+     * Create a new random Part C contract history.
+     * @param person source of randomness
      * @param stopTime when the history should end (as ms since epoch)
      * @param yearsOfHistory how many years should be covered
      */
-    public PartDContractHistory(RandomNumberGenerator rand, long stopTime, int yearsOfHistory) {
+    public PartCContractHistory(Person person, long stopTime, int yearsOfHistory) {
+      super(person, stopTime, yearsOfHistory, 20, 1);
+    }
+
+    /**
+     * Get a random contract ID or null.
+     * @param rand source of randomness
+     * @return a contract ID (58% or the time) or null (42% of the time)
+     */
+    @Override
+    protected PartCContractID getRandomContractID(RandomNumberGenerator rand) {
+      if (rand.randInt(100) < 42) {
+        // 42% chance of not enrolling in Part C
+        // see https://www.kff.org/medicare/issue-brief/medicare-advantage-in-2021-enrollment-update-and-key-trends/
+        return null;
+      }
+      return partCContractIDs[rand.randInt(partCContractIDs.length)];
+    }
+
+    /**
+     * Initialize an array containing all of the configured contract IDs.
+     * @return
+     */
+    private static PartCContractID[] initContractIDs() {
+      int numContracts = Config.getAsInteger("exporter.bfd.partc_contract_count", 10);
+      PartCContractID[] contractIDs = new PartCContractID[numContracts];
+      PartCContractID contractID = PartCContractID.parse(
+              Config.get("exporter.bfd.partc_contract_start", "Y0001"));
+      for (int i = 0; i < numContracts; i++) {
+        contractIDs[i] = contractID;
+        contractID = contractID.next();
+      }
+      return contractIDs;
+    }
+  }
+
+  /**
+   * Utility class to manage a beneficiary's part D contract history.
+   */
+  static class PartDContractHistory extends ContractHistory<PartDContractID> {
+    private static final PartDContractID[] partDContractIDs = initContractIDs();
+    private boolean employeePDP;
+
+    /**
+     * Create a new random Part D contract history.
+     * @param person source of randomness
+     * @param stopTime when the history should end (as ms since epoch)
+     * @param yearsOfHistory how many years should be covered
+     */
+    public PartDContractHistory(Person person, long stopTime, int yearsOfHistory) {
+      super(person, stopTime, yearsOfHistory, 20, 1);
+
+      // 1% chance of being enrolled in employer PDP if person's income is above threshold
+      // TBD determine real % of employer PDP enrollment
+      employeePDP = getPartDCostSharingCode(person).equals("09") && person.randInt(100) == 1;
+    }
+
+    /**
+     * Check if person has employer sponsored PDP.
+     * @return true if has employer PDP, false otherwise.
+     */
+    public boolean hasEmployeePDP() {
+      return employeePDP;
+    }
+
+    /**
+     * Get the RDS indicator based on whether person is enrolled in Part D and has employee
+     * coverage.
+     * @param contractID Part D contract ID or null if not enrolled
+     * @return the RDS indicator code
+     */
+    public String getEmployeePDPIndicator(PartDContractID contractID) {
+      if (!hasEmployeePDP()) {
+        return "N";
+      } else if (contractID == null) {
+        return "*";
+      } else {
+        return "Y";
+      }
+    }
+
+    /**
+     * Get a random contract ID or null.
+     * @param rand source of randomness
+     * @return a contract ID (70% or the time) or null (30% of the time)
+     */
+    @Override
+    protected PartDContractID getRandomContractID(RandomNumberGenerator rand) {
+      if (rand.randInt(100) < 30) {
+        // 30% chance of not enrolling in Part D
+        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
+        return null;
+      }
+      return partDContractIDs[rand.randInt(partDContractIDs.length)];
+    }
+
+    /**
+     * Initialize an array containing all of the configured contract IDs.
+     * @return the contract IDs
+     */
+    private static PartDContractID[] initContractIDs() {
+      int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count", 10);
+      PartDContractID[] contractIDs = new PartDContractID[numContracts];
+      PartDContractID contractID = PartDContractID.parse(
+              Config.get("exporter.bfd.partd_contract_start", "Z0001"));
+      for (int i = 0; i < numContracts; i++) {
+        contractIDs[i] = contractID;
+        contractID = contractID.next();
+      }
+      return contractIDs;
+    }
+  }
+
+  /**
+   * Utility class to manage a beneficiary's contract history.
+   */
+  abstract static class ContractHistory<T extends FixedLengthIdentifier> {
+    private List<ContractPeriod> contractPeriods;
+    private static final PlanBenefitPackageID[] planBenefitPackageIDs = initPlanBenefitPackageIDs();
+
+    /**
+     * Create a new random contract history.
+     * @param person source of randomness
+     * @param stopTime when the history should end (as ms since epoch)
+     * @param yearsOfHistory how many years should be covered
+     * @param percentChangeOpenEnrollment percent chance contract will change at open enrollment
+     * @param percentChangeMidYear percent chance contract will change mid year
+     */
+    public ContractHistory(Person person, long stopTime, int yearsOfHistory,
+            int percentChangeOpenEnrollment, int percentChangeMidYear) {
       int endYear = Utilities.getYear(stopTime);
       int endMonth = 12;
+
       contractPeriods = new ArrayList<>();
-      PartDContractPeriod currentContractPeriod =
-              new PartDContractPeriod(endYear - yearsOfHistory, rand);
+      ContractPeriod currentContractPeriod =
+              new ContractPeriod(endYear - yearsOfHistory, person);
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         if (year == endYear) {
           endMonth = Utilities.getMonth(stopTime);
         }
         for (int month = 1; month <= endMonth; month++) {
-          if ((month == 1 && rand.randInt(10) < 2) || rand.randInt(100) == 1) {
-            // 20% chance of changing policy at open enrollment
-            // 1% chance of changing policy Feb - Dec
-            PartDContractPeriod newContractPeriod = new PartDContractPeriod(year, month, rand);
-            PartDContractID currentContractID = currentContractPeriod.getContractID();
-            PartDContractID newContractID = newContractPeriod.getContractID();
+          if ((month == 1 && person.randInt(100) < percentChangeOpenEnrollment)
+                  || person.randInt(100) < percentChangeMidYear) {
+            ContractPeriod newContractPeriod = new ContractPeriod(year, month, person);
+            T currentContractID = currentContractPeriod.getContractID();
+            T newContractID = newContractPeriod.getContractID();
             if ((currentContractID != null && !currentContractID.equals(newContractID))
                     || currentContractID != newContractID) {
               currentContractPeriod.setEndBefore(newContractPeriod);
@@ -1498,8 +1704,8 @@ public class BB2RIFExporter {
      * @param timeStamp the point in time
      * @return the contract ID or null if not enrolled at the specified point in time
      */
-    public PartDContractID getContractID(long timeStamp) {
-      for (PartDContractPeriod contractPeriod: contractPeriods) {
+    public T getContractID(long timeStamp) {
+      for (ContractPeriod contractPeriod: contractPeriods) {
         if (contractPeriod.covers(timeStamp)) {
           return contractPeriod.getContractID();
         }
@@ -1512,9 +1718,9 @@ public class BB2RIFExporter {
      * @param year the year
      * @return the list
      */
-    public List<PartDContractPeriod> getContractPeriods(int year) {
-      List<PartDContractPeriod> periods = new ArrayList<>();
-      for (PartDContractPeriod period: contractPeriods) {
+    public List<ContractPeriod> getContractPeriods(int year) {
+      List<ContractPeriod> periods = new ArrayList<>();
+      for (ContractPeriod period: contractPeriods) {
         if (period.coversYear(year)) {
           periods.add(period);
         }
@@ -1529,7 +1735,7 @@ public class BB2RIFExporter {
      */
     public int getCoveredMonthsCount(int year) {
       int count = 0;
-      for (PartDContractPeriod period: getContractPeriods(year)) {
+      for (ContractPeriod period: getContractPeriods(year)) {
         if (period.getContractID() != null) {
           count += period.getCoveredMonths(year).size();
         }
@@ -1538,42 +1744,52 @@ public class BB2RIFExporter {
     }
 
     /**
-     * Get a random contract ID or null.
+     * Get a random contract ID or null if bene is not enrolled. Implementations of this method
+     * should use rand to model the likelihood of a bene being enrolled.
      * @param rand source of randomness
-     * @return a contract ID (70% or the time) or null (30% of the time)
+     * @return a contract ID or null
      */
-    private PartDContractID getRandomContractID(RandomNumberGenerator rand) {
-      if (rand.randInt(10) <= 2) {
-        // 30% chance of not enrolling in Part D
-        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
-        return null;
+    protected abstract T getRandomContractID(RandomNumberGenerator rand);
+
+    /**
+     * Get a random plan benefit package ID or null if the supplied contract ID is null.
+     * @param rand a source of randomness
+     * @param contractID the contract ID
+     * @return a random plan benefit package ID
+     */
+    protected PlanBenefitPackageID getRandomPlanBenefitPackageID(RandomNumberGenerator rand,
+            T contractID) {
+      if (contractID == null) {
+        return null; // no benefit package if not on contract
+      } else {
+        return planBenefitPackageIDs[rand.randInt(planBenefitPackageIDs.length)];
       }
-      return partDContractIDs[rand.randInt(partDContractIDs.length)];
     }
 
     /**
-     * Initialize an array containing all of the configured contract IDs.
-     * @return
+     * Initialize an array containing all of the configured plan benefit package IDs.
+     * @return the package IDs
      */
-    private static PartDContractID[] initContractIDs() {
-      int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
-      PartDContractID[] contractIDs = new PartDContractID[numContracts];
-      PartDContractID contractID = PartDContractID.parse(
-              Config.get("exporter.bfd.partd_contract_start", "Z0001"));
-      for (int i = 0; i < numContracts; i++) {
-        contractIDs[i] = contractID;
-        contractID = contractID.next();
+    private static PlanBenefitPackageID[] initPlanBenefitPackageIDs() {
+      int numPackages = Config.getAsInteger("exporter.bfd.plan_benefit_package_count", 5);
+      PlanBenefitPackageID[] packageIDs = new PlanBenefitPackageID[numPackages];
+      PlanBenefitPackageID packageID = PlanBenefitPackageID.parse(
+              Config.get("exporter.bfd.plan_benefit_package_start", "800"));
+      for (int i = 0; i < numPackages; i++) {
+        packageIDs[i] = packageID;
+        packageID = packageID.next();
       }
-      return contractIDs;
+      return packageIDs;
     }
 
     /**
-     * Utility class that represents a period of time and an associated Part D contract id.
+     * Utility class that represents a period of time and an associated contract id.
      */
-    public class PartDContractPeriod {
+    public class ContractPeriod {
       private LocalDate startDate;
       private LocalDate endDate;
-      private PartDContractID contractID;
+      private T contractID;
+      private PlanBenefitPackageID planBenefitPackageID;
 
       /**
        * Create a new contract period. Contract periods have a one month granularity so the
@@ -1582,8 +1798,10 @@ public class BB2RIFExporter {
        * @param start the start of the contract period
        * @param end the end of the contract period
        * @param contractID the contract id
+       * @param planBenefitPackageID the plan benefit package id
        */
-      public PartDContractPeriod(LocalDate start, LocalDate end, PartDContractID contractID) {
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              PlanBenefitPackageID planBenefitPackageID) {
         if (start != null) {
           this.startDate = LocalDate.of(start.getYear(), start.getMonthValue(), 1);
         }
@@ -1592,6 +1810,21 @@ public class BB2RIFExporter {
                   .plusMonths(1).minusDays(1);
         }
         this.contractID = contractID;
+        this.planBenefitPackageID = planBenefitPackageID;
+      }
+
+      /**
+       * Create a new contract period. Contract periods have a one month granularity so the
+       * supplied start and end are adjusted to the first day of the start month and last day of
+       * the end month. A random plan benefit package ID is chosen
+       * @param start the start of the contract period
+       * @param end the end of the contract period
+       * @param contractID the contract id
+       * @param rand source of randomness
+       */
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              RandomNumberGenerator rand) {
+        this(start, end, contractID, getRandomPlanBenefitPackageID(rand, contractID));
       }
 
       /**
@@ -1601,8 +1834,8 @@ public class BB2RIFExporter {
        * @param month the month
        * @param rand source of randomness
        */
-      public PartDContractPeriod(int year, int month, RandomNumberGenerator rand) {
-        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand));
+      public ContractPeriod(int year, int month, RandomNumberGenerator rand) {
+        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand), rand);
       }
 
       /**
@@ -1611,7 +1844,7 @@ public class BB2RIFExporter {
        * @param year the year
        * @param rand source of randomness
        */
-      public PartDContractPeriod(int year, RandomNumberGenerator rand) {
+      public ContractPeriod(int year, RandomNumberGenerator rand) {
         this(year, 1, rand);
       }
 
@@ -1619,8 +1852,12 @@ public class BB2RIFExporter {
        * Get the contract id.
        * @return the contract id or null if not enrolled during this period
        */
-      public PartDContractID getContractID() {
+      public T getContractID() {
         return contractID;
+      }
+
+      public PlanBenefitPackageID getPlanBenefitPackageID() {
+        return planBenefitPackageID;
       }
 
       /**
@@ -1669,7 +1906,7 @@ public class BB2RIFExporter {
        * @param newContractPeriod the period to end one before
        * @throws IllegalStateException if the supplied period has a null start
        */
-      public void setEndBefore(PartDContractPeriod newContractPeriod) {
+      public void setEndBefore(ContractPeriod newContractPeriod) {
         if (newContractPeriod.startDate == null) {
           throw new IllegalStateException(
                   "Contract period has an unbounded start (start is null)");
@@ -1686,7 +1923,7 @@ public class BB2RIFExporter {
       }
 
       /**
-       * Check whether this period includes the specified point in time. Undounded periods are
+       * Check whether this period includes the specified point in time. Unbounded periods are
        * assumed to cover all times before, after or both.
        * @param timeStamp point in time
        * @return true of the period covers the point in time, false otherwise
@@ -3154,6 +3391,52 @@ public class BB2RIFExporter {
 
     public PartDContractID next() {
       return new PartDContractID(value + 1);
+    }
+  }
+
+  /**
+   * Utility class for working with CMS Part C Contract IDs.
+   */
+  static class PartCContractID extends FixedLengthIdentifier {
+
+    private static final char[][] PARTC_CONTRACT_FORMAT = {
+      ALPHA, NUMERIC, NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTC_CONTRACT_ID = 0;
+    static final long MAX_PARTC_CONTRACT_ID = maxValue(PARTC_CONTRACT_FORMAT);
+
+    public PartCContractID(long value) {
+      super(value, PARTC_CONTRACT_FORMAT);
+    }
+
+    static PartCContractID parse(String str) {
+      return new PartCContractID(parse(str, PARTC_CONTRACT_FORMAT));
+    }
+
+    public PartCContractID next() {
+      return new PartCContractID(value + 1);
+    }
+  }
+
+  /**
+   * Utility class for working with CMS Plan Benefit Package IDs.
+   */
+  static class PlanBenefitPackageID extends FixedLengthIdentifier {
+
+    private static final char[][] PBP_CONTRACT_FORMAT = {
+      NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTC_CONTRACT_ID = 0;
+    static final long MAX_PARTC_CONTRACT_ID = maxValue(PBP_CONTRACT_FORMAT);
+
+    public PlanBenefitPackageID(long value) {
+      super(value, PBP_CONTRACT_FORMAT);
+    }
+
+    static PlanBenefitPackageID parse(String str) {
+      return new PlanBenefitPackageID(parse(str, PBP_CONTRACT_FORMAT));
+    }
+
+    public PlanBenefitPackageID next() {
+      return new PlanBenefitPackageID(value + 1);
     }
   }
 
