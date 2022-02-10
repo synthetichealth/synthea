@@ -1,7 +1,13 @@
 {
   "name": "hiv_care",
   "remarks": [
-    "Placeholder."
+    "Placeholder.",
+    "",
+    "This module supplements the automatic built-in immunization module with additional boosters for at-risk populations.",
+    "",
+    "You can review and examine the built-in immunization schedule here:",
+    "https://github.com/synthetichealth/synthea/blob/master/src/main/resources/immunization_schedule.json",
+    ""
   ],
   "states": {
     "Initial": {
@@ -517,7 +523,7 @@
     },
     "Monitoring Medication": {
       "type": "Simple",
-      "direct_transition": "Monitoring Encounter End"
+      "direct_transition": "Vaccine Check"
     },
     "Monitoring Encounter End": {
       "type": "EncounterEnd",
@@ -681,6 +687,239 @@
       "unit": "minutes",
       "direct_transition": "Set Baseline",
       "reason": "hiv_diagnosis"
+    },
+    "Tdap Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "MenACWY Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer Tdap",
+            "within": {
+              "quantity": 10,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer Tdap"
+        }
+      ]
+    },
+    "Administer Tdap": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 115,
+          "display": "tetanus toxoid, reduced diphtheria toxoid, and acellular pertussis vaccine, adsorbed"
+        }
+      ],
+      "direct_transition": "MenACWY Check"
+    },
+    "MenACWY Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "PCV13 Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer MenACWY",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer MenACWY"
+        }
+      ]
+    },
+    "Administer MenACWY": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 114,
+          "display": "meningococcal polysaccharide (groups A, C, Y and W-135) diphtheria toxoid conjugate vaccine (MCV4P)"
+        }
+      ],
+      "direct_transition": "PCV13 Check"
+    },
+    "Administer PPSV23": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 33,
+          "display": "pneumococcal polysaccharide vaccine, 23 valent"
+        }
+      ],
+      "direct_transition": "Zoster Check"
+    },
+    "Zoster Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring Encounter End",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer Zoster"
+          }
+        },
+        {
+          "transition": "Administer Zoster",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 2017,
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Monitoring Encounter End"
+        }
+      ]
+    },
+    "Administer Zoster": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 187,
+          "display": "zoster vaccine recombinant"
+        }
+      ],
+      "direct_transition": "Monitoring Encounter End"
+    },
+    "Under 65": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PCV13",
+            "within": {
+              "quantity": 8,
+              "unit": "weeks"
+            }
+          }
+        },
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PPSV23",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer PPSV23"
+        }
+      ]
+    },
+    "65 and Up": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PPSV23",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer PPSV23"
+        }
+      ]
+    },
+    "PCV13 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Age Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PCV13"
+          }
+        },
+        {
+          "transition": "Administer PCV13"
+        }
+      ]
+    },
+    "Age Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "65 and Up",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Under 65"
+        }
+      ]
+    },
+    "Administer PCV13": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 133,
+          "display": "pneumococcal conjugate vaccine, 13 valent"
+        }
+      ],
+      "direct_transition": "Age Check"
+    },
+    "Vaccine Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring Encounter End",
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2010,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Tdap Check"
+        }
+      ]
     }
   },
   "gmf_version": 2
