@@ -45,6 +45,14 @@ public class EntityManager {
   }
 
   /**
+   * Ensures that all Entities loaded by this EntityManager are valid.
+   * @return true if all Entities are valid
+   */
+  public boolean validate() {
+    return records.stream().allMatch(entity -> entity.validSeedPeriods());
+  }
+
+  /**
    * Creates a new EntityManager by reading in the JSON containing all of the information on
    * entities, seeds and variants.
    * @param rawJSON the actual JSON

@@ -38,4 +38,11 @@ public class Period {
     return timestamp <= startStamp;
   }
 
+  public LocalDate getStart() {
+    return start;
+  }
+
+  public LocalDate getEnd() {
+    return end;
+  }
 }

@@ -49,6 +49,26 @@ public class Entity {
     return firstSeed.getPeriod().isBefore(timestamp) || firstSeed.getPeriod().contains(timestamp);
   }
 
+  /**
+   * Checks to see whether the seeds for this entity are valid. This means that there are no gaps
+   * in time between all seeds. Also ensures that seeds do no overlap in time.
+   * @return true if the seed periods are valid, false otherwise
+   */
+  public boolean validSeedPeriods() {
+    boolean valid = true;
+
+    for (int i = 1; i < seeds.size(); i++) {
+      Period first = seeds.get(i - 1).getPeriod();
+      Period second = seeds.get(i).getPeriod();
+
+      if (! first.getEnd().plusDays(1).equals(second.getStart())) {
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
   public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }

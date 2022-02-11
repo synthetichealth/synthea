@@ -20,4 +20,11 @@ public class EntityManagerTest {
     Variant firstVariant = firstSeed.getVariants().get(0);
     Assert.assertEquals("Margarita Ebony", firstVariant.getGivenName());
   }
+
+  @Test
+  public void validate() throws IOException {
+    String rawJSON = Utilities.readResource("identity/test_records.json");
+    EntityManager em = EntityManager.fromJSON(rawJSON);
+    Assert.assertTrue(em.validate());
+  }
 }
