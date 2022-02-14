@@ -1145,7 +1145,7 @@ public abstract class State implements Cloneable, Serializable {
       }
 
       if (this.reactions != null && !this.reactions.isEmpty()) {
-        HashMap<Code, HealthRecord.ReactionSeverity> reactions = new HashMap();
+        HashMap<Code, HealthRecord.ReactionSeverity> reactions = new HashMap<Code, HealthRecord.ReactionSeverity>();
         this.reactions.forEach(rp -> {
           HealthRecord.ReactionSeverity rs = rp.generateSeverity(person);
           if (rs != null) {

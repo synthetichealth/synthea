@@ -83,14 +83,30 @@ public class HealthRecord implements Serializable {
       this.display = definition.get("display").getAsString();
     }
 
-    public boolean equals(Code other) {
-      return this.system.equals(other.system) && this.code.equals(other.code);
+    @Override
+    public boolean equals(Object other) {
+      if(other instanceof Code) {
+        Code otherCode = (Code) other;
+        return this.system.equals(otherCode.system) && this.code.equals(otherCode.code);
+      }
+      return false;
     }
 
+    @Override
     public String toString() {
       return String
           .format("system=%s, code=%s, display=%s, valueSet=%s", system, code, display, valueSet);
     }
+
+    // Uncommenting this function causes crashes because when Code is used as a Map's key, it is used based on the reference value not the attributes of Code.
+    // @Override
+    // public int hashCode() {
+    //   // The code and system should be equivalent, differences in display do not matter.
+    //   int hash = 13;
+    //   hash = 31 * hash + system.hashCode();
+    //   hash = 31 * hash + code.hashCode();
+    //   return hash;
+    // }
 
     /**
      * Parse a JSON array of codes.
@@ -1318,5 +1334,16 @@ public class HealthRecord implements Serializable {
       }
       seriesNo += 1;
     }
+  }
+
+  /**
+   * Returns whether this health record contains the given code within it.
+   * 
+   * @param code the code to check for.
+   */
+  public boolean containsCode(Code code) {
+    boolean conditionContainsCode = this.present.containsKey(code.code);
+    boolean encounterContainsCode = this.encounters.stream().anyMatch((Encounter e) -> e.containsCode(code.code, code.system));
+    return conditionContainsCode || encounterContainsCode;
   }
 }

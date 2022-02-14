@@ -53,7 +53,7 @@ public class LossOfCareHealthRecordTest {
     Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
     testPrivatePayerCopay = testPrivatePayer.determineCopay(encounter);
 
-    time = 0L; //Utilities.convertCalendarYearsToTime(1900);
+    time = Utilities.convertCalendarYearsToTime(1980);
   }
 
   @AfterClass
@@ -65,10 +65,10 @@ public class LossOfCareHealthRecordTest {
   @Test
   public void personRunsOutOfIncomeWithNoInsurance() {
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
-    Code code = new Code("SNOMED-CT","705129","Fake Code");
+    Code code = new Code("SNOMED-CT","4815162342","Fake Code");
     // Set person's income to be $1 lower than the cost of encounter
     person.attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
 
@@ -78,8 +78,10 @@ public class LossOfCareHealthRecordTest {
     coveredEncounter.provider = new Provider();
     person.record.encounterEnd(time, EncounterType.WELLNESS);
     // Person is in debt $1. They should not recieve any more care.
-    assertTrue(person.defaultRecord.encounters.contains(coveredEncounter));
-    assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounter));
+    assertTrue("The person's default record should contain the code.",
+        person.defaultRecord.encounters.contains(coveredEncounter));
+    assertFalse("The person's loss of care record should not contain the code.",
+        person.lossOfCareRecord.encounters.contains(coveredEncounter));
 
     // Second encounter is uncovered and not affordable.
     Encounter uncoveredEncounter = person.encounterStart(time, EncounterType.WELLNESS);
@@ -87,14 +89,16 @@ public class LossOfCareHealthRecordTest {
     uncoveredEncounter.provider = new Provider();
     person.record.encounterEnd(time, EncounterType.WELLNESS);
     // Person should have this encounter in the uncoveredHealthRecord.
-    assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounter));
-    assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounter));
+    assertTrue("The person's loss of care record should now contain the uncovered encounter.",
+        person.lossOfCareRecord.encounters.contains(uncoveredEncounter));
+    assertFalse("The uncovered encounter should not be in the person's covered health record.",
+        person.defaultRecord.encounters.contains(uncoveredEncounter));
   }
 
   @Test
   public void personRunsOutOfIncomeDueToCopay() {
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     InsurancePlan plan = testPrivatePayer.plans.iterator().next();
     person.coverage.setPlanAtTime(time, plan);
     person.setProvider(EncounterType.WELLNESS, new Provider());
@@ -179,7 +183,7 @@ public class LossOfCareHealthRecordTest {
   public void personRunsOutOfCurrentYearIncomeThenNextYearBegins() {
 
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
