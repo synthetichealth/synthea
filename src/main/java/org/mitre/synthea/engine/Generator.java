@@ -111,7 +111,7 @@ public class Generator implements RandomNumberGenerator {
     public long endTime = referenceTime;
     /** Actual time the run started. */
     public final long runStartTime = referenceTime;
-    /** By default use the current time as random seed */
+    /** By default use the current time as random seed. */
     public long seed = referenceTime;
     public long clinicianSeed = referenceTime;
     /** Population as exclusively live persons or including deceased.
