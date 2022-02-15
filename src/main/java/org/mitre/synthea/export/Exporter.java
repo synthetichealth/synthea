@@ -254,6 +254,13 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Config.getAsBoolean("exporter.csv.pcornet.export")) {
+      try {
+        PCORnetExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
     if (Config.getAsBoolean("exporter.cpcds.export")) {
       try {
         CPCDSExporter.getInstance().export(person, stopTime);
