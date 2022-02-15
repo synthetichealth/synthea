@@ -1,11 +1,11 @@
 {
   "name": "Sleep Apnea",
   "remarks": [
-    "Basic Sleep Apnea module derived from Harrison's Principles of Internal Medicine. 15th edition. 2001.",
+    "Basic Sleep Apnea module primarily derived from Harrison's Principles of Internal Medicine (15th edition, 2001) except where otherwise quoted and cited.",
+    "",
+    "\"... the overall prevalence of any OSA ranged from 9% to 38% in the general adult population, from 13% to 33% in men and from 6% to 19% in women, although much higher in the elderly groups.\" - from https://doi.org/10.1016/j.smrv.2016.07.002.",
     "",
     "Sleep apnea ... is one of the leading causes of excessive daytime sleepiness.",
-    "...",
-    "Epidemiologic studies have established a prevalence of clinically important sleep apnea of at least 2% in middle-aged women and 4% in middle-aged men.",
     "...",
     "...  inevitably results in snoring. In most patients, snoring antedates the development of obstructive events by many years.",
     "...",
@@ -56,11 +56,11 @@
           "distributions": [
             {
               "transition": "Sleep Disorder",
-              "distribution": 0.02
+              "distribution": 0.06
             },
             {
               "transition": "Terminal",
-              "distribution": 0.98
+              "distribution": 0.94
             }
           ]
         },
@@ -72,11 +72,11 @@
           "distributions": [
             {
               "transition": "Sleep Disorder",
-              "distribution": 0.04
+              "distribution": 0.13
             },
             {
               "transition": "Terminal",
-              "distribution": 0.96
+              "distribution": 0.87
             }
           ]
         },
@@ -97,7 +97,7 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "Assessment"
+      "direct_transition": "Initial Assessment"
     },
     "Loud Snoring": {
       "type": "Symptom",
@@ -125,21 +125,6 @@
       },
       "direct_transition": "Initial Encounter"
     },
-    "Initial Encounter End": {
-      "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Wait Until Overnight Study",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Referral"
-          }
-        },
-        {
-          "transition": "At Home Monitoring"
-        }
-      ]
-    },
     "Hypertension": {
       "type": "SetAttribute",
       "attribute": "hypertension",
@@ -158,35 +143,6 @@
         }
       ],
       "direct_transition": "2nd Assessment"
-    },
-    "Assessment": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 103750000,
-          "display": "Sleep apnea assessment (procedure)"
-        }
-      ],
-      "distribution": {
-        "kind": "UNIFORM",
-        "parameters": {
-          "high": 60,
-          "low": 30
-        }
-      },
-      "unit": "minutes",
-      "reason": "Sleep Disorder",
-      "distributed_transition": [
-        {
-          "transition": "Home Sleep Device",
-          "distribution": 0.33
-        },
-        {
-          "transition": "Referral",
-          "distribution": 0.6699999999999999
-        }
-      ]
     },
     "2nd Assessment": {
       "type": "Procedure",
@@ -264,25 +220,6 @@
       "direct_transition": "Treatment",
       "assign_to_attribute": "sleep_apnea"
     },
-    "Referral": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 698560000,
-          "display": "Referral to sleep apnea clinic (procedure)"
-        }
-      ],
-      "distribution": {
-        "kind": "EXACT",
-        "parameters": {
-          "value": 5
-        }
-      },
-      "unit": "minutes",
-      "direct_transition": "Initial Encounter End",
-      "reason": "Sleep Disorder"
-    },
     "Sleep Disorder": {
       "type": "ConditionOnset",
       "target_encounter": "Initial Encounter",
@@ -323,7 +260,7 @@
         "code": 720253003,
         "display": "Home-use sleep apnea recording system (physical object)"
       },
-      "direct_transition": "Initial Encounter End"
+      "direct_transition": "Sleep Specialist Encounter End"
     },
     "Polysomnography Device": {
       "type": "Device",
@@ -407,18 +344,7 @@
     },
     "End 2nd Encounter": {
       "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Wait 30 Days for Resupply",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Oxygen Supply"
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
+      "direct_transition": "Terminal"
     },
     "Sleep Apnea Care Plan": {
       "type": "CarePlanStart",
@@ -480,11 +406,11 @@
           "distributions": [
             {
               "transition": "Home CPAP Unit",
-              "distribution": 0.5
+              "distribution": 0.8
             },
             {
               "transition": "Intraoral Appliance",
-              "distribution": 0.5
+              "distribution": 0.2
             }
           ]
         }
@@ -515,46 +441,138 @@
         "code": 467645007,
         "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
       },
-      "direct_transition": "Oxygen Supply"
-    },
-    "Oxygen Supply": {
-      "type": "SupplyList",
-      "supplies": [
-        {
-          "quantity": 1,
-          "code": {
-            "system": "SNOMED-CT",
-            "code": 320917000,
-            "display": "Product containing only oxygen in conventional release gas for inhalation (medicinal product form)"
-          }
-        }
-      ],
       "direct_transition": "End 2nd Encounter"
     },
-    "Oxygen Resupply Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "sleep_apnea",
+    "Initial Assessment": {
+      "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185389009,
-          "display": "Follow-up visit (procedure)"
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
         }
       ],
-      "direct_transition": "Oxygen Supply"
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "Referral to Sleep Specialist"
     },
-    "Wait 30 Days for Resupply": {
+    "Referral to Sleep Specialist": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698560000,
+          "display": "Referral to sleep apnea clinic (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "Initial Encounter End"
+    },
+    "Sleep Specialist Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Specialist Assessment"
+    },
+    "Wait Until Appointment": {
       "type": "Delay",
       "distribution": {
         "kind": "UNIFORM",
         "parameters": {
-          "high": 31,
-          "low": 28
+          "high": 21,
+          "low": 7
         }
       },
       "unit": "days",
-      "direct_transition": "Oxygen Resupply Encounter"
+      "direct_transition": "Sleep Specialist Encounter"
+    },
+    "Sleep Specialist Encounter End": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Wait Until Overnight Study",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Referral to Overnight"
+          }
+        },
+        {
+          "transition": "At Home Monitoring"
+        }
+      ]
+    },
+    "Initial Encounter End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait Until Appointment"
+    },
+    "Specialist Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "distributed_transition": [
+        {
+          "transition": "Home Sleep Device",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Referral to Overnight",
+          "distribution": 0.6699999999999999
+        }
+      ]
+    },
+    "Referral to Overnight": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698560000,
+          "display": "Referral to sleep apnea clinic (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Sleep Specialist Encounter End",
+      "reason": "Sleep Disorder"
     }
   },
   "gmf_version": 2
