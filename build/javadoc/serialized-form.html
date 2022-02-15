@@ -1111,7 +1111,7 @@
 <li class="blockList"><a name="org.mitre.synthea.engine.State.CarePlanStart">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/engine/State.CarePlanStart.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.CarePlanStart</a> extends <a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/engine/State.CarePlanStart.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.CarePlanStart</a> extends org.mitre.synthea.engine.State.AttributeAssignableState implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialized Fields</h3>
@@ -1124,13 +1124,9 @@
 <h4>activities</h4>
 <pre>java.util.List&lt;E&gt; activities</pre>
 </li>
-<li class="blockList">
+<li class="blockListLast">
 <h4>reason</h4>
 <pre>java.lang.String reason</pre>
-</li>
-<li class="blockListLast">
-<h4>assignToAttribute</h4>
-<pre>java.lang.String assignToAttribute</pre>
 </li>
 </ul>
 </li>
@@ -1272,7 +1268,7 @@
 <li class="blockList"><a name="org.mitre.synthea.engine.State.Device">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/engine/State.Device.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.Device</a> extends <a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/engine/State.Device.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.Device</a> extends org.mitre.synthea.engine.State.AttributeAssignableState implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialized Fields</h3>
@@ -1285,13 +1281,9 @@
 <h4>manufacturer</h4>
 <pre>java.lang.String manufacturer</pre>
 </li>
-<li class="blockList">
+<li class="blockListLast">
 <h4>model</h4>
 <pre>java.lang.String model</pre>
-</li>
-<li class="blockListLast">
-<h4>assignToAttribute</h4>
-<pre>java.lang.String assignToAttribute</pre>
 </li>
 </ul>
 </li>
@@ -1471,7 +1463,7 @@
 <li class="blockList"><a name="org.mitre.synthea.engine.State.MedicationOrder">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/engine/State.MedicationOrder.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.MedicationOrder</a> extends <a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a> implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/engine/State.MedicationOrder.html" title="class in org.mitre.synthea.engine">org.mitre.synthea.engine.State.MedicationOrder</a> extends org.mitre.synthea.engine.State.AttributeAssignableState implements Serializable</h3>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialization Methods</h3>
@@ -1516,10 +1508,6 @@
 <li class="blockList">
 <h4>prescription</h4>
 <pre>com.google.gson.JsonObject prescription</pre>
-</li>
-<li class="blockList">
-<h4>assignToAttribute</h4>
-<pre>java.lang.String assignToAttribute</pre>
 </li>
 <li class="blockList">
 <h4>administration</h4>
