@@ -152,81 +152,89 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#enabledModules">enabledModules</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#endTime">endTime</a></span></code>
+<div class="block">End time of Synthea simulation.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#fixedRecordPath">fixedRecordPath</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#gender">gender</a></span></code>
 <div class="block">Gender to be generated.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#initialPopulationSnapshotPath">initialPopulationSnapshotPath</a></span></code>
 <div class="block">File used to initialize a population.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#keepPatientsModulePath">keepPatientsModulePath</a></span></code>
 <div class="block">Path to a module defining which patients should be kept and exported.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#localModuleDir">localModuleDir</a></span></code>
 <div class="block">When Synthea is used as a standalone library, this directory holds
  any locally created modules.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#maxAge">maxAge</a></span></code>
 <div class="block">Maximum age of people to be generated.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#minAge">minAge</a></span></code>
 <div class="block">Minimum age of people to be generated.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#overflow">overflow</a></span></code>
 <div class="block">Population as exclusively live persons or including deceased.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#population">population</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#referenceTime">referenceTime</a></span></code>
 <div class="block">Reference Time when to start Synthea.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#runStartTime">runStartTime</a></span></code>
 <div class="block">Actual time the run started.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span></code>&nbsp;</td>
-</tr>
 <tr class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#seed">seed</a></span></code>
+<div class="block">By default use the current time as random seed.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#state">state</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#threadPoolSize">threadPoolSize</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.GeneratorOptions.html#updatedPopulationSnapshotPath">updatedPopulationSnapshotPath</a></span></code>
 <div class="block">File used to store a population snapshot.</div>
@@ -297,6 +305,36 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;int threadPoolSize</pre>
 </li>
 </ul>
+<a name="referenceTime">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>referenceTime</h4>
+<pre>public&nbsp;long referenceTime</pre>
+<div class="block">Reference Time when to start Synthea. By default equal to the current system time.</div>
+</li>
+</ul>
+<a name="endTime">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>endTime</h4>
+<pre>public&nbsp;long endTime</pre>
+<div class="block">End time of Synthea simulation. By default equal to the current system time.</div>
+</li>
+</ul>
+<a name="runStartTime">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>runStartTime</h4>
+<pre>public final&nbsp;long runStartTime</pre>
+<div class="block">Actual time the run started.</div>
+</li>
+</ul>
 <a name="seed">
 <!--   -->
 </a>
@@ -304,6 +342,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>seed</h4>
 <pre>public&nbsp;long seed</pre>
+<div class="block">By default use the current time as random seed.</div>
 </li>
 </ul>
 <a name="clinicianSeed">
@@ -447,31 +486,11 @@ extends java.lang.Object</pre>
 <a name="keepPatientsModulePath">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>keepPatientsModulePath</h4>
 <pre>public&nbsp;java.io.File keepPatientsModulePath</pre>
 <div class="block">Path to a module defining which patients should be kept and exported.</div>
-</li>
-</ul>
-<a name="referenceTime">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>referenceTime</h4>
-<pre>public&nbsp;long referenceTime</pre>
-<div class="block">Reference Time when to start Synthea. By default equal to the current system time.</div>
-</li>
-</ul>
-<a name="runStartTime">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>runStartTime</h4>
-<pre>public final&nbsp;long runStartTime</pre>
-<div class="block">Actual time the run started.</div>
 </li>
 </ul>
 </li>
