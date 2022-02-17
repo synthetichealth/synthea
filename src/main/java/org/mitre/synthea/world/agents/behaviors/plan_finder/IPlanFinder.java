@@ -38,12 +38,9 @@ public interface IPlanFinder {
   public static boolean meetsBasicRequirements(
       Payer payer, Person person, EncounterType service, long time) {
 
-    // occupation determines whether their employer will pay for insurance after the mandate.
-    double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
-
     return payer.accepts(person, time)
         && (person.canAffordPayer(payer) || (time >= HealthInsuranceModule.mandateTime
-        && occupation >= HealthInsuranceModule.mandateOccupation))
+        && person.finances.occupationMeetsInsuranceMandate()))
         && payer.isInNetwork(null)
         && (payer.coversService(null)); // For a null service, Payer.coversService returns true.
   }

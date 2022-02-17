@@ -15,7 +15,7 @@ public class StandardMedicaidEligibility implements IPayerEligibility {
                 && (boolean) person.attributes.get("pregnant"));
         boolean blind = (person.attributes.containsKey("blindness")
                 && (boolean) person.attributes.get("blindness"));
-        int income = (Integer) person.attributes.get(Person.INCOME);
+        int income = (Integer) person.finances.getIncome();
         // TODO - why is medicaid level in the HealthInsuranceModule?
         boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
 

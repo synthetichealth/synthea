@@ -49,6 +49,7 @@ import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.Finances;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -642,6 +643,8 @@ public class Generator implements RandomNumberGenerator {
    */
   public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
     Person person = new Person(personSeed);
+    // TODO - how?
+    person.setFinances((Finances) demoAttributes.get(Finances.FINANCES));
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, location);
@@ -775,18 +778,13 @@ public class Generator implements RandomNumberGenerator {
     demographicsOutput.put(Person.EDUCATION_LEVEL, educationLevel);
 
     int income = city.pickIncome(random);
-    demographicsOutput.put(Person.INCOME, income);
     double incomeLevel = city.incomeLevel(income);
-    demographicsOutput.put(Person.INCOME_LEVEL, incomeLevel);
     double povertyRatio = city.povertyRatio(income);
-    demographicsOutput.put(Person.POVERTY_RATIO, povertyRatio);
-
     double occupation = random.nextDouble();
-    demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);
-
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
-    demographicsOutput.put(Person.SOCIOECONOMIC_SCORE, sesScore);
-    demographicsOutput.put(Person.SOCIOECONOMIC_CATEGORY, city.socioeconomicCategory(sesScore));
+
+    Finances finances = new Finances(income, incomeLevel, povertyRatio, occupation, sesScore);
+    demographicsOutput.put(Finances.FINANCES, finances);
 
     if (this.onlyVeterans) {
       demographicsOutput.put("veteran_population_override", Boolean.TRUE);

@@ -150,7 +150,8 @@ public abstract class Logic implements Serializable {
 
     @Override
     public boolean test(Person person, long time) {
-      return category.equals(person.attributes.get(Person.SOCIOECONOMIC_CATEGORY));
+      // TODO - finances should not be a public attribute.
+      return category.equals(person.finances.getSocioeconmicCategory());
     }
   }
 

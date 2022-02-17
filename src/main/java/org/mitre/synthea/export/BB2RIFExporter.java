@@ -456,8 +456,8 @@ public class BB2RIFExporter {
   }
 
   private String getPartDCostSharingCode(Person person) {
-    double incomeLevel = Double.parseDouble(
-            person.attributes.get(Person.INCOME_LEVEL).toString());
+    // TODO - there's a better OO way to delegate this.
+    double incomeLevel = person.finances.getIncomeLevel();
     if (incomeLevel >= 1.0) {
       // Beneficiary enrolled in Parts A and/or B, and Part D; no premium or cost sharing subsidy
       return "09";
