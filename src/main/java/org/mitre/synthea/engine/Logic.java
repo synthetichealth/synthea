@@ -206,7 +206,7 @@ public abstract class Logic implements Serializable {
         for (Code code : this.codes) {
           // First, look in the current health record for the latest observation
           HealthRecord.Observation last = person.record.getLatestObservation(code.code);
-          if (LostCareHealthRecord.lossOfCareEnabled) {
+          if (LostCareHealthRecord.lossOfCareEnabled()) {
             if (last == null) {
               // If the observation is not in the current record,
               // it could be in the uncovered health record.
@@ -496,7 +496,7 @@ public abstract class Logic implements Serializable {
   public static class LostCare extends ActiveLogic {
     @Override
     boolean checkCode(Person person, Code code) {
-      if(LostCareHealthRecord.lossOfCareEnabled) {
+      if(LostCareHealthRecord.lossOfCareEnabled()) {
         return person.lossOfCareRecord.containsCode(code);
       }
       return false;

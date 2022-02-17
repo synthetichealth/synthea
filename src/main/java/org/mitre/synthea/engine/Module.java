@@ -45,6 +45,7 @@ import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.LostCareHealthRecord;
 
 /**
  * Module represents the entry point of a generic module.
@@ -129,15 +130,19 @@ public class Module implements Cloneable, Serializable {
     AtomicInteger submoduleCount = new AtomicInteger();
     Path basePath = modulesPath.getParent();
     Utilities.walkAllModules(modulesPath, t -> {
-      String relativePath = relativePath(t, modulesPath);
-      boolean submodule = !t.getParent().equals(modulesPath);
-      if (submodule) {
-        submoduleCount.getAndIncrement();
+      // This conditional prevents lossOfCare modules from loading when it is disabled.
+      String[] modulePath = t.toString().split("/");
+      if(LostCareHealthRecord.lossOfCareEnabled() || !modulePath[modulePath.length - 2].equalsIgnoreCase("lost_care")) {
+        String relativePath = relativePath(t, modulesPath);
+        boolean submodule = !t.getParent().equals(modulesPath);
+        if (submodule) {
+          submoduleCount.getAndIncrement();
+        }
+        Path loadPath = localFiles ? t : basePath.relativize(t);
+        retVal.put(relativePath, new ModuleSupplier(submodule,
+            relativePath,
+            () -> loadFile(loadPath, submodule, overrides, localFiles)));
       }
-      Path loadPath = localFiles ? t : basePath.relativize(t);
-      retVal.put(relativePath, new ModuleSupplier(submodule,
-          relativePath,
-          () -> loadFile(loadPath, submodule, overrides, localFiles)));
     });
     return submoduleCount.get();
   }

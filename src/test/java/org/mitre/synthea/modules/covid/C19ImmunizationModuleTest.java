@@ -8,14 +8,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.modules.Immunizations;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.LostCareHealthRecord;
 import org.mitre.synthea.world.geography.Location;
 
 public class C19ImmunizationModuleTest {

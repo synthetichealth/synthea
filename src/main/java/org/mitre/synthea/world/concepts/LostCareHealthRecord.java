@@ -5,9 +5,18 @@ import org.mitre.synthea.world.agents.Person;
 
 public class LostCareHealthRecord extends HealthRecord {
 
-    public static boolean lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    private static boolean lossOfCareEnabled = updateLossOfCareFlag();
 
     public LostCareHealthRecord(Person person) {
         super(person);
+    }
+
+    public static boolean updateLossOfCareFlag() {
+      lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+      return lossOfCareEnabled;
+    }
+
+    public static boolean lossOfCareEnabled() {
+      return lossOfCareEnabled;
     }
 }

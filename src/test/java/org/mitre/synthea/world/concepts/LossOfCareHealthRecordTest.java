@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Logic.LostCare;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -41,6 +42,7 @@ public class LossOfCareHealthRecordTest {
         "generic/payers/test_payers.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("lifecycle.death_by_loss_of_care", "true");
+    LostCareHealthRecord.updateLossOfCareFlag();
     // Load in the .csv list of Payers for MA.
     PayerController.loadPayers(new Location(testState, null));
     // Load test payers.
@@ -60,6 +62,7 @@ public class LossOfCareHealthRecordTest {
   public static void clean() {
     Config.set("generate.payers.loss_of_care", "false");
     Config.set("lifecycle.death_by_loss_of_care", "false");
+    LostCareHealthRecord.updateLossOfCareFlag();
   }
 
   @Test
