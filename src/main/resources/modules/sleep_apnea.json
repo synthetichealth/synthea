@@ -181,6 +181,11 @@
           "system": "SNOMED-CT",
           "code": 108243003,
           "display": "Sleep disorder test AND/OR procedure (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 446573003,
+          "display": "Continuous positive airway pressure titration (procedure)"
         }
       ],
       "distribution": {
@@ -241,18 +246,6 @@
         }
       ]
     },
-    "At Home Monitoring": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "UNIFORM",
-        "parameters": {
-          "high": 14,
-          "low": 7
-        }
-      },
-      "unit": "days",
-      "direct_transition": "At Home Follow Up"
-    },
     "Home Sleep Device": {
       "type": "Device",
       "code": {
@@ -287,19 +280,6 @@
       },
       "unit": "days",
       "direct_transition": "Overnight Test"
-    },
-    "At Home Follow Up": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "Sleep Disorder",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185389009,
-          "display": "Follow-up visit (procedure)"
-        }
-      ],
-      "direct_transition": "Return Home Sleep Device"
     },
     "Return Home Sleep Device": {
       "type": "DeviceEnd",
@@ -336,7 +316,7 @@
       },
       "unit": "minutes",
       "reason": "Sleep Disorder",
-      "direct_transition": "Sleep Apnea"
+      "direct_transition": "CPAP Titration"
     },
     "Treatment": {
       "type": "Simple",
@@ -366,15 +346,14 @@
           "system": "SNOMED-CT",
           "code": 419822006,
           "display": "Warning. Avoid alcoholic drink (qualifier value)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 47545007,
+          "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)"
         }
       ],
       "goals": [
-        {
-          "addresses": [
-            "text"
-          ],
-          "text": "Improve nasal patency"
-        },
         {
           "addresses": [
             "text"
@@ -432,16 +411,16 @@
         "code": 702172008,
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
-      "direct_transition": "Nasal Cannula for CPAP"
-    },
-    "Nasal Cannula for CPAP": {
-      "type": "Device",
-      "code": {
-        "system": "SNOMED-CT",
-        "code": 467645007,
-        "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
-      },
-      "direct_transition": "End 2nd Encounter"
+      "distributed_transition": [
+        {
+          "transition": "Face Mask",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Nasal Mask",
+          "distribution": 0.5
+        }
+      ]
     },
     "Initial Assessment": {
       "type": "Procedure",
@@ -518,7 +497,7 @@
           }
         },
         {
-          "transition": "At Home Monitoring"
+          "transition": "Appointment Delay"
         }
       ]
     },
@@ -573,6 +552,68 @@
       "unit": "minutes",
       "direct_transition": "Sleep Specialist Encounter End",
       "reason": "Sleep Disorder"
+    },
+    "Appointment Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 14,
+          "low": 7
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Follow Up"
+    },
+    "CPAP Titration": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 446573003,
+          "display": "Continuous positive airway pressure titration (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 9,
+          "low": 3
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Sleep Apnea"
+    },
+    "Nasal Mask": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 442398003,
+        "display": "Nasal mask (physical object)"
+      },
+      "direct_transition": "End 2nd Encounter"
+    },
+    "Face Mask": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 704718009,
+        "display": "CPAP/BPAP oral mask (physical object)"
+      },
+      "direct_transition": "End 2nd Encounter"
+    },
+    "Follow Up": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Return Home Sleep Device"
     }
   },
   "gmf_version": 2
