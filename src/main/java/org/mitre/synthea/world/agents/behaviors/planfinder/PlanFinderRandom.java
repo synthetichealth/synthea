@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.plan_finder;
+package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Find a particular provider by service.

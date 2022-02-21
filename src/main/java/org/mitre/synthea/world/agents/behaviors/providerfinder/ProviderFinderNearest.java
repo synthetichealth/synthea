@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.provider_finder;
+package org.mitre.synthea.world.agents.behaviors.providerfinder;
 
 import static java.util.stream.Collectors.groupingBy;
 

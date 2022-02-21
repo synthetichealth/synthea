@@ -134,7 +134,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-import org.mitre.synthea.world.concepts.health_insurance.Claim;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim;
 
 public class FhirStu3 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed

@@ -14,8 +14,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
 import org.mitre.synthea.world.geography.Location;
 
 public class PlanFinderTest {

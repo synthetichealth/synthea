@@ -66,7 +66,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Supply;
-import org.mitre.synthea.world.concepts.health_insurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 import org.mitre.synthea.world.geography.CMSStateCodeMapper;
 
 /**

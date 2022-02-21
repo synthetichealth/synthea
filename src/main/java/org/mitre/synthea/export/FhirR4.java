@@ -151,7 +151,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-import org.mitre.synthea.world.concepts.health_insurance.Claim;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim;
 import org.mitre.synthea.world.geography.Location;
 
 public class FhirR4 {

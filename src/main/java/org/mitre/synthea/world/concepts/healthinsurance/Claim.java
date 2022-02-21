@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.concepts.health_insurance;
+package org.mitre.synthea.world.concepts.healthinsurance;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.health_insurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 
 public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;

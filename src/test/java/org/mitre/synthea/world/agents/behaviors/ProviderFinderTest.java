@@ -10,9 +10,9 @@ import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
-import org.mitre.synthea.world.agents.behaviors.provider_finder.ProviderFinderNearest;
-import org.mitre.synthea.world.agents.behaviors.provider_finder.ProviderFinderQuality;
-import org.mitre.synthea.world.agents.behaviors.provider_finder.ProviderFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearest;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderQuality;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderTest {

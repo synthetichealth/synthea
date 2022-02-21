@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.behaviors.payer_adjustment.IPayerAdjustment;
-import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentFixed;
-import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentNone;
-import org.mitre.synthea.world.agents.behaviors.payer_adjustment.PayerAdjustmentRandom;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.IPlanFinder;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.PlanFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentNone;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentRandom;
+import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 public class PayerController {

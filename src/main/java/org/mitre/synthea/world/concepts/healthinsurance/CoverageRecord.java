@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.concepts.health_insurance;
+package org.mitre.synthea.world.concepts.healthinsurance;
 
 import java.io.Serializable;
 import java.util.ArrayList;

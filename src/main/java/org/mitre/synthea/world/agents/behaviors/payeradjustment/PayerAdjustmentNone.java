@@ -1,9 +1,9 @@
-package org.mitre.synthea.world.agents.behaviors.payer_adjustment;
+package org.mitre.synthea.world.agents.behaviors.payeradjustment;
 
 import java.io.Serializable;
 
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.health_insurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 
 /**
  * Default payer adjustment strategy -- no adjustment.

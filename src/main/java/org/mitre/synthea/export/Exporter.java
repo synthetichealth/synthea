@@ -34,7 +34,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
-import org.mitre.synthea.world.concepts.health_insurance.Claim;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim;
 
 public abstract class Exporter {
 

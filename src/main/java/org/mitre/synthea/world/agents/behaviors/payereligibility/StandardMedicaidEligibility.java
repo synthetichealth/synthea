@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.payer_eligibility;
+package org.mitre.synthea.world.agents.behaviors.payereligibility;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;

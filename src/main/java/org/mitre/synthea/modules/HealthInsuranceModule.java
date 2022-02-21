@@ -10,8 +10,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.plan_finder.IPlanFinder;
-import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
+import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class HealthInsuranceModule extends Module {
 

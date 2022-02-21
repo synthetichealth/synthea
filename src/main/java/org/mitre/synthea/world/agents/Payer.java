@@ -19,17 +19,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.world.agents.behaviors.payer_adjustment.IPayerAdjustment;
-import org.mitre.synthea.world.agents.behaviors.payer_eligibility.IPayerEligibility;
-import org.mitre.synthea.world.agents.behaviors.payer_eligibility.PayerEligibilityFactory;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
+import org.mitre.synthea.world.agents.behaviors.payereligibility.IPayerEligibility;
+import org.mitre.synthea.world.agents.behaviors.payereligibility.PayerEligibilityFactory;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.world.concepts.health_insurance.InsurancePlan;
-import org.mitre.synthea.world.concepts.health_insurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 
 public class Payer implements Serializable {
 
