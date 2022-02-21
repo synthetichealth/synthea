@@ -28,7 +28,6 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
-import org.mitre.synthea.world.concepts.Finances;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -69,8 +68,14 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String NAME_MOTHER = "name_mother";
   public static final String NAME_FATHER = "name_father";
   public static final String MARITAL_STATUS = "marital_status";
+  public static final String SOCIOECONOMIC_SCORE = "socioeconomic_score";
+  public static final String SOCIOECONOMIC_CATEGORY = "socioeconomic_category";
+  public static final String INCOME = "income";
+  public static final String INCOME_LEVEL = "income_level";
+  public static final String POVERTY_RATIO = "poverty_ratio";
   public static final String EDUCATION = "education";
   public static final String EDUCATION_LEVEL = "education_level";
+  public static final String OCCUPATION_LEVEL = "occupation_level";
   public static final String SMOKER = "smoker";
   public static final String ALCOHOLIC = "alcoholic";
   public static final String ADHERENCE = "adherence";
@@ -92,6 +97,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String RECORD_GROUP = "record_group";
   public static final String LINK_ID = "link_id";
   public static final String VETERAN = "veteran";
+  private static final String LAST_MONTH_PAID = "last_month_paid";
 
   private final Random random;
   public final long seed;
@@ -132,9 +138,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public List<State> history;
   /** Record of insurance coverage. */
   public CoverageRecord coverage;
-  // Person's Finances
-  // TODO - This should not be a public attribute.
-  public Finances finances;
 
   /**
    * Person constructor.
@@ -720,8 +723,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param payer the payer to check.
    */
   public boolean canAffordPayer(Payer payer) {
-    // TODO - this should not use finances.getIncome(). there's a better OO way to delegate this.
-    int income = (Integer) this.finances.getIncome();
+    int income = (Integer) this.attributes.get(Person.INCOME);
     double yearlyCost = payer.getYearlyCost();
     return income > yearlyCost;
   }
@@ -734,8 +736,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    // TODO - this should not use finances.getIncome(). there's a better OO way to delegate this.
-    boolean stillHasIncome = this.coverage.canIncomeAffordExpenses(this.finances.getIncome(), time);
+    boolean stillHasIncome = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
     if(!stillHasIncome) {
       // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
@@ -750,14 +751,23 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the time that the person checks to pay premium.
    */
   public void checkToPayMonthlyPremium(long time) {
+
+    if (!this.attributes.containsKey(Person.LAST_MONTH_PAID)) {
+      this.attributes.put(Person.LAST_MONTH_PAID, 0);
+    }
+
     int currentMonth = Utilities.getMonth(time);
-    if(finances.timeToPayMonthlyPremium(currentMonth)) {
+    int lastMonthPaid = (int) this.attributes.get(Person.LAST_MONTH_PAID);
+
+    if (currentMonth > lastMonthPaid || (currentMonth == 1 && lastMonthPaid == 12)) {
+
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
+
       // Pay the payer.
       PlanRecord planRecord = this.coverage.getPlanRecordAtTime(time);
       planRecord.payMonthlyPremiums();
       // Update the last monthly premium paid.
-      this.finances.updateLastMonthPaid(currentMonth);
+      this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.
       this.stillHasIncome(time);
     }
@@ -791,9 +801,5 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
-  }
-
-  public void setFinances(Finances finances) {
-    this.finances = finances;
   }
 }
