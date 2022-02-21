@@ -7,11 +7,10 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class GenericPayerEligibilty implements IPayerEligibility {
 
-    // Generic Selection algorithm (maybe takes prameters to dictate certain eligibilty)
-
-    @Override
-    public boolean isPersonEligible(Person person, long time) {
-        // By default, we're currently assuming that generic payer eligiblity will accept any patients.
-        return true;
-    }
+  @Override
+  public boolean isPersonEligible(Person person, long time) {
+    // By default, we're currently assuming that generic payer eligiblity will
+    // accept any patients.
+    return true;
+  }
 }

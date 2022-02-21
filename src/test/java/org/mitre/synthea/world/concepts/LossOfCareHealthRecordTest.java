@@ -137,7 +137,8 @@ public class LossOfCareHealthRecordTest {
     assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounter3));
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounter3));
     // Person should now have no insurance.
-    assertTrue(person.coverage.getPlanAtTime(time).equals(PayerController.noInsurance.getNoInsurancePlan()));
+    assertTrue(person.coverage.getPlanAtTime(time)
+        .equals(PayerController.noInsurance.getNoInsurancePlan()));
   }
 
   @Test
@@ -162,7 +163,8 @@ public class LossOfCareHealthRecordTest {
       healthInsuranceModule.process(person, currTime);
     }
     // Person should now have no insurance.
-    assertTrue(person.coverage.getPlanAtTime(currTime).equals(PayerController.noInsurance.getNoInsurancePlan()));
+    assertTrue(person.coverage.getPlanAtTime(currTime)
+        .equals(PayerController.noInsurance.getNoInsurancePlan()));
 
     // Encounter is uncovered and unaffordable.
     Encounter uncoveredEncounter3

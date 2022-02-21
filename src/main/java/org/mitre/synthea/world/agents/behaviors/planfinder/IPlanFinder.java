@@ -54,7 +54,8 @@ public interface IPlanFinder {
    * @param options the list of acceptable payer options that the person can recieve.
    * @return a random payer from the given list of options.
    */
-  public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options, RandomNumberGenerator rand) {
+  public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options,
+      RandomNumberGenerator rand) {
     if (options.isEmpty()) {
       return PayerController.noInsurance.getNoInsurancePlan();
     } else if (options.size() == 1) {

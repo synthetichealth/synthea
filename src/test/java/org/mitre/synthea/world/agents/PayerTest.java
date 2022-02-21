@@ -74,7 +74,8 @@ public class PayerTest {
     // Clear any Payers that may have already been statically loaded.
     PayerController.clear();
     // Load in the .csv list of Payers.
-    Config.set("generate.payers.insurance_companies.default_file", "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
     // Force medicare for test settings
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
@@ -172,10 +173,12 @@ public class PayerTest {
     long age64Time = birthTime + Utilities.convertTime("years", 65) - sixMonths;
     person.coverage.setPlanAtTime(age64Time, testPrivatePayer1.plans.stream().iterator().next());
     healthInsuranceModule.process(person, age64Time);
-    assertEquals(PayerController.PRIVATE_OWNERSHIP, person.coverage.getPlanAtTime(age64Time).getPayer().getOwnership());
+    assertEquals(PayerController.PRIVATE_OWNERSHIP,
+        person.coverage.getPlanAtTime(age64Time).getPayer().getOwnership());
     // The person is now 65 and qualifies for Medicare.
     healthInsuranceModule.process(person, age65Time);
-    assertEquals(HealthInsuranceModule.MEDICARE, person.coverage.getPlanAtTime(age65Time).getPayer().getName());
+    assertEquals(HealthInsuranceModule.MEDICARE,
+        person.coverage.getPlanAtTime(age65Time).getPayer().getName());
     assertTrue(person.coverage.getPlanAtTime(age65Time).getPayer().accepts(person, age65Time));
   }
 
@@ -190,7 +193,8 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals(HealthInsuranceModule.MEDICARE, person.coverage.getPlanAtTime(0L).getPayer().getName());
+    assertEquals(HealthInsuranceModule.MEDICARE,
+        person.coverage.getPlanAtTime(0L).getPayer().getName());
   }
 
   @Test
@@ -204,7 +208,8 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals(HealthInsuranceModule.MEDICAID, person.coverage.getPlanAtTime(0L).getPayer().getName());
+    assertEquals(HealthInsuranceModule.MEDICAID,
+        person.coverage.getPlanAtTime(0L).getPayer().getName());
     assertTrue(person.coverage.getPlanAtTime(0L).getPayer().accepts(person, 0L));
   }
 
@@ -252,7 +257,8 @@ public class PayerTest {
     long age64Time = birthTime + Utilities.convertTime("years", 64) + sixMonths;
     person.coverage.setPlanAtTime(age64Time, testPrivatePayer1.plans.stream().iterator().next());
     healthInsuranceModule.process(person, age64Time);
-    assertEquals(HealthInsuranceModule.MEDICAID, person.coverage.getPlanAtTime(age64Time).getPayer().getName());
+    assertEquals(HealthInsuranceModule.MEDICAID,
+        person.coverage.getPlanAtTime(age64Time).getPayer().getName());
     // The person is now 65 and qualifies for Medicare in addition to.
     healthInsuranceModule.process(person, age65Time);
     assertEquals(HealthInsuranceModule.DUAL_ELIGIBLE,
@@ -373,7 +379,8 @@ public class PayerTest {
         healthInsuranceModule.process(person, time);
       }
     }
-    int totalMonthlyPremiumsOwed = (int) (testPrivatePayer1.plans.iterator().next().getMonthlyPremium() * 12 * 65);
+    int totalMonthlyPremiumsOwed
+        = (int) (testPrivatePayer1.plans.iterator().next().getMonthlyPremium() * 12 * 65);
     // The payer's revenue should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, testPrivatePayer1.getRevenue(), 0.001);
     // The person's health care expenses should equal the total monthly premiums.

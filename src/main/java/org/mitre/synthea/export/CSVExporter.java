@@ -1286,7 +1286,8 @@ public class CSVExporter {
     // PAYER_ID
     s.append(planRecord.plan.getPayer().getResourceID()).append(',');
     // SECONDARY_PAYER_ID
-    if (planRecord.secondaryPlan.getPayer() != null && planRecord.secondaryPlan.getPayer() != PayerController.noInsurance) {
+    if (planRecord.secondaryPlan.getPayer() != null && planRecord.secondaryPlan.getPayer()
+        != PayerController.noInsurance) {
       s.append(planRecord.secondaryPlan.getPayer().getResourceID());
     }
     s.append(',');

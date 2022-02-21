@@ -43,7 +43,7 @@ public class PlanFinderBestRates implements IPlanFinder {
 
     for (Payer payer : payers) {
       if (IPlanFinder.meetsBasicRequirements(payer, person, service, time)) {
-        for(InsurancePlan plan : payer.plans) {
+        for (InsurancePlan plan : payer.plans) {
           // First, calculate the annual premium.
           double expectedRate = (plan.getMonthlyPremium() * 12.0);
           // Second, calculate expected copays based on last years visits.

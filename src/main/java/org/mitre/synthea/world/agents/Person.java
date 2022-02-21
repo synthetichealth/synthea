@@ -32,9 +32,9 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
-import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
@@ -737,8 +737,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    boolean stillHasIncome = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
-    if(!stillHasIncome) {
+    boolean stillHasIncome
+        = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
+    if (!stillHasIncome) {
       // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     }

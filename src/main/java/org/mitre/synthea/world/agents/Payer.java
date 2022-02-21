@@ -29,8 +29,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class Payer implements Serializable {
 
@@ -111,10 +111,10 @@ public class Payer implements Serializable {
 
   /**
    * Payer constructor.
-   * @param name
-   * @param id
-   * @param statesCovered
-   * @param ownership
+   * @param name  The name of the payer.
+   * @param id  The payer ID.
+   * @param statesCovered The list of states covered.
+   * @param ownership The type of ownership (private/government).
    */
   public Payer(String name, String id, Set<String> statesCovered, String ownership) {
     if (name == null || name.isEmpty()) {
@@ -139,14 +139,16 @@ public class Payer implements Serializable {
 
   /**
    * Creates and adds a new plan with the given attributes to this payer.
-   * @param servicesCovered
-   * @param deductible
-   * @param defaultCoinsurance
-   * @param defaultCopay
-   * @param monthlyPremium
+   * @param servicesCovered The services covered.
+   * @param deductible  The deductible.
+   * @param defaultCoinsurance  The default coinsurance.
+   * @param defaultCopay  The default copay.
+   * @param monthlyPremium  The monthly premium.
    */
-  public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
-    InsurancePlan newPlan = new InsurancePlan(this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
+  public void createPlan(Set<String> servicesCovered, double deductible,
+      double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
+    InsurancePlan newPlan = new InsurancePlan(
+        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
     this.plans.add(newPlan);
   }
 
@@ -187,7 +189,8 @@ public class Payer implements Serializable {
    * @return whether or not the payer will accept this patient as a customer
    */
   public boolean accepts(Person person, long time) {
-    // How does the relationship between Dual Eligible work? Medicare Advantage plans? There probably shouldn't be a Dual Eligible payer.
+    // How does the relationship between Dual Eligible work?
+    // Medicare Advantage plans? There probably shouldn't be a Dual Eligible payer.
     return this.payerEligibility.isPersonEligible(person, time);
   }
 
@@ -541,7 +544,7 @@ public class Payer implements Serializable {
 
   /**
    * Sets the payer claim adjustment strategy.
-   * @param payerAdjustment
+   * @param payerAdjustment The payer adjustment algorithm.
    */
   public void setPayerAdjustment(IPayerAdjustment payerAdjustment) {
     this.payerAdjustment = payerAdjustment;
@@ -570,6 +573,10 @@ public class Payer implements Serializable {
     return insuranceStatus;
   }
 
+  /**
+   * Returns the yearly cost of this payer.
+   * @return
+   */
   public double getYearlyCost() {
     // Will need to be updated to get a yearly cost for a specific plan.
     InsurancePlan singlePlan = this.plans.iterator().next();
@@ -580,7 +587,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the coinsurance for the given person. TODO - currently just has one plan.
-   * @param person
+   * @param person  The person for whom to get the coinsurance for.
    * @return
    */
   public double getCoinsurance(Person person) {
@@ -590,24 +597,32 @@ public class Payer implements Serializable {
 
   /**
    * Adds the given revenue to the payer.
-   * @param revenue
+   * @param revenue The revenue to add.
    */
   public void addRevenue(double revenue) {
     this.revenue += revenue;
   }
 
+  /**
+   * Returns the no insurance InsurancePlan if this is the no insurance payer.
+   * @return  the no insurance plan.
+   */
   public InsurancePlan getNoInsurancePlan() {
     // TODO - This is bad design, reimplement using inheritance?
-    if(!this.name.equals(PayerController.NO_INSURANCE)){
+    if (!this.name.equals(PayerController.NO_INSURANCE)) {
       throw new RuntimeException("Only the no insurance payer can call getNoInsurancePlan().");
     }
     return this.plans.iterator().next();
   }
 
+  /**
+   * Returns the government payer plan if this is a government payer.
+   * @return  This payer's government payer plan.
+   */
   public InsurancePlan getGovernmentPayerPlan() {
     // TODO - This is bad design, reimplement using inheritance?
     // Or should each gov payer have multiple plan options? Or just one?
-    if(!this.ownership.equals(PayerController.GOV_OWNERSHIP)){
+    if (!this.ownership.equals(PayerController.GOV_OWNERSHIP)) {
       throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
     }
     return this.plans.iterator().next();

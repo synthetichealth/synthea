@@ -33,7 +33,7 @@ public class CoverageRecord implements Serializable {
     /**
      * Create a new Plan with the given Payer.
      * @param time The time the plan starts.
-     * @param payer The payer associated with the Plan.
+     * @param plan The plan associated with the PlanRecord.
      */
     public PlanRecord(long time, InsurancePlan plan) {
       this.start = time;
@@ -49,7 +49,8 @@ public class CoverageRecord implements Serializable {
      * @return  Cost of the premiums.
      */
     public double payMonthlyPremiums() {
-      double premiumPrice = (this.plan.payMonthlyPremium()) + (this.secondaryPlan.payMonthlyPremium());
+      double premiumPrice = (this.plan.payMonthlyPremium())
+          + (this.secondaryPlan.payMonthlyPremium());
       this.totalExpenses += premiumPrice;
       return premiumPrice;
     }
@@ -59,7 +60,7 @@ public class CoverageRecord implements Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append("[PlanRecord:");
       sb.append(" Start: " + start);
@@ -100,13 +101,14 @@ public class CoverageRecord implements Serializable {
   /**
    * Sets the person's payer history at the given time to the given payers.
    * @param time the current simulation time.
-   * @param newPayer the primary payer.
-   * @param secondaryPayer the secondary payer (for example, Medicare Supplemental Insurance).
+   * @param newPlan the primary InsurancePlan.
+   * @param secondaryPlan the secondary InsurancePlan (i.e. Medicare Supplemental Insurance).
    */
   public void setPlanAtTime(long time, InsurancePlan newPlan, InsurancePlan secondaryPlan) {
-    if(this.planHistory.isEmpty()){
-      if(person.age(time).getYears() > Utilities.convertTime("years", 1)) {
-        throw new RuntimeException("Person was greater than the age of 1 when recieving their initial insurance plan.");
+    if (this.planHistory.isEmpty()) {
+      if (person.age(time).getYears() > Utilities.convertTime("years", 1)) {
+        throw new RuntimeException("Person was greater than the age"
+            + " of 1 when recieving their initial insurance plan.");
       }
       // If this is the person's first plan, set the start date to their birthdate.
       time = (long) person.attributes.get(Person.BIRTHDATE);
@@ -134,7 +136,7 @@ public class CoverageRecord implements Serializable {
   /**
    * Sets the person's payer history at the given time to the given payer.
    * @param time the current simulation time.
-   * @param newPayer the primary payer.
+   * @param newPlan the primary plan.
    */
   public void setPlanAtTime(long time, InsurancePlan newPlan) {
     this.setPlanAtTime(time, newPlan, PayerController.getNoInsurancePlan());
@@ -156,8 +158,8 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Returns this coverage record history's record of the plan at the given time.
-   * @param time
-   * @return
+   * @param time  The time to get the person's plan at.
+   * @return  The InsurancePlan at the given time.
    */
   public InsurancePlan getPlanAtTime(long time) {
     PlanRecord planRecord = getPlanRecordAtTime(time);
