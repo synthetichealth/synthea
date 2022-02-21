@@ -1,8 +1,7 @@
-package org.mitre.synthea.world.agents.behaviors.payeradjustment;
+package org.mitre.synthea.world.agents.behaviors.payereligibility;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.payereligibility.IPayerEligibility;
 
 /**
  * An algorithm that dictates the standard medicaid elgibilty criteria.

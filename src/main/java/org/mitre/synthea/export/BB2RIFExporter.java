@@ -2159,15 +2159,15 @@ public class BB2RIFExporter {
       fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
           String.format("%.2f", subTotals.deductible));
       fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
       fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
           String.format("%.2f", subTotals.cost - subTotals.adjustment));
       fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
           String.format("%.2f", subTotals.cost));
       fieldValues.put(DME.NCH_CLM_PRVDR_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
       fieldValues.put(DME.CLM_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
 
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
@@ -2216,7 +2216,7 @@ public class BB2RIFExporter {
           fieldValues.put(DME.LINE_PRMRY_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
           fieldValues.put(DME.LINE_NCH_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
+              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
 
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
