@@ -1118,39 +1118,32 @@ public class FhirR4 {
         .setCode("primary")
         .setSystem("http://terminology.hl7.org/CodeSystem/claimcareteamrole")
         .setDisplay("Primary Care Practitioner"));
+    Reference providerReference = new Reference().setDisplay("Unknown");
     if (encounter.clinician != null) {
-      // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
       String practitionerFullUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
-              : findPractitioner(encounter.clinician, bundle);
-      eob.setProvider(new Reference(practitionerFullUrl));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference(practitionerFullUrl))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference(practitionerFullUrl));
-      referral.addPerformer(new Reference(practitionerFullUrl));
+          ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
+          : findPractitioner(encounter.clinician, bundle);
+      if (practitionerFullUrl != null) {
+        providerReference = new Reference(practitionerFullUrl);
+      }
     } else if (encounter.provider != null) {
       String providerUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Location",
-                      encounter.provider.getResourceLocationID())
-              : findProviderUrl(encounter.provider, bundle);
-      eob.setProvider(new Reference(providerUrl));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference(providerUrl))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference(providerUrl));
-      referral.addPerformer(new Reference(providerUrl));
-    } else {
-      eob.setProvider(new Reference().setDisplay("Unknown"));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference().setDisplay("Unknown"))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference().setDisplay("Unknown"));
-      referral.addPerformer(new Reference().setDisplay("Unknown"));
+          ? ExportHelper.buildFhirSearchUrl("Location",
+                    encounter.provider.getResourceLocationID())
+          : findProviderUrl(encounter.provider, bundle);
+      if (providerUrl != null) {
+        providerReference = new Reference(providerUrl);
+      }
     }
+
+    eob.setProvider(providerReference);
+    eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
+        .setSequence(1)
+        .setProvider(providerReference)
+        .setRole(primaryCareRole));
+    referral.setRequester(providerReference);
+    referral.addPerformer(providerReference);
+
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 

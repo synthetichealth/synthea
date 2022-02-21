@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors.payereligibility;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.behaviors.payeradjustment.StandardMedicaidEligibility;
 
 /**
  * Returns the requested Payer elgibility algorithm. This prevents redundant

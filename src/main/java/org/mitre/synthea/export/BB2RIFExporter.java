@@ -48,6 +48,7 @@ import org.mitre.synthea.export.BB2RIFStructure.OUTPATIENT;
 import org.mitre.synthea.export.BB2RIFStructure.PDE;
 import org.mitre.synthea.export.BB2RIFStructure.SNF;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -130,6 +131,7 @@ public class BB2RIFExporter {
   CodeMapper dmeCodeMapper;
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
+  private Map<String, RandomCollection<String>> externalCodes;
 
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -140,18 +142,21 @@ public class BB2RIFExporter {
   private static final String BB2_MBI = "BB2_MBI";
 
   /**
-   * Day-Month-Year date format.
+   * Day-Month-Year date format. Note that SimpleDateFormat is not thread safe so we need one
+   * per generator thread.
    */
-  private static final SimpleDateFormat BB2_DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
+  private static final ThreadLocal<SimpleDateFormat> BB2_DATE_FORMAT = new ThreadLocal<>();
 
   /**
    * Get a date string in the format DD-MMM-YY from the given time stamp.
    */
   private static String bb2DateFromTimestamp(long time) {
-    synchronized (BB2_DATE_FORMAT) {
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
-      return BB2_DATE_FORMAT.format(new Date(time));
+    SimpleDateFormat dateFormat = BB2_DATE_FORMAT.get();
+    if (dateFormat == null) {
+      dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+      BB2_DATE_FORMAT.set(dateFormat);
     }
+    return dateFormat.format(new Date(time));
   }
 
   /**
@@ -166,6 +171,7 @@ public class BB2RIFExporter {
     hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
     betosCodeMapper = new CodeMapper("export/betos_code_map.json");
     locationMapper = new CMSStateCodeMapper();
+    externalCodes = loadExternalCodes();
     try {
       String csv = Utilities.readResourceAndStripBOM("payers/carriers.csv");
       carrierLookup = SimpleCSV.parse(csv);
@@ -180,6 +186,67 @@ public class BB2RIFExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
+  }
+
+  private Map<String, RandomCollection<String>> loadExternalCodes() {
+    Map<String, RandomCollection<String>> data = new HashMap<String, RandomCollection<String>>();
+    try {
+      String fileData = Utilities.readResourceAndStripBOM("export/external_codes.csv");
+      List<LinkedHashMap<String, String>> csv = SimpleCSV.parse(fileData);
+      for (LinkedHashMap<String, String> row : csv) {
+        String primary = row.get("primary");
+        String external = row.get("external");
+        double count = Double.parseDouble(row.get("count"));
+        if (!data.containsKey(primary)) {
+          data.put(primary, new RandomCollection<String>());
+        }
+        data.get(primary).add(count, external);
+      }
+    } catch (Exception e) {
+      if (Config.getAsBoolean("exporter.bfd.require_code_maps", true)) {
+        throw new MissingResourceException(
+            "Unable to read external code file 'external_codes.csv'",
+            "BB2RIFExporter", "external_codes.csv");
+      } else {
+        // For testing, the external codes are not present.
+        System.out.println("BB2RIFExporter is running without 'external_codes.csv'");
+      }
+      return null;
+    }
+    return data;
+  }
+
+  private <E extends Enum<E>> void setExternalCode(Person person,
+      Map<E,String> fieldValues, E diagnosisCodeKey,
+      E externalCodeKey, E externalVersionKey,
+      E externalPOACodeKey, List<String> presentOnAdmission) {
+    // set the external code...
+    boolean set = setExternalCode(person, fieldValues, diagnosisCodeKey,
+        externalCodeKey, externalVersionKey);
+    // ... and also set the 'present on admission' flag...
+    if (set && externalPOACodeKey != null && presentOnAdmission != null) {
+      String primary = fieldValues.get(diagnosisCodeKey);
+      if (primary != null) {
+        String present = presentOnAdmission.contains(primary) ? "Y" : "U";
+        fieldValues.put(externalPOACodeKey, present);
+      }
+    }
+  }
+
+  private <E extends Enum<E>> boolean setExternalCode(Person person,
+      Map<E,String> fieldValues, E diagnosisCodeKey,
+      E externalCodeKey, E externalVersionKey) {
+    String primary = fieldValues.get(diagnosisCodeKey);
+    if (primary != null) {
+      String prefix = primary.substring(0, 3);
+      if (externalCodes != null && externalCodes.containsKey(prefix)) {
+        String externalCode = externalCodes.get(prefix).next(person);
+        fieldValues.put(externalCodeKey, externalCode);
+        fieldValues.put(externalVersionKey, "0");
+        return true;
+      }
+    }
+    return false;
   }
 
   private static CLIA[] initCliaLabNumbers() {
@@ -312,19 +379,21 @@ public class BB2RIFExporter {
    * Export a single person.
    * @param person the person to export
    * @param stopTime end time of simulation
+   * @param yearsOfHistory number of years of claims to export
    * @throws IOException if something goes wrong
    */
-  public void export(Person person, long stopTime) throws IOException {
+  public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     exportBeneficiary(person, stopTime);
     exportBeneficiaryHistory(person, stopTime);
-    exportInpatient(person, stopTime);
-    exportOutpatient(person, stopTime);
-    exportCarrier(person, stopTime);
-    exportPrescription(person, stopTime);
-    exportDME(person, stopTime);
-    exportHome(person, stopTime);
-    exportHospice(person, stopTime);
-    exportSNF(person, stopTime);
+    long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
+    exportInpatient(person, startTime, stopTime);
+    exportOutpatient(person, startTime, stopTime);
+    exportCarrier(person, startTime, stopTime);
+    exportPrescription(person, startTime, stopTime);
+    exportDME(person, startTime, stopTime);
+    exportHome(person, startTime, stopTime);
+    exportHospice(person, startTime, stopTime);
+    exportSNF(person, startTime, stopTime);
   }
 
   /**
@@ -344,16 +413,22 @@ public class BB2RIFExporter {
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
     int endYear = Utilities.getYear(stopTime);
     int endMonth = Utilities.getMonth(stopTime);
-    long deathDate = person.attributes.get(Person.DEATHDATE) == null ? -1
-            : (long) person.attributes.get(Person.DEATHDATE);
-    if (deathDate != -1) {
-      endYear = Utilities.getYear(deathDate);
-      endMonth = Utilities.getMonth(deathDate);
+    long deathDate = -1;
+    if (person.attributes.get(Person.DEATHDATE) != null) {
+      deathDate = (long)person.attributes.get(Person.DEATHDATE);
+      if (deathDate > stopTime) {
+        deathDate = -1; // Ignore future death date that may have been set by a module
+      } else {
+        endYear = Utilities.getYear(deathDate);
+        endMonth = Utilities.getMonth(deathDate);
+      }
     }
 
+    PartCContractHistory partCContracts = new PartCContractHistory(person,
+            deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     PartDContractHistory partDContracts = new PartDContractHistory(person,
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
-    person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts);
+    person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts); // used in exportPrescription
 
     RifEntryStatus entryStatus = RifEntryStatus.INITIAL;
     String initialBeneEntitlementReason = null;
@@ -373,7 +448,6 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
         fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
-        fieldValues.put(BENEFICIARY.RDS_MO_CNT, monthCountStr);
         int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
         fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
         fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
@@ -385,12 +459,17 @@ public class BB2RIFExporter {
         fieldValues.put(BENEFICIARY.BENE_ZIP_CD, zipCode);
         fieldValues.put(BENEFICIARY.BENE_COUNTY_CD,
                 locationMapper.zipToCountyCode(zipCode));
+        for (int i = 0; i < monthCount; i++) {
+          fieldValues.put(BB2RIFStructure.beneficiaryFipsStateCntyFields[i],
+              locationMapper.zipToFipsCountyCode(zipCode));
+        }
         fieldValues.put(BENEFICIARY.STATE_CODE,
                 locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        fieldValues.put(BENEFICIARY.BENE_RACE_CD,
-                bb2RaceCode(
-                        (String)person.attributes.get(Person.ETHNICITY),
-                        (String)person.attributes.get(Person.RACE)));
+        String raceCode = bb2RaceCode(
+                (String)person.attributes.get(Person.ETHNICITY),
+                (String)person.attributes.get(Person.RACE));
+        fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
+        fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI alogorithm
         fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
                 (String)person.attributes.get(Person.LAST_NAME));
         String givenName = (String)person.attributes.get(Person.FIRST_NAME);
@@ -425,25 +504,70 @@ public class BB2RIFExporter {
           fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
         }
 
+        for (PartCContractHistory.ContractPeriod period:
+                partCContracts.getContractPeriods(year)) {
+          PartCContractID partCContractID = period.getContractID();
+          if (partCContractID != null) {
+            String partCContractIDStr = partCContractID.toString();
+            String partCPBPIDStr = period.getPlanBenefitPackageID().toString();
+            List<Integer> coveredMonths = period.getCoveredMonths(year);
+            for (int i: coveredMonths) {
+              fieldValues.put(BB2RIFStructure.beneficiaryPartCContractFields[i - 1],
+                      partCContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartCPBPFields[i - 1],
+                      partCPBPIDStr);
+            }
+          }
+        }
+
         // TODO: make claim copay match the designated cost sharing code
         String partDCostSharingCode = getPartDCostSharingCode(person);
-        for (PartDContractHistory.PartDContractPeriod period:
+        int rdsMonthCount = 0;
+        for (PartDContractHistory.ContractPeriod period:
                 partDContracts.getContractPeriods(year)) {
           PartDContractID partDContractID = period.getContractID();
+          String partDDrugSubsidyIndicator =
+                  partDContracts.getEmployeePDPIndicator(partDContractID);
           if (partDContractID != null) {
             String partDContractIDStr = partDContractID.toString();
-            for (int i: period.getCoveredMonths(year)) {
+            String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
+            List<Integer> coveredMonths = period.getCoveredMonths(year);
+            if (partDDrugSubsidyIndicator.equals("Y")) {
+              rdsMonthCount += coveredMonths.size();
+            }
+            for (int i: coveredMonths) {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
                       partDContractIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[i - 1],
+                      partDPBPIDStr);
+              fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
                       partDCostSharingCode);
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           } else {
             for (int i: period.getCoveredMonths(year)) {
               // Not enrolled this month
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
             }
           }
+        }
+        fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
+
+        String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+        String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
+                isBlind(person));
+        String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
+        for (int month = 0; month < monthCount; month++) {
+          fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
+                  dualEligibleStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
+                  medicareStatusCode);
+          fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
+                  buyInIndicator);
         }
         rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
         if (year == (endYear - 1)) {
@@ -455,7 +579,43 @@ public class BB2RIFExporter {
     }
   }
 
-  private String getPartDCostSharingCode(Person person) {
+  private static String getEntitlementBuyIn(String dualEligibleStatusCode,
+          String medicareStatusCode) {
+    if (medicareStatusCode.equals("00")) {
+      return "0"; // not enrolled
+    } else {
+      if (dualEligibleStatusCode.equals("NA")) {
+        // not dual eligible
+        return "3"; // Part A and Part B
+      } else {
+        // dual eligible
+        return "C"; // Part A and Part B state buy-in
+      }
+    }
+
+  }
+
+  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean blind) {
+    if (medicareAge) {
+      if (esrd) {
+        return "11";
+      } else {
+        return "10";
+      }
+    } else if (blind) {
+      if (esrd) {
+        return "21";
+      } else {
+        return "20";
+      }
+    } else if (esrd) {
+      return "31";
+    } else {
+      return "00"; // Not enrolled
+    }
+  }
+
+  private static String getPartDCostSharingCode(Person person) {
     double incomeLevel = Double.parseDouble(
             person.attributes.get(Person.INCOME_LEVEL).toString());
     if (incomeLevel >= 1.0) {
@@ -473,6 +633,73 @@ public class BB2RIFExporter {
     // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
     // premium subsidy and no copayment
     return "01";
+  }
+
+  // Income level < 0.3
+  private static final RandomCollection<String> incomeBandOneDualCodes = new RandomCollection<>();
+  // 0.3 <= Income level < 0.6
+  private static final RandomCollection<String> incomeBandTwoDualCodes = new RandomCollection<>();
+  // 0.6 <= Income level < 1.0
+  private static final RandomCollection<String> incomeBandThreeDualCodes = new RandomCollection<>();
+
+  static {
+    // Specified Low-Income Medicare Beneficiary (SLMB)-only
+    incomeBandOneDualCodes.add(1.3, "03");
+    // SLMB and full Medicaid coverage, including prescription drugs
+    incomeBandOneDualCodes.add(0.5, "04");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandOneDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandOneDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.1, "");
+
+    // QMB and full Medicaid coverage, including prescription drugs
+    incomeBandTwoDualCodes.add(8.2, "02");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandTwoDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandTwoDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.1, "");
+
+    // Qualified Medicare Beneficiary (QMB)-only
+    incomeBandThreeDualCodes.add(2.2, "01");
+    // Qualifying individuals (QI)
+    incomeBandThreeDualCodes.add(0.8, "06");
+    // Other dual eligible (not QMB, SLMB, QWDI, or QI) with full Medicaid coverage, including
+    // prescription Drugs
+    incomeBandThreeDualCodes.add(2.9, "08");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandThreeDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandThreeDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.1, "");
+  }
+
+  private String getDualEligibilityCode(Person person, int year) {
+    // TBD add support for the following additional code (%-age in brackets is observed
+    // frequency in CMS data):
+    // 00 (15.6%) - Not enrolled in Medicare for the month
+    String partDCostSharingCode = getPartDCostSharingCode(person);
+    if (partDCostSharingCode.equals("03")) {
+      return incomeBandThreeDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("02")) {
+      return incomeBandTwoDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("01")) {
+      return incomeBandOneDualCodes.next(person);
+    } else if (hasESRD(person, year) || isBlind(person)) {
+      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+    } else {
+      return "NA"; // (68.3%) Non-Medicaid
+    }
   }
 
   private String getBB2SexCode(String sex) {
@@ -539,6 +766,11 @@ public class BB2RIFExporter {
     return mappedDiagnosisCodes.contains("N18.6");
   }
 
+  private boolean isBlind(Person person) {
+    return person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true);
+  }
+
   /**
    * Export a beneficiary history for single person. Assumes exportBeneficiary
    * was called first to set up various ID on person
@@ -577,7 +809,13 @@ public class BB2RIFExporter {
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
-    String terminationCode = (person.attributes.get(Person.DEATHDATE) == null) ? "0" : "1";
+    String terminationCode = "0";
+    if (person.attributes.get(Person.DEATHDATE) != null) {
+      long deathDate = (long)person.attributes.get(Person.DEATHDATE);
+      if (deathDate <= stopTime) {
+        terminationCode = "1"; // Ignore future death date that may have been set by a module
+      }
+    }
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
     int year = Utilities.getYear(stopTime);
@@ -610,25 +848,33 @@ public class BB2RIFExporter {
   /**
    * Export outpatient claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long stopTime)
+  private void exportOutpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      if (isVA || isIHSCenter || isPrimary || isUrgent || !(isAmbulatory || isOutpatient)) {
+        continue;
+      }
+
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
-
-      if (isPrimary || !(isAmbulatory || isOutpatient || isUrgent)) {
-        continue;
-      }
 
       staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
 
@@ -717,6 +963,12 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
+
+      // Check for external code...
+      setExternalCode(person, fieldValues,
+          OUTPATIENT.PRNCPAL_DGNS_CD, OUTPATIENT.ICD_DGNS_E_CD1, OUTPATIENT.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          OUTPATIENT.PRNCPAL_DGNS_CD, OUTPATIENT.FST_DGNS_E_CD, OUTPATIENT.FST_DGNS_E_VRSN_CD);
 
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
@@ -807,26 +1059,34 @@ public class BB2RIFExporter {
   /**
    * Export inpatient claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long stopTime)
+  private void exportInpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<INPATIENT, String> fieldValues = new HashMap<>();
 
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
       boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
-      long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
-      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
-
-      if (!(isInpatient || isEmergency)) {
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter || !(isInpatient || isEmergency)) {
         previousEmergency = false;
         continue;
       }
+
+      long claimId = BB2RIFExporter.claimId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, INPATIENT.class, person);
@@ -922,9 +1182,6 @@ public class BB2RIFExporter {
           icdReasonCode = conditionCodeMapper.map(encounter.reason.code, person, true);
           fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, icdReasonCode);
           fieldValues.put(INPATIENT.ADMTG_DGNS_CD, icdReasonCode);
-          if (drgCodeMapper.canMap(icdReasonCode)) {
-            fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdReasonCode, person));
-          }
         }
       }
       // Use the active condition diagnoses to enter mapped values
@@ -947,6 +1204,21 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
         }
       }
+
+      if (fieldValues.containsKey(INPATIENT.PRNCPAL_DGNS_CD)) {
+        String icdCode = fieldValues.get(INPATIENT.PRNCPAL_DGNS_CD);
+        // Add a DRG code, if applicable
+        if (drgCodeMapper.canMap(icdCode)) {
+          fieldValues.put(INPATIENT.CLM_DRG_CD, drgCodeMapper.map(icdCode, person));
+        }
+        // Check for external code...
+        setExternalCode(person, fieldValues,
+            INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.ICD_DGNS_E_CD1, INPATIENT.ICD_DGNS_E_VRSN_CD1,
+            INPATIENT.CLM_E_POA_IND_SW1, presentOnAdmission);
+        setExternalCode(person, fieldValues,
+            INPATIENT.PRNCPAL_DGNS_CD, INPATIENT.FST_DGNS_E_CD, INPATIENT.FST_DGNS_E_VRSN_CD);
+      }
+
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
@@ -1044,19 +1316,28 @@ public class BB2RIFExporter {
   /**
    * Export carrier claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportCarrier(Person person, long stopTime) throws IOException {
+  private void exportCarrier(Person person, long startTime, long stopTime) throws IOException {
     HashMap<CARRIER, String> fieldValues = new HashMap<>();
 
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
+
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
-
-      if (!isPrimary && !isWellness) {
+      boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      if (isVA || !(isIHSCenter || isPrimary || isWellness || isUrgent)) {
         continue;
       }
 
@@ -1157,6 +1438,7 @@ public class BB2RIFExporter {
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = "";
+          String ndcCode = "";
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
               if (hcpcsCodeMapper.canMap(code.code)) {
@@ -1168,6 +1450,7 @@ public class BB2RIFExporter {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
             }
           }
           // TBD: decide whether line item skip logic is needed here and in other files
@@ -1181,6 +1464,7 @@ public class BB2RIFExporter {
           } else {
             fieldValues.put(CARRIER.BETOS_CD, "");
           }
+          fieldValues.put(CARRIER.LINE_NDC_CD, ndcCode);
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
@@ -1246,35 +1530,163 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Utility class to manage a beneficiary's part D contract history.
+   * Utility class to manage a beneficiary's part C contract history.
    */
-  static class PartDContractHistory {
-    private static final PartDContractID[] partDContractIDs = initContractIDs();
-    private List<PartDContractPeriod> contractPeriods;
+  static class PartCContractHistory extends ContractHistory<PartCContractID> {
+    private static final PartCContractID[] partCContractIDs = initContractIDs();
 
     /**
-     * Create a new random Part D contract history.
-     * @param rand source of randomness
+     * Create a new random Part C contract history.
+     * @param person source of randomness
      * @param stopTime when the history should end (as ms since epoch)
      * @param yearsOfHistory how many years should be covered
      */
-    public PartDContractHistory(RandomNumberGenerator rand, long stopTime, int yearsOfHistory) {
+    public PartCContractHistory(Person person, long stopTime, int yearsOfHistory) {
+      super(person, stopTime, yearsOfHistory, 20, 1);
+    }
+
+    /**
+     * Get a random contract ID or null.
+     * @param rand source of randomness
+     * @return a contract ID (58% or the time) or null (42% of the time)
+     */
+    @Override
+    protected PartCContractID getRandomContractID(RandomNumberGenerator rand) {
+      if (rand.randInt(100) < 42) {
+        // 42% chance of not enrolling in Part C
+        // see https://www.kff.org/medicare/issue-brief/medicare-advantage-in-2021-enrollment-update-and-key-trends/
+        return null;
+      }
+      return partCContractIDs[rand.randInt(partCContractIDs.length)];
+    }
+
+    /**
+     * Initialize an array containing all of the configured contract IDs.
+     * @return
+     */
+    private static PartCContractID[] initContractIDs() {
+      int numContracts = Config.getAsInteger("exporter.bfd.partc_contract_count", 10);
+      PartCContractID[] contractIDs = new PartCContractID[numContracts];
+      PartCContractID contractID = PartCContractID.parse(
+              Config.get("exporter.bfd.partc_contract_start", "Y0001"));
+      for (int i = 0; i < numContracts; i++) {
+        contractIDs[i] = contractID;
+        contractID = contractID.next();
+      }
+      return contractIDs;
+    }
+  }
+
+  /**
+   * Utility class to manage a beneficiary's part D contract history.
+   */
+  static class PartDContractHistory extends ContractHistory<PartDContractID> {
+    private static final PartDContractID[] partDContractIDs = initContractIDs();
+    private boolean employeePDP;
+
+    /**
+     * Create a new random Part D contract history.
+     * @param person source of randomness
+     * @param stopTime when the history should end (as ms since epoch)
+     * @param yearsOfHistory how many years should be covered
+     */
+    public PartDContractHistory(Person person, long stopTime, int yearsOfHistory) {
+      super(person, stopTime, yearsOfHistory, 20, 1);
+
+      // 1% chance of being enrolled in employer PDP if person's income is above threshold
+      // TBD determine real % of employer PDP enrollment
+      employeePDP = getPartDCostSharingCode(person).equals("09") && person.randInt(100) == 1;
+    }
+
+    /**
+     * Check if person has employer sponsored PDP.
+     * @return true if has employer PDP, false otherwise.
+     */
+    public boolean hasEmployeePDP() {
+      return employeePDP;
+    }
+
+    /**
+     * Get the RDS indicator based on whether person is enrolled in Part D and has employee
+     * coverage.
+     * @param contractID Part D contract ID or null if not enrolled
+     * @return the RDS indicator code
+     */
+    public String getEmployeePDPIndicator(PartDContractID contractID) {
+      if (!hasEmployeePDP()) {
+        return "N";
+      } else if (contractID == null) {
+        return "*";
+      } else {
+        return "Y";
+      }
+    }
+
+    /**
+     * Get a random contract ID or null.
+     * @param rand source of randomness
+     * @return a contract ID (70% or the time) or null (30% of the time)
+     */
+    @Override
+    protected PartDContractID getRandomContractID(RandomNumberGenerator rand) {
+      if (rand.randInt(100) < 30) {
+        // 30% chance of not enrolling in Part D
+        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
+        return null;
+      }
+      return partDContractIDs[rand.randInt(partDContractIDs.length)];
+    }
+
+    /**
+     * Initialize an array containing all of the configured contract IDs.
+     * @return the contract IDs
+     */
+    private static PartDContractID[] initContractIDs() {
+      int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count", 10);
+      PartDContractID[] contractIDs = new PartDContractID[numContracts];
+      PartDContractID contractID = PartDContractID.parse(
+              Config.get("exporter.bfd.partd_contract_start", "Z0001"));
+      for (int i = 0; i < numContracts; i++) {
+        contractIDs[i] = contractID;
+        contractID = contractID.next();
+      }
+      return contractIDs;
+    }
+  }
+
+  /**
+   * Utility class to manage a beneficiary's contract history.
+   */
+  abstract static class ContractHistory<T extends FixedLengthIdentifier> {
+    private List<ContractPeriod> contractPeriods;
+    private static final PlanBenefitPackageID[] planBenefitPackageIDs = initPlanBenefitPackageIDs();
+
+    /**
+     * Create a new random contract history.
+     * @param person source of randomness
+     * @param stopTime when the history should end (as ms since epoch)
+     * @param yearsOfHistory how many years should be covered
+     * @param percentChangeOpenEnrollment percent chance contract will change at open enrollment
+     * @param percentChangeMidYear percent chance contract will change mid year
+     */
+    public ContractHistory(Person person, long stopTime, int yearsOfHistory,
+            int percentChangeOpenEnrollment, int percentChangeMidYear) {
       int endYear = Utilities.getYear(stopTime);
       int endMonth = 12;
+
       contractPeriods = new ArrayList<>();
-      PartDContractPeriod currentContractPeriod =
-              new PartDContractPeriod(endYear - yearsOfHistory, rand);
+      ContractPeriod currentContractPeriod =
+              new ContractPeriod(endYear - yearsOfHistory, person);
       for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
         if (year == endYear) {
           endMonth = Utilities.getMonth(stopTime);
         }
         for (int month = 1; month <= endMonth; month++) {
-          if ((month == 1 && rand.randInt(10) < 2) || rand.randInt(100) == 1) {
-            // 20% chance of changing policy at open enrollment
-            // 1% chance of changing policy Feb - Dec
-            PartDContractPeriod newContractPeriod = new PartDContractPeriod(year, month, rand);
-            PartDContractID currentContractID = currentContractPeriod.getContractID();
-            PartDContractID newContractID = newContractPeriod.getContractID();
+          if ((month == 1 && person.randInt(100) < percentChangeOpenEnrollment)
+                  || person.randInt(100) < percentChangeMidYear) {
+            ContractPeriod newContractPeriod = new ContractPeriod(year, month, person);
+            T currentContractID = currentContractPeriod.getContractID();
+            T newContractID = newContractPeriod.getContractID();
             if ((currentContractID != null && !currentContractID.equals(newContractID))
                     || currentContractID != newContractID) {
               currentContractPeriod.setEndBefore(newContractPeriod);
@@ -1293,8 +1705,8 @@ public class BB2RIFExporter {
      * @param timeStamp the point in time
      * @return the contract ID or null if not enrolled at the specified point in time
      */
-    public PartDContractID getContractID(long timeStamp) {
-      for (PartDContractPeriod contractPeriod: contractPeriods) {
+    public T getContractID(long timeStamp) {
+      for (ContractPeriod contractPeriod: contractPeriods) {
         if (contractPeriod.covers(timeStamp)) {
           return contractPeriod.getContractID();
         }
@@ -1307,9 +1719,9 @@ public class BB2RIFExporter {
      * @param year the year
      * @return the list
      */
-    public List<PartDContractPeriod> getContractPeriods(int year) {
-      List<PartDContractPeriod> periods = new ArrayList<>();
-      for (PartDContractPeriod period: contractPeriods) {
+    public List<ContractPeriod> getContractPeriods(int year) {
+      List<ContractPeriod> periods = new ArrayList<>();
+      for (ContractPeriod period: contractPeriods) {
         if (period.coversYear(year)) {
           periods.add(period);
         }
@@ -1324,7 +1736,7 @@ public class BB2RIFExporter {
      */
     public int getCoveredMonthsCount(int year) {
       int count = 0;
-      for (PartDContractPeriod period: getContractPeriods(year)) {
+      for (ContractPeriod period: getContractPeriods(year)) {
         if (period.getContractID() != null) {
           count += period.getCoveredMonths(year).size();
         }
@@ -1333,42 +1745,52 @@ public class BB2RIFExporter {
     }
 
     /**
-     * Get a random contract ID or null.
+     * Get a random contract ID or null if bene is not enrolled. Implementations of this method
+     * should use rand to model the likelihood of a bene being enrolled.
      * @param rand source of randomness
-     * @return a contract ID (70% or the time) or null (30% of the time)
+     * @return a contract ID or null
      */
-    private PartDContractID getRandomContractID(RandomNumberGenerator rand) {
-      if (rand.randInt(10) <= 2) {
-        // 30% chance of not enrolling in Part D
-        // see https://www.kff.org/medicare/issue-brief/10-things-to-know-about-medicare-part-d-coverage-and-costs-in-2019/
-        return null;
+    protected abstract T getRandomContractID(RandomNumberGenerator rand);
+
+    /**
+     * Get a random plan benefit package ID or null if the supplied contract ID is null.
+     * @param rand a source of randomness
+     * @param contractID the contract ID
+     * @return a random plan benefit package ID
+     */
+    protected PlanBenefitPackageID getRandomPlanBenefitPackageID(RandomNumberGenerator rand,
+            T contractID) {
+      if (contractID == null) {
+        return null; // no benefit package if not on contract
+      } else {
+        return planBenefitPackageIDs[rand.randInt(planBenefitPackageIDs.length)];
       }
-      return partDContractIDs[rand.randInt(partDContractIDs.length)];
     }
 
     /**
-     * Initialize an array containing all of the configured contract IDs.
-     * @return
+     * Initialize an array containing all of the configured plan benefit package IDs.
+     * @return the package IDs
      */
-    private static PartDContractID[] initContractIDs() {
-      int numContracts = Config.getAsInteger("exporter.bfd.partd_contract_count",1);
-      PartDContractID[] contractIDs = new PartDContractID[numContracts];
-      PartDContractID contractID = PartDContractID.parse(
-              Config.get("exporter.bfd.partd_contract_start", "Z0001"));
-      for (int i = 0; i < numContracts; i++) {
-        contractIDs[i] = contractID;
-        contractID = contractID.next();
+    private static PlanBenefitPackageID[] initPlanBenefitPackageIDs() {
+      int numPackages = Config.getAsInteger("exporter.bfd.plan_benefit_package_count", 5);
+      PlanBenefitPackageID[] packageIDs = new PlanBenefitPackageID[numPackages];
+      PlanBenefitPackageID packageID = PlanBenefitPackageID.parse(
+              Config.get("exporter.bfd.plan_benefit_package_start", "800"));
+      for (int i = 0; i < numPackages; i++) {
+        packageIDs[i] = packageID;
+        packageID = packageID.next();
       }
-      return contractIDs;
+      return packageIDs;
     }
 
     /**
-     * Utility class that represents a period of time and an associated Part D contract id.
+     * Utility class that represents a period of time and an associated contract id.
      */
-    public class PartDContractPeriod {
+    public class ContractPeriod {
       private LocalDate startDate;
       private LocalDate endDate;
-      private PartDContractID contractID;
+      private T contractID;
+      private PlanBenefitPackageID planBenefitPackageID;
 
       /**
        * Create a new contract period. Contract periods have a one month granularity so the
@@ -1377,8 +1799,10 @@ public class BB2RIFExporter {
        * @param start the start of the contract period
        * @param end the end of the contract period
        * @param contractID the contract id
+       * @param planBenefitPackageID the plan benefit package id
        */
-      public PartDContractPeriod(LocalDate start, LocalDate end, PartDContractID contractID) {
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              PlanBenefitPackageID planBenefitPackageID) {
         if (start != null) {
           this.startDate = LocalDate.of(start.getYear(), start.getMonthValue(), 1);
         }
@@ -1387,6 +1811,21 @@ public class BB2RIFExporter {
                   .plusMonths(1).minusDays(1);
         }
         this.contractID = contractID;
+        this.planBenefitPackageID = planBenefitPackageID;
+      }
+
+      /**
+       * Create a new contract period. Contract periods have a one month granularity so the
+       * supplied start and end are adjusted to the first day of the start month and last day of
+       * the end month. A random plan benefit package ID is chosen
+       * @param start the start of the contract period
+       * @param end the end of the contract period
+       * @param contractID the contract id
+       * @param rand source of randomness
+       */
+      public ContractPeriod(LocalDate start, LocalDate end, T contractID,
+              RandomNumberGenerator rand) {
+        this(start, end, contractID, getRandomPlanBenefitPackageID(rand, contractID));
       }
 
       /**
@@ -1396,8 +1835,8 @@ public class BB2RIFExporter {
        * @param month the month
        * @param rand source of randomness
        */
-      public PartDContractPeriod(int year, int month, RandomNumberGenerator rand) {
-        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand));
+      public ContractPeriod(int year, int month, RandomNumberGenerator rand) {
+        this(LocalDate.of(year, month, 1), null, getRandomContractID(rand), rand);
       }
 
       /**
@@ -1406,7 +1845,7 @@ public class BB2RIFExporter {
        * @param year the year
        * @param rand source of randomness
        */
-      public PartDContractPeriod(int year, RandomNumberGenerator rand) {
+      public ContractPeriod(int year, RandomNumberGenerator rand) {
         this(year, 1, rand);
       }
 
@@ -1414,8 +1853,12 @@ public class BB2RIFExporter {
        * Get the contract id.
        * @return the contract id or null if not enrolled during this period
        */
-      public PartDContractID getContractID() {
+      public T getContractID() {
         return contractID;
+      }
+
+      public PlanBenefitPackageID getPlanBenefitPackageID() {
+        return planBenefitPackageID;
       }
 
       /**
@@ -1464,7 +1907,7 @@ public class BB2RIFExporter {
        * @param newContractPeriod the period to end one before
        * @throws IllegalStateException if the supplied period has a null start
        */
-      public void setEndBefore(PartDContractPeriod newContractPeriod) {
+      public void setEndBefore(ContractPeriod newContractPeriod) {
         if (newContractPeriod.startDate == null) {
           throw new IllegalStateException(
                   "Contract period has an unbounded start (start is null)");
@@ -1481,7 +1924,7 @@ public class BB2RIFExporter {
       }
 
       /**
-       * Check whether this period includes the specified point in time. Undounded periods are
+       * Check whether this period includes the specified point in time. Unbounded periods are
        * assumed to cover all times before, after or both.
        * @param timeStamp point in time
        * @return true of the period covers the point in time, false otherwise
@@ -1508,10 +1951,11 @@ public class BB2RIFExporter {
   /**
    * Export prescription claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long stopTime)
+  private void exportPrescription(Person person, long startTime, long stopTime)
         throws IOException {
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
@@ -1521,6 +1965,18 @@ public class BB2RIFExporter {
     int costYear = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter) {
+        continue;
+      }
+
       PartDContractID partDContractID = partDContracts.getContractID(encounter.start);
       if (partDContractID == null) {
         continue; // skip medications if patient isn't enrolled in Part D
@@ -1604,14 +2060,27 @@ public class BB2RIFExporter {
   /**
    * Export DME details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportDME(Person person, long stopTime)
+  private void exportDME(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      if (isVA || isIHSCenter) {
+        continue;
+      }
+
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
@@ -1651,8 +2120,6 @@ public class BB2RIFExporter {
       fieldValues.put(DME.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(DME.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(DME.LINE_SRVC_CNT, "" + encounter.claim.items.size());
-      fieldValues.put(DME.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
 
       // OPTIONAL
       if (encounter.reason != null) {
@@ -1682,11 +2149,38 @@ public class BB2RIFExporter {
         fieldValues.put(DME.LINE_ICD_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
+      // preprocess some subtotals...
+      ClaimEntry subTotals = (encounter.claim).new ClaimEntry(null);
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        if (lineItem.entry instanceof Device || lineItem.entry instanceof Supply) {
+          subTotals.addCosts(lineItem);
+        }
+      }
+      fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
+          String.format("%.2f", subTotals.deductible));
+      fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+      fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
+          String.format("%.2f", subTotals.cost - subTotals.adjustment));
+      fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
+          String.format("%.2f", subTotals.cost));
+      fieldValues.put(DME.NCH_CLM_PRVDR_PMT_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+      fieldValues.put(DME.CLM_PMT_AMT,
+          String.format("%.2f", subTotals.coinsurance + subTotals.payer));
+
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
+        // Now generate the line items...
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device || lineItem.entry instanceof Supply)) {
             continue;
+          }
+          if (lineItem.entry instanceof Supply) {
+            Supply supply = (Supply) lineItem.entry;
+            fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "" + supply.quantity);
+          } else {
+            fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "");
           }
           if (!dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
             System.err.println(" *** Possibly Missing DME Code: "
@@ -1710,7 +2204,7 @@ public class BB2RIFExporter {
           fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(DME.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.coinsurance));
+                  String.format("%.2f", lineItem.getCoinsurancePaid()));
           fieldValues.put(DME.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.paidByPatient));
           fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
@@ -1719,7 +2213,10 @@ public class BB2RIFExporter {
               String.format("%.2f", lineItem.cost));
           fieldValues.put(DME.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
-
+          fieldValues.put(DME.LINE_PRMRY_ALOWD_CHRG_AMT,
+              String.format("%.2f", lineItem.cost - lineItem.adjustment));
+          fieldValues.put(DME.LINE_NCH_PMT_AMT,
+              String.format("%.2f", lineItem.coinsurance + lineItem.payer));
 
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
@@ -1732,14 +2229,25 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportHome(Person person, long stopTime) throws IOException {
+  private void exportHome(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HHA, String> fieldValues = new HashMap<>();
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (!encounter.type.equals(EncounterType.HOME.toString())) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      boolean isHome = encounter.type.equals(EncounterType.HOME.toString());
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+
+      if (isVA || isIHSCenter || !isHome) {
         continue;
       }
 
@@ -1831,6 +2339,12 @@ public class BB2RIFExporter {
         fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
+      // Check for external code...
+      setExternalCode(person, fieldValues,
+          HHA.PRNCPAL_DGNS_CD, HHA.ICD_DGNS_E_CD1, HHA.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          HHA.PRNCPAL_DGNS_CD, HHA.FST_DGNS_E_CD, HHA.FST_DGNS_E_VRSN_CD);
+
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
@@ -1898,15 +2412,26 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportHospice(Person person, long stopTime) throws IOException {
+  private void exportHospice(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (!encounter.type.equals(EncounterType.HOSPICE.toString())) {
+      if (encounter.stop < startTime) {
         continue;
       }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isHospice = encounter.type.equals(EncounterType.HOSPICE.toString());
+      if (isVA || isIHSCenter || !isHospice) {
+        continue;
+      }
+
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
@@ -1997,6 +2522,12 @@ public class BB2RIFExporter {
         fieldValues.put(HOSPICE.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
       }
 
+      // Check for external code...
+      setExternalCode(person, fieldValues,
+          HOSPICE.PRNCPAL_DGNS_CD, HOSPICE.ICD_DGNS_E_CD1, HOSPICE.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          HOSPICE.PRNCPAL_DGNS_CD, HOSPICE.FST_DGNS_E_CD, HOSPICE.FST_DGNS_E_VRSN_CD);
+
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
@@ -2077,21 +2608,32 @@ public class BB2RIFExporter {
   /**
    * Export Home Health Agency visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportSNF(Person person, long stopTime) throws IOException {
+  private void exportSNF(Person person, long startTime, long stopTime) throws IOException {
     HashMap<SNF, String> fieldValues = new HashMap<>();
     boolean previousEmergency;
     boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
+      if (encounter.stop < startTime) {
+        continue;
+      }
+
+      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+      // IHS facilities have valid 6 digit id, IHS centers don't
+      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+              && encounter.provider.id.length() != 6;
+      boolean isSNF = encounter.type.equals(EncounterType.SNF.toString());
+      if (isVA || isIHSCenter || !isSNF) {
+        continue;
+      }
+
       previousEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
 
-      if (!encounter.type.equals(EncounterType.SNF.toString())) {
-        continue;
-      }
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
@@ -2217,6 +2759,12 @@ public class BB2RIFExporter {
         }
       }
 
+      // Check for external code...
+      setExternalCode(person, fieldValues,
+          SNF.PRNCPAL_DGNS_CD, SNF.ICD_DGNS_E_CD1, SNF.ICD_DGNS_E_VRSN_CD1);
+      setExternalCode(person, fieldValues,
+          SNF.PRNCPAL_DGNS_CD, SNF.FST_DGNS_E_CD, SNF.FST_DGNS_E_VRSN_CD);
+
       // Use the procedures in this encounter to enter mapped values
       boolean noProcedures = false;
       if (!encounter.procedures.isEmpty()) {
@@ -2302,8 +2850,8 @@ public class BB2RIFExporter {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
           fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine));
-          // G0299: “direct skilled nursing services of a registered nurse (RN) in the home health
-          // or hospice setting”
+          // G0299: "direct skilled nursing services of a registered nurse (RN) in the home health
+          // or hospice setting"
           fieldValues.put(SNF.HCPCS_CD, "G0299");
           rifWriters.writeValues(SNF.class, fieldValues);
         }
@@ -2844,6 +3392,52 @@ public class BB2RIFExporter {
 
     public PartDContractID next() {
       return new PartDContractID(value + 1);
+    }
+  }
+
+  /**
+   * Utility class for working with CMS Part C Contract IDs.
+   */
+  static class PartCContractID extends FixedLengthIdentifier {
+
+    private static final char[][] PARTC_CONTRACT_FORMAT = {
+      ALPHA, NUMERIC, NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTC_CONTRACT_ID = 0;
+    static final long MAX_PARTC_CONTRACT_ID = maxValue(PARTC_CONTRACT_FORMAT);
+
+    public PartCContractID(long value) {
+      super(value, PARTC_CONTRACT_FORMAT);
+    }
+
+    static PartCContractID parse(String str) {
+      return new PartCContractID(parse(str, PARTC_CONTRACT_FORMAT));
+    }
+
+    public PartCContractID next() {
+      return new PartCContractID(value + 1);
+    }
+  }
+
+  /**
+   * Utility class for working with CMS Plan Benefit Package IDs.
+   */
+  static class PlanBenefitPackageID extends FixedLengthIdentifier {
+
+    private static final char[][] PBP_CONTRACT_FORMAT = {
+      NUMERIC, NUMERIC, NUMERIC};
+    static final long MIN_PARTC_CONTRACT_ID = 0;
+    static final long MAX_PARTC_CONTRACT_ID = maxValue(PBP_CONTRACT_FORMAT);
+
+    public PlanBenefitPackageID(long value) {
+      super(value, PBP_CONTRACT_FORMAT);
+    }
+
+    static PlanBenefitPackageID parse(String str) {
+      return new PlanBenefitPackageID(parse(str, PBP_CONTRACT_FORMAT));
+    }
+
+    public PlanBenefitPackageID next() {
+      return new PlanBenefitPackageID(value + 1);
     }
   }
 

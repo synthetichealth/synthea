@@ -102,12 +102,27 @@ public class CCDAExporter {
     person.attributes.put("ethnicity_display_lookup",
         RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
 
+    if (person.attributes.get(Person.PREFERREDYPROVIDER + "wellness") == null) {
+      // This person does not have a preferred provider. This happens for veterans at age 20 due to
+      // the provider reset and they don't have a provider until their next wellness visit. There
+      // may be other cases. This ensures the preferred provider is there for the CCDA template
+      Encounter encounter = person.record.lastWellnessEncounter();
+      if (encounter != null) {
+        person.attributes.put(Person.PREFERREDYPROVIDER + "wellness", encounter.provider);
+      } else {
+        throw new IllegalStateException(String.format("Unable to export to CCDA because "
+            + "person %s %s has no preferred provider.",
+            person.attributes.get(Person.FIRST_NAME),
+            person.attributes.get(Person.LAST_NAME)));
+      }
+    }
+
     StringWriter writer = new StringWriter();
     try {
       Template template = TEMPLATES.getTemplate("ccda.ftl");
       template.process(person.attributes, writer);
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     return writer.toString();
   }

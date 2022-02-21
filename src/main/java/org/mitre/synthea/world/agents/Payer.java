@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
@@ -34,6 +35,7 @@ import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 public class Payer implements Serializable {
 
   // Payer Adjustment strategy.
+  @JSONSkip
   private IPayerAdjustment payerAdjustment;
   // Payer Eligibilty strategy.
   private transient IPayerEligibility payerEligibility;

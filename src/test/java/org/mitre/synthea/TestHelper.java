@@ -109,6 +109,8 @@ public abstract class TestHelper {
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
+    Config.set("exporter.json.export", "false");
+    Config.set("exporter.metadata.export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.split_records", "false");
     Config.set("exporter.split_records.duplicate_data", "false");

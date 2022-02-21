@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -31,17 +32,22 @@ public class Location implements Serializable {
   private long totalPopulation;
 
   // cache the population by city name for performance
+  @JSONSkip
   private Map<String, Long> populationByCity;
+  @JSONSkip
   private Map<String, Long> populationByCityId;
+  @JSONSkip
   private Map<String, List<Place>> zipCodes;
 
   public final String city;
   private Demographics fixedCity;
   public final String state;
   /** Map of CityId to Demographics. */
+  @JSONSkip
   private Map<String, Demographics> demographics;
 
   /** Map of County Name to attributes and probabilities. */
+  @JSONSkip
   private Map<String, Map<String, Double>> socialDeterminantsOfHealth;
 
   /**

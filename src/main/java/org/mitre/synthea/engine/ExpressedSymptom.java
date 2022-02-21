@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.mitre.synthea.export.JSONSkip;
+
 public class ExpressedSymptom implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 4322116644425686800L;
@@ -49,6 +51,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public class SymptomSource implements Cloneable, Serializable {
     private static final long serialVersionUID = 4322116644425686802L;
 
+    @JSONSkip
     ExpressedSymptom symptom = ExpressedSymptom.this;
     // From which module the expressed symptom was set
     private String source;

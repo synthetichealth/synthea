@@ -7,6 +7,7 @@
         },
         "Diabetes": {
             "type": "ConditionOnset",
+            "assign_to_attribute" : "",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "73211009",

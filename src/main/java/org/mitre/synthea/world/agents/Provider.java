@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -68,6 +69,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final Boolean USE_HOSPITAL_AS_DEFAULT =
       Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
+  @JSONSkip
   public Map<String, Object> attributes;
   public String uuid;
   private String locationUuid;
@@ -89,6 +91,7 @@ public class Provider implements QuadTreeElement, Serializable {
   private double revenue;
   private Point2D.Double coordinates;
   public ArrayList<EncounterType> servicesProvided;
+  @JSONSkip
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
   private transient Table<Integer, String, AtomicInteger> utilization;

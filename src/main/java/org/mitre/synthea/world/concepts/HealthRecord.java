@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -122,6 +123,7 @@ public class HealthRecord implements Serializable {
    */
   public class Entry implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
+    @JSONSkip
     HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
@@ -232,6 +234,7 @@ public class HealthRecord implements Serializable {
     public String category;
     public String unit;
     public List<Observation> observations;
+    @JSONSkip
     public Report report;
 
     /**
@@ -682,9 +685,11 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  @JSONSkip
   private Person person;
   public Provider provider;
   public List<Encounter> encounters;
+  @JSONSkip
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
@@ -776,13 +781,25 @@ public class HealthRecord implements Serializable {
    * @return the time difference, negative if time is before the first wellness encounter).
    */
   public long timeSinceLastWellnessEncounter(long time) {
+    Encounter encounter = lastWellnessEncounter();
+    if (encounter != null) {
+      return (time - encounter.start);
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Return the last wellness encounter for the individual.
+   * @return the Encounter or null if it does not exist
+   */
+  public Encounter lastWellnessEncounter() {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
       if (encounter.type.equals(EncounterType.WELLNESS.toString())) {
-        return (time - encounter.start);
+        return encounter;
       }
     }
-    return Long.MAX_VALUE;
+    return null;
   }
 
   /**

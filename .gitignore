@@ -25,6 +25,7 @@ src/main/resources/export/drg_code_map.json
 src/main/resources/export/dme_code_map.json
 src/main/resources/export/hcpcs_code_map.json
 src/main/resources/export/betos_code_map.json
+src/main/resources/export/external_codes.csv
 
 # H2 database files
 **/*.mv.db

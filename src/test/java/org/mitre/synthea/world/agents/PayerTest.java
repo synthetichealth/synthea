@@ -215,7 +215,7 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put("blindness", false);
+    person.attributes.put(Person.BLINDNESS, false);
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     healthInsuranceModule.process(person, 0L);
@@ -228,7 +228,7 @@ public class PayerTest {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
-    person.attributes.put("blindness", true);
+    person.attributes.put(Person.BLINDNESS, true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);

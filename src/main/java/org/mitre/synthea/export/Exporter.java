@@ -131,9 +131,8 @@ public abstract class Exporter {
     if (options.deferExports) {
       deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
-      int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
-      if (yearsOfHistory > 0) {
-        person = filterForExport(person, yearsOfHistory, stopTime);
+      if (options.yearsOfHistory > 0) {
+        person = filterForExport(person, options.yearsOfHistory, stopTime);
       }
       if (!person.alive(stopTime)) {
         filterAfterDeath(person);
@@ -247,6 +246,12 @@ public abstract class Exporter {
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
       writeNewFile(outFilePath, ccdaXml);
     }
+    if (Config.getAsBoolean("exporter.json.export")) {
+      String json = JSONExporter.export(person);
+      File outDirectory = getOutputFolder("json", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+      writeNewFile(outFilePath, json);
+    }
     if (Config.getAsBoolean("exporter.csv.export")) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
@@ -257,7 +262,7 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
         BB2RIFExporter exporter = BB2RIFExporter.getInstance();
-        exporter.export(person, stopTime);
+        exporter.export(person, stopTime, options.yearsOfHistory);
       } catch (IOException e) {
         e.printStackTrace();
       }
