@@ -127,7 +127,7 @@ public class PayerTest {
   private void setPayerForYears(Person person, int startAge, int endAge) {
     for (int i = startAge; i <= endAge; i++) {
       long time = Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(time, testPrivatePayer1.plans.iterator().next());
+      person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next());
       testPrivatePayer1.incrementCustomers(person);
     }
   }
@@ -136,7 +136,7 @@ public class PayerTest {
   public void incrementEncounters() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer1.plans.iterator().next());
+    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next());
     HealthRecord healthRecord = new HealthRecord(person);
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
@@ -171,7 +171,8 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     // The person should have private insurance before the age of 65.
     long age64Time = birthTime + Utilities.convertTime("years", 65) - sixMonths;
-    person.coverage.setPlanAtTime(age64Time, testPrivatePayer1.plans.stream().iterator().next());
+    person.coverage.setPlanAtTime(age64Time,
+        testPrivatePayer1.getPlans().stream().iterator().next());
     healthInsuranceModule.process(person, age64Time);
     assertEquals(PayerController.PRIVATE_OWNERSHIP,
         person.coverage.getPlanAtTime(age64Time).getPayer().getOwnership());
@@ -255,7 +256,8 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     // Check that their previous payer is Medicaid.
     long age64Time = birthTime + Utilities.convertTime("years", 64) + sixMonths;
-    person.coverage.setPlanAtTime(age64Time, testPrivatePayer1.plans.stream().iterator().next());
+    person.coverage.setPlanAtTime(age64Time,
+        testPrivatePayer1.getPlans().stream().iterator().next());
     healthInsuranceModule.process(person, age64Time);
     assertEquals(HealthInsuranceModule.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
@@ -270,7 +272,7 @@ public class PayerTest {
   @Test
   public void receiveNoInsurance() {
     // Person's income cannot afford the test private insurance.
-    InsurancePlan plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     double monthlyPremium = plan.getMonthlyPremium();
     double deductible = plan.getDeductible();
     double totalYearlyCost = (monthlyPremium * 12) + deductible;
@@ -323,7 +325,7 @@ public class PayerTest {
   public void overwriteInsurance() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    InsurancePlan plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     person.coverage.setPlanAtTime(0L, plan);
     person.coverage.setPlanAtTime(0L, plan);
     assertEquals(2, person.coverage.getPlanHistory().size());
@@ -380,7 +382,7 @@ public class PayerTest {
       }
     }
     int totalMonthlyPremiumsOwed
-        = (int) (testPrivatePayer1.plans.iterator().next().getMonthlyPremium() * 12 * 65);
+        = (int) (testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * 65);
     // The payer's revenue should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, testPrivatePayer1.getRevenue(), 0.001);
     // The person's health care expenses should equal the total monthly premiums.
@@ -401,7 +403,7 @@ public class PayerTest {
     Costs.loadCostData();
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    InsurancePlan plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     person.coverage.setPlanAtTime(time, plan);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
@@ -439,7 +441,7 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, beforeMandateTime);
 
     // Before Mandate.
-    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1Plan);
     Encounter wellnessBeforeMandate =
         person.record.encounterStart(beforeMandateTime, EncounterType.WELLNESS);
@@ -512,12 +514,12 @@ public class PayerTest {
   public void payerCoversEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer1.plans.iterator().next());
+    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next());
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     assertTrue(testPrivatePayer1Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter
@@ -540,12 +542,12 @@ public class PayerTest {
   public void payerDoesNotCoverEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer2.plans.iterator().next());
+    person.coverage.setPlanAtTime(0L, testPrivatePayer2.getPlans().iterator().next());
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    InsurancePlan testPrivatePayer2Plan = testPrivatePayer2.plans.iterator().next();
+    InsurancePlan testPrivatePayer2Plan = testPrivatePayer2.getPlans().iterator().next();
     assertFalse(testPrivatePayer2Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal $0.0.
@@ -558,11 +560,11 @@ public class PayerTest {
   public void personCanAffordPayer() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    InsurancePlan plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     int yearlyCostOfPayer = (int) ((plan.getMonthlyPremium() * 12)
         + plan.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer + 1);
-    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     assertTrue(person.canAffordPlan(testPrivatePayer1Plan));
   }
 
@@ -570,11 +572,11 @@ public class PayerTest {
   public void personCannotAffordPayer() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    InsurancePlan plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     int yearlyCostOfPayer = (int) ((plan.getMonthlyPremium() * 12)
         + plan.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer - 1);
-    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     assertFalse(person.canAffordPlan(testPrivatePayer1Plan));
   }
 

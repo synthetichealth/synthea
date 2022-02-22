@@ -138,8 +138,7 @@ public class Claim implements Serializable {
       assignCosts(item, planRecord);
       totals.addCosts(item);
     }
-    // TODO - This should be refactored to better adhere to OO design principles.
-    // Too much getPayer(), redundant calls to the same objects, etc.
+
     planRecord.incrementExpenses(totals.copay + totals.deductible + totals.paidByPatient);
     planRecord.incrementCoverage(totals.coinsurance + totals.paidByPayer + totals.secondaryPayer);
     double coveredCosts = totals.coinsurance + totals.paidByPayer;

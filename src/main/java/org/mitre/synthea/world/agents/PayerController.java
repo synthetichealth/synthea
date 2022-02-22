@@ -185,17 +185,17 @@ public class PayerController {
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
-    // Add remaining columns we didn't map to first-class fields to payer's
-    // attributes map.
-    for (Map.Entry<String, String> e : line.entrySet()) {
-      // TODO fix this.
-      // newPayer.attributes.put(e.getKey(), e.getValue());
-    }
 
     Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
     // Temporary single plan per payer.
     newPayer.createPlan(servicesCovered, deductible,
         defaultCoinsurance, defaultCopay, monthlyPremium);
+
+    // Add remaining columns we didn't map to first-class fields to payer's
+    // attributes map.
+    for (Map.Entry<String, String> e : line.entrySet()) {
+      newPayer.addAttribute(e.getKey(), e.getValue());
+    }
 
     return newPayer;
   }
@@ -287,6 +287,6 @@ public class PayerController {
    * @return
    */
   public static InsurancePlan getNoInsurancePlan() {
-    return noInsurance.plans.iterator().next();
+    return noInsurance.getPlans().iterator().next();
   }
 }

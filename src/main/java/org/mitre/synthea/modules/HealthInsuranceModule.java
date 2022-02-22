@@ -36,7 +36,6 @@ public class HealthInsuranceModule extends Module {
    */
   public HealthInsuranceModule() {}
 
-  // TODO - this should clone the module not return the original.
   @Override
   public Module clone() {
     return this;

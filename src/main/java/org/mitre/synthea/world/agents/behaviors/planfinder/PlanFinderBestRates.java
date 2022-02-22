@@ -41,7 +41,7 @@ public class PlanFinderBestRates implements IPlanFinder {
     double bestExpectedRate = Double.MAX_VALUE;
 
     for (Payer payer : payers) {
-      for (InsurancePlan plan : payer.plans) {
+      for (InsurancePlan plan : payer.getPlans()) {
         if (IPlanFinder.meetsBasicRequirements(plan, person, service, time)) {
           // First, calculate the annual premium.
           double expectedRate = (plan.getMonthlyPremium() * 12.0);

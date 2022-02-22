@@ -51,7 +51,7 @@ public class LossOfCareHealthRecordTest {
     person.setProvider(EncounterType.WELLNESS, new Provider());
     person.attributes.put(Person.INCOME, 1);
     Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
-    InsurancePlan testPrivatePayerPlan = testPrivatePayer.plans.iterator().next();
+    InsurancePlan testPrivatePayerPlan = testPrivatePayer.getPlans().iterator().next();
     testPrivatePayerCopay = testPrivatePayerPlan.determineCopay(encounter);
 
     time = 0L; //Utilities.convertCalendarYearsToTime(1900);
@@ -96,7 +96,7 @@ public class LossOfCareHealthRecordTest {
   public void personRunsOutOfIncomeDueToCopay() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    InsurancePlan plan = testPrivatePayer.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
     person.coverage.setPlanAtTime(time, plan);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
@@ -148,7 +148,7 @@ public class LossOfCareHealthRecordTest {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
-    InsurancePlan plan = testPrivatePayer.plans.iterator().next();
+    InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
     person.coverage.setPlanAtTime(time, plan);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");

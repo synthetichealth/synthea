@@ -44,7 +44,7 @@ public class Payer implements Serializable {
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
-  public final Set<InsurancePlan> plans;  // TODO - make private
+  private final Set<InsurancePlan> plans;
   private String ownership;
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
@@ -178,6 +178,13 @@ public class Payer implements Serializable {
    */
   public Map<String, Object> getAttributes() {
     return attributes;
+  }
+
+  /**
+   * Returns the set of plans offered by this payer.
+   */
+  public Set<InsurancePlan> getPlans() {
+    return this.plans;
   }
 
   /**
@@ -556,6 +563,13 @@ public class Payer implements Serializable {
       throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
     }
     return this.plans.iterator().next();
+  }
+
+  /**
+   * Add additional attributes to Payer.
+   */
+  public void addAttribute(String key, String value) {
+    this.attributes.put(key, value);
   }
 
 }
