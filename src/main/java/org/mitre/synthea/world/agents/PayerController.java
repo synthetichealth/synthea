@@ -282,7 +282,11 @@ public class PayerController {
         .find(PayerController.getPrivatePayers(), person, service, time);
   }
 
+  /**
+   * Returns the no insurance plan.
+   * @return
+   */
   public static InsurancePlan getNoInsurancePlan() {
-    return noInsurance.getNoInsurancePlan();
+    return noInsurance.plans.iterator().next();
   }
 }

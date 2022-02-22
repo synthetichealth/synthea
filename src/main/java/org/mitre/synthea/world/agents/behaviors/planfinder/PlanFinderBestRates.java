@@ -37,7 +37,7 @@ public class PlanFinderBestRates implements IPlanFinder {
     HealthRecord.Encounter dummy
         = person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
-    InsurancePlan bestRatePlan = PayerController.noInsurance.getNoInsurancePlan();
+    InsurancePlan bestRatePlan = PayerController.getNoInsurancePlan();
     double bestExpectedRate = Double.MAX_VALUE;
 
     for (Payer payer : payers) {

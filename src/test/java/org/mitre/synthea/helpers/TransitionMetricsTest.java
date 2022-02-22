@@ -99,7 +99,7 @@ public class TransitionMetricsTest {
     while (person.alive(time) && !singleModule.process(person, time)) {
       time += Utilities.convertTime("years", 1);
       // Give the person No Insurance to prevent null pointers.
-      person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
+      person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
       // hack the wellness encounter just in case
       person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + singleModule.name,
           true);

@@ -57,7 +57,7 @@ public interface IPlanFinder {
   public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options,
       RandomNumberGenerator rand) {
     if (options.isEmpty()) {
-      return PayerController.noInsurance.getNoInsurancePlan();
+      return PayerController.getNoInsurancePlan();
     } else if (options.size() == 1) {
       return options.get(0);
     } else {

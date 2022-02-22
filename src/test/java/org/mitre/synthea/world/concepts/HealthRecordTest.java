@@ -3,7 +3,6 @@ package org.mitre.synthea.world.concepts;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -12,7 +11,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 public class HealthRecordTest {
 
-  Payer noInsurance;
   long time;
 
   /**
@@ -21,7 +19,6 @@ public class HealthRecordTest {
   @Before
   public void setup() {
     PayerController.loadNoInsurance();
-    noInsurance = PayerController.noInsurance;
     time = 0L;
   }
 
@@ -29,7 +26,7 @@ public class HealthRecordTest {
   public void testReportAllObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -48,7 +45,7 @@ public class HealthRecordTest {
   public void testReportSomeObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -66,7 +63,7 @@ public class HealthRecordTest {
   public void testReportTooManyObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");

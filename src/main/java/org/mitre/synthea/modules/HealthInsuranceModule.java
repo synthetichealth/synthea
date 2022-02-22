@@ -76,7 +76,7 @@ public class HealthInsuranceModule extends Module {
         secondaryPlan = PayerController.findPlan(person, null, time);
       } else {
         // This patient will not purchase secondary insurance.
-        secondaryPlan = PayerController.noInsurance.getNoInsurancePlan();
+        secondaryPlan = PayerController.getNoInsurancePlan();
       }
 
       // Set this new payer at the current time for the person.
@@ -84,7 +84,7 @@ public class HealthInsuranceModule extends Module {
 
       // Update the new Payer's customer statistics.
       newPlan.incrementCustomers(person);
-      if (PayerController.noInsurance.getNoInsurancePlan() != secondaryPlan) {
+      if (PayerController.getNoInsurancePlan() != secondaryPlan) {
         secondaryPlan.incrementCustomers(person);
       }
 

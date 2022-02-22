@@ -26,7 +26,7 @@ public class CostsTest {
     PayerController.loadNoInsurance();
     time = 0L;
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
   }
 
   @Test public void testCostByKnownCode() {

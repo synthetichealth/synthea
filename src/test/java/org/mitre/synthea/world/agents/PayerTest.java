@@ -482,7 +482,7 @@ public class PayerTest {
     long time = 0L;
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(0L, PayerController.noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(0L, PayerController.getNoInsurancePlan());
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);

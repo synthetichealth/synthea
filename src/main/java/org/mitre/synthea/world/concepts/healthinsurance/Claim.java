@@ -105,7 +105,7 @@ public class Claim implements Serializable {
       this.plan = this.person.coverage.getLastInsurancePlan();
     }
     if (this.plan == null) {
-      this.plan = PayerController.noInsurance.getNoInsurancePlan();
+      this.plan = PayerController.getNoInsurancePlan();
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);

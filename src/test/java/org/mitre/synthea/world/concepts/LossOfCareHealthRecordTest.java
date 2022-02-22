@@ -67,7 +67,7 @@ public class LossOfCareHealthRecordTest {
   public void personRunsOutOfIncomeWithNoInsurance() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of encounter
@@ -139,7 +139,7 @@ public class LossOfCareHealthRecordTest {
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounter3));
     // Person should now have no insurance.
     assertTrue(person.coverage.getPlanAtTime(time)
-        .equals(PayerController.noInsurance.getNoInsurancePlan()));
+        .equals(PayerController.getNoInsurancePlan()));
   }
 
   @Test
@@ -165,7 +165,7 @@ public class LossOfCareHealthRecordTest {
     }
     // Person should now have no insurance.
     assertTrue(person.coverage.getPlanAtTime(currTime)
-        .equals(PayerController.noInsurance.getNoInsurancePlan()));
+        .equals(PayerController.getNoInsurancePlan()));
 
     // Encounter is uncovered and unaffordable.
     Encounter uncoveredEncounter3
@@ -183,7 +183,7 @@ public class LossOfCareHealthRecordTest {
 
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, PayerController.noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of an encounter.
@@ -211,7 +211,7 @@ public class LossOfCareHealthRecordTest {
 
     // Next year begins. Person should enough income to cover one encounter for the year.
     long oneYear = Utilities.convertTime("years", 1) + 1;
-    person.coverage.setPlanAtTime(time + oneYear, PayerController.noInsurance.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time + oneYear, PayerController.getNoInsurancePlan());
     // First encounter of next year is uncovered but affordable.
     Encounter coveredEncounterYearTwo
         = person.encounterStart(time + oneYear, EncounterType.WELLNESS);

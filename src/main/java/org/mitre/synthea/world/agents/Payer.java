@@ -546,18 +546,6 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the no insurance InsurancePlan if this is the no insurance payer.
-   * @return  the no insurance plan.
-   */
-  public InsurancePlan getNoInsurancePlan() {
-    // TODO - This is bad design, reimplement using inheritance?
-    if (!this.name.equals(PayerController.NO_INSURANCE)) {
-      throw new RuntimeException("Only the no insurance payer can call getNoInsurancePlan().");
-    }
-    return this.plans.iterator().next();
-  }
-
-  /**
    * Returns the government payer plan if this is a government payer.
    * @return  This payer's government payer plan.
    */
