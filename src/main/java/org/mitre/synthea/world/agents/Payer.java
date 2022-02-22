@@ -537,6 +537,8 @@ public class Payer implements Serializable {
       insuranceStatus = "medicare"; // default to medicare when government payer
       if (this.getName().equalsIgnoreCase(HealthInsuranceModule.MEDICAID)) {
         insuranceStatus = "medicaid";
+      } else if (this.getName().equalsIgnoreCase(HealthInsuranceModule.DUAL_ELIGIBLE)) {
+        insuranceStatus = "dual_eligible";
       }
     } else {
       insuranceStatus = "private";
@@ -557,8 +559,8 @@ public class Payer implements Serializable {
    * @return  This payer's government payer plan.
    */
   public InsurancePlan getGovernmentPayerPlan() {
-    // TODO - This is bad design, reimplement using inheritance?
-    // Or should each gov payer have multiple plan options? Or just one?
+    // TODO - Reimplement using inheritance?
+    // Should each gov payer have multiple plan options? Or just one?
     if (!this.ownership.equals(PayerController.GOV_OWNERSHIP)) {
       throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
     }

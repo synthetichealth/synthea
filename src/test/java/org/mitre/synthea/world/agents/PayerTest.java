@@ -7,8 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -20,7 +18,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -607,4 +604,23 @@ public class PayerTest {
     // For now, this returns true by default because it is not yet implememted.
     assertTrue(testPrivatePayer1.isInNetwork(null));
   }
+
+  @Test
+  public void personKeepsPreviousInsurance() {
+    HealthInsuranceModule him = new HealthInsuranceModule();
+    long time = Utilities.convertCalendarYearsToTime(1980);
+    person = new Person(0L);
+    him.process(person, time);
+    InsurancePlan firstPlan = person.coverage.getPlanAtTime(time);
+    time += Utilities.convertTime("years", 1.5);
+    InsurancePlan secondPlan = person.coverage.getPlanAtTime(time);
+    // For now, this returns true by default because it is not yet implememted.
+    assertEquals(firstPlan, secondPlan);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void getGovPlanFromPrivatePayer() {
+    testPrivatePayer1.getGovernmentPayerPlan();
+  }
+
 }
