@@ -521,12 +521,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    */
   private static void nonZeroDefaults(Map<String, Double> map) {
     // Any null or nan values should be zero
-    for (String key : map.keySet()) {
-      Double value = map.get(key);
-      if (value == null || value.isNaN()) {
-        map.put(key, Double.valueOf(0));
-      }
-    }
+    map.replaceAll((key, value) -> (value == null || value.isNaN()) ? 0.0 : value);
     // Now check if all values are zero
     boolean allZero = true;
     for (Double value : map.values()) {
@@ -535,11 +530,10 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         break;
       }
     }
+    // If all values were zero, apply a uniform distribution.
     if (allZero) {
-      Double value = 1.0 / Double.valueOf(map.size());
-      for (String key : map.keySet()) {
-        map.put(key, value);
-      }
+      Double value = 1.0 / map.size();
+      map.replaceAll((key, oldValue) -> value);
     }
   }
 
