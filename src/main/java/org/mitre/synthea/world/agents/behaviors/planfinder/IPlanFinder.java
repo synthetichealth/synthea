@@ -29,23 +29,23 @@ public interface IPlanFinder {
   /**
    * Determine whether or not the given payer meets the person's basic requirements.
    *
-   * @param payer The payer to check.
+   * @param plan The plan to check.
    * @param person The patient who requires a payer.
    * @param service The service required.
    * @param time The date/time within the simulated world, in milliseconds.
    * @return if the payer meets the basic requirements.
    */
   public static boolean meetsBasicRequirements(
-      Payer payer, Person person, EncounterType service, long time) {
+      InsurancePlan plan, Person person, EncounterType service, long time) {
 
-    // occupation determines whether their employer will pay for insurance after the mandate.
+    // Occupation determines whether their employer will pay for insurance after the mandate.
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
-    return payer.accepts(person, time)
-        && (person.canAffordPayer(payer) || (time >= HealthInsuranceModule.mandateTime
+    return plan.getPayer().accepts(person, time)
+        && (person.canAffordPlan(plan) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
-        && payer.isInNetwork(null)
-        && (payer.coversService(null)); // For a null service, Payer.coversService returns true.
+        && plan.getPayer().isInNetwork(null)
+        && (plan.coversService(null)); // For a null service, Plan.coversService returns true.
   }
 
   /**

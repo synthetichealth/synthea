@@ -195,16 +195,6 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns whether the payer covers the given service.
-   *
-   * @param service the entry type to check
-   * @return whether the payer covers the given service
-   */
-  public boolean coversService(String service) {
-    return this.plans.iterator().next().coversService(service);
-  }
-
-  /**
    * Is the given Provider in this Payer's network?.
    * Currently just returns true until Networks are implemented.
    *
@@ -213,32 +203,6 @@ public class Payer implements Serializable {
    */
   public boolean isInNetwork(Provider provider) {
     return true;
-  }
-
-  /**
-   * Returns whether or not this payer will cover the given entry.
-   *
-   * @param entry the entry that needs covering.
-   */
-  public boolean coversCare(Entry entry) {
-    // Payer.isInNetwork() always returns true. For Now.
-    return this.coversService(entry.type)
-        && this.isInNetwork(null);
-    // Entry doesn't have a provider but encounter does, need to find a way to get provider.
-  }
-
-  /**
-   * Determines the copay owed for this Payer based on the type of entry.
-   * For now, this returns a default copay. But in the future there will be different
-   * copays depending on the encounter type covered. If the entry is a wellness visit
-   * and the time is after the mandate year, then the copay is $0.00.
-   *
-   * @param recordEntry the health record entry to calculate the copay for.
-   */
-  public double determineCopay(HealthRecord.Entry recordEntry) {
-    // This will need to be updated to pull the correct plan from the payer for this person.
-    // Placeholder since currently there is only one plan per payer.
-    return this.plans.iterator().next().determineCopay(recordEntry);
   }
 
   /**
@@ -571,28 +535,6 @@ public class Payer implements Serializable {
       insuranceStatus = "private";
     }
     return insuranceStatus;
-  }
-
-  /**
-   * Returns the yearly cost of this payer.
-   * @return
-   */
-  public double getYearlyCost() {
-    // Will need to be updated to get a yearly cost for a specific plan.
-    InsurancePlan singlePlan = this.plans.iterator().next();
-    double yearlyPremiumTotal = singlePlan.getMonthlyPremium() * 12;
-    double yearlyDeductible = singlePlan.getDeductible();
-    return yearlyPremiumTotal + yearlyDeductible;
-  }
-
-  /**
-   * Returns the coinsurance for the given person. TODO - currently just has one plan.
-   * @param person  The person for whom to get the coinsurance for.
-   * @return
-   */
-  public double getCoinsurance(Person person) {
-    // TODO - this should get the plan associated with this person.
-    return this.plans.iterator().next().getCoinsurance();
   }
 
   /**

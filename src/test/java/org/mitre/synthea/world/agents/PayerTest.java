@@ -439,14 +439,15 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, beforeMandateTime);
 
     // Before Mandate.
-    person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1.plans.iterator().next());
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1Plan);
     Encounter wellnessBeforeMandate =
         person.record.encounterStart(beforeMandateTime, EncounterType.WELLNESS);
     wellnessBeforeMandate.codes.add(code);
     wellnessBeforeMandate.provider = new Provider();
     person.record.encounterEnd(beforeMandateTime, EncounterType.WELLNESS);
     // The copay before the mandate time should be greater than 0.
-    assertTrue(testPrivatePayer1.determineCopay(wellnessBeforeMandate) > 0.0);
+    assertTrue(testPrivatePayer1Plan.determineCopay(wellnessBeforeMandate) > 0.0);
 
     Encounter inpatientBeforeMandate
         = person.record.encounterStart(beforeMandateTime, EncounterType.INPATIENT);
@@ -454,7 +455,7 @@ public class PayerTest {
     inpatientBeforeMandate.provider = new Provider();
     person.record.encounterEnd(beforeMandateTime, EncounterType.INPATIENT);
     // The copay for a non-wellness encounter should be greater than 0.
-    assertTrue(testPrivatePayer1.determineCopay(wellnessBeforeMandate) > 0.0);
+    assertTrue(testPrivatePayer1Plan.determineCopay(inpatientBeforeMandate) > 0.0);
 
     // After Mandate.
     Encounter wellnessAfterMandate
@@ -463,7 +464,7 @@ public class PayerTest {
     wellnessAfterMandate.provider = new Provider();
     person.record.encounterEnd(afterMandateTime, EncounterType.WELLNESS);
     // The copay after the mandate time should be 0.
-    assertEquals(0.0, testPrivatePayer1.determineCopay(wellnessAfterMandate), 0.000001);
+    assertEquals(0.0, testPrivatePayer1Plan.determineCopay(wellnessAfterMandate), 0.000001);
 
     Encounter inpatientAfterMandate
         = person.record.encounterStart(afterMandateTime, EncounterType.INPATIENT);
@@ -471,7 +472,7 @@ public class PayerTest {
     inpatientAfterMandate.provider = new Provider();
     person.record.encounterEnd(afterMandateTime, EncounterType.INPATIENT);
     // The copay for a non-wellness encounter should be greater than 0.
-    assertTrue(testPrivatePayer1.determineCopay(inpatientAfterMandate) > 0.0);
+    assertTrue(testPrivatePayer1Plan.determineCopay(inpatientAfterMandate) > 0.0);
   }
 
   @Test
@@ -516,7 +517,8 @@ public class PayerTest {
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    assertTrue(testPrivatePayer1.coversService(encounter.type));
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    assertTrue(testPrivatePayer1Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter
     double coverage = encounter.claim.totals.coinsurance + encounter.claim.totals.paidByPayer;
@@ -543,7 +545,8 @@ public class PayerTest {
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    assertFalse(testPrivatePayer2.coversService(encounter.type));
+    InsurancePlan testPrivatePayer2Plan = testPrivatePayer2.plans.iterator().next();
+    assertFalse(testPrivatePayer2Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal $0.0.
     assertEquals(0.0, person.coverage.getTotalCoverage(), 0.001);
@@ -559,7 +562,8 @@ public class PayerTest {
     int yearlyCostOfPayer = (int) ((plan.getMonthlyPremium() * 12)
         + plan.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer + 1);
-    assertTrue(person.canAffordPayer(testPrivatePayer1));
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    assertTrue(person.canAffordPlan(testPrivatePayer1Plan));
   }
 
   @Test
@@ -570,7 +574,8 @@ public class PayerTest {
     int yearlyCostOfPayer = (int) ((plan.getMonthlyPremium() * 12)
         + plan.getDeductible());
     person.attributes.put(Person.INCOME, yearlyCostOfPayer - 1);
-    assertFalse(person.canAffordPayer(testPrivatePayer1));
+    InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.plans.iterator().next();
+    assertFalse(person.canAffordPlan(testPrivatePayer1Plan));
   }
 
   @Test

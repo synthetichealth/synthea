@@ -26,8 +26,10 @@ public class PlanFinderRandom implements IPlanFinder {
     List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
 
     for (Payer payer : payers) {
-      if (IPlanFinder.meetsBasicRequirements(payer, person, service, time)) {
-        eligiblePlans.addAll(payer.plans);
+      for (InsurancePlan plan : payer.plans) {
+        if (IPlanFinder.meetsBasicRequirements(plan, person, service, time)) {
+          eligiblePlans.add(plan);
+        }
       }
     }
     // Choose a random payer from the list of options.

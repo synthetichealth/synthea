@@ -9,6 +9,8 @@ import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 
 /**
  * A class that defines an insurance plan.
@@ -110,14 +112,35 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
+   * Increments the number of covered entries.
+   * @param entry  The covered entry.
+   */
+  public void incrementCoveredEntries(Entry entry) {
+    this.payer.incrementCoveredEntries(entry);
+  }
+
+  /**
+   * Increments the number of uncovered entries.
+   * @param entry  The uncovered entry.
+   */
+  public void incrementUncoveredEntries(Entry entry) {
+    this.payer.incrementUncoveredEntries(entry);
+  }
+
+  /**
    * Determines whether this plan covere the request service type.
-   * @param service The service type.
+   * @param entry The entry to cover.
    * @return Whether this plan covere the request service type.
    */
-  public boolean coversService(String service) {
-    return service == null
+  public boolean coversService(Entry entry) {
+    if (entry == null) {
+      return true;
+    }
+    String service = entry.type;
+    return (service == null
         || this.servicesCovered.contains(service)
-        || this.servicesCovered.contains("*");
+        || this.servicesCovered.contains("*"))
+        && this.payer.isInNetwork(null);
   }
 
   /**
@@ -135,4 +158,27 @@ public class InsurancePlan implements Serializable {
   public void addUncoveredCost(double uncoveredCosts) {
     this.payer.addUncoveredCost(uncoveredCosts);
   }
+
+  /**
+   * Determines whether or not this payer will adjust this claim, and by how
+   * much. This determination is based on the claim adjustment strategy configuration,
+   * which defaults to none.
+   * @param claimEntry The claim entry to be adjusted.
+   * @param person The person making the claim.
+   * @return The dollar amount the claim entry was adjusted.
+   */
+  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+    return this.payer.adjustClaim(claimEntry, person);
+  }
+
+  /**
+   * Returns the yearly cost of this plan.
+   * @return
+   */
+  public double getYearlyCost() {
+    double yearlyPremiumTotal = this.monthlyPremium * 12;
+    double yearlyDeductible = this.deductible;
+    return yearlyPremiumTotal + yearlyDeductible;
+  }
+
 }

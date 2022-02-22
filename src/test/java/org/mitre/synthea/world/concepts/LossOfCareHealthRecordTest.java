@@ -51,7 +51,8 @@ public class LossOfCareHealthRecordTest {
     person.setProvider(EncounterType.WELLNESS, new Provider());
     person.attributes.put(Person.INCOME, 1);
     Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
-    testPrivatePayerCopay = testPrivatePayer.determineCopay(encounter);
+    InsurancePlan testPrivatePayerPlan = testPrivatePayer.plans.iterator().next();
+    testPrivatePayerCopay = testPrivatePayerPlan.determineCopay(encounter);
 
     time = 0L; //Utilities.convertCalendarYearsToTime(1900);
   }

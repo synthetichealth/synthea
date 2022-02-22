@@ -126,7 +126,7 @@ public class HealthInsuranceModule extends Module {
     }
     InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
     if (planAtTime != null
-        && IPlanFinder.meetsBasicRequirements(planAtTime.getPayer(), person, null, time)) {
+        && IPlanFinder.meetsBasicRequirements(planAtTime, person, null, time)) {
       // People will keep their previous year's insurance if they can.
       return planAtTime;
     }

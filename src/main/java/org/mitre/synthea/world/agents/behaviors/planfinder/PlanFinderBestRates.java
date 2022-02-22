@@ -31,19 +31,18 @@ public class PlanFinderBestRates implements IPlanFinder {
         numberOfExpectedEncounters += twelveMonthEncounterCount(record, time);
       }
     } else {
-      numberOfExpectedEncounters =
-          twelveMonthEncounterCount(person.defaultRecord, time);
+      numberOfExpectedEncounters = twelveMonthEncounterCount(person.defaultRecord, time);
     }
 
-    HealthRecord.Encounter dummy =
-        person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
+    HealthRecord.Encounter dummy
+        = person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
     InsurancePlan bestRatePlan = PayerController.noInsurance.getNoInsurancePlan();
     double bestExpectedRate = Double.MAX_VALUE;
 
     for (Payer payer : payers) {
-      if (IPlanFinder.meetsBasicRequirements(payer, person, service, time)) {
-        for (InsurancePlan plan : payer.plans) {
+      for (InsurancePlan plan : payer.plans) {
+        if (IPlanFinder.meetsBasicRequirements(plan, person, service, time)) {
           // First, calculate the annual premium.
           double expectedRate = (plan.getMonthlyPremium() * 12.0);
           // Second, calculate expected copays based on last years visits.
@@ -62,7 +61,7 @@ public class PlanFinderBestRates implements IPlanFinder {
   /**
    * Calculates the number of encounters during the last 12 months.
    * @param record The health record being examined.
-   * @param time The date/time within the simulated world, in milliseconds.
+   * @param time   The date/time within the simulated world, in milliseconds.
    * @return The number of encounters during the last 12 months.
    */
   protected int twelveMonthEncounterCount(HealthRecord record, long time) {

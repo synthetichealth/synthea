@@ -447,7 +447,7 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(person, personID, encounter);
-      String payerID = encounter.claim.payer.uuid;
+      String payerID = encounter.claim.plan.getPayer().uuid;
 
       claim(person, encounter.claim, encounter, encounterID, time);
 
@@ -664,8 +664,8 @@ public class CSVExporter {
       s.append(',');
     }
     // PAYER
-    if (encounter.claim.payer != null) {
-      s.append(encounter.claim.payer.getResourceID()).append(',');
+    if (encounter.claim.plan.getPayer() != null) {
+      s.append(encounter.claim.plan.getPayer().getResourceID()).append(',');
     } else {
       s.append(',');
     }
@@ -1362,17 +1362,18 @@ public class CSVExporter {
       s.append(',');
     }
     // PRIMARYPATIENTINSURANCEID
-    if (encounter.claim.payer == null || encounter.claim.payer == PayerController.noInsurance) {
+    if (encounter.claim.plan.getPayer() == null
+        || encounter.claim.plan.getPayer() == PayerController.noInsurance) {
       s.append("0,"); // 0 == No Insurance
     } else {
-      s.append(claim.payer.getResourceID()).append(',');
+      s.append(claim.plan.getPayer().getResourceID()).append(',');
     }
     // SECONDARYPATIENTINSURANCEID (0 default if none)
-    if (encounter.claim.secondaryPayer == null
-        || encounter.claim.secondaryPayer == PayerController.noInsurance) {
+    if (encounter.claim.secondaryPlan.getPayer() == null
+        || encounter.claim.secondaryPlan.getPayer() == PayerController.noInsurance) {
       s.append("0,");
     } else {
-      s.append(claim.secondaryPayer.getResourceID()).append(',');
+      s.append(claim.secondaryPlan.getPayer().getResourceID()).append(',');
     }
     // DEPARTMENTID
     String departmentId = claimDepartmentCode(encounter, claim.person);
@@ -1431,7 +1432,8 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("CLOSED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         s.append("CLOSED,");
       } else {
         s.append(',');
@@ -1441,7 +1443,8 @@ public class CSVExporter {
       // OUTSTANDING1
       s.append("0,");
       // OUTSTANDING2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         s.append("0,");
       } else {
         s.append(',');
@@ -1451,7 +1454,8 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.stop)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         s.append(iso8601Timestamp(encounter.stop)).append(',');
       } else {
         s.append(',');
@@ -1464,7 +1468,8 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("BILLED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         s.append("BILLED,");
       } else {
         s.append(',');
@@ -1474,7 +1479,8 @@ public class CSVExporter {
       // OUTSTANDING1 (TODO this should be the outstanding payer balance)
       s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
       // OUTSTANDING2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         // TODO this is not correct
         s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
       } else {
@@ -1486,7 +1492,8 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+      if (claim.secondaryPlan.getPayer() != null
+          && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
         s.append(iso8601Timestamp(encounter.start)).append(',');
       } else {
         s.append(',');
@@ -1502,7 +1509,8 @@ public class CSVExporter {
       s.append("1,");
     }
     // HEALTHCARECLAIMTYPEID2
-    if (claim.secondaryPayer != null && claim.secondaryPayer != PayerController.noInsurance) {
+    if (claim.secondaryPlan.getPayer() != null
+        && claim.secondaryPlan.getPayer() != PayerController.noInsurance) {
       if (institutional) {
         s.append('2');
       } else {
@@ -1542,7 +1550,7 @@ public class CSVExporter {
     t.setAmount(claimEntry.cost);
     t.departmentId = departmentId;
     t.diagnosisCodes = diagnosisCodes;
-    if (claim.payer == PayerController.noInsurance) {
+    if (claim.plan.getPayer() == PayerController.noInsurance) {
       t.transferType = "p";
     } else {
       t.transferType = "1";
@@ -1649,7 +1657,7 @@ public class CSVExporter {
     }
 
     if (remainder > 0) {
-      if (claim.payer != PayerController.noInsurance) {
+      if (claim.plan.getPayer() != PayerController.noInsurance) {
         // TRANSFEROUT
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);

@@ -35,6 +35,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
@@ -721,11 +722,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * If a person's income is greater than a year of montlhy premiums + deductible
    * then they can afford the insurance.
    *
-   * @param payer the payer to check.
+   * @param plan the plan to check.
    */
-  public boolean canAffordPayer(Payer payer) {
+  public boolean canAffordPlan(InsurancePlan plan) {
     int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyCost = payer.getYearlyCost();
+    double yearlyCost = plan.getYearlyCost();
     return income > yearlyCost;
   }
 

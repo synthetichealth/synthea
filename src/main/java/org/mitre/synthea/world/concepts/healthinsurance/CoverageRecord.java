@@ -9,6 +9,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerController;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 /**
  * A class that manages a history of coverage.
@@ -114,7 +115,7 @@ public class CoverageRecord implements Serializable {
       time = (long) person.attributes.get(Person.BIRTHDATE);
     } else {
       // Set the new stop date of the last insurance plan to prevent any gaps.
-      PlanRecord planRecord = this.getLastPlan();
+      PlanRecord planRecord = this.getLastPlanRecord();
       planRecord.updateStopTime(time);
     }
 
@@ -170,12 +171,24 @@ public class CoverageRecord implements Serializable {
   }
 
   /**
-   * Get the last plan.
+   * Get the last plan record.
    * @return the last plan.
    */
-  public PlanRecord getLastPlan() {
+  public PlanRecord getLastPlanRecord() {
     if (!this.planHistory.isEmpty()) {
       return this.planHistory.get(this.planHistory.size() - 1);
+    }
+    return null;
+  }
+
+  /**
+   * Get the last insurance plan.
+   * @return the last plan.
+   */
+  public InsurancePlan getLastInsurancePlan() {
+    PlanRecord planRecord = this.getLastPlanRecord();
+    if (planRecord != null) {
+      return planRecord.plan;
     }
     return null;
   }
@@ -186,9 +199,9 @@ public class CoverageRecord implements Serializable {
    */
   public Payer getLastPayer() {
     Payer payer = null;
-    PlanRecord planRecord = getLastPlan();
-    if (planRecord != null) {
-      payer = planRecord.plan.getPayer();
+    InsurancePlan plan = getLastInsurancePlan();
+    if (plan != null) {
+      payer = plan.getPayer();
     }
     return payer;
   }
@@ -237,7 +250,7 @@ public class CoverageRecord implements Serializable {
     String[] results = new String[3];
     // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
     int age = this.person.ageInYears(time);
-    PlanRecord lastPlan = this.getLastPlan();
+    PlanRecord lastPlan = this.getLastPlanRecord();
     if (lastPlan != null
         && lastPlan.plan != null
         && lastPlan.plan.equals(plan)
