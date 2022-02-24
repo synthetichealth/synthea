@@ -1,8 +1,8 @@
-package org.mitre.synthea.world.agents.behaviors.payereligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
 import org.mitre.synthea.world.agents.Person;
 
-public interface IPayerEligibility {
+public interface IPlanEligibility {
 
   /**
    * Returns whether the given person meets the eligibilty criteria of this

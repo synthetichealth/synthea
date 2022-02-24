@@ -36,7 +36,7 @@ import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -177,10 +177,10 @@ public class FHIRDSTU2ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    PayerController.loadNoInsurance();
+    PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(yearTime, PayerController.getNoInsurancePlan());
+      person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
     }
 
     Module module = TestHelper.getFixture("observation.json");
@@ -241,10 +241,10 @@ public class FHIRDSTU2ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    PayerController.loadNoInsurance();
+    PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(yearTime, PayerController.getNoInsurancePlan());
+      person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
     }
 
     Module module = TestHelper.getFixture("observation.json");

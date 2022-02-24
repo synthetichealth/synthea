@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -33,10 +33,10 @@ public class QualityOfLifeTest {
     person.attributes.put(Person.INCOME, 1000000);
 
     // Ensure Person's payer is not null
-    PayerController.loadNoInsurance();
-    person.coverage.setPlanAtTime(0L, PayerController.getNoInsurancePlan());
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanAtTime(0L, PayerManager.getNoInsurancePlan());
     person.coverage.setPlanAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
-        PayerController.getNoInsurancePlan());
+        PayerManager.getNoInsurancePlan());
 
     // Diabetes - code = 44054006;  dw = 0.031, 0.049, 0.072
     // ADD      - code = 192127007; dw = 0.028, 0.045, 0.066

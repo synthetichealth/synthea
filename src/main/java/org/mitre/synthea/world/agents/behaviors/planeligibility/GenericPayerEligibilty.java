@@ -1,11 +1,11 @@
-package org.mitre.synthea.world.agents.behaviors.payereligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
 import org.mitre.synthea.world.agents.Person;
 
 /**
  * A payer eligibilty algorithm that accepts all patients.
  */
-public class GenericPayerEligibilty implements IPayerEligibility {
+public class GenericPayerEligibilty implements IPlanEligibility {
 
   @Override
   public boolean isPersonEligible(Person person, long time) {

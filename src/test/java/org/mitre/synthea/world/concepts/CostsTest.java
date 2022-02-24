@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -23,10 +23,10 @@ public class CostsTest {
   public void setup() {
     Costs.loadCostData();
     person = new Person(System.currentTimeMillis());
-    PayerController.loadNoInsurance();
+    PayerManager.loadNoInsurance();
     time = 0L;
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
   }
 
   @Test public void testCostByKnownCode() {

@@ -8,9 +8,8 @@ import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class HealthInsuranceModule extends Module {
@@ -23,13 +22,6 @@ public class HealthInsuranceModule extends Module {
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
   public static double medicaidLevel = 1.33
           * Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
-  public static final String MEDICARE =
-      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-  public static final String MEDICAID =
-      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-  public static final String DUAL_ELIGIBLE =
-      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-  public static final String INSURANCE_STATUS = "insurance_status";
 
   /**
    * HealthInsuranceModule constructor.
@@ -65,31 +57,8 @@ public class HealthInsuranceModule extends Module {
       if (lastPayer != null) {
         lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       }
-      // Determine the insurance for this person at this time.
-      InsurancePlan newPlan = determineInsurance(person, time);
-      InsurancePlan secondaryPlan = null;
-
-      // If the payer is Medicare, they may buy supplemental insurance.
-      if (newPlan.isMedicarePlan() && (person.rand() <= 0.8)) {
-        // Buy supplemental insurance if it is affordable
-        secondaryPlan = PayerController.findPlan(person, null, time);
-      } else {
-        // This patient will not purchase secondary insurance.
-        secondaryPlan = PayerController.getNoInsurancePlan();
-      }
-
-      // Set this new payer at the current time for the person.
-      person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
-
-      // Update the new Payer's customer statistics.
-      newPlan.incrementCustomers(person);
-      if (PayerController.getNoInsurancePlan() != secondaryPlan) {
-        secondaryPlan.incrementCustomers(person);
-      }
-
-      // Set insurance attribute for module access
-      String insuranceStatus = newPlan.getAssociatedInsuranceStatus();
-      person.attributes.put(INSURANCE_STATUS, insuranceStatus);
+      // Update the insurance for this person at this time.
+      this.updateInsurance(person, time);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
@@ -106,32 +75,30 @@ public class HealthInsuranceModule extends Module {
    * @param time   the current time to consider
    * @return the insurance that this person gets
    */
-  private InsurancePlan determineInsurance(Person person, long time) {
-    // Government payers
-    Payer medicare = PayerController.getGovernmentPayer(MEDICARE);
-    Payer medicaid = PayerController.getGovernmentPayer(MEDICAID);
-    Payer dualPayer = PayerController.getGovernmentPayer(DUAL_ELIGIBLE);
-
-    boolean medicareEligible = medicare != null && medicare.accepts(person, time);
-    boolean medicaidEligible = medicaid != null && medicaid.accepts(person, time);
-
-    // If Medicare/Medicaid will accept this person, then it takes priority.
-    if (medicareEligible && medicaidEligible) {
-      return dualPayer.getGovernmentPayerPlan();
-    } else if (medicareEligible) {
-      return medicare.getGovernmentPayerPlan();
-    } else if (medicaidEligible) {
-      return medicaid.getGovernmentPayerPlan();
+  private void updateInsurance(Person person, long time) {
+    InsurancePlan newPlan = PayerManager.findGovernmentPlan(person, null, time);
+    InsurancePlan secondaryPlan = null;
+    // If a government plan was not found, find a private payer.
+    if (newPlan.isNoInsurance()) {
+      newPlan = PayerManager.findPrivatePlan(person, null, time);
+      secondaryPlan = PayerManager.getNoInsurancePlan();
+    } else {
+      // If the payer is Medicare, they may buy supplemental insurance.
+      if (newPlan.isMedicarePlan() && (person.rand() <= 0.8)) {
+        // Buy supplemental insurance if it is affordable
+        secondaryPlan = PayerManager.findPrivatePlan(person, null, time);
+      } else {
+        // This patient will not purchase secondary insurance.
+        secondaryPlan = PayerManager.getNoInsurancePlan();
+      }
     }
-    InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
-    if (planAtTime != null
-        && IPlanFinder.meetsBasicRequirements(planAtTime, person, null, time)) {
-      // People will keep their previous year's insurance if they can.
-      return planAtTime;
+    // Sets the person's new plan(s).
+    person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
+    // Update the new Payer's customer statistics.
+    newPlan.incrementCustomers(person);
+    if (!secondaryPlan.isNoInsurance()) {
+      secondaryPlan.incrementCustomers(person);
     }
-    // Randomly choose one of the remaining private payer's plans.
-    // Returns the no insurance plan if a person cannot afford any of them.
-    return PayerController.findPlan(person, null, time);
   }
 
   /**

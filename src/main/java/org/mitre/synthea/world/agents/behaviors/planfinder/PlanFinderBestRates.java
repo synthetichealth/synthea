@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -37,12 +37,12 @@ public class PlanFinderBestRates implements IPlanFinder {
     HealthRecord.Encounter dummy
         = person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
-    InsurancePlan bestRatePlan = PayerController.getNoInsurancePlan();
+    InsurancePlan bestRatePlan = PayerManager.getNoInsurancePlan();
     double bestExpectedRate = Double.MAX_VALUE;
 
     for (Payer payer : payers) {
       for (InsurancePlan plan : payer.getPlans()) {
-        if (IPlanFinder.meetsBasicRequirements(plan, person, service, time)) {
+        if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
           // First, calculate the annual premium.
           double expectedRate = (plan.getMonthlyPremium() * 12.0);
           // Second, calculate expected copays based on last years visits.

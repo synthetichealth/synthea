@@ -1,8 +1,10 @@
 package org.mitre.synthea.world.agents.behaviors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
@@ -41,54 +43,54 @@ public class PlanFinderTest {
   @Test
   public void noPayersRandom() {
     Config.set("generate.payers.selection_behavior", "random");
-    PayerController.clear();
-    PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
-    assertEquals("NO_INSURANCE", payer.getName());
+    assertTrue(payer.isNoInsurance());
   }
 
   @Test
   public void onePayerRandom() {
     Config.set("generate.payers.selection_behavior", "random");
-    PayerController.clear();
-    PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L).getPayer();
+    Payer payer = finder.find(PayerManager.getPrivatePayers(), person, null, 0L).getPayer();
     assertNotNull(payer);
-    assertNotEquals("NO_INSURANCE", payer.getName());
+    assertFalse(payer.isNoInsurance());
   }
 
   @Test
   public void noPayersBestRate() {
     Config.set("generate.payers.selection_behavior", "best_rate");
-    PayerController.clear();
-    PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
     List<Payer> options = new ArrayList<Payer>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
-    assertEquals("NO_INSURANCE", payer.getName());
+    assertTrue(payer.isNoInsurance());
   }
 
   @Test
   public void onePayerBestRate() {
     Config.set("generate.payers.selection_behavior", "best_rate");
-    PayerController.clear();
-    PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Payer payer = finder.find(PayerController.getPrivatePayers(), person, null, 0L).getPayer();
+    Payer payer = finder.find(PayerManager.getPrivatePayers(), person, null, 0L).getPayer();
     assertNotNull(payer);
-    assertNotEquals("NO_INSURANCE", payer.getName());
+    assertFalse(payer.isNoInsurance());
   }
 
   @Test(expected = RuntimeException.class)
   public void invalidPayerFinderTest() {
     // Note that "bestrate" should be spelled "best_rate"
     Config.set("generate.payers.selection_behavior", "bestrate");
-    PayerController.clear();
-    PayerController.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
   }
 }

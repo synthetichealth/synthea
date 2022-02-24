@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -45,8 +45,8 @@ public class DeathModuleTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    PayerController.loadNoInsurance();
-    person.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
   }
 
   @Test

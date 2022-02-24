@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors.payereligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
@@ -6,7 +6,7 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * An algorithm that dictates the standard medicaid elgibilty criteria.
  */
-public class StandardMedicaidEligibility implements IPayerEligibility {
+public class StandardMedicaidEligibility implements IPlanEligibility {
   @Override
   public boolean isPersonEligible(Person person, long time) {
     boolean female = (person.attributes.get(Person.GENDER).equals("F"));

@@ -20,15 +20,16 @@ import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentN
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentRandom;
 import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderGovPriority;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 /**
- * A class that maintains and controls all Payers.
+ * A class that maintains and manages Payers.
  */
-public class PayerController {
+public class PayerManager {
 
   // Payer adjustment algorithm choices:
   private static final String NONE = "none";
@@ -37,6 +38,13 @@ public class PayerController {
   public static final String GOV_OWNERSHIP = "GOVERNMENT";
   public static final String PRIVATE_OWNERSHIP = "PRIVATE";
   public static final String NO_INSURANCE = "NO_INSURANCE";
+
+  public static final String MEDICARE =
+      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
+  public static final String MEDICAID =
+      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
+  public static final String DUAL_ELIGIBLE =
+      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
   /* ArrayList of all Private Payers imported. */
   private static List<Payer> privatePayers = new ArrayList<Payer>();
@@ -49,10 +57,11 @@ public class PayerController {
   private static Set<String> statesLoaded = new HashSet<String>();
 
   /* Payer Finder. */
-  private static IPlanFinder payerFinder;
+  private static IPlanFinder planFinder;
   // Payer selection algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
+  private static final String GOVPRIORITY = "gov_priority";
 
   /**
    * Load into cache the list of payers for a state.
@@ -61,7 +70,7 @@ public class PayerController {
    */
   public static void loadPayers(Location location) {
     // Build the Payer Finder
-    payerFinder = buildPayerFinder();
+    planFinder = buildPayerFinder();
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -88,7 +97,7 @@ public class PayerController {
    * @throws IOException if the file cannot be read
    */
   private static void loadPayers(Location location, String fileName) throws IOException {
-    PayerController.loadNoInsurance();
+    PayerManager.loadNoInsurance();
 
     String resource = Utilities.readResource(fileName);
     Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
@@ -109,10 +118,10 @@ public class PayerController {
           // Government payers go in a map, allowing for easy retrieval of specific
           // government
           // payers.
-          PayerController.governmentPayers.put(parsedPayer.getName(), parsedPayer);
+          PayerManager.governmentPayers.put(parsedPayer.getName(), parsedPayer);
         } else {
           // Private payers go in a list.
-          PayerController.privatePayers.add(parsedPayer);
+          PayerManager.privatePayers.add(parsedPayer);
         }
       }
     }
@@ -130,6 +139,9 @@ public class PayerController {
         break;
       case RANDOM:
         finder = new PlanFinderRandom();
+        break;
+      case GOVPRIORITY:
+        finder = new PlanFinderGovPriority();
         break;
       default:
         throw new RuntimeException("Not a valid Payer Selection Algorithm: " + behavior);
@@ -219,23 +231,23 @@ public class PayerController {
     // noInsurance 'covers' all states.
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
-    PayerController.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE);
-    PayerController.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0);
-    PayerController.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
+    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE);
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0);
+    PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
   /**
    * Returns the list of all loaded private payers.
    */
   public static List<Payer> getPrivatePayers() {
-    return PayerController.privatePayers;
+    return PayerManager.privatePayers;
   }
 
   /**
    * Returns the List of all loaded government payers.
    */
   public static List<Payer> getGovernmentPayers() {
-    return PayerController.governmentPayers.values().stream().collect(Collectors.toList());
+    return PayerManager.governmentPayers.values().stream().collect(Collectors.toList());
   }
 
   /**
@@ -243,8 +255,8 @@ public class PayerController {
    */
   public static List<Payer> getAllPayers() {
     List<Payer> allPayers = new ArrayList<>();
-    allPayers.addAll(PayerController.getGovernmentPayers());
-    allPayers.addAll(PayerController.getPrivatePayers());
+    allPayers.addAll(PayerManager.getGovernmentPayers());
+    allPayers.addAll(PayerManager.getPrivatePayers());
     return allPayers;
   }
 
@@ -255,7 +267,7 @@ public class PayerController {
    * @return returns null if the government payer does not exist.
    */
   public static Payer getGovernmentPayer(String governmentPayerName) {
-    return PayerController.governmentPayers.get(governmentPayerName);
+    return PayerManager.governmentPayers.get(governmentPayerName);
   }
 
   /**
@@ -266,7 +278,7 @@ public class PayerController {
     governmentPayers.clear();
     privatePayers.clear();
     statesLoaded.clear();
-    payerFinder = buildPayerFinder();
+    planFinder = buildPayerFinder();
   }
 
   /**
@@ -277,9 +289,21 @@ public class PayerController {
    * @param time    the time that the person requires insurance.
    * @return a payer who the person can accept and vice versa.
    */
-  public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    return PayerController.payerFinder
-        .find(PayerController.getPrivatePayers(), person, service, time);
+  public static InsurancePlan findPrivatePlan(Person person, EncounterType service, long time) {
+    InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
+    if (planAtTime != null && !planAtTime.isNoInsurance()
+        && IPlanFinder.meetsAffordabilityRequirements(planAtTime, person, null, time)) {
+      // People will keep their previous year's insurance if they can.
+      // TODO - what if they become medicare/medicaid elgible?
+      return planAtTime;
+    }
+    return planFinder
+        .find(PayerManager.getPrivatePayers(), person, service, time);
+  }
+
+  public static InsurancePlan findGovernmentPlan(Person person, EncounterType service, long time) {
+    return PayerManager.planFinder
+        .find(PayerManager.getGovernmentPayers(), person, service, time);
   }
 
   /**

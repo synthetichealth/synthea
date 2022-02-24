@@ -14,7 +14,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.geography.Location;
 
 public class CPCDSExporterTest {
@@ -34,10 +34,10 @@ public class CPCDSExporterTest {
     File tempOutputFolder = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
 
-    PayerController.clear();
+    PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    PayerController.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     Generator generator = new Generator(numberOfPeople);

@@ -19,10 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
-import org.mitre.synthea.world.agents.behaviors.payereligibility.IPayerEligibility;
-import org.mitre.synthea.world.agents.behaviors.payereligibility.PayerEligibilityFactory;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -37,15 +34,13 @@ public class Payer implements Serializable {
   // Payer Adjustment strategy.
   @JSONSkip
   private IPayerAdjustment payerAdjustment;
-  // Payer Eligibilty strategy.
-  private transient IPayerEligibility payerEligibility;
 
   /* Payer Attributes. */
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
   private final Set<InsurancePlan> plans;
-  private String ownership;
+  private final String ownership;
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
 
@@ -132,9 +127,6 @@ public class Payer implements Serializable {
     this.costsUncovered = 0.0;
     this.revenue = 0.0;
     this.totalQOLS = 0.0;
-
-    // Set the payer's eligiblty criteria.
-    this.payerEligibility = PayerEligibilityFactory.getPayerEligibilityAlgorithm(this.name);
   }
 
   /**
@@ -185,20 +177,6 @@ public class Payer implements Serializable {
    */
   public Set<InsurancePlan> getPlans() {
     return this.plans;
-  }
-
-  /**
-   * Returns whether a payer will accept the given patient at this time. Currently returns
-   * true by default, except for Medicare/Medicaid which have hardcoded requirements.
-   *
-   * @param person Person to consider
-   * @param time   Time the person seeks care
-   * @return whether or not the payer will accept this patient as a customer
-   */
-  public boolean accepts(Person person, long time) {
-    // How does the relationship between Dual Eligible work?
-    // Medicare Advantage plans? There probably shouldn't be a Dual Eligible payer.
-    return this.payerEligibility.isPersonEligible(person, time);
   }
 
   /**
@@ -522,7 +500,7 @@ public class Payer implements Serializable {
   }
 
   public boolean isGovernmentPayer() {
-    return this.ownership.equals(PayerController.GOV_OWNERSHIP);
+    return this.ownership.equals(PayerManager.GOV_OWNERSHIP);
   }
 
   /**
@@ -531,13 +509,13 @@ public class Payer implements Serializable {
    */
   public String getAssociatedInsuranceStatus() {
     String insuranceStatus;
-    if (this == PayerController.noInsurance) {
+    if (this == PayerManager.noInsurance) {
       insuranceStatus = "none";
     } else if (this.isGovernmentPayer()) {
       insuranceStatus = "medicare"; // default to medicare when government payer
-      if (this.getName().equalsIgnoreCase(HealthInsuranceModule.MEDICAID)) {
+      if (this.getName().equalsIgnoreCase(PayerManager.MEDICAID)) {
         insuranceStatus = "medicaid";
-      } else if (this.getName().equalsIgnoreCase(HealthInsuranceModule.DUAL_ELIGIBLE)) {
+      } else if (this.getName().equalsIgnoreCase(PayerManager.DUAL_ELIGIBLE)) {
         insuranceStatus = "dual_eligible";
       }
     } else {
@@ -561,7 +539,7 @@ public class Payer implements Serializable {
   public InsurancePlan getGovernmentPayerPlan() {
     // TODO - Reimplement using inheritance?
     // Should each gov payer have multiple plan options? Or just one?
-    if (!this.ownership.equals(PayerController.GOV_OWNERSHIP)) {
+    if (!this.ownership.equals(PayerManager.GOV_OWNERSHIP)) {
       throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
     }
     return this.plans.iterator().next();
@@ -572,6 +550,14 @@ public class Payer implements Serializable {
    */
   public void addAttribute(String key, String value) {
     this.attributes.put(key, value);
+  }
+
+  /**
+   * Returns whether this is the no insurance payer.
+   * @return
+   */
+  public boolean isNoInsurance() {
+    return this.name.equals(PayerManager.NO_INSURANCE);
   }
 
 }

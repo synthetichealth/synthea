@@ -5,7 +5,7 @@ import java.util.List;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -35,13 +35,13 @@ public interface IPlanFinder {
    * @param time The date/time within the simulated world, in milliseconds.
    * @return if the payer meets the basic requirements.
    */
-  public static boolean meetsBasicRequirements(
+  public static boolean meetsAffordabilityRequirements(
       InsurancePlan plan, Person person, EncounterType service, long time) {
 
     // Occupation determines whether their employer will pay for insurance after the mandate.
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
-    return plan.getPayer().accepts(person, time)
+    return plan.accepts(person, time)
         && (person.canAffordPlan(plan) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
         && plan.getPayer().isInNetwork(null)
@@ -57,7 +57,7 @@ public interface IPlanFinder {
   public default InsurancePlan chooseRandomPlan(List<InsurancePlan> options,
       RandomNumberGenerator rand) {
     if (options.isEmpty()) {
-      return PayerController.getNoInsurancePlan();
+      return PayerManager.getNoInsurancePlan();
     } else if (options.size() == 1) {
       return options.get(0);
     } else {

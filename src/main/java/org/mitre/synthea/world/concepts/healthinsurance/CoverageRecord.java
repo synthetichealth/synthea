@@ -8,7 +8,7 @@ import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -81,6 +81,7 @@ public class CoverageRecord implements Serializable {
   @JSONSkip
   private Person person;
   private List<PlanRecord> planHistory;
+  private String insuranceStatus;
 
   /**
    * Create a new CoverageRecord for the given Person.
@@ -132,6 +133,8 @@ public class CoverageRecord implements Serializable {
       planRecord.id = person.randUUID().toString(); // new id required.
     }
     this.planHistory.add(planRecord);
+    // Set the person's insurance status.
+    this.insuranceStatus = newPlan.getAssociatedInsuranceStatus();
   }
 
   /**
@@ -140,7 +143,7 @@ public class CoverageRecord implements Serializable {
    * @param newPlan the primary plan.
    */
   public void setPlanAtTime(long time, InsurancePlan newPlan) {
-    this.setPlanAtTime(time, newPlan, PayerController.getNoInsurancePlan());
+    this.setPlanAtTime(time, newPlan, PayerManager.getNoInsurancePlan());
   }
 
   /**
@@ -249,11 +252,11 @@ public class CoverageRecord implements Serializable {
       ownerships[0] = currentPlan.owner;
       ownerships[1] = currentPlan.ownerName;
       ownerships[2] = currentPlan.id;
-    } else if (payer.equals(PayerController.noInsurance)) {
+    } else if (payer.equals(PayerManager.noInsurance)) {
       // No owner for no insurance.
       ownerships[0] = null;
       ownerships[1] = null;
-    } else if (age < 18 && payer.getName().equals(HealthInsuranceModule.MEDICAID)) {
+    } else if (age < 18 && payer.getName().equals(PayerManager.MEDICAID)) {
       // If a person is a minor and is on Medicaid, they own their own insurance.
       ownerships[0] = "Self";
       ownerships[1] = (String) person.attributes.get(Person.NAME);

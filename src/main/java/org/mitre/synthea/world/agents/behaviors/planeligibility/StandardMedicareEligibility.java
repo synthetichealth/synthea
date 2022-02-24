@@ -1,11 +1,11 @@
-package org.mitre.synthea.world.agents.behaviors.payereligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
 import org.mitre.synthea.world.agents.Person;
 
 /**
  * An algorithm that dictates the standard medicare elgibilty criteria.
  */
-public class StandardMedicareEligibility implements IPayerEligibility {
+public class StandardMedicareEligibility implements IPlanEligibility {
 
   @Override
   public boolean isPersonEligible(Person person, long time) {

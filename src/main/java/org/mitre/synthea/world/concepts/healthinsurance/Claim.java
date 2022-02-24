@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -105,7 +105,7 @@ public class Claim implements Serializable {
       this.plan = this.person.coverage.getLastInsurancePlan();
     }
     if (this.plan == null) {
-      this.plan = PayerController.getNoInsurancePlan();
+      this.plan = PayerManager.getNoInsurancePlan();
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);
@@ -128,7 +128,7 @@ public class Claim implements Serializable {
       planRecord = person.coverage.getLastPlanRecord();
     }
     if (planRecord == null) {
-      person.coverage.setPlanAtTime(mainEntry.entry.start, PayerController.getNoInsurancePlan());
+      person.coverage.setPlanAtTime(mainEntry.entry.start, PayerManager.getNoInsurancePlan());
       planRecord = person.coverage.getLastPlanRecord();
     }
     assignCosts(mainEntry, planRecord);
@@ -189,7 +189,7 @@ public class Claim implements Serializable {
       }
       if (remainingUnpaid > 0) {
         // If secondary insurance, payer covers remainder, not patient.
-        if (PayerController.noInsurance != planRecord.secondaryPlan.getPayer()) {
+        if (PayerManager.noInsurance != planRecord.secondaryPlan.getPayer()) {
           claimEntry.secondaryPayer = remainingUnpaid;
           remainingUnpaid -= claimEntry.secondaryPayer;
         }

@@ -742,7 +742,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
     if (!stillHasIncome) {
       // Person no longer has income for the year. They will switch to No Insurance.
-      this.coverage.setPlanAtTime(time, PayerController.getNoInsurancePlan());
+      this.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
     }
     return stillHasIncome;
   }

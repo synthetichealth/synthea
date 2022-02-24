@@ -38,7 +38,7 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -86,10 +86,10 @@ public class StateTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    PayerController.loadNoInsurance();
+    PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(yearTime, PayerController.getNoInsurancePlan());
+      person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
     }
 
     // Ensure Physiology state is enabled by default

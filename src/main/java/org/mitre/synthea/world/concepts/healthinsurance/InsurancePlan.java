@@ -5,8 +5,10 @@ import java.util.Set;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerController;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -23,6 +25,8 @@ public class InsurancePlan implements Serializable {
   private final double defaultCoinsurance;
   private final double monthlyPremium;
   private final Set<String> servicesCovered;
+  // Plan Eligibilty strategy.
+  private transient IPlanEligibility planEligibility;
 
   /**
    * Constructor for an InsurancePlan.
@@ -41,6 +45,8 @@ public class InsurancePlan implements Serializable {
     this.defaultCopay = defaultCopay;
     this.monthlyPremium = monthlyPremium;
     this.servicesCovered = servicesCovered;
+    // Set the payer's eligibility criteria.
+    this.planEligibility = PlanEligibilityFinder.getPayerEligibilityAlgorithm(this.payer.getName());
   }
 
   /**
@@ -92,7 +98,7 @@ public class InsurancePlan implements Serializable {
    * @return  Whether this is a medicar provided plan.
    */
   public boolean isMedicarePlan() {
-    return this.payer.equals(PayerController.getGovernmentPayer(HealthInsuranceModule.MEDICARE));
+    return this.payer.equals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE));
   }
 
   /**
@@ -179,6 +185,29 @@ public class InsurancePlan implements Serializable {
     double yearlyPremiumTotal = this.monthlyPremium * 12;
     double yearlyDeductible = this.deductible;
     return yearlyPremiumTotal + yearlyDeductible;
+  }
+
+  /**
+   * Returns whether a plan will accept the given patient at this
+   * time using the plan eligibility criteria.
+   * @param person Person to consider
+   * @param time   Time the person seeks care
+   * @return whether or not the payer will accept this patient as a customer
+   */
+  public boolean accepts(Person person, long time) {
+    return this.planEligibility.isPersonEligible(person, time);
+  }
+
+  /**
+   * Returns whether this plan is based on the no insurance payer.
+   * @return
+   */
+  public boolean isNoInsurance() {
+    return this.payer.isNoInsurance();
+  }
+
+  public boolean isGovernmentPlan() {
+    return this.payer.isGovernmentPayer();
   }
 
 }

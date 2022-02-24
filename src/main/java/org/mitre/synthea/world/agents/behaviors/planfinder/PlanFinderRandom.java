@@ -27,7 +27,7 @@ public class PlanFinderRandom implements IPlanFinder {
 
     for (Payer payer : payers) {
       for (InsurancePlan plan : payer.getPlans()) {
-        if (IPlanFinder.meetsBasicRequirements(plan, person, service, time)) {
+        if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
           eligiblePlans.add(plan);
         }
       }
