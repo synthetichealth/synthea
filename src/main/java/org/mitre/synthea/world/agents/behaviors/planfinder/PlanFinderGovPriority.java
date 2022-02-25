@@ -19,7 +19,7 @@ public class PlanFinderGovPriority implements IPlanFinder {
     for (Payer payer : payers) {
       for (InsurancePlan plan : payer.getPlans()) {
         if (plan.isGovernmentPlan() && plan.accepts(person, time)) {
-          // Government plans does not consider affordability.
+          // Government plan selection does not consider affordability.
           eligiblePlans.add(plan);
         } else if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
           // Private plans require that a person meets basic afforrdabilty/occupation requirements.

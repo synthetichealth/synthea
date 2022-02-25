@@ -76,23 +76,14 @@ public class HealthInsuranceModule extends Module {
    * @return the insurance that this person gets
    */
   private void updateInsurance(Person person, long time) {
-    InsurancePlan newPlan = PayerManager.findGovernmentPlan(person, null, time);
-    InsurancePlan secondaryPlan = null;
-    // If a government plan was not found, find a private payer.
-    if (newPlan.isNoInsurance()) {
-      newPlan = PayerManager.findPrivatePlan(person, null, time);
-      secondaryPlan = PayerManager.getNoInsurancePlan();
-    } else {
-      // If the payer is Medicare, they may buy supplemental insurance.
-      if (newPlan.isMedicarePlan() && (person.rand() <= 0.8)) {
-        // Buy supplemental insurance if it is affordable
-        secondaryPlan = PayerManager.findPrivatePlan(person, null, time);
-      } else {
-        // This patient will not purchase secondary insurance.
-        secondaryPlan = PayerManager.getNoInsurancePlan();
-      }
+    InsurancePlan newPlan = PayerManager.findPlan(person, null, time);
+    InsurancePlan secondaryPlan = PayerManager.getNoInsurancePlan();
+    // If the payer is Medicare, they may buy supplemental insurance.
+    if (newPlan.isMedicarePlan() && (person.rand() <= 0.8)) {
+      // Buy supplemental insurance if it is affordable.
+      secondaryPlan = PayerManager.findPrivatePlan(person, null, time);
     }
-    // Sets the person's new plan(s).
+    // Set the person's new plan(s).
     person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
     // Update the new Payer's customer statistics.
     newPlan.incrementCustomers(person);

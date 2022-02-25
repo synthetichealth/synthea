@@ -289,21 +289,26 @@ public class PayerManager {
    * @param time    the time that the person requires insurance.
    * @return a payer who the person can accept and vice versa.
    */
-  public static InsurancePlan findPrivatePlan(Person person, EncounterType service, long time) {
+  public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
+    InsurancePlan potentialPlan = planFinder
+        .find(PayerManager.getAllPayers(), person, service, time);
+    if(potentialPlan.isGovernmentPlan()){
+      // Person will always choose a government plan.
+      return potentialPlan;
+    }
+    // If the person cannot get a government plan, they will try to keep their existing insurance.
     InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
     if (planAtTime != null && !planAtTime.isNoInsurance()
         && IPlanFinder.meetsAffordabilityRequirements(planAtTime, person, null, time)) {
       // People will keep their previous year's insurance if they can.
-      // TODO - what if they become medicare/medicaid elgible?
       return planAtTime;
     }
-    return planFinder
-        .find(PayerManager.getPrivatePayers(), person, service, time);
+    return potentialPlan;
   }
 
-  public static InsurancePlan findGovernmentPlan(Person person, EncounterType service, long time) {
+  public static InsurancePlan findPrivatePlan(Person person, EncounterType service, long time) {
     return PayerManager.planFinder
-        .find(PayerManager.getGovernmentPayers(), person, service, time);
+        .find(PayerManager.getPrivatePayers(), person, service, time);
   }
 
   /**

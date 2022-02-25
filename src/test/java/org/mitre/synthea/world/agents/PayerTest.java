@@ -2,7 +2,6 @@ package org.mitre.synthea.world.agents;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -95,25 +94,42 @@ public class PayerTest {
 
   @Test
   public void incrementCustomers() {
-    long time = 0L;
+    long time = Utilities.convertCalendarYearsToTime(1930);
     Person firstPerson = new Person(0L);
     firstPerson.attributes.put(Person.ID, UUID.randomUUID().toString());
+    firstPerson.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     firstPerson.attributes.put(Person.BIRTHDATE, time);
+    firstPerson.attributes.put(Person.GENDER, "F");
+    firstPerson.attributes.put(Person.INCOME, 100000);
     // Payer has firstPerson customer from the ages of 0 - 11.
-    setPayerForYears(firstPerson, 0, 11);
+    processInsuranceForAges(firstPerson, 0, 11);
 
     Person secondPerson = new Person(0L);
     secondPerson.attributes.put(Person.ID, UUID.randomUUID().toString());
+    secondPerson.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
     secondPerson.attributes.put(Person.BIRTHDATE, time);
-    // Payer has secondPerson customer from the ages of 10 - 23.
-    setPayerForYears(secondPerson, 10, 23);
-    // Gap of coverage. Person is with Payer again from ages 55 - 60.
-    setPayerForYears(secondPerson, 55, 60);
+    secondPerson.attributes.put(Person.GENDER, "F");
+    secondPerson.attributes.put(Person.INCOME, (int) medicaidLevel - 10);
+    // Person should have medicaid from the ages of 0 - 9.
+    processInsuranceForAges(secondPerson, 0, 9);
+    // Person should have private insurance from the ages of 10 - 23.
+    secondPerson.attributes.put(Person.INCOME, 100000);
+    processInsuranceForAges(secondPerson, 10, 23);
+    // Person should have medicaid from the ages of 24 - 54.
+    secondPerson.attributes.put(Person.INCOME, (int) medicaidLevel - 10);
+    processInsuranceForAges(secondPerson, 24, 54);
+    // Person should have private insurance from the ages of 55 - 60.
+    secondPerson.attributes.put(Person.INCOME, 100000);
+    processInsuranceForAges(secondPerson, 55, 60);
 
     // Ensure the first person was with the Payer for 12 years.
-    assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPerson));
+    assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPerson)
+        + testPrivatePayer2.getCustomerUtilization(firstPerson));
     // Ensure the second person was with the Payer for 20 years.
-    assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPerson));
+    assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPerson)
+        + testPrivatePayer2.getCustomerUtilization(secondPerson));
+    assertEquals(41, PayerManager.getGovernmentPayer(PayerManager.MEDICAID)
+        .getCustomerUtilization(secondPerson));
     // Ensure that there were 2 unique customers for the Payer.
     assertEquals(2, testPrivatePayer1.getUniqueCustomers());
   }
@@ -121,11 +137,17 @@ public class PayerTest {
   /**
    * Sets the person's payer for the given year range.
    */
-  private void setPayerForYears(Person person, int startAge, int endAge) {
-    for (int i = startAge; i <= endAge; i++) {
-      long time = Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next());
-      testPrivatePayer1.incrementCustomers(person);
+  private void processInsuranceForAges(Person person, int startAge, int endAge) {
+    HealthInsuranceModule him = new HealthInsuranceModule();
+    long birthDate = (long) person.attributes.get(Person.BIRTHDATE);
+    long currentTime = birthDate;
+    for (int currentAge = startAge; currentAge <= endAge; currentAge++) {
+      currentTime = birthDate + Utilities.convertTime("years", currentAge);
+      for (int week = 0; week < 52; week++) {
+        // Person checks to pay premiums every week.
+        long ctime = currentTime + Utilities.convertTime("weeks", week);
+        him.process(person, ctime);
+      }
     }
   }
 
@@ -156,9 +178,7 @@ public class PayerTest {
 
   @Test
   public void receiveMedicareAgeEligible() {
-    long birthTime = System.currentTimeMillis();
-    long age65Time = birthTime + Utilities.convertTime("years", 66) - sixMonths;
-    // Older than 65
+    long birthTime = Utilities.convertCalendarYearsToTime(1900);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
@@ -166,18 +186,21 @@ public class PayerTest {
     person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    // The person should have private insurance before the age of 65.
-    long age64Time = birthTime + Utilities.convertTime("years", 65) - sixMonths;
-    person.coverage.setPlanAtTime(age64Time,
-        testPrivatePayer1.getPlans().stream().iterator().next());
-    healthInsuranceModule.process(person, age64Time);
-    assertEquals(PayerManager.PRIVATE_OWNERSHIP,
-        person.coverage.getPlanAtTime(age64Time).getPayer().getOwnership());
-    // The person is now 65 and qualifies for Medicare.
-    healthInsuranceModule.process(person, age65Time);
-    assertEquals(PayerManager.MEDICARE,
-        person.coverage.getPlanAtTime(age65Time).getPayer().getName());
-    assertTrue(person.coverage.getPlanAtTime(age65Time).accepts(person, age65Time));
+    long threeMonths = Utilities.convertTime("months", 3);
+    // Process the person's health insurance for 64 years, should have private insurance for all.
+    for(int age = 0; age < 65; age++) {
+      long currentTime = birthTime + Utilities.convertTime("years", age) + threeMonths;
+      healthInsuranceModule.process(person, currentTime);
+      assertEquals(PayerManager.PRIVATE_OWNERSHIP,
+          person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
+    }
+    // Process the person's insurance for ages 65-69, should have medicare every year.
+    for(int age = 65; age < 70; age++) {
+      long currentTime = birthTime + Utilities.convertTime("years", age) + threeMonths;
+      healthInsuranceModule.process(person, currentTime);
+      assertTrue(person.coverage.getPlanAtTime(currentTime).isMedicarePlan());
+      assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
+    }
   }
 
   @Test
@@ -365,23 +388,23 @@ public class PayerTest {
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.attributes.put(Person.ID, UUID.randomUUID().toString());
+    person.attributes.put(Person.BIRTHDATE, Utilities.convertCalendarYearsToTime(1930));
     // Predetermine person's Payer.
-    setPayerForYears(person, 0, 65);
-    // Pay premium for 65 years.
-    long time = 0L;
-    for (int year = 0; year <= 64; year++) {
-      for (int month = 0; month < 24; month++) {
-        // Person checks to pay twice a month. Only needs to pay once a month.
-        time += (Utilities.convertTime("years", 1) / 24);
-        healthInsuranceModule.process(person, time);
-      }
-    }
-    int totalMonthlyPremiumsOwed
-        = (int) (testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * 65);
+    processInsuranceForAges(person, 0, 64);
+
+    int payer1MemberYears = testPrivatePayer1.getCustomerUtilization(person);
+    int payer2MemberYears = testPrivatePayer2.getCustomerUtilization(person);
+
+    double totalMonthlyPremiumsOwed
+        = testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * payer1MemberYears;
+    totalMonthlyPremiumsOwed
+        += testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium() * 12 * payer2MemberYears;
+    double totalRevenue
+        = testPrivatePayer1.getRevenue();
+    totalRevenue
+        += testPrivatePayer2.getRevenue();
     // The payer's revenue should equal the total monthly premiums.
-    assertEquals(totalMonthlyPremiumsOwed, testPrivatePayer1.getRevenue(), 0.001);
+    assertEquals(totalMonthlyPremiumsOwed, totalRevenue, 0.001);
     // The person's health care expenses should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, person.coverage.getTotalExpenses(), 0.001);
   }

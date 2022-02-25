@@ -509,7 +509,7 @@ public class Payer implements Serializable {
    */
   public String getAssociatedInsuranceStatus() {
     String insuranceStatus;
-    if (this == PayerManager.noInsurance) {
+    if (this.isNoInsurance()) {
       insuranceStatus = "none";
     } else if (this.isGovernmentPayer()) {
       insuranceStatus = "medicare"; // default to medicare when government payer
