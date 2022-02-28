@@ -46,6 +46,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.CMSStateCodeMapper;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
@@ -679,7 +680,11 @@ public class Generator implements RandomNumberGenerator {
         // Check to see if the seed has changed
         if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
           person.attributes.putAll(currentSeed.demographicAttributesForPerson());
-          Location newLocation = new Location(currentSeed.getState(), currentSeed.getCity());
+          String state = currentSeed.getState();
+          if (state.length() == 2) {
+            state = new CMSStateCodeMapper().changeStateFormat(state);
+          }
+          Location newLocation = new Location(state, currentSeed.getCity());
           newLocation.assignPoint(person, currentSeed.getCity());
 
         }
@@ -835,8 +840,12 @@ public class Generator implements RandomNumberGenerator {
    */
   public Map<String, Object> pickFixedDemographics(Entity entity, Random random) {
     Seed firstSeed = entity.getSeeds().get(0);
+    String state = firstSeed.getState();
+    if (state.length() == 2) {
+      state = new CMSStateCodeMapper().changeStateFormat(state);
+    }
     this.location = new Location(
-      firstSeed.getState(),
+      state,
       firstSeed.getCity());
 
     Demographics city = this.location.randomCity(random);

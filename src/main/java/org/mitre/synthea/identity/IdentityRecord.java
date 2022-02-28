@@ -23,4 +23,6 @@ public interface IdentityRecord {
   public String getZipCode();
 
   public long birthdateTimestamp();
+
+  public String getSocialSecurityNumber();
 }

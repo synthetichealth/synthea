@@ -20,6 +20,7 @@ public class Variant implements IdentityRecord {
   private String zipCode;
   private LocalDate dateOfBirth;
   private String gender;
+  private String socialSecurityNumber;
   private transient Seed seed;
 
   public Variant() {
@@ -195,6 +196,19 @@ public class Variant implements IdentityRecord {
     return this.getDateOfBirth().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
   }
 
+  @Override
+  public String getSocialSecurityNumber() {
+    if (socialSecurityNumber == null) {
+      return this.getSeed().getSocialSecurityNumber();
+    }
+
+    return socialSecurityNumber;
+  }
+
+  public void setSocialSecurityNumber(String socialSecurityNumber) {
+    this.socialSecurityNumber = socialSecurityNumber;
+  }
+
   /**
    * Returns the attributes the Synthea Generator usually fills in for a person. These can be used
    * to overwrite those attributes with information from the fixed record file
@@ -214,6 +228,9 @@ public class Variant implements IdentityRecord {
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.getZipCode());
     attributes.put(Person.IDENTIFIER_VARIANT_ID, this.getVariantId());
+    if (this.getSocialSecurityNumber() != null) {
+      attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
+    }
     return attributes;
   }
 }

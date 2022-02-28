@@ -21,6 +21,7 @@ public class Seed implements IdentityRecord {
   private String city;
   private String state;
   private String zipCode;
+  private String socialSecurityNumber;
   private transient Entity entity;
   private List<Variant> variants;
 
@@ -102,7 +103,7 @@ public class Seed implements IdentityRecord {
 
   @Override
   public String getPhone() {
-    return phone;
+    return "8675309";
   }
 
   @Override
@@ -126,6 +127,15 @@ public class Seed implements IdentityRecord {
   }
 
   @Override
+  public String getSocialSecurityNumber() {
+    return socialSecurityNumber;
+  }
+
+  public void setSocialSecurityNumber(String socialSecurityNumber) {
+    this.socialSecurityNumber = socialSecurityNumber;
+  }
+
+  @Override
   public long birthdateTimestamp() {
     return localDateToTimestamp(this.getDateOfBirth());
   }
@@ -145,13 +155,16 @@ public class Seed implements IdentityRecord {
     attributes.put(Person.FIRST_NAME, this.givenName);
     attributes.put(Person.LAST_NAME, this.familyName);
     attributes.put(Person.NAME, this.givenName + " " + this.familyName);
-    attributes.put(Person.TELECOM, this.phone);
+    attributes.put(Person.TELECOM, this.getPhone());
     attributes.put(Person.GENDER, this.getGender());
     attributes.put(Person.STATE, this.state);
     attributes.put(Person.CITY, this.city);
     attributes.put(Person.ADDRESS, this.addressLines.stream()
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.zipCode);
+    if (this.getSocialSecurityNumber() != null) {
+      attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
+    }
     return attributes;
   }
 }
