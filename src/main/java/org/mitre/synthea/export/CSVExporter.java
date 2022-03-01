@@ -330,14 +330,14 @@ public class CSVExporter {
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
         + "UTILIZATION");
     providers.write(NEWLINE);
-    payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
+    payers.write("Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
         + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
         + "UNCOVERED_MEDICATIONS,COVERED_PROCEDURES,UNCOVERED_PROCEDURES,"
         + "COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,"
         + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
     payers.write(NEWLINE);
-    payerTransitions.write("PATIENT,MEMBERID,START_YEAR,END_YEAR,PAYER,SECONDARY_PAYER,"
-        + "OWNERSHIP,OWNERNAME");
+    payerTransitions.write("PATIENT,MEMBERID,START_DATE,END_DATE,PAYER,SECONDARY_PAYER,"
+        + "PLAN_OWNERSHIP,OWNER_NAME");
     payerTransitions.write(NEWLINE);
     claims.write("Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,"
         + "DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,"
@@ -1219,7 +1219,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs.
    */
   private void payer(Payer payer) throws IOException {
-    // Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,AMOUNT_UNCOVERED,REVENUE,
+    // Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,AMOUNT_UNCOVERED,REVENUE,
     // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,UNCOVERED_MEDICATIONS,
     // COVERED_PROCEDURES,UNCOVERED_PROCEDURES,COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,
     // UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS
@@ -1229,6 +1229,8 @@ public class CSVExporter {
     s.append(payer.getResourceID()).append(',');
     // NAME
     s.append(payer.getName()).append(',');
+    // OWNERSHIP
+    s.append(payer.getOwnership()).append(',');
     // Second Class Attributes
     for (String attribute : new String[]
         { "address", "city", "state_headquartered", "zip", "phone" }) {
@@ -1250,7 +1252,7 @@ public class CSVExporter {
     s.append(payer.getProceduresUncoveredCount()).append(",");
     s.append(payer.getImmunizationsCoveredCount()).append(",");
     s.append(payer.getImmunizationsUncoveredCount()).append(",");
-    // UNIQUE CUSTOMERS
+    // UNIQUE_CUSTOMERS
     s.append(payer.getUniqueCustomers()).append(",");
     // QOLS_AVG
     s.append(payer.getQolsAverage()).append(",");
@@ -1291,7 +1293,7 @@ public class CSVExporter {
       s.append(planRecord.secondaryPlan.getPayer().getResourceID());
     }
     s.append(',');
-    // OWNERSHIP
+    // PLAN_OWNERSHIP
     if (planRecord.owner != null) {
       s.append(planRecord.owner);
     }
@@ -1369,7 +1371,7 @@ public class CSVExporter {
       s.append(claim.plan.getPayer().getResourceID()).append(',');
     }
     // SECONDARYPATIENTINSURANCEID (0 default if none)
-    if (encounter.claim.secondaryPlan.getPayer() == null
+    if (encounter.claim.secondaryPlan == null
         || encounter.claim.secondaryPlan.isNoInsurance()) {
       s.append("0,");
     } else {
@@ -1432,7 +1434,7 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("CLOSED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         s.append("CLOSED,");
       } else {
@@ -1443,7 +1445,7 @@ public class CSVExporter {
       // OUTSTANDING1
       s.append("0,");
       // OUTSTANDING2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         s.append("0,");
       } else {
@@ -1454,7 +1456,7 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.stop)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         s.append(iso8601Timestamp(encounter.stop)).append(',');
       } else {
@@ -1468,7 +1470,7 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("BILLED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         s.append("BILLED,");
       } else {
@@ -1479,7 +1481,7 @@ public class CSVExporter {
       // OUTSTANDING1 (TODO this should be the outstanding payer balance)
       s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
       // OUTSTANDING2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         // TODO this is not correct
         s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
@@ -1492,7 +1494,7 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPlan.getPayer() != null
+      if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         s.append(iso8601Timestamp(encounter.start)).append(',');
       } else {
@@ -1509,7 +1511,7 @@ public class CSVExporter {
       s.append("1,");
     }
     // HEALTHCARECLAIMTYPEID2
-    if (claim.secondaryPlan.getPayer() != null
+    if (claim.secondaryPlan != null
         && claim.secondaryPlan.isNoInsurance()) {
       if (institutional) {
         s.append('2');
