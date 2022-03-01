@@ -15,8 +15,12 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -535,5 +539,19 @@ public class Utilities {
         .filter(Files::isRegularFile)
         .filter(p -> p.toString().endsWith(".json"))
         .forEach(p -> action.accept(p));
+  }
+
+  public static Map cleanMap(Map input) {
+    List keysToRemove = new ArrayList();
+    Set keys = input.keySet();
+    keys.forEach(key -> {
+      if (input.get(key) == null) {
+        keysToRemove.add(key);
+      }
+    });
+    keysToRemove.forEach(key -> {
+      input.remove(key);
+    });
+    return input;
   }
 }

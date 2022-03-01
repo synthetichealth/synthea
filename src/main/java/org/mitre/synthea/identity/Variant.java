@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 public class Variant implements IdentityRecord {
@@ -231,6 +232,6 @@ public class Variant implements IdentityRecord {
     if (this.getSocialSecurityNumber() != null) {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
     }
-    return attributes;
+    return Utilities.cleanMap(attributes);
   }
 }

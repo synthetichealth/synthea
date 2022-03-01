@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.RandomNumberGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 public class Seed implements IdentityRecord {
@@ -103,7 +104,7 @@ public class Seed implements IdentityRecord {
 
   @Override
   public String getPhone() {
-    return "8675309";
+    return this.phone;
   }
 
   @Override
@@ -165,6 +166,6 @@ public class Seed implements IdentityRecord {
     if (this.getSocialSecurityNumber() != null) {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
     }
-    return attributes;
+    return Utilities.cleanMap(attributes);
   }
 }
