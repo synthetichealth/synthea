@@ -12,6 +12,7 @@ public class Entity {
   private LocalDate dateOfBirth;
   private String gender;
   private String individualId;
+  private String housingStatus;
 
   public Entity() {
     this.seeds = new ArrayList<>();
@@ -91,5 +92,13 @@ public class Entity {
 
   public void setIndividualId(String individualId) {
     this.individualId = individualId;
+  }
+
+  public String getHousingStatus() {
+    return housingStatus;
+  }
+
+  public void setHousingStatus(String housingStatus) {
+    this.housingStatus = housingStatus;
   }
 }

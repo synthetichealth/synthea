@@ -679,6 +679,12 @@ public class Generator implements RandomNumberGenerator {
         Seed currentSeed = entity.seedAt(time);
         // Check to see if the seed has changed
         if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
+          // If the person has moved out of the simulation area, as indicated by the city
+          // being "AWAY", end the simulation.
+          if (currentSeed.getCity().equals("AWAY")) {
+            break;
+          }
+
           person.attributes.putAll(currentSeed.demographicAttributesForPerson());
           String state = currentSeed.getState();
           if (state.length() == 2) {

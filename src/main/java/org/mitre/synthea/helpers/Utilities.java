@@ -541,6 +541,12 @@ public class Utilities {
         .forEach(p -> action.accept(p));
   }
 
+  /**
+   * Iterate through a Map and remove any entries where there is a key, but the value is null.
+   * This method modifies the input Map.
+   * @param input The Map to clean
+   * @return a null-free Map
+   */
   public static Map cleanMap(Map input) {
     List keysToRemove = new ArrayList();
     Set keys = input.keySet();

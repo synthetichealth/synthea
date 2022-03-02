@@ -78,7 +78,16 @@ public class Seed implements IdentityRecord {
     this.variants = variants;
   }
 
+  /**
+   * Randomly pick a Variant of this seed, using the source of randomness passed in.
+   * @param rng A source of randomness. Likely Person
+   * @return a random Variant. If no variants exist for this Seed, it is wrapped in Variant and
+   *     returned.
+   */
   public Variant selectVariant(RandomNumberGenerator rng) {
+    if (variants.size() == 0) {
+      return this.toVariant();
+    }
     return variants.get(rng.randInt(variants.size()));
   }
 
@@ -167,5 +176,17 @@ public class Seed implements IdentityRecord {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
     }
     return Utilities.cleanMap(attributes);
+  }
+
+  /**
+   * Wrap the Seed in a Variant. Essentially, create a Variant that just uses all of the information
+   * from the Seed.
+   * @return a Variant that is the same as the Seed
+   */
+  public Variant toVariant() {
+    Variant variant = new Variant();
+    variant.setSeed(this);
+    variant.setVariantId(this.seedId);
+    return variant;
   }
 }

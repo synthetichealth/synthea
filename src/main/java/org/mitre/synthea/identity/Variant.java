@@ -79,7 +79,7 @@ public class Variant implements IdentityRecord {
    */
   public String getPhone() {
     if (phone == null) {
-      return phone;
+      return seed.getPhone();
     }
     return phone;
   }
