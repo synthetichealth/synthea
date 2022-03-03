@@ -1,7 +1,7 @@
 {
   "name": "cardiac_labs",
   "remarks": [
-    "A blank module"
+    "Labs used in preoperative testing related to the cardiovascular system."
   ],
   "states": {
     "Initial": {
@@ -162,7 +162,34 @@
         "In the most severe patients, platelet counts should also trend towards being less than 150K per mm3",
         "In the most severe patients, median hemoglobin should be around 12.8 g/dL"
       ],
-      "direct_transition": "Record_CMP"
+      "conditional_transition": [
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Kidney_Damage",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 40095003,
+                    "display": "Injury of kidney (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Comprehensive_Metabolic_Panel_with_Normal_Kidney"
+        }
+      ]
     },
     "Magnesium": {
       "type": "Observation",
@@ -338,7 +365,7 @@
         "Higher than 900 pg/mL for patients age 50 and older"
       ]
     },
-    "Record_CMP": {
+    "Comprehensive_Metabolic_Panel_with_Kidney_Damage": {
       "type": "DiagnosticReport",
       "codes": [
         {
@@ -354,8 +381,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -366,8 +393,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -377,14 +404,14 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
           "range": {
             "low": 2.5,
-            "high": 3.5
+            "high": 3
           }
         },
         {
@@ -393,8 +420,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -405,8 +432,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -417,8 +444,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -429,8 +456,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -441,8 +468,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -458,8 +485,8 @@
             }
           ],
           "range": {
-            "low": 65,
-            "high": 90
+            "low": 5,
+            "high": 14
           }
         },
         {
@@ -473,8 +500,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 5.5,
+            "high": 8
           }
         },
         {
@@ -494,17 +521,213 @@
         },
         {
           "category": "laboratory",
-          "unit": "g/L",
+          "unit": "mg/dL",
           "codes": [
             {
               "system": "LOINC",
-              "code": "10834-0",
-              "display": "Globulin [Mass/volume] in Serum by calculation"
+              "code": "1975-2",
+              "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
             }
           ],
           "range": {
-            "low": 2,
-            "high": 3.5
+            "low": 6,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 39,
+            "high": 117
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 44
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "U/L",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 40
+          }
+        }
+      ],
+      "direct_transition": "Magnesium"
+    },
+    "Comprehensive_Metabolic_Panel_with_Normal_Kidney": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "vital_sign": "Creatinine"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "vital_sign": "EGFR"
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2885-2",
+              "display": "Protein [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.5,
+            "high": 8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "g/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 3.5,
+            "high": 5.5
           }
         },
         {
@@ -518,7 +741,7 @@
             }
           ],
           "range": {
-            "low": 0.1,
+            "low": 0.3,
             "high": 1.2
           }
         },
@@ -533,8 +756,8 @@
             }
           ],
           "range": {
-            "low": 20,
-            "high": 140
+            "low": 39,
+            "high": 117
           }
         },
         {
@@ -548,8 +771,8 @@
             }
           ],
           "range": {
-            "low": 20,
-            "high": 60
+            "low": 0,
+            "high": 44
           }
         },
         {
@@ -563,7 +786,7 @@
             }
           ],
           "range": {
-            "low": 6,
+            "low": 0,
             "high": 40
           }
         }
