@@ -473,7 +473,10 @@
               "display": "Oxygen [Partial pressure] in Arterial blood"
             }
           ],
-          "attribute": "covid19_pao2"
+          "range": {
+            "low": 40,
+            "high": 75
+          }
         },
         {
           "category": "laboratory",
