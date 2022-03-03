@@ -264,7 +264,8 @@
         }
       ],
       "direct_transition": "Protamine",
-      "administration": true
+      "administration": true,
+      "assign_to_attribute": "heparin"
     },
     "Protamine": {
       "type": "MedicationOrder",
