@@ -336,7 +336,7 @@
     },
     "Blood": {
       "type": "CallSubmodule",
-      "submodule": "heart/cabg/or_blood",
+      "submodule": "heart/or_blood",
       "direct_transition": "Insulin Check"
     }
   },
