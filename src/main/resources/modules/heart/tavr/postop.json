@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Check Alive"
+      "direct_transition": "Set_Mortality"
     },
     "Terminal": {
       "type": "Terminal"
@@ -28,7 +28,7 @@
           }
         },
         {
-          "transition": "ICU Need Check"
+          "transition": "Check for ICU"
         }
       ]
     },
@@ -117,7 +117,7 @@
           }
         },
         {
-          "transition": "Hospital Basic Labs"
+          "transition": "Set Outcomes for those who skipped ICU"
         }
       ]
     },
@@ -296,23 +296,6 @@
         "high": 30,
         "unit": "days"
       }
-    },
-    "ICU Need Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Assign Specialty Unit",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "tavr_icu_los",
-            "operator": "==",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Cardiac Surgery ICU"
-        }
-      ]
     },
     "Assign Specialty Unit": {
       "type": "Simple",
@@ -569,11 +552,7 @@
       },
       "unit": "minutes",
       "reason": "tavr_history",
-      "direct_transition": "VHD ICU Care Plan"
-    },
-    "tavr_icu_los set in outcomes": {
-      "type": "Simple",
-      "direct_transition": "Begin Day"
+      "direct_transition": "Set ICU Outcomes"
     },
     "VHD ICU Care Plan": {
       "type": "CarePlanStart",
@@ -584,7 +563,7 @@
           "display": "Surgical inpatient care plan (record artifact)"
         }
       ],
-      "direct_transition": "tavr_icu_los set in outcomes",
+      "direct_transition": "Begin Day",
       "reason": "tavr_history",
       "activities": [
         {
@@ -709,6 +688,242 @@
       "attribute": "postop_snf",
       "direct_transition": "Post Discharge Outcomes",
       "value": false
+    },
+    "Set_Mortality": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.002326
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.997674
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9999
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9999
+            }
+          ]
+        }
+      ]
+    },
+    "Mortality": {
+      "type": "SetAttribute",
+      "attribute": "tavr_mortality",
+      "value": true,
+      "direct_transition": "Check Alive"
+    },
+    "Short Stay": {
+      "type": "SetAttribute",
+      "attribute": "tavr_icu_los",
+      "direct_transition": "Cardiac Surgery ICU",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 1
+        }
+      }
+    },
+    "Medium Stay": {
+      "type": "SetAttribute",
+      "attribute": "tavr_icu_los",
+      "direct_transition": "Cardiac Surgery ICU",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 2
+        }
+      }
+    },
+    "Long Stay": {
+      "type": "SetAttribute",
+      "attribute": "tavr_icu_los",
+      "direct_transition": "Cardiac Surgery ICU",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 7,
+          "low": 3
+        }
+      }
+    },
+    "Check for ICU": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Set ICU LOS",
+          "distribution": 0.818
+        },
+        {
+          "transition": "Assign Specialty Unit",
+          "distribution": 0.182
+        }
+      ]
+    },
+    "Set ICU LOS": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.616279
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.251163
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.13255799999999995
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.08
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.08666700000000005
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.833333
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.998
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Short Stay",
+              "distribution": 0.561404
+            },
+            {
+              "transition": "Medium Stay",
+              "distribution": 0.333333
+            },
+            {
+              "transition": "Long Stay",
+              "distribution": 0.105263
+            }
+          ]
+        }
+      ]
+    },
+    "Set ICU Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "heart/tavr/outcomes",
+      "direct_transition": "VHD ICU Care Plan"
+    },
+    "Set Outcomes for those who skipped ICU": {
+      "type": "CallSubmodule",
+      "submodule": "heart/tavr/outcomes",
+      "direct_transition": "Hospital Basic Labs"
     }
   },
   "gmf_version": 2
