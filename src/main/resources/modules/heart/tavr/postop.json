@@ -13,7 +13,7 @@
     },
     "Discharge": {
       "type": "EncounterEnd",
-      "direct_transition": "Structural Unit"
+      "direct_transition": "ICU to Ward"
     },
     "Check Alive": {
       "type": "Simple",
@@ -110,21 +110,10 @@
         {
           "transition": "Just came from ICU",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "PriorState",
-                "name": "Cardiac Surgery ICU"
-              },
-              {
-                "condition_type": "PriorState",
-                "name": "Discharge to Ward",
-                "within": {
-                  "quantity": 1,
-                  "unit": "days"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "postop_icu_to_ward",
+            "operator": "==",
+            "value": true
           }
         },
         {
@@ -134,7 +123,7 @@
     },
     "Discharge to Home": {
       "type": "EncounterEnd",
-      "direct_transition": "Post Discharge Outcomes",
+      "direct_transition": "No_SNF",
       "discharge_disposition": {
         "system": "NUBC",
         "code": "01",
@@ -143,7 +132,7 @@
     },
     "Discharge to Facility": {
       "type": "EncounterEnd",
-      "direct_transition": "Post Discharge Outcomes",
+      "direct_transition": "SNF",
       "discharge_disposition": {
         "system": "NUBC",
         "code": "04",
@@ -383,8 +372,10 @@
       "direct_transition": "PostOp Care Plan"
     },
     "Just came from ICU": {
-      "type": "Simple",
-      "direct_transition": "Antithrombic"
+      "type": "SetAttribute",
+      "attribute": "postop_icu_to_ward",
+      "direct_transition": "Antithrombic",
+      "value": false
     },
     "Antithrombic": {
       "type": "CallSubmodule",
@@ -542,8 +533,10 @@
         {
           "transition": "Call SNF Submodule",
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Discharge to Facility"
+            "condition_type": "Attribute",
+            "attribute": "postop_snf",
+            "operator": "==",
+            "value": true
           }
         },
         {
@@ -698,6 +691,24 @@
       "type": "CallSubmodule",
       "submodule": "heart/avrr/antithrombotic",
       "direct_transition": "End ICU Care Plan"
+    },
+    "ICU to Ward": {
+      "type": "SetAttribute",
+      "attribute": "postop_icu_to_ward",
+      "direct_transition": "Structural Unit",
+      "value": true
+    },
+    "SNF": {
+      "type": "SetAttribute",
+      "attribute": "postop_snf",
+      "direct_transition": "Post Discharge Outcomes",
+      "value": true
+    },
+    "No_SNF": {
+      "type": "SetAttribute",
+      "attribute": "postop_snf",
+      "direct_transition": "Post Discharge Outcomes",
+      "value": false
     }
   },
   "gmf_version": 2
