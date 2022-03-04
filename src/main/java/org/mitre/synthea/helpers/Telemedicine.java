@@ -1,9 +1,9 @@
 package org.mitre.synthea.helpers;
 
-import org.mitre.synthea.world.agents.Person;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * A place for helpers related to telemedicine.
@@ -13,10 +13,11 @@ public class Telemedicine {
   /**
    * Odds of an encounter being virtual, a.k.a. telemedicine are taken from the McKinsey report:
    * https://www.mckinsey.com/industries/healthcare-systems-and-services/our-insights/telehealth-a-quarter-trillion-dollar-post-covid-19-reality
-   *
+   * <p>
    * The report claims that since April 2020, telemedicine accounted for 13 - 17% of visits. 15%
    * was used here for simplicity. It also claims that the current levels of telemedicine are 38
    * times the prepandemic baseline. That would make the prepandemic baseline 0.4%
+   * </p>
    */
   public static final double CURRENT_CHANCE = 0.15;
   public static final double PREPANDEMIC_CHANCE = 0.004;

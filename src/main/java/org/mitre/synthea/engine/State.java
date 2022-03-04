@@ -855,7 +855,7 @@ public abstract class State implements Cloneable, Serializable {
               type = EncounterType.fromString(encounterClass);
               break;
             case POSSIBLE:
-              if(Telemedicine.shouldEncounterBeVirtual(person, time)) {
+              if (Telemedicine.shouldEncounterBeVirtual(person, time)) {
                 type = EncounterType.VIRTUAL;
               } else {
                 type = EncounterType.fromString(encounterClass);
@@ -864,6 +864,9 @@ public abstract class State implements Cloneable, Serializable {
             case ALWAYS:
               type = EncounterType.VIRTUAL;
               break;
+            default:
+              // should never get here... but checkstyle wants this.
+              type = EncounterType.fromString(encounterClass);
           }
         } else {
           type = EncounterType.fromString(encounterClass);
