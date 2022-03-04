@@ -66,7 +66,7 @@
           "transition": "Begin Day",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "cabg_icu_los",
+            "attribute": "tavr_icu_los",
             "operator": ">",
             "value": 0
           }
