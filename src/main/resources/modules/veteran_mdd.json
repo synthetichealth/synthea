@@ -362,6 +362,7 @@
     "Initial_Psychiatric_MDD_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -509,6 +510,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "mdd_psych",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -691,6 +693,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "mdd",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -713,6 +716,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "mdd_psych",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

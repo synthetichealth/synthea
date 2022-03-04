@@ -423,6 +423,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Type of Alzheimer's",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

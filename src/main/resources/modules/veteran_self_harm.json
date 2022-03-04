@@ -524,7 +524,7 @@
     },
     "VA Hotline Encounter": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "virtual",
       "codes": [
         {
           "system": "SNOMED-CT",
