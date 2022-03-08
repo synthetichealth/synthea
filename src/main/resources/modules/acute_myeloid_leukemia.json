@@ -132,7 +132,7 @@
     "Absolute_Neutrophil_Count_ANC": {
       "type": "Observation",
       "category": "laboratory",
-      "unit": "mm3",
+      "unit": "10*3/uL",
       "codes": [
         {
           "system": "LOINC",
@@ -306,7 +306,7 @@
     "Normal_Body_Temp": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "degrees Fahrenheit",
+      "unit": "[deg F]",
       "codes": [
         {
           "system": "LOINC",
@@ -323,7 +323,7 @@
     "Fever": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "degrees Fahrenheit",
+      "unit": "[deg F]",
       "codes": [
         {
           "system": "LOINC",
