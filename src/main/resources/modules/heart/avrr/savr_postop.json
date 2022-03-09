@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Check Alive"
+      "direct_transition": "Set_Mortality"
     },
     "Terminal": {
       "type": "Terminal"
@@ -28,7 +28,7 @@
           }
         },
         {
-          "transition": "SAVR Postop"
+          "transition": "Set_ICU_LOS"
         }
       ]
     },
@@ -282,23 +282,6 @@
         "high": 30,
         "unit": "days"
       }
-    },
-    "SAVR Postop": {
-      "type": "Encounter",
-      "encounter_class": "inpatient",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 305351004,
-          "display": "Admission to intensive care unit (procedure)"
-        }
-      ],
-      "reason": "savr_history",
-      "direct_transition": "savr_icu_los set in outcomes"
-    },
-    "savr_icu_los set in outcomes": {
-      "type": "Simple",
-      "direct_transition": "Ventilation Check"
     },
     "ICU_Care_Plan": {
       "type": "CarePlanStart",
@@ -634,6 +617,273 @@
       "attribute": "postop_snf",
       "direct_transition": "Post Discharge Outcomes",
       "value": false
+    },
+    "Set_Mortality": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Replace Mortality",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          }
+        },
+        {
+          "transition": "Repair Mortality",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savrepair"
+          }
+        }
+      ]
+    },
+    "Mortality": {
+      "type": "SetAttribute",
+      "attribute": "savr_mortality",
+      "value": true,
+      "direct_transition": "Check Alive"
+    },
+    "Replace Mortality": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.006173
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.993827
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.025
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.975
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        }
+      ]
+    },
+    "Repair Mortality": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Mortality",
+          "distribution": 0.001
+        },
+        {
+          "transition": "Check Alive",
+          "distribution": 0.9990000000000001
+        }
+      ]
+    },
+    "SAVR_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305351004,
+          "display": "Admission to intensive care unit (procedure)"
+        }
+      ],
+      "reason": "savr_history",
+      "direct_transition": "Set_ICU_Outcomes"
+    },
+    "Set_ICU_Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "heart/savr/outcomes",
+      "direct_transition": "Ventilation Check"
+    },
+    "Short_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savr_icu_los",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "SAVR_Postop"
+    },
+    "Medium_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savr_icu_los",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 2
+        }
+      },
+      "direct_transition": "SAVR_Postop"
+    },
+    "Long_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savr_icu_los",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 7,
+          "low": 3
+        }
+      },
+      "direct_transition": "SAVR_Postop"
+    },
+    "Set_ICU_LOS": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.438272
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.308642
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.2530859999999999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.666666
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.666666
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
     }
   },
   "gmf_version": 2
