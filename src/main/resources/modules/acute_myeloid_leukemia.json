@@ -306,7 +306,7 @@
     "Normal_Body_Temp": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "[deg F]",
+      "unit": "[degF]",
       "codes": [
         {
           "system": "LOINC",
@@ -323,7 +323,7 @@
     "Fever": {
       "type": "Observation",
       "category": "vital-signs",
-      "unit": "[deg F]",
+      "unit": "[degF]",
       "codes": [
         {
           "system": "LOINC",
