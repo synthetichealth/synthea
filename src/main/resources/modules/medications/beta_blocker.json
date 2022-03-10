@@ -170,17 +170,17 @@
                 {
                     "transition": "Prescribe_Atenolol_100_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Atenolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atenolol_50_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Atenolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atenolol_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Atenolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
                 }
             ]
         },
@@ -201,12 +201,12 @@
                 {
                     "transition": "Prescribe_Bisoprolol_Fumarate_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Bisoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_bisoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Bisoprolol_Fumarate_5_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Bisoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_bisoprolol_product_distribution.csv"
                 }
             ]
         },
@@ -228,17 +228,17 @@
                 {
                     "transition": "Prescribe_Bisoprolol_Fumarate_10_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Bisoprolol_Hydrochlorothiazide_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Bisoprolol_Fumarate_2_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Bisoprolol_Hydrochlorothiazide_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Bisoprolol_Fumarate_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Bisoprolol_Hydrochlorothiazide_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
                 }
             ]
         },
@@ -267,52 +267,52 @@
                 {
                     "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_10_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_3_125_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet_Coreg",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule_Coreg",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet_Coreg",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Carvedilol_25_Mg_Oral_Tablet_Coreg",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Carvedilol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
                 }
             ]
         },
@@ -334,17 +334,17 @@
                 {
                     "transition": "Prescribe_Labetalol_Hydrochloride_100_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Labetalol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Labetalol_Hydrochloride_200_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Labetalol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Labetalol_Hydrochloride_300_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Labetalol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
                 }
             ]
         },
@@ -375,62 +375,62 @@
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_100_Mg_Extended_Release_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Metoprolol_Tartrate_100_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Metoprolol_Tartrate_25_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_200_Mg_Extended_Release_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet_Toprol",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet_Toprol",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet_Lopressor",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Cartridge",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Injection",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Metoprolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
                 }
             ]
         },
@@ -453,22 +453,22 @@
                 {
                     "transition": "Prescribe_Nebivolol_10_Mg_Oral_Tablet_Bystolic",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Nebivolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nebivolol_20_Mg_Oral_Tablet_Bystolic",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Nebivolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nebivolol_2_5_Mg_Oral_Tablet_Bystolic",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Nebivolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nebivolol_5_Mg_Oral_Tablet_Bystolic",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Nebivolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
                 }
             ]
         },
@@ -496,47 +496,47 @@
                 {
                     "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_120_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "1",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_60_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_80_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Propranolol_Hydrochloride_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_160_Mg_Extended_Release_Oral_Capsule",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Propranolol_Hydrochloride_10_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Propranolol_Hydrochloride_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Propranolol_Hydrochloride_80_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Propranolol_Hydrochloride_60_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "beta_blocker_Propranolol_product_distribution.csv"
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
                 }
             ]
         },
