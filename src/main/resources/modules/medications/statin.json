@@ -167,32 +167,32 @@
                 {
                     "transition": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atorvastatin_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atorvastatin_80_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet_Lipitor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet_Lipitor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Atorvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
                 }
             ]
         },
@@ -215,22 +215,22 @@
                 {
                     "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_20_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Ezetimibe_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Ezetimibe_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_80_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Ezetimibe_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet_Vytorin",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Ezetimibe_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
                 }
             ]
         },
@@ -252,17 +252,17 @@
                 {
                     "transition": "Prescribe_Lovastatin_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Lovastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lovastatin_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Lovastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lovastatin_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Lovastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
                 }
             ]
         },
@@ -284,17 +284,17 @@
                 {
                     "transition": "Prescribe_Pitavastatin_Calcium_1_Mg_Oral_Tablet_Livalo",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Pitavastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pitavastatin_Calcium_2_Mg_Oral_Tablet_Livalo",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pitavastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pitavastatin_Calcium_4_Mg_Oral_Tablet_Livalo",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pitavastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
                 }
             ]
         },
@@ -318,27 +318,27 @@
                 {
                     "transition": "Prescribe_Pravastatin_Sodium_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Pravastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pravastatin_Sodium_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pravastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pravastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pravastatin_Sodium_80_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pravastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet_Pravachol",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Pravastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
                 }
             ]
         },
@@ -365,42 +365,42 @@
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet_Crestor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet_Crestor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet_Crestor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet_Crestor",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Rosuvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
                 }
             ]
         },
@@ -424,27 +424,27 @@
                 {
                     "transition": "Prescribe_Simvastatin_10_Mg_Oral_Tablet",
                     "default_probability": "1",
-                    "lookup_table_name": "statin_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Simvastatin_40_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Simvastatin_20_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Simvastatin_80_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Simvastatin_5_Mg_Oral_Tablet",
                     "default_probability": "0",
-                    "lookup_table_name": "statin_Simvastatin_product_distribution.csv"
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
                 }
             ]
         },
