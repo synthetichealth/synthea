@@ -60,11 +60,11 @@
           "distributions": [
             {
               "transition": "Acute renal failure on dialysis",
-              "distribution": 0.001
+              "distribution": 0.025
             },
             {
               "transition": "Check_Acute respiratory insufficiency",
-              "distribution": 0.999
+              "distribution": 0.975
             }
           ]
         },
@@ -137,11 +137,11 @@
           "distributions": [
             {
               "transition": "Acute respiratory insufficiency",
-              "distribution": 0.001
+              "distribution": 0.175
             },
             {
               "transition": "Terminal",
-              "distribution": 0.9990000000000001
+              "distribution": 0.825
             }
           ]
         },
@@ -261,11 +261,11 @@
           "distributions": [
             {
               "transition": "RBC Transfusion",
-              "distribution": 0.001
+              "distribution": 0.999
             },
             {
               "transition": "Check applicability",
-              "distribution": 0.9990000000000001
+              "distribution": 0.001
             }
           ]
         },
@@ -439,11 +439,11 @@
           "distributions": [
             {
               "transition": "Postop Pacemaker",
-              "distribution": 0.0001
+              "distribution": 0.16670000000000007
             },
             {
               "transition": "Check postop bleeding",
-              "distribution": 0.9999
+              "distribution": 0.8332999999999999
             }
           ]
         },
@@ -546,11 +546,11 @@
           "distributions": [
             {
               "transition": "Bleeding",
-              "distribution": 0.001
+              "distribution": 0.01
             },
             {
               "transition": "Check postop myocardial infarction",
-              "distribution": 0.9990000000000001
+              "distribution": 0.99
             }
           ]
         },
@@ -722,11 +722,11 @@
           "distributions": [
             {
               "transition": "Stroke",
-              "distribution": 0.001
+              "distribution": 0.05
             },
             {
               "transition": "Check postop renal failure",
-              "distribution": 0.999
+              "distribution": 0.9500000000000001
             }
           ]
         },
@@ -810,11 +810,11 @@
           "distributions": [
             {
               "transition": "Postoperative_renal_failure",
-              "distribution": 0.001
+              "distribution": 0.025
             },
             {
               "transition": "Check_Acute renal failure on dialysis",
-              "distribution": 0.9990000000000001
+              "distribution": 0.9750000000000001
             }
           ]
         },

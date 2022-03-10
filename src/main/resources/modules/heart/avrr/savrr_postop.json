@@ -535,11 +535,11 @@
           "distributions": [
             {
               "transition": "Discharge to Home",
-              "distribution": 0.931
+              "distribution": 0.833
             },
             {
               "transition": "Discharge to Facility",
-              "distribution": 0.069
+              "distribution": 0.16700000000000004
             }
           ],
           "condition": {
@@ -714,11 +714,11 @@
           "distributions": [
             {
               "transition": "Mortality",
-              "distribution": 0.001
+              "distribution": 0.01442
             },
             {
               "transition": "Check Alive",
-              "distribution": 0.9990000000000001
+              "distribution": 0.98558
             }
           ]
         }
