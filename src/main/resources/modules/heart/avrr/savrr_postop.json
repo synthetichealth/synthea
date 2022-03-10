@@ -1,5 +1,5 @@
 {
-  "name": "savr_postop",
+  "name": "savrr_postop",
   "remarks": [
     "This submodule of Cardiac Surgery models Postoperative ICU and Ward Care."
   ],
@@ -22,7 +22,7 @@
           "transition": "Deceased",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "savr_mortality",
+            "attribute": "savrr_mortality",
             "operator": "==",
             "value": true
           }
@@ -38,14 +38,14 @@
     },
     "Begin Day": {
       "type": "Counter",
-      "attribute": "savr_icu_los",
+      "attribute": "savrr_icu_los",
       "action": "decrement",
       "conditional_transition": [
         {
           "transition": "ICU_ECG",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "savr_ico_los",
+            "attribute": "savrr_ico_los",
             "operator": "<=",
             "value": 1
           }
@@ -66,7 +66,7 @@
           "transition": "Begin Day",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "savr_icu_los",
+            "attribute": "savrr_icu_los",
             "operator": ">",
             "value": 0
           }
@@ -145,7 +145,7 @@
         }
       ],
       "direct_transition": "Discharge",
-      "reason": "savr_history"
+      "reason": "savrr_history"
     },
     "Admission to Ward": {
       "type": "Encounter",
@@ -158,7 +158,7 @@
         }
       ],
       "direct_transition": "Antithrombic",
-      "reason": "savr_history"
+      "reason": "savrr_history"
     },
     "Discharge to Home": {
       "type": "EncounterEnd",
@@ -245,7 +245,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "reason": "savr_history",
+      "reason": "savrr_history",
       "conditional_transition": [
         {
           "transition": "SAVReplace Dispo",
@@ -292,7 +292,7 @@
           "display": "Surgical inpatient care plan (record artifact)"
         }
       ],
-      "reason": "savr_history",
+      "reason": "savrr_history",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -349,7 +349,7 @@
         }
       },
       "unit": "minutes",
-      "reason": "savr_history",
+      "reason": "savrr_history",
       "direct_transition": "Chest_X_Ray_2"
     },
     "Chest_X_Ray_2": {
@@ -433,7 +433,7 @@
         }
       ],
       "direct_transition": "Discharge from Hospital",
-      "reason": "savr_history",
+      "reason": "savrr_history",
       "activities": [
         {
           "system": "SNOMED-CT",
@@ -643,7 +643,7 @@
     },
     "Mortality": {
       "type": "SetAttribute",
-      "attribute": "savr_mortality",
+      "attribute": "savrr_mortality",
       "value": true,
       "direct_transition": "Check Alive"
     },
@@ -737,7 +737,7 @@
         }
       ]
     },
-    "SAVR_Postop": {
+    "SAVRr_Postop": {
       "type": "Encounter",
       "encounter_class": "inpatient",
       "codes": [
@@ -747,7 +747,7 @@
           "display": "Admission to intensive care unit (procedure)"
         }
       ],
-      "reason": "savr_history",
+      "reason": "savrr_history",
       "direct_transition": "Set_ICU_Outcomes"
     },
     "Set_ICU_Outcomes": {
@@ -757,7 +757,7 @@
     },
     "Short_Stay": {
       "type": "SetAttribute",
-      "attribute": "savr_icu_los",
+      "attribute": "savrr_icu_los",
       "distribution": {
         "kind": "EXACT",
         "round": false,
@@ -765,11 +765,11 @@
           "value": 1
         }
       },
-      "direct_transition": "SAVR_Postop"
+      "direct_transition": "SAVRr_Postop"
     },
     "Medium_Stay": {
       "type": "SetAttribute",
-      "attribute": "savr_icu_los",
+      "attribute": "savrr_icu_los",
       "distribution": {
         "kind": "EXACT",
         "round": false,
@@ -777,11 +777,11 @@
           "value": 2
         }
       },
-      "direct_transition": "SAVR_Postop"
+      "direct_transition": "SAVRr_Postop"
     },
     "Long_Stay": {
       "type": "SetAttribute",
-      "attribute": "savr_icu_los",
+      "attribute": "savrr_icu_los",
       "distribution": {
         "kind": "UNIFORM",
         "round": false,
@@ -790,7 +790,7 @@
           "low": 3
         }
       },
-      "direct_transition": "SAVR_Postop"
+      "direct_transition": "SAVRr_Postop"
     },
     "Set_ICU_LOS": {
       "type": "Simple",

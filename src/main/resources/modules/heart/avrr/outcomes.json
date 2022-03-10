@@ -188,7 +188,7 @@
       },
       "unit": "minutes",
       "direct_transition": "Check postop pacemaker",
-      "reason": "savr_history"
+      "reason": "savrr_history"
     },
     "Acute renal failure on dialysis": {
       "type": "ConditionOnset",
@@ -311,7 +311,7 @@
       },
       "unit": "minutes",
       "direct_transition": "Check applicability",
-      "reason": "savr_history"
+      "reason": "savrr_history"
     },
     "Check Reop procedure": {
       "type": "Simple",
@@ -485,7 +485,7 @@
       },
       "unit": "minutes",
       "direct_transition": "The Pacemaker",
-      "reason": "savr_history"
+      "reason": "savrr_history"
     },
     "The Pacemaker": {
       "type": "Device",
@@ -892,12 +892,12 @@
                 "conditions": [
                   {
                     "condition_type": "Attribute",
-                    "attribute": "savr_mortality",
+                    "attribute": "savrr_mortality",
                     "operator": "is nil"
                   },
                   {
                     "condition_type": "Attribute",
-                    "attribute": "savr_mortality",
+                    "attribute": "savrr_mortality",
                     "operator": "==",
                     "value": false
                   }
@@ -905,7 +905,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "savr_icu_los",
+                "attribute": "savrr_icu_los",
                 "operator": "is nil"
               }
             ]
