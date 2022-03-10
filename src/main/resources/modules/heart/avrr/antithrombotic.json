@@ -26,20 +26,9 @@
                 "operator": "is not nil"
               },
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "cardiac_surgery",
-                    "operator": "is not nil"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "cardiac_surgery",
-                    "operator": "!=",
-                    "value": false
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "cardiac_surgery",
+                "operator": "is not nil"
               }
             ]
           }

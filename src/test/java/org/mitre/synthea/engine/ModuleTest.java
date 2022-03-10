@@ -72,6 +72,13 @@ public class ModuleTest {
   }
 
   @Test
+  public void allModulesMustBeNamed() {
+    for (Module module : Module.getModules()) {
+      assertTrue(module.name != null);
+    }
+  }
+
+  @Test
   public void getModulesInPredictableOrder() {
     List<Module> modulesA = Module.getModules();
     List<Module> modulesB = Module.getModules();

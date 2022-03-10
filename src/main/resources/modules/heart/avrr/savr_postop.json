@@ -752,7 +752,7 @@
     },
     "Set_ICU_Outcomes": {
       "type": "CallSubmodule",
-      "submodule": "heart/savr/outcomes",
+      "submodule": "heart/avrr/outcomes",
       "direct_transition": "Ventilation Check"
     },
     "Short_Stay": {

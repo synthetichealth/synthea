@@ -253,6 +253,9 @@ public abstract class State implements Cloneable, Serializable {
       // e.g. "submodule": "medications/otc_antihistamine"
       List<State> moduleHistory = person.history;
       Module submod = Module.getModuleByPath(submodule);
+      if (submod == null) {
+        throw new RuntimeException("Unknown submodule: " + submodule);
+      }
       HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
       if (encounter != null) {
         person.setCurrentEncounter(submod, encounter);

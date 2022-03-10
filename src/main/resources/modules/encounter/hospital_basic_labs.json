@@ -967,36 +967,14 @@
             "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "warfarin",
-                    "operator": "is not nil"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "warfarin",
-                    "operator": "!=",
-                    "value": false
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "warfarin",
+                "operator": "is not nil"
               },
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "heparin",
-                    "operator": "is not nil"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "heparin",
-                    "operator": "!=",
-                    "value": false
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "heparin",
+                "operator": "is not nil"
               }
             ]
           }
@@ -1025,20 +1003,9 @@
                 ]
               },
               {
-                "condition_type": "And",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "cardiac_surgery_reason",
-                    "operator": "is not nil"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "cardiac_surgery_reason",
-                    "operator": "!=",
-                    "value": false
-                  }
-                ]
+                "condition_type": "Attribute",
+                "attribute": "cardiac_surgery_reason",
+                "operator": "is not nil"
               }
             ]
           }
