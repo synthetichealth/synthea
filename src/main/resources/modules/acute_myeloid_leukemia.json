@@ -261,10 +261,6 @@
     },
     "Death": {
       "type": "Death",
-      "exact": {
-        "quantity": 1,
-        "unit": "days"
-      },
       "direct_transition": "End_Encounter2",
       "remarks": [
         ""
@@ -289,7 +285,7 @@
     "Absolute_Neutrophil_Count_ANC2": {
       "type": "Observation",
       "category": "laboratory",
-      "unit": "mm3",
+      "unit": "10*3/uL",
       "codes": [
         {
           "system": "LOINC",
