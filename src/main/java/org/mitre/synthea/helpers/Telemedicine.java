@@ -22,6 +22,8 @@ public class Telemedicine {
   public static final double CURRENT_CHANCE = 0.15;
   public static final double PREPANDEMIC_CHANCE = 0.004;
 
+  public static final long TELEMEDICINE_START_DATE = LocalDateTime.of(2016, 1, 1, 12, 0)
+      .toInstant(ZoneOffset.UTC).toEpochMilli();
   public static final long TELEMEDICINE_UPTAKE_DATE = LocalDateTime.of(2020, 4, 1, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
 
@@ -33,6 +35,9 @@ public class Telemedicine {
    * @return true if the encounter should be virtual
    */
   public static boolean shouldEncounterBeVirtual(Person person, long time) {
+    if (time < TELEMEDICINE_START_DATE) {
+      return false;
+    }
     if (time < TELEMEDICINE_UPTAKE_DATE) {
       return person.rand() <= PREPANDEMIC_CHANCE;
     } else {
