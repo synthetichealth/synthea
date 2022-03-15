@@ -842,7 +842,7 @@ public class FhirR4 {
    * @param bundle the bundle to look in for the patient home resource
    * @return the URL of the patient home resource
    */
-  private static String addPatientHomeLocation(Bundle bundle) {
+  public static String addPatientHomeLocation(Bundle bundle) {
     String locationURL = null;
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Location")) {
