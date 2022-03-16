@@ -86,15 +86,8 @@
       "direct_transition": "Anesthesia"
     },
     "Anesthesia": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 410011004,
-          "display": "Administration of anesthesia AND/OR sedation (procedure)"
-        }
-      ],
-      "unit": "minutes",
+      "type": "CallSubmodule",
+      "submodule": "PerformAnesthesia",
       "direct_transition": "Incision",
       "remarks": [
         "This is intentionally NOT the anesthesia submodule"

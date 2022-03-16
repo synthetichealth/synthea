@@ -16,7 +16,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Antiemetic"
+      "direct_transition": "Anesthesia Submodule"
     },
     "Terminal": {
       "type": "Terminal"
@@ -46,11 +46,6 @@
           "display": "Intubation"
         }
       ],
-      "duration": {
-        "low": 5,
-        "high": 10,
-        "unit": "minutes"
-      },
       "direct_transition": "Volatile_Anesthetic"
     },
     "Midazolam": {
@@ -343,6 +338,11 @@
       "type": "MedicationEnd",
       "direct_transition": "Terminal",
       "medication_order": "Sufentanil"
+    },
+    "Anesthesia Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "PerformAnesthesia",
+      "direct_transition": "Antiemetic"
     }
   },
   "gmf_version": 1
