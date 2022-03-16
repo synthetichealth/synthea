@@ -221,7 +221,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": 26212005,
           "display": "Replacement of aortic valve (procedure)"
         }
       ],
