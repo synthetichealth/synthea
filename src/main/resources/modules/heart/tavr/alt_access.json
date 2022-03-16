@@ -144,7 +144,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": "1234",
+        "code": 74964007,
         "display": "Other (qualifier value)"
       },
       "remarks": [

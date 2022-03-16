@@ -69,7 +69,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": 183976008,
           "display": "Operative procedure planned (situation)"
         }
       ],
