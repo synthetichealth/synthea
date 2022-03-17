@@ -2,6 +2,7 @@ package org.mitre.synthea.world.agents;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +18,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.StandardMedicaidEligibility;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -279,6 +281,29 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
     assertEquals("Medicaid", person.coverage.getPlanAtTime(0L).getPayer().getName());
+  }
+
+  @Test
+  public void receiveMedicaidMnilEligble() {
+    StandardMedicaidEligibility.buildMedicaidEligibility(testState);
+    long time = Utilities.convertCalendarYearsToTime(1980);
+    // Recieve Medciare after having too high of an income, but later qualifying for MNIL.
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.1);
+
+    // The minimum income that does not qualify for MA Medicaid at age 0 is 12880 * 2.0 + 1 = 25761
+    person.attributes.put(Person.INCOME, (int) 25761);
+    healthInsuranceModule.process(person, time);
+    // They should have not have Medicaid in this first year.
+    assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
+    // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
+    person.coverage.getPlanRecordAtTime(time).incrementExpenses(19699);
+    // Now process their insurance and they should switch to Medicaid.
+    time += Utilities.convertTime("years", 1.05);
+    healthInsuranceModule.process(person, time);
+    assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
 
   @Test

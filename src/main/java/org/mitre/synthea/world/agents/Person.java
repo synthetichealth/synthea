@@ -806,4 +806,20 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
+
+  /**
+   * Returns the amount of income the person has remaining at the given time.
+   * @param time
+   * @return
+   */
+  public int incomeRemaining(long time) {
+    int income = (int) this.attributes.get(Person.INCOME);
+    if(this.age(time).getYears() < 1){
+      // Too young to have incurred expenses yet.
+      return income;
+    }
+    long oneMonth = Utilities.convertTime("months", 1); // Subtracting a month to check the person's most recent plan record.
+    double outOfPocketExpenses = this.coverage.getPlanRecordAtTime(time - oneMonth).getHealthcareExpenses();
+    return (int) (income - outOfPocketExpenses);
+  }
 }
