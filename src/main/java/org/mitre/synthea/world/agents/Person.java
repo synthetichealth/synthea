@@ -725,9 +725,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param plan the plan to check.
    */
   public boolean canAffordPlan(InsurancePlan plan) {
+    double incomePercentage = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     int income = (Integer) this.attributes.get(Person.INCOME);
     double yearlyCost = plan.getYearlyCost();
-    return income > yearlyCost;
+    return (income * incomePercentage) > yearlyCost;
   }
 
   /**
