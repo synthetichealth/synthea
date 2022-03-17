@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
@@ -116,14 +117,31 @@ public class PayerManager {
         // Put the payer in their correct List/Map based on Government/Private.
         if (parsedPayer.isGovernmentPayer()) {
           // Government payers go in a map, allowing for easy retrieval of specific
-          // government
-          // payers.
+          // government payers.
           PayerManager.governmentPayers.put(parsedPayer.getName(), parsedPayer);
         } else {
           // Private payers go in a list.
           PayerManager.privatePayers.add(parsedPayer);
         }
       }
+    }
+
+    PayerManager.loadPlans();
+  }
+
+  private static void loadPlans() {
+    String fileName = Config.get("generate.payers.insurance_plans.default_file");
+    Iterator<? extends Map<String, String>> csv = null;
+    try {
+      String resource = Utilities.readResource(fileName);
+      csv = SimpleCSV.parseLineByLine(resource);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    while (csv.hasNext()) {
+      Map<String, String> row = csv.next();
+      csvLineToPlan(row);
     }
   }
 
@@ -178,16 +196,10 @@ public class PayerManager {
    */
   private static Payer csvLineToPayer(Map<String, String> line) {
 
-    // Uses .remove() instead of .get() so we can iterate over the remaining keys
-    // later.
+    // Uses .remove() instead of .get() so we can iterate over remaining keys later.
     String payerName = line.remove("name");
     String payerId = line.remove("id");
     Set<String> statesCovered = commaSeparatedStringToHashSet(line.remove("states_covered"));
-    Set<String> servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
-    double deductible = Double.parseDouble(line.remove("deductible"));
-    double defaultCoinsurance = Double.parseDouble(line.remove("default_coinsurance"));
-    double defaultCopay = Double.parseDouble(line.remove("default_copay"));
-    double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     String ownership = line.remove("ownership");
     if (ownership.equalsIgnoreCase(GOV_OWNERSHIP)
         || ownership.equalsIgnoreCase(PRIVATE_OWNERSHIP)) {
@@ -199,9 +211,6 @@ public class PayerManager {
     }
 
     Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
-    // Temporary single plan per payer.
-    newPayer.createPlan(servicesCovered, deductible,
-        defaultCoinsurance, defaultCopay, monthlyPremium);
 
     // Add remaining columns we didn't map to first-class fields to payer's
     // attributes map.
@@ -210,6 +219,29 @@ public class PayerManager {
     }
 
     return newPayer;
+  }
+
+  private static void csvLineToPlan(Map<String, String> line) {
+    // Uses .remove() instead of .get() so we can iterate over remaining keys later.
+    String payerId = line.remove("payer_id");
+    String planId = line.remove("plan_id");
+    String planName = line.remove("name");
+    Set<String> servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
+    double deductible = Double.parseDouble(line.remove("deductible"));
+    double defaultCoinsurance = Double.parseDouble(line.remove("default_coinsurance"));
+    double defaultCopay = Double.parseDouble(line.remove("default_copay"));
+    double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
+    boolean medicareSupplement = Boolean.parseBoolean(line.remove("medicare_supplement"));
+    Payer payer = PayerManager.getPayerById(payerId);
+    payer.createPlan(servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium, medicareSupplement);
+  }
+
+  private static Payer getPayerById(String payerId) {
+    List<Payer> payerList = getAllPayers().stream().filter(payer -> payer.getPlanLinkId().equals(payerId)).collect(Collectors.toList());
+    if(!payerList.isEmpty()){
+      return payerList.get(0);
+    }
+    return null;
   }
 
   /**
@@ -232,7 +264,7 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0);
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
@@ -290,8 +322,11 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
+    Set<InsurancePlan> plans = extractPlans(getAllPayers());
+    // Remove medicare supplement plans from this check.
+    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
     InsurancePlan potentialPlan = planFinder
-        .find(PayerManager.getAllPayers(), person, service, time);
+        .find(plans, person, service, time);
     if(potentialPlan.isGovernmentPlan()){
       // Person will always choose a government plan.
       return potentialPlan;
@@ -306,9 +341,9 @@ public class PayerManager {
     return potentialPlan;
   }
 
-  public static InsurancePlan findPrivatePlan(Person person, EncounterType service, long time) {
-    return PayerManager.planFinder
-        .find(PayerManager.getPrivatePayers(), person, service, time);
+  public static Set<InsurancePlan> extractPlans(List<Payer> payers) {
+    Set<InsurancePlan> plans = payers.stream().map(payer -> payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
+    return plans;
   }
 
   /**
@@ -317,5 +352,21 @@ public class PayerManager {
    */
   public static InsurancePlan getNoInsurancePlan() {
     return noInsurance.getPlans().iterator().next();
+  }
+
+  /**
+   * Finds an eligible medicare supplement plan for the given person.
+   * @param person
+   * @param service
+   * @param time
+   * @return
+   */
+  public static InsurancePlan findMedicareSupplement(Person person, EncounterType service, long time) {
+    Set<InsurancePlan> plans = extractPlans(getAllPayers());
+    // Remove non-medicare supplement plans from this check.
+    plans = plans.stream().filter(plan -> plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
+    InsurancePlan potentialPlan = planFinder
+        .find(plans, person, service, time);
+    return potentialPlan;
   }
 }

@@ -1,9 +1,8 @@
 package org.mitre.synthea.world.agents.behaviors.planfinder;
 
-import java.util.List;
+import java.util.Set;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -24,7 +23,7 @@ public class PlanFinderBestRates implements IPlanFinder {
    * @return Service provider or null if none is available.
    */
   @Override
-  public InsurancePlan find(List<Payer> payers, Person person, EncounterType service, long time) {
+  public InsurancePlan find(Set<InsurancePlan> plans, Person person, EncounterType service, long time) {
     int numberOfExpectedEncounters = 0;
     if (person.hasMultipleRecords) {
       for (HealthRecord record : person.records.values()) {
@@ -40,18 +39,16 @@ public class PlanFinderBestRates implements IPlanFinder {
     InsurancePlan bestRatePlan = PayerManager.getNoInsurancePlan();
     double bestExpectedRate = Double.MAX_VALUE;
 
-    for (Payer payer : payers) {
-      for (InsurancePlan plan : payer.getPlans()) {
-        if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
-          // First, calculate the annual premium.
-          double expectedRate = (plan.getMonthlyPremium() * 12.0);
-          // Second, calculate expected copays based on last years visits.
-          expectedRate += (plan.determineCopay(dummy) * numberOfExpectedEncounters);
-          // TODO consider deductibles, coinsurance, covered services, etc.
-          if (expectedRate < bestExpectedRate) {
-            bestExpectedRate = expectedRate;
-            bestRatePlan = plan;
-          }
+    for (InsurancePlan plan : plans) {
+      if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
+        // First, calculate the annual premium.
+        double expectedRate = (plan.getMonthlyPremium() * 12.0);
+        // Second, calculate expected copays based on last years visits.
+        expectedRate += (plan.determineCopay(dummy) * numberOfExpectedEncounters);
+        // TODO consider deductibles, coinsurance, covered services, etc.
+        if (expectedRate < bestExpectedRate) {
+          bestExpectedRate = expectedRate;
+          bestRatePlan = plan;
         }
       }
     }

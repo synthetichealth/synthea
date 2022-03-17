@@ -2,8 +2,8 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -22,14 +22,12 @@ public class PlanFinderRandom implements IPlanFinder {
    * @return Service provider or null if none is available.
    */
   @Override
-  public InsurancePlan find(List<Payer> payers, Person person, EncounterType service, long time) {
+  public InsurancePlan find(Set<InsurancePlan> plans, Person person, EncounterType service, long time) {
     List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
 
-    for (Payer payer : payers) {
-      for (InsurancePlan plan : payer.getPlans()) {
-        if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
-          eligiblePlans.add(plan);
-        }
+    for (InsurancePlan plan : plans) {
+      if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
+        eligiblePlans.add(plan);
       }
     }
     // Choose a random payer from the list of options.
