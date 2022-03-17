@@ -143,6 +143,10 @@ public class CSVExporter {
    * Writer for claims_transactions.csv
    */
   private OutputStreamWriter claimsTransactions;
+  /**
+   * Writer for patient_expenses.csv
+   */
+  private OutputStreamWriter patientExpenses;
 
   /**
    * Charset for specifying the character set of the output files.
@@ -252,6 +256,10 @@ public class CSVExporter {
       claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
           includedFiles, excludedFiles);
 
+      if(Config.getAsBoolean("exporter.csv.patient_expenses")){
+        patientExpenses = getWriter(outputDirectory, "patient_expenses.csv", append, includedFiles, excludedFiles);
+      }
+
       if (!append) {
         writeCSVHeaders();
       }
@@ -291,7 +299,7 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME,OCCUPATION");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
         + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
@@ -352,6 +360,10 @@ public class CSVExporter {
         + "TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,"
         + "PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID");
     claimsTransactions.write(NEWLINE);
+    if(Config.getAsBoolean("exporter.csv.patient_expenses")){
+      patientExpenses.write("PATIENT_ID,YEAR,PAYER_ID,HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS");
+      patientExpenses.write(NEWLINE);
+    }
   }
 
   /**
@@ -435,6 +447,21 @@ public class CSVExporter {
   }
 
   /**
+   * Export the payerTransitions.csv file. This method should be called once after all the
+   * Patient records have been exported using the export(Person,long) method.
+   *
+   * @throws IOException if any IO errors occur.
+   */
+  private void exportPatientExpenses(Person person, long stopTime) throws IOException {
+    for (PlanRecord planRecord : person.coverage.getPlanHistory()) {
+      if (planRecord.start <= stopTime) {
+        patientExpense(person, planRecord);
+      }
+    }
+    patientExpenses.flush();
+  }
+
+  /**
    * Add a single Person's health record info to the CSV records.
    *
    * @param person Person to write record data for
@@ -449,7 +476,9 @@ public class CSVExporter {
       String encounterID = encounter(person, personID, encounter);
       String payerID = encounter.claim.plan.getPayer().uuid;
 
-      claim(person, encounter.claim, encounter, encounterID, time);
+      if (Config.getAsBoolean("exporter.csv.claim_transactions")) {
+        claim(person, encounter.claim, encounter, encounterID, time);
+      }
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         /* condition to ignore codes other then retrieved from terminology url */
@@ -479,7 +508,9 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        claim(person, medication.claim, encounter, encounterID, time);
+        if(Config.getAsBoolean("exporter.csv.claim_transactions")){
+          claim(person, medication.claim, encounter, encounterID, time);
+        }
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -503,7 +534,10 @@ public class CSVExporter {
       }
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
-
+    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
+      CSVExporter.getInstance().exportPatientExpenses(person, time);
+    }
+    
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     Calendar cutOff = new GregorianCalendar(1900, 0, 1);
     if (yearsOfHistory > 0) {
@@ -552,6 +586,9 @@ public class CSVExporter {
     supplies.flush();
     claims.flush();
     claimsTransactions.flush();
+    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
+      patientExpenses.flush();
+    }
   }
 
   /**
@@ -565,7 +602,7 @@ public class CSVExporter {
   private String patient(Person person, long time) throws IOException {
     // Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,
     // FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
-    // CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE
+    // CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME
     String personID = (String) person.attributes.get(Person.ID);
 
     // check if we've already exported this patient demographic data yet,
@@ -611,7 +648,11 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.coverage.getTotalExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.coverage.getTotalCoverage());
+    s.append(person.coverage.getTotalCoverage()).append(',');
+    // INCOME
+    s.append(person.attributes.get(Person.INCOME)).append(',');
+    // OCCUPATION
+    s.append(person.attributes.get(Person.OCCUPATION_LEVEL));
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS
@@ -1288,7 +1329,7 @@ public class CSVExporter {
     // PAYER_ID
     s.append(planRecord.plan.getPayer().getResourceID()).append(',');
     // SECONDARY_PAYER_ID
-    if (planRecord.secondaryPlan.getPayer() != null && planRecord.secondaryPlan.getPayer()
+    if (planRecord.secondaryPlan.getPayer() != null && !planRecord.secondaryPlan.getPayer()
         .isNoInsurance()) {
       s.append(planRecord.secondaryPlan.getPayer().getResourceID());
     }
@@ -1304,6 +1345,30 @@ public class CSVExporter {
     }
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
+  }
+
+  private void patientExpense(Person person, PlanRecord planRecord) throws IOException {
+    // PATIENT_ID,YEAR,PAYER_ID,HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS
+
+    StringBuilder s = new StringBuilder();
+    // PATIENT_ID
+    s.append(person.attributes.get(Person.ID)).append(",");
+    // YEAR
+    s.append(iso8601Timestamp(planRecord.start)).append(',');
+    // PAYER_ID
+    s.append(planRecord.plan.getPayer().getResourceID()).append(',');
+    // HEALTHCARE_EXPENSES
+    double healthcareExpenses = planRecord.getHealthcareExpenses();
+    s.append(healthcareExpenses).append(',');
+    // INSURANCE_COSTS
+    double insuranceCosts = planRecord.getInsuranceCosts();
+    s.append(insuranceCosts).append(',');
+    // COVERED_COSTS
+    double coveredExpenses = planRecord.getCoveredExpenses();
+    s.append(coveredExpenses);
+
+    s.append(NEWLINE);
+    write(s.toString(), patientExpenses);
   }
 
   /**
@@ -1599,7 +1664,7 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    double payerAmount = (claimEntry.paidByPayer + claimEntry.coinsurance);
+    double payerAmount = (claimEntry.paidByPayer + claimEntry.coinsurancePaidByPayer);
     if (payerAmount > 0) {
       // PAYMENT FROM INSURANCE
       remainder -= payerAmount;
@@ -1615,7 +1680,7 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    double secondaryPayerAmount = claimEntry.secondaryPayer;
+    double secondaryPayerAmount = claimEntry.paidBySecondaryPayer;
     if (secondaryPayerAmount > 0) {
       // TRANSFEROUT
       t = new ClaimTransaction(encounter, encounterId,
