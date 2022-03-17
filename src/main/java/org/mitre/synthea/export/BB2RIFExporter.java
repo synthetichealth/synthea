@@ -1036,7 +1036,7 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost)));
           fieldValues.put(OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
           fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
@@ -1471,11 +1471,11 @@ public class BB2RIFExporter {
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.coinsurance));
+                  String.format("%.2f", lineItem.coinsurancePaidByPayer));
           fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.paidByPatient));
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
           fieldValues.put(CARRIER.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
@@ -2162,15 +2162,15 @@ public class BB2RIFExporter {
       fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
           String.format("%.2f", subTotals.deductible));
       fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
+          String.format("%.2f", subTotals.coinsurancePaidByPayer + subTotals.paidByPayer));
       fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
           String.format("%.2f", subTotals.cost - subTotals.adjustment));
       fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
           String.format("%.2f", subTotals.cost));
       fieldValues.put(DME.NCH_CLM_PRVDR_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
+          String.format("%.2f", subTotals.coinsurancePaidByPayer + subTotals.paidByPayer));
       fieldValues.put(DME.CLM_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurance + subTotals.paidByPayer));
+          String.format("%.2f", subTotals.coinsurancePaidByPayer + subTotals.paidByPayer));
 
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
@@ -2211,7 +2211,7 @@ public class BB2RIFExporter {
           fieldValues.put(DME.LINE_BENE_PMT_AMT,
               String.format("%.2f", lineItem.copay + lineItem.deductible + lineItem.paidByPatient));
           fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
           fieldValues.put(DME.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(DME.LINE_ALOWD_CHRG_AMT,
@@ -2219,7 +2219,7 @@ public class BB2RIFExporter {
           fieldValues.put(DME.LINE_PRMRY_ALOWD_CHRG_AMT,
               String.format("%.2f", lineItem.cost - lineItem.adjustment));
           fieldValues.put(DME.LINE_NCH_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
 
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
@@ -2380,7 +2380,7 @@ public class BB2RIFExporter {
           fieldValues.put(HHA.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
           fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
           fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
@@ -2577,7 +2577,7 @@ public class BB2RIFExporter {
           fieldValues.put(HOSPICE.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost / Integer.max(1, days))));
           fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance + lineItem.paidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer + lineItem.paidByPayer));
           fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,

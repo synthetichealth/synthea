@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -27,9 +26,10 @@ public class CoverageRecord implements Serializable {
     public InsurancePlan secondaryPlan;
     public String owner;
     public String ownerName;
-    private Double totalExpenses;
-    private Double totalCoverage;
-    public Double remainingDeductible;
+    private double healthcareExpenses;
+    private double coveredExpenses;
+    private double insuranceCosts;
+    public double remainingDeductible;
 
     /**
      * Create a new Plan with the given Payer.
@@ -40,8 +40,9 @@ public class CoverageRecord implements Serializable {
       this.start = time;
       this.stop = time + Utilities.convertTime("years", 1);
       this.plan = plan;
-      this.totalExpenses = 0.0;
-      this.totalCoverage = 0.0;
+      this.healthcareExpenses = 0.0;
+      this.coveredExpenses = 0.0;
+      this.insuranceCosts = 0.0;
       this.remainingDeductible = plan.getDeductible();
     }
 
@@ -52,7 +53,7 @@ public class CoverageRecord implements Serializable {
     public double payMonthlyPremiums() {
       double premiumPrice = (this.plan.payMonthlyPremium())
           + (this.secondaryPlan.payMonthlyPremium());
-      this.totalExpenses += premiumPrice;
+      this.insuranceCosts += premiumPrice;
       return premiumPrice;
     }
 
@@ -70,11 +71,23 @@ public class CoverageRecord implements Serializable {
     }
 
     public void incrementExpenses(double expenses) {
-      this.totalExpenses += expenses;
+      this.healthcareExpenses += expenses;
     }
 
     public void incrementCoverage(double coverage) {
-      this.totalCoverage += coverage;
+      this.coveredExpenses += coverage;
+    }
+
+    public double getHealthcareExpenses() {
+      return this.healthcareExpenses;
+    }
+
+    public double getCoveredExpenses() {
+      return this.coveredExpenses;
+    }
+
+    public double getInsuranceCosts() {
+      return this.insuranceCosts;
     }
   }
 
@@ -215,7 +228,7 @@ public class CoverageRecord implements Serializable {
   public double getTotalExpenses() {
     double total = 0;
     for (PlanRecord plan : planHistory) {
-      total += plan.totalExpenses;
+      total += plan.healthcareExpenses;
     }
     return total;
   }
@@ -226,7 +239,7 @@ public class CoverageRecord implements Serializable {
   public double getTotalCoverage() {
     double total = 0;
     for (PlanRecord plan : planHistory) {
-      total += plan.totalCoverage;
+      total += plan.coveredExpenses;
     }
     return total;
   }
@@ -309,7 +322,7 @@ public class CoverageRecord implements Serializable {
     CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
     double currentYearlyExpenses;
     if (planRecord != null) {
-      currentYearlyExpenses = planRecord.totalExpenses;
+      currentYearlyExpenses = planRecord.healthcareExpenses;
     } else {
       currentYearlyExpenses = 0.0;
     }
