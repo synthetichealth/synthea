@@ -1,0 +1,8 @@
+,payer_id,plan_id,name,services_covered,deductible,default_coinsurance,default_copay,monthly_premium,medicare_supplement,notes
+0,10000,10001,Standard Medicare Plan,*,233,0.8,0,170.10,false,https://www.medicare.gov/your-medicare-costs/medicare-costs-at-a-glance
+1,20000,20001,Standard Medicaid Plan,*,100,0,50,10,false,
+2,30000,30001,Standard Dual Eligible Plan,*,0,0,35,10,false,
+3,40000,40001,Standard Private Plan 1,*,1644,0,30,574.67,false,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+3,40000,40002,Standard Private Plan 2,*,1644,0,30,574.67,false,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+3,40000,40003,Standard Private Plan 3,*,1644,0,30,574.67,false,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+3,40000,40004,Supplemental Medicare Plan,*,0,0,0,150.00,true,https://www.retireguide.com/medicare/supplement-insurance/costs/#:~:text=The%20average%20cost%20of%20a-A%20and%20Part%20B)%20coverage.

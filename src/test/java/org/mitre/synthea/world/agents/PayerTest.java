@@ -72,6 +72,10 @@ public class PayerTest {
     // Load in the .csv list of Payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    Config.set("generate.payers.insurance_plans.ssd_rejection",
+        "1.0");
     // Force medicare for test settings
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
@@ -216,6 +220,21 @@ public class PayerTest {
     healthInsuranceModule.process(person, 0L);
     assertEquals(PayerManager.MEDICARE,
         person.coverage.getPlanAtTime(0L).getPayer().getName());
+  }
+
+  @Test
+  public void receiveMedicareSsdBreastCancerEligible() {
+    long time = Utilities.convertCalendarYearsToTime(1980);
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.GENDER, "F");
+    person.record.conditionStart(time, "254837009");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    // Above Medicaid Income Level.
+    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    healthInsuranceModule.process(person, time + sixMonths);
+    assertEquals(PayerManager.MEDICARE,
+        person.coverage.getPlanAtTime(time + 1).getPayer().getName());
   }
 
   @Test
@@ -435,7 +454,7 @@ public class PayerTest {
     assertEquals(plan.getDeductible(), fakeEncounter.claim.totals.deductible, 0.001);
     // check that totals match
     assertEquals(totalCost, fakeEncounter.claim.totals.cost, 0.001);
-    double result = fakeEncounter.claim.totals.coinsurance
+    double result = fakeEncounter.claim.totals.coinsurancePaidByPayer
         + fakeEncounter.claim.totals.copay
         + fakeEncounter.claim.totals.deductible
         + fakeEncounter.claim.totals.paidByPayer
@@ -543,9 +562,9 @@ public class PayerTest {
     assertTrue(testPrivatePayer1Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter
-    double coverage = encounter.claim.totals.coinsurance + encounter.claim.totals.paidByPayer;
+    double coverage = encounter.claim.totals.coinsurancePaidByPayer + encounter.claim.totals.paidByPayer;
     assertEquals(person.coverage.getTotalCoverage(), coverage, 0.001);
-    double result = encounter.claim.totals.coinsurance
+    double result = encounter.claim.totals.coinsurancePaidByPayer
         + encounter.claim.totals.copay
         + encounter.claim.totals.deductible
         + encounter.claim.totals.paidByPayer

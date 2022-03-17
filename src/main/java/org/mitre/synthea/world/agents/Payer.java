@@ -54,6 +54,8 @@ public class Payer implements Serializable {
   // row: year, column: type, value: count.
   private transient Table<Integer, String, AtomicInteger> entryUtilization;
 
+  private final String planLinkId;
+
   /**
    * Simple bean used to add Java Serialization support to
    * com.google.common.collect.Table&lt;Integer, String, AtomicInteger&gt; which doesn't natively
@@ -116,6 +118,7 @@ public class Payer implements Serializable {
       throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
     this.name = name;
+    this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
     this.plans = new HashSet<InsurancePlan>();
@@ -138,9 +141,9 @@ public class Payer implements Serializable {
    * @param monthlyPremium  The monthly premium.
    */
   public void createPlan(Set<String> servicesCovered, double deductible,
-      double defaultCoinsurance, double defaultCopay, double monthlyPremium) {
+      double defaultCoinsurance, double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
     InsurancePlan newPlan = new InsurancePlan(
-        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium);
+        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium, medicareSupplement);
     this.plans.add(newPlan);
   }
 
@@ -558,6 +561,10 @@ public class Payer implements Serializable {
    */
   public boolean isNoInsurance() {
     return this.name.equals(PayerManager.NO_INSURANCE);
+  }
+
+  public String getPlanLinkId() {
+    return this.planLinkId;
   }
 
 }

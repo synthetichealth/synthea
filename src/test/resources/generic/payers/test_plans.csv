@@ -1,0 +1,6 @@
+,payer_id,plan_id,name,services_covered,deductible,default_coinsurance,default_copay,monthly_premium,medicare_supplement,notes
+0,10000,10001,Medicare Plan,*,0,0.7,60,200,false,
+1,20000,20001,Medicaid Plan,*,0,0.8,40,300,false,
+2,30000,30001,Dual Eligible Plan,*,0,0.9,100,500,false,
+3,40000,40001,Test Private Plan 1,*,0,0.1,10,10,false,
+4,50000,50001,Test Private Plan 2,wellness,0,0.2,20,200,false,

@@ -1,13 +1,11 @@
 package org.mitre.synthea.world.agents.behaviors;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +16,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 public class PlanFinderTest {
@@ -46,7 +45,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    List<Payer> options = new ArrayList<Payer>();
+    Set<InsurancePlan> options = new HashSet<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertTrue(payer.isNoInsurance());
@@ -58,7 +57,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    Payer payer = finder.find(PayerManager.getPrivatePayers(), person, null, 0L).getPayer();
+    Payer payer = finder.find(PayerManager.extractPlans(PayerManager.getPrivatePayers()), person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());
   }
@@ -69,7 +68,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    List<Payer> options = new ArrayList<Payer>();
+    Set<InsurancePlan> options = new HashSet<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertTrue(payer.isNoInsurance());
@@ -81,7 +80,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Payer payer = finder.find(PayerManager.getPrivatePayers(), person, null, 0L).getPayer();
+    Payer payer = finder.find(PayerManager.extractPlans(PayerManager.getPrivatePayers()), person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());
   }
