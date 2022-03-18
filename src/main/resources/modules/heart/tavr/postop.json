@@ -357,7 +357,7 @@
     "Just came from ICU": {
       "type": "SetAttribute",
       "attribute": "postop_icu_to_ward",
-      "direct_transition": "Antithrombic",
+      "direct_transition": "Hospital Basic Labs",
       "value": false
     },
     "Antithrombic": {
@@ -674,7 +674,7 @@
     "ICU to Ward": {
       "type": "SetAttribute",
       "attribute": "postop_icu_to_ward",
-      "direct_transition": "Structural Unit",
+      "direct_transition": "Admission to Ward Encounter",
       "value": true
     },
     "SNF": {
@@ -923,7 +923,20 @@
     "Set Outcomes for those who skipped ICU": {
       "type": "CallSubmodule",
       "submodule": "heart/tavr/outcomes",
-      "direct_transition": "Hospital Basic Labs"
+      "direct_transition": "Antithrombic"
+    },
+    "Admission to Ward Encounter": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "tavr_history",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305342007,
+          "display": "Admission to ward (procedure"
+        }
+      ],
+      "direct_transition": "Admission to Ward"
     }
   },
   "gmf_version": 2

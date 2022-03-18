@@ -1,7 +1,7 @@
 {
   "name": "outcomes",
   "remarks": [
-    "SAVR outcomes based on operative status."
+    "SAVRr outcomes based on operative status."
   ],
   "states": {
     "Initial": {

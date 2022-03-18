@@ -334,9 +334,24 @@
             "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Attribute",
-                "attribute": "ckd",
-                "operator": "is not nil"
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ckd",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": 275408006,
+                        "display": "Postoperative renal failure (disorder)"
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "condition_type": "Active Condition",
@@ -769,8 +784,8 @@
           ],
           "unit": "mg/dL",
           "range": {
-            "low": 2.5,
-            "high": 3
+            "low": 1.5,
+            "high": 5
           }
         },
         {

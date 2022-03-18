@@ -67,23 +67,6 @@
         }
       ]
     },
-    "Redo TAVR Encounter": {
-      "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "transition": "Long Wait for Encounter",
-          "distribution": 0.1
-        },
-        {
-          "transition": "Medium Wait for Encounter",
-          "distribution": 0.6
-        },
-        {
-          "transition": "Short Wait for Encounter",
-          "distribution": 0.3
-        }
-      ]
-    },
     "Annual Check": {
       "type": "Delay",
       "exact": {
@@ -390,7 +373,7 @@
               "distribution": 0.01
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.99
             }
           ]
@@ -409,7 +392,7 @@
               "distribution": 0.06
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.94
             }
           ]
@@ -428,7 +411,7 @@
               "distribution": 0.5
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.5
             }
           ]
@@ -447,7 +430,7 @@
               "distribution": 0.625
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.375
             }
           ]
@@ -459,7 +442,7 @@
               "distribution": 0.75
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.25
             }
           ]
@@ -483,7 +466,7 @@
               "distribution": 0.005
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.995
             }
           ]
@@ -502,7 +485,7 @@
               "distribution": 0.03
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.97
             }
           ]
@@ -521,7 +504,7 @@
               "distribution": 0.25
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.75
             }
           ]
@@ -540,7 +523,7 @@
               "distribution": 0.5
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.5
             }
           ]
@@ -559,7 +542,7 @@
               "distribution": 0.625
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.375
             }
           ]
@@ -571,7 +554,7 @@
               "distribution": 0.75
             },
             {
-              "transition": "Redo TAVR Encounter",
+              "transition": "Redo Echo Encounter",
               "distribution": 0.25
             }
           ]
@@ -613,6 +596,23 @@
         "unit": "months"
       },
       "direct_transition": "Echo Encounter"
+    },
+    "Redo Echo Encounter": {
+      "type": "EncounterEnd",
+      "distributed_transition": [
+        {
+          "transition": "Long Wait for Encounter",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Medium Wait for Encounter",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Short Wait for Encounter",
+          "distribution": 0.3
+        }
+      ]
     }
   },
   "gmf_version": 2
