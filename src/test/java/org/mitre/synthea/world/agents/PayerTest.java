@@ -18,7 +18,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
-import org.mitre.synthea.world.agents.behaviors.planeligibility.StandardMedicaidEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -37,6 +37,7 @@ public class PayerTest {
   private static HealthInsuranceModule healthInsuranceModule;
   private Person person;
   private static double medicaidLevel;
+  private static double povertyLevel;
   private static long mandateTime;
   private static String medicareName;
   private static String medicaidName;
@@ -53,7 +54,7 @@ public class PayerTest {
     testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
-    double povertyLevel =
+    povertyLevel =
             Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
     medicaidLevel = 1.33 * povertyLevel;
     // Set up Mandate year.
@@ -82,6 +83,7 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
     Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+    PlanEligibilityFinder.buildPayerEligibilities(testState);
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
     testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);
@@ -241,18 +243,18 @@ public class PayerTest {
 
   @Test
   public void receiveMedicaidPregnancyElgible() {
-    // Pregnancy
+    long time = Utilities.convertCalendarYearsToTime(1980);
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put("pregnant", true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, 0L);
+    // A pregnant person is eligble in MA for medicaid when their income is less than 2 * the poverty level.
+    person.attributes.put(Person.INCOME, (int) (povertyLevel * 2) - 1);
+    healthInsuranceModule.process(person, time);
     assertEquals(PayerManager.MEDICAID,
-        person.coverage.getPlanAtTime(0L).getPayer().getName());
-    assertTrue(person.coverage.getPlanAtTime(0L).accepts(person, 0L));
+        person.coverage.getPlanAtTime(time).getPayer().getName());
+    assertTrue(person.coverage.getPlanAtTime(time).accepts(person, time));
   }
 
   @Test
@@ -285,7 +287,6 @@ public class PayerTest {
 
   @Test
   public void receiveMedicaidMnilEligble() {
-    StandardMedicaidEligibility.buildMedicaidEligibility(testState);
     long time = Utilities.convertCalendarYearsToTime(1980);
     // Recieve Medciare after having too high of an income, but later qualifying for MNIL.
     person = new Person(0L);
@@ -347,14 +348,22 @@ public class PayerTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
     // Give the person an income lower than the totalYearlyCost.
     person.attributes.put(Person.INCOME, (int) totalYearlyCost - 1);
-    // Set the medicaid poverty level to be lower than their income
+
+    // Set the medicaid poverty level to be lower than half their income. This is because 0 year olds in MA qualify for Medicaid at 2*poverty.
     Config.set("generate.demographics.socioeconomic.income.poverty",
-        Integer.toString((int) totalYearlyCost - 2));
-    HealthInsuranceModule.medicaidLevel = Config.getAsDouble(
+        Integer.toString((int) (totalYearlyCost/3) - 5));
+    HealthInsuranceModule.povertyLevel = Config.getAsDouble(
             "generate.demographics.socioeconomic.income.poverty", 11000);
 
     healthInsuranceModule.process(person, 0L);
-    assertTrue(person.coverage.getPlanAtTime(0L).isNoInsurance());
+    InsurancePlan newPlan = person.coverage.getPlanAtTime(0L);
+    assertTrue(newPlan.isNoInsurance());
+
+    // Reset the povery level.
+    Config.set("generate.demographics.socioeconomic.income.poverty",
+        Integer.toString((int) PayerTest.povertyLevel));
+    HealthInsuranceModule.povertyLevel = Config.getAsDouble(
+            "generate.demographics.socioeconomic.income.poverty", 11000);
   }
 
   @Test
@@ -622,6 +631,9 @@ public class PayerTest {
 
   @Test
   public void personCanAffordPayer() {
+    String willingToSpend = Config.get("generate.payers.insurance_plans.income_premium_ratio");
+    // Set their willinginess to spend to 100%.
+    Config.set("generate.payers.insurance_plans.income_premium_ratio", "1.0");
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
@@ -630,6 +642,8 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, yearlyCostOfPayer + 1);
     InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     assertTrue(person.canAffordPlan(testPrivatePayer1Plan));
+    // Reset the person's willingness to spend.
+    Config.set("generate.payers.insurance_plans.income_premium_ratio", willingToSpend);
   }
 
   @Test
@@ -652,7 +666,7 @@ public class PayerTest {
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.BIRTHDATE, currentTime);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
-    person.attributes.put(Person.INCOME, (int) HealthInsuranceModule.medicaidLevel * 100);
+    person.attributes.put(Person.INCOME, (int) HealthInsuranceModule.povertyLevel * 100);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
 
     // Get private insurance for 55 years.

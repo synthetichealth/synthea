@@ -13,7 +13,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A class that defines the logic for eligibility for social security based on disability. This is expected to be used in conjuntion with Medicare, when someone is Social Security eligible, they also qualify for Medicare.
+ * An algorithm that defines the logic for eligibility for social security based on disability. This is expected to be used in conjuntion with Medicare, when someone is Social Security eligible, they also qualify for Medicare.
  */
 public class SocialSecurityEligibilty implements IPlanEligibility {
 
@@ -23,7 +23,11 @@ public class SocialSecurityEligibilty implements IPlanEligibility {
   // Source: https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm
   // Note that the this list is incomplete, some condtions are not currently simulated in Synthea.
   // It is by no means an exhaustive list, it probably has ~50% of the disability eligibilities.
-  private static final List<String> ssDisabilities = buildSocialSecurityEligibility();
+  private final List<String> ssDisabilities;
+
+  public SocialSecurityEligibilty(String fileName){
+    ssDisabilities = buildSocialSecurityEligibility(fileName);
+  }
 
   @Override
   public boolean isPersonEligible(Person person, long time) {
@@ -38,8 +42,7 @@ public class SocialSecurityEligibilty implements IPlanEligibility {
    * Builds a list of codes that would qualify a person for Social Security Disability.
    * @return
    */
-  private static List<String> buildSocialSecurityEligibility() {
-    String fileName = Config.get("generate.payers.insurance_plans.ssd_eligibility");
+  private static List<String> buildSocialSecurityEligibility(String fileName) {
     String resource = null;
     try {
       resource = Utilities.readResource(fileName);

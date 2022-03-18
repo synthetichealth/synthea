@@ -11,33 +11,31 @@ import org.mitre.synthea.world.agents.PayerManager;
  */
 public class PlanEligibilityFinder {
 
-  private static final Map<String, IPlanEligibility> payerEligibilties = buildPayerEligibilities();
+  private static Map<String, IPlanEligibility> planEligibilities;
 
   private static final String GENERIC = "GENERIC";
 
   /**
-   * Returns the correct elgibility algorithm based on the payer's name. It uses
-   * names of either Medicare or Medicaid.
+   * Returns the correct elgibility algorithm based on the given string.
    * @param eligibility The name of the eligibility type.
    * @return  The requested payer eligibilty algorithm.
    */
   public static IPlanEligibility getPayerEligibilityAlgorithm(String eligibility) {
-    if (payerEligibilties.containsKey(eligibility)) {
-      return payerEligibilties.get(eligibility);
+    if (planEligibilities.containsKey(eligibility)) {
+      return planEligibilities.get(eligibility);
     }
-    return payerEligibilties.get(GENERIC);
+    return planEligibilities.get(GENERIC);
   }
 
-  private static Map<String, IPlanEligibility> buildPayerEligibilities(){
+  public static void buildPayerEligibilities(String state){
     Map<String, IPlanEligibility> payerEligibilties = new HashMap<>();
-    payerEligibilties.put(PayerManager.MEDICAID, new StandardMedicaidEligibility());
+    payerEligibilties.put(PayerManager.MEDICAID, new StandardMedicaidEligibility(state));
     payerEligibilties.put(PayerManager.MEDICARE, new StandardMedicareEligibility());
     payerEligibilties.put(PayerManager.DUAL_ELIGIBLE, new StandardDualEligibility());
     payerEligibilties.put(PlanEligibilityFinder.GENERIC, new GenericPayerEligibilty());
-    payerEligibilties.put(SocialSecurityEligibilty.SOCIAL_SECURITY, new SocialSecurityEligibilty());
 
     // TODO - HERE IS WHERE CSV INPUT ELIGIBILITIES WOULD BE BUILT
 
-    return payerEligibilties;
+    PlanEligibilityFinder.planEligibilities = payerEligibilties;
   }
 }

@@ -20,8 +20,8 @@ public class HealthInsuranceModule extends Module {
       .get("generate.insurance.mandate.year", "2006")));
   public static double mandateOccupation =
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
-  public static double medicaidLevel = 1.33
-          * Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
+  public static double povertyLevel =
+          Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
 
   /**
    * HealthInsuranceModule constructor.
