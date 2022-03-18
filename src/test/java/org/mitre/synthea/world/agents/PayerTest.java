@@ -83,7 +83,7 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
     Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-    PlanEligibilityFinder.buildPayerEligibilities(testState);
+    PlanEligibilityFinder.buildPlanEligibilities(testState, Config.get("generate.payers.insurance_plans.csv_eligibilities"));
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
     testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);

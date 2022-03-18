@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.Config;
@@ -19,6 +18,7 @@ import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentNone;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentRandom;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderGovPriority;
@@ -70,8 +70,12 @@ public class PayerManager {
    * @param location the state being loaded.
    */
   public static void loadPayers(Location location) {
-    // Build the Payer Finder
-    planFinder = buildPayerFinder();
+    // Load the plan eligibility algorithms.
+    PlanEligibilityFinder.buildPlanEligibilities
+        (location.state, Config.get("generate.payers.insurance_plans.csv_eligibilities"));
+
+    // Build the Plan Finder.
+    planFinder = buildPlanFinder();
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -148,7 +152,7 @@ public class PayerManager {
   /**
    * Determines the algorithm to use for patients to find a Payer.
    */
-  private static IPlanFinder buildPayerFinder() {
+  private static IPlanFinder buildPlanFinder() {
     IPlanFinder finder;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
@@ -209,8 +213,10 @@ public class PayerManager {
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
+    String eligibilityName = line.remove("eligibility_algorithm");
+    System.out.println(eligibilityName);
 
-    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
+    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, eligibilityName);
 
     // Add remaining columns we didn't map to first-class fields to payer's
     // attributes map.
@@ -263,7 +269,7 @@ public class PayerManager {
     // noInsurance 'covers' all states.
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
-    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE);
+    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE, "generic");
     PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
@@ -310,7 +316,7 @@ public class PayerManager {
     governmentPayers.clear();
     privatePayers.clear();
     statesLoaded.clear();
-    planFinder = buildPayerFinder();
+    planFinder = buildPlanFinder();
   }
 
   /**

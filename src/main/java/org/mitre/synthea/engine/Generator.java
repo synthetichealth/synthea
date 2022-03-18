@@ -48,7 +48,6 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
@@ -218,7 +217,6 @@ public class Generator implements RandomNumberGenerator {
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
-    PlanEligibilityFinder.buildPayerEligibilities(options.state);
 
     this.random = new Random(options.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));

@@ -8,12 +8,13 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class StandardMedicareEligibility implements IPlanEligibility {
 
-  private static final int ageRequirement = 65; //65
+  private final IPlanEligibility ageEligibility;
   private final IPlanEligibility ssdEligibility;
 
   public StandardMedicareEligibility() {
     String fileName = Config.get("generate.payers.insurance_plans.ssd_eligibility");
     ssdEligibility = new SocialSecurityEligibilty(fileName);
+    ageEligibility = new AgeThresholdEligibility(65);
   }
 
   @Override
@@ -21,8 +22,7 @@ public class StandardMedicareEligibility implements IPlanEligibility {
     boolean ssdEligible = ssdEligibility.isPersonEligible(person, time);
     boolean esrd = (person.attributes.containsKey("end_stage_renal_disease")
         && (boolean) person.attributes.get("end_stage_renal_disease"));
-    int personAge = person.ageInYears(time);
-    boolean ageEligible = personAge >= ageRequirement;
+    boolean ageEligible = ageEligibility.isPersonEligible(person, time);
     return ssdEligible || ageEligible || esrd;
   }
 }

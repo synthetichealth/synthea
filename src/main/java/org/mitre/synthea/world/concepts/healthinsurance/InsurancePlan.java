@@ -48,7 +48,7 @@ public class InsurancePlan implements Serializable {
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
     // Set the payer's eligibility criteria.
-    this.planEligibility = PlanEligibilityFinder.getPayerEligibilityAlgorithm(this.payer.getName());
+    this.planEligibility = PlanEligibilityFinder.getPlanEligibilityAlgorithm(this.payer.getEligibilityName());
   }
 
   /**

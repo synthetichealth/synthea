@@ -12,10 +12,12 @@ public class StandardDualEligibility implements IPlanEligibility {
   public boolean isPersonEligible(Person person, long time) {
     // This format could allow for a swap out of the medicare eligblity by altering the
     // PlanEligibilityFinder to have different Medicare/Medicaid criteria.
+    String medicareEligibility = PayerManager.getGovernmentPayer(PayerManager.MEDICARE).getEligibilityName();
+    String medicaidEligbility = PayerManager.getGovernmentPayer(PayerManager.MEDICARE).getEligibilityName();
     return (
       PlanEligibilityFinder
-        .getPayerEligibilityAlgorithm(PayerManager.MEDICARE).isPersonEligible(person, time)
+        .getPlanEligibilityAlgorithm(medicareEligibility).isPersonEligible(person, time)
         && PlanEligibilityFinder
-        .getPayerEligibilityAlgorithm(PayerManager.MEDICAID).isPersonEligible(person, time));
+        .getPlanEligibilityAlgorithm(medicaidEligbility).isPersonEligible(person, time));
   }
 }

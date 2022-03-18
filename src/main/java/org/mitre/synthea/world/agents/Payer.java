@@ -56,6 +56,8 @@ public class Payer implements Serializable {
 
   private final String planLinkId;
 
+  private final String eligibilityName;
+
   /**
    * Simple bean used to add Java Serialization support to
    * com.google.common.collect.Table&lt;Integer, String, AtomicInteger&gt; which doesn't natively
@@ -113,11 +115,12 @@ public class Payer implements Serializable {
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
    */
-  public Payer(String name, String id, Set<String> statesCovered, String ownership) {
+  public Payer(String name, String id, Set<String> statesCovered, String ownership, String eligibilityName) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
     this.name = name;
+    this.eligibilityName = eligibilityName;
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
@@ -565,6 +568,10 @@ public class Payer implements Serializable {
 
   public String getPlanLinkId() {
     return this.planLinkId;
+  }
+
+  public String getEligibilityName() {
+    return this.eligibilityName;
   }
 
 }
