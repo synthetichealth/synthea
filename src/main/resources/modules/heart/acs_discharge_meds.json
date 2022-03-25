@@ -199,12 +199,24 @@
           "display": "Medication management note"
         }
       ],
-      "direct_transition": "End_Prior_Antiplatelet",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 702566000,
         "display": "Suspected non-compliance of drug therapy (situation)"
-      }
+      },
+      "conditional_transition": [
+        {
+          "transition": "End_Prior_Antiplatelet",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "acs_antiplatelet",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     },
     "P2Y12": {
       "type": "Simple",

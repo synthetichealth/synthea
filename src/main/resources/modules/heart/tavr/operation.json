@@ -62,22 +62,8 @@
       "direct_transition": "TAVR Procedure"
     },
     "TAVR Procedure": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 725351001,
-          "display": "Transcatheter aortic valve replacement (procedure)"
-        }
-      ],
-      "distribution": {
-        "kind": "UNIFORM",
-        "parameters": {
-          "high": 80,
-          "low": 55
-        }
-      },
-      "unit": "minutes",
+      "type": "CallSubmodule",
+      "submodule": "PerformTAVR",
       "direct_transition": "Dressing"
     },
     "OR Labs and Meds": {
