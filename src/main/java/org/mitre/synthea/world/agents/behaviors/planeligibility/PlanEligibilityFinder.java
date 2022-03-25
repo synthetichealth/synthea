@@ -20,20 +20,18 @@ public class PlanEligibilityFinder {
   private static Map<String, IPlanEligibility> planEligibilities;
 
   private static final String ELIGIBILITY_NAME = "name";
-  private static final String GENERIC = "GENERIC";
+  private static final String GENERIC = "generic";
 
   /**
    * Returns the correct elgibility algorithm based on the given string.
    * @param eligibility The name of the eligibility type.
    * @return  The requested payer eligibilty algorithm.
    */
-  public static IPlanEligibility getPlanEligibilityAlgorithm(String eligibility) {
+  public static IPlanEligibility getEligibilityAlgorithm(String eligibility) {
     if (planEligibilities.containsKey(eligibility)) {
-      System.out.println("FOUND " + eligibility);
       return planEligibilities.get(eligibility);
     }
-    System.out.println("Defulted to generic from " + eligibility);
-    return planEligibilities.get(GENERIC);
+    throw new RuntimeException("Plan eligiblity " + eligibility + " does not exist.");
   }
 
   /**
@@ -42,11 +40,6 @@ public class PlanEligibilityFinder {
    */
   public static void buildPlanEligibilities(String state, String fileName) {    
     planEligibilities = new HashMap<>();
-
-    // Build the Java eligibility algorithms.
-    // planEligibilities.put(PayerManager.MEDICAID, new StandardMedicaidEligibility(state));
-    // planEligibilities.put(PayerManager.MEDICARE, new StandardMedicareEligibility());
-    // planEligibilities.put(PayerManager.DUAL_ELIGIBLE, new StandardDualEligibility());
     planEligibilities.put(PlanEligibilityFinder.GENERIC, new GenericPayerEligibilty());
 
     // Build the CSV input eligbility algorithms.
@@ -70,7 +63,6 @@ public class PlanEligibilityFinder {
       if (planEligibilities.containsKey(eligblilityName)) {
         throw new RuntimeException("Plan eligibility name " + eligblilityName + " is reserved or already in use.");
       }
-      System.out.println(eligblilityName);
       planEligibilities.put(eligblilityName, new CSVEligibility(row));
     }
   }

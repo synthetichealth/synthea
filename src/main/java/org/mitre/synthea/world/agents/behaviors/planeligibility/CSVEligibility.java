@@ -15,11 +15,13 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String POVERTY_MULTIPLIER = "poverty_multiplier";
   private static final String INCOME_THRESHOLD = "income_threshold";
   private static final String AGE_THRESHOLD = "age_threshold";
-  private static final String SSD_FILE = "ssd_file";
+  private static final String QUALIFYING_CONDITIONS = "qualifying_conditions";
+  private static final String ACCEPTANCE_LIKELIHOOD = "acceptance_likelihood";
   private static final String POVERTY_MULTIPLIER_FILE = "poverty_multiplier_file";
   private static final String MNIL_FILE = "mnil_file";
   private static final String LOGICAL_OPERATOR = "logical_operator";
-  private static final Object SUB_ALGORITHMS = "sub_algorithms";
+  private static final Object SUB_ELIGIBILITIES = "sub_eligibilities";
+  private static final String VETERAN = "veteran_eligiblity";
 
   // A map that maps a column to the type of eligibilty it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
@@ -37,9 +39,9 @@ public class CSVEligibility implements IPlanEligibility {
       if (key.equals(LOGICAL_OPERATOR)) {
         logicalOperator = convertToLogicalOperator(inputEligibilities.get(key));
         break;
-      } else if(key.equals(SUB_ALGORITHMS)) {
+      } else if(key.equals(SUB_ELIGIBILITIES)) {
         for (String subAlgorithm : inputEligibilities.get(key).split("\\|")) {
-          eligibilityCriteria.add(PlanEligibilityFinder.getPlanEligibilityAlgorithm(subAlgorithm));
+          eligibilityCriteria.add(PlanEligibilityFinder.getEligibilityAlgorithm(subAlgorithm));
         }
       } else {
         if (!eligbilityOptions.containsKey(key)) {
@@ -57,7 +59,6 @@ public class CSVEligibility implements IPlanEligibility {
     if (logicalOperator.equalsIgnoreCase("AND")) {
       return eligibilityCriteria.stream().allMatch(eligibility -> eligibility.isPersonEligible(person, time));
     } else if (logicalOperator.equalsIgnoreCase("OR")) {
-      System.out.println(eligibilityCriteria);
       return eligibilityCriteria.stream().anyMatch(eligibility -> eligibility.isPersonEligible(person, time));
     }
     throw new RuntimeException("Erorr with logical operator " + logicalOperator+ " for input csv.");
@@ -72,11 +73,13 @@ public class CSVEligibility implements IPlanEligibility {
     eligbilityOptions.put(POVERTY_MULTIPLIER, (input) -> new PovertyMultiplierEligibility(Double.parseDouble(input)));
     eligbilityOptions.put(INCOME_THRESHOLD, (input) -> new IncomeThresholdEligibility(Double.parseDouble(input)));
     eligbilityOptions.put(AGE_THRESHOLD, (input) -> new AgeThresholdEligibility(Integer.parseInt(input)));
-    eligbilityOptions.put(SSD_FILE, (input) -> new SocialSecurityEligibilty(input));
+    eligbilityOptions.put(QUALIFYING_CONDITIONS, (input) -> new QualifyingConditionsEligibility(input));
+    eligbilityOptions.put(ACCEPTANCE_LIKELIHOOD, (input) -> new AcceptanceLikelihoodEligibility(Double.parseDouble(input)));
     eligbilityOptions.put(POVERTY_MULTIPLIER_FILE, (input) -> new PovertyMultiplierFileEligibility(state, input));
     eligbilityOptions.put(MNIL_FILE, (input) -> new MedicallyNeedyIncomeEligibility(state, input));
+    eligbilityOptions.put("veteran_eligiblity", (input) -> new VeteranEligiblity());
   }
-
+  
   /**
    * Converts the given string to a logic operator.
    * @param string

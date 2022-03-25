@@ -1,8 +1,9 @@
-﻿,name,poverty_multiplier,income_threshold,age_threshold,ssd_file,poverty_multiplier_file,mnil_file,sub_algorithms,logical_operator
-,StandardSocialSecurityDisabilityCSV,,,,payers/ssd_eligibility.csv,,,,or
-,StandardMedicaidCSV,,,,,payers/medicaid_eligibility.csv,payers/medicaid_eligibility.csv,,or
-,StandardMedicareCSV,,,65,,,,StandardSocialSecurityDisabilityCSV,or
-,StandardDualEligibleCSV,,,,,,,StandardMedicaidCSV|StandardMedicareCSV,and
-,ComplexExampleSub1,,30000,50,,,,,and
-,ComplexExampleSub2,3.33,,75,,,,,and
-,ComplexExample,,,,,,,ComplexExampleSub1|ComplexExampleSub2,or
+﻿,name,poverty_multiplier,income_threshold,age_threshold,qualifying_conditions,poverty_multiplier_file,mnil_file,acceptance_likelihood,sub_eligibilities,logical_operator
+,StandardSocialSecurityDisability,,,,payers/ssd_eligibility.csv,,,0.9,,and
+,StandardMedicaid,,,,,payers/medicaid_eligibility.csv,payers/medicaid_eligibility.csv,,,or
+,StandardMedicare,,,65,,,,,StandardSocialSecurityDisability,or
+,StandardDualEligible,,,,,,,,StandardMedicaid|StandardMedicare,and
+,LongCovidMedicare,,,,88888888888,,,,StandardMedicare,or
+,ComplexExampleSub1,,30000,50,,,,,,and
+,ComplexExampleSub2,3.33,,75,,,,,,and
+,ComplexExample,,,,,,,,ComplexExampleSub1|ComplexExampleSub2,or

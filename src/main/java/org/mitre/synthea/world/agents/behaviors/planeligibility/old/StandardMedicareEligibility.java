@@ -1,7 +1,10 @@
-package org.mitre.synthea.world.agents.behaviors.planeligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility.old;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.AgeThresholdEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionsEligibility;
 
 /**
  * An algorithm that dictates the standard medicare elgibilty criteria.
@@ -13,7 +16,7 @@ public class StandardMedicareEligibility implements IPlanEligibility {
 
   public StandardMedicareEligibility() {
     String fileName = Config.get("generate.payers.insurance_plans.ssd_eligibility");
-    ssdEligibility = new SocialSecurityEligibilty(fileName);
+    ssdEligibility = new QualifyingConditionsEligibility(fileName);
     ageEligibility = new AgeThresholdEligibility(65);
   }
 

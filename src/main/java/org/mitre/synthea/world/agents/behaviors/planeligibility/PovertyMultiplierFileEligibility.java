@@ -79,7 +79,7 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
       // MNIL (Medically Needy Income Limit) data from: https://www.medicaidplanningassistance.org/medically-needy-pathway/
       // MNIL allows people who don't qualify for income-based Medicare to qualify if their expenses bring them down to a certain income bracket.
       Map<String, String> row = csv.next();
-      if(row.get("state").equals(state)){
+      if (row.get("state").equals(state)) {
         povertyAge1 = Double.parseDouble(row.get("0-1"));
         povertyAge5= Double.parseDouble(row.get("2-5"));
         povertyAge18 = Double.parseDouble(row.get("6-18"));

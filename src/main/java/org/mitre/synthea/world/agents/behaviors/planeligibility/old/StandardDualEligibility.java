@@ -1,7 +1,9 @@
-package org.mitre.synthea.world.agents.behaviors.planeligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility.old;
 
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 
 /**
  * An algorithm that dictates the standard dual elgibilty criteria.
@@ -16,8 +18,8 @@ public class StandardDualEligibility implements IPlanEligibility {
     String medicaidEligbility = PayerManager.getGovernmentPayer(PayerManager.MEDICARE).getEligibilityName();
     return (
       PlanEligibilityFinder
-        .getPlanEligibilityAlgorithm(medicareEligibility).isPersonEligible(person, time)
+        .getEligibilityAlgorithm(medicareEligibility).isPersonEligible(person, time)
         && PlanEligibilityFinder
-        .getPlanEligibilityAlgorithm(medicaidEligbility).isPersonEligible(person, time));
+        .getEligibilityAlgorithm(medicaidEligbility).isPersonEligible(person, time));
   }
 }

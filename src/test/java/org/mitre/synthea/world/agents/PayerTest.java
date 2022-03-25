@@ -249,7 +249,7 @@ public class PayerTest {
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put("pregnant", true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // A pregnant person is eligble in MA for medicaid when their income is less than 2 * the poverty level.
+    // A pregnant person is eligble in MA when their income is less than 2 * the poverty level.
     person.attributes.put(Person.INCOME, (int) (povertyLevel * 2) - 1);
     healthInsuranceModule.process(person, time);
     assertEquals(PayerManager.MEDICAID,
@@ -349,7 +349,8 @@ public class PayerTest {
     // Give the person an income lower than the totalYearlyCost.
     person.attributes.put(Person.INCOME, (int) totalYearlyCost - 1);
 
-    // Set the medicaid poverty level to be lower than half their income. This is because 0 year olds in MA qualify for Medicaid at 2*poverty.
+    // Set the medicaid poverty level to be lower than half their income.
+    // This is because 0 year olds in MA qualify for Medicaid at 2*poverty.
     Config.set("generate.demographics.socioeconomic.income.poverty",
         Integer.toString((int) (totalYearlyCost/3) - 5));
     HealthInsuranceModule.povertyLevel = Config.getAsDouble(
@@ -448,14 +449,12 @@ public class PayerTest {
     int payer1MemberYears = testPrivatePayer1.getCustomerUtilization(person);
     int payer2MemberYears = testPrivatePayer2.getCustomerUtilization(person);
 
-    double totalMonthlyPremiumsOwed
-        = testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * payer1MemberYears;
-    totalMonthlyPremiumsOwed
-        += testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium() * 12 * payer2MemberYears;
-    double totalRevenue
-        = testPrivatePayer1.getRevenue();
-    totalRevenue
-        += testPrivatePayer2.getRevenue();
+    double totalMonthlyPremiumsOwed = 0.0;
+    totalMonthlyPremiumsOwed += testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * payer1MemberYears;
+    totalMonthlyPremiumsOwed += testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium() * 12 * payer2MemberYears;
+    double totalRevenue = 0.0;
+    totalRevenue += testPrivatePayer1.getRevenue();
+    totalRevenue += testPrivatePayer2.getRevenue();
     // The payer's revenue should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, totalRevenue, 0.001);
     // The person's health care expenses should equal the total monthly premiums.

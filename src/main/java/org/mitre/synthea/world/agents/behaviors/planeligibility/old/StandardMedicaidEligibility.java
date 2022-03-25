@@ -1,7 +1,10 @@
-package org.mitre.synthea.world.agents.behaviors.planeligibility;
+package org.mitre.synthea.world.agents.behaviors.planeligibility.old;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.MedicallyNeedyIncomeEligibility;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PovertyMultiplierFileEligibility;
 
 /**
  * An algorithm that dictates the standard medicaid elgibilty criteria.
