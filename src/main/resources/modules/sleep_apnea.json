@@ -1,0 +1,620 @@
+{
+  "name": "Sleep Apnea",
+  "remarks": [
+    "Basic Sleep Apnea module primarily derived from Harrison's Principles of Internal Medicine (15th edition, 2001) except where otherwise quoted and cited.",
+    "",
+    "\"... the overall prevalence of any OSA ranged from 9% to 38% in the general adult population, from 13% to 33% in men and from 6% to 19% in women, although much higher in the elderly groups.\" - from https://doi.org/10.1016/j.smrv.2016.07.002.",
+    "",
+    "Sleep apnea ... is one of the leading causes of excessive daytime sleepiness.",
+    "...",
+    "...  inevitably results in snoring. In most patients, snoring antedates the development of obstructive events by many years.",
+    "...",
+    "Over 50% of patients with Obstructive Sleep Apnea (OSA) have systemic hypertension.",
+    "...",
+    "the typical patient is a male aged 30 to 60 years who presents with a history of snoring, excessive daytime sleepiness ... and often mild to moderate hypertension.",
+    "...",
+    "The definitive investigation for suspected OSA is polysomnography, a detailed overnight sleep study...",
+    "...",
+    "Because polysomnography is a time-consuming and expensive test, there is considerable interest in the role of simplified, unattended, ambulatory sleep monitoring ... that would allow the patient to be studied at home...",
+    "...",
+    "Studies suggest that overnight oximetry can obviate the need for polysomnography in about one-third of clinic patients referred for consideration ... the remaining two-thirds of patients ... will require polysomnography.",
+    "...",
+    "TREATMENT",
+    "...",
+    "Mild to moderate OSA can often be managed effectively by modest weight reduction, avoidance of alcohol, improvement of nasal patency, and avoidance of sleeping in the supine posture. Intraoral appliances ... are also effective in 55 to 80% of patients.",
+    "...",
+    "Nasal CPAP ... is currently the most successful long-term approach to treatment, being well tolerated and effective In over 80% of patients ... For patients with ischemic heart disease or congestive heart failure who also have OSA, nasal CPAP is the only treatment that has been specifically test. and is considered the treatment of choice."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait Until Middle Age"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Wait Until Middle Age": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Prevalence"
+    },
+    "Prevalence": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Sleep Disorder",
+              "distribution": 0.06
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.94
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Sleep Disorder",
+              "distribution": 0.13
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.87
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Initial Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Initial Assessment"
+    },
+    "Loud Snoring": {
+      "type": "Symptom",
+      "symptom": "loud snoring",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Excessive Daytime Sleepiness"
+    },
+    "Excessive Daytime Sleepiness": {
+      "type": "Symptom",
+      "symptom": "excessive daytime sleepiness",
+      "cause": "",
+      "probability": 1,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "Initial Encounter"
+    },
+    "Hypertension": {
+      "type": "SetAttribute",
+      "attribute": "hypertension",
+      "direct_transition": "Loud Snoring",
+      "value": true
+    },
+    "Overnight Test": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "2nd Assessment"
+    },
+    "2nd Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Monitoring Equipment",
+      "reason": "Sleep Disorder"
+    },
+    "Sleep Study": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 82808001,
+          "display": "Sleep apnea monitoring with alarm (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 60554003,
+          "display": "Polysomnography (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 108243003,
+          "display": "Sleep disorder test AND/OR procedure (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 446573003,
+          "display": "Continuous positive airway pressure titration (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 9,
+          "low": 3
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "End Monitoring Equipment",
+      "reason": "Sleep Disorder"
+    },
+    "Monitoring Equipment": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 701077002,
+        "display": "Respiratory apnea monitoring system (physical object)"
+      },
+      "direct_transition": "Polysomnography Device"
+    },
+    "End Monitoring Equipment": {
+      "type": "DeviceEnd",
+      "direct_transition": "End Polysomnography Device",
+      "device": "Monitoring Equipment"
+    },
+    "Obstructive Sleep Apnea": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 78275009,
+          "display": "Obstructive sleep apnea syndrome (disorder)"
+        }
+      ],
+      "direct_transition": "Treatment",
+      "assign_to_attribute": "sleep_apnea"
+    },
+    "Sleep Disorder": {
+      "type": "ConditionOnset",
+      "target_encounter": "Initial Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 39898005,
+          "display": "Sleep disorder (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Hypertension",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Loud Snoring",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Home Sleep Device": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 720253003,
+        "display": "Home-use sleep apnea recording system (physical object)"
+      },
+      "direct_transition": "Sleep Specialist Encounter End"
+    },
+    "Polysomnography Device": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 701100002,
+        "display": "Polysomnography analyzer (physical object)"
+      },
+      "direct_transition": "Sleep Study"
+    },
+    "End Polysomnography Device": {
+      "type": "DeviceEnd",
+      "direct_transition": "Obstructive Sleep Apnea",
+      "device": "Polysomnography Device"
+    },
+    "Wait Until Overnight Study": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 21,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Overnight Test"
+    },
+    "Return Home Sleep Device": {
+      "type": "DeviceEnd",
+      "direct_transition": "2nd_Assessment",
+      "device": "Home Sleep Device"
+    },
+    "Sleep Apnea": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 73430006,
+          "display": "Sleep apnea (disorder)"
+        }
+      ],
+      "direct_transition": "Treatment",
+      "assign_to_attribute": "sleep_apnea"
+    },
+    "2nd_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "CPAP Titration"
+    },
+    "Treatment": {
+      "type": "Simple",
+      "direct_transition": "Sleep Apnea Care Plan"
+    },
+    "End 2nd Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Sleep Apnea Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care plan (record artifact)"
+        }
+      ],
+      "reason": "sleep_apnea",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 388976009,
+          "display": "Weight reduction regimen (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 419822006,
+          "display": "Warning. Avoid alcoholic drink (qualifier value)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 47545007,
+          "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)"
+        }
+      ],
+      "goals": [
+        {
+          "addresses": [
+            "text"
+          ],
+          "text": "Avoid sleeping in the supine posture"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "chf",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Home CPAP Unit"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Home CPAP Unit",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Intraoral Appliance",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "Intraoral Appliance": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 272265001,
+        "display": "Appliance for sleep apnea (physical object)"
+      },
+      "direct_transition": "End 2nd Encounter"
+    },
+    "Home CPAP Unit": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 702172008,
+        "display": "Home continuous positive airway pressure unit (physical object)"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Face Mask",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Nasal Mask",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Initial Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "Referral to Sleep Specialist"
+    },
+    "Referral to Sleep Specialist": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698560000,
+          "display": "Referral to sleep apnea clinic (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "Initial Encounter End"
+    },
+    "Sleep Specialist Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
+        }
+      ],
+      "direct_transition": "Specialist Assessment"
+    },
+    "Wait Until Appointment": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 21,
+          "low": 7
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Sleep Specialist Encounter"
+    },
+    "Sleep Specialist Encounter End": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Wait Until Overnight Study",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Referral to Overnight"
+          }
+        },
+        {
+          "transition": "Appointment Delay"
+        }
+      ]
+    },
+    "Initial Encounter End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait Until Appointment"
+    },
+    "Specialist Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "distributed_transition": [
+        {
+          "transition": "Home Sleep Device",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Referral to Overnight",
+          "distribution": 0.6699999999999999
+        }
+      ]
+    },
+    "Referral to Overnight": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698560000,
+          "display": "Referral to sleep apnea clinic (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Sleep Specialist Encounter End",
+      "reason": "Sleep Disorder"
+    },
+    "Appointment Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 14,
+          "low": 7
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Follow Up"
+    },
+    "CPAP Titration": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 446573003,
+          "display": "Continuous positive airway pressure titration (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 9,
+          "low": 3
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Sleep Apnea"
+    },
+    "Nasal Mask": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 442398003,
+        "display": "Nasal mask (physical object)"
+      },
+      "direct_transition": "End 2nd Encounter"
+    },
+    "Face Mask": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 704718009,
+        "display": "CPAP/BPAP oral mask (physical object)"
+      },
+      "direct_transition": "End 2nd Encounter"
+    },
+    "Follow Up": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Sleep Disorder",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Return Home Sleep Device"
+    }
+  },
+  "gmf_version": 2
+}
