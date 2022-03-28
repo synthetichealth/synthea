@@ -251,6 +251,21 @@ public class Graphviz {
           Link link = Factory.to(target).with(Label.of(label));
           links.add(link);
         });
+      } else if (state.has("lookup_table_transition")) {
+        JsonArray distributions = state.get("lookup_table_transition").getAsJsonArray();
+        distributions.forEach(d -> {
+          JsonObject option = d.getAsJsonObject();
+          String destination = option.get("transition").getAsString();
+          double pct = option.get("default_probability").getAsDouble() * 100.0;
+          String label = "See Table (def: " + pct + "%)";
+          Node target = nodeMap.get(destination);
+          if (target == null) {
+            throw new RuntimeException(
+                relativePath + " " + name + " transitioning to unknown state: " + destination);
+          }
+          Link link = Factory.to(target).with(Label.of(label));
+          links.add(link);
+        });
       }
       g = g.with(node.link(links.toArray(new Link[0])));
     }

@@ -103,8 +103,15 @@ public class Generator implements RandomNumberGenerator {
   public static class GeneratorOptions {
     public int population = Config.getAsInteger("generate.default_population", 1);
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
-    public long seed = System.currentTimeMillis();
-    public long clinicianSeed = seed;
+    /** Reference Time when to start Synthea. By default equal to the current system time. */
+    public long referenceTime = System.currentTimeMillis();
+    /** End time of Synthea simulation. By default equal to the current system time. */
+    public long endTime = referenceTime;
+    /** Actual time the run started. */
+    public final long runStartTime = referenceTime;
+    /** By default use the current time as random seed. */
+    public long seed = referenceTime;
+    public long clinicianSeed = referenceTime;
     /** Population as exclusively live persons or including deceased.
      * True for live, false includes deceased */
     public boolean overflow = true;
@@ -132,10 +139,6 @@ public class Generator implements RandomNumberGenerator {
     public int daysToTravelForward = -1;
     /** Path to a module defining which patients should be kept and exported. */
     public File keepPatientsModulePath;
-    /** Reference Time when to start Synthea. By default equal to the current system time. */
-    public long referenceTime = seed;
-    /** Actual time the run started. */
-    public final long runStartTime = referenceTime;
   }
 
   /**
@@ -216,7 +219,7 @@ public class Generator implements RandomNumberGenerator {
 
     this.random = new Random(options.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
-    this.stop = System.currentTimeMillis();
+    this.stop = options.endTime;
     this.referenceTime = options.referenceTime;
 
     this.location = new Location(options.state, options.city);

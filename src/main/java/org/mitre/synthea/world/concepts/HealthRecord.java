@@ -785,13 +785,25 @@ public class HealthRecord implements Serializable {
    * @return the time difference, negative if time is before the first wellness encounter).
    */
   public long timeSinceLastWellnessEncounter(long time) {
+    Encounter encounter = lastWellnessEncounter();
+    if (encounter != null) {
+      return (time - encounter.start);
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Return the last wellness encounter for the individual.
+   * @return the Encounter or null if it does not exist
+   */
+  public Encounter lastWellnessEncounter() {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
       if (encounter.type.equals(EncounterType.WELLNESS.toString())) {
-        return (time - encounter.start);
+        return encounter;
       }
     }
-    return Long.MAX_VALUE;
+    return null;
   }
 
   /**
