@@ -1,0 +1,51 @@
+{
+  "resourceType": "ValueSet",
+  "id": "us-core-usps-state",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><ul><li>Include all codes defined in <code>https://www.usps.com/</code></li></ul></div>"
+  },
+  "url": "http://hl7.org/fhir/us/core/ValueSet/us-core-usps-state",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.4.642.3.40"
+    }
+  ],
+  "version": "4.0.0",
+  "name": "UspsTwoLetterAlphabeticCodes",
+  "title": "USPS Two Letter Alphabetic Codes",
+  "status": "active",
+  "date": "2019-05-21",
+  "publisher": "HL7 International - US Realm Steering Committee",
+  "contact": [
+    {
+      "name": "HL7 International - US Realm Steering Committee",
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/usrealm/index.cfm"
+        }
+      ]
+    }
+  ],
+  "description": "This value set defines two letter USPS alphabetic codes.",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "system": "urn:iso:std:iso:3166",
+          "code": "US"
+        }
+      ]
+    }
+  ],
+  "copyright": "On July 1, 1963, the Post Office Department implemented the five-digit ZIP Code, which was placed after the state name in the last line of an address. To provide room for the ZIP Code, the Department issued two-letter abbreviations for all states and territories. Publication 59, Abbreviations for Use with ZIP Code, issued by the Department in October 1963. There is no copyright restriction on this value set.",
+  "compose": {
+    "include": [
+      {
+        "system": "https://www.usps.com/"
+      }
+    ]
+  }
+}
