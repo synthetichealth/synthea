@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "us-core-provider-role",
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><ul><li>Include all codes defined in <code>http://nucc.org/provider-taxonomy</code></li></ul></div>"
+  },
+  "url": "http://hl7.org/fhir/us/core/ValueSet/us-core-provider-role",
+  "version": "4.0.0",
+  "name": "USCoreProviderRoleNucc",
+  "title": "US Core Provider Role (NUCC)",
+  "status": "active",
+  "date": "2019-05-21",
+  "publisher": "HL7 International - US Realm Steering Committee",
+  "contact": [
+    {
+      "name": "HL7 International - US Realm Steering Committee",
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/usrealm/index.cfm"
+        }
+      ]
+    }
+  ],
+  "description": "Provider roles codes which are composed of the NUCC Health Care Provider Taxonomy Code Set classification codes for providers. Only concepts with a classification and no specialization are included.",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "system": "urn:iso:std:iso:3166",
+          "code": "US"
+        }
+      ]
+    }
+  ],
+  "copyright": "This value set includes content from NUCC Health Care Provider Taxonomy Code Set for providers which is copyright © 2016+ American Medical Association.  For commercial use, including sales or licensing, a license must be obtained.",
+  "compose": {
+    "include": [
+      {
+        "system": "http://nucc.org/provider-taxonomy"
+      }
+    ]
+  }
+}
