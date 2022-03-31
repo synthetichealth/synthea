@@ -109,8 +109,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "781831000000109",
-          "display": "Major surgery care management"
+          "code": "737567002",
+          "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
