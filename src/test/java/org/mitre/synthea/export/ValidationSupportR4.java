@@ -1,6 +1,8 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.support.ConceptValidationOptions;
+import ca.uhn.fhir.context.support.ValidationSupportContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 
@@ -10,14 +12,23 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import javax.annotation.Nonnull;
+
 import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.CodeSystem;
+import org.hl7.fhir.r4.model.CodeSystem.ConceptDefinitionComponent;
 import org.hl7.fhir.r4.model.StructureDefinition;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ValueSet.ConceptReferenceComponent;
+import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetComposeComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetExpansionComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetExpansionContainsComponent;
 
 /**
  * ValidationSupport provides implementation guide profiles (i.e. StructureDefinitions)
@@ -82,5 +93,148 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
         this.addStructureDefinition(resource);
       }
     }
+  }
+
+  @Override
+  public CodeValidationResult validateCodeInValueSet(
+      ValidationSupportContext theValidationSupportContext,
+      ConceptValidationOptions theOptions,
+      String theCodeSystem,
+      String theCode,
+      String theDisplay,
+      @Nonnull IBaseResource theValueSet) {
+    return validateCode(theValidationSupportContext, theOptions, theCodeSystem, theCode,
+        theDisplay, theValueSet.getIdElement().getValue());
+  }
+
+  @Override
+  public CodeValidationResult validateCode(
+      ValidationSupportContext theValidationSupportContext,
+      ConceptValidationOptions theOptions,
+      String theCodeSystem,
+      String theCode,
+      String theDisplay,
+      String theValueSetUrl) {
+    CodeValidationResult result = null;
+    if (theValueSetUrl != null) {
+      result = validateCodeUsingValueSet(theCodeSystem, theCode, theDisplay, theValueSetUrl);
+    } else {
+      LookupCodeResult codeSystemContainsCode =
+          lookupCode(theValidationSupportContext, theCodeSystem, theCode, null);
+      if (codeSystemContainsCode.isFound()) {
+        result = new CodeValidationResult();
+        result.setCode(theCode);
+        result.setDisplay(theDisplay);
+        result.setMessage("Included");
+        result.setSeverity(IssueSeverity.INFORMATION);
+      }
+    }
+    return result;
+  }
+
+  private CodeValidationResult validateCodeUsingValueSet(
+      String theCodeSystem,
+      String theCode,
+      String theDisplay,
+      String theValueSetUrl) {
+    CodeValidationResult result = null;
+    if (theValueSetUrl == null || theValueSetUrl.isEmpty()) {
+      result = new CodeValidationResult();
+      result.setCode(theCode);
+      result.setDisplay(theDisplay);
+      result.setMessage("No ValueSet!");
+      result.setSeverity(IssueSeverity.FATAL);
+    } else {
+      ValueSet vs = (ValueSet) this.fetchValueSet(theValueSetUrl);
+      if (vs.hasCompose()) {
+        ValueSetComposeComponent vscc = vs.getCompose();
+        if (vscc.hasInclude()) {
+          for (ConceptSetComponent csc : vscc.getInclude()) {
+            if ((theCodeSystem == null
+                || (theCodeSystem != null && theCodeSystem.equals(csc.getSystem()))))  {
+              for (ConceptReferenceComponent crc : csc.getConcept())  {
+                if (crc.hasCode() && crc.getCode().equals(theCode)) {
+                  result = new CodeValidationResult();
+                  result.setCode(theCode);
+                  result.setDisplay(theDisplay);
+                  result.setMessage("Included");
+                  result.setSeverity(IssueSeverity.INFORMATION);
+                }
+              }
+            }
+          }
+        }
+        if (result == null && vscc.hasExclude()) {
+          for (ConceptSetComponent csc : vscc.getExclude()) {
+            if ((theCodeSystem == null
+                || (theCodeSystem != null && theCodeSystem.equals(csc.getSystem()))))  {
+              for (ConceptReferenceComponent crc : csc.getConcept())  {
+                if (crc.hasCode() && crc.getCode().equals(theCode)) {
+                  result = new CodeValidationResult();
+                  result.setCode(theCode);
+                  result.setDisplay(theDisplay);
+                  result.setMessage("Excluded");
+                  result.setSeverity(IssueSeverity.ERROR);
+                }
+              }
+            }
+          }
+        }
+      }
+      if (result == null && vs.hasExpansion()) {
+        ValueSetExpansionComponent vsec = vs.getExpansion();
+        if (vsec.hasContains()) {
+          for (ValueSetExpansionContainsComponent vsecc : vsec.getContains()) {
+            if (theCodeSystem == null
+                || (theCodeSystem != null && theCodeSystem.equals(vsecc.getSystem()))) {
+              if (vsecc.getCode().equals(theCode)) {
+                result = new CodeValidationResult();
+                result.setCode(theCode);
+                result.setDisplay(theDisplay);
+                result.setMessage("Included");
+                result.setSeverity(IssueSeverity.INFORMATION);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private boolean conceptContainsCode(ConceptDefinitionComponent cdc, String code) {
+    if (cdc.hasCode() && cdc.getCode().equals(code)) {
+      return true;
+    } else if (cdc.hasConcept()) {
+      for (ConceptDefinitionComponent child : cdc.getConcept()) {
+        if (conceptContainsCode(child, code)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public LookupCodeResult lookupCode(
+      ValidationSupportContext theValidationSupportContext,
+      String theSystem,
+      String theCode,
+      String theDisplayLanguage) {
+    LookupCodeResult result = new LookupCodeResult();
+    result.setSearchedForCode(theCode);
+    result.setSearchedForSystem(theSystem);
+    result.setFound(false);
+
+    CodeSystem cs = (CodeSystem) this.fetchCodeSystem(theSystem);
+    if (cs != null) {
+      for (ConceptDefinitionComponent cdc : cs.getConcept()) {
+        if (conceptContainsCode(cdc, theCode)) {
+          result.setFound(true);
+        }
+      }
+    }
+    return result;
   }
 }

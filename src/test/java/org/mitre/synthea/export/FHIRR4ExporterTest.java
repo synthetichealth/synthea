@@ -14,14 +14,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -143,46 +140,6 @@ public class FHIRR4ExporterTest {
                * Ignore warnings.
                */
               valid = true;
-            } else if (emessage.getMessage().contains("us-core-documentreference-type")) {
-              /*
-               * The instance validator does not expand intentional value sets like this one.
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
-              /*
-               * The ait-2 invariant:
-               * Description:
-               * AllergyIntolerance.clinicalStatus SHALL NOT be present
-               * if verification Status is entered-in-error
-               * Expression:
-               * verificationStatus!='entered-in-error' or clinicalStatus.empty()
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains("@ ExplanationOfBenefit dom-3")) {
-              /*
-               * For some reason, it doesn't like the contained ServiceRequest and contained
-               * Coverage resources in the ExplanationOfBenefit, both of which are
-               * properly referenced. Running $validate on test servers finds this valid...
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains(
-                "per-1: If present, start SHALL have a lower value than end")) {
-              /*
-               * The per-1 invariant does not account for daylight savings time... so, if the
-               * daylight savings switch happens between the start and end, the validation
-               * fails, even if it is valid.
-               */
-              valid = true; // ignore this error
-            } else if (
-                emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
-                    || emessage.getMessage().contains("Unknown extension http://synthetichealth")
-                    || emessage.getMessage().contains("not be resolved, so has not been checked")) {
-              /*
-               * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
-               * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
-               * reports these as errors
-               */
-              valid = true; // ignore this error
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));
