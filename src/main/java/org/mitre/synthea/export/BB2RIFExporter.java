@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,11 +27,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -122,6 +125,7 @@ public class BB2RIFExporter {
   private static AtomicReference<HICN> hicn =
       new AtomicReference<>(HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   private final CLIA[] cliaLabNumbers;
+  private final long claimCutoff;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   CodeMapper conditionCodeMapper;
@@ -179,7 +183,10 @@ public class BB2RIFExporter {
       for (String tsvIssue: staticFieldConfig.validateTSV()) {
         System.out.println(tsvIssue);
       }
-    } catch (IOException e) {
+      SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+      format.setTimeZone(TimeZone.getTimeZone("UTC"));
+      claimCutoff = format.parse(Config.get("exporter.bfd.cutoff_date", "20140529")).getTime();
+    } catch (IOException | ParseException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
       // and if these do throw ioexceptions there's nothing we can do anyway
@@ -531,7 +538,7 @@ public class BB2RIFExporter {
             String partDContractIDStr = partDContractID.toString();
             String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
             List<Integer> coveredMonths = period.getCoveredMonths(year);
-            if (partDDrugSubsidyIndicator.equals("Y")) {
+            if (partDDrugSubsidyIndicator != null && partDDrugSubsidyIndicator.equals("Y")) {
               rdsMonthCount += coveredMonths.size();
             }
             for (int i: coveredMonths) {
@@ -542,15 +549,15 @@ public class BB2RIFExporter {
               fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
                       partDCostSharingCode);
-              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
-                      partDDrugSubsidyIndicator);
+              if (partDDrugSubsidyIndicator != null) {
+                fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                        partDDrugSubsidyIndicator);
+              }
             }
           } else {
             for (int i: period.getCoveredMonths(year)) {
               // Not enrolled this month
               fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
-              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
-                      partDDrugSubsidyIndicator);
             }
           }
         }
@@ -856,7 +863,7 @@ public class BB2RIFExporter {
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
       boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
@@ -1083,7 +1090,7 @@ public class BB2RIFExporter {
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
       boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
@@ -1343,7 +1350,7 @@ public class BB2RIFExporter {
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
@@ -1668,15 +1675,15 @@ public class BB2RIFExporter {
      * Get the RDS indicator based on whether person is enrolled in Part D and has employee
      * coverage.
      * @param contractID Part D contract ID or null if not enrolled
-     * @return the RDS indicator code
+     * @return the RDS indicator code or null if contract id is null
      */
     public String getEmployeePDPIndicator(PartDContractID contractID) {
-      if (!hasEmployeePDP()) {
-        return "N";
-      } else if (contractID == null) {
-        return "*";
-      } else {
+      if (contractID == null) {
+        return null;
+      } else if (hasEmployeePDP()) {
         return "Y";
+      } else {
+        return "N";
       }
     }
 
@@ -2017,13 +2024,11 @@ public class BB2RIFExporter {
         throws IOException {
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
-    HashMap<PDE, String> fieldValues = new HashMap<>();
-    HashMap<String, Integer> fillNum = new HashMap<>();
-    double costs = 0;
-    int costYear = 0;
-
+    // Build a chronologically ordered list of prescription fills (including refills where
+    // specified).
+    List<PrescriptionFill> prescriptionFills = new LinkedList<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
 
@@ -2034,84 +2039,183 @@ public class BB2RIFExporter {
       if (isVA || isIHSCenter) {
         continue;
       }
-
-      PartDContractID partDContractID = partDContracts.getContractID(encounter.start);
-      if (partDContractID == null) {
-        continue; // skip medications if patient isn't enrolled in Part D
-      }
       for (Medication medication : encounter.medications) {
         if (!medicationCodeMapper.canMap(medication.codes.get(0).code)) {
           continue; // skip codes that can't be mapped to NDC
         }
-
-        long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
-        int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
-
-        fieldValues.clear();
-        staticFieldConfig.setValues(fieldValues, PDE.class, person);
-
-        // The REQUIRED fields
-        fieldValues.put(PDE.PDE_ID, "" + pdeId);
-        fieldValues.put(PDE.CLM_GRP_ID, "" + claimGroupId);
-        fieldValues.put(PDE.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
-        fieldValues.put(PDE.SRVC_DT, bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(PDE.SRVC_PRVDR_ID, encounter.provider.id);
-        fieldValues.put(PDE.PRSCRBR_ID,
-            "" + (9_999_999_999L - encounter.clinician.identifier));
-        fieldValues.put(PDE.RX_SRVC_RFRNC_NUM, "" + pdeId);
-        fieldValues.put(PDE.PROD_SRVC_ID,
-                medicationCodeMapper.map(medication.codes.get(0).code, person));
-        // The following field was replaced by the PartD contract ID, leaving this here for now
-        // until this is validated
-        // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
-        // fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
-        //     ("R" + Math.abs(
-        //         UUID.fromString(medication.claim.payer.uuid)
-        //         .getMostSignificantBits())).substring(0, 5));
-        fieldValues.put(PDE.PLAN_CNTRCT_REC_ID, partDContractID.toString());
-        fieldValues.put(PDE.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
-        fieldValues.put(PDE.QTY_DSPNSD_NUM, "" + getQuantity(medication, stopTime));
-        fieldValues.put(PDE.DAYS_SUPLY_NUM, "" + getDays(medication, stopTime));
-        Integer fill = 1;
-        if (fillNum.containsKey(medication.codes.get(0).code)) {
-          fill = 1 + fillNum.get(medication.codes.get(0).code);
+        long supplyDaysMax = 90; // TBD - 30, 60, 90 day refil schedules?
+        long supplyInterval = supplyDaysMax * 24 * 60 * 60 * 1000;
+        long finishTime = medication.stop == 0L ? stopTime : Long.min(medication.stop, stopTime);
+        String medicationCode = medicationCodeMapper.map(medication.codes.get(0).code, person);
+        long time = medication.start;
+        int fillNo = 1;
+        while (time < finishTime) {
+          PartDContractID partDContractID = partDContracts.getContractID(time);
+          PrescriptionFill fill = new PrescriptionFill(time, encounter, medication,
+                    medicationCode, fillNo, partDContractID, supplyInterval, finishTime);
+          if (partDContractID != null) {
+            prescriptionFills.add(fill);
+          }
+          if (!fill.refillsRemaining()) {
+            break;
+          }
+          time += Long.min((long)fill.days * 24 * 60 * 60 * 1000, supplyInterval);
+          fillNo++;
         }
-        fillNum.put(medication.codes.get(0).code, fill);
-        fieldValues.put(PDE.FILL_NUM, "" + fill);
-        int year = Utilities.getYear(medication.start);
-        if (year != costYear) {
-          costYear = year;
-          costs = 0;
-        }
-        costs += medication.claim.getPatientCost();
-        if (costs <= 4550.00) {
-          fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
-          fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
-        } else {
-          fieldValues.put(PDE.GDC_BLW_OOPT_AMT, "4550.00");
-          fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
-                  String.format("%.2f", (costs - 4550)));
-        }
-        fieldValues.put(PDE.PTNT_PAY_AMT,
-                String.format("%.2f", medication.claim.getPatientCost()));
-        fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
-            String.format("%.2f", medication.claim.getCoveredCost()));
-        fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
-            String.format("%.2f", medication.claim.getPatientCost()));
-        fieldValues.put(PDE.TOT_RX_CST_AMT,
-            String.format("%.2f", medication.claim.getTotalClaimCost()));
-        fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
-        fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(encounter.start));
-        // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
-        if (person.attributes.containsKey("homeless")
-            && ((Boolean) person.attributes.get("homeless") == true)) {
-          fieldValues.put(PDE.PTNT_RSDNC_CD, "14");
-        } else {
-          fieldValues.put(PDE.PTNT_RSDNC_CD, "01");
-        }
-
-        rifWriters.writeValues(PDE.class, fieldValues);
       }
+    }
+    Collections.sort(prescriptionFills);
+
+    // Export each prescription fill to RIF format
+    HashMap<PDE, String> fieldValues = new HashMap<>();
+    double costs = 0;
+    int costYear = 0;
+    for (PrescriptionFill fill: prescriptionFills) {
+
+      long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
+      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+
+      fieldValues.clear();
+      staticFieldConfig.setValues(fieldValues, PDE.class, person);
+
+      // The REQUIRED fields
+      fieldValues.put(PDE.PDE_ID, "" + pdeId);
+      fieldValues.put(PDE.CLM_GRP_ID, "" + claimGroupId);
+      fieldValues.put(PDE.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
+      fieldValues.put(PDE.SRVC_DT, bb2DateFromTimestamp(fill.time));
+      fieldValues.put(PDE.SRVC_PRVDR_ID, fill.encounter.provider.id);
+      fieldValues.put(PDE.PRSCRBR_ID,
+          "" + (9_999_999_999L - fill.encounter.clinician.identifier));
+      fieldValues.put(PDE.RX_SRVC_RFRNC_NUM, "" + pdeId);
+      fieldValues.put(PDE.PROD_SRVC_ID, fill.medicationCode);
+      // The following field was replaced by the PartD contract ID, leaving this here for now
+      // until this is validated
+      // H=hmo, R=ppo, S=stand-alone, E=employer direct, X=limited income
+      // fieldValues.put(PrescriptionFields.PLAN_CNTRCT_REC_ID,
+      //     ("R" + Math.abs(
+      //         UUID.fromString(medication.claim.payer.uuid)
+      //         .getMostSignificantBits())).substring(0, 5));
+      fieldValues.put(PDE.PLAN_CNTRCT_REC_ID, fill.partDContractID.toString());
+      fieldValues.put(PDE.DAW_PROD_SLCTN_CD, "" + (int) person.rand(0, 9));
+      fieldValues.put(PDE.QTY_DSPNSD_NUM, "" + fill.quantity);
+      fieldValues.put(PDE.DAYS_SUPLY_NUM, "" + fill.days);
+      fieldValues.put(PDE.FILL_NUM, "" + fill.fillNo);
+      int year = Utilities.getYear(fill.time);
+      if (year != costYear) {
+        costYear = year;
+        costs = 0;
+      }
+      costs += fill.medication.claim.getPatientCost();
+      if (costs <= 4550.00) {
+        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
+        fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
+      } else {
+        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, "4550.00");
+        fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
+                String.format("%.2f", (costs - 4550)));
+      }
+      fieldValues.put(PDE.PTNT_PAY_AMT,
+              String.format("%.2f", fill.medication.claim.getPatientCost()));
+      fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
+          String.format("%.2f", fill.medication.claim.getCoveredCost()));
+      fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
+          String.format("%.2f", fill.medication.claim.getPatientCost()));
+      fieldValues.put(PDE.TOT_RX_CST_AMT,
+          String.format("%.2f", fill.medication.claim.getTotalClaimCost()));
+      fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
+      fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(fill.time));
+      // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
+      if (person.attributes.containsKey("homeless")
+          && ((Boolean) person.attributes.get("homeless") == true)) {
+        fieldValues.put(PDE.PTNT_RSDNC_CD, "14");
+      } else {
+        fieldValues.put(PDE.PTNT_RSDNC_CD, "01");
+      }
+
+      rifWriters.writeValues(PDE.class, fieldValues);
+    }
+  }
+
+  private static class PrescriptionFill implements Comparable<PrescriptionFill> {
+    long time;
+    HealthRecord.Encounter encounter;
+    Medication medication;
+    PartDContractID partDContractID;
+    int quantity;
+    int days;
+    int fillNo;
+    String medicationCode;
+    int refills = 0;
+
+    PrescriptionFill(long time, HealthRecord.Encounter encounter, Medication medication,
+            String medicationCode, int fillNo, PartDContractID partDContractID,
+            long supplyInterval, long end) {
+      this.time = time;
+      this.encounter = encounter;
+      this.medication = medication;
+      this.medicationCode = medicationCode;
+      this.fillNo = fillNo;
+      this.partDContractID = partDContractID;
+      if (medication.prescriptionDetails != null && medication.prescriptionDetails.has("refills")) {
+        refills = medication.prescriptionDetails.get("refills").getAsInt();
+      }
+      if (end > time + supplyInterval || fillNo > 1) {
+        end = time + supplyInterval;
+      }
+      initDaysAndQuantity(end);
+    }
+
+    boolean refillsRemaining() {
+      return refills - fillNo + 1 > 0;
+    }
+
+    private void initDaysAndQuantity(long stopTime) {
+      this.days = getDays(stopTime);
+      double amountPerDay = 1;
+
+      if (medication.prescriptionDetails != null
+          && medication.prescriptionDetails.has("dosage")) {
+        JsonObject dosage = medication.prescriptionDetails.getAsJsonObject("dosage");
+        long amount = dosage.get("amount").getAsLong();
+        long frequency = dosage.get("frequency").getAsLong();
+        long period = dosage.get("period").getAsLong();
+        String units = dosage.get("unit").getAsString();
+        long periodTime = Utilities.convertTime(units, period);
+
+        long perPeriod = amount * frequency;
+        amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
+        if (amountPerDay == 0) {
+          amountPerDay = 1;
+        }
+      }
+
+      this.quantity = (int) (amountPerDay * days);
+    }
+
+    private int getDays(long stopTime) {
+      long medDuration = stopTime - time;
+      double calcDays = (double) (medDuration / (1000 * 60 * 60 * 24));
+
+      if (medication.prescriptionDetails != null
+          && medication.prescriptionDetails.has("duration")) {
+        JsonObject duration = medication.prescriptionDetails.getAsJsonObject("duration");
+        long medQuantity = duration.get("quantity").getAsLong();
+        String unit = duration.get("unit").getAsString();
+        long durationTime = Utilities.convertTime(unit, medQuantity);
+        double durationTimeInDays = (double) (durationTime / (1000 * 60 * 60 * 24));
+        if (durationTimeInDays < calcDays) {
+          calcDays = durationTimeInDays;
+        }
+      }
+      return (int) calcDays;
+    }
+
+    @Override
+    public int compareTo(PrescriptionFill o) {
+      // This method is only intended to be used to order prescriptions by time.
+      // Note that this is inconsistent with PrescriptionEvent.equals, see warnings at
+      // https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html
+      return Long.compare(time, o.time);
     }
   }
 
@@ -2127,7 +2231,7 @@ public class BB2RIFExporter {
     HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
 
@@ -2296,7 +2400,7 @@ public class BB2RIFExporter {
     HashMap<HHA, String> fieldValues = new HashMap<>();
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
 
@@ -2482,7 +2586,7 @@ public class BB2RIFExporter {
   private void exportHospice(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
 
@@ -2684,7 +2788,7 @@ public class BB2RIFExporter {
     boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime) {
+      if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
 
@@ -2960,52 +3064,6 @@ public class BB2RIFExporter {
       }
       return bbRaceCode;
     }
-  }
-
-  private int getQuantity(Medication medication, long stopTime) {
-    double amountPerDay = 1;
-    double days = getDays(medication, stopTime);
-
-    if (medication.prescriptionDetails != null
-        && medication.prescriptionDetails.has("dosage")) {
-      JsonObject dosage = medication.prescriptionDetails.getAsJsonObject("dosage");
-      long amount = dosage.get("amount").getAsLong();
-      long frequency = dosage.get("frequency").getAsLong();
-      long period = dosage.get("period").getAsLong();
-      String units = dosage.get("unit").getAsString();
-      long periodTime = Utilities.convertTime(units, period);
-
-      long perPeriod = amount * frequency;
-      amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
-      if (amountPerDay == 0) {
-        amountPerDay = 1;
-      }
-    }
-
-    return (int) (amountPerDay * days);
-  }
-
-  private int getDays(Medication medication, long stopTime) {
-    double days = 1;
-    long stop = medication.stop;
-    if (stop == 0L) {
-      stop = stopTime;
-    }
-    long medDuration = stop - medication.start;
-    days = (double) (medDuration / (1000 * 60 * 60 * 24));
-
-    if (medication.prescriptionDetails != null
-        && medication.prescriptionDetails.has("duration")) {
-      JsonObject duration = medication.prescriptionDetails.getAsJsonObject("duration");
-      long quantity = duration.get("quantity").getAsLong();
-      String unit = duration.get("unit").getAsString();
-      long durationTime = Utilities.convertTime(unit, quantity);
-      double durationTimeInDays = (double) (durationTime / (1000 * 60 * 60 * 24));
-      if (durationTimeInDays > days) {
-        days = durationTimeInDays;
-      }
-    }
-    return (int) days;
   }
 
   /**
