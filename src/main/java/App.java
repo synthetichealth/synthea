@@ -23,6 +23,7 @@ public class App {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-cs clinicianSeed] [-p populationSize]");
     System.out.println("         [-r referenceDate as YYYYMMDD]");
+    System.out.println("         [-e endDate as YYYYMMDD]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
     System.out.println("         [-m moduleFileWildcardList]");
@@ -82,6 +83,11 @@ public class App {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             options.referenceTime = format.parse(value).getTime();
+          } else if (currArg.equalsIgnoreCase("-e")) {
+            String value = argsQ.poll();
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            options.endTime = format.parse(value).getTime();
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);

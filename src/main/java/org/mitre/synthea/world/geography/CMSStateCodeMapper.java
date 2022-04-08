@@ -83,7 +83,7 @@ public class CMSStateCodeMapper {
     states.put("Colorado", "CO");
     states.put("Connecticut", "CT");
     states.put("Delaware", "DE");
-    states.put("District Of Columbia", "DC");
+    states.put("District of Columbia", "DC");
     states.put("Florida", "FL");
     states.put("Georgia", "GA");
     states.put("Guam", "GU");
@@ -280,9 +280,13 @@ public class CMSStateCodeMapper {
     String[] words = str.split("\\s");
     String capitalizeWords = "";
     for (String w : words) {
-      String first = w.substring(0, 1);
-      String afterFirst = w.substring(1);
-      capitalizeWords += first.toUpperCase() + afterFirst + " ";
+      if (w.equalsIgnoreCase("of") || w.equalsIgnoreCase("and") || w.equalsIgnoreCase("the")) {
+        capitalizeWords += w.toLowerCase() + " ";
+      } else {
+        String first = w.substring(0, 1);
+        String afterFirst = w.substring(1);
+        capitalizeWords += first.toUpperCase() + afterFirst + " ";
+      }
     }
     return capitalizeWords.trim();
   }
