@@ -709,6 +709,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Gunshot_Wound",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -878,6 +879,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "concussion_injury",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

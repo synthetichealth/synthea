@@ -50,6 +50,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "hypertension_dx",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -114,6 +115,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "hypertension_dx",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -126,6 +128,7 @@
     "Hypertension_Followup_Encounter_3": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

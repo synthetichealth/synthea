@@ -859,6 +859,9 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
+      boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
+      boolean isVirtualOutpatient = isVirtual &&
+          (ProviderType.HOSPITAL == encounter.provider.type);
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
@@ -867,7 +870,11 @@ public class BB2RIFExporter {
       boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
               && encounter.provider.id.length() != 6;
       boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      if (isVA || isIHSCenter || isPrimary || isUrgent || !(isAmbulatory || isOutpatient)) {
+
+      if (isVA || isIHSCenter || isPrimary || isUrgent) {
+        continue;
+      }
+      if (!isAmbulatory && !isOutpatient && !isVirtualOutpatient) {
         continue;
       }
 
@@ -999,6 +1006,11 @@ public class BB2RIFExporter {
       if (icdReasonCode == null && noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
+      String revCenter = fieldValues.get(OUTPATIENT.REV_CNTR);
+      if (isVirtual) {
+        revCenter = person.randBoolean() ? "0780" : "0789";
+        fieldValues.put(OUTPATIENT.REV_CNTR, revCenter);
+      }
 
       synchronized (rifWriters.getOrCreateWriter(OUTPATIENT.class)) {
         int claimLine = 1;
@@ -1011,6 +1023,7 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.put(OUTPATIENT.REV_CNTR, revCenter);
             fieldValues.remove(OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
             fieldValues.remove(OUTPATIENT.REV_CNTR_NDC_QTY);
             fieldValues.remove(OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
@@ -1018,6 +1031,7 @@ public class BB2RIFExporter {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(OUTPATIENT.REV_CNTR, "0636"); // Drugs requiring specific id
               String ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
               fieldValues.put(OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM, ndcCode);
               fieldValues.put(OUTPATIENT.REV_CNTR_NDC_QTY, "1"); // 1 Unit
@@ -1135,6 +1149,7 @@ public class BB2RIFExporter {
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       if (isEmergency) {
         field = "1"; // emergency
+        fieldValues.put(INPATIENT.REV_CNTR, "0450"); // emergency
       } else if (previousEmergency) {
         field = "2"; // urgent
       } else {
@@ -1249,6 +1264,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
       previousEmergency = isEmergency;
+      String revCenter = fieldValues.get(INPATIENT.REV_CNTR);
 
       synchronized (rifWriters.getOrCreateWriter(INPATIENT.class)) {
         int claimLine = 1;
@@ -1261,12 +1277,14 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.put(INPATIENT.REV_CNTR, revCenter);
             fieldValues.remove(INPATIENT.REV_CNTR_NDC_QTY);
             fieldValues.remove(INPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(INPATIENT.REV_CNTR, "0250"); // Pharmacy-general classification
               fieldValues.put(INPATIENT.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(INPATIENT.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
@@ -1328,7 +1346,6 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime) {
         continue;
       }
-
       boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
       boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
@@ -1402,6 +1419,7 @@ public class BB2RIFExporter {
 
       fieldValues.put(CARRIER.LINE_HCT_HGB_RSLT_NUM,
               "" + latestHemoglobin);
+      fieldValues.put(CARRIER.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
       // OPTIONAL
       String icdReasonCode = null;
@@ -1529,6 +1547,47 @@ public class BB2RIFExporter {
   }
 
   /**
+   * Get the Line Place of Service Code. This is a required field for
+   * Carrier and DME claims.
+   * @param encounter The encounter.
+   * @return non-null place of service code.
+   */
+  private String getPlaceOfService(HealthRecord.Encounter encounter) {
+    String placeOfServiceCode = "11"; // Default to "11" = Office
+    if (encounter.type.equalsIgnoreCase(EncounterType.VIRTUAL.toString())) {
+      placeOfServiceCode = "02"; // telehealth
+    } else if (encounter.provider.type == ProviderType.IHS) {
+      if (encounter.provider.hasService(EncounterType.WELLNESS)) {
+        placeOfServiceCode = "05"; // no hospitalization
+      } else {
+        placeOfServiceCode = "06"; // hospitalization
+      }
+    } else if (encounter.provider.type == ProviderType.VETERAN) {
+      placeOfServiceCode = "26"; // military
+    } else if (encounter.provider.hasService(EncounterType.SNF)) {
+      placeOfServiceCode = "31"; // skilled nursing facility
+    } else if (encounter.provider.hasService(EncounterType.HOSPICE)) {
+      placeOfServiceCode = "34"; // hospice
+    } else if (encounter.provider.hasService(EncounterType.HOME)) {
+      placeOfServiceCode = "12"; // home
+    } else if (encounter.provider.hasService(EncounterType.URGENTCARE)) {
+      placeOfServiceCode = "20"; // urgent care
+    } else if (encounter.type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
+      placeOfServiceCode = "23"; // emergency room
+    } else if (encounter.type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
+      placeOfServiceCode = "21"; // inpatient
+    } else if (encounter.type.equalsIgnoreCase(EncounterType.OUTPATIENT.toString())) {
+      placeOfServiceCode = "22"; // outpatient
+    } else if (encounter.type.equalsIgnoreCase(EncounterType.AMBULATORY.toString())) {
+      placeOfServiceCode = "22";
+    } else if (encounter.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())) {
+      placeOfServiceCode = "11"; // office
+    }
+    return placeOfServiceCode;
+  }
+
+  /**
+   * Utility class to manage a beneficiary's part D contract history.
    * Utility class to manage a beneficiary's part C contract history.
    */
   static class PartCContractHistory extends ContractHistory<PartCContractID> {
@@ -2119,6 +2178,7 @@ public class BB2RIFExporter {
       fieldValues.put(DME.LINE_1ST_EXPNS_DT, bb2DateFromTimestamp(encounter.start));
       fieldValues.put(DME.LINE_LAST_EXPNS_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(DME.LINE_SRVC_CNT, "" + encounter.claim.items.size());
+      fieldValues.put(DME.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
       // OPTIONAL
       if (encounter.reason != null) {
@@ -2344,6 +2404,8 @@ public class BB2RIFExporter {
       setExternalCode(person, fieldValues,
           HHA.PRNCPAL_DGNS_CD, HHA.FST_DGNS_E_CD, HHA.FST_DGNS_E_VRSN_CD);
 
+      String revCenter = fieldValues.get(HHA.REV_CNTR);
+
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
@@ -2355,12 +2417,14 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.put(HHA.REV_CNTR, revCenter);
             fieldValues.remove(HHA.REV_CNTR_NDC_QTY);
             fieldValues.remove(HHA.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(HHA.REV_CNTR, "0250"); // Pharmacy-general classification
               fieldValues.put(HHA.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
@@ -2539,6 +2603,7 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.REV_CNTR_UNIT_CNT, "" + days);
       fieldValues.put(HOSPICE.REV_CNTR_RATE_AMT,
           String.format("%.2f", (encounter.claim.getTotalClaimCost() / days)));
+      String revCenter = fieldValues.get(HOSPICE.REV_CNTR);
 
       synchronized (rifWriters.getOrCreateWriter(HOSPICE.class)) {
         int claimLine = 1;
@@ -2551,12 +2616,14 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.put(HOSPICE.REV_CNTR, revCenter);
             fieldValues.remove(HOSPICE.REV_CNTR_NDC_QTY);
             fieldValues.remove(HOSPICE.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(HOSPICE.REV_CNTR, "0250"); // Pharmacy-general classification
               fieldValues.put(HOSPICE.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(HOSPICE.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
@@ -2795,6 +2862,7 @@ public class BB2RIFExporter {
       if (noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
+      String revCenter = fieldValues.get(SNF.REV_CNTR);
 
       synchronized (rifWriters.getOrCreateWriter(SNF.class)) {
         int claimLine = 1;
@@ -2807,12 +2875,14 @@ public class BB2RIFExporter {
                 break; // take the first mappable code for each procedure
               }
             }
+            fieldValues.put(SNF.REV_CNTR, revCenter);
             fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
             fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(SNF.REV_CNTR, "0250"); // Pharmacy-general classification
               fieldValues.put(SNF.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }

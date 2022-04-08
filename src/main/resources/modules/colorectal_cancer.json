@@ -421,6 +421,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "colorectal_adenoma",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -638,6 +639,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Colorectal_Cancer_Symptom_2",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
