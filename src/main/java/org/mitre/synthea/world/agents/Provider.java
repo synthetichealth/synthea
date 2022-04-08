@@ -275,7 +275,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Find specific service provider for the given person.
    * @param person The patient who requires the service.
    * @param service The service required. For example, EncounterType.AMBULATORY.
-   * @param specialty
+   * @param specialty the ClinicianSpecialty required. May be null.
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
