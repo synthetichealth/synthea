@@ -1,16 +1,22 @@
 package org.mitre.synthea.modules;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.mitre.synthea.engine.Components.Range;
+import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * Generate realistic blood pressure vital signs.
- * Can reproducibly look a few days into the past and future.
- * <p></p>
- * See <a href="https://raywinstead.com/bp/thrice.htm">https://raywinstead.com/bp/thrice.htm</a>
- * for desired result
+ * Generate realistic blood pressure vital signs,
+ * with impacts from select medications.
  */
 public class BloodPressureValueGenerator extends ValueGenerator {
   public enum SysDias {
@@ -26,17 +32,40 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private static final int[] NORMAL_DIA_BP_RANGE = BiometricsConfig
       .ints("metabolic.blood_pressure.normal.diastolic");
 
-  private static final long ONE_DAY = 1 * 24 * 60 * 60 * 1000L;
 
-  // How far into the past or into the future can this generator look reproducibly?
-  private static final long TIMETRAVEL_DURATION = 10 * ONE_DAY;
+  public static final Map<String, Range<Double>> HTN_DRUG_IMPACTS;
 
+  static {
+    try {
+      Map<String, Range<Double>> drugImpacts = new HashMap<>();
 
-  // Use a ringbuffer to reproducibly travel back in time for a bit, but not keep
-  // a full history per patient.
-  private static final int RING_ENTRIES = 10;
-  private final TrendingValueGenerator[] ringBuffer = new TrendingValueGenerator[RING_ENTRIES];
-  private int ringIndex = 0;
+      String csv = Utilities.readResource("htn_drugs.csv");
+
+      List<LinkedHashMap<String, String>> table = SimpleCSV.parse(csv);
+
+      for (LinkedHashMap<String,String> line : table) {
+        String code = line.get("RxNorm");
+        double impactMin = Double.parseDouble(line.get("Impact Minimum"));
+        double impactMax = Double.parseDouble(line.get("Impact Maximum"));
+
+        Range<Double> impact = new Range<>();
+        impact.low = impactMin;
+        impact.high = impactMax;
+
+        drugImpacts.put(code, impact);
+      }
+
+      HTN_DRUG_IMPACTS = drugImpacts;
+    } catch (Exception e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
+  // simple 1-value cache, so that we get consistent results when called with the same timestamp
+  // note that consistency is not guaranteed if we go time A -> time B -> time A across modules.
+  // in that case we'd need a bigger cache
+  private Double cachedValue;
+  private long cacheTime;
 
   private SysDias sysDias;
 
@@ -47,156 +76,165 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
   @Override
   public double getValue(long time) {
-    // TODO: BP is circadian. Model change over time of day.
-    final TrendingValueGenerator trendingValueGenerator = getTrendingValueGenerator(time, true);
-    return trendingValueGenerator.getValue(time);
-  }
+    if (cacheTime == time && cachedValue != null) {
+      return cachedValue;
+    }
 
+    double value = calculateMean(person, null, 0, time);
 
-  /**
-   * The minimum duration that the trend continues in one direction.
-   * @return the duration in days.
-   */
-  private int minTrendDuration() {
-    return 2;
-  }
+    cachedValue = value
+      + getMedicationImpacts(person, time)
+      + getLifestyleImpacts(person, value, time);
 
-  /**
-   * The maximum duration that the trend continues in one direction.
-   * @return the duration in days.
-   */
-  private int maxTrendDuration() {
-    return 5;
+    cacheTime = time;
+    return cachedValue;
   }
 
   /**
-   * The maximum permitted change per day.
-   * @return the maximum change per day.
+   * Helper function to ensure a person has a consistent impact from a drug.
    */
-  private double maxChangePerDay() {
-    return 15.0;
+  private static double getDrugImpact(Person person, long time, String drug,
+      Range<Double> impactRange) {
+    Map<String, Double> personalDrugImpacts =
+        (Map<String, Double>)person.attributes.get("htn_drug_impacts");
+    if (personalDrugImpacts == null) {
+      personalDrugImpacts = new HashMap<>();
+      person.attributes.put("htn_drug_impacts", personalDrugImpacts);
+    }
+
+    if (personalDrugImpacts.containsKey(drug)) {
+      return personalDrugImpacts.get(drug);
+    }
+
+    // note these are intentionally flipped. "max impact" == lower number, since these are negative
+    double impact = person.rand(impactRange.high, impactRange.low);
+
+    personalDrugImpacts.put(drug, impact);
+
+    return impact;
   }
 
-  /**
-   * Return a matching value generator for the given time.
-   *
-   * @param time find a value generator for which time stamp?
-   * @param createNewGenerators should a new generator be created when no match can be found?
-   * @return a value generator, or potentially null (if none exists and none should be created)
-   */
-  private TrendingValueGenerator getTrendingValueGenerator(long time, boolean createNewGenerators) {
-    // System.out.println("getTVG @ " + time);
-
-    for (int i = 0; i < RING_ENTRIES; i++) {
-      final TrendingValueGenerator trendingValueGenerator = ringBuffer[i];
-      if (trendingValueGenerator != null && trendingValueGenerator.getBeginTime() <= time
-          && trendingValueGenerator.getEndTime() >= time) {
-        return trendingValueGenerator;
-      }
-    }
-    if (!createNewGenerators) {
-      return null;
-    } else {
-      createNewGenerators(time);
-      return getTrendingValueGenerator(time, false);
-    }
-  }
-
-  /**
-   * Fill the ring buffer with a few new trending sections.
-   *
-   * @param time a timestamp which shall be covered by the generators in the buffer
-   * @param previousValueGenerator a previous generator, for potential continuity
-   */
-  private void createNewGenerators(long time) {
-    int endIndex = 0;
-    long endTime = Long.MIN_VALUE;
-    for (int i = 0; i < RING_ENTRIES; i++) {
-      if (ringBuffer[i] != null && ringBuffer[i].getEndTime() > endTime) {
-        endIndex = i;
-        endTime = ringBuffer[i].getEndTime();
-      }
-    }
-
-    TrendingValueGenerator previousValueGenerator;
-    if (time - endTime < TIMETRAVEL_DURATION) {
-      // If the last ringbuffer entry is maximum of TIMETRAVEL_DURATION days in the past,
-      // then continue from it.
-      previousValueGenerator = ringBuffer[endIndex];
-    } else {
-      // Last entry is too far in the past. Start over.
-      previousValueGenerator = null;
-    }
-
-    long currentTime;
-    long generatePeriod;
-    double startValue;
-    if (previousValueGenerator == null) {
-      // There is no recent previous buffer entry. Start from a few days in the past.
-      // System.out.println("Starting over");
-      currentTime = time - TIMETRAVEL_DURATION;
-      generatePeriod = TIMETRAVEL_DURATION + TIMETRAVEL_DURATION;
-      startValue = calculateMean(person, currentTime);
-    } else {
-      // System.out.println("Continuing @ " + endTime);
-      currentTime = endTime;
-      generatePeriod = TIMETRAVEL_DURATION;
-      startValue = previousValueGenerator.getValue(endTime);
-    }
-
-    while (generatePeriod > 0L) {
-      final int days = minTrendDuration()
-          + person.randInt(maxTrendDuration() - minTrendDuration() + 1);
-      long duration = ONE_DAY * days;
-      double endValue;
-      do { // Limit the maximum rate of change.
-        endValue = calculateMean(person, currentTime + duration);
-      } while (Math.abs(startValue - endValue) > maxChangePerDay() * duration);
-
-      ringBuffer[ringIndex] = new TrendingValueGenerator(person, 1.0, startValue, endValue,
-          currentTime, currentTime + duration, null, null);
-      // System.out.println("Filled [" + ringIndex + "] with: " + ringBuffer[ringIndex]);
-      ringIndex++;
-      ringIndex = ringIndex % RING_ENTRIES;
-      currentTime = currentTime + duration + 1L;
-      generatePeriod -= duration;
-      startValue = endValue;
-    }
-  }
-
-  private double calculateMean(Person person, long time) {
-    // TODO: Take additional factors into consideration: age + gender
+  private double calculateMean(Person person, Double startValue, int days, long time) {
     boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
-    boolean bloodPressureControlled =
-        (Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false);
+    boolean severe = (Boolean) person.attributes.getOrDefault("hypertension_severe", false);
 
-    if (sysDias == SysDias.SYSTOLIC) {
-      if (hypertension) {
-        if (!bloodPressureControlled) {
-          double severe = person.rand();
-          if (severe <= 0.75) {
-            // this skews the distribution to be more on the lower side of the range
-            return person.rand(HYPERTENSIVE_SYS_BP_RANGE[0], HYPERTENSIVE_SYS_BP_RANGE[1]);
-          } else {
+    double baseline;
+
+    String bpBaselineKey = "bp_baseline_" + hypertension + "_" + sysDias.toString();
+    if (person.attributes.containsKey(bpBaselineKey)) {
+      baseline = (Double)person.attributes.get(bpBaselineKey);
+    } else {
+      if (sysDias == SysDias.SYSTOLIC) {
+        if (hypertension) {
+          if (severe) {
             // this leaves fewer people at the upper end of the spectrum
-            return person.rand(HYPERTENSIVE_SYS_BP_RANGE[1], HYPERTENSIVE_SYS_BP_RANGE[2]);
+            baseline = person.rand(HYPERTENSIVE_SYS_BP_RANGE[1], HYPERTENSIVE_SYS_BP_RANGE[2]);
+
+          } else {
+            // this skews the distribution to be more on the lower side of the range
+            baseline = person.rand(HYPERTENSIVE_SYS_BP_RANGE[0], HYPERTENSIVE_SYS_BP_RANGE[1]);
           }
         } else {
-          return person.rand(NORMAL_SYS_BP_RANGE);
+          baseline = person.rand(NORMAL_SYS_BP_RANGE);
         }
       } else {
-        return person.rand(NORMAL_SYS_BP_RANGE);
-      }
-    } else {
-      if (hypertension) {
-        if (!bloodPressureControlled) {
-          return person.rand(HYPERTENSIVE_DIA_BP_RANGE);
+        if (hypertension) {
+          baseline = person.rand(HYPERTENSIVE_DIA_BP_RANGE);
         } else {
-          return person.rand(NORMAL_DIA_BP_RANGE);
+          baseline = person.rand(NORMAL_DIA_BP_RANGE);
         }
+      }
+
+      if ("M".equals(person.attributes.get(Person.GENDER))) {
+        baseline += 1;
       } else {
-        return person.rand(NORMAL_DIA_BP_RANGE);
+        baseline -= 1;
+      }
+
+      person.attributes.put(bpBaselineKey, baseline);
+    }
+    return baseline;
+  }
+
+  private static final long ONE_YEAR = Utilities.convertTime("years", 1);
+
+  private double getLifestyleImpacts(Person person, double baseline, long time) {
+    // if the person has a "blood pressure care plan"
+    // assume that over ~1 year their blood pressure will be reduced by ~14 mmHg
+    // with most of that happening in the first 6 mos
+
+    double maxDrop;
+    if (this.sysDias == SysDias.SYSTOLIC) {
+      // don't allow diet/exercise alone to drop below 124
+      double delta = Math.abs(baseline - 124);
+      maxDrop = -Math.min(delta, 14.0);
+    } else {
+      // don't allow diet/exercise alone to drop below 78
+      double delta = Math.abs(baseline - 78);
+      maxDrop = -Math.min(delta, 8.0);
+    }
+
+    // 443402002 = base hypertension careplan
+    // allow for multiple codes, and consider each independently,
+    // but if one is active then skip the rest
+    // (assume they don't add together)
+    String[] carePlanCodes = {"443402002"};
+
+    for (String code : carePlanCodes) {
+      double adherenceRatio = 0.15;
+      // estimate 3-25% of patients are adherent,
+      // so for a single # pick ~15%
+
+      HealthRecord.CarePlan careplan = (HealthRecord.CarePlan) person.record.present.get(code);
+
+      if (careplan != null && careplan.stop == 0L) {
+        boolean carePlanAdherent;
+        String key = "htn_trial_" + code + "_careplan_adherent";
+        if (person.attributes.containsKey(key)) {
+          carePlanAdherent = (boolean) person.attributes.get(key);
+        } else {
+          carePlanAdherent = person.rand() < adherenceRatio;
+          person.attributes.put(key, carePlanAdherent);
+        }
+        if (carePlanAdherent) {
+          long start = careplan.start;
+
+          if (time > (start + ONE_YEAR)) {
+            // max value
+            return maxDrop;
+          } else if (time < start) {
+            return 0.0;
+          }
+
+          // dy / dx = -14/1 = -14
+          // y = (dy/dx) * x
+          // x = (time - start) / 1 yr
+
+          double x = ((double)(time - start) / ((double)ONE_YEAR));
+
+          return x * maxDrop;
+        }
       }
     }
+
+    return 0.0;
+  }
+
+  private double getMedicationImpacts(Person person, long time) {
+    double drugImpactDelta = 0.0;
+    // see also LifecycleModule.calculateVitalSigns
+
+    for (Map.Entry<String, Range<Double>> e : HTN_DRUG_IMPACTS.entrySet()) {
+      String medicationCode = e.getKey();
+      Range<Double> impactRange = e.getValue();
+      if (person.record.medicationActive(medicationCode)) {
+        double impact = getDrugImpact(person, time, medicationCode, impactRange);
+
+        // impacts are negative, so add them (ie, don't subtract them)
+        drugImpactDelta += impact;
+      }
+    }
+
+    return drugImpactDelta;
   }
 }
