@@ -1944,7 +1944,8 @@
       "reason": "hiv_diagnosis"
     },
     "Medication Submodule": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence",
       "direct_transition": "PRAPARE"
     },
     "Education": {

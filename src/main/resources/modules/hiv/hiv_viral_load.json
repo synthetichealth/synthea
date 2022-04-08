@@ -5,7 +5,7 @@
     "",
     "The notion of \"Viral Load Group\" is an artificial construct to bin patients into different baseline levels.",
     "",
-    "Group A == <= 1500 [copies]/mL",
+    "Group A == <= 1500 {copies}/mL",
     "Group B == 1501-7000",
     "Group C == 7001-20000",
     "Group D == 20001-55000",
@@ -169,7 +169,7 @@
     "Observe Viral Load": {
       "type": "Observation",
       "category": "laboratory",
-      "unit": "[copies]/mL",
+      "unit": "{copies}/mL",
       "codes": [
         {
           "system": "LOINC",

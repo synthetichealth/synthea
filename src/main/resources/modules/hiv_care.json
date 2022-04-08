@@ -125,18 +125,38 @@
     "CD4_Submodule": {
       "type": "CallSubmodule",
       "submodule": "hiv/hiv_cd4",
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "End Treatment Encounter",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "hiv_rapid_start",
             "operator": "==",
-            "value": "trrue"
-          }
+            "value": true
+          },
+          "distributions": [],
+          "transition": "End Treatment Encounter"
         },
         {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
           "transition": "Medication_Submodule"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Medication_Submodule",
+              "distribution": 0.8
+            },
+            {
+              "transition": "End Treatment Encounter",
+              "distribution": 0.2
+            }
+          ]
         }
       ]
     },
@@ -146,7 +166,8 @@
       "direct_transition": "CBC"
     },
     "Medication_Submodule": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence",
       "direct_transition": "End Treatment Encounter"
     },
     "End Treatment Encounter": {
@@ -522,8 +543,32 @@
       "direct_transition": "Monitoring_CD4_Submodule"
     },
     "Monitoring Medication": {
-      "type": "Simple",
-      "direct_transition": "Vaccine Check"
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_oi_prophylaxis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "ART Sequence"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ART Sequence",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Vaccine Check",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
     },
     "Monitoring Encounter End": {
       "type": "EncounterEnd",
@@ -920,6 +965,11 @@
           "transition": "Tdap Check"
         }
       ]
+    },
+    "ART Sequence": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence",
+      "direct_transition": "Vaccine Check"
     }
   },
   "gmf_version": 2

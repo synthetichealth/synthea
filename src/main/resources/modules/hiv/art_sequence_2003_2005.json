@@ -1,0 +1,364 @@
+{
+  "name": "art_sequence_2003_2005",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "CKD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
+          }
+        },
+        {
+          "transition": "No CKD"
+        }
+      ]
+    },
+    "ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199663,
+          "display": "zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 3"
+    },
+    "3TC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349491,
+          "display": "lamivudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "3TC+ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200082,
+          "display": "lamivudine 150 MG / zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "distributed_transition": [
+        {
+          "transition": "LPV/r",
+          "distribution": 0.5
+        },
+        {
+          "transition": "EFV",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "EFV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349477,
+          "display": "efavirenz 600 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "LPV/r": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597730,
+          "display": "lopinavir 200 MG / ritonavir 50 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "Drug 3": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 349251,
+                "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "EFV"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "EFV",
+              "distribution": 0.5
+            },
+            {
+              "transition": "LPV/r",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "TDF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349251,
+          "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 3"
+    },
+    "Drug 2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "ZDV",
+          "distribution": 0.5
+        },
+        {
+          "transition": "TDF",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "FTC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 403875,
+          "display": "emtricitabine 200 MG Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "FTC+TDF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 476556,
+          "display": "emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_3TCZDV_Era",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "EFV"
+    },
+    "CKD": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2004,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "FTC",
+              "distribution": 0.5
+            },
+            {
+              "transition": "3TC",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "3TC"
+        }
+      ]
+    },
+    "No CKD": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "date": {
+              "year": 2004,
+              "month": 8,
+              "day": 2,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            },
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "FTC+TDF",
+              "distribution": 0.25
+            },
+            {
+              "transition": "3TC",
+              "distribution": 0.25
+            },
+            {
+              "transition": "FTC",
+              "distribution": 0.25
+            },
+            {
+              "transition": "3TC+ZDV",
+              "distribution": 0.25
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}
