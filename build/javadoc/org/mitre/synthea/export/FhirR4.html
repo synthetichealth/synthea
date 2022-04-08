@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/mitre/synthea/export/FhirPractitionerExporterStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/mitre/synthea/export/FhirStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/mitre/synthea/export/FhirR4.html" target="_top">Frames</a></li>
@@ -172,6 +172,12 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#addPatientHomeLocation-org.hl7.fhir.r4.model.Bundle-">addPatientHomeLocation</a></span>(org.hl7.fhir.r4.model.Bundle&nbsp;bundle)</code>
+<div class="block">Finds the "patient's home" Location resource and returns the URL.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static org.hl7.fhir.r4.model.Bundle</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#convertToFHIR-org.mitre.synthea.world.agents.Person-long-">convertToFHIR</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
              long&nbsp;stopTime)</code>
@@ -179,7 +185,7 @@ extends java.lang.Object</pre>
  associated entries from their health record.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#convertToFHIRJson-org.mitre.synthea.world.agents.Person-long-">convertToFHIRJson</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;stopTime)</code>
@@ -187,17 +193,17 @@ extends java.lang.Object</pre>
  associated entries from their health record.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static ca.uhn.fhir.context.FhirContext</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#getContext--">getContext</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#getUrlPrefix-java.lang.String-">getUrlPrefix</a></span>(java.lang.String&nbsp;resourceType)</code>
 <div class="block">Return either "[resourceType]/" or "urn:uuid:" as appropriate.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Bundle.BundleEntryComponent</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#practitioner-org.mitre.synthea.helpers.RandomNumberGenerator-org.hl7.fhir.r4.model.Bundle-org.mitre.synthea.world.agents.Clinician-">practitioner</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
             org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
@@ -205,7 +211,7 @@ extends java.lang.Object</pre>
 <div class="block">Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Bundle.BundleEntryComponent</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#provider-org.mitre.synthea.helpers.RandomNumberGenerator-org.hl7.fhir.r4.model.Bundle-org.mitre.synthea.world.agents.Provider-">provider</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
         org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
@@ -213,7 +219,7 @@ extends java.lang.Object</pre>
 <div class="block">Map the Provider into a FHIR Organization resource, and add it to the given Bundle.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Location</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/export/FhirR4.html#providerLocation-org.mitre.synthea.helpers.RandomNumberGenerator-org.hl7.fhir.r4.model.Bundle-org.mitre.synthea.world.agents.Provider-">providerLocation</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
                 org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
@@ -343,6 +349,23 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a name="addPatientHomeLocation-org.hl7.fhir.r4.model.Bundle-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addPatientHomeLocation</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;addPatientHomeLocation(org.hl7.fhir.r4.model.Bundle&nbsp;bundle)</pre>
+<div class="block">Finds the "patient's home" Location resource and returns the URL. If it does not yet exist in
+ the bundle, it will create it.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>bundle</code> - the bundle to look in for the patient home resource</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the URL of the patient home resource</dd>
+</dl>
+</li>
+</ul>
 <a name="provider-org.mitre.synthea.helpers.RandomNumberGenerator-org.hl7.fhir.r4.model.Bundle-org.mitre.synthea.world.agents.Provider-">
 <!--   -->
 </a>
@@ -447,7 +470,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/mitre/synthea/export/FhirPractitionerExporterStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/mitre/synthea/export/FhirStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/mitre/synthea/export/FhirR4.html" target="_top">Frames</a></li>

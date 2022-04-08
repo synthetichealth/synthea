@@ -172,6 +172,10 @@
 <dd>
 <div class="block">Add the patient to the patient list.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#addPatientHomeLocation-org.hl7.fhir.r4.model.Bundle-">addPatientHomeLocation(Bundle)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dd>
+<div class="block">Finds the "patient's home" Location resource and returns the URL.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html#addPoint-int-long-double-">addPoint(int, long, double)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory</a></dt>
 <dd>
 <div class="block">Adds a point to the end of the trajectory.</div>
@@ -1217,6 +1221,10 @@
 <dd>
 <div class="block">Number of people that are "currently" in that state.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#CURRENT_CHANCE">CURRENT_CHANCE</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
+<dd>
+<div class="block">Odds of an encounter being virtual, a.k.a.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENT_ENCOUNTERS">CURRENT_ENCOUNTERS</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENT_WEIGHT_LENGTH_PERCENTILE">CURRENT_WEIGHT_LENGTH_PERCENTILE</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -1891,6 +1899,12 @@
 <dt><a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#FhirR4--">FhirR4()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4PatientHome</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">Singleton class to manage the instance of the "Patient's Home" Location resource.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4PatientHome.html#FhirR4PatientHome--">FhirR4PatientHome()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export">FhirR4PatientHome</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/FhirStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirStu3</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
 <dd>&nbsp;</dd>
@@ -2639,6 +2653,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getPatientCost--">getPatientCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>
 <div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4PatientHome.html#getPatientHome--">getPatientHome()</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export">FhirR4PatientHome</a></dt>
+<dd>
+<div class="block">Provides the one and only patient home Location.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/CoverageRecord.html#getPayerAtTime-long-">getPayerAtTime(long)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></dt>
 <dd>
@@ -4667,6 +4685,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html#PreGeneratorArg--">PreGeneratorArg()</a></span> - Constructor for class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#PREPANDEMIC_CHANCE">PREPANDEMIC_CHANCE</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html#prescriptionDetails">prescriptionDetails</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#PRESCRIPTIONS">PRESCRIPTIONS</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
@@ -5598,6 +5618,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html#ShortPayerSerializer--">ShortPayerSerializer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.ShortPayerSerializer</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#shouldEncounterBeVirtual-org.mitre.synthea.world.agents.Person-long-">shouldEncounterBeVirtual(Person, long)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
+<dd>
+<div class="block">Determines whether an encounter should be telemedicine, with different chances before and
+ after the start of the COVID-19 pandemic.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html#shouldRun-org.mitre.synthea.world.agents.Person-org.mitre.synthea.world.concepts.HealthRecord-long-">shouldRun(Person, HealthRecord, long)</a></span> - Method in class org.mitre.synthea.editors.<a href="org/mitre/synthea/editors/GrowthDataErrorsEditor.html" title="class in org.mitre.synthea.editors">GrowthDataErrorsEditor</a></dt>
 <dd>
 <div class="block">Checks to see if the person is under MAX_AGE.</div>
@@ -5862,6 +5887,8 @@
 <dd>
 <div class="block">The Symptom state type adds or updates a patient's symptom.</div>
 </dd>
+<dt><a href="org/mitre/synthea/engine/State.TelemedicinePossibility.html" title="enum in org.mitre.synthea.engine"><span class="typeNameLink">State.TelemedicinePossibility</span></a> - Enum in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/engine/State.Terminal.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">State.Terminal</span></a> - Class in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
 <dd>
 <div class="block">The Terminal state type indicates the end of the module progression.</div>
@@ -5973,6 +6000,16 @@
 <div class="block">Finds the last point of the growth trajectory.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#TELECOM">TELECOM</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">Telemedicine</span></a> - Class in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
+<dd>
+<div class="block">A place for helpers related to telemedicine.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#Telemedicine--">Telemedicine()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#TELEMEDICINE_START_DATE">TELEMEDICINE_START_DATE</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#TELEMEDICINE_UPTAKE_DATE">TELEMEDICINE_UPTAKE_DATE</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Terminal.html#Terminal--">Terminal()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Terminal.html" title="class in org.mitre.synthea.engine">State.Terminal</a></dt>
 <dd>&nbsp;</dd>
@@ -6337,6 +6374,10 @@
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.TelemedicinePossibility.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.TelemedicinePossibility.html" title="enum in org.mitre.synthea.engine">State.TelemedicinePossibility</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html#valueOf-java.lang.String-">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html" title="enum in org.mitre.synthea.export">CSVExporter.ClaimTransactionType</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
@@ -6390,6 +6431,11 @@
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Distribution.Kind.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.TelemedicinePossibility.html#values--">values()</a></span> - Static method in enum org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.TelemedicinePossibility.html" title="enum in org.mitre.synthea.engine">State.TelemedicinePossibility</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum type, in
 the order they are declared.</div>
