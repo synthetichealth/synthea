@@ -75,10 +75,10 @@ public class StateTest {
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
     Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
-    person.setProvider(EncounterType.AMBULATORY, mock);
-    person.setProvider(EncounterType.WELLNESS, mock);
-    person.setProvider(EncounterType.EMERGENCY, mock);
-    person.setProvider(EncounterType.INPATIENT, mock);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, mock);
 
     int age = 35;
     time = System.currentTimeMillis();

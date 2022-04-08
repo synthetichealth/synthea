@@ -65,8 +65,8 @@ public class C19ImmunizationModuleTest {
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     here.assignPoint(person, "Billerica");
     Provider.loadProviders(here, 1L);
-    person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
-        Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
+    person.preferredProviders.forceRelationship(HealthRecord.EncounterType.OUTPATIENT,
+        null, Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, null, decemberFifteenth));
     Payer.loadPayers(here);
     person.coverage.setPayerAtTime(decemberFifteenth, Payer.getGovernmentPayer("Medicare"));
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);

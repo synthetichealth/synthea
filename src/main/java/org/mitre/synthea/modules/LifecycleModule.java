@@ -290,9 +290,7 @@ public final class LifecycleModule extends Module {
           if (person.attributes.get("veteran_provider_reset") == null) {
             // reset providers for veterans, they'll switch to VA facilities
             person.attributes.remove(Person.CURRENTPROVIDER);
-            for (EncounterType type : EncounterType.values()) {
-              person.attributes.remove(Person.PREFERREDYPROVIDER + type);
-            }
+
             person.attributes.put("veteran_provider_reset", true);
           }
         }

@@ -180,6 +180,14 @@ public class Provider implements QuadTreeElement, Serializable {
     return servicesProvided.contains(service);
   }
 
+  public boolean hasSpecialty(String specialty) {
+    return clinicianMap.get(specialty) != null;
+  }
+
+  public boolean canOffer(EncounterType type, String specialty) {
+    return (type == null || hasService(type)) && (specialty == null || hasSpecialty(specialty));
+  }
+
   public void incrementEncounters(EncounterType service, int year) {
     increment(year, ENCOUNTERS);
     increment(year, ENCOUNTERS + "-" + service);
@@ -267,17 +275,19 @@ public class Provider implements QuadTreeElement, Serializable {
    * Find specific service provider for the given person.
    * @param person The patient who requires the service.
    * @param service The service required. For example, EncounterType.AMBULATORY.
+   * @param specialty
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public static Provider findService(Person person, EncounterType service, long time) {
+  public static Provider findService(Person person, EncounterType service, String specialty,
+                                     long time) {
     double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
     double degrees = 0.125;
     List<Provider> options = null;
     Provider provider = null;
     while (degrees <= maxDistance) {
       options = findProvidersByLocation(person, degrees);
-      provider = providerFinder.find(options, person, service, time);
+      provider = providerFinder.find(options, person, service, specialty, time);
       if (provider != null) {
         return provider;
       }

@@ -679,7 +679,7 @@ public class FhirStu3 {
     Provider provider = encounter.provider;
     if (provider == null) {
       // no associated provider, patient goes to wellness provider
-      provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+      provider = person.getProvider(EncounterType.WELLNESS, null, encounter.start);
     }
 
     if (TRANSACTION_BUNDLE) {

@@ -12,13 +12,14 @@ public class ProviderFinderQuality implements IProviderFinder {
   private IProviderFinder nearest = new ProviderFinderNearest();
 
   @Override
-  public Provider find(List<Provider> providers, Person person, EncounterType service, long time) {
+  public Provider find(List<Provider> providers, Person person, EncounterType service,
+                       String specialty, long time) {
     List<Provider> options = new ArrayList<>();
     double bestQuality = Double.NEGATIVE_INFINITY;
 
     for (Provider provider : providers) {
       if (provider.accepts(person, time)
-          && (provider.hasService(service) || service == null)) {
+          && (provider.canOffer(service, specialty))) {
         if (provider.quality > bestQuality) {
           options.clear();
           options.add(provider);
@@ -34,7 +35,7 @@ public class ProviderFinderQuality implements IProviderFinder {
     } else if (options.size() == 1) {
       return options.get(0);
     } else {
-      return nearest.find(options, person, service, time);
+      return nearest.find(options, person, service, specialty, time);
     }
   }
 }

@@ -730,7 +730,7 @@ public class FhirR4 {
     Provider provider = encounter.provider;
     if (provider == null) {
       // no associated provider, patient goes to wellness provider
-      provider = person.getProvider(EncounterType.WELLNESS, encounter.start);
+      provider = person.getProvider(EncounterType.WELLNESS, null, encounter.start);
     }
 
     if (TRANSACTION_BUNDLE) {
@@ -1913,7 +1913,7 @@ public class FhirR4 {
             : findPractitioner(clinician, bundle);
     Provider providerOrganization = person.record.provider;
     if (providerOrganization == null) {
-      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+      providerOrganization = person.getProvider(EncounterType.WELLNESS, null, stopTime);
     }
     String organizationFullUrl = TRANSACTION_BUNDLE
             ? ExportHelper.buildFhirSearchUrl("Organization",
