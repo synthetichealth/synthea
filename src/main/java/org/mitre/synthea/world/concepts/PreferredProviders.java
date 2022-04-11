@@ -13,7 +13,7 @@ import org.mitre.synthea.world.agents.Provider;
  */
 public class PreferredProviders implements Serializable {
   // The table class does not allow null values for keys
-  private static String NULL_PLACEHOLDER = "*";
+  private static String NULL_PLACEHOLDER = ClinicianSpecialty.GENERAL_PRACTICE;
 
   private Table<HealthRecord.EncounterType, String, Provider> relationships;
 
@@ -31,11 +31,7 @@ public class PreferredProviders implements Serializable {
    * @return true if there is an existing relationship
    */
   public boolean doesRelationshipExist(HealthRecord.EncounterType type, String speciality) {
-    String specialityColumnValue = speciality;
-    if (specialityColumnValue == null) {
-      specialityColumnValue = NULL_PLACEHOLDER;
-    }
-    return relationships.contains(type, specialityColumnValue);
+    return relationships.contains(type, blankSafeSpecialty(speciality));
   }
 
   /**
@@ -45,11 +41,7 @@ public class PreferredProviders implements Serializable {
    * @return the Provider if there is a preferred one or null
    */
   public Provider get(HealthRecord.EncounterType type, String speciality) {
-    String specialityColumnValue = speciality;
-    if (specialityColumnValue == null) {
-      specialityColumnValue = NULL_PLACEHOLDER;
-    }
-    return relationships.get(type, specialityColumnValue);
+    return relationships.get(type, blankSafeSpecialty(speciality));
   }
 
   /**
@@ -70,12 +62,7 @@ public class PreferredProviders implements Serializable {
           time);
     }
 
-    String specialityColumnValue = speciality;
-    if (specialityColumnValue == null) {
-      specialityColumnValue = NULL_PLACEHOLDER;
-    }
-
-    relationships.put(type, specialityColumnValue, provider);
+    relationships.put(type, blankSafeSpecialty(speciality), provider);
 
     return provider;
   }
@@ -96,11 +83,7 @@ public class PreferredProviders implements Serializable {
    */
   public void forceRelationship(HealthRecord.EncounterType type, String speciality,
                                 Provider provider) {
-    String specialityColumnValue = speciality;
-    if (specialityColumnValue == null) {
-      specialityColumnValue = NULL_PLACEHOLDER;
-    }
-    relationships.put(type, specialityColumnValue, provider);
+    relationships.put(type, blankSafeSpecialty(speciality), provider);
   }
 
   /**
@@ -109,11 +92,7 @@ public class PreferredProviders implements Serializable {
    * @param speciality the ClinicalSpecialty, may be null
    */
   public void resetRelationship(HealthRecord.EncounterType type, String speciality) {
-    String specialityColumnValue = speciality;
-    if (specialityColumnValue == null) {
-      specialityColumnValue = NULL_PLACEHOLDER;
-    }
-    relationships.remove(type, specialityColumnValue);
+    relationships.remove(type, blankSafeSpecialty(speciality));
   }
 
   /**
@@ -121,5 +100,13 @@ public class PreferredProviders implements Serializable {
    */
   public void reset() {
     relationships.clear();
+  }
+
+  private String blankSafeSpecialty(String providedSpecialty) {
+    String specialityColumnValue = providedSpecialty;
+    if (specialityColumnValue == null || specialityColumnValue.isEmpty()) {
+      specialityColumnValue = NULL_PLACEHOLDER;
+    }
+    return specialityColumnValue;
   }
 }

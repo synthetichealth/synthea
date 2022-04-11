@@ -40,6 +40,7 @@ import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -2319,5 +2320,19 @@ public class StateTest {
       assertEquals(expectedDisplays[i], code.display);
       assertEquals(expectedQuantities[i], supply.quantity);
     }
+  }
+
+  @Test
+  public void testEncounterSpecialty() throws Exception {
+    Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
+    Mockito.when(mock.getResourceID()).thenReturn("Special-UUID");
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY,
+        ClinicianSpecialty.CARDIOLOGY, mock);
+    Module module = TestHelper.getFixture("ahd_with_cardiology.json");
+
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+    Encounter encounter = person.getCurrentEncounter(module);
+    assertEquals("Special-UUID", encounter.provider.getResourceID());
   }
 }
