@@ -378,9 +378,9 @@ public class Location implements Serializable {
     }
 
     Place place;
-    if (zipsForCity.size() == 1) {
+    if (zipsForCity != null && zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
-    } else {
+    } else if (zipsForCity != null) {
       String personZip = (String) person.attributes.get(Person.ZIP);
       if (personZip == null) {
         place = zipsForCity.get(person.randInt(zipsForCity.size()));
@@ -390,6 +390,10 @@ public class Location implements Serializable {
             .findFirst()
             .orElse(zipsForCity.get(person.randInt(zipsForCity.size())));
       }
+    } else {
+      // The place doesn't exist for some reason, pick a random location...
+      String key = (String) zipCodes.keySet().toArray()[person.randInt(zipCodes.keySet().size())];
+      place = zipCodes.get(key).get(person.randInt(zipCodes.get(key).size()));
     }
 
     if (place != null) {
@@ -429,11 +433,15 @@ public class Location implements Serializable {
     }
 
     Place place = null;
-    if (zipsForCity.size() == 1) {
+    if (zipsForCity != null && zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
-    } else {
+    } else if (zipsForCity != null) {
       // pick a random one
       place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
+    } else {
+      // The place doesn't exist for some reason, pick a random location...
+      String key = (String) zipCodes.keySet().toArray()[clinician.randInt(zipCodes.keySet().size())];
+      place = zipCodes.get(key).get(clinician.randInt(zipCodes.get(key).size()));
     }
 
     if (place != null) {
