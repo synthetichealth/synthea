@@ -568,7 +568,53 @@
     "AVRr Sequence": {
       "type": "CallSubmodule",
       "submodule": "heart/avrr/sequence",
-      "direct_transition": "Terminal"
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 1231000119100,
+                    "display": "History of aortic valve replacement (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 119481000119105,
+                    "display": "History of aortic valve repair (situation)"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Set PriorValveOp",
+              "distribution": 0.005
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.995
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        }
+      ]
     },
     "Medium Wait for Encounter": {
       "type": "Delay",
@@ -613,6 +659,16 @@
           "distribution": 0.3
         }
       ]
+    },
+    "Set PriorValveOp": {
+      "type": "SetAttribute",
+      "attribute": "PriorValveOp",
+      "direct_transition": "Delay 10 years",
+      "value": true
+    },
+    "Delay 10 years": {
+      "type": "Simple",
+      "direct_transition": "AVRr Sequence"
     }
   },
   "gmf_version": 2

@@ -217,22 +217,8 @@
       "direct_transition": "AV Replacement Procedure"
     },
     "AV Replacement Procedure": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 26212005,
-          "display": "Replacement of aortic valve (procedure)"
-        }
-      ],
-      "distribution": {
-        "kind": "UNIFORM",
-        "parameters": {
-          "high": 230,
-          "low": 160
-        }
-      },
-      "unit": "minutes",
+      "type": "CallSubmodule",
+      "submodule": "PerformAVReplace",
       "direct_transition": "Removal_of_Aortic_Cross_Clamp"
     },
     "AV Repair Procedure": {

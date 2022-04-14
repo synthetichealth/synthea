@@ -40,6 +40,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.PerformAVReplace;
 import org.mitre.synthea.modules.PerformAnesthesia;
 import org.mitre.synthea.modules.PerformCABG;
 import org.mitre.synthea.modules.PerformTAVR;
@@ -77,6 +78,7 @@ public class Module implements Cloneable, Serializable {
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
     retVal.put("PerformCABG", new ModuleSupplier(new PerformCABG()));
     retVal.put("PerformTAVR", new ModuleSupplier(new PerformTAVR()));
+    retVal.put("PerformAVReplace", new ModuleSupplier(new PerformAVReplace()));
     retVal.put("PerformAnesthesia", new ModuleSupplier(new PerformAnesthesia()));
 
     Properties moduleOverrides = getModuleOverrides();
