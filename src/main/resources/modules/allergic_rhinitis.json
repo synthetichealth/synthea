@@ -153,6 +153,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "allergic_rhinitis",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

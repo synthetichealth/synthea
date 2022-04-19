@@ -252,7 +252,6 @@ public class Demographics implements Comparable<Demographics>, Serializable {
      */
 
     String pickedRange = incomeDistribution.next(random);
-
     String[] range = pickedRange.split("\\.\\.");
     // TODO this seems like it would benefit from better caching
     int low = Integer.parseInt(range[0]) * 1000;
@@ -454,11 +453,14 @@ public class Demographics implements Comparable<Demographics>, Serializable {
       String csvHeader = Integer.toString(i++);
       double percentage = Double.parseDouble(line.get(csvHeader));
       d.ages.put(ageGroup, percentage);
+
     }
+    nonZeroDefaults(d.ages);
 
     d.gender = new HashMap<String, Double>();
     d.gender.put("male", Double.parseDouble(line.get("TOT_MALE")));
     d.gender.put("female", Double.parseDouble(line.get("TOT_FEMALE")));
+    nonZeroDefaults(d.gender);
 
     double percentageTotal = 0;
     d.race = new HashMap<String, Double>();
@@ -480,6 +482,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
       d.race.put("hawaiian", 0.0);
       d.race.put("other", 0.0);
     }
+    nonZeroDefaults(d.race);
 
     d.income = new HashMap<String, Double>();
     for (String income : CSV_INCOMES) {
@@ -491,6 +494,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         d.income.put(income, percentage);
       }
     }
+    nonZeroDefaults(d.income);
 
     d.education = new HashMap<String, Double>();
     for (String education : CSV_EDUCATIONS) {
@@ -502,10 +506,35 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         d.education.put(education.toLowerCase(), percentage);
       }
     }
+    nonZeroDefaults(d.education);
 
     d.ethnicity = Double.parseDouble(line.get(CSV_ETHNICITY));
 
     return d;
+  }
+
+  /**
+   * A distribution with all zero values will cause run-time issues.
+   * If the values are all zero, an equally weighted uniform distribution
+   * will be set.
+   * @param map The map to check.
+   */
+  private static void nonZeroDefaults(Map<String, Double> map) {
+    // Any null or nan values should be zero
+    map.replaceAll((key, value) -> (value == null || value.isNaN()) ? 0.0 : value);
+    // Now check if all values are zero
+    boolean allZero = true;
+    for (Double value : map.values()) {
+      if (value != 0)  {
+        allZero = false;
+        break;
+      }
+    }
+    // If all values were zero, apply a uniform distribution.
+    if (allZero) {
+      Double value = 1.0 / map.size();
+      map.replaceAll((key, oldValue) -> value);
+    }
   }
 
   /**

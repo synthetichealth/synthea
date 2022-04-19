@@ -1,0 +1,24 @@
+name: Feature Request
+description: Request a new feature in Synthea
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+
+        Prior to filling out a feature request, it is recommended to open a Synthea Discussion
+        to ensure that the desired functionality is something that can't be currently achieved
+        with Synthea and that the idea is something that the Synthea team would be willing to
+        incorporate.
+
+        Also, please check the [Contributions to Avoid](https://github.com/synthetichealth/synthea/wiki/Contributing#contributions-to-avoid)
+        section of the Synthea wiki to ensure your idea is something that fits Synthea's scope.
+  - type: textarea
+    id: feature
+    attributes:
+      label: Requested Feature
+      description: New behavior, simulated information or other item you would like in Synthea
+      placeholder: Synthea should add a feature to...
+    validations:
+      required: true

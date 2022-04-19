@@ -271,8 +271,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "850261000000100",
-          "display": "Education about dementia"
+          "code": "311401005",
+          "display": "Patient education (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -423,6 +423,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Type of Alzheimer's",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

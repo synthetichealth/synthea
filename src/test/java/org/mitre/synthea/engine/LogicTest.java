@@ -75,7 +75,7 @@ public class LogicTest {
   }
 
   private boolean doTest(String testName) {
-    JsonObject definition = tests.getAsJsonObject(testName);
+    JsonObject definition = tests.getAsJsonObject(testName).deepCopy();
     Logic logic = Utilities.getGson().fromJson(definition, Logic.class);
 
     return logic.test(person, time);

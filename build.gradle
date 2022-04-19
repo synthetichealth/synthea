@@ -43,11 +43,11 @@ dependencies {
   // This dependency is found on compile classpath of this component and consumers.
   implementation 'com.google.code.gson:gson:2.8.7'
   implementation 'com.jayway.jsonpath:json-path:2.4.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.2.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.2.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.7.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.7.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.7.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.7.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.7.0'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.26-incubating'
 
@@ -104,12 +104,12 @@ dependencies {
   testImplementation 'org.powermock:powermock-module-junit4:1.7.1'
   testImplementation 'org.powermock:powermock-api-mockito2:1.7.1'
   testImplementation 'com.github.tomakehurst:wiremock-jre8:2.26.3'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:5.2.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.2.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:5.2.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:5.2.0'
-  testImplementation 'com.helger:ph-schematron:5.0.4'
-  testImplementation 'com.helger:ph-commons:9.1.1'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:5.7.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.7.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:5.7.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:5.7.0'
+  testImplementation 'com.helger:ph-schematron:5.6.5'
+  testImplementation 'com.helger:ph-commons:9.5.4'
 }
 
 // Provide more descriptive test failure output
@@ -129,7 +129,10 @@ test {
 
 buildscript {
   repositories {
-    jcenter()
+    mavenCentral()
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
   }
   dependencies {
     // commons-io used in getting the version id below
@@ -141,8 +144,8 @@ buildscript {
 
 jacocoTestReport {
   reports {
-    xml.enabled true
-    html.enabled true
+    xml.required = true
+    html.required = true
   }
 }
 
@@ -152,7 +155,7 @@ task graphviz(type: JavaExec) {
   group 'Application'
   description 'Generate rule visualization'
   classpath sourceSets.main.runtimeClasspath
-  main = "Graphviz"
+  mainClass = "Graphviz"
 }
 
 task uberJar(type: Jar) {
@@ -181,7 +184,7 @@ task concepts(type: JavaExec) {
   group 'Application'
   description 'Create a list of simulated concepts'
   classpath sourceSets.main.runtimeClasspath
-  main = "org.mitre.synthea.helpers.Concepts"
+  mainClass = "org.mitre.synthea.helpers.Concepts"
   args 'false'
 }
 
@@ -189,7 +192,7 @@ task conceptswithoutcosts(type: JavaExec) {
   group 'Application'
   description 'Create a list of simulated concepts without costs'
   classpath sourceSets.main.runtimeClasspath
-  main = "org.mitre.synthea.helpers.Concepts"
+  mainClass = "org.mitre.synthea.helpers.Concepts"
   args 'true'
 }
 
@@ -197,14 +200,14 @@ task attributes(type: JavaExec) {
   group 'Application'
   description 'Create a list of patient attributes'
   classpath sourceSets.main.runtimeClasspath
-  main = "org.mitre.synthea.helpers.Attributes"
+  mainClass = "org.mitre.synthea.helpers.Attributes"
 }
 
 task overrides(type: JavaExec) {
   group 'Application'
   description 'Create a list of modules parameters in module override format'
   classpath sourceSets.main.runtimeClasspath
-  main = "org.mitre.synthea.helpers.ModuleOverrides"
+  mainClass = "org.mitre.synthea.helpers.ModuleOverrides"
   doFirst {
     // TODO: is there a way to make this cleaner?
     String includeFields = project.hasProperty('includeFields') ? project.getProperty('includeFields') : ""
@@ -220,7 +223,7 @@ task physiology(type: JavaExec) {
     group 'Application'
     description 'Test a physiology simulation'
     classpath sourceSets.main.runtimeClasspath
-    main = "org.mitre.synthea.engine.PhysiologySimulator"
+    mainClass = "org.mitre.synthea.engine.PhysiologySimulator"
 }
 
 task versionTxt() {

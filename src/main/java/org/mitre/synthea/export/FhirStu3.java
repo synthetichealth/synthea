@@ -1188,6 +1188,12 @@ public class FhirStu3 {
       identifier.setValue(encounter.provider.getResourceID());
       eob.setOrganization(new Reference().setIdentifier(identifier));
     }
+    String npi = "9999999999";
+    if (encounter.clinician != null) {
+      npi = encounter.clinician.npi;
+    } else if (encounter.provider != null) {
+      npi = encounter.provider.npi;
+    }
 
     // Get the insurance info at the time that the encounter happened.
     Payer payer = encounter.claim.plan.getPayer();
@@ -1215,7 +1221,23 @@ public class FhirStu3 {
     if (!inpatient && !outpatient) {
       eob.setClaim(new Reference()
           .setReference(claimEntry.getFullUrl()));
-      eob.setReferral(new Reference("#1"));
+      List<Reference> recipientList = new ArrayList<>();
+      recipientList.add(new Reference()
+          .setIdentifier(new Identifier()
+          .setSystem("http://hl7.org/fhir/sid/us-npi")
+          .setValue(npi)));
+      eob.addContained(new ReferralRequest()
+          .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
+          .setIntent(ReferralRequest.ReferralCategory.ORDER)
+          .setSubject(new Reference(personEntry.getFullUrl()))
+          .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
+              .setAgent(new Reference()
+                  .setIdentifier(new Identifier()
+                      .setSystem("http://hl7.org/fhir/sid/us-npi")
+                      .setValue(npi))))
+          .setRecipient(recipientList)
+          .setId("referral"));
+      eob.setReferral(new Reference("#referral"));
       eob.setCreated(encounterResource.getPeriod().getEnd());
     }
     eob.setType(claim.getType());
@@ -1455,30 +1477,6 @@ public class FhirStu3 {
         .setCode("USD");
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
-
-    // Hardcoded
-    String npi = "9999999999";
-    if (encounter.clinician != null) {
-      npi = encounter.clinician.npi;
-    } else if (encounter.provider != null) {
-      npi = encounter.provider.npi;
-    }
-    List<Reference> recipientList = new ArrayList<>();
-    recipientList.add(new Reference()
-        .setIdentifier(new Identifier()
-        .setSystem("http://hl7.org/fhir/sid/us-npi")
-        .setValue(npi)));
-    eob.addContained(new ReferralRequest()
-        .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
-        .setIntent(ReferralRequest.ReferralCategory.ORDER)
-        .setSubject(new Reference(personEntry.getFullUrl()))
-        .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
-            .setAgent(new Reference()
-                .setIdentifier(new Identifier()
-                    .setSystem("http://hl7.org/fhir/sid/us-npi")
-                    .setValue(npi))))
-        .setRecipient(recipientList)
-        .setId("1"));
 
     if (encounter.clinician != null) {
       // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
