@@ -83,7 +83,7 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
     Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-    PlanEligibilityFinder.buildPlanEligibilities(testState, Config.get("generate.payers.insurance_plans.csv_eligibilities"));
+    PlanEligibilityFinder.buildPlanEligibilities(testState, Config.get("generate.payers.insurance_plans.eligibilities_file"));
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
     testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);
@@ -222,8 +222,8 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
-    assertEquals(PayerManager.MEDICARE,
-        person.coverage.getPlanAtTime(0L).getPayer().getName());
+    assertEquals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE),
+        person.coverage.getPlanAtTime(0L).getPayer());
   }
 
   @Test
@@ -237,8 +237,8 @@ public class PayerTest {
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, time + sixMonths);
-    assertEquals(PayerManager.MEDICARE,
-        person.coverage.getPlanAtTime(time + 1).getPayer().getName());
+    assertEquals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE),
+        person.coverage.getPlanAtTime(time + 1).getPayer());
   }
 
   @Test
@@ -326,7 +326,7 @@ public class PayerTest {
     healthInsuranceModule.process(person, age64Time);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
-    // The person is now 65 and qualifies for Medicare in addition to.
+    // The person is now 65 and qualifies for Medicare in addition to Medicaid.
     healthInsuranceModule.process(person, age65Time);
     assertEquals(PayerManager.DUAL_ELIGIBLE,
         person.coverage.getPlanAtTime(age65Time).getPayer().getName());

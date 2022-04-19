@@ -514,20 +514,13 @@ public class Payer implements Serializable {
    * @return
    */
   public String getAssociatedInsuranceStatus() {
-    String insuranceStatus;
     if (this.isNoInsurance()) {
-      insuranceStatus = "none";
-    } else if (this.isGovernmentPayer()) {
-      insuranceStatus = "medicare"; // default to medicare when government payer
-      if (this.getName().equalsIgnoreCase(PayerManager.MEDICAID)) {
-        insuranceStatus = "medicaid";
-      } else if (this.getName().equalsIgnoreCase(PayerManager.DUAL_ELIGIBLE)) {
-        insuranceStatus = "dual_eligible";
-      }
-    } else {
-      insuranceStatus = "private";
+      return "none";
     }
-    return insuranceStatus;
+    if (this.isGovernmentPayer()) {
+      return this.name;
+    }
+    return "private";
   }
 
   /**
@@ -543,8 +536,6 @@ public class Payer implements Serializable {
    * @return  This payer's government payer plan.
    */
   public InsurancePlan getGovernmentPayerPlan() {
-    // TODO - Reimplement using inheritance?
-    // Should each gov payer have multiple plan options? Or just one?
     if (!this.ownership.equals(PayerManager.GOV_OWNERSHIP)) {
       throw new RuntimeException("Only government payers can call getGovernmentPayerPlan().");
     }

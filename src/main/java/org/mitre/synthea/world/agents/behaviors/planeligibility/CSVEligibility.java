@@ -77,7 +77,7 @@ public class CSVEligibility implements IPlanEligibility {
     eligbilityOptions.put(ACCEPTANCE_LIKELIHOOD, (input) -> new AcceptanceLikelihoodEligibility(Double.parseDouble(input)));
     eligbilityOptions.put(POVERTY_MULTIPLIER_FILE, (input) -> new PovertyMultiplierFileEligibility(state, input));
     eligbilityOptions.put(MNIL_FILE, (input) -> new MedicallyNeedyIncomeEligibility(state, input));
-    eligbilityOptions.put("veteran_eligiblity", (input) -> new VeteranEligiblity());
+    eligbilityOptions.put(VETERAN, (input) -> new VeteranEligiblity());
   }
   
   /**

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.PayerManager;
 
 /**
  * Returns the requested Payer elgibility algorithm. This prevents redundant
@@ -41,7 +40,6 @@ public class PlanEligibilityFinder {
   public static void buildPlanEligibilities(String state, String fileName) {    
     planEligibilities = new HashMap<>();
     planEligibilities.put(PlanEligibilityFinder.GENERIC, new GenericPayerEligibilty());
-
     // Build the CSV input eligbility algorithms.
     CSVEligibility.buildEligibilityOptions(state);
     String resource = null;

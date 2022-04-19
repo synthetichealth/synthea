@@ -71,8 +71,8 @@ public class PayerManager {
    */
   public static void loadPayers(Location location) {
     // Load the plan eligibility algorithms.
-    PlanEligibilityFinder.buildPlanEligibilities
-        (location.state, Config.get("generate.payers.insurance_plans.csv_eligibilities"));
+    String eligibilitiesFile = Config.get("generate.payers.insurance_plans.eligibilities_file");
+    PlanEligibilityFinder.buildPlanEligibilities(location.state, eligibilitiesFile);
 
     // Build the Plan Finder.
     planFinder = buildPlanFinder();
