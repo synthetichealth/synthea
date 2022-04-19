@@ -341,9 +341,10 @@ public class PayerTest {
     double monthlyPremium = plan.getMonthlyPremium();
     double deductible = plan.getDeductible();
     double totalYearlyCost = (monthlyPremium * 12) + deductible;
+    long birthTime = Utilities.convertCalendarYearsToTime(1980);
 
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
     // Give the person an income lower than the totalYearlyCost.
@@ -356,8 +357,8 @@ public class PayerTest {
     HealthInsuranceModule.povertyLevel = Config.getAsDouble(
             "generate.demographics.socioeconomic.income.poverty", 11000);
 
-    healthInsuranceModule.process(person, 0L);
-    InsurancePlan newPlan = person.coverage.getPlanAtTime(0L);
+    healthInsuranceModule.process(person, birthTime);
+    InsurancePlan newPlan = person.coverage.getPlanAtTime(birthTime);
     assertTrue(newPlan.isNoInsurance());
 
     // Reset the povery level.

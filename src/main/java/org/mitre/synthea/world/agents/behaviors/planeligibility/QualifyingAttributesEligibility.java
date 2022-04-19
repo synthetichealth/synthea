@@ -14,37 +14,37 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * An algorithm that defines the logic for eligibility for social security based on disability. This is expected to be used in conjuntion with Medicare, when someone is Social Security eligible, they also qualify for Medicare.
  */
-public class QualifyingConditionsEligibility implements IPlanEligibility {
+public class QualifyingAttributesEligibility implements IPlanEligibility {
 
-  public static final String SOCIAL_SECURITY = "SOCIAL_SECURITY";
+  private final List<String> qualifyingAttributes;
 
-  // A list that maintains the codes that qualify a person for Social Security Disability.
-  // Source: https://www.ssa.gov/disability/professionals/bluebook/AdultListings.htm
-  // Note that the this list is incomplete, some condtions are not currently simulated in Synthea.
-  // It is by no means an exhaustive list, it probably has ~50% of the disability eligibilities.
-  private final List<String> ssDisabilities;
-
-  public QualifyingConditionsEligibility(String input) {
+  public QualifyingAttributesEligibility(String input) {
     if (input.contains("/")) {
       // The input is a file, so we have a file that defines the eligible conditions.
-      ssDisabilities = buildQualifyingConditionsEligibility(input);
+      qualifyingAttributes = buildQualifyingAttributesFile(input);
     } else {
-      // The input is a set of codes.
-      ssDisabilities = Arrays.asList(input.split("|"));
+      // The input is a set of attributes.
+      qualifyingAttributes = Arrays.asList(input.split("\\|"));
     }
   }
 
   @Override
   public boolean isPersonEligible(Person person, long time) {
-    boolean ssDisabilityEligble = ssDisabilities.stream().anyMatch(code -> person.record.conditionActive(code));
-    return ssDisabilityEligble;
+    boolean attributeEligible = qualifyingAttributes.stream().anyMatch(attribute -> {
+      Object attributeResult = person.attributes.get(attribute);
+      if (attributeResult == null) {
+        return false;
+      }
+      return ((boolean) attributeResult) == true;
+    });
+    return attributeEligible;
   }
 
   /**
    * Builds a list of codes that would qualify a person for Social Security Disability.
    * @return
    */
-  private static List<String> buildQualifyingConditionsEligibility(String fileName) {
+  private static List<String> buildQualifyingAttributesFile(String fileName) {
     String resource = null;
     try {
       resource = Utilities.readResource(fileName);
@@ -52,7 +52,7 @@ public class QualifyingConditionsEligibility implements IPlanEligibility {
       e.printStackTrace();
     }
 
-    List<String> ssdEligibleCodes = new ArrayList<String>();
+    List<String> eligibleAttributes = new ArrayList<String>();
 
     Iterator<? extends Map<String, String>> csv = null;
     try {
@@ -62,10 +62,10 @@ public class QualifyingConditionsEligibility implements IPlanEligibility {
     }
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-        String codeValue = row.get("codes");
-        String[] codes = codeValue.split("\\|");
-        ssdEligibleCodes.addAll(Arrays.asList(codes));
+        String attribute = row.get("codes");
+        String[] codes = attribute.split("\\|");
+        eligibleAttributes.addAll(Arrays.asList(codes));
     }
-    return ssdEligibleCodes;
+    return eligibleAttributes;
   }
 }

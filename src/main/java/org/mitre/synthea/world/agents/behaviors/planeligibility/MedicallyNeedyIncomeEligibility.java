@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -13,8 +12,6 @@ import org.mitre.synthea.world.agents.Person;
  * A class that defines the elgibility logic for Medically Needy Income Limits (MNIL)
  */
 public class MedicallyNeedyIncomeEligibility implements IPlanEligibility {
-
-  private static final double povertyLevel = Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
 
   // Medicaid Medically Needy Income Limits (MNIL)
   private static boolean mnilAvailable;  // Whether Medicaid Medically Needy Income Limits are available.

@@ -214,7 +214,6 @@ public class PayerManager {
           + " " + payerId + " has ownership of " + ownership + ".");
     }
     String eligibilityName = line.remove("eligibility_algorithm");
-    System.out.println(eligibilityName);
 
     Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, eligibilityName);
 
