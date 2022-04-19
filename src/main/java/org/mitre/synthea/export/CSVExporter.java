@@ -646,7 +646,7 @@ public class CSVExporter {
     // LAT,LON
     s.append(',').append(person.getY()).append(',').append(person.getX()).append(',');
     // HEALTHCARE_EXPENSES
-    s.append(person.coverage.getTotalExpenses()).append(',');
+    s.append(person.coverage.getTotalHealthcareExpenses()).append(',');
     // HEALTHCARE_COVERAGE
     s.append(person.coverage.getTotalCoverage()).append(',');
     // INCOME

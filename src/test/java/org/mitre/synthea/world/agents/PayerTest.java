@@ -202,7 +202,7 @@ public class PayerTest {
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
     }
-    // Process the person's insurance for ages 65-69, should have medicare every year.
+    // Process their insurance for ages 65-69, should have medicare every year.
     for(int age = 65; age < 70; age++) {
       long currentTime = birthTime + Utilities.convertTime("years", age) + threeMonths;
       healthInsuranceModule.process(person, currentTime);
@@ -288,7 +288,7 @@ public class PayerTest {
   @Test
   public void receiveMedicaidMnilEligble() {
     long time = Utilities.convertCalendarYearsToTime(1980);
-    // Recieve Medciare after having too high of an income, but later qualifying for MNIL.
+    // Receive Medciare after having too high of an income, but later qualifying for MNIL.
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "M");
@@ -347,25 +347,15 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
-    // Give the person an income lower than the totalYearlyCost.
-    person.attributes.put(Person.INCOME, (int) totalYearlyCost - 1);
-
-    // Set the medicaid poverty level to be lower than half their income.
-    // This is because 0 year olds in MA qualify for Medicaid at 2*poverty.
-    Config.set("generate.demographics.socioeconomic.income.poverty",
-        Integer.toString((int) (totalYearlyCost/3) - 5));
-    HealthInsuranceModule.povertyLevel = Config.getAsDouble(
-            "generate.demographics.socioeconomic.income.poverty", 11000);
+    // Give the person an income lower than the totalYearlyCost divided by the max income ratio a person is willing to spend on healthcare. 
+    // This value greater than the 0 year old poverty multiplier in MA (2 * 12880).
+    double costThreshold = ((double) totalYearlyCost) / Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
+    person.attributes.put(Person.INCOME, (int) costThreshold - 10);
 
     healthInsuranceModule.process(person, birthTime);
     InsurancePlan newPlan = person.coverage.getPlanAtTime(birthTime);
     assertTrue(newPlan.isNoInsurance());
 
-    // Reset the povery level.
-    Config.set("generate.demographics.socioeconomic.income.poverty",
-        Integer.toString((int) PayerTest.povertyLevel));
-    HealthInsuranceModule.povertyLevel = Config.getAsDouble(
-            "generate.demographics.socioeconomic.income.poverty", 11000);
   }
 
   @Test
@@ -459,7 +449,7 @@ public class PayerTest {
     // The payer's revenue should equal the total monthly premiums.
     assertEquals(totalMonthlyPremiumsOwed, totalRevenue, 0.001);
     // The person's health care expenses should equal the total monthly premiums.
-    assertEquals(totalMonthlyPremiumsOwed, person.coverage.getTotalExpenses(), 0.001);
+    assertEquals(totalMonthlyPremiumsOwed, person.coverage.getTotalPremiumExpenses(), 0.001);
   }
 
   @Test(expected = RuntimeException.class)
@@ -569,7 +559,7 @@ public class PayerTest {
     // The No Insurance's uncovered costs should equal the total cost.
     assertEquals(totalCost, PayerManager.noInsurance.getAmountUncovered(), 0.001);
     // The person's expenses shoudl equal the total cost.
-    assertEquals(totalCost, person.coverage.getTotalExpenses(), 0.001);
+    assertEquals(totalCost, person.coverage.getTotalHealthcareExpenses(), 0.001);
   }
 
   @Test
@@ -608,7 +598,7 @@ public class PayerTest {
     double expenses = encounter.claim.totals.copay
         + encounter.claim.totals.deductible
         + encounter.claim.totals.paidByPatient;
-    assertEquals(person.coverage.getTotalExpenses(), expenses, 0.001);
+    assertEquals(person.coverage.getTotalHealthcareExpenses(), expenses, 0.001);
   }
 
   @Test
@@ -626,7 +616,7 @@ public class PayerTest {
     // Person's coverage should equal $0.0.
     assertEquals(0.0, person.coverage.getTotalCoverage(), 0.001);
     // Person's expenses should equal the total cost of the encounter.
-    assertEquals(person.coverage.getTotalExpenses(), encounter.getCost().doubleValue(), 0.001);
+    assertEquals(person.coverage.getTotalHealthcareExpenses(), encounter.getCost().doubleValue(), 0.001);
   }
 
   @Test

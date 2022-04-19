@@ -225,10 +225,18 @@ public class CoverageRecord implements Serializable {
   /**
    * Returns the total healthcare expenses for this person.
    */
-  public double getTotalExpenses() {
+  public double getTotalHealthcareExpenses() {
     double total = 0;
     for (PlanRecord plan : planHistory) {
       total += plan.healthcareExpenses;
+    }
+    return total;
+  }
+
+  public double getTotalPremiumExpenses() {
+    double total = 0;
+    for (PlanRecord plan : planHistory) {
+      total += plan.insuranceCosts;
     }
     return total;
   }
