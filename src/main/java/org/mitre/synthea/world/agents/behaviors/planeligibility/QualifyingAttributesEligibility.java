@@ -31,10 +31,10 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
   @Override
   public boolean isPersonEligible(Person person, long time) {
     boolean attributeEligible = qualifyingAttributes.stream().anyMatch(attribute -> {
-      Object attributeResult = person.attributes.get(attribute);
-      if (attributeResult == null) {
+      if (!person.attributes.containsKey(attribute)) {
         return false;
       }
+      Object attributeResult = person.attributes.get(attribute);
       return ((boolean) attributeResult) == true;
     });
     return attributeEligible;

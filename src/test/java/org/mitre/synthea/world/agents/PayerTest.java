@@ -194,17 +194,17 @@ public class PayerTest {
     person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    long threeMonths = Utilities.convertTime("months", 3);
+    long timeInterval = Utilities.convertTime("months", 0.9);
     // Process the person's health insurance for 64 years, should have private insurance for all.
     for(int age = 0; age < 65; age++) {
-      long currentTime = birthTime + Utilities.convertTime("years", age) + threeMonths;
+      long currentTime = birthTime + Utilities.convertTime("years", age) + timeInterval;
       healthInsuranceModule.process(person, currentTime);
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
     }
     // Process their insurance for ages 65-69, should have medicare every year.
     for(int age = 65; age < 70; age++) {
-      long currentTime = birthTime + Utilities.convertTime("years", age) + threeMonths;
+      long currentTime = birthTime + Utilities.convertTime("years", age) + timeInterval;
       healthInsuranceModule.process(person, currentTime);
       assertTrue(person.coverage.getPlanAtTime(currentTime).isMedicarePlan());
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));

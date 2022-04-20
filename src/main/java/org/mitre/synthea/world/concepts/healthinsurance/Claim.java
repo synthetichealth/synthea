@@ -151,58 +151,60 @@ public class Claim implements Serializable {
   private void assignCosts(ClaimEntry claimEntry, PlanRecord planRecord) {
     claimEntry.cost = claimEntry.entry.getCost().doubleValue();
     double remainingUnpaid = claimEntry.cost;
-    if (plan.coversService(claimEntry.entry)) {
-      plan.incrementCoveredEntries(claimEntry.entry);
-      // Apply copay to Encounters and Medication claims only
-      if ((claimEntry.entry instanceof HealthRecord.Encounter)
-          || (claimEntry.entry instanceof HealthRecord.Medication)) {
-        claimEntry.copay = plan.determineCopay(claimEntry.entry);
-        remainingUnpaid -= claimEntry.copay;
-      }
-      // Check if the patient has remaining deductible
-      if (remainingUnpaid > 0 && planRecord.remainingDeductible > 0) {
-        if (planRecord.remainingDeductible >= remainingUnpaid) {
-          claimEntry.deductible = remainingUnpaid;
-        } else {
-          claimEntry.deductible = planRecord.remainingDeductible;
-        }
-        remainingUnpaid -= claimEntry.deductible;
-        planRecord.remainingDeductible -= claimEntry.deductible;
-      }
-      if (remainingUnpaid > 0) {
-        // Check if the payer has an adjustment
-        double adjustment = plan.adjustClaim(claimEntry, person);
-        remainingUnpaid -= adjustment;
-      }
-      if (remainingUnpaid > 0) {
-        // Check if the patient has coinsurance
-        double coinsurance = plan.getCoinsurance();
-        if (coinsurance > 0) {
-          // Payer covers some
-          claimEntry.coinsurancePaidByPayer = (coinsurance * remainingUnpaid);
-          remainingUnpaid -= claimEntry.coinsurancePaidByPayer;
-        } else {
-          // Payer covers all
-          claimEntry.paidByPayer = remainingUnpaid;
-          remainingUnpaid -= claimEntry.paidByPayer;
-        }
-      }
-      if (remainingUnpaid > 0) {
-        // If secondary insurance, payer covers remainder, not patient.
-        if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
-          claimEntry.paidBySecondaryPayer = remainingUnpaid;
-          remainingUnpaid -= claimEntry.paidBySecondaryPayer;
-        }
-      }
-      if (remainingUnpaid > 0) {
-        // Patient amount
-        claimEntry.paidByPatient = remainingUnpaid;
-        remainingUnpaid -= claimEntry.paidByPatient;
-      }
-    } else {
+
+    if(!plan.coversService(claimEntry.entry)){
       plan.incrementUncoveredEntries(claimEntry.entry);
       // Payer does not cover care
+      claimEntry.paidByPatient = remainingUnpaid; 
+      return;
+    } 
+
+    plan.incrementCoveredEntries(claimEntry.entry);
+    // Apply copay to Encounters and Medication claims only
+    if ((claimEntry.entry instanceof HealthRecord.Encounter)
+        || (claimEntry.entry instanceof HealthRecord.Medication)) {
+      claimEntry.copay = plan.determineCopay(claimEntry.entry);
+      remainingUnpaid -= claimEntry.copay;
+    }
+    // Check if the patient has remaining deductible
+    if (remainingUnpaid > 0 && planRecord.remainingDeductible > 0) {
+      if (planRecord.remainingDeductible >= remainingUnpaid) {
+        claimEntry.deductible = remainingUnpaid;
+      } else {
+        claimEntry.deductible = planRecord.remainingDeductible;
+      }
+      remainingUnpaid -= claimEntry.deductible;
+      planRecord.remainingDeductible -= claimEntry.deductible;
+    }
+    if (remainingUnpaid > 0) {
+      // Check if the payer has an adjustment
+      double adjustment = plan.adjustClaim(claimEntry, person);
+      remainingUnpaid -= adjustment;
+    }
+    if (remainingUnpaid > 0) {
+      // Check if the patient has coinsurance
+      double coinsurance = plan.getCoinsurance();
+      if (coinsurance > 0) {
+        // Payer covers some
+        claimEntry.coinsurancePaidByPayer = (coinsurance * remainingUnpaid);
+        remainingUnpaid -= claimEntry.coinsurancePaidByPayer;
+      } else {
+        // Payer covers all
+        claimEntry.paidByPayer = remainingUnpaid;
+        remainingUnpaid -= claimEntry.paidByPayer;
+      }
+    }
+    if (remainingUnpaid > 0) {
+      // If secondary insurance, payer covers remainder, not patient.
+      if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
+        claimEntry.paidBySecondaryPayer = remainingUnpaid;
+        remainingUnpaid -= claimEntry.paidBySecondaryPayer;
+      }
+    }
+    if (remainingUnpaid > 0) {
+      // Patient amount
       claimEntry.paidByPatient = remainingUnpaid;
+      remainingUnpaid -= claimEntry.paidByPatient;
     }
   }
 

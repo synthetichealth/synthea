@@ -328,11 +328,10 @@ public class CoverageRecord implements Serializable {
    */
   public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
     CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
-    double currentYearlyExpenses;
+    double currentYearlyExpenses = 0.0;
     if (planRecord != null) {
-      currentYearlyExpenses = planRecord.healthcareExpenses;
-    } else {
-      currentYearlyExpenses = 0.0;
+      currentYearlyExpenses += planRecord.getHealthcareExpenses();
+      currentYearlyExpenses += planRecord.getInsuranceCosts();
     }
     return (yearlyIncome - currentYearlyExpenses) > 0;
   }

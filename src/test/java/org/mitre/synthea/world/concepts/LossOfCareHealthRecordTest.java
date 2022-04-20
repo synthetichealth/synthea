@@ -26,7 +26,7 @@ public class LossOfCareHealthRecordTest {
 
   private long time;
   private double defaultEncounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-  private double testPrivatePayerCopay;
+  private Encounter dummyWellnessEncounter;
 
   /**
    * Setup for HealthRecord Tests.
@@ -50,9 +50,7 @@ public class LossOfCareHealthRecordTest {
     Person person = new Person(0L);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     person.attributes.put(Person.INCOME, 1);
-    Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
-    InsurancePlan testPrivatePayerPlan = testPrivatePayer.getPlans().iterator().next();
-    testPrivatePayerCopay = testPrivatePayerPlan.determineCopay(encounter);
+    dummyWellnessEncounter = person.encounterStart(time, EncounterType.WELLNESS);
 
     time = 0L; //Utilities.convertCalendarYearsToTime(1900);
   }
@@ -66,7 +64,7 @@ public class LossOfCareHealthRecordTest {
   @Test
   public void personRunsOutOfIncomeWithNoInsurance() {
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
@@ -95,21 +93,20 @@ public class LossOfCareHealthRecordTest {
   @Test
   public void personRunsOutOfIncomeDueToCopay() {
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.01);
+    person.attributes.put(Person.GENDER, "M");
     InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
     person.coverage.setPlanAtTime(time, plan);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
-
     // Determine income
-    double encCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-    double coinsurance = 1 - plan.getCoinsurance();
-    double deductible = plan.getDeductible();
-    double income = deductible
-        + (2 * (encCost - testPrivatePayerCopay) * coinsurance)
-        + (2 * testPrivatePayerCopay) - 1;
+    double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
+    double planCoinsurance = 1.0 - plan.getCoinsurance();
+    double planCopay = plan.determineCopay(dummyWellnessEncounter);
+    double income = (2 * (encounterCost - planCopay) * planCoinsurance) + (2 * planCopay) - 1;
     // Set person's income to be $1 lower than the cost of 2 visits.
-    person.attributes.put(Person.INCOME, (int) income);
+    person.attributes.put(Person.INCOME, (int) income - 10);
 
     // First encounter is covered and copay is affordable.
     Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.WELLNESS);
@@ -144,7 +141,6 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfIncomeDueToMonthlyPremium() {
-
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
@@ -152,11 +148,11 @@ public class LossOfCareHealthRecordTest {
     person.coverage.setPlanAtTime(time, plan);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
-    // Set person's income to be $1 lower than the cost of 8 monthly premiums.
-    person.attributes.put(Person.INCOME, (int) (plan.getMonthlyPremium() * 8) - 1);
+    // Set person's income to be $1 lower than the cost of 7 monthly premiums.
+    person.attributes.put(Person.INCOME, (int) (plan.getMonthlyPremium() * 7) - 1);
 
     // Pay monthly premium 8 times.
-    long oneMonth = Utilities.convertTime("years", 1) / 12;
+    long oneMonth = Utilities.convertTime("months", 1);
     long currTime = time;
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     for (int i = 0; i < 8; i++) {
@@ -182,7 +178,7 @@ public class LossOfCareHealthRecordTest {
   public void personRunsOutOfCurrentYearIncomeThenNextYearBegins() {
 
     Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
