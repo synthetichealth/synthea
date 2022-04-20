@@ -1,13 +1,14 @@
 package org.mitre.synthea.modules;
 
-import java.util.HashMap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.mitre.synthea.engine.Components.Range;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.world.agents.Person;
@@ -33,11 +34,15 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       .ints("metabolic.blood_pressure.normal.diastolic");
 
 
-  public static final Map<String, Range<Double>> HTN_DRUG_IMPACTS;
+  // Notes on where these impacts come from:
+  // https://www.bmj.com/content/359/bmj.j5542
+  // https://pubmed.ncbi.nlm.nih.gov/31668726/
+  // https://academic.oup.com/ajh/article/18/7/935/221053
+  private static final Table<String, SysDias, Range<Double>> HTN_DRUG_IMPACTS;
 
   static {
     try {
-      Map<String, Range<Double>> drugImpacts = new HashMap<>();
+      Table<String, SysDias, Range<Double>> drugImpacts = HashBasedTable.create();
 
       String csv = Utilities.readResource("htn_drugs.csv");
 
@@ -45,14 +50,20 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
       for (LinkedHashMap<String,String> line : table) {
         String code = line.get("RxNorm");
-        double impactMin = Double.parseDouble(line.get("Impact Minimum"));
-        double impactMax = Double.parseDouble(line.get("Impact Maximum"));
+        double impactMinSystolic = Double.parseDouble(line.get("Systolic Impact Minimum"));
+        double impactMaxSystolic = Double.parseDouble(line.get("Systolic Impact Maximum"));
 
-        Range<Double> impact = new Range<>();
-        impact.low = impactMin;
-        impact.high = impactMax;
+        Range<Double> impactSystolic = new Range<>();
+        impactSystolic.low = impactMinSystolic;
+        impactSystolic.high = impactMaxSystolic;
+        drugImpacts.put(code, SysDias.SYSTOLIC, impactSystolic);
 
-        drugImpacts.put(code, impact);
+        double impactMinDiastolic = Double.parseDouble(line.get("Diastolic Impact Minimum"));
+        double impactMaxDiastolic = Double.parseDouble(line.get("Diastolic Impact Maximum"));
+        Range<Double> impactDiastolic = new Range<>();
+        impactDiastolic.low = impactMinDiastolic;
+        impactDiastolic.high = impactMaxDiastolic;
+        drugImpacts.put(code, SysDias.DIASTOLIC, impactDiastolic);
       }
 
       HTN_DRUG_IMPACTS = drugImpacts;
@@ -93,23 +104,23 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   /**
    * Helper function to ensure a person has a consistent impact from a drug.
    */
-  private static double getDrugImpact(Person person, long time, String drug,
+  private static double getDrugImpact(Person person, long time, String drug, SysDias sysDias,
       Range<Double> impactRange) {
-    Map<String, Double> personalDrugImpacts =
-        (Map<String, Double>)person.attributes.get("htn_drug_impacts");
+    Table<String, SysDias, Double> personalDrugImpacts =
+        (Table<String, SysDias, Double>)person.attributes.get("htn_drug_impacts");
     if (personalDrugImpacts == null) {
-      personalDrugImpacts = new HashMap<>();
+      personalDrugImpacts = HashBasedTable.create();
       person.attributes.put("htn_drug_impacts", personalDrugImpacts);
     }
 
-    if (personalDrugImpacts.containsKey(drug)) {
-      return personalDrugImpacts.get(drug);
+    if (personalDrugImpacts.contains(drug, sysDias)) {
+      return personalDrugImpacts.get(drug, sysDias);
     }
 
     // note these are intentionally flipped. "max impact" == lower number, since these are negative
     double impact = person.rand(impactRange.high, impactRange.low);
 
-    personalDrugImpacts.put(drug, impact);
+    personalDrugImpacts.put(drug, sysDias, impact);
 
     return impact;
   }
@@ -162,6 +173,8 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     // if the person has a "blood pressure care plan"
     // assume that over ~1 year their blood pressure will be reduced by ~14 mmHg
     // with most of that happening in the first 6 mos
+
+    // https://pubmed.ncbi.nlm.nih.gov/12709466/
 
     double maxDrop;
     if (this.sysDias == SysDias.SYSTOLIC) {
@@ -224,11 +237,11 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     double drugImpactDelta = 0.0;
     // see also LifecycleModule.calculateVitalSigns
 
-    for (Map.Entry<String, Range<Double>> e : HTN_DRUG_IMPACTS.entrySet()) {
+    for (Map.Entry<String, Range<Double>> e : HTN_DRUG_IMPACTS.column(this.sysDias).entrySet()) {
       String medicationCode = e.getKey();
       Range<Double> impactRange = e.getValue();
       if (person.record.medicationActive(medicationCode)) {
-        double impact = getDrugImpact(person, time, medicationCode, impactRange);
+        double impact = getDrugImpact(person, time, medicationCode, this.sysDias, impactRange);
 
         // impacts are negative, so add them (ie, don't subtract them)
         drugImpactDelta += impact;
