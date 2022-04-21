@@ -820,6 +820,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     long oneMonth = Utilities.convertTime("months", 1); // Subtracting a month to check the person's most recent plan record.
     double outOfPocketExpenses = this.coverage.getPlanRecordAtTime(time - oneMonth).getHealthcareExpenses();
+    outOfPocketExpenses += this.coverage.getPlanRecordAtTime(time - oneMonth).getInsuranceCosts();
     return (int) (income - outOfPocketExpenses);
   }
 }

@@ -35,10 +35,10 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
@@ -63,6 +63,10 @@ public class FHIRDSTU2ExporterTest {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
+    // Ensure plan and eligibilities are loaded.
+    PlanEligibilityFinder.buildPlanEligibilities(Config.get("test_state.default", "Massachusetts"),
+        Config.get("generate.payers.insurance_plans.eligibilities_file"));
+    PayerManager.loadNoInsurance();
   }
 
   /**
@@ -177,7 +181,6 @@ public class FHIRDSTU2ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time - Utilities.convertTime("years", i);
       person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
