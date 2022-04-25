@@ -18,5 +18,4 @@ public class PovertyMultiplierEligibility implements IPlanEligibility {
     int income = (int) person.attributes.get(Person.INCOME);
     return income <= incomeThreshold;
   }
-  
 }

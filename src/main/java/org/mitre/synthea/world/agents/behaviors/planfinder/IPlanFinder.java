@@ -18,13 +18,14 @@ public interface IPlanFinder {
   /**
    * Find a payer that meets the person's and simulation's requirements.
    *
-   * @param payers The list of eligible payers (determined by state currently).
+   * @param plans The list of plans (as determined by state).
    * @param person The patient who requires a payer.
    * @param service The service required.
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person, EncounterType service, long time);
+  public InsurancePlan
+      find(Set<InsurancePlan> plans, Person person, EncounterType service, long time);
 
   /**
    * Determine whether or not the given payer meets the person's basic requirements.

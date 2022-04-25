@@ -13,9 +13,9 @@ import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 public class PlanFinderGovPriority implements IPlanFinder {
 
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person, EncounterType service, long time) {
+  public InsurancePlan find(Set<InsurancePlan> plans, Person person,
+      EncounterType service, long time) {
     List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
-
     for (InsurancePlan plan : plans) {
       if ((plan.isGovernmentPlan() && plan.accepts(person, time))
           || (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time))) {

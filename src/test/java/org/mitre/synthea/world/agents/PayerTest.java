@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Period;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -83,7 +84,8 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.medicare", "Medicare");
     Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
     Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-    PlanEligibilityFinder.buildPlanEligibilities(testState, Config.get("generate.payers.insurance_plans.eligibilities_file"));
+    PlanEligibilityFinder.buildPlanEligibilities(testState,
+        Config.get("generate.payers.insurance_plans.eligibilities_file"));
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
     testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);
@@ -186,7 +188,8 @@ public class PayerTest {
 
   @Test
   public void receiveMedicareAgeEligible() {
-    long birthTime = Utilities.convertCalendarYearsToTime(1900);
+    int currentYear = 1900;
+    long birthTime = Utilities.convertCalendarYearsToTime(currentYear);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
@@ -194,20 +197,22 @@ public class PayerTest {
     person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    long timeInterval = Utilities.convertTime("months", 0.9);
+    long timestep = Config.getAsLong("generate.timestep");
     // Process the person's health insurance for 64 years, should have private insurance for all.
-    for(int age = 0; age < 65; age++) {
-      long currentTime = birthTime + Utilities.convertTime("years", age) + timeInterval;
+    for (int age = 0; age < 65; age++) {
+      long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep;
       healthInsuranceModule.process(person, currentTime);
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
+      currentYear++;
     }
     // Process their insurance for ages 65-69, should have medicare every year.
-    for(int age = 65; age < 70; age++) {
-      long currentTime = birthTime + Utilities.convertTime("years", age) + timeInterval;
+    for (int age = 65; age < 70; age++) {
+      long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep * 3;
       healthInsuranceModule.process(person, currentTime);
       assertTrue(person.coverage.getPlanAtTime(currentTime).isMedicarePlan());
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
+      currentYear++;
     }
   }
 
@@ -236,9 +241,9 @@ public class PayerTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, time + sixMonths);
+    healthInsuranceModule.process(person, time);
     assertEquals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE),
-        person.coverage.getPlanAtTime(time + 1).getPayer());
+        person.coverage.getPlanAtTime(time).getPayer());
   }
 
   @Test
@@ -302,7 +307,7 @@ public class PayerTest {
     // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
     person.coverage.getPlanRecordAtTime(time).incrementExpenses(19699);
     // Now process their insurance and they should switch to Medicaid.
-    time += Utilities.convertTime("years", 1.05);
+    time += Utilities.convertTime("years", 1.001);
     healthInsuranceModule.process(person, time);
     assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
@@ -347,9 +352,11 @@ public class PayerTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
-    // Give the person an income lower than the totalYearlyCost divided by the max income ratio a person is willing to spend on healthcare. 
-    // This value greater than the 0 year old poverty multiplier in MA (2 * 12880).
-    double costThreshold = ((double) totalYearlyCost) / Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
+    // Give the person an income lower than the totalYearlyCost divided by the max
+    // income ratio a person is willing to spend on health insurance.
+    // This value is greater than a 0-year-old's poverty multiplier in MA (2 * 12880).
+    double costThreshold = ((double) totalYearlyCost)
+        / Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     person.attributes.put(Person.INCOME, (int) costThreshold - 10);
 
     healthInsuranceModule.process(person, birthTime);
@@ -441,8 +448,10 @@ public class PayerTest {
     int payer2MemberYears = testPrivatePayer2.getCustomerUtilization(person);
 
     double totalMonthlyPremiumsOwed = 0.0;
-    totalMonthlyPremiumsOwed += testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium() * 12 * payer1MemberYears;
-    totalMonthlyPremiumsOwed += testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium() * 12 * payer2MemberYears;
+    totalMonthlyPremiumsOwed += testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium()
+        * 12 * payer1MemberYears;
+    totalMonthlyPremiumsOwed += testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium()
+        * 12 * payer2MemberYears;
     double totalRevenue = 0.0;
     totalRevenue += testPrivatePayer1.getRevenue();
     totalRevenue += testPrivatePayer2.getRevenue();
@@ -586,7 +595,8 @@ public class PayerTest {
     assertTrue(testPrivatePayer1Plan.coversService(encounter));
     healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter
-    double coverage = encounter.claim.totals.coinsurancePaidByPayer + encounter.claim.totals.paidByPayer;
+    double coverage = encounter.claim.totals.coinsurancePaidByPayer
+        + encounter.claim.totals.paidByPayer;
     assertEquals(person.coverage.getTotalCoverage(), coverage, 0.001);
     double result = encounter.claim.totals.coinsurancePaidByPayer
         + encounter.claim.totals.copay
@@ -616,7 +626,8 @@ public class PayerTest {
     // Person's coverage should equal $0.0.
     assertEquals(0.0, person.coverage.getTotalCoverage(), 0.001);
     // Person's expenses should equal the total cost of the encounter.
-    assertEquals(person.coverage.getTotalHealthcareExpenses(), encounter.getCost().doubleValue(), 0.001);
+    assertEquals(person.coverage.getTotalHealthcareExpenses(),
+        encounter.getCost().doubleValue(), 0.001);
   }
 
   @Test

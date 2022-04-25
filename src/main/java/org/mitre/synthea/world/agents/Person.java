@@ -725,7 +725,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param plan the plan to check.
    */
   public boolean canAffordPlan(InsurancePlan plan) {
-    double incomePercentage = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
+    double incomePercentage
+        = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     int income = (Integer) this.attributes.get(Person.INCOME);
     double yearlyCost = plan.getYearlyCost();
     return (income * incomePercentage) > yearlyCost;
@@ -809,18 +810,43 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Returns the amount of income the person has remaining at the given time.
-   * @param time
-   * @return
+   * @param time  The time to check for.
+   * @return  The amount of income the person has remaining.
    */
   public int incomeRemaining(long time) {
     int income = (int) this.attributes.get(Person.INCOME);
-    if(this.age(time).getYears() < 1){
+    // We need to check based on the last timestep since the person may not have inusurance
+    // for this timestep yet.
+    long timestep = Config.getAsLong("generate.timestep");
+    PlanRecord currentPlan = this.coverage.getPlanRecordAtTime(time - timestep);
+    int ageInDays = this.age(time).getDays();
+    double timestepDays = Utilities.getDurationDays(timestep);
+    if (currentPlan == null && ageInDays <= timestepDays) {
       // Too young to have incurred expenses yet.
       return income;
     }
-    long oneMonth = Utilities.convertTime("months", 1); // Subtracting a month to check the person's most recent plan record.
-    double outOfPocketExpenses = this.coverage.getPlanRecordAtTime(time - oneMonth).getHealthcareExpenses();
-    outOfPocketExpenses += this.coverage.getPlanRecordAtTime(time - oneMonth).getInsuranceCosts();
+    if (currentPlan == null) {
+      throw new RuntimeException("Person does not have insurance for age "
+          + this.age(time).getYears() + ".");
+    }
+    double outOfPocketExpenses = currentPlan.getHealthcareExpenses();
+    outOfPocketExpenses += currentPlan.getInsuranceCosts();
     return (int) (income - outOfPocketExpenses);
   }
+
+  /**
+   * Returns the amount of income the person has remaining at the given time.
+   * @param time  The time to check for.
+   * @return  The amount of income the person has remaining.
+   */
+  // public int incomeRemaining(long time) {
+  //   int income = (int) this.attributes.get(Person.INCOME);
+  //   if (currentPlan == null && this.age(time).getYears() < 2) {
+  //     // Too young and uncovered, checking expenses will cause a null pointer.
+  //     return income;
+  //   }
+  //   double outOfPocketExpenses = currentPlan.getHealthcareExpenses();
+  //   outOfPocketExpenses += currentPlan.getInsuranceCosts();
+  //   return (int) (income - outOfPocketExpenses);
+  // }
 }

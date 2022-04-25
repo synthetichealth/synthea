@@ -141,7 +141,8 @@ public class Claim implements Serializable {
 
     double uncoveredCosts = totals.copay + totals.deductible + totals.paidByPatient;
     planRecord.incrementExpenses(uncoveredCosts);
-    planRecord.incrementCoverage(totals.coinsurancePaidByPayer + totals.paidByPayer + totals.paidBySecondaryPayer);
+    planRecord.incrementCoverage(totals.coinsurancePaidByPayer
+        + totals.paidByPayer + totals.paidBySecondaryPayer);
     double coveredCosts = totals.coinsurancePaidByPayer + totals.paidByPayer;
     planRecord.plan.addCoveredCost(coveredCosts);
     planRecord.plan.addUncoveredCost(uncoveredCosts);
@@ -152,12 +153,12 @@ public class Claim implements Serializable {
     claimEntry.cost = claimEntry.entry.getCost().doubleValue();
     double remainingUnpaid = claimEntry.cost;
 
-    if(!plan.coversService(claimEntry.entry)){
+    if (!plan.coversService(claimEntry.entry)) {
       plan.incrementUncoveredEntries(claimEntry.entry);
       // Payer does not cover care
-      claimEntry.paidByPatient = remainingUnpaid; 
+      claimEntry.paidByPatient = remainingUnpaid;
       return;
-    } 
+    }
 
     plan.incrementCoveredEntries(claimEntry.entry);
     // Apply copay to Encounters and Medication claims only

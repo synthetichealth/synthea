@@ -9,53 +9,38 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A class that defines the elgibility logic for Medically Needy Income Limits (MNIL)
+ * A class that defines the elgibility logic for Medically Needy Income Limits (MNIL).
+ * MNIL allows people who don't qualify for income-based Medicaid to qualify if their expenses
+ * bring them down to a certain income bracket.
+ * By-age and by-state Standard Medicaid MNIL data from:
+ * https://www.medicaidplanningassistance.org/medically-needy-pathway/
  */
 public class MedicallyNeedyIncomeEligibility implements IPlanEligibility {
 
-  // Medicaid Medically Needy Income Limits (MNIL)
-  private static boolean mnilAvailable;  // Whether Medicaid Medically Needy Income Limits are available.
-  private static boolean mnilDisabilityLimited;  // Whether MNIL is limited to aged/disabled/blind patients.
-  private static int mnilYearlySpenddown;  // The income that a person must "spend down" to to be eligible based on MNIL.  
-
-  public MedicallyNeedyIncomeEligibility(String state, String fileName) {
-    this.buildMnilEligibility(state, fileName);
-  }
-
-  @Override
-  public boolean isPersonEligible(Person person, long time) {
-    boolean mnilEligble = false;
-    if (mnilAvailable && !mnilDisabilityLimited) {
-      // For now, we'll only calculate MNIL for those states without an age/disability requirement.
-      int incomeRemaining = person.incomeRemaining(time);
-      mnilEligble = incomeRemaining <= mnilYearlySpenddown;
-    }
-    return mnilEligble;
-  }
+  // Whether Medically Needy Income Limits are available.
+  private static boolean mnilAvailable;
+  // Whether MNIL is limited to aged/disabled/blind patients.
+  private static boolean mnilDisabilityLimited;
+  // The income that a person must "spend down" to to be eligible based on MNIL.
+  private static int mnilYearlySpenddown;
 
   /**
-   * Builds the income eligibility the given file and state.
-   * @param state
+   * Constructor.
+   * @param state The state.
+   * @param fileName  The file to create MNIL from.
    */
-  private void buildMnilEligibility(String state, String fileName) {
+  public MedicallyNeedyIncomeEligibility(String state, String fileName) {
     String resource = null;
-    try {
-      resource = Utilities.readResource(fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     Iterator<? extends Map<String, String>> csv = null;
     try {
+      resource = Utilities.readResource(fileName);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();
     }
     while (csv.hasNext()) {
-      // By-age and by-state Medicaid Income Limits data from: 
-      // MNIL (Medically Needy Income Limit) data from: https://www.medicaidplanningassistance.org/medically-needy-pathway/
-      // MNIL allows people who don't qualify for income-based Medicaid to qualify if their expenses bring them down to a certain income bracket.
       Map<String, String> row = csv.next();
-      if(row.get("state").equals(state)){
+      if (row.get("state").equals(state)) {
         mnilAvailable = Boolean.parseBoolean(row.get("mnil-available"));
         if (mnilAvailable) {
           mnilDisabilityLimited = Boolean.parseBoolean(row.get("age-blind-disabled-limit"));
@@ -69,5 +54,16 @@ public class MedicallyNeedyIncomeEligibility implements IPlanEligibility {
     }
     throw new RuntimeException("Invalid state " + state + " used.");
   }
-  
+
+  @Override
+  public boolean isPersonEligible(Person person, long time) {
+    // For now, we'll skip MNIL for those states without an age/disability requirement.
+    if (!mnilAvailable || mnilDisabilityLimited) {
+      return false;
+    }
+    int incomeRemaining = person.incomeRemaining(time);
+    boolean mnilEligble = incomeRemaining <= mnilYearlySpenddown;
+    return mnilEligble;
+  }
+
 }

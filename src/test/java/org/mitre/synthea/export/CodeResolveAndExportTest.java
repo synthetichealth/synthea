@@ -144,11 +144,11 @@ public class CodeResolveAndExportTest {
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-    // Must process health insurance module from birth to time of encounter to prevent null pointers.
+    // Must process health insurance module from birth to encounter time to prevent null pointers.
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     long oneYear = Utilities.convertTime("years", 1);
     long currentTime =  (long) person.attributes.get(Person.BIRTHDATE);
-    while(currentTime <= time){
+    while (currentTime <= time) {
       healthInsuranceModule.process(person, currentTime);
       currentTime += oneYear;
     }

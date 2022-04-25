@@ -6,7 +6,7 @@ import org.mitre.synthea.world.agents.Person;
  * A payer eligibilty algorithm that may reject someone based on an acceptance likelihood.
  */
 public class AcceptanceLikelihoodEligibility implements IPlanEligibility {
-  
+
   private final double acceptanceLikelihood;
 
   public AcceptanceLikelihoodEligibility(double acceptanceLikelihood) {

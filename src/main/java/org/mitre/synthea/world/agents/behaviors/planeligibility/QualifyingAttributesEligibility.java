@@ -12,19 +12,23 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * An algorithm that defines the logic for eligibility for social security based on disability. This is expected to be used in conjuntion with Medicare, when someone is Social Security eligible, they also qualify for Medicare.
+ * An eligibility criteria based on whether a person has the given attributes.
  */
 public class QualifyingAttributesEligibility implements IPlanEligibility {
 
   private final List<String> qualifyingAttributes;
 
-  public QualifyingAttributesEligibility(String input) {
-    if (input.contains("/")) {
+  /**
+   * Constructor.
+   * @param attributes  The "|" delimited string or file of qualifying attributes.
+   */
+  public QualifyingAttributesEligibility(String attributes) {
+    if (attributes.contains("/")) {
       // The input is a file, so we have a file that defines the eligible conditions.
-      qualifyingAttributes = buildQualifyingAttributesFile(input);
+      qualifyingAttributes = buildQualifyingAttributesFile(attributes);
     } else {
       // The input is a set of attributes.
-      qualifyingAttributes = Arrays.asList(input.split("\\|"));
+      qualifyingAttributes = Arrays.asList(attributes.split("\\|"));
     }
   }
 
@@ -62,9 +66,9 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
     }
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-        String attribute = row.get("codes");
-        String[] codes = attribute.split("\\|");
-        eligibleAttributes.addAll(Arrays.asList(codes));
+      String attribute = row.get("codes");
+      String[] codes = attribute.split("\\|");
+      eligibleAttributes.addAll(Arrays.asList(codes));
     }
     return eligibleAttributes;
   }

@@ -116,6 +116,15 @@ public class Utilities {
   }
 
   /**
+   * Get the the number of days from a Unix timestamp.
+   */
+  public static double getDurationDays(long time) {
+    long oneDay = 86400 * 1000;
+    return (double) (time / oneDay);
+  }
+
+
+  /**
    * Converts a JsonPrimitive into a primitive Boolean, Double, or String.
    *
    * @param p

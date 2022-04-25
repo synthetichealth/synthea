@@ -256,8 +256,9 @@ public class CSVExporter {
       claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
           includedFiles, excludedFiles);
 
-      if(Config.getAsBoolean("exporter.csv.patient_expenses")){
-        patientExpenses = getWriter(outputDirectory, "patient_expenses.csv", append, includedFiles, excludedFiles);
+      if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
+        patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
+            append, includedFiles, excludedFiles);
       }
 
       if (!append) {
@@ -299,7 +300,8 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME,OCCUPATION");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,"
+        + "INCOME,OCCUPATION");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
         + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
@@ -360,8 +362,9 @@ public class CSVExporter {
         + "TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,"
         + "PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID");
     claimsTransactions.write(NEWLINE);
-    if(Config.getAsBoolean("exporter.csv.patient_expenses")){
-      patientExpenses.write("PATIENT_ID,YEAR,PAYER_ID,HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS");
+    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
+      patientExpenses.write("PATIENT_ID,YEAR,PAYER_ID,"
+          + "HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS");
       patientExpenses.write(NEWLINE);
     }
   }
@@ -508,7 +511,7 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        if(Config.getAsBoolean("exporter.csv.claim_transactions")){
+        if (Config.getAsBoolean("exporter.csv.claim_transactions")) {
           claim(person, medication.claim, encounter, encounterID, time);
         }
       }
@@ -537,7 +540,6 @@ public class CSVExporter {
     if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
       CSVExporter.getInstance().exportPatientExpenses(person, time);
     }
-    
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     Calendar cutOff = new GregorianCalendar(1900, 0, 1);
     if (yearsOfHistory > 0) {
@@ -1260,7 +1262,8 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs.
    */
   private void payer(Payer payer) throws IOException {
-    // Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,AMOUNT_UNCOVERED,REVENUE,
+    // Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,
+    // AMOUNT_UNCOVERED,REVENUE,
     // COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,UNCOVERED_MEDICATIONS,
     // COVERED_PROCEDURES,UNCOVERED_PROCEDURES,COVERED_IMMUNIZATIONS,UNCOVERED_IMMUNIZATIONS,
     // UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS

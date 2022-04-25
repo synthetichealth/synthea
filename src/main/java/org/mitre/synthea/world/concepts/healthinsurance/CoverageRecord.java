@@ -224,6 +224,8 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Returns the total healthcare expenses for this person.
+   * Does not include premium costs.
+   * @return The healthcare expenses.
    */
   public double getTotalHealthcareExpenses() {
     double total = 0;
@@ -233,6 +235,11 @@ public class CoverageRecord implements Serializable {
     return total;
   }
 
+  /**
+   * Returns the total premium expenses.
+   * Does not include healthcare expenses.
+   * @return  The premium expenses.
+   */
   public double getTotalPremiumExpenses() {
     double total = 0;
     for (PlanRecord plan : planHistory) {
@@ -243,6 +250,7 @@ public class CoverageRecord implements Serializable {
 
   /**
    * Returns the total healthcare coverage for this person.
+   * @return  The healthcare coverage.
    */
   public double getTotalCoverage() {
     double total = 0;

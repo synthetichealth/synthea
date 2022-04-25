@@ -1,11 +1,11 @@
 package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -35,9 +35,9 @@ public class PlanEligibilityFinder {
 
   /**
    * Builds the plan eligiblities for the given state and CSV input file.
-   * @param state
+   * @param state The state.
    */
-  public static void buildPlanEligibilities(String state, String fileName) {    
+  public static void buildPlanEligibilities(String state, String fileName) {
     planEligibilities = new HashMap<>();
     planEligibilities.put(PlanEligibilityFinder.GENERIC, new GenericPayerEligibilty());
     // Build the CSV input eligbility algorithms.
@@ -59,22 +59,21 @@ public class PlanEligibilityFinder {
       removeEmptyValues(row);
       String eligblilityName = row.remove(ELIGIBILITY_NAME);
       if (planEligibilities.containsKey(eligblilityName)) {
-        throw new RuntimeException("Plan eligibility name " + eligblilityName + " is reserved or already in use.");
+        throw new IllegalArgumentException("Plan eligibility name "
+            + eligblilityName + " is reserved or already in use.");
       }
       planEligibilities.put(eligblilityName, new CSVEligibility(row));
     }
   }
 
   private static void removeEmptyValues(Map<String, String> map) {
-    List<String> keysToRemove = new ArrayList<>();
+    Set<String> keysToRemove = new HashSet<>();
     for (String key : map.keySet()) {
-      if(map.get(key).isEmpty()){
+      if (map.get(key).isEmpty()) {
         keysToRemove.add(key);
       }
     }
-    for(String key: keysToRemove){
-      map.remove(key);
-    }
+    map.keySet().removeAll(keysToRemove);
   }
 
 }

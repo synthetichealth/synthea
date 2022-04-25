@@ -39,7 +39,8 @@ public class InsurancePlan implements Serializable {
    * @param monthlyPremium  The montly premium.
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, double deductible,
-      double defaultCoinsurance, double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
+      double defaultCoinsurance, double defaultCopay,
+      double monthlyPremium, boolean medicareSupplement) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -48,7 +49,8 @@ public class InsurancePlan implements Serializable {
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
     // Set the payer's eligibility criteria.
-    this.planEligibility = PlanEligibilityFinder.getEligibilityAlgorithm(this.payer.getEligibilityName());
+    this.planEligibility
+        = PlanEligibilityFinder.getEligibilityAlgorithm(this.payer.getEligibilityName());
   }
 
   /**

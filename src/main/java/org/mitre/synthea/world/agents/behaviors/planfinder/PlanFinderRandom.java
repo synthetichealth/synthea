@@ -15,14 +15,15 @@ public class PlanFinderRandom implements IPlanFinder {
   /**
    * Find a provider with a specific service for the person.
    *
-   * @param payers The list of eligible payers.
+   * @param plans The list of eligible plans.
    * @param person The patient who requires the service.
    * @param service The service required.
    * @param time The date/time within the simulated world, in milliseconds.
-   * @return Service provider or null if none is available.
+   * @return A plan or null if none is available.
    */
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person, EncounterType service, long time) {
+  public InsurancePlan find(Set<InsurancePlan> plans,
+      Person person, EncounterType service, long time) {
     List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
 
     for (InsurancePlan plan : plans) {

@@ -115,7 +115,8 @@ public class Payer implements Serializable {
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
    */
-  public Payer(String name, String id, Set<String> statesCovered, String ownership, String eligibilityName) {
+  public Payer(String name, String id, Set<String> statesCovered,
+      String ownership, String eligibilityName) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name.");
     }
@@ -143,10 +144,11 @@ public class Payer implements Serializable {
    * @param defaultCopay  The default copay.
    * @param monthlyPremium  The monthly premium.
    */
-  public void createPlan(Set<String> servicesCovered, double deductible,
-      double defaultCoinsurance, double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
+  public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
+      double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
     InsurancePlan newPlan = new InsurancePlan(
-        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium, medicareSupplement);
+        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay,
+        monthlyPremium, medicareSupplement);
     this.plans.add(newPlan);
   }
 

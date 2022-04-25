@@ -238,12 +238,14 @@ public class PayerManager {
     double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     boolean medicareSupplement = Boolean.parseBoolean(line.remove("medicare_supplement"));
     Payer payer = PayerManager.getPayerById(payerId);
-    payer.createPlan(servicesCovered, deductible, defaultCoinsurance, defaultCopay, monthlyPremium, medicareSupplement);
+    payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
+        defaultCopay, monthlyPremium, medicareSupplement);
   }
 
   private static Payer getPayerById(String payerId) {
-    List<Payer> payerList = getAllPayers().stream().filter(payer -> payer.getPlanLinkId().equals(payerId)).collect(Collectors.toList());
-    if(!payerList.isEmpty()){
+    List<Payer> payerList = getAllPayers().stream().filter(payer ->
+        payer.getPlanLinkId().equals(payerId)).collect(Collectors.toList());
+    if (!payerList.isEmpty()) {
       return payerList.get(0);
     }
     return null;
@@ -268,7 +270,8 @@ public class PayerManager {
     // noInsurance 'covers' all states.
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
-    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000", statesCovered, NO_INSURANCE, "generic");
+    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
+        statesCovered, NO_INSURANCE, "generic");
     PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
@@ -327,12 +330,12 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = extractPlans(getAllPayers());
+    Set<InsurancePlan> plans = getAllPlans(getAllPayers());
     // Remove medicare supplement plans from this check.
-    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
-    InsurancePlan potentialPlan = planFinder
-        .find(plans, person, service, time);
-    if(potentialPlan.isGovernmentPlan()){
+    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
+        .collect(Collectors.toSet());
+    InsurancePlan potentialPlan = planFinder.find(plans, person, service, time);
+    if (potentialPlan.isGovernmentPlan()) {
       // Person will always choose a government plan.
       return potentialPlan;
     }
@@ -346,8 +349,13 @@ public class PayerManager {
     return potentialPlan;
   }
 
-  public static Set<InsurancePlan> extractPlans(List<Payer> payers) {
-    Set<InsurancePlan> plans = payers.stream().map(payer -> payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
+  /**
+   * Returns all plans loaded by the set of payers.
+   * @return The set of plans.
+   */
+  public static Set<InsurancePlan> getAllPlans(List<Payer> payers) {
+    Set<InsurancePlan> plans = payers.stream().map(payer ->
+        payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
     return plans;
   }
 
@@ -361,15 +369,17 @@ public class PayerManager {
 
   /**
    * Finds an eligible medicare supplement plan for the given person.
-   * @param person
-   * @param service
-   * @param time
-   * @return
+   * @param person  The person for whom to find a medicare supplement plan.
+   * @param service The service the plan should cover.
+   * @param time  The time.
+   * @return  A potential Medicare Supplement plan, if eligible and affordable.
    */
-  public static InsurancePlan findMedicareSupplement(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = extractPlans(getAllPayers());
+  public static InsurancePlan findMedicareSupplement(Person person,
+      EncounterType service, long time) {
+    Set<InsurancePlan> plans = getAllPlans(getAllPayers());
     // Remove non-medicare supplement plans from this check.
-    plans = plans.stream().filter(plan -> plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
+    plans = plans.stream().filter(plan ->
+        plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
     InsurancePlan potentialPlan = planFinder
         .find(plans, person, service, time);
     return potentialPlan;

@@ -17,7 +17,6 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.geography.Location;
 
