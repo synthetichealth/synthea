@@ -834,19 +834,4 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return (int) (income - outOfPocketExpenses);
   }
 
-  /**
-   * Returns the amount of income the person has remaining at the given time.
-   * @param time  The time to check for.
-   * @return  The amount of income the person has remaining.
-   */
-  // public int incomeRemaining(long time) {
-  //   int income = (int) this.attributes.get(Person.INCOME);
-  //   if (currentPlan == null && this.age(time).getYears() < 2) {
-  //     // Too young and uncovered, checking expenses will cause a null pointer.
-  //     return income;
-  //   }
-  //   double outOfPocketExpenses = currentPlan.getHealthcareExpenses();
-  //   outOfPocketExpenses += currentPlan.getInsuranceCosts();
-  //   return (int) (income - outOfPocketExpenses);
-  // }
 }

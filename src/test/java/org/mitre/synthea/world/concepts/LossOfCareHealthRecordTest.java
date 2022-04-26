@@ -26,7 +26,7 @@ public class LossOfCareHealthRecordTest {
 
   private long time;
   private double defaultEncounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-  private Encounter dummyWellnessEncounter;
+  private Encounter dummyInpatientEncounter;
 
   /**
    * Setup for HealthRecord Tests.
@@ -39,6 +39,8 @@ public class LossOfCareHealthRecordTest {
     String testState = Config.get("test_state.default", "Massachusetts");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
@@ -50,7 +52,7 @@ public class LossOfCareHealthRecordTest {
     Person person = new Person(0L);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     person.attributes.put(Person.INCOME, 1);
-    dummyWellnessEncounter = person.encounterStart(time, EncounterType.WELLNESS);
+    dummyInpatientEncounter = person.encounterStart(time, EncounterType.WELLNESS);
 
     time = 0L; //Utilities.convertCalendarYearsToTime(1900);
   }
@@ -91,46 +93,49 @@ public class LossOfCareHealthRecordTest {
   }
 
   @Test
-  public void personRunsOutOfIncomeDueToCopay() {
+  public void personRunsOutOfIncomeDueToCopayOrCoinsurance() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.01);
     person.attributes.put(Person.GENDER, "M");
     InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
     person.coverage.setPlanAtTime(time, plan);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
+    person.setProvider(EncounterType.INPATIENT, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Determine income
     double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
     double planCoinsurance = 1.0 - plan.getCoinsurance();
-    double planCopay = plan.determineCopay(dummyWellnessEncounter);
-    double income = (2 * (encounterCost - planCopay) * planCoinsurance) + (2 * planCopay) - 1;
+    double planCopay = plan.determineCopay(dummyInpatientEncounter);
+    double income = (2 * (encounterCost * planCoinsurance)) - 1;
+    if (plan.isCopayBased()) {
+      income = (2 * planCopay) - 1;
+    }
     // Set person's income to be $1 lower than the cost of 2 visits.
-    person.attributes.put(Person.INCOME, (int) income - 10);
+    person.attributes.put(Person.INCOME, (int) income);
 
     // First encounter is covered and copay is affordable.
-    Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.INPATIENT);
     coveredEncounter1.codes.add(code);
     coveredEncounter1.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person has enough income for one more copay.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounter1));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounter1));
 
     // Second encounter is covered and copay is affordable.
-    Encounter coveredEncounter2 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter coveredEncounter2 = person.encounterStart(time, EncounterType.INPATIENT);
     coveredEncounter2.codes.add(code);
     coveredEncounter2.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person is in debt $1. They should switch to no insurance not recieve any further care.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounter2));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounter2));
 
     // Third encounter is uncovered and unaffordable.
-    Encounter uncoveredEncounter3 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter uncoveredEncounter3 = person.encounterStart(time, EncounterType.INPATIENT);
     uncoveredEncounter3.codes.add(code);
     uncoveredEncounter3.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person should have this record in the uncoveredHealthRecord.
     assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounter3));
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounter3));

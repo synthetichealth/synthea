@@ -25,11 +25,13 @@ public class Claim implements Serializable {
     /** copay paid by patient. */
     public double copay;
     /** deductible paid by patient. */
-    public double deductible;
+    public double paidByDeductible;
     /** amount the charge was decreased by payer adjustment. */
     public double adjustment;
     /** coinsurance paid by payer. */
     public double coinsurancePaidByPayer;
+    /** coinsurance paid by payer. */
+    public double coinsurancePaidByPatient;
     /** otherwise paid by payer. */
     public double paidByPayer;
     /** otherwise paid by secondary payer. */
@@ -41,6 +43,57 @@ public class Claim implements Serializable {
       this.entry = entry;
     }
 
+    void assignCosts(PlanRecord planRecord) {
+      this.cost = this.entry.getCost().doubleValue();
+
+      if (!plan.coversService(this.entry)) {
+        plan.incrementUncoveredEntries(this.entry);
+        // Plan does not cover care
+        this.paidByPatient = this.cost;
+        return;
+      }
+
+      plan.incrementCoveredEntries(this.entry);
+      // Check if the plan has a cost adjustment
+      double adjustment = plan.adjustClaim(this, person);
+      final double adjustedCost = cost - adjustment;
+      // Check if the patient has remaining deductible (if the plan is deductible-based)
+      if (planRecord.remainingDeductible < 1 && planRecord.plan.getDeductible() > 0) {
+        this.paidByDeductible = adjustedCost;
+        return;
+      }
+      // Apply copay to Encounters and Medication claims only
+      if (plan.isCopayBased() && ((this.entry instanceof HealthRecord.Encounter)
+          || (this.entry instanceof HealthRecord.Medication))) {
+        double copay = plan.determineCopay(this.entry);
+        this.copay = copay;
+        this.paidByPatient += copay;
+        this.paidByPayer += (adjustedCost - copay);
+        planRecord.remainingDeductible -= copay;
+        return;
+      }
+      // Check if the patient has coinsurance to pay.
+      double coinsurance = (1 - plan.getCoinsurance());
+      if (coinsurance > 0.0) {
+        double coinsurancePatientToPay = (coinsurance * adjustedCost);
+        // If the person has secondary insurance, they cover the coinusurance.
+        if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
+          this.paidBySecondaryPayer = coinsurancePatientToPay;
+          coinsurancePatientToPay = 0;
+        }
+        this.paidByPatient += coinsurancePatientToPay;
+        this.coinsurancePaidByPatient += coinsurancePatientToPay;
+        double coinsurancePayerToPay = (adjustedCost - coinsurancePatientToPay);
+        this.paidByPayer += coinsurancePayerToPay;
+        this.coinsurancePaidByPayer = coinsurancePayerToPay;
+        planRecord.remainingDeductible -= coinsurancePatientToPay;
+        return;
+      }
+      // Since the patient has not been covered up to this point, they incur the total cost.
+      this.paidByPatient += adjustedCost;
+      planRecord.remainingDeductible -= this.paidByPatient;
+    }
+
     /**
      * Add the costs from the other entry to this one.
      * @param other the other claim entry.
@@ -48,7 +101,7 @@ public class Claim implements Serializable {
     public void addCosts(ClaimEntry other) {
       this.cost += other.cost;
       this.copay += other.copay;
-      this.deductible += other.deductible;
+      this.paidByDeductible += other.paidByDeductible;
       this.adjustment += other.adjustment;
       this.coinsurancePaidByPayer += other.coinsurancePaidByPayer;
       this.paidByPayer += other.paidByPayer;
@@ -62,12 +115,7 @@ public class Claim implements Serializable {
      * @return the amount of coinsurance paid
      */
     public double getCoinsurancePaid() {
-      if (this.paidBySecondaryPayer > 0) {
-        return this.paidBySecondaryPayer;
-      } else if (this.coinsurancePaidByPayer > 0) {
-        return this.paidByPatient;
-      }
-      return 0;
+      return this.coinsurancePaidByPatient;
     }
   }
 
@@ -131,82 +179,20 @@ public class Claim implements Serializable {
         planRecord = person.coverage.getLastPlanRecord();
       }
     }
-    assignCosts(mainEntry, planRecord);
+    mainEntry.assignCosts(planRecord);
     totals = new ClaimEntry(mainEntry.entry);
     totals.addCosts(mainEntry);
     for (ClaimEntry item : items) {
-      assignCosts(item, planRecord);
+      item.assignCosts(planRecord);
       totals.addCosts(item);
     }
 
-    double uncoveredCosts = totals.copay + totals.deductible + totals.paidByPatient;
+    double uncoveredCosts = totals.paidByPatient;
     planRecord.incrementExpenses(uncoveredCosts);
-    planRecord.incrementCoverage(totals.coinsurancePaidByPayer
-        + totals.paidByPayer + totals.paidBySecondaryPayer);
-    double coveredCosts = totals.coinsurancePaidByPayer + totals.paidByPayer;
-    planRecord.plan.addCoveredCost(coveredCosts);
+    planRecord.incrementCoverage(totals.paidByPayer + totals.paidBySecondaryPayer);
+    planRecord.plan.addCoveredCost(totals.paidByPayer);
     planRecord.plan.addUncoveredCost(uncoveredCosts);
     planRecord.secondaryPlan.addCoveredCost(totals.paidBySecondaryPayer);
-  }
-
-  private void assignCosts(ClaimEntry claimEntry, PlanRecord planRecord) {
-    claimEntry.cost = claimEntry.entry.getCost().doubleValue();
-    double remainingUnpaid = claimEntry.cost;
-
-    if (!plan.coversService(claimEntry.entry)) {
-      plan.incrementUncoveredEntries(claimEntry.entry);
-      // Payer does not cover care
-      claimEntry.paidByPatient = remainingUnpaid;
-      return;
-    }
-
-    plan.incrementCoveredEntries(claimEntry.entry);
-    // Apply copay to Encounters and Medication claims only
-    if ((claimEntry.entry instanceof HealthRecord.Encounter)
-        || (claimEntry.entry instanceof HealthRecord.Medication)) {
-      claimEntry.copay = plan.determineCopay(claimEntry.entry);
-      remainingUnpaid -= claimEntry.copay;
-    }
-    // Check if the patient has remaining deductible
-    if (remainingUnpaid > 0 && planRecord.remainingDeductible > 0) {
-      if (planRecord.remainingDeductible >= remainingUnpaid) {
-        claimEntry.deductible = remainingUnpaid;
-      } else {
-        claimEntry.deductible = planRecord.remainingDeductible;
-      }
-      remainingUnpaid -= claimEntry.deductible;
-      planRecord.remainingDeductible -= claimEntry.deductible;
-    }
-    if (remainingUnpaid > 0) {
-      // Check if the payer has an adjustment
-      double adjustment = plan.adjustClaim(claimEntry, person);
-      remainingUnpaid -= adjustment;
-    }
-    if (remainingUnpaid > 0) {
-      // Check if the patient has coinsurance
-      double coinsurance = plan.getCoinsurance();
-      if (coinsurance > 0) {
-        // Payer covers some
-        claimEntry.coinsurancePaidByPayer = (coinsurance * remainingUnpaid);
-        remainingUnpaid -= claimEntry.coinsurancePaidByPayer;
-      } else {
-        // Payer covers all
-        claimEntry.paidByPayer = remainingUnpaid;
-        remainingUnpaid -= claimEntry.paidByPayer;
-      }
-    }
-    if (remainingUnpaid > 0) {
-      // If secondary insurance, payer covers remainder, not patient.
-      if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
-        claimEntry.paidBySecondaryPayer = remainingUnpaid;
-        remainingUnpaid -= claimEntry.paidBySecondaryPayer;
-      }
-    }
-    if (remainingUnpaid > 0) {
-      // Patient amount
-      claimEntry.paidByPatient = remainingUnpaid;
-      remainingUnpaid -= claimEntry.paidByPatient;
-    }
   }
 
   /**
@@ -224,7 +210,7 @@ public class Claim implements Serializable {
   }
 
   public double getDeductiblePaid() {
-    return this.totals.deductible;
+    return this.totals.paidByDeductible;
   }
 
   public double getCopayPaid() {
@@ -237,18 +223,15 @@ public class Claim implements Serializable {
    * @return the amount of coinsurance paid
    */
   public double getCoinsurancePaid() {
-    if (this.totals.paidBySecondaryPayer > 0) {
-      return this.totals.paidBySecondaryPayer;
-    } else if (this.totals.coinsurancePaidByPayer > 0) {
-      return this.totals.paidByPatient;
-    }
-    return 0;
+    double paid = this.mainEntry.getCoinsurancePaid();
+    paid += this.items.stream().mapToDouble(item -> item.getCoinsurancePaid()).sum();
+    return paid;
   }
 
   /**
    * Returns the total cost to the patient, including copay, coinsurance, and deductible.
    */
   public double getPatientCost() {
-    return this.totals.paidByPatient + this.totals.copay + this.totals.deductible;
+    return this.totals.paidByPatient;
   }
 }

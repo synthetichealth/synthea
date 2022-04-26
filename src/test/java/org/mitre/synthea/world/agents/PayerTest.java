@@ -436,8 +436,8 @@ public class PayerTest {
   @Test
   public void monthlyPremiumPayment() {
     person = new Person(0L);
-    // Give person an income to prevent null pointer.
     person.attributes.put(Person.GENDER, "F");
+    person.attributes.put(Person.ID, UUID.randomUUID().toString());
     person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.BIRTHDATE, Utilities.convertCalendarYearsToTime(1930));
@@ -481,24 +481,22 @@ public class PayerTest {
     Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
-    double totalCost = fakeEncounter.getCost().doubleValue();
+    double expectedTotalCost = fakeEncounter.getCost().doubleValue();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
-    // check the copays match
-    assertEquals(plan.getDeductible(), fakeEncounter.claim.totals.deductible, 0.001);
+    // Check that the deductibles are accurate.
+    assertEquals(plan.getDeductible(), fakeEncounter.claim.totals.paidByDeductible, 0.001);
     // check that totals match
-    assertEquals(totalCost, fakeEncounter.claim.totals.cost, 0.001);
-    double result = fakeEncounter.claim.totals.coinsurancePaidByPayer
-        + fakeEncounter.claim.totals.copay
-        + fakeEncounter.claim.totals.deductible
-        + fakeEncounter.claim.totals.paidByPayer
+    assertEquals(expectedTotalCost, fakeEncounter.claim.totals.cost, 0.001);
+    double resultCost = fakeEncounter.claim.totals.paidByPayer
         + fakeEncounter.claim.totals.paidByPatient;
-    assertEquals(totalCost, result, 0.001);
+    assertEquals(expectedTotalCost, resultCost, 0.001);
+    assertEquals(fakeEncounter.claim.totals.paidByPatient, fakeEncounter.claim.totals.copay, 0.001);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
-    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
+    assertEquals(expectedTotalCost, testPrivatePayer1.getAmountCovered()
         + fakeEncounter.claim.getPatientCost(), 0.001);
     // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
-    assertEquals(totalCost, testPrivatePayer1.getAmountCovered()
-        + testPrivatePayer1.getAmountUncovered(), 0.001);
+    assertEquals(expectedTotalCost,
+        testPrivatePayer1.getAmountCovered() + testPrivatePayer1.getAmountUncovered(), 0.001);
     // The total coverage by the payer should equal the person's covered costs.
     assertEquals(person.coverage.getTotalCoverage(), testPrivatePayer1.getAmountCovered(), 0.001);
   }
@@ -598,17 +596,13 @@ public class PayerTest {
     double coverage = encounter.claim.totals.coinsurancePaidByPayer
         + encounter.claim.totals.paidByPayer;
     assertEquals(person.coverage.getTotalCoverage(), coverage, 0.001);
-    double result = encounter.claim.totals.coinsurancePaidByPayer
-        + encounter.claim.totals.copay
-        + encounter.claim.totals.deductible
-        + encounter.claim.totals.paidByPayer
+    double result = encounter.claim.totals.paidByPayer
         + encounter.claim.totals.paidByPatient;
     assertEquals(encounter.getCost().doubleValue(), result, 0.001);
     // Person's expenses should equal the copay.
-    double expenses = encounter.claim.totals.copay
-        + encounter.claim.totals.deductible
-        + encounter.claim.totals.paidByPatient;
+    double expenses = encounter.claim.totals.paidByPatient;
     assertEquals(person.coverage.getTotalHealthcareExpenses(), expenses, 0.001);
+    assertEquals(encounter.claim.totals.copay, expenses, 0.001);
   }
 
   @Test
@@ -660,6 +654,26 @@ public class PayerTest {
   }
 
   @Test
+  public void keepPreviousInsurance() {
+    long time = Utilities.convertCalendarYearsToTime(1960);
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.INCOME, 100000);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.GENDER, "F");
+    HealthInsuranceModule hm = new HealthInsuranceModule();
+    hm.process(person, time);
+    Payer inititalPayer = person.coverage.getPlanAtTime(time).getPayer();
+    assertFalse("Person should have insurance.", inititalPayer.isNoInsurance());
+    assertFalse("Person should have private insurance.", inititalPayer.isGovernmentPayer());
+    time += Utilities.convertTime("years", 1);
+    hm.process(person, time);
+    assertEquals("Person should keep the same insurance.",
+        inititalPayer, person.coverage.getPlanAtTime(time).getPayer());
+  }
+
+
+  @Test
   public void payerMemberYears() {
     int startYear = 1950;
     long currentTime = Utilities.convertCalendarYearsToTime(startYear);
@@ -679,6 +693,42 @@ public class PayerTest {
     int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
         + testPrivatePayer2.getNumYearsCovered();
     assertEquals(numberOfYears, totalYearsCovered);
+  }
+
+  @Test
+  public void checkCoinsuranceCopayPaid() {
+    long time = Utilities.convertCalendarYearsToTime(1960);
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.INCOME, 100000);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.GENDER, "F");
+    HealthInsuranceModule hm = new HealthInsuranceModule();
+
+    hm.process(person, time);
+    InsurancePlan plan = person.coverage.getPlanAtTime(time);
+    assertFalse("Person should have insurance.", plan.getPayer().isNoInsurance());
+    assertFalse("Person should have private insurance.", plan.getPayer().isGovernmentPayer());
+
+    HealthRecord healthRecord = new HealthRecord(person);
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+    Encounter fakeEncounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
+    fakeEncounter.codes.add(code);
+    healthRecord.encounterEnd(time + 1, EncounterType.INPATIENT);
+
+    double planCoinsuranceToPay = (1 - plan.getCoinsurance());
+    double copay = 0.0;
+    if (plan.isCopayBased()) {
+      planCoinsuranceToPay = 0;
+      copay = plan.determineCopay(fakeEncounter);
+    }
+    double encounterCost = fakeEncounter.getCost().doubleValue();
+    double expectedPaid = (planCoinsuranceToPay * encounterCost) + copay;
+    double coinsurancePaid = fakeEncounter.claim.getCoinsurancePaid();
+    double copayPaid = fakeEncounter.claim.getCopayPaid();
+
+    assertEquals("The amount paid should be equal to the plan's coinsurance rate plus the copay.",
+        expectedPaid, coinsurancePaid + copayPaid, 0.01);
   }
 
   @Test

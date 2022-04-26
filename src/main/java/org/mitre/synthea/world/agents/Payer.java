@@ -216,10 +216,11 @@ public class Payer implements Serializable {
    * @param person the person to add to the payer.
    */
   public synchronized void incrementCustomers(Person person) {
-    if (!customerUtilization.containsKey(person.attributes.get(Person.ID))) {
-      customerUtilization.put((String) person.attributes.get(Person.ID), new AtomicInteger(0));
+    String personId = (String) person.attributes.get(Person.ID);
+    if (!customerUtilization.containsKey(personId)) {
+      customerUtilization.put(personId, new AtomicInteger(0));
     }
-    customerUtilization.get(person.attributes.get(Person.ID)).incrementAndGet();
+    customerUtilization.get(personId).incrementAndGet();
   }
 
   /**
@@ -328,7 +329,11 @@ public class Payer implements Serializable {
    * Returns the number of years the given customer was with this Payer.
    */
   public int getCustomerUtilization(Person person) {
-    return customerUtilization.get(person.attributes.get(Person.ID)).get();
+    String personId = (String) person.attributes.get(Person.ID);
+    if (!customerUtilization.containsKey(personId)) {
+      return 0;
+    }
+    return customerUtilization.get(personId).get();
   }
 
   /**

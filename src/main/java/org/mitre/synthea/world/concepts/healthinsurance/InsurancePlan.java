@@ -210,6 +210,10 @@ public class InsurancePlan implements Serializable {
     return this.payer.isNoInsurance();
   }
 
+  /**
+   * Returns whether this is a government plan.
+   * @return whether this is a government plan.
+   */
   public boolean isGovernmentPlan() {
     return this.payer.isGovernmentPayer();
   }
@@ -219,6 +223,14 @@ public class InsurancePlan implements Serializable {
    */
   public boolean isMedicareSupplementPlan() {
     return this.medicareSupplement;
+  }
+
+  /**
+   * Returns wether this plan is copay-based.
+   * @return whether this is a copay-based plan.
+   */
+  public boolean isCopayBased() {
+    return this.defaultCopay > 0;
   }
 
 }
