@@ -20,6 +20,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -720,7 +721,7 @@ public class PayerTest {
     double planCoinsuranceToPay = (1 - plan.getCoinsurance());
     double copay = 0.0;
     if (plan.isCopayBased()) {
-      planCoinsuranceToPay = 0;
+      planCoinsuranceToPay = 0.0;
       copay = plan.determineCopay(fakeEncounter);
     }
     double encounterCost = fakeEncounter.getCost().doubleValue();
@@ -751,9 +752,25 @@ public class PayerTest {
     assertEquals(firstPlan, secondPlan);
   }
 
+  @Test
+  public void qualifyingAttributesFileEligibility() {
+    String fileName = "generic/payers/test_attributes_eligibility.csv";
+    QualifyingAttributesEligibility qae = new QualifyingAttributesEligibility(fileName);
+    long time = Utilities.convertCalendarYearsToTime(1975);
+    person = new Person(0L);
+    assertFalse(qae.isPersonEligible(person, time));
+    person.attributes.put("TEST", true);
+    assertTrue(qae.isPersonEligible(person, time));
+  }
+
   @Test(expected = RuntimeException.class)
   public void getGovPlanFromPrivatePayer() {
     testPrivatePayer1.getGovernmentPayerPlan();
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void getNonexistantEligibility() {
+    PlanEligibilityFinder.getEligibilityAlgorithm("FAKE");
   }
 
 }

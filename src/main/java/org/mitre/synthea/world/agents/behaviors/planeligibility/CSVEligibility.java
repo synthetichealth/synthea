@@ -36,9 +36,6 @@ public class CSVEligibility implements IPlanEligibility {
    * @param inputEligibilities The row of eligiblity inputs.
    */
   public CSVEligibility(Map<String, String> inputEligibilities) throws IllegalArgumentException {
-    if (!inputEligibilities.containsKey(LOGICAL_OPERATOR)) {
-      inputEligibilities.put(LOGICAL_OPERATOR, "");
-    }
     this.eligibilityCriteria = new ArrayList<>();
     for (String key : inputEligibilities.keySet()) {
       if (key.equals(LOGICAL_OPERATOR)) {

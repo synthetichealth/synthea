@@ -45,28 +45,23 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
   }
 
   /**
-   * Builds a list of codes that would qualify a person for Social Security Disability.
-   * @return
+   * Builds a list of attributes that would qualify a person for this eligibility type.
+   * @return  A list of qualifying attributes.
    */
   private static List<String> buildQualifyingAttributesFile(String fileName) {
     String resource = null;
+    Iterator<? extends Map<String, String>> csv = null;
     try {
       resource = Utilities.readResource(fileName);
+      csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();
     }
 
     List<String> eligibleAttributes = new ArrayList<String>();
-
-    Iterator<? extends Map<String, String>> csv = null;
-    try {
-      csv = SimpleCSV.parseLineByLine(resource);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-      String attribute = row.get("codes");
+      String attribute = row.get("attributes");
       String[] codes = attribute.split("\\|");
       eligibleAttributes.addAll(Arrays.asList(codes));
     }

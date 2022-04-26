@@ -43,13 +43,9 @@ public class PlanEligibilityFinder {
     // Build the CSV input eligbility algorithms.
     CSVEligibility.buildEligibilityOptions(state);
     String resource = null;
-    try {
-      resource = Utilities.readResource(fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     Iterator<? extends Map<String, String>> csv = null;
     try {
+      resource = Utilities.readResource(fileName);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();
