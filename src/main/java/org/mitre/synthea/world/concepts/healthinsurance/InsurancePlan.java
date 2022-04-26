@@ -27,7 +27,7 @@ public class InsurancePlan implements Serializable {
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
   // Plan Eligibilty strategy.
-  private transient IPlanEligibility planEligibility;
+  private final IPlanEligibility planEligibility;
 
   /**
    * Constructor for an InsurancePlan.
@@ -183,7 +183,7 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Returns the yearly cost of this plan.
-   * @return
+   * @return the yearly cost.
    */
   public double getYearlyCost() {
     double yearlyPremiumTotal = this.monthlyPremium * 12;

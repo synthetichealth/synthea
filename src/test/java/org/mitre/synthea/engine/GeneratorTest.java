@@ -26,7 +26,6 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;

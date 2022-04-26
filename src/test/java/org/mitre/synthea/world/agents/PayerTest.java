@@ -132,16 +132,17 @@ public class PayerTest {
     secondPerson.attributes.put(Person.INCOME, 100000);
     processInsuranceForAges(secondPerson, 55, 60);
 
-    // Ensure the first person was with the Payer for 12 years.
+    // Ensure the first person was with the Payers for 12 years.
     assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPerson)
         + testPrivatePayer2.getCustomerUtilization(firstPerson));
-    // Ensure the second person was with the Payer for 20 years.
+    // Ensure the second person was with the Payers for 20 years.
     assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPerson)
         + testPrivatePayer2.getCustomerUtilization(secondPerson));
     assertEquals(41, PayerManager.getGovernmentPayer(PayerManager.MEDICAID)
         .getCustomerUtilization(secondPerson));
-    // Ensure that there were 2 unique customers for the Payer.
-    assertEquals(2, testPrivatePayer1.getUniqueCustomers());
+    // Ensure that there were 2 unique customers for the Payers.
+    assertEquals(2, testPrivatePayer1.getUniqueCustomers()
+        + testPrivatePayer2.getUniqueCustomers());
   }
 
   /**

@@ -1,8 +1,10 @@
 package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
+import java.io.Serializable;
+
 import org.mitre.synthea.world.agents.Person;
 
-public interface IPlanEligibility {
+public interface IPlanEligibility extends Serializable {
 
   /**
    * Returns whether the given person meets the eligibilty criteria of this
