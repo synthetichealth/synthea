@@ -104,9 +104,9 @@ public class LossOfCareHealthRecordTest {
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Determine income
     double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-    double planCoinsurance = 1.0 - plan.getCoinsurance();
+    double patientCoinsurance = plan.getPatientCoinsurance();
     double planCopay = plan.determineCopay(dummyInpatientEncounter);
-    double income = (2 * (encounterCost * planCoinsurance)) - 1;
+    double income = (2 * (encounterCost * patientCoinsurance)) - 1;
     if (plan.isCopayBased()) {
       income = (2 * planCopay) - 1;
     }

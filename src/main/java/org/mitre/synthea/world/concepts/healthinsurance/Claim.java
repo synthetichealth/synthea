@@ -73,9 +73,10 @@ public class Claim implements Serializable {
         return;
       }
       // Check if the patient has coinsurance to pay.
-      double coinsurance = (1 - plan.getCoinsurance());
-      if (coinsurance > 0.0) {
-        double coinsurancePatientToPay = (coinsurance * adjustedCost);
+      double patientCoinsurance = plan.getPatientCoinsurance();
+      if (patientCoinsurance > 0.0) {
+        double payerCoinsurance = plan.getPayerCoinsurance();
+        double coinsurancePatientToPay = (adjustedCost * patientCoinsurance);
         // If the person has secondary insurance, they cover the coinusurance.
         if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
           this.paidBySecondaryPayer = coinsurancePatientToPay;
@@ -83,7 +84,7 @@ public class Claim implements Serializable {
         }
         this.paidByPatient += coinsurancePatientToPay;
         this.coinsurancePaidByPatient += coinsurancePatientToPay;
-        double coinsurancePayerToPay = (adjustedCost - coinsurancePatientToPay);
+        double coinsurancePayerToPay = (adjustedCost * payerCoinsurance);
         this.paidByPayer += coinsurancePayerToPay;
         this.coinsurancePaidByPayer = coinsurancePayerToPay;
         planRecord.remainingDeductible -= coinsurancePatientToPay;

@@ -75,8 +75,13 @@ public class InsurancePlan implements Serializable {
     return this.deductible;
   }
 
-  public double getCoinsurance() {
+  public double getPayerCoinsurance() {
     return this.defaultCoinsurance;
+  }
+
+  public double getPatientCoinsurance() {
+    double coinsurance = 1 - this.defaultCoinsurance;
+    return coinsurance < 1 ? coinsurance : 0.0;
   }
 
   /**
