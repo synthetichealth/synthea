@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Period;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -33,17 +32,14 @@ public class PayerTest {
 
   private static String testState;
   // Covers all healthcare.
-  private Payer testPrivatePayer1;
+  private static Payer testPrivatePayer1;
   // Covers only wellness encounters.
-  private Payer testPrivatePayer2;
+  private static Payer testPrivatePayer2;
   private static HealthInsuranceModule healthInsuranceModule;
-  private Person person;
+  private static Person person;
   private static double medicaidLevel;
   private static double povertyLevel;
   private static long mandateTime;
-  private static String medicareName;
-  private static String medicaidName;
-  private static String dualName;
   private static long sixMonths = Utilities.convertTime("months", 6);
 
   /**
@@ -62,9 +58,14 @@ public class PayerTest {
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
-    medicareName = Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-    medicaidName = Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-    dualName = Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    // Force medicare for test settings
+    Config.set("generate.payers.insurance_companies.medicare", "Medicare");
+    Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
+    Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
   }
 
   /**
@@ -72,21 +73,10 @@ public class PayerTest {
    */
   @Before
   public void before() {
-    // Clear any Payers that may have already been statically loaded.
-    PayerManager.clear();
-    // Load in the .csv list of Payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    Config.set("generate.payers.insurance_plans.ssd_rejection",
-        "1.0");
-    // Force medicare for test settings
-    Config.set("generate.payers.insurance_companies.medicare", "Medicare");
-    Config.set("generate.payers.insurance_companies.medicaid", "Medicaid");
-    Config.set("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-    PlanEligibilityFinder.buildPlanEligibilities(testState,
-        Config.get("generate.payers.insurance_plans.eligibilities_file"));
+    // Clear any Payers that may have already been statically loaded.
+    PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
     testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);
@@ -98,9 +88,10 @@ public class PayerTest {
    */
   @AfterClass
   public static void cleanup() {
-    Config.set("generate.payers.insurance_companies.medicare", medicareName);
-    Config.set("generate.payers.insurance_companies.medicaid", medicaidName);
-    Config.set("generate.payers.insurance_companies.dual_eligible", dualName);
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/insurance_companies.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/insurance_plans.csv");
   }
 
   @Test
@@ -141,9 +132,11 @@ public class PayerTest {
         + testPrivatePayer2.getCustomerUtilization(secondPerson));
     assertEquals(41, PayerManager.getGovernmentPayer(PayerManager.MEDICAID)
         .getCustomerUtilization(secondPerson));
-    // Ensure that there were 2 unique customers for the Payers.
-    assertEquals(2, testPrivatePayer1.getUniqueCustomers()
-        + testPrivatePayer2.getUniqueCustomers());
+    // Ensure that there were betwen 2 and 4 unique customers for the Payers.
+    assertTrue(testPrivatePayer1.getUniqueCustomers()
+        + testPrivatePayer2.getUniqueCustomers() >= 2);
+    assertTrue(testPrivatePayer1.getUniqueCustomers()
+        + testPrivatePayer2.getUniqueCustomers() <= 4);
   }
 
   /**
@@ -165,25 +158,26 @@ public class PayerTest {
 
   @Test
   public void incrementEncounters() {
+    long time = Utilities.convertCalendarYearsToTime(1968);
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next());
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next());
     HealthRecord healthRecord = new HealthRecord(person);
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
-    Encounter fakeEncounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    Encounter fakeEncounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
-    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
-    fakeEncounter = healthRecord.encounterStart(0L, EncounterType.AMBULATORY);
+    healthRecord.encounterEnd(time, EncounterType.INPATIENT);
+    fakeEncounter = healthRecord.encounterStart(time, EncounterType.AMBULATORY);
     fakeEncounter.provider = new Provider();
     fakeEncounter.codes.add(code);
-    healthRecord.encounterEnd(0L, EncounterType.AMBULATORY);
+    healthRecord.encounterEnd(time, EncounterType.AMBULATORY);
     fakeEncounter = healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
-    healthRecord.encounterEnd(0L, EncounterType.EMERGENCY);
+    healthRecord.encounterEnd(time, EncounterType.EMERGENCY);
 
     assertEquals(3, testPrivatePayer1.getEncountersCoveredCount());
   }
@@ -432,7 +426,6 @@ public class PayerTest {
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/bad_test_payers.csv");
     PayerManager.loadPayers(new Location("Massachusetts", null));
-    PayerManager.clear();
   }
 
   @Test
@@ -729,7 +722,8 @@ public class PayerTest {
     double coinsurancePaid = fakeEncounter.claim.getCoinsurancePaid();
     double copayPaid = fakeEncounter.claim.getCopayPaid();
 
-    assertEquals("The amount paid should be equal to the plan's coinsurance rate plus the copay.",
+    assertEquals("The amount paid should be equal to the plan's coinsurance rate plus the copay."
+        + " The payer is " + plan.getPayer().getName() + ".",
         expectedPaid, coinsurancePaid + copayPaid, 0.01);
   }
 

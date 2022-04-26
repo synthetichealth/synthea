@@ -118,7 +118,7 @@ public class Payer implements Serializable {
   public Payer(String name, String id, Set<String> statesCovered,
       String ownership, String eligibilityName) {
     if (name == null || name.isEmpty()) {
-      throw new RuntimeException("ERROR: Payer must have a non-null name.");
+      throw new RuntimeException("ERROR: Payer must have a non-null name. Payer ID: " + id + ".");
     }
     this.name = name;
     this.eligibilityName = eligibilityName;
