@@ -1,0 +1,48 @@
+{
+  "name": "Vehicle Launch",
+  "remarks": [
+    "This module simulates a space craft shuttle accident.",
+    "Source: https://en.wikipedia.org/wiki/List_of_spaceflight-related_accidents_and_incidents",
+    "Source: https://en.wikipedia.org/wiki/List_of_space_travelers_by_name",
+    "Space Travel Participants:  601; Deaths:  31"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Launch"
+    },
+    "Launch": {
+      "type": "Encounter",
+      "wellness": true,
+      "distributed_transition": [
+        {
+          "distribution": 0.05,
+          "transition": "Accident"
+        },
+        {
+          "distribution": 0.95,
+          "transition": "End_Launch"
+        }
+      ]
+    },
+    "Accident": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "418161006",
+          "display": "Vehicle accident (event)"
+        }
+      ],
+      "remarks": [
+        "Shuttle accident"
+      ],
+      "direct_transition": "End_Launch"
+    },
+    "End_Launch": {
+      "type": "Terminal",
+      "name": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}
