@@ -89,9 +89,8 @@ public class PayerTest {
   @AfterClass
   public static void cleanup() {
     Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/insurance_companies.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/insurance_plans.csv");
+        "payers/insurance_companies.csv");
+    Config.set("generate.payers.insurance_plans.default_file", "payers/insurance_plans.csv");
   }
 
   @Test
