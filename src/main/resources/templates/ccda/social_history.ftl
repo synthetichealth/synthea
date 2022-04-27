@@ -3,8 +3,8 @@
 <component>
   <!--Social History - CCDA-->
   <section>
-    <templateId root="2.16.840.1.113883.10.20.22.2.17"/>
     <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01"/>
+    <templateId root="2.16.840.1.113883.10.20.22.2.17"/>
     <!-- Social history section template -->
     <code code="29762-2" codeSystem="2.16.840.1.113883.6.1"/>
     <title>Social History</title>
@@ -48,13 +48,13 @@
               </assignedAuthoringDevice>
               <representedOrganization>
                 <id nullFlavor="NA"/>
-                <name>${preferredProviderambulatory.name?replace("&", "&amp;")}</name>
+                <name>${preferredProviderwellness.name?replace("&", "&amp;")}</name>
                 <telecom nullFlavor="NA"/>
                 <addr>
-                  <streetAddressLine>${preferredProviderambulatory.address?replace("&", "&amp;")}</streetAddressLine>
-                  <city>${preferredProviderambulatory.city}</city>
-                  <state>${preferredProviderambulatory.state}</state>
-                  <postalCode>${preferredProviderambulatory.zip}</postalCode>
+                  <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
+                  <city>${preferredProviderwellness.city}</city>
+                  <state>${preferredProviderwellness.state}</state>
+                  <postalCode>${preferredProviderwellness.zip}</postalCode>
                 </addr>
               </representedOrganization>
             </assignedAuthor>
