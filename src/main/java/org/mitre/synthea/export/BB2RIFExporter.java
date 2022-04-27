@@ -1465,7 +1465,6 @@ public class BB2RIFExporter {
 
       synchronized (rifWriters.getOrCreateWriter(CARRIER.class)) {
         int lineNum = 1;
-        double totalPrvdrPayment = 0.0;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
         List<ClaimEntry> allItems = new ArrayList<>();
         allItems.add(encounter.claim.mainEntry);
@@ -1507,7 +1506,6 @@ public class BB2RIFExporter {
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
           double providerAmount = lineItem.coinsurance + lineItem.payer;
-          totalPrvdrPayment += providerAmount;
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
@@ -1543,16 +1541,11 @@ public class BB2RIFExporter {
           // (set in field value spreadsheet)
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
-          totalPrvdrPayment += encounter.claim.getCoveredCost();
           fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(CARRIER.HCPCS_CD, "99241");
           rifWriters.writeValues(CARRIER.class, fieldValues);
-        }
-
-        if (totalPrvdrPayment == 0.0) {
-          System.out.println("Paying nothing");
         }
       }
     }
