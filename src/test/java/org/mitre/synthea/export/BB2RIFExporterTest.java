@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -126,6 +127,7 @@ public class BB2RIFExporterTest {
       assertTrue(outpatientFile.exists() && outpatientFile.isFile());
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
+      validateCarrierFile(carrierFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
@@ -133,6 +135,81 @@ public class BB2RIFExporterTest {
       File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
       assertTrue(dmeFile.exists() && dmeFile.isFile());
     }
+  }
+
+  private static class CarrierClaimInfo {
+    private final String claimID;
+    private final double claimPaymentAmount;
+    private final double claimAllowedAmount;
+    private final double claimBenePaymentAmount;
+    private final double claimBeneDDblAmount;
+    private final double claimProviderPaymentAmount;
+    private double linePaymentAmount;
+    private double linePaymentAmountTotal;
+    private double lineBenePaymentAmount;
+    private double lineBenePaymentAmountTotal;
+    private double lineBeneDDblAmountTotal;
+    private double lineProviderPaymentAmount;
+    private double lineProviderPaymentAmountTotal;
+
+    CarrierClaimInfo(LinkedHashMap<String, String> row) {
+      claimID = row.get("CLM_ID");
+      claimPaymentAmount = Double.parseDouble(row.get("CLM_PMT_AMT"));
+      claimAllowedAmount = Double.parseDouble(row.get("NCH_CARR_CLM_ALOWD_AMT"));
+      claimBenePaymentAmount = Double.parseDouble(row.get("NCH_CLM_BENE_PMT_AMT"));
+      claimBeneDDblAmount = Double.parseDouble(row.get("CARR_CLM_CASH_DDCTBL_APLD_AMT"));
+      claimProviderPaymentAmount = Double.parseDouble(row.get("NCH_CLM_PRVDR_PMT_AMT"));
+      linePaymentAmountTotal = 0.0;
+      lineBenePaymentAmountTotal = 0.0;
+      lineProviderPaymentAmountTotal = 0.0;
+      lineBeneDDblAmountTotal = 0.0;
+    }
+
+    void addLineItems(LinkedHashMap<String, String> row) {
+      linePaymentAmount = Double.parseDouble(row.get("LINE_NCH_PMT_AMT"));
+      linePaymentAmountTotal += linePaymentAmount;
+      lineBenePaymentAmount = Double.parseDouble(row.get("LINE_BENE_PMT_AMT"));
+      lineBenePaymentAmountTotal += lineBenePaymentAmount;
+      lineProviderPaymentAmount = Double.parseDouble(row.get("LINE_PRVDR_PMT_AMT"));
+      lineProviderPaymentAmountTotal += lineProviderPaymentAmount;
+      lineBeneDDblAmountTotal += Double.parseDouble(row.get("LINE_BENE_PTB_DDCTBL_AMT"));
+    }
+  }
+
+  private void validateCarrierFile(File file) throws IOException {
+    double compThreshold = 0.1;
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in the carrier file, found " + rows.size(),
+            rows.size() >= 1);
+    Map<String, CarrierClaimInfo> claims = new HashMap<>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length claim ID",
+              row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+      String claimID = row.get("CLM_ID");
+      if (!claims.containsKey(claimID)) {
+        CarrierClaimInfo claim = new CarrierClaimInfo(row);
+        claims.put(claimID, claim);
+      }
+      CarrierClaimInfo claim = claims.get(claimID);
+      claim.addLineItems(row);
+      assertEquals(claim.linePaymentAmount,
+              claim.lineBenePaymentAmount + claim.lineProviderPaymentAmount, compThreshold);
+    });
+
+    claims.values().forEach(claim -> {
+      assertEquals(claim.claimPaymentAmount,
+              claim.claimBenePaymentAmount + claim.claimProviderPaymentAmount, compThreshold);
+      assertEquals(claim.linePaymentAmountTotal, claim.claimAllowedAmount, compThreshold);
+      assertEquals(claim.lineBenePaymentAmountTotal, claim.claimBenePaymentAmount, compThreshold);
+      assertEquals(claim.lineProviderPaymentAmountTotal, claim.claimProviderPaymentAmount,
+              compThreshold);
+      assertEquals(claim.lineBeneDDblAmountTotal, claim.claimBeneDDblAmount, compThreshold);
+    });
   }
 
   @Test
