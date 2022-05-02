@@ -187,7 +187,7 @@ public class PerformAnesthesia extends Module {
       }
 
 
-      double durationInMinutes = getProcedureDuration(person, anesthetist, time);
+      double durationInMinutes = getProcedureDuration(person, cardiacSurgery, anesthetist, time);
       long durationInMs = Utilities.convertTime("minutes", durationInMinutes);
       stopTime = time + durationInMs;
       person.attributes.put("anesthesia_stop_time", stopTime);
@@ -239,19 +239,22 @@ public class PerformAnesthesia extends Module {
     }
   }
   
-  public static final double getProcedureDuration(Person person, Clinician clin, long time) {
-
-    int age = person.ageInYears(time);
-    
+  public static final double getProcedureDuration(Person person, String cardiacSurgery, Clinician clin, long time) {
     double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
 
     double meanSurgeonTime = (double) clin.attributes.get("mean_surgeon_time");
     
-    return getProcedureDuration(age, calculatedBMI, meanSurgeonTime);
+    if (cardiacSurgery.equals("savreplace")) {
+      boolean historyOfStroke = person.attributes.get("stroke_history") != null;
+      return getProcedureDurationAVReplace(calculatedBMI, meanSurgeonTime, historyOfStroke);
+    } else {
+      int age = person.ageInYears(time);
+      
+      return getProcedureDuration(age, calculatedBMI, meanSurgeonTime);
+    }
   }
 
-  // extracted to a constant so we can disable it in the unit test
-  public static int GAUSSIAN_NOISE_FACTOR = 28;
+
   
   public static final double getProcedureDuration(int age, double calculatedBMI, double meanAnesthetistTime) {
 
@@ -274,4 +277,28 @@ const,10.191,continuous
     
     return duration;
   }
+  
+  
+  public static final double getProcedureDurationAVReplace(double calculatedBMI, double meanAnesthetistTime, boolean historyOfStroke) {    
+    /*
+
+CalculatedBMI,0.1395,Continuous,
+mean_anesthetist_time,0.793,Continuous,mean anesthesia time for particular anesthetist
+CVA_No,0.293,Binary,No prior history of stroke
+CVA_Yes,4.27,Binary,Prior history of stroke
+constant,4.568,continuous,
+
+     */
+ 
+    double duration = 4.568; // constant value
+    
+    duration += meanAnesthetistTime * 0.793;
+    
+    duration += calculatedBMI * 0.1395;
+    
+    duration += historyOfStroke ? 4.27 : 0.293;
+    
+    return duration;
+  }
+  
 }
