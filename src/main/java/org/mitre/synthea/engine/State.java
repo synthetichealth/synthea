@@ -874,6 +874,11 @@ public abstract class State implements Cloneable, Serializable {
         }
         String desiredSpeciality = ClinicianSpecialty.GENERAL_PRACTICE;
         if (this.specialty != null && !this.specialty.isEmpty()) {
+          if (! ClinicianSpecialty.validateSpecialty(this.specialty)) {
+            throw new IllegalArgumentException(
+                String.format("Specialty '%s' is not recognized as a valid clinical specialty",
+                    this.specialty));
+          }
           desiredSpeciality = this.specialty;
         }
         HealthRecord.Encounter encounter = EncounterModule.createEncounter(person, time, type,
