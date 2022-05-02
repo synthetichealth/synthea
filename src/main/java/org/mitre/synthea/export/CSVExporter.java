@@ -1480,7 +1480,7 @@ public class CSVExporter {
         s.append(',');
       }
       // OUTSTANDINGP (TODO this should be the outstanding patient balance)
-      double patientCost = claim.getTotalClaimCost() - claim.getCoveredCost();
+      BigDecimal patientCost = claim.getTotalClaimCost().subtract(claim.getCoveredCost());
       s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
@@ -1549,13 +1549,14 @@ public class CSVExporter {
     write(t.toString(), claimsTransactions);
     chargeId = transactionId.getAndIncrement();
 
-    double remainder = claimEntry.cost;
+    BigDecimal remainder = claimEntry.cost;
     if (mainEntry) {
-      if (claimEntry.copay > 0) {
+      if (claimEntry.copay.compareTo(Claim.ZERO_CENTS) > 0) {
         // COPAY
-        remainder -= claimEntry.copay;
-        if (remainder < 0) {
-          remainder = 0; // If the cost of the copay is greater than the medication cost.
+        remainder = remainder.subtract(claimEntry.copay);
+        if (remainder.compareTo(Claim.ZERO_CENTS) < 0) {
+          // If the cost of the copay is greater than the medication cost.
+          remainder = Claim.ZERO_CENTS;
         }
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, rand);
@@ -1571,10 +1572,10 @@ public class CSVExporter {
     }
 
     // ADJUSTMENTS
-    if (claimEntry.adjustment > 0) {
-      remainder -= claimEntry.adjustment;
-      if (remainder < 0) {
-        remainder = 0;
+    if (claimEntry.adjustment.compareTo(Claim.ZERO_CENTS) > 0) {
+      remainder = remainder.subtract(claimEntry.adjustment);
+      if (remainder.compareTo(Claim.ZERO_CENTS) < 0) {
+        remainder = Claim.ZERO_CENTS;
       }
       t = new ClaimTransaction(encounter, encounterId,
           claim, claimId, chargeId, claimEntry, rand);
@@ -1588,10 +1589,10 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    double payerAmount = (claimEntry.payer + claimEntry.coinsurance);
-    if (payerAmount > 0) {
+    BigDecimal payerAmount = claimEntry.payer.add(claimEntry.coinsurance);
+    if (payerAmount.compareTo(Claim.ZERO_CENTS) > 0) {
       // PAYMENT FROM INSURANCE
-      remainder -= payerAmount;
+      remainder = remainder.subtract(payerAmount);
       t = new ClaimTransaction(encounter, encounterId,
           claim, claimId, chargeId, claimEntry, rand);
       t.type = ClaimTransactionType.PAYMENT;
@@ -1604,8 +1605,8 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    double secondaryPayerAmount = claimEntry.secondaryPayer;
-    if (secondaryPayerAmount > 0) {
+    BigDecimal secondaryPayerAmount = claimEntry.secondaryPayer;
+    if (secondaryPayerAmount.compareTo(Claim.ZERO_CENTS) > 0) {
       // TRANSFEROUT
       t = new ClaimTransaction(encounter, encounterId,
           claim, claimId, chargeId, claimEntry, rand);
@@ -1632,7 +1633,7 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
 
       // PAYMENT FROM SECONDARY INSURANCE
-      remainder -= secondaryPayerAmount;
+      remainder = remainder.subtract(secondaryPayerAmount);
 
       // PAYMENT
       t = new ClaimTransaction(encounter, encounterId,
@@ -1647,7 +1648,7 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
 
-    if (remainder > 0) {
+    if (remainder.compareTo(Claim.ZERO_CENTS) > 0) {
       if (claim.payer != Payer.noInsurance) {
         // TRANSFEROUT
         t = new ClaimTransaction(encounter, encounterId,
@@ -1683,7 +1684,7 @@ public class CSVExporter {
           PaymentMethod.CC.toString()};
       t.method = PaymentMethod.valueOf(rand.rand(opts));
       t.payment = remainder;
-      t.unpaid = 0.0;
+      t.unpaid = Claim.ZERO_CENTS;
       t.departmentId = departmentId;
       t.diagnosisCodes = diagnosisCodes;
       write(t.toString(), claimsTransactions);
@@ -1709,12 +1710,12 @@ public class CSVExporter {
     String patientId;
     String memberId;
     ClaimTransactionType type;
-    Double amount;
+    BigDecimal amount = Claim.ZERO_CENTS;
     Integer units;
-    Double unitAmount;
-    Double payment;
-    Double adjustment;
-    Double unpaid;
+    BigDecimal unitAmount = Claim.ZERO_CENTS;
+    BigDecimal payment = Claim.ZERO_CENTS;
+    BigDecimal adjustment = Claim.ZERO_CENTS;
+    BigDecimal unpaid = Claim.ZERO_CENTS;
     PaymentMethod method;
     long start;
     long stop;
@@ -1760,7 +1761,7 @@ public class CSVExporter {
       this.procedureDisplay = clean(claimEntry.entry.codes.get(0).display);
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
       this.amount = amount;
       this.unitAmount = amount;
     }
