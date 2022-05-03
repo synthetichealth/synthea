@@ -61,6 +61,11 @@ public class PreferredProviders implements Serializable {
       provider = Provider.findService(person, HealthRecord.EncounterType.INPATIENT, speciality,
           time);
     }
+    if (provider == null) {
+      throw new IllegalStateException(
+          String.format("Unable to find provider for encounter type '%s' and specialty '%s'",
+              type, speciality));
+    }
 
     relationships.put(type, blankSafeSpecialty(speciality), provider);
 
