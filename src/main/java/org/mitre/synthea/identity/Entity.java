@@ -37,7 +37,7 @@ public class Entity {
    *     seed
    */
   public Seed seedAt(long timestamp) {
-    if (timestamp == Long.MIN_VALUE) {
+    if (timestamp == Long.MIN_VALUE || isBeforeOrDuringFirstSeed(timestamp)) {
       return seeds.get(0);
     }
     LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp)

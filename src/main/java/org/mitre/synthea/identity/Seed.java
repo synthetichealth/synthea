@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -123,7 +124,7 @@ public class Seed implements IdentityRecord {
 
   @Override
   public String getCity() {
-    return city;
+    return WordUtils.capitalizeFully(city);
   }
 
   @Override
@@ -168,7 +169,7 @@ public class Seed implements IdentityRecord {
     attributes.put(Person.TELECOM, this.getPhone());
     attributes.put(Person.GENDER, this.getGender());
     attributes.put(Person.STATE, this.state);
-    attributes.put(Person.CITY, this.city);
+    attributes.put(Person.CITY, WordUtils.capitalizeFully(this.city));
     attributes.put(Person.ADDRESS, this.addressLines.stream()
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.zipCode);

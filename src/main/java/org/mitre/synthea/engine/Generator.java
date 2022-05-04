@@ -684,7 +684,7 @@ public class Generator implements RandomNumberGenerator {
         if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
           // If the person has moved out of the simulation area, as indicated by the city
           // being "AWAY", end the simulation.
-          if (currentSeed.getCity().equals("AWAY")) {
+          if (currentSeed.getCity().equals("Away")) {
             break;
           }
 
