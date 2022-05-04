@@ -43,7 +43,7 @@
           "display": "Chronic congestive heart failure (disorder)"
         }
       ],
-      "direct_transition": "CHF initial workup encounter"
+      "direct_transition": "Eventual Hospice Reason"
     },
     "CHF initial workup encounter": {
       "type": "Encounter",
@@ -671,6 +671,7 @@
     "Daily Self-Measurement Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1506,7 +1507,6 @@
     },
     "Shock Disorder": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1829,7 +1829,7 @@
     },
     "Stage D Hospice": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "hospice",
       "reason": "chf",
       "codes": [
         {
@@ -1849,6 +1849,12 @@
       },
       "referenced_by_attribute": "chf",
       "direct_transition": "Terminal"
+    },
+    "Eventual Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "CHF initial workup encounter",
+      "value_attribute": "chf"
     }
   },
   "remarks": [

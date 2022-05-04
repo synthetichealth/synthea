@@ -28,6 +28,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.CoverageRecord;
 import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -96,6 +97,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
   public static final String RECORD_GROUP = "record_group";
   public static final String LINK_ID = "link_id";
+  public static final String VETERAN = "veteran";
+  public static final String BLINDNESS = "blindness";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
   private final Random random;
@@ -640,6 +643,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, long time) {
     Provider provider = Provider.findService(this, type, time);
+    if (provider == null && Provider.USE_HOSPITAL_AS_DEFAULT) {
+      // Default to Hospital
+      provider = Provider.findService(this, EncounterType.INPATIENT, time);
+    }
     setProvider(type, provider);
   }
 
@@ -718,10 +725,12 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param payer the payer to check.
    */
   public boolean canAffordPayer(Payer payer) {
-    int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyPremiumTotal = payer.getMonthlyPremium() * 12;
-    double yearlyDeductible = payer.getDeductible();
-    return income > (yearlyPremiumTotal + yearlyDeductible);
+    BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
+    BigDecimal yearlyPremiumTotal = payer.getMonthlyPremium()
+            .multiply(BigDecimal.valueOf(12))
+            .setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal yearlyDeductible = payer.getDeductible();
+    return income.compareTo(yearlyPremiumTotal.add(yearlyDeductible)) > 0;
   }
 
   /**
@@ -733,14 +742,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   private boolean stillHasIncome(long time) {
     CoverageRecord.Plan plan = coverage.getPlanAtTime(time);
-    double currentYearlyExpenses;
+    BigDecimal currentYearlyExpenses;
     if (plan != null) {
       currentYearlyExpenses = plan.totalExpenses;
     } else {
-      currentYearlyExpenses = 0.0;
+      currentYearlyExpenses = Claim.ZERO_CENTS;
     }
 
-    if ((int) this.attributes.get(Person.INCOME) - currentYearlyExpenses > 0) {
+    BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
+    if (income.compareTo(currentYearlyExpenses) > 0) {
       // Person has remaining income for the year.
       return true;
     }
@@ -770,9 +780,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
       // Pay the payer.
       Plan plan = this.coverage.getPlanAtTime(time);
-      plan.totalExpenses += (plan.payer.payMonthlyPremium());
+      plan.totalExpenses = plan.totalExpenses.add(plan.payer.payMonthlyPremium());
       // Pay secondary insurance, if applicable
-      plan.totalExpenses += (plan.secondaryPayer.payMonthlyPremium());
+      plan.totalExpenses = plan.totalExpenses.add(plan.secondaryPayer.payMonthlyPremium());
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

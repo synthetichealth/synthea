@@ -55,6 +55,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "obesity",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

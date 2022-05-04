@@ -629,7 +629,7 @@ public class FhirDstu2 {
     for (Entry entry : bundle.getEntry()) {
       if (entry.getResource().getResourceName().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.identifier)) {
+        if (doc.getIdentifierFirstRep().getValue().equals(clinician.npi)) {
           return entry.getFullUrl();
         }
       }
@@ -1638,7 +1638,7 @@ public class FhirDstu2 {
 
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue("" + (9_999_999_999L - clinician.identifier));
+            .setValue(clinician.npi);
     practitionerResource.setActive(true);
     practitionerResource.getName().addFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))

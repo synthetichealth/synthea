@@ -17,10 +17,10 @@ public class HealthInsuranceModule extends Module {
   public static long mandateTime
       = Utilities.convertCalendarYearsToTime(Integer.parseInt(Config
       .get("generate.insurance.mandate.year", "2006")));
-  public static double mandateOccupation = Double
-      .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-  public static double medicaidLevel = 1.33 * Double
-      .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
+  public static double mandateOccupation =
+      Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
+  public static double medicaidLevel = 1.33
+          * Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
   public static String MEDICARE =
       Config.get("generate.payers.insurance_companies.medicare", "Medicare");
   public static String MEDICAID =
@@ -147,7 +147,7 @@ public class HealthInsuranceModule extends Module {
   public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = HealthInsuranceModule.class.getSimpleName();
     Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
-    Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.BLINDNESS, true, false, "Boolean");
     Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");
     Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
     Attributes.inventory(attributes, m, Person.OCCUPATION_LEVEL, true, false, "Low");

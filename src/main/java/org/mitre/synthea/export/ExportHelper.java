@@ -2,7 +2,11 @@ package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -191,6 +195,21 @@ public abstract class ExportHelper {
     }
   }
 
+  /**
+   * Get the timestamp for next Friday.
+   */
+  public static long nextFriday(long time) {
+    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    c.setTimeInMillis(time);
+    LocalDate d = LocalDate.of(
+        c.get(Calendar.YEAR), 1 + c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+    d = d.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+    c.set(Calendar.YEAR, d.getYear());
+    c.set(Calendar.MONTH, d.getMonthValue() - 1);
+    c.set(Calendar.DAY_OF_MONTH, d.getDayOfMonth());
+    return c.getTimeInMillis();
+  }
+
   private static final String SNOMED_URI = "http://snomed.info/sct";
   private static final String LOINC_URI = "http://loinc.org";
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
@@ -263,8 +282,7 @@ public abstract class ExportHelper {
       return null;
     } else {
       return String.format("%s?identifier=%s|%s", "Practitioner",
-              "http://hl7.org/fhir/sid/us-npi",
-              Long.toString(9_999_999_999L - clinician.identifier));
+              "http://hl7.org/fhir/sid/us-npi", clinician.npi);
     }
   }
 

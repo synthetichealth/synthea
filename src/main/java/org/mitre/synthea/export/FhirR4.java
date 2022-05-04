@@ -127,6 +127,7 @@ import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
+import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
@@ -746,12 +747,30 @@ public class FhirR4 {
     }
     encounterResource.getServiceProvider().setDisplay(provider.name);
     if (USE_US_CORE_IG) {
-      String referenceUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Location", provider.getResourceLocationID())
-              : findLocationUrl(provider, bundle);
+      String referenceUrl;
+      String display;
+      if (TRANSACTION_BUNDLE) {
+        if (encounter.type.equals(EncounterType.VIRTUAL.toString())) {
+          referenceUrl = ExportHelper.buildFhirSearchUrl("Location",
+              FhirR4PatientHome.getPatientHome().getId());
+          display = "Patient's Home";
+        } else {
+          referenceUrl = ExportHelper.buildFhirSearchUrl("Location",
+              provider.getResourceLocationID());
+          display = provider.name;
+        }
+      } else {
+        if (encounter.type.equals(EncounterType.VIRTUAL.toString())) {
+          referenceUrl = addPatientHomeLocation(bundle);
+          display = "Patient's Home";
+        } else {
+          referenceUrl = findLocationUrl(provider, bundle);
+          display = provider.name;
+        }
+      }
       encounterResource.addLocation().setLocation(new Reference()
           .setReference(referenceUrl)
-          .setDisplay(provider.name));
+          .setDisplay(display));
     }
 
     if (encounter.clinician != null) {
@@ -818,6 +837,29 @@ public class FhirR4 {
   }
 
   /**
+   * Finds the "patient's home" Location resource and returns the URL. If it does not yet exist in
+   * the bundle, it will create it.
+   * @param bundle the bundle to look in for the patient home resource
+   * @return the URL of the patient home resource
+   */
+  public static String addPatientHomeLocation(Bundle bundle) {
+    String locationURL = null;
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Location")) {
+        if (entry.getResource().getId().equals(FhirR4PatientHome.getPatientHome().getId())) {
+          locationURL = entry.getFullUrl();
+        }
+      }
+    }
+    if (locationURL == null) {
+      org.hl7.fhir.r4.model.Location location = FhirR4PatientHome.getPatientHome();
+      BundleEntryComponent bec = newEntry(bundle, location, location.getId());
+      locationURL = bec.getFullUrl();
+    }
+    return locationURL;
+  }
+
+  /**
    * Find the Location entry in this bundle for the given provider, and return the
    * "fullUrl" attribute.
    *
@@ -830,8 +872,9 @@ public class FhirR4 {
       if (entry.getResource().fhirType().equals("Location")) {
         org.hl7.fhir.r4.model.Location location =
             (org.hl7.fhir.r4.model.Location) entry.getResource();
-        if (location.getManagingOrganization()
-            .getIdentifier().getValue().equals(provider.getResourceID())) {
+        Reference managingOrg = location.getManagingOrganization();
+        if (managingOrg != null
+            && managingOrg.getIdentifier().getValue().equals(provider.getResourceID())) {
           return entry.getFullUrl();
         }
       }
@@ -850,8 +893,7 @@ public class FhirR4 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue()
-              .equals("" + (9_999_999_999L - clinician.identifier))) {
+        if (doc.getIdentifierFirstRep().getValue().equals(clinician.npi)) {
           return entry.getFullUrl();
         }
       }
@@ -1119,39 +1161,32 @@ public class FhirR4 {
         .setCode("primary")
         .setSystem("http://terminology.hl7.org/CodeSystem/claimcareteamrole")
         .setDisplay("Primary Care Practitioner"));
+    Reference providerReference = new Reference().setDisplay("Unknown");
     if (encounter.clinician != null) {
-      // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
       String practitionerFullUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
-              : findPractitioner(encounter.clinician, bundle);
-      eob.setProvider(new Reference(practitionerFullUrl));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference(practitionerFullUrl))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference(practitionerFullUrl));
-      referral.addPerformer(new Reference(practitionerFullUrl));
+          ? ExportHelper.buildFhirNpiSearchUrl(encounter.clinician)
+          : findPractitioner(encounter.clinician, bundle);
+      if (practitionerFullUrl != null) {
+        providerReference = new Reference(practitionerFullUrl);
+      }
     } else if (encounter.provider != null) {
       String providerUrl = TRANSACTION_BUNDLE
-              ? ExportHelper.buildFhirSearchUrl("Location",
-                      encounter.provider.getResourceLocationID())
-              : findProviderUrl(encounter.provider, bundle);
-      eob.setProvider(new Reference(providerUrl));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference(providerUrl))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference(providerUrl));
-      referral.addPerformer(new Reference(providerUrl));
-    } else {
-      eob.setProvider(new Reference().setDisplay("Unknown"));
-      eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
-          .setSequence(1)
-          .setProvider(new Reference().setDisplay("Unknown"))
-          .setRole(primaryCareRole));
-      referral.setRequester(new Reference().setDisplay("Unknown"));
-      referral.addPerformer(new Reference().setDisplay("Unknown"));
+          ? ExportHelper.buildFhirSearchUrl("Location",
+                    encounter.provider.getResourceLocationID())
+          : findProviderUrl(encounter.provider, bundle);
+      if (providerUrl != null) {
+        providerReference = new Reference(providerUrl);
+      }
     }
+
+    eob.setProvider(providerReference);
+    eob.addCareTeam(new ExplanationOfBenefit.CareTeamComponent()
+        .setSequence(1)
+        .setProvider(providerReference)
+        .setRole(primaryCareRole));
+    referral.setRequester(providerReference);
+    referral.addPerformer(providerReference);
+
     eob.addContained(referral);
     eob.setReferral(new Reference().setReference("#referral"));
 
@@ -2894,10 +2929,9 @@ public class FhirR4 {
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner");
       practitionerResource.setMeta(meta);
     }
-    String practitionerNPI = Long.toString(9_999_999_999L - clinician.identifier);
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue(practitionerNPI);
+            .setValue(clinician.npi);
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
@@ -2943,7 +2977,7 @@ public class FhirR4 {
       practitionerRole.setPractitioner(new Reference()
           .setIdentifier(new Identifier()
                   .setSystem("http://hl7.org/fhir/sid/us-npi")
-                  .setValue(practitionerNPI))
+                  .setValue(clinician.npi))
           .setDisplay(practitionerResource.getNameFirstRep().getNameAsSingleString()));
       practitionerRole.setOrganization(new Reference()
           .setIdentifier(new Identifier()

@@ -450,7 +450,7 @@
             },
             {
               "distribution": 0.0424,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -478,7 +478,7 @@
             },
             {
               "distribution": 0.06,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -502,7 +502,7 @@
             },
             {
               "distribution": 0.08,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -550,7 +550,7 @@
             },
             {
               "distribution": 0.01,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -574,7 +574,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -598,7 +598,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -785,25 +785,12 @@
               }
             ]
           },
-          "transition": "End_COPD_Followup_Enc1"
+          "transition": "Check Oxygen"
         },
         {
-          "transition": "Prescribe_Medication"
+          "transition": "Prescribe_Corticosteroid"
         }
       ]
-    },
-    "Prescribe_Medication": {
-      "type": "MedicationOrder",
-      "reason": "copd_variant",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "896209",
-          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
-        }
-      ],
-      "direct_transition": "End_COPD_Followup_Enc1",
-      "chronic": true
     },
     "Consider_Surgery": {
       "type": "Simple",
@@ -972,7 +959,12 @@
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "copd_variant",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 10,
+        "high": 30,
+        "unit": "days"
+      }
     },
     "Terminal": {
       "type": "Terminal"
@@ -1005,6 +997,109 @@
     "End_COPD_Followup_Enc1": {
       "type": "EncounterEnd",
       "direct_transition": "Consider_Surgery"
+    },
+    "Hospice Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Hospice",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.6
+        }
+      ]
+    },
+    "Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "copd_variant",
+      "direct_transition": "Death"
+    },
+    "Check Oxygen": {
+      "type": "Simple",
+      "remarks": [
+        "Ardestani ME, Abbaszadeh M. The association between forced expiratory volume in one second (FEV1) and pulse oximetric measurements of arterial oxygen saturation (SpO2) in the patients with COPD: A preliminary study. J Res Med Sci. 2014;19(3):257-261.",
+        "The study may demonstrate that oxygen saturation measured by pulse oximetry appears to be independent of the degree of airways obstruction as quantified by the FEV1; although further evidence needs to be assessed these preliminary findings."
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Oxygen System",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End_COPD_Followup_Enc1"
+        }
+      ]
+    },
+    "Prescribe_Corticosteroid": {
+      "type": "MedicationOrder",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "896209",
+          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
+        }
+      ],
+      "direct_transition": "Prescribe_Bronchodilator",
+      "chronic": true
+    },
+    "Prescribe_Bronchodilator": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 245314,
+          "display": "albuterol 5 MG/ML Inhalation Solution"
+        }
+      ],
+      "direct_transition": "Nebulizer",
+      "reason": "copd_variant",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "as_needed": true
+      }
+    },
+    "Nebulizer": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 170615005,
+        "display": "Home nebulizer (physical object)"
+      },
+      "direct_transition": "Check Oxygen"
+    },
+    "Oxygen System": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 336621006,
+        "display": "Oxygen concentrator (physical object)"
+      },
+      "direct_transition": "End_COPD_Followup_Enc1"
     }
   },
   "gmf_version": 1

@@ -20,9 +20,9 @@ import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -135,7 +135,10 @@ public class Attributes {
     Map<String,Inventory> attributes = new TreeMap<String,Inventory>();
 
     Utilities.walkAllModules((basePath, modulePath) -> {
-      try (JsonReader reader = new JsonReader(new FileReader(modulePath.toString()))) {
+      try {
+        String moduleRelativePath = basePath.getParent().relativize(modulePath).toString();
+        JsonReader reader = new JsonReader(new StringReader(
+                 Utilities.readResource(moduleRelativePath)));
         JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
         inventoryModule(attributes, module);
       } catch (IOException e) {

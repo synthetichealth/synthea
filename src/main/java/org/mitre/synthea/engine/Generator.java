@@ -81,6 +81,7 @@ public class Generator implements RandomNumberGenerator {
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   private List<FixedRecordGroup> recordGroups;
+  public final int threadPoolSize;
 
   /**
    * Used only for testing and debugging. Populate this field to keep track of all patients
@@ -102,9 +103,17 @@ public class Generator implements RandomNumberGenerator {
    * This class provides the default values for Generator, or alternatives may be set.
    */
   public static class GeneratorOptions {
-    public int population = Integer.parseInt(Config.get("generate.default_population", "1"));
-    public long seed = System.currentTimeMillis();
-    public long clinicianSeed = seed;
+    public int population = Config.getAsInteger("generate.default_population", 1);
+    public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
+    /** Reference Time when to start Synthea. By default equal to the current system time. */
+    public long referenceTime = System.currentTimeMillis();
+    /** End time of Synthea simulation. By default equal to the current system time. */
+    public long endTime = referenceTime;
+    /** Actual time the run started. */
+    public final long runStartTime = referenceTime;
+    /** By default use the current time as random seed. */
+    public long seed = referenceTime;
+    public long clinicianSeed = referenceTime;
     /** Population as exclusively live persons or including deceased.
      * True for live, false includes deceased */
     public boolean overflow = true;
@@ -133,10 +142,6 @@ public class Generator implements RandomNumberGenerator {
     public int daysToTravelForward = -1;
     /** Path to a module defining which patients should be kept and exported. */
     public File keepPatientsModulePath;
-    /** Reference Time when to start Synthea. By default equal to the current system time. */
-    public long referenceTime = seed;
-    /** Actual time the run started. */
-    public final long runStartTime = referenceTime;
   }
 
   /**
@@ -193,6 +198,14 @@ public class Generator implements RandomNumberGenerator {
       exporterRuntimeOptions.deferExports = true;
       internalStore = Collections.synchronizedList(new LinkedList<>());
     }
+    if (options.threadPoolSize == -1) {
+      threadPoolSize = Runtime.getRuntime().availableProcessors();
+    } else if (options.threadPoolSize > 0) {
+      threadPoolSize = options.threadPoolSize;
+    } else {
+      throw new IllegalArgumentException(String.format(
+              "Illegal thread pool size (%d)", options.threadPoolSize));
+    }
     init();
   }
 
@@ -207,7 +220,7 @@ public class Generator implements RandomNumberGenerator {
 
     this.random = new Random(options.seed);
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
-    this.stop = System.currentTimeMillis();
+    this.stop = options.endTime;
     this.referenceTime = options.referenceTime;
 
     this.location = new Location(options.state, options.city);
@@ -324,7 +337,7 @@ public class Generator implements RandomNumberGenerator {
       Config.set("generate.append_numbers_to_person_names", "false");
     }
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(8);
+    ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;

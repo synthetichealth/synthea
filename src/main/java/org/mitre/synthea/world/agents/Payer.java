@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -32,6 +36,7 @@ import org.mitre.synthea.world.agents.behaviors.PayerAdjustmentNone;
 import org.mitre.synthea.world.agents.behaviors.PayerAdjustmentRandom;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.PayerFinderRandom;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -61,6 +66,7 @@ public class Payer implements Serializable {
   private static final String BESTRATE = "best_rate";
 
   /* Payer Adjustment strategy. */
+  @JSONSkip
   private IPayerAdjustment payerAdjustment;
   // Payer adjustment algorithm choices:
   private static final String NONE = "none";
@@ -70,10 +76,10 @@ public class Payer implements Serializable {
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
-  private double deductible;
-  private double defaultCopay;
-  private double defaultCoinsurance;
-  private double monthlyPremium;
+  private BigDecimal deductible;
+  private BigDecimal defaultCopay;
+  private BigDecimal defaultCoinsurance;
+  private BigDecimal monthlyPremium;
   private String ownership;
   // The States that this payer covers & operates in.
   private Set<String> statesCovered;
@@ -81,9 +87,9 @@ public class Payer implements Serializable {
   private Set<String> servicesCovered;
 
   /* Payer Statistics. */
-  private double revenue;
-  private double costsCovered;
-  private double costsUncovered;
+  private BigDecimal revenue;
+  private BigDecimal costsCovered;
+  private BigDecimal costsUncovered;
   private double totalQOLS; // Total customer quality of life scores.
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final Map<String, AtomicInteger> customerUtilization;
@@ -152,9 +158,9 @@ public class Payer implements Serializable {
     this.attributes = new LinkedTreeMap<>();
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
-    this.costsCovered = 0.0;
-    this.costsUncovered = 0.0;
-    this.revenue = 0.0;
+    this.costsCovered = Claim.ZERO_CENTS;
+    this.costsUncovered = Claim.ZERO_CENTS;
+    this.revenue = Claim.ZERO_CENTS;
     this.totalQOLS = 0.0;
   }
 
@@ -236,10 +242,18 @@ public class Payer implements Serializable {
     Payer newPayer = new Payer(line.remove("name"), line.remove("id"));
     newPayer.statesCovered = commaSeparatedStringToHashSet(line.remove("states_covered"));
     newPayer.servicesCovered = commaSeparatedStringToHashSet(line.remove("services_covered"));
-    newPayer.deductible = Double.parseDouble(line.remove("deductible"));
-    newPayer.defaultCoinsurance = Double.parseDouble(line.remove("default_coinsurance"));
-    newPayer.defaultCopay = Double.parseDouble(line.remove("default_copay"));
-    newPayer.monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
+    newPayer.deductible = new BigDecimal(
+            line.remove("deductible"), MathContext.DECIMAL64)
+            .setScale(2, RoundingMode.HALF_EVEN);
+    newPayer.defaultCoinsurance = new BigDecimal(
+            line.remove("default_coinsurance"), MathContext.DECIMAL64)
+            .setScale(2, RoundingMode.HALF_EVEN);
+    newPayer.defaultCopay = new BigDecimal(
+            line.remove("default_copay"), MathContext.DECIMAL64)
+            .setScale(2, RoundingMode.HALF_EVEN);
+    newPayer.monthlyPremium = new BigDecimal(
+            line.remove("monthly_premium"), MathContext.DECIMAL64)
+            .setScale(2, RoundingMode.HALF_EVEN);
     newPayer.ownership = line.remove("ownership");
     // Add remaining columns we didn't map to first-class fields to payer's attributes map.
     for (Map.Entry<String, String> e : line.entrySet()) {
@@ -249,7 +263,7 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Given a comma seperated string, convert the data into a Set.
+   * Given a comma separated string, convert the data into a Set.
    *
    * @param field the string to extract the Set from.
    * @return the HashSet of services covered.
@@ -266,10 +280,10 @@ public class Payer implements Serializable {
   public static void loadNoInsurance() {
     noInsurance = new Payer("NO_INSURANCE", "000000");
     noInsurance.ownership = "NO_INSURANCE";
-    noInsurance.deductible = 0.0;
-    noInsurance.defaultCoinsurance = 0.0;
-    noInsurance.defaultCopay = 0.0;
-    noInsurance.monthlyPremium = 0.0;
+    noInsurance.deductible = Claim.ZERO_CENTS;
+    noInsurance.defaultCoinsurance = Claim.ZERO_CENTS;
+    noInsurance.defaultCopay = Claim.ZERO_CENTS;
+    noInsurance.monthlyPremium = Claim.ZERO_CENTS;
     noInsurance.payerAdjustment = new PayerAdjustmentNone();
     // noInsurance does not cover any services.
     noInsurance.servicesCovered = new HashSet<String>();
@@ -392,26 +406,26 @@ public class Payer implements Serializable {
   /**
    * Returns the monthly premium of the payer.
    */
-  public double getMonthlyPremium() {
+  public BigDecimal getMonthlyPremium() {
     return this.monthlyPremium;
   }
 
   /**
    * Returns the yearly deductible of this payer.
    */
-  public double getDeductible() {
+  public BigDecimal getDeductible() {
     return this.deductible;
   }
 
   /**
    * Returns the Coinsurance of this payer.
    */
-  public double getCoinsurance() {
+  public BigDecimal getCoinsurance() {
     return this.defaultCoinsurance;
   }
 
   /**
-   * Returns the ownserhip type of the payer (Government/Private).
+   * Returns the ownership type of the payer (Government/Private).
    */
   public String getOwnership() {
     return this.ownership;
@@ -426,7 +440,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns whether a payer will accept the given patient at this time. Currently returns
-   * true by default, except for Medicare/Medicaid which have hardcoded requirements.
+   * true by default, except for Medicare/Medicaid which have hard-coded requirements.
    *
    * @param person Person to consider
    * @param time   Time the person seeks care
@@ -447,8 +461,8 @@ public class Payer implements Serializable {
       boolean female = (person.attributes.get(Person.GENDER).equals("F"));
       boolean pregnant = (person.attributes.containsKey("pregnant")
           && (boolean) person.attributes.get("pregnant"));
-      boolean blind = (person.attributes.containsKey("blindness")
-          && (boolean) person.attributes.get("blindness"));
+      boolean blind = (person.attributes.containsKey(Person.BLINDNESS)
+          && (boolean) person.attributes.get(Person.BLINDNESS));
       int income = (Integer) person.attributes.get(Person.INCOME);
       boolean medicaidIncomeEligible = (income <= HealthInsuranceModule.medicaidLevel);
 
@@ -502,11 +516,11 @@ public class Payer implements Serializable {
    *
    * @param entry the entry to calculate the copay for.
    */
-  public double determineCopay(Entry entry) {
-    double copay = this.defaultCopay;
+  public BigDecimal determineCopay(Entry entry) {
+    BigDecimal copay = this.defaultCopay;
     if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
         && entry.start > HealthInsuranceModule.mandateTime) {
-      copay = 0.0;
+      copay = Claim.ZERO_CENTS;
     }
     return copay;
   }
@@ -519,7 +533,7 @@ public class Payer implements Serializable {
    * @param person The person making the claim.
    * @return The dollar amount the claim entry was adjusted.
    */
-  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person) {
     return payerAdjustment.adjustClaim(claimEntry, person);
   }
 
@@ -528,8 +542,8 @@ public class Payer implements Serializable {
    *
    * @return the monthly premium amount.
    */
-  public double payMonthlyPremium() {
-    this.revenue += this.monthlyPremium;
+  public BigDecimal payMonthlyPremium() {
+    this.revenue = this.revenue.add(this.monthlyPremium);
     return this.monthlyPremium;
   }
 
@@ -615,8 +629,8 @@ public class Payer implements Serializable {
    *
    * @param costToPayer the cost of the current encounter, after the patient's copay.
    */
-  public void addCoveredCost(double costToPayer) {
-    this.costsCovered += costToPayer;
+  public void addCoveredCost(BigDecimal costToPayer) {
+    this.costsCovered = this.costsCovered.add(costToPayer);
   }
 
   /**
@@ -624,8 +638,8 @@ public class Payer implements Serializable {
    *
    * @param costToPatient the costs that the payer did not cover.
    */
-  public void addUncoveredCost(double costToPatient) {
-    this.costsUncovered += costToPatient;
+  public void addUncoveredCost(BigDecimal costToPatient) {
+    this.costsUncovered = this.costsUncovered.add(costToPatient);
   }
 
   /**
@@ -640,10 +654,10 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the total amount of money recieved from patients.
+   * Returns the total amount of money received from patients.
    * Consists of monthly premium payments.
    */
-  public double getRevenue() {
+  public BigDecimal getRevenue() {
     return this.revenue;
   }
 
@@ -735,14 +749,14 @@ public class Payer implements Serializable {
   /**
    * Returns the amount of money the payer paid to providers.
    */
-  public double getAmountCovered() {
+  public BigDecimal getAmountCovered() {
     return this.costsCovered;
   }
 
   /**
    * Returns the amount of money the payer did not cover.
    */
-  public double getAmountUncovered() {
+  public BigDecimal getAmountUncovered() {
     return this.costsUncovered;
   }
 
@@ -760,23 +774,16 @@ public class Payer implements Serializable {
     hash = 53 * hash + Objects.hashCode(this.attributes);
     hash = 53 * hash + Objects.hashCode(this.name);
     hash = 53 * hash + Objects.hashCode(this.uuid);
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.deductible)
-            ^ (Double.doubleToLongBits(this.deductible) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCopay)
-            ^ (Double.doubleToLongBits(this.defaultCopay) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.defaultCoinsurance)
-            ^ (Double.doubleToLongBits(this.defaultCoinsurance) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.monthlyPremium)
-            ^ (Double.doubleToLongBits(this.monthlyPremium) >>> 32));
+    hash = 53 * hash + this.deductible.hashCode();
+    hash = 53 * hash + this.defaultCopay.hashCode();
+    hash = 53 * hash + this.defaultCoinsurance.hashCode();
+    hash = 53 * hash + this.monthlyPremium.hashCode();
     hash = 53 * hash + Objects.hashCode(this.ownership);
     hash = 53 * hash + Objects.hashCode(this.statesCovered);
     hash = 53 * hash + Objects.hashCode(this.servicesCovered);
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.revenue)
-            ^ (Double.doubleToLongBits(this.revenue) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsCovered)
-            ^ (Double.doubleToLongBits(this.costsCovered) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsUncovered)
-            ^ (Double.doubleToLongBits(this.costsUncovered) >>> 32));
+    hash = 53 * hash + this.revenue.hashCode();
+    hash = 53 * hash + this.costsCovered.hashCode();
+    hash = 53 * hash + this.costsUncovered.hashCode();
     hash = 53 * hash + (int) (Double.doubleToLongBits(this.totalQOLS)
             ^ (Double.doubleToLongBits(this.totalQOLS) >>> 32));
     return hash;
@@ -794,32 +801,25 @@ public class Payer implements Serializable {
       return false;
     }
     final Payer other = (Payer) obj;
-    if (Double.doubleToLongBits(this.deductible)
-            != Double.doubleToLongBits(other.deductible)) {
+    if (!this.deductible.equals(other.deductible)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.defaultCopay)
-            != Double.doubleToLongBits(other.defaultCopay)) {
+    if (!this.defaultCopay.equals(other.defaultCopay)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.defaultCoinsurance)
-            != Double.doubleToLongBits(other.defaultCoinsurance)) {
+    if (!this.defaultCoinsurance.equals(other.defaultCoinsurance)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.monthlyPremium)
-            != Double.doubleToLongBits(other.monthlyPremium)) {
+    if (!this.monthlyPremium.equals(other.monthlyPremium)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.revenue)
-            != Double.doubleToLongBits(other.revenue)) {
+    if (!this.revenue.equals(other.revenue)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.costsCovered)
-            != Double.doubleToLongBits(other.costsCovered)) {
+    if (!this.costsCovered.equals(other.costsCovered)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.costsUncovered)
-            != Double.doubleToLongBits(other.costsUncovered)) {
+    if (!this.costsUncovered.equals(other.costsUncovered)) {
       return false;
     }
     if (Double.doubleToLongBits(this.totalQOLS)

@@ -599,7 +599,6 @@
     },
     "Cerebral_Palsy_Sialorrhea": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -651,6 +650,7 @@
     "Followup_Cerebral_Palsy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1028,7 +1028,6 @@
     },
     "Cerebral_Palsy_Dystonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1044,7 +1043,6 @@
     },
     "Cerebral_Palsy_Pain": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1060,7 +1058,6 @@
     },
     "Cerebral_Palsy_Central_Hypotonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1076,7 +1073,6 @@
     },
     "Cerebral_Palsy_Spasticity": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1092,7 +1088,6 @@
     },
     "Cerebral_Palsy_Osteoporosis": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1108,7 +1103,6 @@
     },
     "Cerebral_Palsy_Epilepsy": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1124,7 +1118,6 @@
     },
     "Cerebral_Palsy_Intellectual_Disability": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1140,7 +1133,6 @@
     },
     "Cerebral_Palsy_GERD": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1320,7 +1312,6 @@
     },
     "Cerebral_Palsy_Pneumonia": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1495,7 +1486,6 @@
     },
     "Cerebral_Palsy_Hip_Dislocation": {
       "type": "ConditionOnset",
-      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1542,7 +1532,7 @@
   "remarks": [
     "Module Title: Treatment of Sialorrhea in Cerebral Palsy",
     "Version Number: 1.0",
-    "Last Updated: 10/28/2020",
+    "Date Created: 10/28/2020",
     "Module Steward: ONC",
     "Module Developer: Clinovations Government + Health",
     "Description: This module models the treatment of Sialorrhea in Cerebral Palsy in patients age <=18 years of age. It is based on the American Academy for Cerebral Palsy and Developmental Medicine (AACPDM) clinical care pathway for Sialorrhea. This guideline provides recommendations for treatment of Sialorrhea in outpatient settings for the pediatric patient with cerebral palsy. ",

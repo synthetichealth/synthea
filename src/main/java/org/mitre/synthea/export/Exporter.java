@@ -53,7 +53,7 @@ public abstract class Exporter {
   private static final ConcurrentHashMap<Path, PrintWriter> fileWriters =
           new ConcurrentHashMap<Path, PrintWriter>();
 
-  private static final int fileBufferSize = 4 * 1024 * 1024;
+  private static final int FILE_BUFFER_SIZE = 4 * 1024 * 1024;
 
   /**
    * Runtime configuration of the record exporter.
@@ -131,9 +131,8 @@ public abstract class Exporter {
     if (options.deferExports) {
       deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
-      int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
-      if (yearsOfHistory > 0) {
-        person = filterForExport(person, yearsOfHistory, stopTime);
+      if (options.yearsOfHistory > 0) {
+        person = filterForExport(person, options.yearsOfHistory, stopTime);
       }
       if (!person.alive(stopTime)) {
         filterAfterDeath(person);
@@ -247,9 +246,23 @@ public abstract class Exporter {
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
       writeNewFile(outFilePath, ccdaXml);
     }
+    if (Config.getAsBoolean("exporter.json.export")) {
+      String json = JSONExporter.export(person);
+      File outDirectory = getOutputFolder("json", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
+      writeNewFile(outFilePath, json);
+    }
     if (Config.getAsBoolean("exporter.csv.export")) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.export(person, stopTime, options.yearsOfHistory);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -324,7 +337,7 @@ public abstract class Exporter {
   }
 
   /**
-   * Write a new file with the given contents.
+   * Write a new file with the given contents. Fails if the file already exists.
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
@@ -337,11 +350,25 @@ public abstract class Exporter {
   }
 
   /**
+   * Overwrite a file with the given contents. If the file doesn't exist it will be created.
+   * @param file Path to the new file.
+   * @param contents The contents of the file.
+   */
+  static void overwriteFile(Path file, String contents) {
+    try {
+      Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE,
+              StandardOpenOption.TRUNCATE_EXISTING);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * Append contents to the end of a file.
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  private static void appendToFile(Path file, String contents) {
+  static void appendToFile(Path file, String contents) {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
@@ -350,7 +377,7 @@ public abstract class Exporter {
         if (writer == null) {
           try {
             writer = new PrintWriter(
-              new BufferedWriter(new FileWriter(file.toFile(), true),fileBufferSize)
+              new BufferedWriter(new FileWriter(file.toFile(), true), FILE_BUFFER_SIZE)
             );
           } catch (IOException e) {
             e.printStackTrace();
@@ -449,6 +476,17 @@ public abstract class Exporter {
       e.printStackTrace();
     }
     Config.set("exporter.fhir.bulk_data", bulk);
+
+    if (Config.getAsBoolean("exporter.bfd.export")) {
+      try {
+        BB2RIFExporter exporter = BB2RIFExporter.getInstance();
+        exporter.exportNPIs();
+        exporter.exportManifest();
+        exporter.exportEndState();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();

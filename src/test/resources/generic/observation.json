@@ -113,7 +113,7 @@
         "SampledDataObservation" : {
             "type" : "Observation",
             "category" : "procedure",
-            "unit": "mmHg",
+            "unit": "mm[Hg]",
             "codes" : [
                 {
 		          "system": "SNOMED-CT",

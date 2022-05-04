@@ -769,7 +769,7 @@ public class FhirStu3 {
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Practitioner")) {
         Practitioner doc = (Practitioner) entry.getResource();
-        if (doc.getIdentifierFirstRep().getValue().equals("" + clinician.identifier)) {
+        if (doc.getIdentifierFirstRep().getValue().equals(clinician.npi)) {
           return entry.getFullUrl();
         }
       }
@@ -1188,6 +1188,12 @@ public class FhirStu3 {
       identifier.setValue(encounter.provider.getResourceID());
       eob.setOrganization(new Reference().setIdentifier(identifier));
     }
+    String npi = "9999999999";
+    if (encounter.clinician != null) {
+      npi = encounter.clinician.npi;
+    } else if (encounter.provider != null) {
+      npi = encounter.provider.npi;
+    }
 
     // Get the insurance info at the time that the encounter happened.
     Payer payer = encounter.claim.payer;
@@ -1215,7 +1221,23 @@ public class FhirStu3 {
     if (!inpatient && !outpatient) {
       eob.setClaim(new Reference()
           .setReference(claimEntry.getFullUrl()));
-      eob.setReferral(new Reference("#1"));
+      List<Reference> recipientList = new ArrayList<>();
+      recipientList.add(new Reference()
+          .setIdentifier(new Identifier()
+          .setSystem("http://hl7.org/fhir/sid/us-npi")
+          .setValue(npi)));
+      eob.addContained(new ReferralRequest()
+          .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
+          .setIntent(ReferralRequest.ReferralCategory.ORDER)
+          .setSubject(new Reference(personEntry.getFullUrl()))
+          .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
+              .setAgent(new Reference()
+                  .setIdentifier(new Identifier()
+                      .setSystem("http://hl7.org/fhir/sid/us-npi")
+                      .setValue(npi))))
+          .setRecipient(recipientList)
+          .setId("referral"));
+      eob.setReferral(new Reference("#referral"));
       eob.setCreated(encounterResource.getPeriod().getEnd());
     }
     eob.setType(claim.getType());
@@ -1456,24 +1478,6 @@ public class FhirStu3 {
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
 
-    // Hardcoded
-    List<Reference> recipientList = new ArrayList<>();
-    recipientList.add(new Reference()
-        .setIdentifier(new Identifier()
-        .setSystem("http://hl7.org/fhir/sid/us-npi")
-        .setValue("99999999")));
-    eob.addContained(new ReferralRequest()
-        .setStatus(ReferralRequest.ReferralRequestStatus.COMPLETED)
-        .setIntent(ReferralRequest.ReferralCategory.ORDER)
-        .setSubject(new Reference(personEntry.getFullUrl()))
-        .setRequester(new ReferralRequest.ReferralRequestRequesterComponent()
-            .setAgent(new Reference()
-                .setIdentifier(new Identifier()
-                    .setSystem("http://hl7.org/fhir/sid/us-npi")
-                    .setValue("99999999"))))
-        .setRecipient(recipientList)
-        .setId("1"));
-
     if (encounter.clinician != null) {
       // This is what should happen if BlueButton 2.0 wasn't needlessly restrictive
       // String practitionerFullUrl = findPractitioner(encounter.clinician, bundle);
@@ -1494,8 +1498,7 @@ public class FhirStu3 {
             // .setReference(findProviderUrl(provider, bundle))
             .setIdentifier(new Identifier()
                 .setSystem("http://hl7.org/fhir/sid/us-npi")
-                // providers don't have an npi
-                .setValue("99999999")))
+                .setValue(npi)))
         .setRole(new CodeableConcept().addCoding(new Coding()
             .setCode("primary")
             .setSystem("http://hl7.org/fhir/claimcareteamrole")
@@ -2455,7 +2458,7 @@ public class FhirStu3 {
 
     practitionerResource.addIdentifier()
             .setSystem("http://hl7.org/fhir/sid/us-npi")
-            .setValue("" + (9_999_999_999L - clinician.identifier));
+            .setValue(clinician.npi);
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))

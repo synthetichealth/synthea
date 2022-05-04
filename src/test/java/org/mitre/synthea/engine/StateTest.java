@@ -193,6 +193,8 @@ public class StateTest {
         module.name, conditionDisplay
     );
     assertTrue(onsetTime != null);
+    // Ensure that it ignores the blank assign_to_attribute
+    assertNull(person.attributes.get(""));
     assertEquals(time, onsetTime.longValue());
   }
 
@@ -246,6 +248,40 @@ public class StateTest {
     assertEquals("Emergency Room Admission", code.display);
     assertEquals(1, enc.conditions.size());
     code = enc.conditions.get(0).codes.get(0);
+    assertEquals("47693006", code.code);
+    assertEquals("Rupture of appendix", code.display);
+    Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
+        module.name, code.display
+    );
+    assertTrue(onsetTime != null);
+    assertNotNull(person.attributes.get("Most Recent ED Visit"));
+    assertEquals(time, onsetTime.longValue());
+  }
+
+  /**
+   * Previously, if there were multiple calls to ConditionOnset, the condition Entry would contain
+   * multiple Codes, one for each time the ConditionOnset was invoked. This test checks to make
+   * sure that the same code is only added once.
+   * @throws Exception when bad things happen
+   */
+  @Test
+  public void condition_onset_during_encounter_prevent_multiple_coding() throws Exception {
+    Module module = TestHelper.getFixture("condition_onset.json");
+    // The encounter comes first (and add it to history);
+    State encounter = module.getState("ED_Visit");
+
+    assertTrue(encounter.process(person, time));
+    person.history.add(0, encounter);
+
+    // Then appendicitis is diagnosed
+    State appendicitis = module.getState("Appendicitis");
+    assertTrue(appendicitis.process(person, time));
+    // Call the same ConditionOnset
+    assertTrue(appendicitis.process(person, time));
+
+    Encounter enc = person.record.encounters.get(0);
+    assertEquals(1, enc.conditions.get(0).codes.size());
+    Code code = enc.conditions.get(0).codes.get(0);
     assertEquals("47693006", code.code);
     assertEquals("Rupture of appendix", code.display);
     Long onsetTime = person.getOnsetConditionRecord().getConditionLastOnsetTimeFromModule(
@@ -803,7 +839,7 @@ public class StateTest {
     HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
         .observations.get(2);
     assertEquals("procedure", sampleObservation.category);
-    assertEquals("mmHg", sampleObservation.unit);
+    assertEquals("mm[Hg]", sampleObservation.unit);
     assertTrue(sampleObservation.value instanceof SampledData);
     SampledData sampledData = (SampledData) sampleObservation.value;
     assertEquals("P_ao", sampledData.attributes.get(0));

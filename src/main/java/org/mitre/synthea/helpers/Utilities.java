@@ -11,15 +11,21 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.Range;
 import org.mitre.synthea.engine.Logic;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
@@ -138,7 +144,7 @@ public class Utilities {
    * Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).
    */
   public static double convertRiskToTimestep(double risk, double originalPeriodInMS) {
-    double currTimeStepInMS = Double.parseDouble(Config.get("generate.timestep"));
+    double currTimeStepInMS = Config.getAsDouble("generate.timestep");
 
     return convertRiskToTimestep(risk, originalPeriodInMS, currTimeStepInMS);
   }
@@ -339,6 +345,53 @@ public class Utilities {
   }
 
   /**
+   * Parse a range of Synthea timestamps (milliseconds since the epoch) from a String. The string
+   * can be in one of two formats:
+   * <p>
+   * "milliseconds start-milliseconds end" example: "1599264000000-1627948800000"
+   * or
+   * "ISO date start-ISO date end" example: "2020-09-05-2021-08-03"
+   * </p><p>
+   * If using the ISO date format, the time range will be from the start of the day at the beginning
+   * of the range until the end of the day for the last day of the range.
+   * </p>
+   * @param range String containing the range
+   * @return A Range with the min and max set to Synthea timestamps, longs containing milliseconds
+   *     since the epoch
+   * @throws IllegalArgumentException If the string is not in one of the expected formats
+   */
+  public static Range<Long> parseDateRange(String range) throws IllegalArgumentException {
+    if (!range.contains("-")
+        || range.substring(0, range.indexOf("-")).length() < 1
+        || range.substring(range.indexOf("-") + 1).length() < 1) {
+      throw new IllegalArgumentException("Time range format error. Expect low-high. Found '"
+              + range + "'");
+    }
+
+    Pattern dateRangeRegex =
+        Pattern.compile("^(\\d{4}\\-\\d{2}\\-\\d{2})\\-(\\d{4}\\-\\d{2}\\-\\d{2})$");
+
+    Matcher matcher = dateRangeRegex.matcher(range);
+
+    Range<Long> parsedRange;
+    if (matcher.matches()) {
+      parsedRange = Range.between(
+        LocalDate.parse(matcher.group(1), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
+            .toInstant(ZoneOffset.UTC).toEpochMilli(),
+        // adding a day and subtracting 1 to get the millisecond before midnight at the end of the
+        // range
+        LocalDate.parse(matcher.group(2), DateTimeFormatter.ISO_LOCAL_DATE).plusDays(1)
+            .atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli() - 1);
+    } else {
+      parsedRange = Range.between(
+          Long.parseLong(range.substring(0, range.indexOf("-"))),
+          Long.parseLong(range.substring(range.indexOf("-") + 1)));
+    }
+
+    return parsedRange;
+  }
+
+  /**
    * Read the entire contents of a file in resources into a String.
    * @param filename Path to the file, relative to src/main/resources.
    * @return The entire text contents of the file.
@@ -347,6 +400,23 @@ public class Utilities {
   public static final String readResource(String filename) throws IOException {
     URL url = Resources.getResource(filename);
     return Resources.toString(url, Charsets.UTF_8);
+  }
+
+  /**
+   * Read the entire contents of a file in resources into a String and strip the BOM if present.
+   * This method is intended for use when reading CSV files that may have been created by
+   * spreadsheet programs that sometimes automatically add a BOM though it could also be used for
+   * any other type of file that may optionally include a BOM.
+   * @param filename Path to the file, relative to src/main/resources.
+   * @return The entire text contents of the file minus the leading BOM if present.
+   * @throws IOException if any error occurs reading the file
+   */
+  public static final String readResourceAndStripBOM(String filename) throws IOException {
+    String contents = readResource(filename);
+    if (contents.startsWith("\uFEFF")) {
+      contents = contents.substring(1); // Removes BOM.
+    }
+    return contents;
   }
 
   /**
@@ -442,8 +512,7 @@ public class Utilities {
    *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
-    URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-    Path modulesPath = Paths.get(modulesFolder.toURI());
+    Path modulesPath = Module.getModulesPath();
 
     walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
   }

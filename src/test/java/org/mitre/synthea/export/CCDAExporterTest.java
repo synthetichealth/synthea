@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.Diagnostic;
@@ -13,6 +15,7 @@ import org.eclipse.mdht.uml.cda.util.CDAUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
@@ -33,15 +36,9 @@ public class CCDAExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
     CDAUtil.loadPackages();
-    List<String> validationErrors = new ArrayList<String>();
-
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       Config.set("exporter.ccda.export", "true");
       String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
       InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
@@ -56,13 +53,46 @@ public class CCDAExporterTest {
         e.printStackTrace();
         validationErrors.add(e.getMessage());
       }
-      int y = validationErrors.size();
-      if (x != y) {
+      if (! validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
 
     assertEquals("Validation of exported CCDA failed: "
-        + String.join("|", validationErrors), 0, validationErrors.size());
+        + String.join("|", errors), 0, errors.size());
   }
+
+  @Test
+  public void testExportWithNoPreferredWellnessProvider() throws Exception {
+    TestHelper.loadTestProperties();
+    Person[] people = TestHelper.getGeneratedPeople();
+    List<String> validationErrors = new ArrayList<String>();
+    TestHelper.exportOff();
+    Config.set("exporter.ccda.export", "true");
+    Optional<Person> personWithWellnessProvider = Arrays.stream(people).filter((person -> {
+      return person.attributes.get(Person.PREFERREDYPROVIDER + "wellness") != null;
+    })).findFirst();
+    if (personWithWellnessProvider.isPresent()) {
+      Person toExport = personWithWellnessProvider.get();
+      toExport.attributes.remove(Person.PREFERREDYPROVIDER + "wellness");
+      String ccdaXml = CCDAExporter.export(toExport, System.currentTimeMillis());
+      InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
+      try {
+        CDAUtil.load(inputStream, new BasicValidationHandler() {
+          public void handleError(Diagnostic diagnostic) {
+            System.out.println("ERROR: " + diagnostic.getMessage());
+            validationErrors.add(diagnostic.getMessage());
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+        validationErrors.add(e.getMessage());
+      }
+      assertEquals(0, validationErrors.size());
+    } else {
+      System.out.println("There were no people generated that have wellness providers... odd.");
+    }
+  }
+
 }

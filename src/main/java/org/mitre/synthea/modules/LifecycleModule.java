@@ -43,6 +43,7 @@ public final class LifecycleModule extends Module {
       loadWeightForLengthChart();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
+  public static final String DAYS_UNTIL_DEATH = "days_until_death";
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
   public static final String QUIT_SMOKING_AGE = "quit smoking age";
   public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
@@ -210,8 +211,7 @@ public final class LifecycleModule extends Module {
     boolean isRHNeg = person.rand() < 0.15;
     attributes.put("RH_NEG", isRHNeg);
 
-    double adherenceBaseline = Double
-        .parseDouble(Config.get("lifecycle.adherence.baseline", ".05"));
+    double adherenceBaseline = Config.getAsDouble("lifecycle.adherence.baseline", 0.05);
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
@@ -614,9 +614,61 @@ public final class LifecycleModule extends Module {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
     }
 
-    double totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+    double totalCholesterol;
     double triglycerides = person.rand(TRIGLYCERIDES_RANGE[index], TRIGLYCERIDES_RANGE[index + 1]);
-    double hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    double hdl;
+
+    if (index == 0) {
+      // for patients without diabetes
+      // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
+      // NCHS Data Brief - No. 363 - April 2020
+      // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015–2018
+      boolean lowHDL, highTotalChol;
+      if (person.attributes.containsKey("low_hdl")) {
+        // cache low or high status, so it's consistent
+        lowHDL = (boolean)person.attributes.get("low_hdl");
+        highTotalChol = (boolean)person.attributes.get("high_total_chol");
+      } else {
+        boolean female = "F".equals(person.attributes.get(Person.GENDER));
+
+        // gender is the largest factor, much more than age or race/ethnicity
+        // from the above source ("Key findings" section):
+        //  "Over one-quarter of men (26.6%) and 8.5% of women
+        //   had low high-density lipoprotein cholesterol (HDL-C)."
+        double chanceOfLowHDL = female ? .085 : .266;
+
+        lowHDL = person.rand() < chanceOfLowHDL; 
+
+        person.attributes.put("low_hdl", lowHDL);
+
+        // from the above source:
+        //  "During 2015–2018, 11.4% of adults had high total cholesterol,
+        //   and prevalence was similar by race and Hispanic origin."
+        highTotalChol = person.rand() < .114;
+        person.attributes.put("high_total_chol", highTotalChol);
+      }
+
+      // normal distribution: sd * randGaussian() + mean
+      // these numbers do not come from any formal source
+      // but are intended to generate a normal rather than uniform distribution
+      if (lowHDL) {
+        // low HDL is defined as < 40
+        hdl = 3 * person.randGaussian() + 30;
+      } else {
+        hdl = 5 * person.randGaussian() + 55;
+      }
+
+      if (highTotalChol) {
+        // high is 240 or more
+        totalCholesterol = 20 * person.randGaussian() + 280;
+      } else {
+        totalCholesterol = 30 * person.randGaussian() + 170;
+      }
+    } else {
+      totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+      hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    }
+
     double ldl = totalCholesterol - hdl - (0.2 * triglycerides);
 
     person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, totalCholesterol);
@@ -800,6 +852,13 @@ public final class LifecycleModule extends Module {
     if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
       person.recordDeath(time, LOSS_OF_CARE);
     }
+
+    if (person.attributes.containsKey(Person.DEATHDATE)) {
+      Long deathDate = (Long) person.attributes.get(Person.DEATHDATE);
+      long diff = deathDate - time;
+      long days = TimeUnit.MILLISECONDS.toDays(diff);
+      person.attributes.put(DAYS_UNTIL_DEATH, Long.valueOf(days));
+    }
   }
 
   protected static double likelihoodOfDeath(int age) {
@@ -870,8 +929,7 @@ public final class LifecycleModule extends Module {
       int year = Utilities.getYear(time);
       Boolean smoker = person.rand() < likelihoodOfBeingASmoker(year);
       person.attributes.put(Person.SMOKER, smoker);
-      double quitSmokingBaseline = Double
-          .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
+      double quitSmokingBaseline = Config.getAsDouble("lifecycle.quit_smoking.baseline", 0.01);
       person.attributes.put(LifecycleModule.QUIT_SMOKING_PROBABILITY, quitSmokingBaseline);
     }
   }
@@ -906,8 +964,8 @@ public final class LifecycleModule extends Module {
       // assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);
-      double quitAlcoholismBaseline = Double
-          .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.05"));
+      double quitAlcoholismBaseline =
+              Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.05);
       person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quitAlcoholismBaseline);
     }
   }
@@ -926,10 +984,9 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.SMOKER, false);
           person.attributes.put(QUIT_SMOKING_AGE, age);
         } else {
-          double quitSmokingBaseline = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.baseline", "0.01"));
-          double quitSmokingTimestepDelta = Double
-              .parseDouble(Config.get("lifecycle.quit_smoking.timestep_delta", "-0.1"));
+          double quitSmokingBaseline = Config.getAsDouble("lifecycle.quit_smoking.baseline", 0.01);
+          double quitSmokingTimestepDelta =
+                  Config.getAsDouble("lifecycle.quit_smoking.timestep_delta", -0.1);
           probability += quitSmokingTimestepDelta;
           if (probability < quitSmokingBaseline) {
             probability = quitSmokingBaseline;
@@ -955,10 +1012,10 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.ALCOHOLIC, false);
           person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
         } else {
-          double quitAlcoholismBaseline = Double
-              .parseDouble(Config.get("lifecycle.quit_alcoholism.baseline", "0.01"));
-          double quitAlcoholismTimestepDelta = Double
-              .parseDouble(Config.get("lifecycle.quit_alcoholism.timestep_delta", "-0.1"));
+          double quitAlcoholismBaseline =
+                  Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.01);
+          double quitAlcoholismTimestepDelta =
+                  Config.getAsDouble("lifecycle.quit_alcoholism.timestep_delta", -0.1);
           probability += quitAlcoholismTimestepDelta;
           if (probability < quitAlcoholismBaseline) {
             probability = quitAlcoholismBaseline;
@@ -978,10 +1035,9 @@ public final class LifecycleModule extends Module {
   public static void adherence(Person person, long time) {
     if (person.attributes.containsKey(Person.ADHERENCE)) {
       double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
-      double adherenceBaseline = Double
-          .parseDouble(Config.get("lifecycle.adherence.baseline", "0.05"));
-      double adherenceTimestepDelta = Double
-          .parseDouble(Config.get("lifecycle.adherence.timestep_delta", "-.01"));
+      double adherenceBaseline = Config.getAsDouble("lifecycle.adherence.baseline", 0.05);
+      double adherenceTimestepDelta =
+              Config.getAsDouble("lifecycle.adherence.timestep_delta", -0.01);
       probability += adherenceTimestepDelta;
       if (probability < adherenceBaseline) {
         probability = adherenceBaseline;
@@ -1070,6 +1126,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, true, false, null);
     Attributes.inventory(attributes, m, Person.RACE, true, false, null);
     Attributes.inventory(attributes, m, Person.SMOKER, true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.DEATHDATE, true, false, "1046327126000");
     // Write
     Attributes.inventory(attributes, m, "pregnant", false, true, "Boolean");
     Attributes.inventory(attributes, m, "probability_of_fall_injury", false, true, "1.0");
@@ -1112,5 +1169,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, false, true, "1.0");
     Attributes.inventory(attributes, m, QUIT_SMOKING_AGE, false, true, "Numeric");
     Attributes.inventory(attributes, m, QUIT_SMOKING_PROBABILITY, false, true, "1.0");
+    Attributes.inventory(attributes, m, DAYS_UNTIL_DEATH, false, true, "42");
   }
 }

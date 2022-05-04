@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.mitre.synthea.helpers.Utilities;
@@ -37,16 +39,20 @@ public class PayerFinderBestRates implements IPayerFinder {
         person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
     Payer bestRatePayer = Payer.noInsurance;
-    double bestExpectedRate = Double.MAX_VALUE;
+    BigDecimal bestExpectedRate = BigDecimal.valueOf(Double.MAX_VALUE);
 
     for (Payer payer : payers) {
       if (IPayerFinder.meetsBasicRequirements(payer, person, service, time)) {
         // First, calculate the annual premium.
-        double expectedRate = (payer.getMonthlyPremium() * 12.0);
+        BigDecimal expectedRate = payer.getMonthlyPremium().multiply(BigDecimal.valueOf(12))
+                .setScale(2, RoundingMode.HALF_EVEN);
         // Second, calculate expected copays based on last years visits.
-        expectedRate += (payer.determineCopay(dummy) * numberOfExpectedEncounters);
+        expectedRate = expectedRate.add(
+                payer.determineCopay(dummy).multiply(
+                        BigDecimal.valueOf(numberOfExpectedEncounters)))
+                .setScale(2, RoundingMode.HALF_EVEN);
         // TODO consider deductibles, coinsurance, covered services, etc.
-        if (expectedRate < bestExpectedRate) {
+        if (expectedRate.compareTo(bestExpectedRate) < 0) {
           bestExpectedRate = expectedRate;
           bestRatePayer = payer;
         }

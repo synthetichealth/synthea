@@ -4,12 +4,22 @@ import ca.uhn.fhir.context.FhirContext;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
@@ -22,9 +32,8 @@ public abstract class TestHelper {
   public static final String LOINC_URI = "http://loinc.org";
   public static final String SNOMED_OID = "2.16.840.1.113883.6.96";
   public static final String LOINC_OID = "2.16.840.1.113883.6.1";
-  private static FhirContext dstu2FhirContext;
-  private static FhirContext stu3FhirContext;
-  private static FhirContext r4FhirContext;
+
+  private static byte[] serializedPatients;
 
   /**
    * Returns a test fixture Module by filename.
@@ -100,9 +109,12 @@ public abstract class TestHelper {
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.text.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
+    Config.set("exporter.json.export", "false");
+    Config.set("exporter.metadata.export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.split_records", "false");
     Config.set("exporter.split_records.duplicate_data", "false");
+    Config.set("exporter.bfd.export", "false");
     Config.set("exporter.symptoms.csv.export", "false");
     Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cpcds.export", "false");
@@ -125,4 +137,38 @@ public abstract class TestHelper {
   public static long years(long numYears) {
     return Utilities.convertTime("years", numYears);
   }
+
+  /**
+   * This method generates 10 people and then serializes them out into memory as byte arrays. For
+   * tests that need a generated patient, they can call this method to grab a fresh copy of a person
+   * which is rehydrated from the byte array to ensure an unmodified copy of the original. This
+   * eliminates regeneration of people in the test suite for many of the exporters.
+   * @return the people array
+   * @throws IOException when there is a problem rehydrating a person
+   * @throws ClassNotFoundException when there is a problem rehydrating a person
+   */
+  public static synchronized Person[] getGeneratedPeople() throws IOException,
+      ClassNotFoundException {
+    if (serializedPatients == null) {
+      int numberOfPeople = 10;
+      Generator generator = new Generator(numberOfPeople);
+      generator.options.overflow = false;
+      exportOff();
+      Person[] people = new Person[10];
+      for (int i = 0; i < numberOfPeople; i++) {
+        people[i] = generator.generatePerson(i);
+      }
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(people);
+      oos.close();
+      serializedPatients = baos.toByteArray();
+    }
+    ByteArrayInputStream bais = new ByteArrayInputStream(serializedPatients);
+    ObjectInputStream ois = new ObjectInputStream(bais);
+    Person[] rehydrated = (Person[]) ois.readObject();
+    ois.close();
+    return rehydrated;
+  }
+
 }

@@ -1,9 +1,12 @@
 package org.mitre.synthea.world.concepts;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
@@ -21,9 +24,9 @@ public class CoverageRecord implements Serializable {
     public Payer secondaryPayer;
     public String owner;
     public String ownerName;
-    public Double totalExpenses;
-    public Double totalCoverage;
-    public Double remainingDeductible;
+    public BigDecimal totalExpenses = Claim.ZERO_CENTS;
+    public BigDecimal totalCoverage = Claim.ZERO_CENTS;
+    public BigDecimal remainingDeductible = Claim.ZERO_CENTS;
 
     /**
      * Create a new Plan with the given Payer.
@@ -34,12 +37,13 @@ public class CoverageRecord implements Serializable {
       this.start = time;
       this.stop = time + Utilities.convertTime("years", 1);
       this.payer = payer;
-      this.totalExpenses = 0.0;
-      this.totalCoverage = 0.0;
+      this.totalExpenses = Claim.ZERO_CENTS;
+      this.totalCoverage = Claim.ZERO_CENTS;
       this.remainingDeductible = payer.getDeductible();
     }
   }
 
+  @JSONSkip
   private Person person;
   private List<Plan> planHistory;
 
@@ -168,10 +172,10 @@ public class CoverageRecord implements Serializable {
   /**
    * Returns the total healthcare expenses for this person.
    */
-  public double getTotalExpenses() {
-    double total = 0;
+  public BigDecimal getTotalExpenses() {
+    BigDecimal total = Claim.ZERO_CENTS;
     for (Plan plan : planHistory) {
-      total += plan.totalExpenses;
+      total = total.add(plan.totalExpenses);
     }
     return total;
   }
@@ -179,10 +183,10 @@ public class CoverageRecord implements Serializable {
   /**
    * Returns the total healthcare coverage for this person.
    */
-  public double getTotalCoverage() {
-    double total = 0;
+  public BigDecimal getTotalCoverage() {
+    BigDecimal total = Claim.ZERO_CENTS;
     for (Plan plan : planHistory) {
-      total += plan.totalCoverage;
+      total = total.add(plan.totalCoverage);
     }
     return total;
   }

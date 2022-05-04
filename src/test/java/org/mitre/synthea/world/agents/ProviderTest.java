@@ -16,6 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
@@ -198,7 +199,7 @@ public class ProviderTest {
     Provider.loadProviders(location, 1L);
     Provider vaProvider = Provider.getProviderList()
                                   .stream()
-                                  .filter(p -> "VA Facility".equals(p.type))
+                                  .filter(p -> ProviderType.VETERAN.equals(p.type))
                                   .findFirst().get();
     Person veteran = new Person(0L);
     veteran.attributes.put("veteran", "vietnam");
@@ -223,10 +224,15 @@ public class ProviderTest {
            try {
              Provider.clear();
              Provider.loadProviders(location, "providers/" + t.getFileName(),
-                 providerServices, true, 1L);
+                 ProviderType.HOSPITAL, providerServices, 1L, false);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }
          });
+  }
+
+  @Test
+  public void testNPICreation() {
+    Assert.assertEquals("1234567893", Provider.toNPI(123_456_789L));
   }
 }

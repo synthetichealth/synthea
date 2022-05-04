@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -100,21 +102,16 @@ public class FHIRR4ExporterTest {
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationResources validator = new ValidationResources();
-    List<String> validationErrors = new ArrayList<String>();
 
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-
-    generator.options.overflow = false;
-
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
       FhirR4.USE_US_CORE_IG = person.randBoolean();
       FhirR4.USE_SHR_EXTENSIONS = false;
+
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
+
       // Check that the fhirJSON doesn't contain unresolved SNOMED-CT strings
       // (these should have been converted into URIs)
       if (fhirJson.contains("SNOMED-CT")) {
@@ -130,6 +127,7 @@ public class FHIRR4ExporterTest {
       // is impossible.
       // As of 2021-01-05, validating the bundle didn't validate references anyway,
       // but at some point we may want to do that.
+
       Bundle bundle = parser.parseResource(Bundle.class, fhirJson);
       for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
         ValidationResult eresult = validator.validateR4(entry.getResource());
@@ -137,51 +135,11 @@ public class FHIRR4ExporterTest {
           for (SingleValidationMessage emessage : eresult.getMessages()) {
             boolean valid = false;
             if (emessage.getSeverity() == ResultSeverityEnum.INFORMATION
-                    || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
+                || emessage.getSeverity() == ResultSeverityEnum.WARNING) {
               /*
                * Ignore warnings.
                */
               valid = true;
-            } else if (emessage.getMessage().contains("us-core-documentreference-type")) {
-              /*
-               * The instance validator does not expand intentional value sets like this one.
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains("@ AllergyIntolerance ait-2")) {
-              /*
-               * The ait-2 invariant:
-               * Description:
-               * AllergyIntolerance.clinicalStatus SHALL NOT be present
-               * if verification Status is entered-in-error
-               * Expression:
-               * verificationStatus!='entered-in-error' or clinicalStatus.empty()
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains("@ ExplanationOfBenefit dom-3")) {
-              /*
-               * For some reason, it doesn't like the contained ServiceRequest and contained
-               * Coverage resources in the ExplanationOfBenefit, both of which are
-               * properly referenced. Running $validate on test servers finds this valid...
-               */
-              valid = true;
-            } else if (emessage.getMessage().contains(
-                "per-1: If present, start SHALL have a lower value than end")) {
-              /*
-               * The per-1 invariant does not account for daylight savings time... so, if the
-               * daylight savings switch happens between the start and end, the validation
-               * fails, even if it is valid.
-               */
-              valid = true; // ignore this error
-            } else if (
-                emessage.getMessage().contains("Unknown extension http://hl7.org/fhir/us/core")
-                || emessage.getMessage().contains("Unknown extension http://synthetichealth")
-                || emessage.getMessage().contains("not be resolved, so has not been checked")) {
-              /*
-               * Despite setting instanceValidator.setAnyExtensionsAllowed(true) and
-               * instanceValidator.setErrorForUnknownProfiles(false), the FHIR validator still
-               * reports these as errors
-               */
-              valid = true; // ignore this error
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));
@@ -191,13 +149,13 @@ public class FHIRR4ExporterTest {
           }
         }
       }
-      int y = validationErrors.size();
-      if (x != y) {
+      if (! validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
     assertTrue("Validation of exported FHIR bundle failed: "
-        + String.join("|", validationErrors), validationErrors.size() == 0);
+        + String.join("|", errors), errors.size() == 0);
   }
 
   @Test

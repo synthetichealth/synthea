@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -121,6 +122,7 @@ public class HealthRecord implements Serializable {
    */
   public class Entry implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
+    @JSONSkip
     HealthRecord record = HealthRecord.this;
     public String fullUrl;
     public String name;
@@ -169,6 +171,19 @@ public class HealthRecord implements Serializable {
     }
 
     /**
+     * Merges the passed in code list into the existing list of codes for this entry. If a code in
+     * otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.
+     * @param otherCodes codes to add to this entry
+     */
+    public void mergeCodeList(List<Code> otherCodes) {
+      otherCodes.forEach(oc -> {
+        if (! this.containsCode(oc.code, oc.system)) {
+          this.codes.add(oc);
+        }
+      });
+    }
+
+    /**
      * Converts the entry to a String.
      */
     @Override
@@ -177,11 +192,48 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  public abstract class EntryWithReasons extends Entry {
+    public List<Code> reasons;
+
+    /**
+     * Constructor for HealthRecord EntryWithReasons.
+     */
+    public EntryWithReasons(long time, String type) {
+      super(time, type);
+      this.reasons = new ArrayList<Code>();
+    }
+
+
+    /**
+     * Merges the passed in code list into the existing list of codes for this entry. If a code in
+     * otherCodes already exists in this.codes, it is skipped, since it already exists in the Entry.
+     * @param otherCodes codes to add to this entry
+     */
+    public void mergeReasonList(List<Code> otherCodes) {
+      otherCodes.forEach(oc -> {
+        if (! this.containsReason(oc.code, oc.system)) {
+          this.codes.add(oc);
+        }
+      });
+    }
+
+    /**
+     * Determines if the given entry contains the provided reason code in its list of reason codes.
+     * @param code clinical term
+     * @param system system for the code
+     * @return true if the code is there
+     */
+    public boolean containsReason(String code, String system) {
+      return this.reasons.stream().anyMatch(c -> code.equals(c.code) && system.equals(c.system));
+    }
+  }
+
   public class Observation extends Entry {
     public Object value;
     public String category;
     public String unit;
     public List<Observation> observations;
+    @JSONSkip
     public Report report;
 
     /**
@@ -206,8 +258,7 @@ public class HealthRecord implements Serializable {
     }
   }
 
-  public class Medication extends Entry {
-    public List<Code> reasons;
+  public class Medication extends EntryWithReasons {
     public Code stopReason;
     public transient JsonObject prescriptionDetails;
     public Claim claim;
@@ -219,7 +270,6 @@ public class HealthRecord implements Serializable {
      */
     public Medication(long time, String type) {
       super(time, type);
-      this.reasons = new ArrayList<Code>();
       // Create a medication claim.
       this.claim = new Claim(this, person);
     }
@@ -262,8 +312,7 @@ public class HealthRecord implements Serializable {
     }
   }
 
-  public class Procedure extends Entry {
-    public List<Code> reasons;
+  public class Procedure extends EntryWithReasons {
     public Provider provider;
     public Clinician clinician;
 
@@ -272,14 +321,12 @@ public class HealthRecord implements Serializable {
      */
     public Procedure(long time, String type) {
       super(time, type);
-      this.reasons = new ArrayList<Code>();
       this.stop = this.start + TimeUnit.MINUTES.toMillis(15);
     }
   }
 
-  public class CarePlan extends Entry {
+  public class CarePlan extends EntryWithReasons {
     public Set<Code> activities;
-    public List<Code> reasons;
     public transient Set<JsonObject> goals;
     public Code stopReason;
 
@@ -289,7 +336,6 @@ public class HealthRecord implements Serializable {
     public CarePlan(long time, String type) {
       super(time, type);
       this.activities = new LinkedHashSet<Code>();
-      this.reasons = new ArrayList<Code>();
       this.goals = new LinkedHashSet<JsonObject>();
     }
 
@@ -454,7 +500,8 @@ public class HealthRecord implements Serializable {
 
   public enum EncounterType {
     WELLNESS("AMB"), AMBULATORY("AMB"), OUTPATIENT("AMB"),
-        INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB");
+    INPATIENT("IMP"), EMERGENCY("EMER"), URGENTCARE("AMB"),
+    HOSPICE("HH"), HOME("HH"), SNF("IMP"), VIRTUAL("VR");
 
     // http://www.hl7.org/implement/standards/fhir/v3/ActEncounterCode/vs.html
     private final String code;
@@ -637,9 +684,11 @@ public class HealthRecord implements Serializable {
     }
   }
 
+  @JSONSkip
   private Person person;
   public Provider provider;
   public List<Encounter> encounters;
+  @JSONSkip
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
@@ -731,13 +780,25 @@ public class HealthRecord implements Serializable {
    * @return the time difference, negative if time is before the first wellness encounter).
    */
   public long timeSinceLastWellnessEncounter(long time) {
+    Encounter encounter = lastWellnessEncounter();
+    if (encounter != null) {
+      return (time - encounter.start);
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Return the last wellness encounter for the individual.
+   * @return the Encounter or null if it does not exist
+   */
+  public Encounter lastWellnessEncounter() {
     for (int i = encounters.size() - 1; i >= 0; i--) {
       Encounter encounter = encounters.get(i);
       if (encounter.type.equals(EncounterType.WELLNESS.toString())) {
-        return (time - encounter.start);
+        return encounter;
       }
     }
-    return Long.MAX_VALUE;
+    return null;
   }
 
   /**
@@ -953,6 +1014,7 @@ public class HealthRecord implements Serializable {
     device.generateUDI(person);
     Encounter encounter = currentEncounter(time);
     encounter.devices.add(device);
+    encounter.claim.addLineItem(device);
     present.put(type, device);
     return device;
   }
@@ -1003,6 +1065,7 @@ public class HealthRecord implements Serializable {
     supply.codes.add(code);
     supply.quantity = quantity;
     encounter.supplies.add(supply);
+    encounter.claim.addLineItem(supply);
     return supply;
   }
 
@@ -1029,6 +1092,7 @@ public class HealthRecord implements Serializable {
     }
     Report report = new Report(time, type, observations);
     encounter.reports.add(report);
+    encounter.claim.addLineItem(report);
     observations.forEach(o -> o.report = report);
     return report;
   }
@@ -1099,7 +1163,9 @@ public class HealthRecord implements Serializable {
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
       medication.chronic = chronic;
-      currentEncounter(time).medications.add(medication);
+      Encounter encounter = currentEncounter(time);
+      encounter.medications.add(medication);
+      encounter.claim.addLineItem(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);

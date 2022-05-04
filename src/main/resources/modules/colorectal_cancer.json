@@ -421,6 +421,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "colorectal_adenoma",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -638,6 +639,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Colorectal_Cancer_Symptom_2",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -932,7 +934,16 @@
         "high": 5,
         "unit": "years"
       },
-      "direct_transition": "Wait_For_Oncologist_Encounter"
+      "distributed_transition": [
+        {
+          "transition": "Will Use Hospice",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Wait_For_Oncologist_Encounter",
+          "distribution": 0.7
+        }
+      ]
     },
     "Wait_For_Oncologist_Encounter": {
       "type": "Delay",
@@ -1207,8 +1218,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "781831000000109",
-          "display": "Major surgery care management"
+          "code": "737567002",
+          "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
@@ -1332,8 +1343,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "781831000000109",
-          "display": "Major surgery care management"
+          "code": "737567002",
+          "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
@@ -1712,8 +1723,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {
@@ -2080,6 +2091,18 @@
           "transition": "Oncologist_Encounter"
         }
       ]
+    },
+    "Will Use Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Wait_For_Oncologist_Encounter",
+      "value_attribute": "colorectal_cancer"
     }
   },
   "gmf_version": 1

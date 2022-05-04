@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
@@ -108,15 +109,9 @@ public class FHIRSTU3ExporterTest {
 
     ValidationResources validationResources = new ValidationResources();
 
-    List<String> validationErrors = new ArrayList<String>();
-
-    int numberOfPeople = 10;
-    Generator generator = new Generator(numberOfPeople);
-    generator.options.overflow = false;
-    for (int i = 0; i < numberOfPeople; i++) {
-      int x = validationErrors.size();
+    List<String> errors = ParallelTestingService.runInParallel((person) -> {
+      List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
-      Person person = generator.generatePerson(i);
       Config.set("exporter.fhir_stu3.export", "true");
       Config.set("exporter.fhir.use_shr_extensions", "true");
       FhirStu3.TRANSACTION_BUNDLE = person.randBoolean();
@@ -201,13 +196,13 @@ public class FHIRSTU3ExporterTest {
         }
       }
 
-      int y = validationErrors.size();
-      if (x != y) {
+      if (!validationErrors.isEmpty()) {
         Exporter.export(person, System.currentTimeMillis());
       }
-    }
+      return validationErrors;
+    });
     assertTrue("Validation of exported FHIR bundle failed: "
-        + String.join("|", validationErrors), validationErrors.size() == 0);
+        + String.join("|", errors), errors.size() == 0);
   }
 
   /**

@@ -166,6 +166,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "uti",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -331,6 +332,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "uti",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

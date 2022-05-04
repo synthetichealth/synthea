@@ -175,10 +175,7 @@ public abstract class Transition implements Serializable {
       String fileName = Config.get("generate.lookup_tables") + lookupTableName;
       List<? extends Map<String, String>> lookupTable = null;
       try {
-        String csv = Utilities.readResource(fileName);
-        if (csv.startsWith("\uFEFF")) {
-          csv = csv.substring(1); // Removes BOM.
-        }
+        String csv = Utilities.readResourceAndStripBOM(fileName);
         lookupTable = SimpleCSV.parse(csv);
       } catch (IOException e) {
         e.printStackTrace();
@@ -221,17 +218,7 @@ public abstract class Transition implements Serializable {
           Integer timeIndex = this.attributes.indexOf("time");
           // Remove and parse the age range.
           String value = rowAttributes.remove(timeIndex.intValue());
-          if (!value.contains("-")
-              || value.substring(0, value.indexOf("-")).length() < 1
-              || value.substring(value.indexOf("-") + 1).length() < 1) {
-            throw new RuntimeException(
-                "LOOKUP TABLE '" + fileName
-                    + "' ERROR: Time Range must be in the form: 'timeLow-timeHigh'. Found '"
-                    + value + "'");
-          }
-          timeRange = Range.between(
-              Long.parseLong(value.substring(0, value.indexOf("-"))),
-              Long.parseLong(value.substring(value.indexOf("-") + 1)));
+          timeRange = Utilities.parseDateRange(value);
         }
         // Attributes key to inert into lookup table.
         LookupTableKey attributesLookupKey =

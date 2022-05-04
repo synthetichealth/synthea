@@ -5,15 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.geography.Location;
-
-
 
 public class C19ImmunizationModuleTest {
 
@@ -70,6 +72,10 @@ public class C19ImmunizationModuleTest {
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());
+    Map<String, List<Long>> immunizationHistory =
+        (Map<String, List<Long>>) person.attributes.get(Immunizations.IMMUNIZATIONS);
+    long shotTime = immunizationHistory.get(C19ImmunizationModule.C19_PERSON_ATTRS_KEY).get(0);
+    assertEquals(decemberFifteenth, shotTime);
   }
 
   @Test
