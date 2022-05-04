@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.agents.behaviors;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
@@ -29,8 +31,9 @@ public class PayerAdjustmentFixed implements IPayerAdjustment, Serializable {
   }
 
   @Override
-  public double adjustClaim(ClaimEntry claimEntry, Person person) {
-    claimEntry.adjustment = this.rate * claimEntry.cost;
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person) {
+    claimEntry.adjustment = BigDecimal.valueOf(this.rate).multiply(claimEntry.cost)
+            .setScale(2, RoundingMode.HALF_EVEN);
     return claimEntry.adjustment;
   }
 }
