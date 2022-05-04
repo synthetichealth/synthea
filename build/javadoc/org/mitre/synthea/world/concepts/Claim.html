@@ -179,6 +179,10 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#totals">totals</a></span></code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.math.BigDecimal</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#ZERO_CENTS">ZERO_CENTS</a></span></code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -227,34 +231,34 @@ implements java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getCoinsurancePaid--">getCoinsurancePaid</a></span>()</code>
 <div class="block">Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
  of pocket.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getCopayPaid--">getCopayPaid</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getCoveredCost--">getCoveredCost</a></span>()</code>
 <div class="block">Returns the total cost that the Payer covered for this claim.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getDeductiblePaid--">getDeductiblePaid</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getPatientCost--">getPatientCost</a></span>()</code>
 <div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>double</code></td>
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#getTotalClaimCost--">getTotalClaimCost</a></span>()</code>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
 </td>
@@ -281,6 +285,15 @@ implements java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="ZERO_CENTS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ZERO_CENTS</h4>
+<pre>public static final&nbsp;java.math.BigDecimal ZERO_CENTS</pre>
+</li>
+</ul>
 <a name="payer">
 <!--   -->
 </a>
@@ -388,7 +401,7 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getTotalClaimCost</h4>
-<pre>public&nbsp;double&nbsp;getTotalClaimCost()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getTotalClaimCost()</pre>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
 </li>
 </ul>
@@ -398,7 +411,7 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getCoveredCost</h4>
-<pre>public&nbsp;double&nbsp;getCoveredCost()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getCoveredCost()</pre>
 <div class="block">Returns the total cost that the Payer covered for this claim.</div>
 </li>
 </ul>
@@ -408,7 +421,7 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getDeductiblePaid</h4>
-<pre>public&nbsp;double&nbsp;getDeductiblePaid()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getDeductiblePaid()</pre>
 </li>
 </ul>
 <a name="getCopayPaid--">
@@ -417,7 +430,7 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getCopayPaid</h4>
-<pre>public&nbsp;double&nbsp;getCopayPaid()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getCopayPaid()</pre>
 </li>
 </ul>
 <a name="getCoinsurancePaid--">
@@ -426,7 +439,7 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getCoinsurancePaid</h4>
-<pre>public&nbsp;double&nbsp;getCoinsurancePaid()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getCoinsurancePaid()</pre>
 <div class="block">Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
  of pocket.</div>
 <dl>
@@ -441,7 +454,7 @@ implements java.io.Serializable</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getPatientCost</h4>
-<pre>public&nbsp;double&nbsp;getPatientCost()</pre>
+<pre>public&nbsp;java.math.BigDecimal&nbsp;getPatientCost()</pre>
 <div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
 </li>
 </ul>
