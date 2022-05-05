@@ -1,0 +1,710 @@
+{
+  "name": "art_sequence_1997_2002",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "==",
+            "year": 2002,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "ddI"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "ZDV"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "d4T"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Attribute",
+                  "attribute": "ckd",
+                  "operator": ">=",
+                  "value": 4
+                }
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "date": {
+                  "year": 1997,
+                  "month": 9,
+                  "day": 26,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                },
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "3TC+ZDV"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.6,
+              "transition": "ZDV"
+            },
+            {
+              "distribution": 0.4,
+              "transition": "d4T"
+            }
+          ]
+        }
+      ]
+    },
+    "d4T": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313110,
+          "display": "stavudine 40 MG Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "distributed_transition": [
+        {
+          "transition": "3TC",
+          "distribution": 0.5
+        },
+        {
+          "transition": "ddI_2",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199663,
+          "display": "zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2000,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "ddC",
+              "distribution": 0.34
+            },
+            {
+              "transition": "ddI_2",
+              "distribution": 0.33
+            },
+            {
+              "transition": "3TC",
+              "distribution": 0.33
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "ddI_2"
+            },
+            {
+              "transition": "3TC",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    "ddC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313760,
+          "display": "zalcitabine 0.75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Drug 3",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddI": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284988,
+          "display": "didanosine 400 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2000,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "ddC",
+              "distribution": 0.5
+            },
+            {
+              "transition": "3TC",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "3TC"
+        }
+      ]
+    },
+    "3TC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349491,
+          "display": "lamivudine 300 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Drug 3",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "3TC+ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200082,
+          "display": "lamivudine 150 MG / zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Drug 3",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddI_2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284988,
+          "display": "didanosine 400 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "direct_transition": "Drug 3",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "Drug 3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Year 2K+",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2001,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Year 2000",
+          "condition": {
+            "condition_type": "Date",
+            "operator": "==",
+            "year": 2000,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Year 98 and 99",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "date": {
+              "year": 1998,
+              "month": 9,
+              "day": 17,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            },
+            "value": 0
+          }
+        },
+        {
+          "transition": "Year 1997",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "value": 0,
+            "date": {
+              "year": 1997,
+              "month": 9,
+              "day": 30,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          }
+        },
+        {
+          "transition": "Early 1997"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "IDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 310988,
+          "display": "indinavir 400 MG Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "conditional_transition": [
+        {
+          "transition": "r",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2001,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "SQV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 859863,
+          "display": "saquinavir mesylate 500 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "r",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "r": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 317150,
+          "display": "ritonavir 100 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "RTV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 317150,
+          "display": "ritonavir 100 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 6,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "NEL": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 403978,
+          "display": "nelfinavir 625 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "EFV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349477,
+          "display": "efavirenz 600 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "LPV/r": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597730,
+          "display": "lopinavir 200 MG / ritonavir 50 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_EarlyPI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "Year 1997": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IDV",
+          "distribution": 0.25
+        },
+        {
+          "transition": "SQV",
+          "distribution": 0.25
+        },
+        {
+          "transition": "RTV",
+          "distribution": 0.25
+        },
+        {
+          "transition": "NEL",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Year 98 and 99": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IDV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "SQV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "RTV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NEL",
+          "distribution": 0.2
+        },
+        {
+          "transition": "EFV",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Year 2000": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IDV",
+          "distribution": 0.25
+        },
+        {
+          "transition": "SQV",
+          "distribution": 0.25
+        },
+        {
+          "transition": "NEL",
+          "distribution": 0.25
+        },
+        {
+          "transition": "EFV",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Year 2K+": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IDV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "SQV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "NEL",
+          "distribution": 0.2
+        },
+        {
+          "transition": "EFV",
+          "distribution": 0.2
+        },
+        {
+          "transition": "LPV/r",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Early 1997": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IDV",
+          "distribution": 0.34
+        },
+        {
+          "transition": "SQV",
+          "distribution": 0.33
+        },
+        {
+          "transition": "RTV",
+          "distribution": 0.33
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}
