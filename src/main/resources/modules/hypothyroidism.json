@@ -123,6 +123,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "hypothyroidism",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

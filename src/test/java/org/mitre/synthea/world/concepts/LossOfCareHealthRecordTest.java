@@ -3,6 +3,8 @@ package org.mitre.synthea.world.concepts;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +25,9 @@ public class LossOfCareHealthRecordTest {
   private Payer testPrivatePayer;
 
   private long time;
-  private double defaultEncounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-  private double testPrivatePayerCopay;
+  private final double defaultEncounterCost
+          = Config.getAsDouble("generate.costs.default_encounter_cost");
+  private BigDecimal testPrivatePayerCopay;
 
   /**
    * Setup for HealthRecord Tests.
@@ -98,13 +101,15 @@ public class LossOfCareHealthRecordTest {
 
     // Determine income
     double encCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-    double coinsurance = 1 - testPrivatePayer.getCoinsurance();
-    double deductible = testPrivatePayer.getDeductible();
-    double income = deductible
-        + (2 * (encCost - testPrivatePayerCopay) * coinsurance)
-        + (2 * testPrivatePayerCopay) - 1;
+    BigDecimal coinsurance = BigDecimal.ONE.subtract(testPrivatePayer.getCoinsurance());
+    BigDecimal deductible = testPrivatePayer.getDeductible();
+    BigDecimal income = deductible
+        .add(BigDecimal.valueOf(2).multiply(BigDecimal.valueOf(encCost)
+                .subtract(testPrivatePayerCopay)).multiply(coinsurance))
+        .add(BigDecimal.valueOf(2).multiply(testPrivatePayerCopay))
+        .subtract(BigDecimal.ONE);
     // Set person's income to be $1 lower than the cost of 2 visits.
-    person.attributes.put(Person.INCOME, (int) income);
+    person.attributes.put(Person.INCOME, income.intValue());
 
     // First encounter is covered and copay is affordable.
     Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.WELLNESS);
@@ -146,7 +151,10 @@ public class LossOfCareHealthRecordTest {
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of 8 monthly premiums.
-    person.attributes.put(Person.INCOME, (int) (testPrivatePayer.getMonthlyPremium() * 8) - 1);
+    person.attributes.put(Person.INCOME, testPrivatePayer.getMonthlyPremium()
+            .multiply(BigDecimal.valueOf(8))
+            .subtract(BigDecimal.ONE)
+            .intValue());
 
     // Pay monthly premium 8 times.
     long oneMonth = Utilities.convertTime("years", 1) / 12;

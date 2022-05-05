@@ -1,6 +1,5 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
 import com.google.common.collect.Table;
 
 import java.io.File;
@@ -51,6 +50,9 @@ public abstract class HospitalExporterR4 {
           addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
+      // add in the patient's home location
+      FhirR4.addPatientHomeLocation(bundle);
+
 
       String bundleJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
           .encodeResourceToString(bundle);

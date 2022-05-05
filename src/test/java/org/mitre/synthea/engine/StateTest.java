@@ -839,7 +839,7 @@ public class StateTest {
     HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
         .observations.get(2);
     assertEquals("procedure", sampleObservation.category);
-    assertEquals("mmHg", sampleObservation.unit);
+    assertEquals("mm[Hg]", sampleObservation.unit);
     assertTrue(sampleObservation.value instanceof SampledData);
     SampledData sampledData = (SampledData) sampleObservation.value;
     assertEquals("P_ao", sampledData.attributes.get(0));

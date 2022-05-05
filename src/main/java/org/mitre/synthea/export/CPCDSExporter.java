@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
@@ -458,29 +459,29 @@ public class CPCDSExporter {
       String providerString = provider.toString();
 
       // totals
-      double totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
-      double coveredCost = encounter.claim.getCoveredCost();
-      double disallowed = totalCost - coveredCost;
-      double patientPaid;
-      double memberReimbursement;
-      double paymentAmount;
-      double toProvider;
-      double deductible = encounter.claim.person.coverage.getTotalCoverage();
-      double liability;
-      double copay = 0.00;
+      BigDecimal totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
+      BigDecimal coveredCost = encounter.claim.getCoveredCost();
+      BigDecimal disallowed = totalCost.subtract(coveredCost);
+      BigDecimal patientPaid = Claim.ZERO_CENTS;
+      BigDecimal memberReimbursement = Claim.ZERO_CENTS;
+      BigDecimal paymentAmount = Claim.ZERO_CENTS;
+      BigDecimal toProvider = Claim.ZERO_CENTS;
+      BigDecimal deductible = encounter.claim.person.coverage.getTotalCoverage();
+      BigDecimal liability = Claim.ZERO_CENTS;
+      BigDecimal copay = Claim.ZERO_CENTS;
 
-      if (disallowed > 0) {
-        memberReimbursement = 0.00;
+      if (disallowed.compareTo(Claim.ZERO_CENTS) > 0) {
+        memberReimbursement = Claim.ZERO_CENTS;
         patientPaid = disallowed;
       } else {
-        memberReimbursement = disallowed - 2 * disallowed;
-        disallowed = 0.00;
-        patientPaid = 0.00;
+        memberReimbursement = disallowed.negate();
+        disallowed = Claim.ZERO_CENTS;
+        patientPaid = Claim.ZERO_CENTS;
       }
 
-      paymentAmount = coveredCost + patientPaid;
+      paymentAmount = coveredCost.add(patientPaid);
       toProvider = paymentAmount;
-      liability = totalCost - paymentAmount;
+      liability = totalCost.subtract(paymentAmount);
 
       String[] claimTotalsSection = {
         String.valueOf(paymentAmount),
@@ -1030,7 +1031,7 @@ public class CPCDSExporter {
     private String revenueCenterCode;
     private String npiProvider;
     private String npiPrescribingProvider;
-    private double totalClaimCost = 0.00;
+    private BigDecimal totalClaimCost = Claim.ZERO_CENTS;
 
     /**
      * Constructor. Takes the encounter and processes relevant encounters based on
@@ -1110,20 +1111,20 @@ public class CPCDSExporter {
       setNpiProvider(doctorNPI);
 
       for (Entry condition : encounter.conditions) {
-        totalClaimCost = totalClaimCost + condition.getCost().doubleValue();
+        totalClaimCost = totalClaimCost.add(condition.getCost());
       }
       for (Procedure procedure : encounter.procedures) {
-        totalClaimCost = totalClaimCost + procedure.getCost().doubleValue();
+        totalClaimCost = totalClaimCost.add(procedure.getCost());
       }
       for (Medication medication : encounter.medications) {
-        totalClaimCost = totalClaimCost + medication.getCost().doubleValue();
+        totalClaimCost = totalClaimCost.add(medication.getCost());
       }
       for (Device device : encounter.devices) {
-        totalClaimCost = totalClaimCost + device.getCost().doubleValue();
+        totalClaimCost = totalClaimCost.add(device.getCost());
       }
     }
 
-    public double getTotalClaimCost() {
+    public BigDecimal getTotalClaimCost() {
       return totalClaimCost;
     }
 

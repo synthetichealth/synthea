@@ -650,6 +650,7 @@
     "Followup_Cerebral_Palsy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
