@@ -412,54 +412,6 @@ public class Location implements Serializable {
   }
 
   /**
-   * Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
-   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
-   * that city. If cityName is not given, then picks a random city from the list of all cities.
-   *
-   * @param clinician Clinician to assign location information
-   * @param cityName Name of the city, or null to choose one randomly
-   */
-  public void assignPoint(Clinician clinician, String cityName) {
-    List<Place> zipsForCity = null;
-
-    if (cityName == null) {
-      int size = zipCodes.keySet().size();
-      cityName = (String) zipCodes.keySet().toArray()[clinician.randInt(size)];
-    }
-    zipsForCity = zipCodes.get(cityName);
-
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
-    }
-
-    Place place = null;
-    if (zipsForCity != null && zipsForCity.size() == 1) {
-      place = zipsForCity.get(0);
-    } else if (zipsForCity != null) {
-      // pick a random one
-      place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
-    } else {
-      // The place doesn't exist for some reason, pick a random location...
-      String key = (String) zipCodes.keySet().toArray()[clinician.randInt(zipCodes.keySet().size())];
-      place = zipCodes.get(key).get(clinician.randInt(zipCodes.get(key).size()));
-    }
-
-    if (place != null) {
-      // Get the coordinate of the city/town
-      Point2D.Double coordinate = new Point2D.Double();
-      coordinate.setLocation(place.coordinate);
-      // And now perturbate it slightly.
-      // Precision within 0.001 degree is more or less a neighborhood or street.
-      // Precision within 0.01 is a village or town
-      // Precision within 0.1 is a large city
-      double dx = (clinician.rand() * 0.1) - 0.05;
-      double dy = (clinician.rand() * 0.1) - 0.05;
-      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
-      clinician.attributes.put(Person.COORDINATE, coordinate);
-    }
-  }
-
-  /**
    * Set social determinants of health attributes on the patient, as defined
    * by the optional social determinants of health county-level file.
    * @param person The person to assign attributes.
