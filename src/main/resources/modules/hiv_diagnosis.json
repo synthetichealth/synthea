@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Diagnosis Check"
+      "direct_transition": "Wait until 1979"
     },
     "Terminal": {
       "type": "Terminal"
@@ -264,9 +264,19 @@
           }
         },
         {
-          "transition": "Terminal"
+          "transition": "Wait_Until_Next_Diagnosis_Check"
         }
       ]
+    },
+    "Wait until 1979": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Date",
+        "operator": ">=",
+        "year": 1979,
+        "value": 0
+      },
+      "direct_transition": "Diagnosis Check"
     }
   },
   "gmf_version": 2
