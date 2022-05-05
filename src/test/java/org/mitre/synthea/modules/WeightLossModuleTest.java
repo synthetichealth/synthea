@@ -292,4 +292,34 @@ public class WeightLossModuleTest {
     assertEquals(expectedTailAge, pgt.tail().ageInMonths);
     assertEquals(expectedBMI, pgt.tail().bmi, 0.001);
   }
+
+  @Test
+  public void transitionRegression() {
+    long birthDay = TestHelper.timestamp(1990, 1, 1, 0, 0, 0);
+    long weightLossStart = TestHelper.timestamp(2003, 12, 2, 0, 0, 0);
+    long transitionRegressionTime = TestHelper.timestamp(2010, 1, 1, 0, 0, 0);
+    Person person = new Person(0L);
+    String gender = "M";
+    double bmiPercentileChange = 0.01;
+    person.attributes.put(Person.BIRTHDATE, birthDay);
+    person.attributes.put(Person.GENDER, gender);
+    person.attributes.put(WeightLossModule.WEIGHT_MANAGEMENT_START, weightLossStart);
+    person.attributes.put(WeightLossModule.WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, bmiPercentileChange);
+    person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, 0.75);
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(0L, birthDay);
+    int yearToCheck = 1993;
+    for (int i = 0; i < 17; i++) {
+      long timeToCheck = TestHelper.timestamp(yearToCheck + i, 1, 1, 0, 0, 0);
+      pgt.currentBMI(person, timeToCheck);
+    }
+
+    person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
+
+    double weight = mod.transitionRegression(person, transitionRegressionTime);
+    // The seeded pgt will target a BMI around 24.9 at age 20
+    // The person is in the 75th percentile for height which would make them ~181.65 cm
+    // Therefore, the weight should be about 82.14 kg, since this is the end of the transition
+    // back to the original weight trajectory
+    assertEquals(82.14, weight, 0.01);
+  }
 }

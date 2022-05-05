@@ -277,10 +277,16 @@ public final class WeightLossModule extends Module {
     double targetWeight = BMI.weightForHeightAndBMI(height, bmiForPercentileAtTwenty);
     int ageTwenty = 20;
     int lossAndRegressionTotalYears = 7;
-    double weightAtTwenty = BMI.weightForHeightAndBMI(height, pgt.tail().bmi);
     int regressionEndAge = (startAgeInMonths / 12) + lossAndRegressionTotalYears;
-    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty)
-        / (regressionEndAge - ageTwenty);
+    int denominator = regressionEndAge - ageTwenty;
+    // This can happen when regression ends at age 20
+    if (denominator == 0) {
+      denominator = 1;
+    }
+
+    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty) / denominator;
+
+    double weightAtTwenty = BMI.weightForHeightAndBMI(height, pgt.tail().bmi);
     return weightAtTwenty + (percentageElapsed * (targetWeight - weightAtTwenty));
   }
 
