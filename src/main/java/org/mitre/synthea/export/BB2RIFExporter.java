@@ -1307,9 +1307,11 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
           fieldValues.put(INPATIENT.HCPCS_CD, hcpcsCode);
           fieldValues.put(INPATIENT.REV_CNTR_UNIT_CNT, "" + Integer.max(1, days));
+          BigDecimal rate = lineItem.cost.divide(
+                  BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
+                  .setScale(2, RoundingMode.HALF_EVEN);
           fieldValues.put(INPATIENT.REV_CNTR_RATE_AMT,
-              String.format("%.2f", lineItem.cost.divide(BigDecimal.valueOf(Integer.max(1, days)))
-                      .setScale(2, RoundingMode.HALF_EVEN)));
+              String.format("%.2f", rate));
           fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
@@ -1505,7 +1507,7 @@ public class BB2RIFExporter {
 
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
-          double providerAmount = lineItem.coinsurance + lineItem.payer;
+          BigDecimal providerAmount = lineItem.coinsurance.add(lineItem.payer);
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,

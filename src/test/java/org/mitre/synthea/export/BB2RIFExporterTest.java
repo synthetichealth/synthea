@@ -8,6 +8,7 @@ import static org.mitre.synthea.world.agents.Person.INCOME_LEVEL;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +41,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Claim;
 
 public class BB2RIFExporterTest {
   /**
@@ -139,45 +141,46 @@ public class BB2RIFExporterTest {
 
   private static class CarrierClaimInfo {
     private final String claimID;
-    private final double claimPaymentAmount;
-    private final double claimAllowedAmount;
-    private final double claimBenePaymentAmount;
-    private final double claimBeneDDblAmount;
-    private final double claimProviderPaymentAmount;
-    private double linePaymentAmount;
-    private double linePaymentAmountTotal;
-    private double lineBenePaymentAmount;
-    private double lineBenePaymentAmountTotal;
-    private double lineBeneDDblAmountTotal;
-    private double lineProviderPaymentAmount;
-    private double lineProviderPaymentAmountTotal;
+    private final BigDecimal claimPaymentAmount;
+    private final BigDecimal claimAllowedAmount;
+    private final BigDecimal claimBenePaymentAmount;
+    private final BigDecimal claimBeneDDblAmount;
+    private final BigDecimal claimProviderPaymentAmount;
+    private BigDecimal linePaymentAmount;
+    private BigDecimal linePaymentAmountTotal;
+    private BigDecimal lineBenePaymentAmount;
+    private BigDecimal lineBenePaymentAmountTotal;
+    private BigDecimal lineBeneDDblAmountTotal;
+    private BigDecimal lineProviderPaymentAmount;
+    private BigDecimal lineProviderPaymentAmountTotal;
 
     CarrierClaimInfo(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
-      claimPaymentAmount = Double.parseDouble(row.get("CLM_PMT_AMT"));
-      claimAllowedAmount = Double.parseDouble(row.get("NCH_CARR_CLM_ALOWD_AMT"));
-      claimBenePaymentAmount = Double.parseDouble(row.get("NCH_CLM_BENE_PMT_AMT"));
-      claimBeneDDblAmount = Double.parseDouble(row.get("CARR_CLM_CASH_DDCTBL_APLD_AMT"));
-      claimProviderPaymentAmount = Double.parseDouble(row.get("NCH_CLM_PRVDR_PMT_AMT"));
-      linePaymentAmountTotal = 0.0;
-      lineBenePaymentAmountTotal = 0.0;
-      lineProviderPaymentAmountTotal = 0.0;
-      lineBeneDDblAmountTotal = 0.0;
+      claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
+      claimAllowedAmount = new BigDecimal(row.get("NCH_CARR_CLM_ALOWD_AMT")).setScale(2);
+      claimBenePaymentAmount = new BigDecimal(row.get("NCH_CLM_BENE_PMT_AMT")).setScale(2);
+      claimBeneDDblAmount = new BigDecimal(row.get("CARR_CLM_CASH_DDCTBL_APLD_AMT")).setScale(2);
+      claimProviderPaymentAmount = new BigDecimal(row.get("NCH_CLM_PRVDR_PMT_AMT")).setScale(2);
+      linePaymentAmountTotal = Claim.ZERO_CENTS;
+      lineBenePaymentAmountTotal = Claim.ZERO_CENTS;
+      lineProviderPaymentAmountTotal = Claim.ZERO_CENTS;
+      lineBeneDDblAmountTotal = Claim.ZERO_CENTS;
     }
 
     void addLineItems(LinkedHashMap<String, String> row) {
-      linePaymentAmount = Double.parseDouble(row.get("LINE_NCH_PMT_AMT"));
-      linePaymentAmountTotal += linePaymentAmount;
-      lineBenePaymentAmount = Double.parseDouble(row.get("LINE_BENE_PMT_AMT"));
-      lineBenePaymentAmountTotal += lineBenePaymentAmount;
-      lineProviderPaymentAmount = Double.parseDouble(row.get("LINE_PRVDR_PMT_AMT"));
-      lineProviderPaymentAmountTotal += lineProviderPaymentAmount;
-      lineBeneDDblAmountTotal += Double.parseDouble(row.get("LINE_BENE_PTB_DDCTBL_AMT"));
+      linePaymentAmount = new BigDecimal(row.get("LINE_NCH_PMT_AMT")).setScale(2);
+      linePaymentAmountTotal = linePaymentAmountTotal.add(linePaymentAmount);
+      lineBenePaymentAmount = new BigDecimal(row.get("LINE_BENE_PMT_AMT")).setScale(2);
+      lineBenePaymentAmountTotal = lineBenePaymentAmountTotal.add(lineBenePaymentAmount);
+      lineProviderPaymentAmount = new BigDecimal(row.get("LINE_PRVDR_PMT_AMT")).setScale(2);
+      lineProviderPaymentAmountTotal = lineProviderPaymentAmountTotal
+              .add(lineProviderPaymentAmount);
+      lineBeneDDblAmountTotal =  lineBeneDDblAmountTotal
+              .add(new BigDecimal(row.get("LINE_BENE_PTB_DDCTBL_AMT")).setScale(2));
     }
   }
 
   private void validateCarrierFile(File file) throws IOException {
-    double compThreshold = 0.1;
     String csvData = new String(Files.readAllBytes(file.toPath()));
 
     // the BB2 exporter doesn't use the SimpleCSV class to write the data,
@@ -197,18 +200,17 @@ public class BB2RIFExporterTest {
       }
       CarrierClaimInfo claim = claims.get(claimID);
       claim.addLineItems(row);
-      assertEquals(claim.linePaymentAmount,
-              claim.lineBenePaymentAmount + claim.lineProviderPaymentAmount, compThreshold);
+      assertTrue(claim.linePaymentAmount.equals(
+              claim.lineBenePaymentAmount.add(claim.lineProviderPaymentAmount)));
     });
 
     claims.values().forEach(claim -> {
-      assertEquals(claim.claimPaymentAmount,
-              claim.claimBenePaymentAmount + claim.claimProviderPaymentAmount, compThreshold);
-      assertEquals(claim.linePaymentAmountTotal, claim.claimAllowedAmount, compThreshold);
-      assertEquals(claim.lineBenePaymentAmountTotal, claim.claimBenePaymentAmount, compThreshold);
-      assertEquals(claim.lineProviderPaymentAmountTotal, claim.claimProviderPaymentAmount,
-              compThreshold);
-      assertEquals(claim.lineBeneDDblAmountTotal, claim.claimBeneDDblAmount, compThreshold);
+      assertTrue(claim.claimPaymentAmount.equals(
+              claim.claimBenePaymentAmount.add(claim.claimProviderPaymentAmount)));
+      assertTrue(claim.linePaymentAmountTotal.equals(claim.claimAllowedAmount));
+      assertTrue(claim.lineBenePaymentAmountTotal.equals(claim.claimBenePaymentAmount));
+      assertTrue(claim.lineProviderPaymentAmountTotal.equals(claim.claimProviderPaymentAmount));
+      assertTrue(claim.lineBeneDDblAmountTotal.equals(claim.claimBeneDDblAmount));
     });
   }
 
