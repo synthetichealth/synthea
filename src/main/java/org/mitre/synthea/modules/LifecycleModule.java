@@ -620,9 +620,61 @@ public final class LifecycleModule extends Module {
       index = (Integer) person.attributes.getOrDefault("diabetes_severity", 1);
     }
 
-    double totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+    double totalCholesterol;
     double triglycerides = person.rand(TRIGLYCERIDES_RANGE[index], TRIGLYCERIDES_RANGE[index + 1]);
-    double hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    double hdl;
+
+    if (index == 0) {
+      // for patients without diabetes
+      // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
+      // NCHS Data Brief - No. 363 - April 2020
+      // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015–2018
+      boolean lowHDL, highTotalChol;
+      if (person.attributes.containsKey("low_hdl")) {
+        // cache low or high status, so it's consistent
+        lowHDL = (boolean)person.attributes.get("low_hdl");
+        highTotalChol = (boolean)person.attributes.get("high_total_chol");
+      } else {
+        boolean female = "F".equals(person.attributes.get(Person.GENDER));
+
+        // gender is the largest factor, much more than age or race/ethnicity
+        // from the above source ("Key findings" section):
+        //  "Over one-quarter of men (26.6%) and 8.5% of women
+        //   had low high-density lipoprotein cholesterol (HDL-C)."
+        double chanceOfLowHDL = female ? .085 : .266;
+
+        lowHDL = person.rand() < chanceOfLowHDL; 
+
+        person.attributes.put("low_hdl", lowHDL);
+
+        // from the above source:
+        //  "During 2015–2018, 11.4% of adults had high total cholesterol,
+        //   and prevalence was similar by race and Hispanic origin."
+        highTotalChol = person.rand() < .114;
+        person.attributes.put("high_total_chol", highTotalChol);
+      }
+
+      // normal distribution: sd * randGaussian() + mean
+      // these numbers do not come from any formal source
+      // but are intended to generate a normal rather than uniform distribution
+      if (lowHDL) {
+        // low HDL is defined as < 40
+        hdl = 3 * person.randGaussian() + 30;
+      } else {
+        hdl = 5 * person.randGaussian() + 55;
+      }
+
+      if (highTotalChol) {
+        // high is 240 or more
+        totalCholesterol = 20 * person.randGaussian() + 280;
+      } else {
+        totalCholesterol = 30 * person.randGaussian() + 170;
+      }
+    } else {
+      totalCholesterol = person.rand(CHOLESTEROL_RANGE[index], CHOLESTEROL_RANGE[index + 1]);
+      hdl = person.rand(HDL_RANGE[index], HDL_RANGE[index + 1]);
+    }
+
     double ldl = totalCholesterol - hdl - (0.2 * triglycerides);
 
     person.setVitalSign(VitalSign.TOTAL_CHOLESTEROL, totalCholesterol);

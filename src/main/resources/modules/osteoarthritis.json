@@ -91,6 +91,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "osteoarthritis",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

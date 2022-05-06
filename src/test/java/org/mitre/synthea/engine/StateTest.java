@@ -839,7 +839,7 @@ public class StateTest {
     HealthRecord.Observation sampleObservation = person.record.encounters.get(0)
         .observations.get(2);
     assertEquals("procedure", sampleObservation.category);
-    assertEquals("mmHg", sampleObservation.unit);
+    assertEquals("mm[Hg]", sampleObservation.unit);
     assertTrue(sampleObservation.value instanceof SampledData);
     SampledData sampledData = (SampledData) sampleObservation.value;
     assertEquals("P_ao", sampledData.attributes.get(0));
@@ -2290,7 +2290,6 @@ public class StateTest {
     assertEquals(time, device.stop);
   }
 
-
   @Test
   public void testSupplyList() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
@@ -2318,6 +2317,32 @@ public class StateTest {
       assertEquals(expectedCodes[i], code.code);
       assertEquals(expectedDisplays[i], code.display);
       assertEquals(expectedQuantities[i], supply.quantity);
+    }
+  }
+
+  @Test
+  public void testVaccine() throws Exception {
+    Module module = TestHelper.getFixture("vaccine.json");
+
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+
+    State supplyListState = module.getState("Vaccine");
+    assertTrue(supplyListState.process(person, time));
+
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Immunization> vaccines = encounter.immunizations;
+    assertNotNull(vaccines);
+    assertEquals(1, vaccines.size());
+
+    String[] expectedCodes = { "123" };
+    String[] expectedDisplays = { "CVX Vaccine Code" };
+
+    for (int i = 0; i < vaccines.size(); i++) {
+      HealthRecord.Immunization vaccine = vaccines.get(i);
+      Code code = vaccine.codes.get(0);
+      assertEquals(expectedCodes[i], code.code);
+      assertEquals(expectedDisplays[i], code.display);
     }
   }
 }

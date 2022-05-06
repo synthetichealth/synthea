@@ -37,6 +37,7 @@ import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomValueGenerator;
+import org.mitre.synthea.helpers.Telemedicine;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.physiology.IoMapper;
@@ -776,6 +777,12 @@ public abstract class State implements Cloneable, Serializable {
     }
   }
 
+  public enum TelemedicinePossibility {
+    NONE,
+    POSSIBLE,
+    ALWAYS
+  }
+
   /**
    * The Encounter state type indicates a point in the module where an encounter should take place.
    * Encounters are important in Synthea because they are generally the mechanism through which the
@@ -811,6 +818,7 @@ public abstract class State implements Cloneable, Serializable {
     private String encounterClass;
     private List<Code> codes;
     private String reason;
+    private String telemedicinePossibility;
 
     @Override
     public Encounter clone() {
@@ -838,7 +846,31 @@ public abstract class State implements Cloneable, Serializable {
           return false;
         }
       } else {
-        EncounterType type = EncounterType.fromString(encounterClass);
+        EncounterType type = null;
+        if (telemedicinePossibility != null && !telemedicinePossibility.isEmpty()) {
+          TelemedicinePossibility possibility =
+              TelemedicinePossibility.valueOf(telemedicinePossibility.toUpperCase());
+          switch (possibility) {
+            case NONE:
+              type = EncounterType.fromString(encounterClass);
+              break;
+            case POSSIBLE:
+              if (Telemedicine.shouldEncounterBeVirtual(person, time)) {
+                type = EncounterType.VIRTUAL;
+              } else {
+                type = EncounterType.fromString(encounterClass);
+              }
+              break;
+            case ALWAYS:
+              type = EncounterType.VIRTUAL;
+              break;
+            default:
+              // should never get here... but checkstyle wants this.
+              type = EncounterType.fromString(encounterClass);
+          }
+        } else {
+          type = EncounterType.fromString(encounterClass);
+        }
         HealthRecord.Encounter encounter = EncounterModule.createEncounter(person, time, type,
             ClinicianSpecialty.GENERAL_PRACTICE, null);
         entry = encounter;
@@ -2181,6 +2213,30 @@ public abstract class State implements Cloneable, Serializable {
         person.recordDeath(time, reason);
         return true;
       }
+    }
+  }
+
+  /**
+   * The Vaccine state type indicates a point in the module where the patient is vaccinated.
+   */
+  public static class Vaccine extends State {
+    private int series;
+    private List<Code> codes;
+
+    @Override
+    public Vaccine clone() {
+      Vaccine clone = (Vaccine) super.clone();
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      HealthRecord.Immunization entry = person.record.immunization(time, codes.get(0).display);
+      for (Code code : codes) {
+        entry.codes.add(code);
+      }
+      entry.series = this.series;
+      return true;
     }
   }
 }

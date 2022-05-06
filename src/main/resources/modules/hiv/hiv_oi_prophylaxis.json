@@ -1,0 +1,421 @@
+{
+  "name": "HIV OI Prophylaxis",
+  "remarks": [
+    "This module is limited to PCP, Toxoplasma, and MAC Prophylaxis.",
+    "It can be built out and expanded in the future."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Check Path"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "MAC PPx": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Azithromycin",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Clarithromycin",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Stop all HIV Pox Meds": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hiv_ppx",
+      "conditional_transition": [
+        {
+          "transition": "Stop_all_HIV_Pox_Meds_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx2",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Stop_all_HIV_Pox_Meds_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx3",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "PCP/Toxo PPx": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 10831,
+                "display": "Sulfamethoxazole / Trimethoprim"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Atovaquone"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "TMP-SMX DS",
+              "distribution": 0.9
+            },
+            {
+              "transition": "TMP SMX SS",
+              "distribution": 0.07
+            },
+            {
+              "transition": "Dapsone",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Atovaquone",
+              "distribution": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    "Azithromycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 204844,
+          "display": "azithromycin 600 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 1,
+          "period": 1,
+          "unit": "weeks"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx"
+    },
+    "Clarithromycin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197517,
+          "display": "clarithromycin 500 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx",
+      "direct_transition": "Terminal"
+    },
+    "TMP-SMX DS": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198335,
+          "display": "sulfamethoxazole 800 MG / trimethoprim 160 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx"
+    },
+    "TMP SMX SS": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198334,
+          "display": "sulfamethoxazole 400 MG / trimethoprim 80 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx"
+    },
+    "Dapsone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197558,
+          "display": "dapsone 25 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Pyrimethamin",
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx"
+    },
+    "Pyrimethamin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198182,
+          "display": "pyrimethamine 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 2,
+          "frequency": 1,
+          "period": 1,
+          "unit": "weeks"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx2",
+      "direct_transition": "Leucovorin"
+    },
+    "Leucovorin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197862,
+          "display": "leucovorin 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "weeks"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "assign_to_attribute": "hiv_ppx3",
+      "direct_transition": "Terminal"
+    },
+    "Atovaquone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308429,
+          "display": "atovaquone 150 MG/ML Oral Suspension"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12,
+        "instructions": [
+          {
+            "system": "SNOMED-CT",
+            "code": 421399004,
+            "display": "Dilute - dosing instruction imperative (qualifier value)"
+          }
+        ]
+      },
+      "assign_to_attribute": "hiv_ppx"
+    },
+    "Stop_all_HIV_Pox_Meds_3": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hiv_ppx3",
+      "direct_transition": "Terminal"
+    },
+    "Stop_all_HIV_Pox_Meds_2": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "hiv_ppx2",
+      "conditional_transition": [
+        {
+          "transition": "Stop_all_HIV_Pox_Meds_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx3",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Check Path": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "MAC PPx",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_continuous_art",
+                "operator": "==",
+                "value": false
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_cd4",
+                "operator": "<",
+                "value": 50
+              }
+            ]
+          }
+        },
+        {
+          "transition": "PCP/Toxo PPx",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_cd4",
+            "operator": "<",
+            "value": 200
+          }
+        },
+        {
+          "transition": "Stop Meds"
+        }
+      ]
+    },
+    "Stop Meds": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Stop all HIV Pox Meds",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Stop_all_HIV_Pox_Meds_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx2",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Stop_all_HIV_Pox_Meds_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_ppx3",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

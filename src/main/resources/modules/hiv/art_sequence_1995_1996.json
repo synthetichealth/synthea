@@ -1,0 +1,208 @@
+{
+  "name": "art_sequence_1995_1996",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "transition": "d4T",
+          "distribution": 0.4
+        },
+        {
+          "transition": "ZDV",
+          "distribution": 0.6
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "d4T": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313110,
+          "display": "stavudine 40 MG Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_DualERA",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Assign Regimen"
+    },
+    "ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199663,
+          "display": "zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Assign Regimen",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_DualEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313760,
+          "display": "zalcitabine 0.75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_DualEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddI": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284988,
+          "display": "didanosine 400 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_DualEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "3TC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349491,
+          "display": "lamivudine 300 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_DualEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "Assign Regimen": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">",
+            "date": {
+              "year": 1995,
+              "month": 11,
+              "day": 17,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          },
+          "distributions": [],
+          "transition": "3TC"
+        },
+        {
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 313110,
+                "display": "stavudine 40 MG Oral Capsule"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "ddI"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ddC",
+              "distribution": 0.5
+            },
+            {
+              "transition": "ddI",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}
