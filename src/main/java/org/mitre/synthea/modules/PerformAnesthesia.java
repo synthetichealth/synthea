@@ -244,19 +244,28 @@ public class PerformAnesthesia extends Module {
 
     double meanSurgeonTime = (double) clin.attributes.get("mean_surgeon_time");
     
+    double gaussianNoise = person.randGaussian();
+    
     if (cardiacSurgery.equals("savreplace")) {
       boolean historyOfStroke = person.attributes.get("stroke_history") != null;
-      return getProcedureDurationAVReplace(calculatedBMI, meanSurgeonTime, historyOfStroke);
+      return getProcedureDurationAVReplace(calculatedBMI, meanSurgeonTime, historyOfStroke, gaussianNoise);
     } else {
       int age = person.ageInYears(time);
       
-      return getProcedureDuration(age, calculatedBMI, meanSurgeonTime);
+      return getProcedureDuration(cardiacSurgery, age, calculatedBMI, meanSurgeonTime, gaussianNoise);
     }
   }
 
 
+  /*
+   * gaussian noise factors
+     {'TAVR': {'mean': -11, 'std': 15},
+      'CABG': {'mean': 4, 'std': 13},
+      'AV_Replace': {'mean': 0, 'std': 8}}
+   */
   
-  public static final double getProcedureDuration(int age, double calculatedBMI, double meanAnesthetistTime) {
+  
+  public static final double getProcedureDuration(String cardiacSurgery, int age, double calculatedBMI, double meanAnesthetistTime, double gaussianNoise) {
 
     /* 
    
@@ -275,11 +284,17 @@ const,10.191,continuous
     
     duration += calculatedBMI * 0.4162;
     
+    if (cardiacSurgery.equals("cabg")) {
+      duration += gaussianNoise * 13 + 4;
+    } else if (cardiacSurgery.equals("tavr")) {
+      duration += gaussianNoise * 15 - 11;
+    }
+    
     return duration;
   }
   
   
-  public static final double getProcedureDurationAVReplace(double calculatedBMI, double meanAnesthetistTime, boolean historyOfStroke) {    
+  public static final double getProcedureDurationAVReplace(double calculatedBMI, double meanAnesthetistTime, boolean historyOfStroke, double gaussianNoise) {    
     /*
 
 CalculatedBMI,0.1395,Continuous,
@@ -297,6 +312,8 @@ constant,4.568,continuous,
     duration += calculatedBMI * 0.1395;
     
     duration += historyOfStroke ? 4.27 : 0.293;
+    
+    duration += gaussianNoise * 8;
     
     return duration;
   }
