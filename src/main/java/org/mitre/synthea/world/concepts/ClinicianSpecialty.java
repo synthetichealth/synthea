@@ -99,6 +99,7 @@ public class ClinicianSpecialty {
   public static final String UNDEFINED = "UNDEFINED PHYSICIAN TYPE (SPECIFY)";
   public static final String UROLOGY = "UROLOGY";
   public static final String VASCULAR_SURGERY = "VASCULAR SURGERY";
+  public static final String HIV_TESTING = "HIV TESTING";
 
   /**
    * Get the complete list of all specialties defined in the system.
@@ -128,7 +129,7 @@ public class ClinicianSpecialty {
       "PULMONARY DISEASE", "RADIATION ONCOLOGY", "REGISTERED DIETITIAN OR NUTRITION PROFESSIONAL",
       "RHEUMATOLOGY", "SLEEP MEDICINE", "SPEECH LANGUAGE PATHOLOGIST", "SPORTS MEDICINE",
       "SURGICAL ONCOLOGY", "THORACIC SURGERY", "UNDEFINED PHYSICIAN TYPE (SPECIFY)",
-      "UROLOGY", "VASCULAR SURGERY"};
+      "UROLOGY", "VASCULAR SURGERY", "HIV TESTING"};
 
     return specialtyList;
   }

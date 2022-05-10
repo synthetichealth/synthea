@@ -372,22 +372,22 @@ public class Provider implements QuadTreeElement, Serializable {
         loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
                 clinicianSeed, false);
 
-        String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
-        loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
-                clinicianSeed, true);
-
-        servicesProvided.add(EncounterType.WELLNESS);
-        String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, clinicianSeed,
-                false);
+//        String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
+//        loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
+//                clinicianSeed, true);
+//
+//        servicesProvided.add(EncounterType.WELLNESS);
+//        String vaFile = Config.get("generate.providers.veterans.default_file");
+//        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, clinicianSeed,
+//                false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, ProviderType.PRIMARY, servicesProvided,
                 clinicianSeed, false);
-        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
-        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
+//        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
+//        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);

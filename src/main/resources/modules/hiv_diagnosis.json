@@ -151,6 +151,7 @@
     "Diagnosis_Encounter_Later_Years": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "specialty": "HIV TESTING",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -163,6 +164,7 @@
     "Diagnosis_Encounter_Early_Years": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "specialty": "HIV TESTING",
       "codes": [
         {
           "system": "SNOMED-CT",

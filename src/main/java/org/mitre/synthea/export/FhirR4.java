@@ -421,7 +421,7 @@ public class FhirR4 {
           .setValue(String.valueOf(person.attributes.get(Person.IDENTIFIER_SEED_ID)));
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/variant_record_id")
-          .setValue(String.valueOf((String) person.attributes.get(Person.HOUSEHOLD)));
+          .setValue(String.valueOf((String) person.attributes.get(Person.IDENTIFIER_VARIANT_ID)));
     }
 
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
