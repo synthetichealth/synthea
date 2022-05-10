@@ -1,0 +1,3 @@
+,id,name,address,city,state,zip,county,phone,type,ownership,emergency,quality,LAT,LON
+1,1001,BOULDER COMMUNITY HEALTH,1100 BALSAM AVE,BOULDER,CO,80304-3404,BOULDER,303-440-2300,Acute Care Hospitals,2,Voluntary non-profit - Private,Yes,240.009643,-105.231978
+2,060011,DENVER HEALTH MEDICAL CENTER,777 BANNOCK ST,DENVER,CO,80204,DENVER,3036024930,Acute Care Hospitals,Government - State,Yes,2,39.761849,-104.880625
