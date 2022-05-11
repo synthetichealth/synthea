@@ -217,31 +217,27 @@
     },
     "Diagnosis Check Early Years": {
       "type": "Simple",
-      "lookup_table_transition": [
-        {
-          "transition": "Diagnosed_Early_Years",
-          "default_probability": 0.0001565,
-          "lookup_table_name": "hiv_diagnosis_early.csv"
-        },
+      "distributed_transition": [
         {
           "transition": "Wait_Until_Next_Diagnosis_Check",
-          "default_probability": 0.9998435,
-          "lookup_table_name": "hiv_diagnosis_early.csv"
+          "distribution": 0.95
+        },
+        {
+          "transition": "Diagnosed_Early_Years",
+          "distribution": 0.05
         }
       ]
     },
     "Diagnosis Check Later Years": {
       "type": "Simple",
-      "lookup_table_transition": [
-        {
-          "transition": "Diagnosed_Later_Years",
-          "default_probability": 0.000097,
-          "lookup_table_name": "hiv_diagnosis_later.csv"
-        },
+      "distributed_transition": [
         {
           "transition": "Wait_Until_Next_Diagnosis_Check",
-          "default_probability": 0.999903,
-          "lookup_table_name": "hiv_diagnosis_later.csv"
+          "distribution": 0.95
+        },
+        {
+          "transition": "Diagnosed_Later_Years",
+          "distribution": 0.05
         }
       ]
     },

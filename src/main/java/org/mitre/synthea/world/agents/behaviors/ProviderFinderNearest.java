@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderNearest implements IProviderFinder {
@@ -21,8 +22,12 @@ public class ProviderFinderNearest implements IProviderFinder {
         // Find providers that accept the person
         .filter(p -> p.accepts(person, time));
 
+    // Java made me use this ternary operator because lambdas in java can't handle changing variables
+    // That is awful and I now feel awful.
+    final String requestedSpecialty = specialty == null ? ClinicianSpecialty.GENERAL_PRACTICE : specialty;
+
     // Find providers with the requested service and specialties, if given
-    options = options.filter(p -> p.canOffer(service, specialty));
+    options = options.filter(p -> p.canOffer(service, requestedSpecialty));
 
     // If it's not an emergency
     if (service == null

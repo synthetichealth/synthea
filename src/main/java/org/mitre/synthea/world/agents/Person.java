@@ -658,7 +658,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
                 && !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
                 // The provider is not in the seed range. Force finding a new provider.
                 System.out.println("Move reset for " + type);
-                setProvider(type, time);
+                setProvider(type, speciality, time);
             }
         }
     }
