@@ -93,52 +93,37 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
 
     private final AttributeLogic logic;
 
-    AttributeQualifier (String attribute, String value, String intialOperator) {
+    AttributeQualifier (String attribute, Object initialValue, String intialOperator) {
       if (intialOperator.equals("=")) {
         intialOperator = "==";
       }
       final String operator = intialOperator;
-      if (NumberUtils.isCreatable(value)) {
-        // If the value is a number, treat it and the attribute as numeric.
-        String[] validOperators = {">=", ">", "<", "<=", "==", "!="};
-        if (Arrays.asList(validOperators).contains(operator)) {
-          logic = 
-            (Person person) -> {
-              Object objResult = person.attributes.get(attribute);
-              if(objResult == null){
-                return false;
-              }
-              if (!(objResult instanceof Number)) {
-                throw new RuntimeException("Attribute must be a numeric type. Recieved type '" + objResult.getClass() + "'.");
-              }
-              Number attributeResult = (Number) objResult;
-              return Utilities.compare(attributeResult, Double.parseDouble(value), operator);
-            };
-        } else {
-          throw new RuntimeException("Operator '" + operator + "' is invalid for attribute '" + attribute + "' with value '" + value + "'.");
-        }
-        return;
-      }
       // Non-numeric logic can only use equality logic.
       String[] validOperators = {"!=", "=="};
-      if (Arrays.asList(validOperators).contains(operator)) {
-        logic = 
-          (Person person) -> {
-            Object objResult = person.attributes.get(attribute);
-            String attributeResult = "";
-            if (objResult instanceof Boolean) {
-              attributeResult = String.valueOf((Boolean) objResult);
-            } else {
-              attributeResult = (String) objResult;
-              if(attributeResult == null){
-                attributeResult = "false";
-              }
-            }
-            return Utilities.compare(attributeResult, value, operator);
-          };
-      } else {
-        throw new RuntimeException("Operator '" + operator + "' is invalid for attribute '" + attribute + "'.");
+      if (NumberUtils.isCreatable((String) initialValue)) {
+        // If the value is a number, treat it and the attribute as numeric.
+        initialValue = Double.parseDouble((String) initialValue);
+        validOperators = new String[]{">=", ">", "<", "<=", "==", "!="};
       }
+      final Object value = initialValue;
+      if (Arrays.asList(validOperators).contains(operator)) {
+        logic = (Person person) -> {
+          Object attributeResult = person.attributes.get(attribute);
+          if (attributeResult == null) {
+            return false;
+          }
+          if (!(attributeResult instanceof Number) && !(attributeResult instanceof String) && !(attributeResult instanceof Boolean)) {
+            throw new RuntimeException("Attribute must be of Number, String, or Boolean type. Recieved type '" + attributeResult.getClass() + "'.");
+          }
+          if (attributeResult instanceof Boolean) {
+            attributeResult = String.valueOf((Boolean) attributeResult);
+          }
+          return Utilities.compare(attributeResult, value, operator);
+        };
+      } else {
+        throw new RuntimeException("Operator '" + operator + "' is invalid for attribute '" + attribute + "' with value '" + value + "'.");
+      }
+      return;
     }
 
     boolean checkLogic(Person person) {
