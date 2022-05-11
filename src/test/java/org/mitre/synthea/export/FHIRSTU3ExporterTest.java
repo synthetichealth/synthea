@@ -249,10 +249,10 @@ public class FHIRSTU3ExporterTest {
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
-    person.setProvider(EncounterType.AMBULATORY, mock);
-    person.setProvider(EncounterType.WELLNESS, mock);
-    person.setProvider(EncounterType.EMERGENCY, mock);
-    person.setProvider(EncounterType.INPATIENT, mock);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, mock);
 
     Long time = System.currentTimeMillis();
     int age = 35;
@@ -313,10 +313,10 @@ public class FHIRSTU3ExporterTest {
     person.history = new LinkedList<>();
     Provider mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
-    person.setProvider(EncounterType.AMBULATORY, mock);
-    person.setProvider(EncounterType.WELLNESS, mock);
-    person.setProvider(EncounterType.EMERGENCY, mock);
-    person.setProvider(EncounterType.INPATIENT, mock);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, mock);
+    person.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, mock);
 
     Long time = System.currentTimeMillis();
     int age = 35;

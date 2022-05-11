@@ -871,7 +871,7 @@ public class BB2RIFExporter {
       }
       boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
       boolean isVirtualOutpatient = isVirtual
-              && (ProviderType.HOSPITAL == encounter.provider.type);
+          && (ProviderType.HOSPITAL == encounter.provider.type);
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());

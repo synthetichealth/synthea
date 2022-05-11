@@ -41,7 +41,7 @@ public class ProviderFinderTest {
   @Test
   public void testNearest() {
     ProviderFinderNearest finder = new ProviderFinderNearest();
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("1", provider.id);
   }
@@ -54,7 +54,7 @@ public class ProviderFinderTest {
     // Making the test person a veteran, so they will prefer the closest VA facility in a
     // non-emergency situation
     person.attributes.put(Person.VETERAN, "Civil War");
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("2", provider.id);
   }
@@ -67,7 +67,7 @@ public class ProviderFinderTest {
     // Setting the race to white for a test person so that they will not go to an IHS facility in a
     // non-emergency situation
     person.attributes.put(Person.RACE, "white");
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("2", provider.id);
   }
@@ -75,7 +75,7 @@ public class ProviderFinderTest {
   @Test
   public void testAnyNearest() {
     ProviderFinderNearest finder = new ProviderFinderNearest();
-    Provider provider = finder.find(providers, person, null, 0L);
+    Provider provider = finder.find(providers, person, null, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("1", provider.id);
   }
@@ -86,7 +86,7 @@ public class ProviderFinderTest {
     List<Provider> options = new ArrayList<Provider>();
     options.addAll(providers);
     options.addAll(providers);
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("1", provider.id);
   }
@@ -95,14 +95,14 @@ public class ProviderFinderTest {
   public void testNoNearest() {
     ProviderFinderNearest finder = new ProviderFinderNearest();
     List<Provider> options = new ArrayList<Provider>();
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNull(provider);
   }
 
   @Test
   public void testQuality() {
     ProviderFinderQuality finder = new ProviderFinderQuality();
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("3", provider.id);
   }
@@ -110,7 +110,7 @@ public class ProviderFinderTest {
   @Test
   public void testAnyQuality() {
     ProviderFinderQuality finder = new ProviderFinderQuality();
-    Provider provider = finder.find(providers, person, null, 0L);
+    Provider provider = finder.find(providers, person, null, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("3", provider.id);
   }
@@ -121,7 +121,7 @@ public class ProviderFinderTest {
     List<Provider> options = new ArrayList<Provider>();
     options.addAll(providers);
     options.addAll(providers);
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
     Assert.assertEquals("3", provider.id);
   }
@@ -130,21 +130,21 @@ public class ProviderFinderTest {
   public void testNoQuality() {
     ProviderFinderQuality finder = new ProviderFinderQuality();
     List<Provider> options = new ArrayList<Provider>();
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNull(provider);
   }
 
   @Test
   public void testRandom() {
     ProviderFinderRandom finder = new ProviderFinderRandom();
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNotNull(provider);
   }
 
   @Test
   public void testAnyRandom() {
     ProviderFinderRandom finder = new ProviderFinderRandom();
-    Provider provider = finder.find(providers, person, null, 0L);
+    Provider provider = finder.find(providers, person, null, null, 0L);
     Assert.assertNotNull(provider);
   }
 
@@ -152,7 +152,7 @@ public class ProviderFinderTest {
   public void testNoRandom() {
     ProviderFinderRandom finder = new ProviderFinderRandom();
     List<Provider> options = new ArrayList<Provider>();
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, 0L);
+    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNull(provider);
   }
 }

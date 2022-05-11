@@ -15,15 +15,14 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 public class ProviderFinderNearest implements IProviderFinder {
 
   @Override
-  public Provider find(List<Provider> providers, Person person, EncounterType service, long time) {
+  public Provider find(List<Provider> providers, Person person, EncounterType service,
+                       String specialty, long time) {
     Stream<Provider> options = providers.stream()
         // Find providers that accept the person
         .filter(p -> p.accepts(person, time));
 
-    // Find providers with the requested service, if one is given
-    if (service != null) {
-      options = options.filter(p -> p.hasService(service));
-    }
+    // Find providers with the requested service and specialties, if given
+    options = options.filter(p -> p.canOffer(service, specialty));
 
     // If it's not an emergency
     if (service == null

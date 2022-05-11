@@ -147,7 +147,7 @@ public final class EncounterModule extends Module {
       encounter.codes.add(code);
     }
     // assign a provider organization
-    Provider prov = person.getProvider(type, time);
+    Provider prov = person.getProvider(type, specialty, time);
     prov.incrementEncounters(type, year);
     encounter.provider = prov;
     // assign a clinician

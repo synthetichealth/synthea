@@ -284,9 +284,7 @@ public final class LifecycleModule extends Module {
           if (person.attributes.get("veteran_provider_reset") == null) {
             // reset providers for veterans, they'll switch to VA facilities
             person.attributes.remove(Person.CURRENTPROVIDER);
-            for (EncounterType type : EncounterType.values()) {
-              person.attributes.remove(Person.PREFERREDYPROVIDER + type);
-            }
+
             person.attributes.put("veteran_provider_reset", true);
           }
         }
@@ -629,7 +627,8 @@ public final class LifecycleModule extends Module {
       // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
       // NCHS Data Brief - No. 363 - April 2020
       // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015–2018
-      boolean lowHDL, highTotalChol;
+      boolean lowHDL;
+      boolean highTotalChol;
       if (person.attributes.containsKey("low_hdl")) {
         // cache low or high status, so it's consistent
         lowHDL = (boolean)person.attributes.get("low_hdl");
@@ -643,7 +642,7 @@ public final class LifecycleModule extends Module {
         //   had low high-density lipoprotein cholesterol (HDL-C)."
         double chanceOfLowHDL = female ? .085 : .266;
 
-        lowHDL = person.rand() < chanceOfLowHDL; 
+        lowHDL = person.rand() < chanceOfLowHDL;
 
         person.attributes.put("low_hdl", lowHDL);
 

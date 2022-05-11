@@ -38,6 +38,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.PreferredProviders;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
@@ -148,6 +149,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public List<State> history;
   /** Record of insurance coverage. */
   public CoverageRecord coverage;
+  /** A place to maintain preferred providers by encounter type and specialty. */
+  public PreferredProviders preferredProviders;
 
   /**
    * Person constructor.
@@ -168,6 +171,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     this.initializeDefaultHealthRecords();
     coverage = new CoverageRecord(this);
+    preferredProviders = new PreferredProviders();
   }
 
   /**
@@ -530,7 +534,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public Encounter encounterStart(long time, EncounterType type) {
     // Set the record for the current provider as active
-    Provider provider = getProvider(type, time);
+    Provider provider = getProvider(type, null, time);
     record = getHealthRecord(provider, time);
     // Start the encounter
     return record.encounterStart(time, type);
@@ -634,57 +638,39 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   // Providers API -----------------------------------------------------------
   public static final String CURRENTPROVIDER = "currentProvider";
-  public static final String PREFERREDYPROVIDER = "preferredProvider";
 
   /**
    * Get the preferred provider for the specified encounter type. If none is set the
    * provider at the specified time as the preferred provider for this encounter type.
    */
-  public Provider getProvider(EncounterType type, long time) {
-    String key = PREFERREDYPROVIDER + type;
-    if (!attributes.containsKey(key)) {
-      setProvider(type, time);
+  public Provider getProvider(EncounterType type, String speciality, long time) {
+    if (!preferredProviders.doesRelationshipExist(type, speciality)) {
+      setProvider(type, speciality, time);
     } else {
-      Entity entity = (Entity) attributes.get(ENTITY);
-      // check to see if this is a fixed identity
-      if (entity != null) {
-        Provider provider = (Provider) attributes.get(key);
-        HealthRecord healthRecord = getHealthRecord(provider, time);
-        long lastEncounterTime = healthRecord.lastEncounterTime();
-        // check to see if the provider is valid for this see range
-        if (lastEncounterTime != Long.MIN_VALUE
-            && !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
-          // The provider is not in the seed range. Force finding a new provider.
-          System.out.println("Move reset for " + type);
-          setProvider(type, time);
+        Entity entity = (Entity) attributes.get(ENTITY);
+        // check to see if this is a fixed identity
+        if (entity != null) {
+            Provider provider = preferredProviders.get(type, speciality);
+            HealthRecord healthRecord = getHealthRecord(provider, time);
+            long lastEncounterTime = healthRecord.lastEncounterTime();
+            // check to see if the provider is valid for this see range
+            if (lastEncounterTime != Long.MIN_VALUE
+                && !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
+                // The provider is not in the seed range. Force finding a new provider.
+                System.out.println("Move reset for " + type);
+                setProvider(type, time);
+            }
         }
-      }
     }
-    return (Provider) attributes.get(key);
-  }
-
-  /**
-   * Set the preferred provider for the specified encounter type.
-   */
-  public void setProvider(EncounterType type, Provider provider) {
-    if (provider == null) {
-      throw new RuntimeException("Unable to find provider: " + type);
-    }
-    String key = PREFERREDYPROVIDER + type;
-    attributes.put(key, provider);
+    return preferredProviders.get(type, speciality);
   }
 
   /**
    * Set the preferred provider for the specified encounter type to be the provider
    * at the specified time.
    */
-  public void setProvider(EncounterType type, long time) {
-    Provider provider = Provider.findService(this, type, time);
-    if (provider == null && Provider.USE_HOSPITAL_AS_DEFAULT) {
-      // Default to Hospital
-      provider = Provider.findService(this, EncounterType.INPATIENT, time);
-    }
-    setProvider(type, provider);
+  public void setProvider(EncounterType type, String specialty, long time) {
+    preferredProviders.startNewRelationship(this, type, specialty, time);
   }
 
   /**
@@ -856,5 +842,4 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
   }
-
 }
