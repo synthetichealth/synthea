@@ -100,7 +100,7 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
       final String operator = intialOperator;
       if (NumberUtils.isCreatable(value)) {
         // If the value is a number, treat it and the attribute as numeric.
-        String[] validOperators = {">=", ">", "<", "<=", "=="};
+        String[] validOperators = {">=", ">", "<", "<=", "==", "!="};
         if (Arrays.asList(validOperators).contains(operator)) {
           logic = 
             (Person person) -> {
@@ -108,14 +108,10 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
               if(objResult == null){
                 return false;
               }
-              Double attributeResult = null;
-              if (objResult instanceof Double) {
-                attributeResult = (Double) objResult;
-              } else if (objResult instanceof Integer) {
-                attributeResult = Double.valueOf((Integer) objResult);
-              } else {
-                throw new RuntimeException("Attribute must be of type integer or double. Recieved type '" + objResult.getClass() + "'.");
+              if (!(objResult instanceof Number)) {
+                throw new RuntimeException("Attribute must be a numeric type. Recieved type '" + objResult.getClass() + "'.");
               }
+              Number attributeResult = (Number) objResult;
               return Utilities.compare(attributeResult, Double.parseDouble(value), operator);
             };
         } else {
@@ -124,16 +120,16 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
         return;
       }
       // Non-numeric logic can only use equality logic.
-      String[] validOperators = {"=="};
+      String[] validOperators = {"!=", "=="};
       if (Arrays.asList(validOperators).contains(operator)) {
         logic = 
           (Person person) -> {
-            Object attributeResultObj = person.attributes.get(attribute);
+            Object objResult = person.attributes.get(attribute);
             String attributeResult = "";
-            if (attributeResultObj instanceof Boolean) {
-              attributeResult = String.valueOf((Boolean) attributeResultObj);
+            if (objResult instanceof Boolean) {
+              attributeResult = String.valueOf((Boolean) objResult);
             } else {
-              attributeResult = (String) attributeResultObj;
+              attributeResult = (String) objResult;
               if(attributeResult == null){
                 attributeResult = "false";
               }

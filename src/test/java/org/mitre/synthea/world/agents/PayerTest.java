@@ -785,10 +785,15 @@ public class PayerTest {
     QualifyingAttributesEligibility qae = new QualifyingAttributesEligibility(fileName);
     long time = Utilities.convertCalendarYearsToTime(1975);
     person = new Person(0L);
+    person.attributes.put("test2", "TEST");
     assertFalse(qae.isPersonEligible(person, time));
     person.attributes.put("test1", true);
     assertTrue(qae.isPersonEligible(person, time));
     person.attributes.put("test1", false);
+    assertFalse(qae.isPersonEligible(person, time));
+    person.attributes.put("test2", "NOT TEST");
+    assertTrue(qae.isPersonEligible(person, time));
+    person.attributes.put("test2", "TEST");
     assertFalse(qae.isPersonEligible(person, time));
     person.attributes.put("test3", 5.5);
     assertFalse(qae.isPersonEligible(person, time));
