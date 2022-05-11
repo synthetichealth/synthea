@@ -1,3 +1,7 @@
 attributes
-test1
-test2|TEST
+test1 = true|test3 > 5.5|test4 <= 4.2
+test5 = TEST
+test6 < 12.1|test7 = FALSE
+test8 == true
+test9 = 10
+test10 < 6|test11 >= 456
