@@ -367,6 +367,7 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.AMBULATORY);
         servicesProvided.add(EncounterType.OUTPATIENT);
         servicesProvided.add(EncounterType.INPATIENT);
+        servicesProvided.add(EncounterType.WELLNESS);
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
@@ -388,6 +389,11 @@ public class Provider implements QuadTreeElement, Serializable {
                 clinicianSeed, false);
 //        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
 //        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
+
+        servicesProvided.clear();
+        servicesProvided.add(EncounterType.AMBULATORY);
+        loadProviders(location, "providers/hrsa_testing_sites.csv", ProviderType.PRIMARY, servicesProvided,
+            clinicianSeed, false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
@@ -496,11 +502,11 @@ public class Provider implements QuadTreeElement, Serializable {
                       clinicianSeed, clinicianRand));
             }
           }
-          if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
-            parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
-                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
-                    clinicianSeed, clinicianRand));
-          }
+//          if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
+//            parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
+//                parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
+//                    clinicianSeed, clinicianRand));
+//          }
         }
 
         providerList.add(parsed);
@@ -598,6 +604,9 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public Clinician chooseClinicianList(String specialty, RandomNumberGenerator rand) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
+    if(clinicians == null) {
+      System.out.println(specialty + ": " + this.name);
+    }
     Clinician doc = clinicians.get(rand.randInt(clinicians.size()));
     doc.incrementEncounters();
     return doc;
