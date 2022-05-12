@@ -1307,9 +1307,11 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
           fieldValues.put(INPATIENT.HCPCS_CD, hcpcsCode);
           fieldValues.put(INPATIENT.REV_CNTR_UNIT_CNT, "" + Integer.max(1, days));
+          BigDecimal rate = lineItem.cost.divide(
+                  BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
+                  .setScale(2, RoundingMode.HALF_EVEN);
           fieldValues.put(INPATIENT.REV_CNTR_RATE_AMT,
-              String.format("%.2f", lineItem.cost.divide(BigDecimal.valueOf(Integer.max(1, days)))
-                      .setScale(2, RoundingMode.HALF_EVEN)));
+              String.format("%.2f", rate));
           fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
@@ -1397,15 +1399,16 @@ public class BB2RIFExporter {
       fieldValues.put(CARRIER.CARR_NUM,
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+              String.format("%.2f", encounter.claim.getCoveredCost()));
       if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
                 String.format("%.2f", encounter.claim.getCoveredCost()));
       }
+      // NCH_CLM_BENE_PMT_AMT, is always zero (set in field value spreadsheet)
       fieldValues.put(CARRIER.NCH_CLM_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+              String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CARRIER.NCH_CARR_CLM_SBMTD_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CARRIER.NCH_CARR_CLM_ALOWD_AMT,
@@ -1425,8 +1428,6 @@ public class BB2RIFExporter {
       fieldValues.put(CARRIER.LINE_SRVC_CNT, "" + encounter.claim.items.size());
       fieldValues.put(CARRIER.CARR_LINE_PRCNG_LCLTY_CD,
               getCarrier(encounter.provider.state, CARRIER.CARR_LINE_PRCNG_LCLTY_CD));
-      fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
       // length of encounter in minutes
       fieldValues.put(CARRIER.CARR_LINE_MTUS_CNT,
               "" + ((encounter.stop - encounter.start) / (1000 * 60)));
@@ -1467,7 +1468,10 @@ public class BB2RIFExporter {
       synchronized (rifWriters.getOrCreateWriter(CARRIER.class)) {
         int lineNum = 1;
         CLIA cliaLab = cliaLabNumbers[person.randInt(cliaLabNumbers.length)];
-        for (ClaimEntry lineItem : encounter.claim.items) {
+        List<ClaimEntry> allItems = new ArrayList<>();
+        allItems.add(encounter.claim.mainEntry);
+        allItems.addAll(encounter.claim.items);
+        for (ClaimEntry lineItem : allItems) {
           String hcpcsCode = "";
           String ndcCode = "";
           if (lineItem.entry instanceof HealthRecord.Procedure) {
@@ -1500,10 +1504,14 @@ public class BB2RIFExporter {
                   String.format("%.2f", lineItem.deductible));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.coinsurance));
-          fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
+
+          // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
+          // (set in field value spreadsheet)
+          BigDecimal providerAmount = lineItem.coinsurance.add(lineItem.payer);
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurance.add(lineItem.payer)));
+              String.format("%.2f", providerAmount));
+          fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
+              String.format("%.2f", providerAmount));
           fieldValues.put(CARRIER.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
@@ -1531,10 +1539,12 @@ public class BB2RIFExporter {
                   String.format("%.2f", encounter.claim.getTotalClaimCost()));
           fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
+          // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
+          // (set in field value spreadsheet)
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
                   String.format("%.2f", encounter.claim.getCoveredCost()));
-          fieldValues.put(CARRIER.LINE_BENE_PMT_AMT,
-                  String.format("%.2f", encounter.claim.getPatientCost()));
+          fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
+                  String.format("%.2f", encounter.claim.getCoveredCost()));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(CARRIER.HCPCS_CD, "99241");
           rifWriters.writeValues(CARRIER.class, fieldValues);
