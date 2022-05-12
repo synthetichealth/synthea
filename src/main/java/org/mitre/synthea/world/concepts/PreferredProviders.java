@@ -63,8 +63,8 @@ public class PreferredProviders implements Serializable {
     }
     if (provider == null) {
       throw new IllegalStateException(
-          String.format("Unable to find provider for encounter type '%s' and specialty '%s'",
-              type, speciality));
+          String.format("Unable to find provider for encounter type '%s' and specialty '%s' in city '%s'",
+              type, speciality, person.attributes.get(Person.CITY)));
     }
 
     relationships.put(type, blankSafeSpecialty(speciality), provider);
