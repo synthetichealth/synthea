@@ -83,7 +83,6 @@ public class CCDAExporter {
         break;
       }
     }
-    Observation smokingHistory = person.record.getLatestObservation("72166-2");
 
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
@@ -98,6 +97,9 @@ public class CCDAExporter {
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
     person.attributes.put("ehr_imaging_studies", superEncounter.imagingStudies);
+
+    Observation smokingHistory = person.record.getLatestObservation("72166-2");
+
     if (smokingHistory != null) {
       person.attributes.put("ehr_smoking_history", smokingHistory);
     }
