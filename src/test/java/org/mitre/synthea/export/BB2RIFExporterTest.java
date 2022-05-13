@@ -8,6 +8,7 @@ import static org.mitre.synthea.world.agents.Person.INCOME_LEVEL;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -39,6 +41,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Claim;
 
 public class BB2RIFExporterTest {
   /**
@@ -126,6 +129,7 @@ public class BB2RIFExporterTest {
       assertTrue(outpatientFile.exists() && outpatientFile.isFile());
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
+      validateCarrierFile(carrierFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
@@ -133,6 +137,81 @@ public class BB2RIFExporterTest {
       File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
       assertTrue(dmeFile.exists() && dmeFile.isFile());
     }
+  }
+
+  private static class CarrierClaimInfo {
+    private final String claimID;
+    private final BigDecimal claimPaymentAmount;
+    private final BigDecimal claimAllowedAmount;
+    private final BigDecimal claimBenePaymentAmount;
+    private final BigDecimal claimBeneDDblAmount;
+    private final BigDecimal claimProviderPaymentAmount;
+    private BigDecimal linePaymentAmount;
+    private BigDecimal linePaymentAmountTotal;
+    private BigDecimal lineBenePaymentAmount;
+    private BigDecimal lineBenePaymentAmountTotal;
+    private BigDecimal lineBeneDDblAmountTotal;
+    private BigDecimal lineProviderPaymentAmount;
+    private BigDecimal lineProviderPaymentAmountTotal;
+
+    CarrierClaimInfo(LinkedHashMap<String, String> row) {
+      claimID = row.get("CLM_ID");
+      claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
+      claimAllowedAmount = new BigDecimal(row.get("NCH_CARR_CLM_ALOWD_AMT")).setScale(2);
+      claimBenePaymentAmount = new BigDecimal(row.get("NCH_CLM_BENE_PMT_AMT")).setScale(2);
+      claimBeneDDblAmount = new BigDecimal(row.get("CARR_CLM_CASH_DDCTBL_APLD_AMT")).setScale(2);
+      claimProviderPaymentAmount = new BigDecimal(row.get("NCH_CLM_PRVDR_PMT_AMT")).setScale(2);
+      linePaymentAmountTotal = Claim.ZERO_CENTS;
+      lineBenePaymentAmountTotal = Claim.ZERO_CENTS;
+      lineProviderPaymentAmountTotal = Claim.ZERO_CENTS;
+      lineBeneDDblAmountTotal = Claim.ZERO_CENTS;
+    }
+
+    void addLineItems(LinkedHashMap<String, String> row) {
+      linePaymentAmount = new BigDecimal(row.get("LINE_NCH_PMT_AMT")).setScale(2);
+      linePaymentAmountTotal = linePaymentAmountTotal.add(linePaymentAmount);
+      lineBenePaymentAmount = new BigDecimal(row.get("LINE_BENE_PMT_AMT")).setScale(2);
+      lineBenePaymentAmountTotal = lineBenePaymentAmountTotal.add(lineBenePaymentAmount);
+      lineProviderPaymentAmount = new BigDecimal(row.get("LINE_PRVDR_PMT_AMT")).setScale(2);
+      lineProviderPaymentAmountTotal = lineProviderPaymentAmountTotal
+              .add(lineProviderPaymentAmount);
+      lineBeneDDblAmountTotal =  lineBeneDDblAmountTotal
+              .add(new BigDecimal(row.get("LINE_BENE_PTB_DDCTBL_AMT")).setScale(2));
+    }
+  }
+
+  private void validateCarrierFile(File file) throws IOException {
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in the carrier file, found " + rows.size(),
+            rows.size() >= 1);
+    Map<String, CarrierClaimInfo> claims = new HashMap<>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length claim ID",
+              row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+      String claimID = row.get("CLM_ID");
+      if (!claims.containsKey(claimID)) {
+        CarrierClaimInfo claim = new CarrierClaimInfo(row);
+        claims.put(claimID, claim);
+      }
+      CarrierClaimInfo claim = claims.get(claimID);
+      claim.addLineItems(row);
+      assertTrue(claim.linePaymentAmount.equals(
+              claim.lineBenePaymentAmount.add(claim.lineProviderPaymentAmount)));
+    });
+
+    claims.values().forEach(claim -> {
+      assertTrue(claim.claimPaymentAmount.equals(
+              claim.claimBenePaymentAmount.add(claim.claimProviderPaymentAmount)));
+      assertTrue(claim.linePaymentAmountTotal.equals(claim.claimAllowedAmount));
+      assertTrue(claim.lineBenePaymentAmountTotal.equals(claim.claimBenePaymentAmount));
+      assertTrue(claim.lineProviderPaymentAmountTotal.equals(claim.claimProviderPaymentAmount));
+      assertTrue(claim.lineBeneDDblAmountTotal.equals(claim.claimBeneDDblAmount));
+    });
   }
 
   @Test
