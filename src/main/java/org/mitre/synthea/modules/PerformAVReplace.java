@@ -209,14 +209,16 @@ public class PerformAVReplace extends Module {
     
     double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
 
-    int numDiseasedVessels = (int) person.attributes.get("avrr_num_diseased_vessels");
+    int numDiseasedVessels = (int) person.attributes.getOrDefault("avrr_num_diseased_vessels", 0);
     boolean anyDiseasedVessels = numDiseasedVessels > 0;
     
-    return getProcedureDuration(elective, emergent, urgent, redo, meanSurgeonTime, anyDiseasedVessels);
+    double gaussianNoise = person.randGaussian();
+    
+    return getProcedureDuration(elective, emergent, urgent, redo, meanSurgeonTime, anyDiseasedVessels, gaussianNoise);
   }
   
   public static final double getProcedureDuration(boolean elective, boolean emergent, boolean urgent,
-      boolean redo, double meanSurgeonTime, boolean anyDiseasedVessels) {
+      boolean redo, double meanSurgeonTime, boolean anyDiseasedVessels, double gaussianNoise) {
 
 //    Status__Elective,0.6057,Binary,
 //    Status__Emergent,36.76,Binary,
@@ -240,6 +242,8 @@ public class PerformAVReplace extends Module {
     duration += (0.666 * meanSurgeonTime);
     
     if (anyDiseasedVessels) duration += 17.143;
+    
+    duration += gaussianNoise * 40;
     
     return duration;
   }

@@ -211,12 +211,13 @@ public class PerformTAVR extends Module {
 
     double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
 
+    double gaussianNoise = person.randGaussian();
     
-    return getProcedureDuration(transfemoral, previousValveSurgery, calculatedBMI, meanSurgeonTime);
+    return getProcedureDuration(transfemoral, previousValveSurgery, calculatedBMI, meanSurgeonTime, gaussianNoise);
   }
   
   public static final double getProcedureDuration(boolean transfemoral, boolean prValve,  double calculatedBMI,
-      double meanSurgeonTime) {
+      double meanSurgeonTime, double gaussianNoise) {
 
     double duration = 41.08; // constant value
 
@@ -230,6 +231,8 @@ public class PerformTAVR extends Module {
     
     duration += prValve ? 25.22 : 15.85;
 
+    duration += gaussianNoise * 15 - 4;
+    
     return duration;
   }
 
