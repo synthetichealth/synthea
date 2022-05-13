@@ -92,7 +92,7 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
      * An interface that describes the logic for checking a person's attributes.
      */
     @FunctionalInterface
-    private interface AttributeLogic {
+    private interface AttributeLogic extends Serializable {
       boolean checkAttributeLogic(Person person);
     }
 
