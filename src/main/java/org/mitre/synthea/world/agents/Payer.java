@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,13 +21,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
+import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Immunization;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class Payer implements Serializable {
@@ -41,13 +43,14 @@ public class Payer implements Serializable {
   public final String uuid;
   private final Set<InsurancePlan> plans;
   private final String ownership;
+
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
 
   /* Payer Statistics. */
-  private double revenue;
-  private double costsCovered;
-  private double costsUncovered;
+  private BigDecimal revenue;
+  private BigDecimal costsCovered;
+  private BigDecimal costsUncovered;
   private double totalQOLS; // Total customer quality of life scores.
   // Unique utilizers of Payer, by Person ID, with number of utilizations per Person.
   private final Map<String, AtomicInteger> customerUtilization;
@@ -130,9 +133,9 @@ public class Payer implements Serializable {
     this.attributes = new LinkedTreeMap<>();
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
-    this.costsCovered = 0.0;
-    this.costsUncovered = 0.0;
-    this.revenue = 0.0;
+    this.costsCovered = Claim.ZERO_CENTS;
+    this.costsUncovered = Claim.ZERO_CENTS;
+    this.revenue = Claim.ZERO_CENTS;
     this.totalQOLS = 0.0;
   }
 
@@ -147,8 +150,9 @@ public class Payer implements Serializable {
   public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
       double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
     InsurancePlan newPlan = new InsurancePlan(
-        this, servicesCovered, deductible, defaultCoinsurance, defaultCopay,
-        monthlyPremium, medicareSupplement);
+        this, servicesCovered, BigDecimal.valueOf(deductible),
+        BigDecimal.valueOf(defaultCoinsurance), BigDecimal.valueOf(defaultCopay),
+        BigDecimal.valueOf(monthlyPremium), medicareSupplement);
     this.plans.add(newPlan);
   }
 
@@ -167,7 +171,7 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the ownserhip type of the payer (Government/Private).
+   * Returns the ownership type of the payer (Government/Private).
    */
   public String getOwnership() {
     return this.ownership;
@@ -199,6 +203,18 @@ public class Payer implements Serializable {
   }
 
   /**
+   * Returns whether or not this payer will cover the given entry.
+   *
+   * @param entry the entry that needs covering.
+   */
+  public boolean coversCare(Entry entry) {
+    // Payer.isInNetwork() always returns true. For Now.
+    return this.plans.iterator().next().coversService(entry)
+        && this.isInNetwork(null);
+    // Entry doesn't have a provider but encounter does, need to find a way to get provider.
+  }
+
+  /**
    * Determines whether or not this payer will adjust this claim, and by how
    * much. This determination is based on the claim adjustment strategy configuration,
    * which defaults to none.
@@ -206,7 +222,7 @@ public class Payer implements Serializable {
    * @param person The person making the claim.
    * @return The dollar amount the claim entry was adjusted.
    */
-  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person) {
     return payerAdjustment.adjustClaim(claimEntry, person);
   }
 
@@ -293,8 +309,8 @@ public class Payer implements Serializable {
    *
    * @param costToPayer the cost of the current encounter, after the patient's copay.
    */
-  public void addCoveredCost(double costToPayer) {
-    this.costsCovered += costToPayer;
+  public void addCoveredCost(BigDecimal costToPayer) {
+    this.costsCovered = this.costsCovered.add(costToPayer);
   }
 
   /**
@@ -302,8 +318,8 @@ public class Payer implements Serializable {
    *
    * @param costToPatient the costs that the payer did not cover.
    */
-  public void addUncoveredCost(double costToPatient) {
-    this.costsUncovered += costToPatient;
+  public void addUncoveredCost(BigDecimal costToPatient) {
+    this.costsUncovered = this.costsUncovered.add(costToPatient);
   }
 
   /**
@@ -318,10 +334,10 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the total amount of money recieved from patients.
+   * Returns the total amount of money received from patients.
    * Consists of monthly premium payments.
    */
-  public double getRevenue() {
+  public BigDecimal getRevenue() {
     return this.revenue;
   }
 
@@ -417,14 +433,14 @@ public class Payer implements Serializable {
   /**
    * Returns the amount of money the payer paid to providers.
    */
-  public double getAmountCovered() {
+  public BigDecimal getAmountCovered() {
     return this.costsCovered;
   }
 
   /**
    * Returns the amount of money the payer did not cover.
    */
-  public double getAmountUncovered() {
+  public BigDecimal getAmountUncovered() {
     return this.costsUncovered;
   }
 
@@ -444,12 +460,9 @@ public class Payer implements Serializable {
     hash = 53 * hash + Objects.hashCode(this.uuid);
     hash = 53 * hash + Objects.hashCode(this.ownership);
     hash = 53 * hash + Objects.hashCode(this.statesCovered);
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.revenue)
-            ^ (Double.doubleToLongBits(this.revenue) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsCovered)
-            ^ (Double.doubleToLongBits(this.costsCovered) >>> 32));
-    hash = 53 * hash + (int) (Double.doubleToLongBits(this.costsUncovered)
-            ^ (Double.doubleToLongBits(this.costsUncovered) >>> 32));
+    hash = 53 * hash + this.revenue.hashCode();
+    hash = 53 * hash + this.costsCovered.hashCode();
+    hash = 53 * hash + this.costsUncovered.hashCode();
     hash = 53 * hash + (int) (Double.doubleToLongBits(this.totalQOLS)
             ^ (Double.doubleToLongBits(this.totalQOLS) >>> 32));
     return hash;
@@ -467,16 +480,13 @@ public class Payer implements Serializable {
       return false;
     }
     final Payer other = (Payer) obj;
-    if (Double.doubleToLongBits(this.revenue)
-            != Double.doubleToLongBits(other.revenue)) {
+    if (!this.revenue.equals(other.revenue)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.costsCovered)
-            != Double.doubleToLongBits(other.costsCovered)) {
+    if (!this.costsCovered.equals(other.costsCovered)) {
       return false;
     }
-    if (Double.doubleToLongBits(this.costsUncovered)
-            != Double.doubleToLongBits(other.costsUncovered)) {
+    if (!this.costsUncovered.equals(other.costsUncovered)) {
       return false;
     }
     if (Double.doubleToLongBits(this.totalQOLS)
@@ -532,10 +542,10 @@ public class Payer implements Serializable {
 
   /**
    * Adds the given revenue to the payer.
-   * @param revenue The revenue to add.
+   * @param additionalRevenue The revenue to add.
    */
-  public void addRevenue(double revenue) {
-    this.revenue += revenue;
+  public void addRevenue(BigDecimal additionalRevenue) {
+    this.revenue = this.revenue.add(additionalRevenue);
   }
 
   /**

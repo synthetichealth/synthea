@@ -1,6 +1,8 @@
 package org.mitre.synthea.world.concepts.healthinsurance;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Set;
 
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -9,10 +11,10 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
-import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 
 /**
  * A class that defines an insurance plan.
@@ -20,10 +22,10 @@ import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
 public class InsurancePlan implements Serializable {
 
   private final Payer payer;
-  private final double deductible;
-  private final double defaultCopay;
-  private final double defaultCoinsurance;
-  private final double monthlyPremium;
+  private final BigDecimal deductible;
+  private final BigDecimal defaultCopay;
+  private final BigDecimal defaultCoinsurance;
+  private final BigDecimal monthlyPremium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
   // Plan Eligibilty strategy.
@@ -38,9 +40,9 @@ public class InsurancePlan implements Serializable {
    * @param defaultCopay  The default copay.
    * @param monthlyPremium  The montly premium.
    */
-  public InsurancePlan(Payer payer, Set<String> servicesCovered, double deductible,
-      double defaultCoinsurance, double defaultCopay,
-      double monthlyPremium, boolean medicareSupplement) {
+  public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
+      BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
+      BigDecimal monthlyPremium, boolean medicareSupplement) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -54,34 +56,37 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Determines the copay owed by this InsurancePlan on the given entry.
-   * @param recordEntry The entry to check against.
-   * @return  The copay.
+   * Determines the copay owed for this Payer based on the type of entry.
+   * For now, this returns a default copay. But in the future there will be different
+   * copays depending on the encounter type covered. If the entry is a wellness visit
+   * and the time is after the mandate year, then the copay is $0.00.
+   *
+   * @param entry the entry to calculate the copay for.
    */
-  public double determineCopay(HealthRecord.Entry recordEntry) {
-    double copay = this.defaultCopay;
-    if (recordEntry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
-        && recordEntry.start > HealthInsuranceModule.mandateTime) {
-      copay = 0.0;
+  public BigDecimal determineCopay(Entry entry) {
+    BigDecimal copay = this.defaultCopay;
+    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
+        && entry.start > HealthInsuranceModule.mandateTime) {
+      copay = Claim.ZERO_CENTS;
     }
     return copay;
   }
 
-  public double getMonthlyPremium() {
+  public BigDecimal getMonthlyPremium() {
     return this.monthlyPremium;
   }
 
-  public double getDeductible() {
+  public BigDecimal getDeductible() {
     return this.deductible;
   }
 
-  public double getPayerCoinsurance() {
+  public BigDecimal getPayerCoinsurance() {
     return this.defaultCoinsurance;
   }
 
-  public double getPatientCoinsurance() {
-    double coinsurance = 1 - this.defaultCoinsurance;
-    return coinsurance < 1 ? coinsurance : 0.0;
+  public BigDecimal getPatientCoinsurance() {
+    BigDecimal coinsurance = BigDecimal.ONE.subtract(this.defaultCoinsurance);
+    return coinsurance.compareTo(BigDecimal.ONE) == -1 ? coinsurance : BigDecimal.ZERO;
   }
 
   /**
@@ -89,11 +94,11 @@ public class InsurancePlan implements Serializable {
    *
    * @return the monthly premium amount.
    */
-  public double payMonthlyPremium() {
+  public BigDecimal payMonthlyPremium() {
     // This will need to be updated to pull the correct monthly premium from the
     // correct plan for a given person.
     // Will need to take a person's ID?
-    double premiumPaid = this.getMonthlyPremium();
+    BigDecimal premiumPaid = this.getMonthlyPremium();
     this.payer.addRevenue(premiumPaid);
     return premiumPaid;
   }
@@ -162,7 +167,7 @@ public class InsurancePlan implements Serializable {
    * Adds a covered cost to this plan.
    * @param coveredCosts  The cost covered.
    */
-  public void addCoveredCost(double coveredCosts) {
+  public void addCoveredCost(BigDecimal coveredCosts) {
     this.payer.addCoveredCost(coveredCosts);
   }
 
@@ -170,7 +175,7 @@ public class InsurancePlan implements Serializable {
    * Adds an uncovered cost to this plan.
    * @param uncoveredCosts  The cost covered.
    */
-  public void addUncoveredCost(double uncoveredCosts) {
+  public void addUncoveredCost(BigDecimal uncoveredCosts) {
     this.payer.addUncoveredCost(uncoveredCosts);
   }
 
@@ -182,7 +187,7 @@ public class InsurancePlan implements Serializable {
    * @param person The person making the claim.
    * @return The dollar amount the claim entry was adjusted.
    */
-  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person) {
     return this.payer.adjustClaim(claimEntry, person);
   }
 
@@ -190,10 +195,11 @@ public class InsurancePlan implements Serializable {
    * Returns the yearly cost of this plan.
    * @return the yearly cost.
    */
-  public double getYearlyCost() {
-    double yearlyPremiumTotal = this.monthlyPremium * 12;
-    double yearlyDeductible = this.deductible;
-    return yearlyPremiumTotal + yearlyDeductible;
+  public BigDecimal getYearlyCost() {
+    BigDecimal yearlyPremiumTotal = this.getMonthlyPremium()
+            .multiply(BigDecimal.valueOf(12))
+            .setScale(2, RoundingMode.HALF_EVEN);
+    return yearlyPremiumTotal;
   }
 
   /**
@@ -235,7 +241,7 @@ public class InsurancePlan implements Serializable {
    * @return whether this is a copay-based plan.
    */
   public boolean isCopayBased() {
-    return this.defaultCopay > 0;
+    return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
   }
 
 }

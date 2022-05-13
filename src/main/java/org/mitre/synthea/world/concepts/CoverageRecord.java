@@ -1,6 +1,7 @@
-package org.mitre.synthea.world.concepts.healthinsurance;
+package org.mitre.synthea.world.concepts;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * A class that manages a history of coverage.
@@ -26,10 +28,10 @@ public class CoverageRecord implements Serializable {
     public InsurancePlan secondaryPlan;
     public String owner;
     public String ownerName;
-    private double healthcareExpenses;
-    private double coveredExpenses;
-    private double insuranceCosts;
-    public double remainingDeductible;
+    private BigDecimal healthcareExpenses = Claim.ZERO_CENTS;
+    private BigDecimal coveredExpenses = Claim.ZERO_CENTS;
+    private BigDecimal insuranceCosts = Claim.ZERO_CENTS;
+    public BigDecimal remainingDeductible = Claim.ZERO_CENTS;
 
     /**
      * Create a new Plan with the given Payer.
@@ -40,9 +42,6 @@ public class CoverageRecord implements Serializable {
       this.start = time;
       this.stop = time + Utilities.convertTime("years", 1);
       this.plan = plan;
-      this.healthcareExpenses = 0.0;
-      this.coveredExpenses = 0.0;
-      this.insuranceCosts = 0.0;
       this.remainingDeductible = plan.getDeductible();
     }
 
@@ -50,10 +49,10 @@ public class CoverageRecord implements Serializable {
      * Pay monthly premiums associated with this plan.
      * @return  Cost of the premiums.
      */
-    public double payMonthlyPremiums() {
-      double premiumPrice = (this.plan.payMonthlyPremium())
-          + (this.secondaryPlan.payMonthlyPremium());
-      this.insuranceCosts += premiumPrice;
+    public BigDecimal payMonthlyPremiums() {
+      BigDecimal premiumPrice = (this.plan.payMonthlyPremium())
+          .add(this.secondaryPlan.payMonthlyPremium());
+      this.insuranceCosts = this.insuranceCosts.add(premiumPrice);
       return premiumPrice;
     }
 
@@ -70,24 +69,28 @@ public class CoverageRecord implements Serializable {
       return sb.toString();
     }
 
-    public void incrementExpenses(double expenses) {
-      this.healthcareExpenses += expenses;
+    public void incrementExpenses(BigDecimal expenses) {
+      this.healthcareExpenses = this.healthcareExpenses.add(expenses);
     }
 
-    public void incrementCoverage(double coverage) {
-      this.coveredExpenses += coverage;
+    public void incrementCoverage(BigDecimal coverage) {
+      this.coveredExpenses = this.coveredExpenses.add(coverage);
     }
 
-    public double getHealthcareExpenses() {
+    public BigDecimal getHealthcareExpenses() {
       return this.healthcareExpenses;
     }
 
-    public double getCoveredExpenses() {
+    public BigDecimal getCoveredExpenses() {
       return this.coveredExpenses;
     }
 
-    public double getInsuranceCosts() {
+    public BigDecimal getInsuranceCosts() {
       return this.insuranceCosts;
+    }
+
+    public boolean isDedctiblePlan() {
+      return this.plan.getDeductible().compareTo(BigDecimal.ZERO) == 1;
     }
   }
 
@@ -227,10 +230,10 @@ public class CoverageRecord implements Serializable {
    * Does not include premium costs.
    * @return The healthcare expenses.
    */
-  public double getTotalHealthcareExpenses() {
-    double total = 0;
+  public BigDecimal getTotalHealthcareExpenses() {
+    BigDecimal total = BigDecimal.ZERO;
     for (PlanRecord plan : planHistory) {
-      total += plan.healthcareExpenses;
+      total = total.add(plan.healthcareExpenses);
     }
     return total;
   }
@@ -240,10 +243,23 @@ public class CoverageRecord implements Serializable {
    * Does not include healthcare expenses.
    * @return  The premium expenses.
    */
-  public double getTotalPremiumExpenses() {
-    double total = 0;
+  public BigDecimal getTotalPremiumExpenses() {
+    BigDecimal total = Claim.ZERO_CENTS;
     for (PlanRecord plan : planHistory) {
-      total += plan.insuranceCosts;
+      total = total.add(plan.insuranceCosts);
+    }
+    return total;
+  }
+
+  /**
+   * Returns the total Healthcare expenses associated with this coverage record.
+   * Does not include premium costs.
+   * @return  The total healthcare expenses.
+   */
+  public BigDecimal getTotalExpenses() {
+    BigDecimal total = Claim.ZERO_CENTS;
+    for (PlanRecord plan : planHistory) {
+      total = total.add(plan.healthcareExpenses);
     }
     return total;
   }
@@ -252,10 +268,10 @@ public class CoverageRecord implements Serializable {
    * Returns the total healthcare coverage for this person.
    * @return  The healthcare coverage.
    */
-  public double getTotalCoverage() {
-    double total = 0;
+  public BigDecimal getTotalCoverage() {
+    BigDecimal total = Claim.ZERO_CENTS;
     for (PlanRecord plan : planHistory) {
-      total += plan.coveredExpenses;
+      total = total.add(plan.coveredExpenses);
     }
     return total;
   }
@@ -336,11 +352,12 @@ public class CoverageRecord implements Serializable {
    */
   public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
     CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
-    double currentYearlyExpenses = 0.0;
+    BigDecimal currentYearlyExpenses = BigDecimal.ZERO;
     if (planRecord != null) {
-      currentYearlyExpenses += planRecord.getHealthcareExpenses();
-      currentYearlyExpenses += planRecord.getInsuranceCosts();
+      currentYearlyExpenses = currentYearlyExpenses.add(planRecord.getHealthcareExpenses());
+      currentYearlyExpenses = currentYearlyExpenses.add(planRecord.getInsuranceCosts());
     }
-    return (yearlyIncome - currentYearlyExpenses) > 0;
+    return (BigDecimal.valueOf(yearlyIncome).subtract(currentYearlyExpenses))
+        .compareTo(BigDecimal.ZERO) == 1;
   }
 }

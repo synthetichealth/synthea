@@ -1,0 +1,302 @@
+{
+  "name": "art_sequence_1987-1994",
+  "remarks": [
+    "This module will be called every 3-4 months if continuous ART.",
+    "If non-continuous ART, every 4-6 months."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Counter Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "ZDV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199663,
+          "display": "zidovudine 300 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_MonoEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddI": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284988,
+          "display": "didanosine 400 MG Delayed Release Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_MonoEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "ddC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313760,
+          "display": "zalcitabine 0.75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_MonoEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "Date Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Stop ZDV",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "value": 0,
+            "date": {
+              "year": 1991,
+              "month": 10,
+              "day": 9,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Prescription Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "ZDV",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ART_MonoEra",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Counter_Check_2"
+        }
+      ]
+    },
+    "Counter Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set Counter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ART_MonoEra",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Increment Counter"
+        }
+      ]
+    },
+    "Set Counter": {
+      "type": "SetAttribute",
+      "attribute": "art_1987_counter",
+      "direct_transition": "Prescription Check",
+      "value": 1
+    },
+    "Increment Counter": {
+      "type": "Counter",
+      "attribute": "art_1987_counter",
+      "action": "increment",
+      "direct_transition": "Prescription Check"
+    },
+    "Stop ZDV": {
+      "type": "MedicationEnd",
+      "referenced_by_attribute": "ART_MonoEra",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "value": 0,
+            "date": {
+              "year": 1994,
+              "month": 6,
+              "day": 24,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          },
+          "distributions": [],
+          "transition": "d4T"
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "value": 0,
+            "date": {
+              "year": 1992,
+              "month": 6,
+              "day": 19,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
+          },
+          "distributions": [
+            {
+              "distribution": 0.4,
+              "transition": "ddC"
+            },
+            {
+              "distribution": 0.6,
+              "transition": "ddI"
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "ddI"
+        }
+      ]
+    },
+    "Counter_Check_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Date Check",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "art_1987_counter",
+                "operator": "==",
+                "value": 4
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "art_1987_counter",
+                    "operator": "==",
+                    "value": 8
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "art_1987_counter",
+                        "operator": "==",
+                        "value": 12
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "art_1987_counter",
+                        "operator": "==",
+                        "value": 16
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ],
+      "remarks": [
+        "The counter updates every 3-6 months (4.5 months on average), so counter == 4 would be approximately 18 months.",
+        "So, this should update medication approximately every 18 months."
+      ]
+    },
+    "d4T": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313110,
+          "display": "stavudine 40 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_MonoEra",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    }
+  },
+  "gmf_version": 2
+}

@@ -29,7 +29,6 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.concepts.healthinsurance.Claim;
 
 /**
  * HealthRecord contains all the coded entries in a person's health record. This

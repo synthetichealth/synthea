@@ -1,9 +1,12 @@
 package org.mitre.synthea.world.agents.behaviors.payeradjustment;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 
 /**
  * Randomized payment adjustment strategy.
@@ -29,13 +32,14 @@ public class PayerAdjustmentRandom implements IPayerAdjustment, Serializable {
   }
 
   @Override
-  public double adjustClaim(ClaimEntry claimEntry, Person person) {
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person) {
     if (person.randBoolean()) {
       double currentRate = person.rand(0.0, rate);
-      claimEntry.adjustment = currentRate * claimEntry.cost;
+      claimEntry.adjustment = BigDecimal.valueOf(currentRate).multiply(claimEntry.cost)
+              .setScale(2, RoundingMode.HALF_EVEN);
       return claimEntry.adjustment;
     } else {
-      return 0;
+      return Claim.ZERO_CENTS;
     }
   }
 }

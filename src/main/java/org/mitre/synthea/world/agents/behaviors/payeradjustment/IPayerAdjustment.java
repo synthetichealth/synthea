@@ -1,7 +1,8 @@
 package org.mitre.synthea.world.agents.behaviors.payeradjustment;
 
+import java.math.BigDecimal;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.healthinsurance.Claim.ClaimEntry;
+import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 
 /**
  * Interface to abstract various claim adjustment strategies.
@@ -13,5 +14,5 @@ public interface IPayerAdjustment {
    * @param person The person making the claim.
    * @return The dollar amount that was deducted/adjusted/removed from this claim entry.
    */
-  public double adjustClaim(ClaimEntry claimEntry, Person person);
+  public BigDecimal adjustClaim(ClaimEntry claimEntry, Person person);
 }

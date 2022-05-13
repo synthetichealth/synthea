@@ -28,13 +28,13 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.world.concepts.CoverageRecord;
+import org.mitre.synthea.world.concepts.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
@@ -727,9 +727,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public boolean canAffordPlan(InsurancePlan plan) {
     double incomePercentage
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
-    int income = (Integer) this.attributes.get(Person.INCOME);
-    double yearlyCost = plan.getYearlyCost();
-    return (income * incomePercentage) > yearlyCost;
+    BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
+    BigDecimal yearlyCost = plan.getYearlyCost();
+    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) == 1;
   }
 
   /**
@@ -829,9 +829,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       throw new RuntimeException("Person does not have insurance for age "
           + this.age(time).getYears() + ".");
     }
-    double outOfPocketExpenses = currentPlan.getHealthcareExpenses();
-    outOfPocketExpenses += currentPlan.getInsuranceCosts();
-    return (int) (income - outOfPocketExpenses);
+    BigDecimal outOfPocketExpenses = currentPlan.getHealthcareExpenses();
+    outOfPocketExpenses = outOfPocketExpenses.add(currentPlan.getInsuranceCosts());
+    return (BigDecimal.valueOf(income).subtract(outOfPocketExpenses)).intValue();
   }
 
 }
