@@ -23,7 +23,6 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String MNIL_FILE = "mnil_file";
   static final String LOGICAL_OPERATOR = "logical_operator";
   private static final Object SUB_ELIGIBILITIES = "sub_eligibilities";
-  private static final String VETERAN = "veteran_eligiblity";
 
   // A map that maps a column to the type of eligibilty it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
@@ -92,7 +91,6 @@ public class CSVEligibility implements IPlanEligibility {
         -> new PovertyMultiplierFileEligibility(state, input));
     eligbilityOptions.put(MNIL_FILE, (input)
         -> new MedicallyNeedyIncomeEligibility(state, input));
-    eligbilityOptions.put(VETERAN, (input) -> new VeteranEligiblity());
   }
 
   /**
