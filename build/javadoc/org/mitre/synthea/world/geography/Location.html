@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":10,"i5":9,"i6":9,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
+var methods = {"i0":10,"i1":9,"i2":9,"i3":10,"i4":9,"i5":9,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -181,72 +181,65 @@ implements java.io.Serializable</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#assignPoint-org.mitre.synthea.world.agents.Clinician-java.lang.String-">assignPoint</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&nbsp;clinician,
-           java.lang.String&nbsp;cityName)</code>
-<div class="block">Assign a geographic location to the given Clinician.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#assignPoint-org.mitre.synthea.world.agents.Person-java.lang.String-">assignPoint</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
            java.lang.String&nbsp;cityName)</code>
 <div class="block">Assign a geographic location to the given Person.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getAbbreviation-java.lang.String-">getAbbreviation</a></span>(java.lang.String&nbsp;state)</code>
 <div class="block">Get the abbreviation for a state.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getIndex-java.lang.String-">getIndex</a></span>(java.lang.String&nbsp;state)</code>
 <div class="block">Get the index for a state.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getPopulation-java.lang.String-">getPopulation</a></span>(java.lang.String&nbsp;cityName)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getStateName-java.lang.String-">getStateName</a></span>(java.lang.String&nbsp;abbreviation)</code>
 <div class="block">Get the state name from an abbreviation.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getTimezoneByState-java.lang.String-">getTimezoneByState</a></span>(java.lang.String&nbsp;state)</code>
 <div class="block">Get the full name of the timezone by the full name of the state.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getZipCode-java.lang.String-org.mitre.synthea.helpers.RandomNumberGenerator-">getZipCode</a></span>(java.lang.String&nbsp;cityName,
           <a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Get the zip code for the given city name.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#getZipCodes-java.lang.String-">getZipCodes</a></span>(java.lang.String&nbsp;cityName)</code>
 <div class="block">Get the list of zip codes (or postal codes) by city name.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected static java.util.Map&lt;java.lang.String,java.util.List&lt;java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#loadCitiesByLanguage-java.lang.String-">loadCitiesByLanguage</a></span>(java.lang.String&nbsp;resource)</code>
 <div class="block">Load a resource which contains foreign places of birth based on ethnicity in json format:</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#randomBirthPlace-org.mitre.synthea.helpers.RandomNumberGenerator-">randomBirthPlace</a></span>(<a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Pick a random birth place, weighted by population.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#randomBirthplaceByLanguage-org.mitre.synthea.helpers.RandomNumberGenerator-java.lang.String-">randomBirthplaceByLanguage</a></span>(<a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random,
                           java.lang.String&nbsp;language)</code>
@@ -254,25 +247,25 @@ implements java.io.Serializable</pre>
  for an language.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#randomCity-java.util.Random-">randomCity</a></span>(java.util.Random&nbsp;random)</code>
 <div class="block">Pick the name of a random city from the current "world".</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#randomCity-org.mitre.synthea.helpers.RandomNumberGenerator-">randomCity</a></span>(<a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Pick the name of a random city from the current "world".</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#randomCityName-org.mitre.synthea.helpers.RandomNumberGenerator-">randomCityName</a></span>(<a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Pick a random city name, weighted by population.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/geography/Location.html#setSocialDeterminants-org.mitre.synthea.world.agents.Person-">setSocialDeterminants</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
 <div class="block">Set social determinants of health attributes on the patient, as defined
@@ -498,24 +491,6 @@ implements java.io.Serializable</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - Person to assign location information</dd>
-<dd><code>cityName</code> - Name of the city, or null to choose one randomly</dd>
-</dl>
-</li>
-</ul>
-<a name="assignPoint-org.mitre.synthea.world.agents.Clinician-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>assignPoint</h4>
-<pre>public&nbsp;void&nbsp;assignPoint(<a href="../../../../../org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&nbsp;clinician,
-                        java.lang.String&nbsp;cityName)</pre>
-<div class="block">Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
- Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
- that city. If cityName is not given, then picks a random city from the list of all cities.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>clinician</code> - Clinician to assign location information</dd>
 <dd><code>cityName</code> - Name of the city, or null to choose one randomly</dd>
 </dl>
 </li>
