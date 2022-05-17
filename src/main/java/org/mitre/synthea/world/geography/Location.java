@@ -378,9 +378,9 @@ public class Location implements Serializable {
     }
 
     Place place;
-    if (zipsForCity.size() == 1) {
+    if (zipsForCity != null && zipsForCity.size() == 1) {
       place = zipsForCity.get(0);
-    } else {
+    } else if (zipsForCity != null) {
       String personZip = (String) person.attributes.get(Person.ZIP);
       if (personZip == null) {
         place = zipsForCity.get(person.randInt(zipsForCity.size()));
@@ -390,6 +390,10 @@ public class Location implements Serializable {
             .findFirst()
             .orElse(zipsForCity.get(person.randInt(zipsForCity.size())));
       }
+    } else {
+      // The place doesn't exist for some reason, pick a random location...
+      String key = (String) zipCodes.keySet().toArray()[person.randInt(zipCodes.keySet().size())];
+      place = zipCodes.get(key).get(person.randInt(zipCodes.get(key).size()));
     }
 
     if (place != null) {
@@ -404,50 +408,6 @@ public class Location implements Serializable {
       double dy = person.rand(-0.05, 0.05);
       coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
       person.attributes.put(Person.COORDINATE, coordinate);
-    }
-  }
-
-  /**
-   * Assign a geographic location to the given Clinician. Location includes City, State, Zip, and
-   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
-   * that city. If cityName is not given, then picks a random city from the list of all cities.
-   *
-   * @param clinician Clinician to assign location information
-   * @param cityName Name of the city, or null to choose one randomly
-   */
-  public void assignPoint(Clinician clinician, String cityName) {
-    List<Place> zipsForCity = null;
-
-    if (cityName == null) {
-      int size = zipCodes.keySet().size();
-      cityName = (String) zipCodes.keySet().toArray()[clinician.randInt(size)];
-    }
-    zipsForCity = zipCodes.get(cityName);
-
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
-    }
-
-    Place place = null;
-    if (zipsForCity.size() == 1) {
-      place = zipsForCity.get(0);
-    } else {
-      // pick a random one
-      place = zipsForCity.get(clinician.randInt(zipsForCity.size()));
-    }
-
-    if (place != null) {
-      // Get the coordinate of the city/town
-      Point2D.Double coordinate = new Point2D.Double();
-      coordinate.setLocation(place.coordinate);
-      // And now perturbate it slightly.
-      // Precision within 0.001 degree is more or less a neighborhood or street.
-      // Precision within 0.01 is a village or town
-      // Precision within 0.1 is a large city
-      double dx = (clinician.rand() * 0.1) - 0.05;
-      double dy = (clinician.rand() * 0.1) - 0.05;
-      coordinate.setLocation(coordinate.x + dx, coordinate.y + dy);
-      clinician.attributes.put(Person.COORDINATE, coordinate);
     }
   }
 
