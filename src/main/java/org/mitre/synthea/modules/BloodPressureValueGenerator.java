@@ -91,11 +91,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       return cachedValue;
     }
 
-    double value = calculateMean(person, null, 0, time);
+    double baseline = calculateBaseline(person);
 
-    cachedValue = value
-      + getMedicationImpacts(person, time)
-      + getLifestyleImpacts(person, value, time);
+    cachedValue = baseline
+      + getMedicationImpacts(person)
+      + getLifestyleImpacts(person, baseline, time)
+      + getVariation(person, time);
 
     cacheTime = time;
     return cachedValue;
@@ -104,7 +105,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   /**
    * Helper function to ensure a person has a consistent impact from a drug.
    */
-  private static double getDrugImpact(Person person, long time, String drug, SysDias sysDias,
+  private static double getDrugImpact(Person person, String drug, SysDias sysDias,
       Range<Double> impactRange) {
     Table<String, SysDias, Double> personalDrugImpacts =
         (Table<String, SysDias, Double>)person.attributes.get("htn_drug_impacts");
@@ -125,15 +126,23 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return impact;
   }
 
-  private double calculateMean(Person person, Double startValue, int days, long time) {
-    boolean hypertension = (Boolean) person.attributes.getOrDefault("hypertension", false);
-    boolean severe = (Boolean) person.attributes.getOrDefault("hypertension_severe", false);
+  /**
+   * Get the "baseline" BP for a Person.
+   * Baseline here means the BP values accounting for hypertension, but before
+   * applying medications, lifestyle changes, and intra-daily variation.
+   */
+  private double calculateBaseline(Person person) {
+    boolean hypertension = (boolean) person.attributes.getOrDefault("hypertension", false);
+    boolean severe = (boolean) person.attributes.getOrDefault("hypertension_severe", false);
 
     double baseline;
 
     String bpBaselineKey = "bp_baseline_" + hypertension + "_" + sysDias.toString();
+
     if (person.attributes.containsKey(bpBaselineKey)) {
       baseline = (Double)person.attributes.get(bpBaselineKey);
+      return baseline;
+
     } else {
       if (sysDias == SysDias.SYSTOLIC) {
         if (hypertension) {
@@ -163,12 +172,16 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       }
 
       person.attributes.put(bpBaselineKey, baseline);
+      return baseline;
     }
-    return baseline;
   }
 
   private static final long ONE_YEAR = Utilities.convertTime("years", 1);
 
+  /**
+   * Get the amount of impact that lifestyle changes, if this Person is making any,
+   * will have on their BP. Lifestyle changes are tracked as specific CarePlans.
+   */
   private double getLifestyleImpacts(Person person, double baseline, long time) {
     // if the person has a "blood pressure care plan"
     // assume that over ~1 year their blood pressure will be reduced by ~14 mmHg
@@ -219,13 +232,10 @@ public class BloodPressureValueGenerator extends ValueGenerator {
             return 0.0;
           }
 
-          // dy / dx = -14/1 = -14
-          // y = (dy/dx) * x
-          // x = (time - start) / 1 yr
+          // assume a linear relationship between time and drop
+          double fractionThruYear = ((double)(time - start)) / ((double)ONE_YEAR);
 
-          double x = ((double)(time - start) / ((double)ONE_YEAR));
-
-          return x * maxDrop;
+          return fractionThruYear * maxDrop;
         }
       }
     }
@@ -233,7 +243,10 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return 0.0;
   }
 
-  private double getMedicationImpacts(Person person, long time) {
+  /**
+   * Get the amount that Medications will impact this Person's BP.
+   */
+  private double getMedicationImpacts(Person person) {
     double drugImpactDelta = 0.0;
     // see also LifecycleModule.calculateVitalSigns
 
@@ -241,7 +254,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
       String medicationCode = e.getKey();
       Range<Double> impactRange = e.getValue();
       if (person.record.medicationActive(medicationCode)) {
-        double impact = getDrugImpact(person, time, medicationCode, this.sysDias, impactRange);
+        double impact = getDrugImpact(person, medicationCode, this.sysDias, impactRange);
 
         // impacts are negative, so add them (ie, don't subtract them)
         drugImpactDelta += impact;
@@ -249,5 +262,32 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
 
     return drugImpactDelta;
+  }
+
+  private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
+
+  /**
+   * Get an small amount of daily variation in the Person's BP.
+   */
+  private double getVariation(Person person, long time) {
+    // blood pressure can vary significantly during the day
+    // https://www.health.harvard.edu/heart-health/experts-call-for-home-blood-pressure-monitoring
+
+    // some notes for the ideal implementation:
+    // - systolic and diastolic should generally move in the same direction at the same time
+    // - BP should generally be lowest at night (by 10-20%)
+
+    // for now we'll just use a normal distribution, SD of 8 for systolic and 5 for diastolic
+    // the sign will be set based on time so that sys & dias have the same one
+
+    double normalSD = this.sysDias == SysDias.SYSTOLIC ? 8 : 5;
+    double magnitude = Math.abs(person.randGaussian()) * normalSD;
+    int sign = (time / CYCLE_TIME) % 2 == 0 ? 1 : -1;
+    // the goal here is to get sign = 1 for ~ half the time and -1 half the time
+    // so (x) % 2 == 0 just checks if a number is even.
+    // and by dividing time / 12 hours,
+    //  we should get a number that is even for 12 hours then odd for 12 hours
+
+    return sign * magnitude;
   }
 }
