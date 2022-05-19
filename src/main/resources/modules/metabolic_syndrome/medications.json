@@ -49,7 +49,7 @@
           "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
         }
       ],
-      "reason": "Diagnose_Diabetes",
+      "reason": "diabetes_stage",
       "direct_transition": "Bitherapy",
       "chronic": true
     },
@@ -121,7 +121,7 @@
           "display": "3 ML liraglutide 6 MG/ML Pen Injector"
         }
       ],
-      "reason": "Diagnose_Diabetes",
+      "reason": "diabetes_stage",
       "direct_transition": "Tritherapy",
       "chronic": true
     },
@@ -204,7 +204,7 @@
           "display": "canagliflozin 100 MG Oral Tablet"
         }
       ],
-      "reason": "Diagnose_Diabetes",
+      "reason": "diabetes_stage",
       "direct_transition": "Insulin"
     },
     "End_Canagliflozin": {
@@ -298,7 +298,7 @@
           "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
         }
       ],
-      "reason": "Diagnose_Diabetes",
+      "reason": "diabetes_stage",
       "direct_transition": "Terminal",
       "chronic": true
     },
@@ -322,7 +322,7 @@
           "display": "Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]"
         }
       ],
-      "reason": "Diagnose_Diabetes",
+      "reason": "diabetes_stage",
       "direct_transition": "Terminal",
       "chronic": true
     },
