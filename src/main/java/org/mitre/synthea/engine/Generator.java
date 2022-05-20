@@ -342,7 +342,7 @@ public class Generator implements RandomNumberGenerator {
         Config.set("generate.only_alive_patients", "true");
         Config.set("generate.only_dead_patients", "false");
         // We want full years of history.
-        Config.set("exporter.years_of_history", "0");
+        //Config.set("exporter.years_of_history", "0");
       } catch (IOException ioe) {
         throw new RuntimeException("Couldn't open the fixed patient demographics "
             + "records file", ioe);
@@ -532,7 +532,7 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        if (Generator.entityManager == null || isAlive) {
+        if (Generator.entityManager != null || isAlive) {
           // This if-statement prevents dead patients from being exported during
           // fixed demographics runs.
           Exporter.export(person, finishTime, exporterRuntimeOptions);

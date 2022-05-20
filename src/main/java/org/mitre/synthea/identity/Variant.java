@@ -1,5 +1,7 @@
 package org.mitre.synthea.identity;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
-public class Variant implements IdentityRecord {
+public class Variant implements IdentityRecord, Serializable {
   private String variantId;
   private String givenName;
   private String familyName;
@@ -27,6 +29,8 @@ public class Variant implements IdentityRecord {
   public Variant() {
 
   }
+
+
 
   public String getVariantId() {
     return variantId;

@@ -2,6 +2,8 @@ package org.mitre.synthea.identity;
 
 import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
-public class Seed implements IdentityRecord {
+public class Seed implements IdentityRecord, Serializable {
   private String seedId;
   private Period period;
   private String givenName;
@@ -26,6 +28,13 @@ public class Seed implements IdentityRecord {
   private String socialSecurityNumber;
   private transient Entity entity;
   private List<Variant> variants;
+
+
+  private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    variants.forEach(v -> v.setSeed(this));
+
+  }
 
   public String getSeedId() {
     return seedId;

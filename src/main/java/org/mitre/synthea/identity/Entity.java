@@ -1,5 +1,6 @@
 package org.mitre.synthea.identity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,7 +8,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Entity {
+public class Entity implements Serializable {
   private List<Seed> seeds;
   private LocalDate dateOfBirth;
   private String gender;

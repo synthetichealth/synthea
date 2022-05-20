@@ -2,9 +2,10 @@ package org.mitre.synthea.identity;
 
 import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Period {
+public class Period implements Serializable {
   private LocalDate start;
   private LocalDate end;
 
