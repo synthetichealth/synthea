@@ -3,7 +3,6 @@ package org.mitre.synthea.helpers;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
-import java.util.Random;
 import java.util.TreeMap;
 
 /**
@@ -27,18 +26,6 @@ public class RandomCollection<E> implements Serializable {
     }
     total += weight;
     map.put(total, result);
-  }
-
-  /**
-   * Select an item from the collection at random by the weight of the items.
-   * Selecting an item from one draw, does not remove the item from the collection
-   * for subsequent draws. In other words, an item can be selected repeatedly if
-   * the weights are severely imbalanced.
-   * @param random - Random object.
-   * @return a random item from the collection weighted by the item weights.
-   */
-  public E next(Random random) {
-    return next(random.nextDouble() * total);
   }
 
   /**

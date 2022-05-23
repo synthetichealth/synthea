@@ -14,6 +14,7 @@ import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.geography.Location;
 
@@ -64,7 +65,7 @@ public class C19ImmunizationModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     here.assignPoint(person, "Billerica");
-    Provider.loadProviders(here, 1L);
+    Provider.loadProviders(here, ProviderTest.providerRandom);
     person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     Payer.loadPayers(here);

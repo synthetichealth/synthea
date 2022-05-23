@@ -52,6 +52,7 @@ import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -121,7 +122,7 @@ public class CodeResolveAndExportTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(person, location.randomCityName(person));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
 
     Payer.clear();
     Config.set("generate.payers.insurance_companies.default_file",

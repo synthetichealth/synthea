@@ -76,7 +76,7 @@ public class JSONExporter {
     @Override
     public JsonElement serialize(Person src, Type typeOfSrc, JsonSerializationContext context) {
       JsonObject personOut = new JsonObject();
-      personOut.add("seed", new JsonPrimitive(src.seed));
+      personOut.add("seed", new JsonPrimitive(src.getSeed()));
       personOut.add("lastUpdated", new JsonPrimitive(src.lastUpdated));
       personOut.add("coverage", context.serialize(src.coverage));
       JsonObject attributes = new JsonObject();
