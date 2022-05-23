@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -63,11 +64,13 @@ public class Generator implements RandomNumberGenerator {
   public final UUID id = UUID.randomUUID();
   public GeneratorOptions options;
   private Random random;
+  private AtomicLong count = new AtomicLong(0l);
   public long timestep;
   public long stop;
   public long referenceTime;
   public Map<String, AtomicInteger> stats;
-  public Location location;
+  public Location defaultLocation;
+  public Map<String, Location> locations;
   public AtomicInteger totalGeneratedPopulation;
   private String logLevel;
   private boolean onlyAlivePatients;
@@ -222,7 +225,12 @@ public class Generator implements RandomNumberGenerator {
     this.stop = options.endTime;
     this.referenceTime = options.referenceTime;
 
-    this.location = new Location(options.state, options.city);
+    this.defaultLocation = null;
+    try {
+      new Location(options.state, options.city);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     this.logLevel = Config.get("generate.log_patients.detail", "simple");
 
@@ -260,10 +268,28 @@ public class Generator implements RandomNumberGenerator {
       this.metrics = new TransitionMetrics();
     }
 
-    // initialize hospitals
-    Provider.loadProviders(location, options.clinicianSeed);
-    // Initialize Payers
-    Payer.loadPayers(location);
+    // Load a bunch of states....
+    this.locations = Collections.synchronizedMap(new HashMap<String, Location>());
+    String configStates = Config.get("states");
+    String[] states = configStates.split(",");
+    System.out.println(" *** Loading data for multiple states: " + configStates);
+    for (String state : states) {
+      System.out.println(" *** Loading " + state + "...");
+      try {
+        Location location = new Location(state, null);
+        locations.put(state, location);
+        String abbreviation = Location.getAbbreviation(state);
+        locations.put(abbreviation, location);
+        // initialize hospitals
+        Provider.loadProviders(location, options.clinicianSeed);
+        // Initialize Payers
+        Payer.loadPayers(location);
+      } catch (Exception e) {
+        System.out.println("Error loading data for " + state);
+        e.printStackTrace();
+      }
+    }
+
     // ensure modules load early
     if (options.localModuleDir != null) {
       Module.addModules(options.localModuleDir);
@@ -379,7 +405,7 @@ public class Generator implements RandomNumberGenerator {
       // Generate patients up to the specified population size.
       for (int i = 0; i < this.options.population; i++) {
         final int index = i;
-        final long seed = this.random.nextLong();
+        final long seed = randLong();
         threadPool.submit(() -> generatePerson(index, seed));
       }
     }
@@ -649,9 +675,9 @@ public class Generator implements RandomNumberGenerator {
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
-    person.attributes.put(Person.LOCATION, this.location);
+    person.attributes.put(Person.LOCATION, this.defaultLocation);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
-    location.setSocialDeterminants(person);
+    defaultLocation.setSocialDeterminants(person);
 
     LifecycleModule.birth(person, person.lastUpdated);
 
@@ -693,9 +719,26 @@ public class Generator implements RandomNumberGenerator {
           if (state.length() == 2) {
             state = new CMSStateCodeMapper().changeStateFormat(state);
           }
-          Location newLocation = new Location(state, currentSeed.getCity());
+          Location newLocation = null;
+          try {
+            newLocation = new Location(state, currentSeed.getCity());
+          } catch (Exception e) {
+            System.out.println(" *** " + currentSeed.getCity() + " doesn't exist in " + state + "... they must have moved to a different state...");
+            state = currentSeed.getVariants().get(0).getState();
+            if (state.length() == 2) {
+              state = new CMSStateCodeMapper().changeStateFormat(state);
+            }
+            System.out.println(" *** Checking for " + currentSeed.getCity() + " in " + state + "...");
+            try {
+              newLocation = new Location(state, currentSeed.getCity());
+            } catch (Exception e1) {
+              System.out.println(" *** " + currentSeed.getCity() + " also doesn't exist in " + state + "... PASS...");
+            }
+          }
           newLocation.assignPoint(person, currentSeed.getCity());
-
+          person.attributes.put(Person.LOCATION, newLocation);
+          person.attributes.put(Person.STATE, state);
+          person.attributes.put(Person.CITY, currentSeed.getCity());
         }
       }
 
@@ -726,7 +769,7 @@ public class Generator implements RandomNumberGenerator {
    * @param random The random number generator to use.
    */
   public Map<String, Object> randomDemographics(Random random) {
-    Demographics city = location.randomCity(random);
+    Demographics city = defaultLocation.randomCity(random);
     Map<String, Object> demoAttributes = this.pickDemographics(random, city);
     return demoAttributes;
   }
@@ -742,11 +785,13 @@ public class Generator implements RandomNumberGenerator {
     // this is synchronized to ensure all lines for a single person are always printed
     // consecutively
     String deceased = isAlive ? "" : "DECEASED";
-    System.out.format("%d -- %s (%d y/o %s) %s, %s %s\n", index + 1,
+    System.out.format("%d -- %s (%d y/o %s) %s, %s %s (%d)\n", index + 1,
         person.attributes.get(Person.NAME), person.ageInYears(time),
         person.attributes.get(Person.GENDER),
         person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
-        deceased);
+        deceased,
+        person.getRNGCount()
+        );
 
     if (this.logLevel.equals("detailed")) {
       System.out.println("ATTRIBUTES");
@@ -853,11 +898,15 @@ public class Generator implements RandomNumberGenerator {
     if (state.length() == 2) {
       state = new CMSStateCodeMapper().changeStateFormat(state);
     }
-    this.location = new Location(
-      state,
-      firstSeed.getCity());
-
-    Demographics city = this.location.randomCity(random);
+    this.defaultLocation = null;
+    try {
+      this.defaultLocation = new Location(
+          state,
+          firstSeed.getCity());
+    } catch (Exception e) {
+      System.out.println(" *** " + firstSeed.getCity() + " does not exist in " + state);
+    }
+    Demographics city = this.defaultLocation.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = this.pickDemographics(random, city);
 
@@ -926,6 +975,7 @@ public class Generator implements RandomNumberGenerator {
    * Returns a random double.
    */
   public double rand() {
+    count.addAndGet(1l);
     return random.nextDouble();
   }
 
@@ -933,6 +983,7 @@ public class Generator implements RandomNumberGenerator {
    * Returns a random boolean.
    */
   public boolean randBoolean() {
+    count.addAndGet(1l);
     return random.nextBoolean();
   }
 
@@ -940,6 +991,7 @@ public class Generator implements RandomNumberGenerator {
    * Returns a random integer.
    */
   public int randInt() {
+    count.addAndGet(1l);
     return random.nextInt();
   }
 
@@ -947,6 +999,7 @@ public class Generator implements RandomNumberGenerator {
    * Returns a random integer in the given bound.
    */
   public int randInt(int bound) {
+    count.addAndGet(1l);
     return random.nextInt(bound);
   }
 
@@ -954,6 +1007,7 @@ public class Generator implements RandomNumberGenerator {
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
+    count.addAndGet(1l);
     return random.nextGaussian();
   }
 
@@ -961,6 +1015,7 @@ public class Generator implements RandomNumberGenerator {
    * Return a random long.
    */
   public long randLong() {
+    count.addAndGet(1l);
     return random.nextLong();
   }
 
@@ -969,6 +1024,11 @@ public class Generator implements RandomNumberGenerator {
    */
   public UUID randUUID() {
     return new UUID(randLong(), randLong());
+  }
+
+  @Override
+  public long getRNGCount() {
+    return count.get();
   }
 
 }

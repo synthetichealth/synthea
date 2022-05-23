@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
@@ -111,6 +112,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String ENTITY = "ENTITY";
 
   private final Random random;
+  private AtomicLong count = new AtomicLong(0l);
   public final long seed;
   public long populationSeed;
   /**
@@ -191,6 +193,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random double.
    */
   public double rand() {
+    count.getAndAdd(1l);
     return random.nextDouble();
   }
 
@@ -198,6 +201,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random boolean.
    */
   public boolean randBoolean() {
+    count.getAndAdd(1l);
     return random.nextBoolean();
   }
 
@@ -205,6 +209,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random integer.
    */
   public int randInt() {
+    count.getAndAdd(1l);
     return random.nextInt();
   }
 
@@ -212,6 +217,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random integer in the given bound.
    */
   public int randInt(int bound) {
+    count.getAndAdd(1l);
     return random.nextInt(bound);
   }
 
@@ -219,6 +225,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
+    count.getAndAdd(1l);
     return random.nextGaussian();
   }
 
@@ -226,6 +233,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Return a random long.
    */
   public long randLong() {
+    count.getAndAdd(1l);
     return random.nextLong();
   }
 
@@ -234,6 +242,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public UUID randUUID() {
     return new UUID(randLong(), randLong());
+  }
+
+  @Override
+  public long getRNGCount() {
+    return count.get();
   }
 
   /**

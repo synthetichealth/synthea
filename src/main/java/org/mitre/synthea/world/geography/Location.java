@@ -58,8 +58,8 @@ public class Location implements Serializable {
    * @param city The full name of the city.
    *     e.g. "Columbus" or null for an entire state.
    */
-  public Location(String state, String city) {
-    try {
+  public Location(String state, String city) throws Exception {
+    //try {
       this.city = city;
       this.state = state;
 
@@ -98,11 +98,11 @@ public class Location implements Serializable {
       }
 
       totalPopulation = runningPopulation;
-    } catch (Exception e) {
-      System.err.println("ERROR: unable to load demographics");
-      e.printStackTrace();
-      throw new ExceptionInInitializerError(e);
-    }
+//    } catch (Exception e) {
+//      System.err.println("ERROR: unable to load demographics");
+//      e.printStackTrace();
+//      throw new ExceptionInInitializerError(e);
+//    }
 
     String filename = null;
     try {
