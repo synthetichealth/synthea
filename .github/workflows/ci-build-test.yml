@@ -2,7 +2,7 @@ on: [push, pull_request]
 
 jobs:
   check_java_latest:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dev-ue1]
     name: Java 16
     
     steps:
@@ -46,7 +46,7 @@ jobs:
 
   
   check_java8:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dev-ue1]
     name: Java 8
     
     steps:
