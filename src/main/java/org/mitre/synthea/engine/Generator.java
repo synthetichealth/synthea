@@ -675,9 +675,8 @@ public class Generator implements RandomNumberGenerator {
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
-    person.attributes.put(Person.LOCATION, this.defaultLocation);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
-    defaultLocation.setSocialDeterminants(person);
+    ((Location) person.attributes.get(Person.LOCATION)).setSocialDeterminants(person);
 
     LifecycleModule.birth(person, person.lastUpdated);
 
@@ -898,15 +897,17 @@ public class Generator implements RandomNumberGenerator {
     if (state.length() == 2) {
       state = new CMSStateCodeMapper().changeStateFormat(state);
     }
+    Location location = null;
     this.defaultLocation = null;
     try {
-      this.defaultLocation = new Location(
+      location = new Location(
           state,
           firstSeed.getCity());
     } catch (Exception e) {
       System.out.println(" *** " + firstSeed.getCity() + " does not exist in " + state);
     }
-    Demographics city = this.defaultLocation.randomCity(random);
+    this.defaultLocation = location;
+    Demographics city = location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
     Map<String, Object> demoAttributes = this.pickDemographics(random, city);
 
@@ -915,6 +916,7 @@ public class Generator implements RandomNumberGenerator {
     demoAttributes.put(Person.ENTITY, entity);
     demoAttributes.put(Person.BIRTH_CITY, city.city);
     demoAttributes.put(Person.BIRTHDATE, firstSeed.birthdateTimestamp());
+    demoAttributes.put(Person.LOCATION, location);
 
     return demoAttributes;
   }
