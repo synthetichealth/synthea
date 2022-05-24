@@ -14,6 +14,7 @@ import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.geography.Location;
 
@@ -56,7 +57,7 @@ public class C19ImmunizationModuleTest {
   }
 
   @Test
-  public void vaccinate() {
+  public void vaccinate() throws Exception {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
     Location here = new Location("Massachusetts", "Billerica");
@@ -64,7 +65,7 @@ public class C19ImmunizationModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     here.assignPoint(person, "Billerica");
-    Provider.loadProviders(here, 1L);
+    Provider.loadProviders(here, ProviderTest.random);
     person.preferredProviders.forceRelationship(HealthRecord.EncounterType.OUTPATIENT,
         null, Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, null,
             decemberFifteenth));

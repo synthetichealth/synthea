@@ -575,7 +575,9 @@ public class FhirR4 {
 
     String state = (String) person.attributes.get(Person.STATE);
     if (USE_US_CORE_IG) {
-      state = Location.getAbbreviation(state);
+      if (state.length() > 2) {
+        state = Location.getAbbreviation(state);        
+      }
     }
     Address addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))

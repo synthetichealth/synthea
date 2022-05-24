@@ -96,8 +96,7 @@ public class PersonTest {
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
     int personSeed = 0;
-    Random randomForDemographics = new Random(personSeed);
-    Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+    Map<String, Object> demoAttributes = generator.randomDemographics(generator);
     Person original = generator.createPerson(0, demoAttributes);
 
     Person rehydrated = serializeAndDeserialize(original);

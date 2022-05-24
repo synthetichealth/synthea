@@ -20,6 +20,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
@@ -44,12 +45,12 @@ public class HospitalExporterTestR4 {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     Provider.clear();
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.random);
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 
     Provider.getProviderList().get(0).incrementEncounters(EncounterType.WELLNESS, 0);
-    HospitalExporterR4.export(new Generator(), 0L);
+    HospitalExporterR4.export(ProviderTest.random, 0L);
 
     File expectedExportFolder = tempOutputFolder.toPath().resolve("fhir").toFile();
     assertTrue(expectedExportFolder.exists() && expectedExportFolder.isDirectory());

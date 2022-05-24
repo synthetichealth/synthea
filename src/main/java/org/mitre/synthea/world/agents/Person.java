@@ -13,20 +13,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
@@ -111,8 +108,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
   public static final String ENTITY = "ENTITY";
 
-  private final Random random;
-  private AtomicLong count = new AtomicLong(0l);
+  private final RandomNumberGenerator random;
   public final long seed;
   public long populationSeed;
   /**
@@ -159,7 +155,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public Person(long seed) {
     this.seed = seed;
-    random = new Random(seed);
+    random = new DefaultRandomNumberGenerator(seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();
@@ -193,60 +189,59 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random double.
    */
   public double rand() {
-    count.getAndAdd(1l);
-    return random.nextDouble();
+    return random.rand();
   }
 
   /**
    * Returns a random boolean.
    */
   public boolean randBoolean() {
-    count.getAndAdd(1l);
-    return random.nextBoolean();
+    return random.randBoolean();
   }
 
   /**
    * Returns a random integer.
    */
   public int randInt() {
-    count.getAndAdd(1l);
-    return random.nextInt();
+    return random.randInt();
   }
 
   /**
    * Returns a random integer in the given bound.
    */
   public int randInt(int bound) {
-    count.getAndAdd(1l);
-    return random.nextInt(bound);
+    return random.randInt(bound);
   }
 
   /**
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
-    count.getAndAdd(1l);
-    return random.nextGaussian();
+    return random.randGaussian();
   }
 
   /**
    * Return a random long.
    */
   public long randLong() {
-    count.getAndAdd(1l);
-    return random.nextLong();
+    return random.randLong();
   }
 
   /**
    * Return a random UUID.
    */
   public UUID randUUID() {
-    return new UUID(randLong(), randLong());
+    return random.randUUID();
   }
 
   @Override
-  public long getRNGCount() {
-    return count.get();
+  public long getCount() {
+    return random.getCount();
+  }
+
+  @Override
+  public long getSeed() {
+    return random.getSeed();
   }
 
   /**

@@ -16,13 +16,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -32,6 +30,7 @@ import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
@@ -63,8 +62,8 @@ public class Generator implements RandomNumberGenerator {
    */
   public final UUID id = UUID.randomUUID();
   public GeneratorOptions options;
-  private Random random;
-  private AtomicLong count = new AtomicLong(0l);
+  private RandomNumberGenerator personRandom;
+  private RandomNumberGenerator clinicianRandom;
   public long timestep;
   public long stop;
   public long referenceTime;
@@ -220,7 +219,9 @@ public class Generator implements RandomNumberGenerator {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
 
-    this.random = new Random(options.seed);
+    this.personRandom = new DefaultRandomNumberGenerator(options.seed);
+    this.clinicianRandom = new DefaultRandomNumberGenerator(options.clinicianSeed);
+
     this.timestep = Long.parseLong(Config.get("generate.timestep"));
     this.stop = options.endTime;
     this.referenceTime = options.referenceTime;
@@ -281,7 +282,7 @@ public class Generator implements RandomNumberGenerator {
         String abbreviation = Location.getAbbreviation(state);
         locations.put(abbreviation, location);
         // initialize hospitals
-        Provider.loadProviders(location, options.clinicianSeed);
+        Provider.loadProviders(location, this.clinicianRandom);
         // Initialize Payers
         Payer.loadPayers(location);
       } catch (Exception e) {
@@ -437,6 +438,8 @@ public class Generator implements RandomNumberGenerator {
 
     System.out.printf("Records: total=%d, alive=%d, dead=%d\n", totalGeneratedPopulation.get(),
         stats.get("alive").get(), stats.get("dead").get());
+    System.out.printf("RNG=%d\n", this.personRandom.getCount());
+    System.out.printf("Clinician RNG=%d\n", this.clinicianRandom.getCount());
 
     if (this.metrics != null) {
       metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
@@ -474,21 +477,19 @@ public class Generator implements RandomNumberGenerator {
    */
   public Person generatePerson(int index, long personSeed) {
 
-    Person person = null;
+    Person person = new Person(personSeed);
 
     try {
       int tryNumber = 0; // Number of tries to create these demographics
-      Random randomForDemographics = new Random(personSeed);
-
       Map<String, Object> demoAttributes;
 
       if (entityManager != null) {
         // Get the fixed demographic attributes for the person.
         Entity entity = entityManager.getRecords().get(index);
-        demoAttributes = pickFixedDemographics(entity, random);
+        demoAttributes = pickFixedDemographics(entity, person);
       } else {
         // Standard random demographics.
-        demoAttributes = randomDemographics(randomForDemographics);
+        demoAttributes = randomDemographics(person);
       }
 
       boolean patientMeetsCriteria;
@@ -527,7 +528,7 @@ public class Generator implements RandomNumberGenerator {
           // when we want to export this patient, but keep trying to produce one meeting criteria
           if (!check.exportAnyway()) {
             // rotate the seed so the next attempt gets a consistent but different one
-            personSeed = randomForDemographics.nextLong();
+            personSeed = person.randLong();
             continue;
             // skip the other stuff if the patient doesn't meet our goals
             // note that this skips ahead to the while check
@@ -539,7 +540,7 @@ public class Generator implements RandomNumberGenerator {
 
         if (!isAlive) {
           // rotate the seed so the next attempt gets a consistent but different one
-          personSeed = randomForDemographics.nextLong();
+          personSeed = person.randLong();
 
           // if we've tried and failed > 10 times to generate someone over age 90
           // and the options allow for ages as low as 85
@@ -547,11 +548,11 @@ public class Generator implements RandomNumberGenerator {
           if ((int)person.attributes.get(TARGET_AGE) > 90
               && (!options.ageSpecified || options.minAge <= 85)) {
             // pick a new target age between 85 and 90
-            int newTargetAge = randomForDemographics.nextInt(5) + 85;
+            int newTargetAge = person.randInt(5) + 85;
             // the final age bracket is 85-110, but our patients rarely break 100
             // so reducing a target age to 85-90 shouldn't affect numbers too much
             demoAttributes.put(TARGET_AGE, newTargetAge);
-            long birthdate = birthdateFromTargetAge(newTargetAge, randomForDemographics);
+            long birthdate = birthdateFromTargetAge(newTargetAge, person);
             demoAttributes.put(Person.BIRTHDATE, birthdate);
           }
         }
@@ -767,7 +768,7 @@ public class Generator implements RandomNumberGenerator {
    * Create a set of random demographics.
    * @param random The random number generator to use.
    */
-  public Map<String, Object> randomDemographics(Random random) {
+  public Map<String, Object> randomDemographics(RandomNumberGenerator random) {
     Demographics city = defaultLocation.randomCity(random);
     Map<String, Object> demoAttributes = this.pickDemographics(random, city);
     return demoAttributes;
@@ -789,7 +790,7 @@ public class Generator implements RandomNumberGenerator {
         person.attributes.get(Person.GENDER),
         person.attributes.get(Person.CITY), person.attributes.get(Person.STATE),
         deceased,
-        person.getRNGCount()
+        person.getCount()
         );
 
     if (this.logLevel.equals("detailed")) {
@@ -814,7 +815,7 @@ public class Generator implements RandomNumberGenerator {
    * @param city The city to base the demographics off of.
    * @return the person's picked demographics.
    */
-  private Map<String, Object> pickDemographics(Random random, Demographics city) {
+  private Map<String, Object> pickDemographics(RandomNumberGenerator random, Demographics city) {
     // Output map of the generated demographic data.
     Map<String, Object> demographicsOutput = new HashMap<>();
 
@@ -858,7 +859,7 @@ public class Generator implements RandomNumberGenerator {
     double povertyRatio = city.povertyRatio(income);
     demographicsOutput.put(Person.POVERTY_RATIO, povertyRatio);
 
-    double occupation = random.nextDouble();
+    double occupation = random.rand();
     demographicsOutput.put(Person.OCCUPATION_LEVEL, occupation);
 
     double sesScore = city.socioeconomicScore(incomeLevel, educationLevel, occupation);
@@ -873,7 +874,7 @@ public class Generator implements RandomNumberGenerator {
     int targetAge;
     if (options.ageSpecified) {
       targetAge =
-          (int) (options.minAge + ((options.maxAge - options.minAge) * random.nextDouble()));
+          (int) (options.minAge + ((options.maxAge - options.minAge) * random.rand()));
     } else {
       targetAge = city.pickAge(random);
     }
@@ -891,7 +892,7 @@ public class Generator implements RandomNumberGenerator {
    * @param entity The record group to pull demographics from.
    * @param random Random object.
    */
-  public Map<String, Object> pickFixedDemographics(Entity entity, Random random) {
+  public Map<String, Object> pickFixedDemographics(Entity entity, RandomNumberGenerator random) {
     Seed firstSeed = entity.getSeeds().get(0);
     String state = firstSeed.getState();
     if (state.length() == 2) {
@@ -927,11 +928,11 @@ public class Generator implements RandomNumberGenerator {
    * @param random A random object.
    * @return
    */
-  private long birthdateFromTargetAge(long targetAge, Random random) {
+  private long birthdateFromTargetAge(long targetAge, RandomNumberGenerator random) {
     long earliestBirthdate = referenceTime - TimeUnit.DAYS.toMillis((targetAge + 1) * 365L + 1);
     long latestBirthdate = referenceTime - TimeUnit.DAYS.toMillis(targetAge * 365L);
     return
-        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.nextDouble()));
+        (long) (earliestBirthdate + ((latestBirthdate - earliestBirthdate) * random.rand()));
   }
 
   /**
@@ -977,60 +978,59 @@ public class Generator implements RandomNumberGenerator {
    * Returns a random double.
    */
   public double rand() {
-    count.addAndGet(1l);
-    return random.nextDouble();
+    return this.personRandom.rand();
   }
 
   /**
    * Returns a random boolean.
    */
   public boolean randBoolean() {
-    count.addAndGet(1l);
-    return random.nextBoolean();
+    return this.personRandom.randBoolean();
   }
 
   /**
    * Returns a random integer.
    */
   public int randInt() {
-    count.addAndGet(1l);
-    return random.nextInt();
+    return this.personRandom.randInt();
   }
 
   /**
    * Returns a random integer in the given bound.
    */
   public int randInt(int bound) {
-    count.addAndGet(1l);
-    return random.nextInt(bound);
+    return this.personRandom.randInt(bound);
   }
 
   /**
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
-    count.addAndGet(1l);
-    return random.nextGaussian();
+    return this.personRandom.randGaussian();
   }
 
   /**
    * Return a random long.
    */
   public long randLong() {
-    count.addAndGet(1l);
-    return random.nextLong();
+    return this.personRandom.randLong();
   }
 
   /**
    * Return a random UUID.
    */
   public UUID randUUID() {
-    return new UUID(randLong(), randLong());
+    return this.personRandom.randUUID();
   }
 
   @Override
-  public long getRNGCount() {
-    return count.get();
+  public long getCount() {
+    return this.personRandom.getCount();
+  }
+
+  @Override
+  public long getSeed() {
+    return this.personRandom.getSeed();
   }
 
 }

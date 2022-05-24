@@ -36,7 +36,7 @@ public class PayerFinderTest {
   }
 
   @Test
-  public void noPayersRandom() {
+  public void noPayersRandom() throws Exception {
     Config.set("generate.payers.selection_behavior", "random");
     Payer.clear();
     Payer.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
@@ -48,7 +48,7 @@ public class PayerFinderTest {
   }
 
   @Test
-  public void onePayerRandom() {
+  public void onePayerRandom() throws Exception {
     Config.set("generate.payers.selection_behavior", "random");
     Payer.clear();
     Payer.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
@@ -59,7 +59,7 @@ public class PayerFinderTest {
   }
 
   @Test
-  public void noPayersBestRate() {
+  public void noPayersBestRate() throws Exception {
     Config.set("generate.payers.selection_behavior", "best_rate");
     Payer.clear();
     Payer.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
@@ -71,7 +71,7 @@ public class PayerFinderTest {
   }
 
   @Test
-  public void onePayerBestRate() {
+  public void onePayerBestRate() throws Exception {
     Config.set("generate.payers.selection_behavior", "best_rate");
     Payer.clear();
     Payer.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
@@ -82,7 +82,7 @@ public class PayerFinderTest {
   }
 
   @Test(expected = RuntimeException.class)
-  public void invalidPayerFinderTest() {
+  public void invalidPayerFinderTest() throws Exception {
     // Note that "bestrate" should be spelled "best_rate"
     Config.set("generate.payers.selection_behavior", "bestrate");
     Payer.clear();

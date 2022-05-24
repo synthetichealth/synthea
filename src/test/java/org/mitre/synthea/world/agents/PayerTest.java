@@ -67,9 +67,10 @@ public class PayerTest {
 
   /**
    * Setup before each test.
+   * @throws Exception 
    */
   @Before
-  public void before() {
+  public void before() throws Exception {
     // Clear any Payers that may have already been statically loaded.
     Payer.clear();
     Config.set("generate.payers.insurance_companies.default_file",
@@ -341,7 +342,7 @@ public class PayerTest {
   }
 
   @Test(expected = RuntimeException.class)
-  public void nullPayerName() {
+  public void nullPayerName() throws Exception {
     Payer.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/bad_test_payers.csv");

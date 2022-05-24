@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -272,8 +271,7 @@ public class GeneratorTest {
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      Map<String, Object> demoAttributes = generator.randomDemographics(generator);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       generator.recordPerson(people[i], i);
     }
@@ -333,8 +331,7 @@ public class GeneratorTest {
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      Map<String, Object> demoAttributes = generator.randomDemographics(generator);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       //generator.recordPerson(people[i], i);
     }

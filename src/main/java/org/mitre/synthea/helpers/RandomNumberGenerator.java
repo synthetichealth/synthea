@@ -102,6 +102,9 @@ public interface RandomNumberGenerator {
   /** Return a random UUID. */
   public UUID randUUID();
 
-  /** Return the number of time the RNG was called. */
-  public long getRNGCount();
+  /** Return how many times this RNG was called. */
+  public long getCount();
+
+  /** Return the seed. */
+  public long getSeed();
 }

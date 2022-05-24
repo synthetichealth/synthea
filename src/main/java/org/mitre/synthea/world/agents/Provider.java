@@ -10,13 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -348,7 +346,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Load into cache the list of providers for a state.
    * @param location the state being loaded.
    */
-  public static void loadProviders(Location location, long clinicianSeed) {
+  public static void loadProviders(Location location, RandomNumberGenerator random) {
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -361,7 +359,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
-                clinicianSeed, false);
+                random, false);
 
 //        String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
 //        loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
@@ -376,20 +374,20 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, ProviderType.PRIMARY, servicesProvided,
-                clinicianSeed, false);
+            random, false);
 //        String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
 //        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.AMBULATORY);
         loadProviders(location, "providers/hrsa_testing_sites.csv", ProviderType.PRIMARY, servicesProvided,
-            clinicianSeed, false);
+            random, false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
         loadProviders(location, urgentcareFile, ProviderType.URGENT, servicesProvided,
-                clinicianSeed, false);
+            random, false);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -406,19 +404,19 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.HOME);
         String homeHealthFile = Config.get("generate.providers.homehealth.default_file");
         loadProviders(location, homeHealthFile, ProviderType.HOME_HEALTH, servicesProvided,
-                clinicianSeed, true);
+            random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOSPICE);
         String hospiceFile = Config.get("generate.providers.hospice.default_file");
         loadProviders(location, hospiceFile, ProviderType.HOSPICE, servicesProvided,
-                clinicianSeed, true);
+            random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.SNF);
         String nursingFile = Config.get("generate.providers.nursing.default_file");
         loadProviders(location, nursingFile, ProviderType.NURSING, servicesProvided,
-                clinicianSeed, true);
+            random, true);
       } catch (IOException e) {
         System.err.println("WARNING: unable to load optional providers in: " + location.state);
       }
@@ -433,12 +431,13 @@ public class Provider implements QuadTreeElement, Serializable {
    * @param filename Location of the file, relative to src/main/resources
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
-   * @param clinicianSeed random seed for clinicians
+   * @param random random for clinicians
    * @param optional if true the function will silently ignore a null or empty filename
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed,
+      ProviderType providerType, Set<EncounterType> servicesProvided,
+      RandomNumberGenerator random,
       boolean optional)
       throws IOException {
     if (optional && (filename == null || filename.length() == 0)) {
@@ -447,7 +446,6 @@ public class Provider implements QuadTreeElement, Serializable {
 
     String resource = Utilities.readResource(filename);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
-    Random clinicianRand = new Random(clinicianSeed);
 
     while (csv.hasNext()) {
       Map<String,String> row = csv.next();
@@ -480,8 +478,7 @@ public class Provider implements QuadTreeElement, Serializable {
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
-              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
-                  clinicianSeed, clinicianRand));
+              parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE, random));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) {
             String specialtyCount = row.get(specialty);
@@ -489,7 +486,7 @@ public class Provider implements QuadTreeElement, Serializable {
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty,
                   parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty,
-                      clinicianSeed, clinicianRand));
+                      random));
             }
           }
 //          if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
@@ -518,11 +515,11 @@ public class Provider implements QuadTreeElement, Serializable {
    * @return
    */
   private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty,
-      long clinicianSeed, Random clinicianRand) {
+      RandomNumberGenerator clinicianRand) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(clinicianSeed, clinicianRand,
+      clinician = generateClinician(clinicianRand,
           Long.parseLong(loaded + "" + i));
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
@@ -537,7 +534,7 @@ public class Provider implements QuadTreeElement, Serializable {
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(long clinicianSeed, Random clinicianRand,
+  private Clinician generateClinician(RandomNumberGenerator clinicianRand,
       long clinicianIdentifier) {
     Clinician clinician = null;
     try {
@@ -560,7 +557,7 @@ public class Provider implements QuadTreeElement, Serializable {
       }
       out.put(Person.GENDER, gender);
 
-      clinician = new Clinician(clinicianSeed, clinicianRand, clinicianIdentifier, this);
+      clinician = new Clinician(clinicianRand, clinicianIdentifier, this);
       clinician.attributes.putAll(out);
       clinician.attributes.put(Person.ADDRESS, address);
       clinician.attributes.put(Person.CITY, city);
