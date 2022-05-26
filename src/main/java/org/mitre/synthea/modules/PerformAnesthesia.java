@@ -74,12 +74,12 @@ public class PerformAnesthesia extends Module {
 
       // Now create a Clinician representing each surgeon...
       Provider provider = Provider.getProviderList().get(0);
-      Random clinicianRand = new Random(-1);
+      Random clinicianRand = new Random(-9);
       int id = 0;
       for (String surgeonId : identifierSet) {
         Clinician clin = new Clinician(-1, clinicianRand, id++, provider);
 
-        clin.attributes.put(Clinician.SPECIALTY, "Surgeon");
+        clin.attributes.put(Clinician.SPECIALTY, "Anesthesiology");
         clin.attributes.put(Clinician.FIRST_NAME, surgeonId);
         clin.attributes.put(Clinician.LAST_NAME, surgeonId);
         clin.attributes.put(Clinician.NAME, surgeonId);
