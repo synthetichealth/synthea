@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":42,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -105,15 +105,10 @@ var activeTableTab = "activeTableTab";
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dd>
-</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">Generator</span>
-extends java.lang.Object
-implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></pre>
+extends java.lang.Object</pre>
 <div class="block">Generator creates a population by running the generic modules each timestep per Person.</div>
 </li>
 </ul>
@@ -252,7 +247,7 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -277,7 +272,7 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#generatePerson-int-">generatePerson</a></span>(int&nbsp;index)</code>
-<div class="block">Generate a completely random Person.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -288,81 +283,45 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#getRandomizer--">getRandomizer</a></span>()</code>
+<div class="block">Get the seeded random number generator used by this Generator.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/mitre/synthea/input/FixedRecordGroup.html" title="class in org.mitre.synthea.input">FixedRecordGroup</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#importFixedPatientDemographicsFile--">importFixedPatientDemographicsFile</a></span>()</code>
 <div class="block">Imports the fixed demographics records file when using fixed patient
  demographics.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#rand--">rand</a></span>()</code>
-<div class="block">Returns a random double.</div>
-</td>
-</tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randBoolean--">randBoolean</a></span>()</code>
-<div class="block">Returns a random boolean.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randGaussian--">randGaussian</a></span>()</code>
-<div class="block">Returns a double from a normal distribution.</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randInt--">randInt</a></span>()</code>
-<div class="block">Returns a random integer.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randInt-int-">randInt</a></span>(int&nbsp;bound)</code>
-<div class="block">Returns a random integer in the given bound.</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randLong--">randLong</a></span>()</code>
-<div class="block">Return a random long.</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randomDemographics-java.util.Random-">randomDemographics</a></span>(java.util.Random&nbsp;random)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randomDemographics-org.mitre.synthea.helpers.RandomNumberGenerator-">randomDemographics</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Create a set of random demographics.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>java.util.UUID</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#randUUID--">randUUID</a></span>()</code>
-<div class="block">Return a random UUID.</div>
-</td>
-</tr>
-<tr id="i13" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#recordPerson-org.mitre.synthea.world.agents.Person-int-">recordPerson</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
             int&nbsp;index)</code>
 <div class="block">Record the person using whatever tracking mechanisms are currently configured.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#run--">run</a></span>()</code>
 <div class="block">Generate the population, using the currently set configuration settings.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#updatePerson-org.mitre.synthea.world.agents.Person-">updatePerson</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code>
 <div class="block">Update a previously created person from the time they were last updated until Generator.stop or
  they die, whichever comes sooner.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/engine/Generator.html#updateRecordExportPerson-org.mitre.synthea.world.agents.Person-int-">updateRecordExportPerson</a></span>(<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                         int&nbsp;index)</code>
@@ -376,13 +335,6 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.org.mitre.synthea.helpers.RandomNumberGenerator">
-<!--   -->
-</a>
-<h3>Methods inherited from interface&nbsp;org.mitre.synthea.helpers.<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></h3>
-<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double:A-">rand</a>, <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double-double-">rand</a>, <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double-double-java.lang.Integer-">rand</a>, <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-int:A-">rand</a>, <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-java.lang.String:A-">rand</a></code></li>
 </ul>
 </li>
 </ul>
@@ -619,7 +571,9 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <ul class="blockList">
 <li class="blockList">
 <h4>generatePerson</h4>
-<pre>public&nbsp;<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;generatePerson(int&nbsp;index)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;generatePerson(int&nbsp;index)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Generate a completely random Person. The returned person will be alive at the end of the
  simulation. This means that if in the course of the simulation the person dies, a new person
  will be started to replace them.
@@ -702,7 +656,7 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>personSeed</code> - Seed for the random person</dd>
-<dd><code>demoAttributes</code> - Demographic attributes for the new person, <a href="../../../../org/mitre/synthea/engine/Generator.html#randomDemographics-java.util.Random-"><code>randomDemographics(java.util.Random)</code></a></dd>
+<dd><code>demoAttributes</code> - Demographic attributes for the new person, <a href="../../../../org/mitre/synthea/engine/Generator.html#randomDemographics-org.mitre.synthea.helpers.RandomNumberGenerator-"><code>randomDemographics(org.mitre.synthea.helpers.RandomNumberGenerator)</code></a></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the new person</dd>
 </dl>
@@ -723,13 +677,13 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </dl>
 </li>
 </ul>
-<a name="randomDemographics-java.util.Random-">
+<a name="randomDemographics-org.mitre.synthea.helpers.RandomNumberGenerator-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>randomDemographics</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;randomDemographics(java.util.Random&nbsp;random)</pre>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;randomDemographics(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</pre>
 <div class="block">Create a set of random demographics.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -756,101 +710,17 @@ implements <a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.
 </dl>
 </li>
 </ul>
-<a name="rand--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>rand</h4>
-<pre>public&nbsp;double&nbsp;rand()</pre>
-<div class="block">Returns a random double.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand--">rand</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randBoolean--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>randBoolean</h4>
-<pre>public&nbsp;boolean&nbsp;randBoolean()</pre>
-<div class="block">Returns a random boolean.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randBoolean--">randBoolean</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randInt--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>randInt</h4>
-<pre>public&nbsp;int&nbsp;randInt()</pre>
-<div class="block">Returns a random integer.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randInt--">randInt</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randInt-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>randInt</h4>
-<pre>public&nbsp;int&nbsp;randInt(int&nbsp;bound)</pre>
-<div class="block">Returns a random integer in the given bound.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randInt-int-">randInt</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randGaussian--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>randGaussian</h4>
-<pre>public&nbsp;double&nbsp;randGaussian()</pre>
-<div class="block">Returns a double from a normal distribution.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randGaussian--">randGaussian</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randLong--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>randLong</h4>
-<pre>public&nbsp;long&nbsp;randLong()</pre>
-<div class="block">Return a random long.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randLong--">randLong</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="randUUID--">
+<a name="getRandomizer--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>randUUID</h4>
-<pre>public&nbsp;java.util.UUID&nbsp;randUUID()</pre>
-<div class="block">Return a random UUID.</div>
+<h4>getRandomizer</h4>
+<pre>public&nbsp;<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;getRandomizer()</pre>
+<div class="block">Get the seeded random number generator used by this Generator.</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randUUID--">randUUID</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the random number generator.</dd>
 </dl>
 </li>
 </ul>

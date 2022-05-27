@@ -775,7 +775,7 @@
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Clinician</span></a> - Class in <a href="org/mitre/synthea/world/agents/package-summary.html">org.mitre.synthea.world.agents</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#Clinician-long-java.util.Random-long-org.mitre.synthea.world.agents.Provider-">Clinician(long, Random, long, Provider)</a></span> - Constructor for class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#Clinician-long-org.mitre.synthea.helpers.RandomNumberGenerator-long-org.mitre.synthea.world.agents.Provider-">Clinician(long, RandomNumberGenerator, long, Provider)</a></span> - Constructor for class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>
 <div class="block">Create a new clinician.</div>
 </dd>
@@ -1329,6 +1329,14 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.NamedDistribution.html#defaultDistribution">defaultDistribution</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.NamedDistribution.html" title="class in org.mitre.synthea.engine">Transition.NamedDistribution</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">DefaultRandomNumberGenerator</span></a> - Class in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
+<dd>
+<div class="block">A default implementation of the RandomNumberGenerator interface.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#DefaultRandomNumberGenerator-long-">DefaultRandomNumberGenerator(long)</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>
+<div class="block">Create a new default random number generator.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#defaultRecord">defaultRecord</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Default health record.</div>
@@ -1482,7 +1490,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#EDUCATION_LEVEL">EDUCATION_LEVEL</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#educationLevel-java.lang.String-java.util.Random-">educationLevel(String, Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#educationLevel-java.lang.String-org.mitre.synthea.helpers.RandomNumberGenerator-">educationLevel(String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Return a random number between the configured bounds for a specified education level.</div>
 </dd>
@@ -2074,7 +2082,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#generatePerson-int-">generatePerson(int)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
 <dd>
-<div class="block">Generate a completely random Person.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#generatePerson-int-long-">generatePerson(int, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
 <dd>
@@ -2339,6 +2347,14 @@
 <dd>
 <div class="block">Returns the base cost of the entry.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#getCount--">getCount()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#getCount--">getCount()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
+<dd>
+<div class="block">Return how many times this RNG was called.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCount--">getCount()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getCoveredCost--">getCoveredCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>
 <div class="block">Returns the total cost that the Payer covered for this claim.</div>
@@ -2723,6 +2739,10 @@
 <dd>
 <div class="block">Returns the person's QOL at the given time.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#getRandomizer--">getRandomizer()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
+<dd>
+<div class="block">Get the seeded random number generator used by this Generator.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#getReaction--">getReaction()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#getResourceID--">getResourceID()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
@@ -2753,6 +2773,14 @@
 <dd>
 <div class="block">Pulls the first valid city from the list of FixedRecords.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#getSeed--">getSeed()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#getSeed--">getSeed()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
+<dd>
+<div class="block">Return the seed.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getSeed--">getSeed()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableChartConfig.html#getSeries--">getSeries()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.MultiTableChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.MultiTableChartConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html#getSeries--">getSeries()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.PersonChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.PersonChartConfig</a></dt>
@@ -3646,7 +3674,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Attachment.html#language">language</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Attachment.html" title="class in org.mitre.synthea.engine">Components.Attachment</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#languageFromRaceAndEthnicity-java.lang.String-java.lang.String-java.util.Random-">languageFromRaceAndEthnicity(String, String, Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#languageFromRaceAndEthnicity-java.lang.String-java.lang.String-org.mitre.synthea.helpers.RandomNumberGenerator-">languageFromRaceAndEthnicity(String, String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Selects a language based on race and ethnicity.</div>
 </dd>
@@ -3745,11 +3773,11 @@
 <dd>
 <div class="block">Load into cache the list of payers for a state.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-long-">loadProviders(Location, long)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-org.mitre.synthea.helpers.DefaultRandomNumberGenerator-">loadProviders(Location, DefaultRandomNumberGenerator)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>
 <div class="block">Load into cache the list of providers for a state.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-java.lang.String-org.mitre.synthea.world.agents.Provider.ProviderType-java.util.Set-long-boolean-">loadProviders(Location, String, Provider.ProviderType, Set&lt;HealthRecord.EncounterType&gt;, long, boolean)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#loadProviders-org.mitre.synthea.world.geography.Location-java.lang.String-org.mitre.synthea.world.agents.Provider.ProviderType-java.util.Set-org.mitre.synthea.helpers.RandomNumberGenerator-boolean-">loadProviders(Location, String, Provider.ProviderType, Set&lt;HealthRecord.EncounterType&gt;, RandomNumberGenerator, boolean)</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>
 <div class="block">Read the providers from the given resource file, only importing the ones for the given state.</div>
 </dd>
@@ -4216,10 +4244,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Delayable.html#next">next</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Delayable.html" title="class in org.mitre.synthea.engine">State.Delayable</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCollection.html#next-java.util.Random-">next(Random)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a></dt>
-<dd>
-<div class="block">Select an item from the collection at random by the weight of the items.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCollection.html#next-org.mitre.synthea.helpers.RandomNumberGenerator-">next(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a></dt>
 <dd>
 <div class="block">Select an item from the collection at random by the weight of the items.</div>
@@ -4576,27 +4600,27 @@
 <dd>
 <div class="block">A generator of VitalSign values from a physiology simulation.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickAge-java.util.Random-">pickAge(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickAge-org.mitre.synthea.helpers.RandomNumberGenerator-">pickAge(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Pick an age based on the population distribution for the city.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickEducation-java.util.Random-">pickEducation(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickEducation-org.mitre.synthea.helpers.RandomNumberGenerator-">pickEducation(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Return a random education level based on statistics.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickEthnicity-java.util.Random-">pickEthnicity(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickEthnicity-org.mitre.synthea.helpers.RandomNumberGenerator-">pickEthnicity(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Pick an ethnicity based on the population distribution for the city.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickGender-java.util.Random-">pickGender(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickGender-org.mitre.synthea.helpers.RandomNumberGenerator-">pickGender(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Pick a gender based on the population distribution for the city.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickIncome-java.util.Random-">pickIncome(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickIncome-org.mitre.synthea.helpers.RandomNumberGenerator-">pickIncome(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Pick an ethnicity based on the population distribution for the city.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickRace-java.util.Random-">pickRace(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Demographics.html#pickRace-org.mitre.synthea.helpers.RandomNumberGenerator-">pickRace(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography">Demographics</a></dt>
 <dd>
 <div class="block">Pick a race based on the population distribution for the city.</div>
 </dd>
@@ -4972,10 +4996,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#RADIATION_ONCOLOGY">RADIATION_ONCOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#rand--">rand()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Returns a random double.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#rand--">rand()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#rand--">rand()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Returns a double between 0-1 from a uniform distribution.</div>
@@ -5002,16 +5024,12 @@
 <div class="block">Helper function to get a random number based on an integer array of [min,
  max].</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#rand--">rand()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#rand--">rand()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Returns a random double.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randBoolean--">randBoolean()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Returns a random boolean.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randBoolean--">randBoolean()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#randBoolean--">randBoolean()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Returns a random boolean.</div>
@@ -5020,10 +5038,8 @@
 <dd>
 <div class="block">Returns a random boolean.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randGaussian--">randGaussian()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Returns a double from a normal distribution.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randGaussian--">randGaussian()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#randGaussian--">randGaussian()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Returns a double between from a normal distribution
@@ -5033,14 +5049,10 @@
 <dd>
 <div class="block">Returns a double from a normal distribution.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randInt--">randInt()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Returns a random integer.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randInt-int-">randInt(int)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Returns a random integer in the given bound.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randInt--">randInt()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randInt-int-">randInt(int)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#randInt--">randInt()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Returns a random integer.</div>
@@ -5049,8 +5061,6 @@
 <dd>
 <div class="block">Returns a random integer in the given bound.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#randInt-int-">randInt(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#randInt--">randInt()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Returns a random integer.</div>
@@ -5059,10 +5069,8 @@
 <dd>
 <div class="block">Returns a random integer in the given bound.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randLong--">randLong()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Return a random long.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randLong--">randLong()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#randLong--">randLong()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Return a random long.</div>
@@ -5071,8 +5079,6 @@
 <dd>
 <div class="block">Return a random long.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#random">random</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#RANDOM">RANDOM</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Location.html#randomBirthPlace-org.mitre.synthea.helpers.RandomNumberGenerator-">randomBirthPlace(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></dt>
@@ -5085,10 +5091,6 @@
  for an language.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Location.html#randomCity-org.mitre.synthea.helpers.RandomNumberGenerator-">randomCity(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></dt>
-<dd>
-<div class="block">Pick the name of a random city from the current "world".</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Location.html#randomCity-java.util.Random-">randomCity(Random)</a></span> - Method in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography">Location</a></dt>
 <dd>
 <div class="block">Pick the name of a random city from the current "world".</div>
 </dd>
@@ -5109,7 +5111,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCollection.html#RandomCollection--">RandomCollection()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers">RandomCollection</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randomDemographics-java.util.Random-">randomDemographics(Random)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randomDemographics-org.mitre.synthea.helpers.RandomNumberGenerator-">randomDemographics(RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
 <dd>
 <div class="block">Create a set of random demographics.</div>
 </dd>
@@ -5131,10 +5133,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomValueGenerator.html#RandomValueGenerator-org.mitre.synthea.world.agents.Person-org.mitre.synthea.engine.Distribution-">RandomValueGenerator(Person, Distribution)</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomValueGenerator.html" title="class in org.mitre.synthea.helpers">RandomValueGenerator</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#randUUID--">randUUID()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
-<dd>
-<div class="block">Return a random UUID.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html#randUUID--">randUUID()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomNumberGenerator.html#randUUID--">randUUID()</a></span> - Method in interface org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></dt>
 <dd>
 <div class="block">Return a random UUID.</div>
@@ -5353,8 +5353,6 @@
 <dd>
 <div class="block">By default use the current time as random seed.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#seed">seed</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#selectedCodes">selectedCodes</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19Vaccine.html#selectShot-org.mitre.synthea.world.agents.Person-">selectShot(Person)</a></span> - Static method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19Vaccine.html" title="class in org.mitre.synthea.modules.covid">C19Vaccine</a></dt>

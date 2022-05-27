@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":18,"i2":18,"i3":18,"i4":18,"i5":18,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":18,"i4":18,"i5":18,"i6":18,"i7":18,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a>, <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dd>
+<dd><a href="../../../../org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers">DefaultRandomNumberGenerator</a>, <a href="../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dd>
 </dl>
 <hr>
 <br>
@@ -123,25 +123,37 @@ var activeTableTab = "activeTableTab";
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getCount--">getCount</a></span>()</code>
+<div class="block">Return how many times this RNG was called.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getSeed--">getSeed</a></span>()</code>
+<div class="block">Return the seed.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand--">rand</a></span>()</code>
 <div class="block">Returns a double between 0-1 from a uniform distribution.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>default double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double:A-">rand</a></span>(double[]&nbsp;range)</code>
 <div class="block">Helper function to get a random number based on an array of [min, max].</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>default double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double-double-">rand</a></span>(double&nbsp;low,
     double&nbsp;high)</code>
 <div class="block">Returns a random double in the given range.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>default double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-double-double-java.lang.Integer-">rand</a></span>(double&nbsp;low,
     double&nbsp;high,
@@ -150,51 +162,51 @@ var activeTableTab = "activeTableTab";
  number of decimal places.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>default double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-int:A-">rand</a></span>(int[]&nbsp;range)</code>
 <div class="block">Helper function to get a random number based on an integer array of [min,
  max].</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>default java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#rand-java.lang.String:A-">rand</a></span>(java.lang.String[]&nbsp;choices)</code>
 <div class="block">Return one of the options randomly with uniform distribution.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randBoolean--">randBoolean</a></span>()</code>
 <div class="block">Returns a random boolean.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randGaussian--">randGaussian</a></span>()</code>
 <div class="block">Returns a double between from a normal distribution
  with mean of 0 and standard deviation of 1.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randInt--">randInt</a></span>()</code>
 <div class="block">Returns a random integer.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randInt-int-">randInt</a></span>(int&nbsp;bound)</code>
 <div class="block">Returns a random integer in the given bound.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randLong--">randLong</a></span>()</code>
 <div class="block">Return a random long.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randUUID--">randUUID</a></span>()</code>
 <div class="block">Return a random UUID.</div>
@@ -353,11 +365,31 @@ var activeTableTab = "activeTableTab";
 <a name="randUUID--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>randUUID</h4>
 <pre>java.util.UUID&nbsp;randUUID()</pre>
 <div class="block">Return a random UUID.</div>
+</li>
+</ul>
+<a name="getCount--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCount</h4>
+<pre>long&nbsp;getCount()</pre>
+<div class="block">Return how many times this RNG was called.</div>
+</li>
+</ul>
+<a name="getSeed--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getSeed</h4>
+<pre>long&nbsp;getSeed()</pre>
+<div class="block">Return the seed.</div>
 </li>
 </ul>
 </li>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -164,12 +164,6 @@ implements java.io.Serializable</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/mitre/synthea/helpers/RandomCollection.html" title="type parameter in RandomCollection">E</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomCollection.html#next-java.util.Random-">next</a></span>(java.util.Random&nbsp;random)</code>
-<div class="block">Select an item from the collection at random by the weight of the items.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/mitre/synthea/helpers/RandomCollection.html" title="type parameter in RandomCollection">E</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/RandomCollection.html#next-org.mitre.synthea.helpers.RandomNumberGenerator-">next</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random)</code>
 <div class="block">Select an item from the collection at random by the weight of the items.</div>
 </td>
@@ -230,25 +224,6 @@ implements java.io.Serializable</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>weight</code> - - Positive weight of the result.</dd>
 <dd><code>result</code> - - the object to add to the collection.</dd>
-</dl>
-</li>
-</ul>
-<a name="next-java.util.Random-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>next</h4>
-<pre>public&nbsp;<a href="../../../../org/mitre/synthea/helpers/RandomCollection.html" title="type parameter in RandomCollection">E</a>&nbsp;next(java.util.Random&nbsp;random)</pre>
-<div class="block">Select an item from the collection at random by the weight of the items.
- Selecting an item from one draw, does not remove the item from the collection
- for subsequent draws. In other words, an item can be selected repeatedly if
- the weights are severely imbalanced.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>random</code> - - Random object.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a random item from the collection weighted by the item weights.</dd>
 </dl>
 </li>
 </ul>

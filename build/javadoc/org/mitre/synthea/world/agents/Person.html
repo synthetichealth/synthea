@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -423,42 +423,38 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#seed">seed</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SEXUAL_ORIENTATION">SEXUAL_ORIENTATION</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SMOKER">SMOKER</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SOCIOECONOMIC_CATEGORY">SOCIOECONOMIC_CATEGORY</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SOCIOECONOMIC_SCORE">SOCIOECONOMIC_SCORE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#STATE">STATE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#TELECOM">TELECOM</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#VETERAN">VETERAN</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;<a href="../../../../../org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>,<a href="../../../../../org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#vitalSigns">vitalSigns</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#ZIP">ZIP</a></span></code>&nbsp;</td>
 </tr>
@@ -559,101 +555,113 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </td>
 </tr>
 <tr id="i10" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getCount--">getCount</a></span>()</code>
+<div class="block">Return how many times this RNG was called.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getCurrentEncounter-org.mitre.synthea.engine.Module-">getCurrentEncounter</a></span>(<a href="../../../../../org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module)</code>
 <div class="block">Get the current encounter for the specified module or null if none exists.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getCurrentProvider-java.lang.String-">getCurrentProvider</a></span>(java.lang.String&nbsp;module)</code>
 <div class="block">Get the current provider for the specified module.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getDalys--">getDalys</a></span>()</code>
 <div class="block">Returns the sum of DALYS of this person's life.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../../org/mitre/synthea/engine/ExpressedSymptom.html" title="class in org.mitre.synthea.engine">ExpressedSymptom</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getExpressedSymptoms--">getExpressedSymptoms</a></span>()</code>
 <div class="block">Get the expressed symptoms.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>java.awt.geom.Point2D.Double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getLonLat--">getLonLat</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/engine/ExpressedConditionRecord.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getOnsetConditionRecord--">getOnsetConditionRecord</a></span>()</code>
 <div class="block">Get the onsetonditionRecord.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getProvider-org.mitre.synthea.world.concepts.HealthRecord.EncounterType-long-">getProvider</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;type,
            long&nbsp;time)</code>
 <div class="block">Get the preferred provider for the specified encounter type.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getQalys--">getQalys</a></span>()</code>
 <div class="block">Returns the sum of QALYS of this person's life.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getQolsForYear-int-">getQolsForYear</a></span>(int&nbsp;year)</code>
 <div class="block">Returns the person's QOL at the given time.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getSeed--">getSeed</a></span>()</code>
+<div class="block">Return the seed.</div>
+</td>
+</tr>
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getSymptom-java.lang.String-">getSymptom</a></span>(java.lang.String&nbsp;type)</code>
 <div class="block">Method for retrieving the value associated to a given symptom.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>java.lang.Long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getSymptomLastUpdatedTime-java.lang.String-java.lang.String-">getSymptomLastUpdatedTime</a></span>(java.lang.String&nbsp;module,
                          java.lang.String&nbsp;symptom)</code>
 <div class="block">Method for retrieving the last time a given symptom has been updated from a given module.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getSymptoms--">getSymptoms</a></span>()</code>
 <div class="block">Get active symptoms above some threshold.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>java.lang.Double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getVitalSign-org.mitre.synthea.world.concepts.VitalSign-long-">getVitalSign</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
             long&nbsp;time)</code>
 <div class="block">Get a vital sign value.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getX--">getX</a></span>()</code>
 <div class="block">Get the x-coordinate of this element.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#getY--">getY</a></span>()</code>
 <div class="block">Get the y-coordinate of this element.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#hadPriorState-java.lang.String-">hadPriorState</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#hadPriorState-java.lang.String-java.lang.String-java.lang.Long-">hadPriorState</a></span>(java.lang.String&nbsp;name,
              java.lang.String&nbsp;since,
@@ -661,81 +669,81 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 <div class="block">Check for prior existence of specified state.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#hasCurrentEncounter--">hasCurrentEncounter</a></span>()</code>
 <div class="block">Check if there are any current encounters.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#providerCount--">providerCount</a></span>()</code>
 <div class="block">Returns the number of providers that this person has.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#rand--">rand</a></span>()</code>
 <div class="block">Returns a random double.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randBoolean--">randBoolean</a></span>()</code>
 <div class="block">Returns a random boolean.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randGaussian--">randGaussian</a></span>()</code>
 <div class="block">Returns a double from a normal distribution.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randInt--">randInt</a></span>()</code>
 <div class="block">Returns a random integer.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randInt-int-">randInt</a></span>(int&nbsp;bound)</code>
 <div class="block">Returns a random integer in the given bound.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randLong--">randLong</a></span>()</code>
 <div class="block">Return a random long.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>java.util.UUID</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#randUUID--">randUUID</a></span>()</code>
 <div class="block">Return a random UUID.</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#recordDeath-long-org.mitre.synthea.world.concepts.HealthRecord.Code-">recordDeath</a></span>(long&nbsp;time,
            <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;cause)</code>
 <div class="block">Records a person's death.</div>
 </td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#removeCurrentProvider-java.lang.String-">removeCurrentProvider</a></span>(java.lang.String&nbsp;module)</code>
 <div class="block">Remove the current provider for the specified module.</div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setCurrentEncounter-org.mitre.synthea.engine.Module-org.mitre.synthea.world.concepts.HealthRecord.Encounter-">setCurrentEncounter</a></span>(<a href="../../../../../org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
                    <a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code>
 <div class="block">Set the current encounter for the specified module.</div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setProvider-org.mitre.synthea.world.concepts.HealthRecord.EncounterType-long-">setProvider</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;type,
            long&nbsp;time)</code>
@@ -743,14 +751,14 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
  at the specified time.</div>
 </td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setProvider-org.mitre.synthea.world.concepts.HealthRecord.EncounterType-org.mitre.synthea.world.agents.Provider-">setProvider</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;type,
            <a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</code>
 <div class="block">Set the preferred provider for the specified encounter type.</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setSymptom-java.lang.String-java.lang.String-java.lang.String-long-int-java.lang.Boolean-">setSymptom</a></span>(java.lang.String&nbsp;module,
           java.lang.String&nbsp;cause,
@@ -762,19 +770,19 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
  the symptom is set.</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setVitalSign-org.mitre.synthea.world.concepts.VitalSign-double-">setVitalSign</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
             double&nbsp;value)</code>
 <div class="block">Convenience function to set a vital sign to a constant value.</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#setVitalSign-org.mitre.synthea.world.concepts.VitalSign-org.mitre.synthea.helpers.ValueGenerator-">setVitalSign</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
             <a href="../../../../../org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&nbsp;valueGenerator)</code>&nbsp;</td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#symptomTotal--">symptomTotal</a></span>()</code>
 <div class="block">The total number of all unaddressed symptom severities.</div>
@@ -1557,15 +1565,6 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </dl>
 </li>
 </ul>
-<a name="seed">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>seed</h4>
-<pre>public final&nbsp;long seed</pre>
-</li>
-</ul>
 <a name="populationSeed">
 <!--   -->
 </a>
@@ -1876,6 +1875,36 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#randUUID--">randUUID</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getCount--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCount</h4>
+<pre>public&nbsp;long&nbsp;getCount()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getCount--">RandomNumberGenerator</a></code></span></div>
+<div class="block">Return how many times this RNG was called.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getCount--">getCount</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getSeed--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSeed</h4>
+<pre>public&nbsp;long&nbsp;getSeed()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getSeed--">RandomNumberGenerator</a></code></span></div>
+<div class="block">Return the seed.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html#getSeed--">getSeed</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a></code></dd>
 </dl>
 </li>
 </ul>
