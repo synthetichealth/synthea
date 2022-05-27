@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mitre.synthea.export.JSONSkip;
@@ -19,7 +18,6 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 
 public class Location implements Serializable {
@@ -244,24 +242,6 @@ public class Location implements Serializable {
   }
 
   /**
-   * Pick the name of a random city from the current "world".
-   * @param random The source of randomness.
-   * @return Demographics of a random city.
-   */
-  public Demographics randomCity(Random random) {
-    if (city != null) {
-      // if we're only generating one city at a time, just use the largest entry for that one city
-      if (fixedCity == null) {
-        fixedCity = demographics.values().stream()
-          .filter(d -> d.city.equalsIgnoreCase(city))
-          .sorted().findFirst().get();
-      }
-      return fixedCity;
-    }
-    return demographics.get(randomCityId(random));
-  }
-
-  /**
    * Pick a random city name, weighted by population.
    * @param random the source of randomness
    * @return a city name
@@ -278,21 +258,6 @@ public class Location implements Serializable {
    */
   private String randomCityId(RandomNumberGenerator random) {
     long targetPop = (long) (random.rand() * totalPopulation);
-
-    for (Map.Entry<String, Long> city : populationByCityId.entrySet()) {
-      targetPop -= city.getValue();
-
-      if (targetPop < 0) {
-        return city.getKey();
-      }
-    }
-
-    // should never happen
-    throw new RuntimeException("Unable to select a random city id.");
-  }
-
-  private String randomCityId(Random random) {
-    long targetPop = (long) (random.nextDouble() * totalPopulation);
 
     for (Map.Entry<String, Long> city : populationByCityId.entrySet()) {
       targetPop -= city.getValue();

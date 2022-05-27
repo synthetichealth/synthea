@@ -37,6 +37,7 @@ import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
 import org.mitre.synthea.export.BB2RIFStructure.DME;
 import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -77,7 +78,7 @@ public class BB2RIFExporterTest {
     Generator generator = new Generator(generatorOpts, exportOpts);
     generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
-      generator.generatePerson(i);
+      generator.generatePerson(i, i);
     }
     // Adding post completion exports to generate organizations and providers CSV files
     Exporter.runPostCompletionExports(generator, exportOpts);
@@ -222,13 +223,11 @@ public class BB2RIFExporterTest {
     } catch (IOException | IllegalArgumentException e) {
       return;
     }
-    Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
-    Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
-    Generator generator = new Generator(generatorOpts, exportOpts);
+    RandomNumberGenerator random = new DefaultRandomNumberGenerator(0);
     CodeMapper mapper = new CodeMapper("condition_code_map.json");
     assertTrue(mapper.canMap("10509002"));
-    assertEquals("J20.9", mapper.map("10509002", generator));
-    assertEquals("J209", mapper.map("10509002", generator, true));
+    assertEquals("J20.9", mapper.map("10509002", random));
+    assertEquals("J209", mapper.map("10509002", random, true));
     assertFalse(mapper.canMap("not a code"));
   }
 
