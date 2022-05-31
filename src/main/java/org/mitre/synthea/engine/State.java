@@ -1328,7 +1328,7 @@ public abstract class State implements Cloneable, Serializable {
     }
 
     /**
-     * Apply all the various features to the medication
+     * Apply all the various features to the medication.
      * @param person the Person.
      * @param medication the Medication.
      */
