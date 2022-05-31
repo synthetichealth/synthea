@@ -1301,6 +1301,9 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       String primaryCode = codes.get(0).code;
+      // Check if this person is already on this medication...
+      boolean isAlreadyOnMedication = (person.record.presentOnset(primaryCode) != null);
+
       Medication medication = person.record.medicationStart(time, primaryCode, chronic);
       entry = medication;
       medication.name = this.name;
@@ -1324,6 +1327,9 @@ public abstract class State implements Cloneable, Serializable {
 
       medication.prescriptionDetails = prescription;
       medication.administration = administration;
+      if (medication.administration && !isAlreadyOnMedication) {
+        person.record.medicationEnd(time, primaryCode, null);
+      }
 
       if (shouldAssignAttribute()) {
         person.attributes.put(assignToAttribute, medication);
