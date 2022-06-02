@@ -14,6 +14,7 @@ import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.LostCareHealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
@@ -144,7 +145,7 @@ public class QualityOfLifeModule extends Module {
 
     // Get counts of uncovered healthcare.
     int uncoveredEntries;
-    if (person.lossOfCareEnabled) {
+    if (LostCareHealthRecord.lossOfCareEnabled) {
       List<Entry> allLossOfCareConditions = new ArrayList<Entry>();
       int uncoveredMedicationCount = 0;
       int uncoveredProcedureCount = 0;

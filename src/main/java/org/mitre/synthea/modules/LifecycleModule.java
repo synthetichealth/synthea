@@ -850,9 +850,10 @@ public final class LifecycleModule extends Module {
       }
     }
 
-    if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
-      person.recordDeath(time, LOSS_OF_CARE);
-    }
+    // TODO - How to record a death as being due to lost care?
+    // if (ENABLE_DEATH_BY_LOSS_OF_CARE && deathFromLossOfCare(person)) {
+    //   person.recordDeath(time, LOSS_OF_CARE);
+    // }
 
     if (person.attributes.containsKey(Person.DEATHDATE)) {
       Long deathDate = (Long) person.attributes.get(Person.DEATHDATE);
@@ -895,32 +896,6 @@ public final class LifecycleModule extends Module {
     double adjustedRisk = Utilities.convertRiskToTimestep(yearlyRisk, oneYearInMs);
 
     return adjustedRisk;
-  }
-
-  /**
-   * Determines whether a person dies due to loss-of-care and lack of
-   * necessary treatment.
-   *
-   * @param person the person to check for loss of care death.
-   */
-  public static boolean deathFromLossOfCare(Person person) {
-    // Search the person's lossOfCareHealthRecord for missed treatments.
-    // Based on missed treatments, increase likelihood of death.
-    if (person.lossOfCareEnabled) {
-      for (Encounter encounter : person.lossOfCareRecord.encounters) {
-        for (Procedure procedure : encounter.procedures) {
-          for (Code code : procedure.codes) {
-            /*
-             * TODO USE A LOOKUP TABLE FOR DEATH PROBABILITIES FOR LACK OF TREATMENTS HERE
-             */
-            if (code.code.equals("33195004")) {
-              return person.rand() < 0.6;
-            }
-          }
-        }
-      }
-    }
-    return false;
   }
 
   private static void startSmoking(Person person, long time) {

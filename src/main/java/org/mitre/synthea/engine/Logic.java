@@ -12,6 +12,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.LostCareHealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -207,7 +208,7 @@ public abstract class Logic implements Serializable {
         for (Code code : this.codes) {
           // First, look in the current health record for the latest observation
           HealthRecord.Observation last = person.record.getLatestObservation(code.code);
-          if (person.lossOfCareEnabled) {
+          if (LostCareHealthRecord.lossOfCareEnabled) {
             if (last == null) {
               // If the observation is not in the current record,
               // it could be in the uncovered health record.
@@ -581,6 +582,32 @@ public abstract class Logic implements Serializable {
     @Override
     public boolean test(Person person, long time) {
       return Utilities.compare(person.getVitalSign(vitalSign, time), value, operator);
+    }
+  }
+
+  public static class LostCare extends ActiveLogic {
+    @Override
+    boolean checkCode(Person person, Code code) {
+      if(LostCareHealthRecord.lossOfCareEnabled) {
+        return person.lossOfCareRecord.containsCode(code);
+      }
+      return false;
+    }
+
+    @Override
+    boolean checkAttribute(Person person, Entry entry) {
+      return person.lossOfCareRecord.present.containsKey(entry.type);
+    }
+
+    @Override
+    Entry findItemWhenMultipleRecords(Person person, Code code) {
+      return findEntryFromHistory(person, HealthRecord.Entry.class, code);
+    }
+
+    @Override
+    void addItemWhenDataIsDuplicated(Person person, long time, Entry entry) {
+      // Should this happen?
+      person.lossOfCareRecord.currentEncounter(time).conditions.add(entry);
     }
   }
 }
