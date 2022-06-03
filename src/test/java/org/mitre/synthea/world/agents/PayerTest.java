@@ -303,7 +303,7 @@ public class PayerTest {
     // They should have not have Medicaid in this first year.
     assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
     // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
-    person.coverage.getPlanRecordAtTime(time).incrementExpenses(BigDecimal.valueOf(19699));
+    person.coverage.getPlanRecordAtTime(time).incrementHealthcareExpenses(BigDecimal.valueOf(19699));
     // Now process their insurance and they should switch to Medicaid.
     time += Utilities.convertTime("years", 1.001);
     healthInsuranceModule.process(person, time);

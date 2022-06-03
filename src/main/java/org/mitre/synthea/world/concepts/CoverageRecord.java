@@ -69,7 +69,7 @@ public class CoverageRecord implements Serializable {
       return sb.toString();
     }
 
-    public void incrementExpenses(BigDecimal expenses) {
+    public void incrementHealthcareExpenses(BigDecimal expenses) {
       this.healthcareExpenses = this.healthcareExpenses.add(expenses);
     }
 
@@ -231,7 +231,7 @@ public class CoverageRecord implements Serializable {
    * @return The healthcare expenses.
    */
   public BigDecimal getTotalHealthcareExpenses() {
-    BigDecimal total = BigDecimal.ZERO;
+    BigDecimal total = Claim.ZERO_CENTS;
     for (PlanRecord plan : planHistory) {
       total = total.add(plan.healthcareExpenses);
     }
@@ -350,14 +350,19 @@ public class CoverageRecord implements Serializable {
    * @param time  The time to check for.
    * @return
    */
-  public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
-    CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
-    BigDecimal currentYearlyExpenses = BigDecimal.ZERO;
-    if (planRecord != null) {
-      currentYearlyExpenses = currentYearlyExpenses.add(planRecord.getHealthcareExpenses());
-      currentYearlyExpenses = currentYearlyExpenses.add(planRecord.getInsuranceCosts());
-    }
-    return (BigDecimal.valueOf(yearlyIncome).subtract(currentYearlyExpenses))
+  public boolean doExpensesExceedIncome(int yearlyIncome, long time) {
+    BigDecimal currentYearExpenses = this.getYearsExpenses(time);
+    return (BigDecimal.valueOf(yearlyIncome).subtract(currentYearExpenses))
         .compareTo(BigDecimal.ZERO) == 1;
+  }
+
+  private BigDecimal getYearsExpenses(long time) {
+    BigDecimal yearsExpenses = Claim.ZERO_CENTS;
+    CoverageRecord.PlanRecord planRecord = this.getPlanRecordAtTime(time);
+    if (planRecord != null) {
+      yearsExpenses = yearsExpenses.add(planRecord.getHealthcareExpenses());
+      yearsExpenses = yearsExpenses.add(planRecord.getInsuranceCosts());
+    }
+    return yearsExpenses;
   }
 }

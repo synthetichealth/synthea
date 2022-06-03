@@ -50,7 +50,7 @@ public class Claim implements Serializable {
     void assignCosts(PlanRecord planRecord) {
       this.cost = this.entry.getCost();
 
-      if (!plan.coversService(this.entry)) {
+      if (!plan.coversService(this.entry) || plan.isNoInsurance()) {
         plan.incrementUncoveredEntries(this.entry);
         // Plan does not cover care
         this.paidByPatient = this.cost;
@@ -65,7 +65,7 @@ public class Claim implements Serializable {
       if (planRecord.remainingDeductible.compareTo(BigDecimal.ONE) == -1
           && planRecord.isDedctiblePlan()) {
         this.paidByDeductible = adjustedCost;
-        this.paidByPatient = BigDecimal.ZERO;
+        this.paidByPatient = ZERO_CENTS;
         this.paidByPayer = this.paidByDeductible;
         return;
       }
@@ -205,7 +205,7 @@ public class Claim implements Serializable {
       totals.addCosts(item);
     }
 
-    planRecord.incrementExpenses(totals.paidByPatient);
+    planRecord.incrementHealthcareExpenses(totals.paidByPatient);
     planRecord.incrementCoverage(totals.paidByPayer);
     planRecord.incrementCoverage(totals.paidBySecondaryPayer);
     planRecord.plan.addCoveredCost(totals.paidByPayer);

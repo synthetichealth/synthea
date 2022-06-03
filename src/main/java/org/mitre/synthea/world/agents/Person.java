@@ -524,7 +524,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
     // meaning we can guarantee that they currently have no insurance.
-    if (LostCareHealthRecord.lossOfCareEnabled && !this.stillHasIncome(time)) {
+    boolean stillHasIncome = this.stillHasIncome(time);
+    if (LostCareHealthRecord.lossOfCareEnabled && !stillHasIncome) {
       return this.lossOfCareRecord;
     }
 
@@ -737,7 +738,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   private boolean stillHasIncome(long time) {
     boolean stillHasIncome
-        = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
+        = this.coverage.doExpensesExceedIncome((int) this.attributes.get(Person.INCOME), time);
     if (!stillHasIncome) {
       // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());

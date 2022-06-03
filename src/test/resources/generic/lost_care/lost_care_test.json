@@ -1,0 +1,67 @@
+{
+  "name": "Lost Care Test",
+  "remarks": [
+    "A module that tests the lost care functionality. If a person misses a certain procedure, they should die."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_Procedure_Code"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_For_Missed_Procedure_Code": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Mortality_Check",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "4815162342",
+                "display": "Procedure that, if missed, should result in death. Based on the numbers from LOST."
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Re-Check"
+        }
+      ]
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "direct_transition": "Death"
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_BREAST_CANCER"
+        }
+      ]
+    },
+    "Yearly_Mortality_Re-Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_Procedure_Code"
+    }
+  },
+  "gmf_version": 2
+}
