@@ -118,7 +118,7 @@ public class LostCareImpactsTest {
     time = time + Utilities.convertTime("months", 13);
     lostCareModule.process(person, time);
     assertFalse(
-        "Test that the person is no longer alive. The SNOMED code is now in the lost care record meaning they should die.",
+        "Test that the person is no longer alive because the SNOMED code is now in the lost care record.",
         person.alive(time));
 
     // The person's cause of death should be lost care.

@@ -131,7 +131,6 @@ public class Module implements Cloneable, Serializable {
     Path basePath = modulesPath.getParent();
     Utilities.walkAllModules(modulesPath, t -> {
       String relativePath = relativePath(t, modulesPath);
-      System.out.println(relativePath);
       boolean lostCareModule = relativePath.split("/")[0].equals("lost_care");
       if(lostCareModule && !LostCareHealthRecord.lossOfCareEnabled) {
         // Since this is a lost-care module and loss of care is not enabled, it should not be loaded.

@@ -15,7 +15,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Mortality_Check",
+          "transition": "Pause_Breast_Cancer_Module",
           "condition": {
             "condition_type": "Lost Care",
             "codes": [
@@ -70,6 +70,11 @@
       },
       "unit": "years",
       "direct_transition": "Check_For_Missed_Breast_Cancer_Care"
+    },
+    "Pause_Breast_Cancer_Module": {
+      "type": "Simple",
+      "direct_transition": "Mortality_Check",
+      "modulesToPause": "breast_cancer"
     }
   },
   "gmf_version": 2
