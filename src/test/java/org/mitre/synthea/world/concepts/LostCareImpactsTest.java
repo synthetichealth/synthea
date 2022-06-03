@@ -121,7 +121,9 @@ public class LostCareImpactsTest {
         "Test that the person is no longer alive. The SNOMED code is now in the lost care record meaning they should die.",
         person.alive(time));
 
-    // Cause of death should be LOST_CARE.
+    // The person's cause of death should be lost care.
+    Code lostCareCode = new Code("SNOMED-CT", "LOST_CARE_TEST_CODE", "LOST_CARE_TEST_DISPLAY");
+    assertEquals(lostCareCode, person.attributes.get(Person.CAUSE_OF_DEATH));
   }
 
   /**

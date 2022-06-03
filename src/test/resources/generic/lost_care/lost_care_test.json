@@ -46,8 +46,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "LOST_CARE",
-          "display": "LOST_CARE_BREAST_CANCER"
+          "code": "LOST_CARE_TEST_CODE",
+          "display": "LOST_CARE_TEST_DISPLAY"
         }
       ]
     },
