@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+##############################################################################
+##
+##  Flexporter launcher for UN*X
+##
+##############################################################################
+
+ARGS=
+
+for arg in "$@"
+do
+    ARGS=$ARGS\'$arg\',
+    # Trailing comma ok, don't need to remove it
+done
+
+./gradlew flexporter -Params="[$ARGS]"
+

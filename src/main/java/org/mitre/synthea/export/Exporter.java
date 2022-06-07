@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.parser.IParser;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +23,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.flexporter.Actions;
+import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
@@ -68,6 +69,7 @@ public abstract class Exporter {
         !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
+    private List<Mapping> flexporterMappings;
 
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
@@ -227,9 +229,18 @@ public abstract class Exporter {
     }
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
+      org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+      
+      if (options.flexporterMappings != null) {
+    	  for (Mapping mapping : options.flexporterMappings) {
+    		  // flexport on the bundle here
+    		  Actions.applyMapping(bundle, mapping, person);
+    	  }
+      }
+      
+      IParser parser = FhirR4.getContext().newJsonParser();
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
-        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
+        parser.setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -237,7 +248,8 @@ public abstract class Exporter {
           appendToFile(outFilePath, entryJson);
         }
       } else {
-        String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
+        parser.setPrettyPrint(true);
+        String bundleJson = parser.encodeResourceToString(bundle);
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }

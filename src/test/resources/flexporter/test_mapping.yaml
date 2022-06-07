@@ -1,0 +1,135 @@
+---
+# name is just a friendly name for this mapping
+name: Random Testing
+
+# applicability determines whether this mapping applies to a given file.
+# for now the assumption is 1 file = 1 synthea patient bundle.
+applicability: true
+
+actions:
+ - name: Apply Profiles
+   # v1: define specific profiles and an applicability statement on when to apply them
+   # v1.1: allow specifying a field from the profile to key off of (ex. mCode TNMPrimaryTumorCategory.code)
+   # maybe v2 will automatically infer?
+   # some of the challenges to keep in mind:
+   #  - what if the resource doesn't conform to the profile yet? 
+   #    we should make sure we can take other actions before applying profiles, 
+   #    or manually specify where to apply profiles so that we can apply other fixes based on profile later.
+   profiles:
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient
+     applicability: Patient
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter
+     applicability: Encounter
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition
+   #   applicability: Condition
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation
+   #   applicability: Observation
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure
+   #   applicability: Procedure
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest
+   #   applicability: MedicationRequest
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunization
+   #   applicability: Immunization
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careplan
+   #   applicability: CarePlan
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy
+   #   applicability: ImagingStudy
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-device
+   #   applicability: Device
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitioner
+   #   applicability: Practitioner
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-allergyintolerance
+   #   applicability: AllergyIntolerance
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-claim
+   #   applicability: Claim
+
+
+ - name: testSetValues
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.birthDate
+           value: !!str "1987-06-05"
+
+
+ - name: testSetValues_getField
+   set_values:
+     - applicability: Immunization
+       fields:
+         - location: Immunization.recorded
+           value: $getField([Immunization.occurrence])
+           # TODO: occurrence is a choice type,
+           # it would be nice to put "occurrenceDateTime" here
+           # since that's what's actually in the JSON
+           # but that doesn't seem to work with HAPI's FhirPath
+
+ - name: testSetValues_overwrite
+   set_values:
+     - applicability: Observation
+       fields:
+         - location: Observation.effectiveInstant
+           value: $getField([Observation.effective])
+     #     - location: Observation.referenceRange.text
+     #       value: sample reference range text
+     #     - location: Observation.valueString
+     #       value: string value here
+     #     - location: Observation.derivedFrom.reference
+     #       value: $findRef([Observation]) 
+
+ - name: testSetValues_transform
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.birthDate.extension.where(url='http://hl7.org/fhir/StructureDefinition/patient-birthTime').valueDateTime
+           value: $getField([Patient.birthDate])
+           transform: toDateTime
+
+ - name: testCreateResources_createSingle
+   create_resource: 
+     - resourceType: ServiceRequest
+       profiles:
+         - http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest
+       fields:
+         - location: ServiceRequest.status
+           value: active
+         - location: ServiceRequest.subject.reference
+           value: $findRef([Patient])
+
+
+ - name: testCreateResources_createBasedOn
+   create_resource: 
+     - resourceType: ServiceRequest
+       based_on: Procedure
+       fields:
+         - location: ServiceRequest.intent
+           value: plan
+         - location: ServiceRequest.encounter.reference
+           value: $getField([Procedure.encounter.reference])
+       # TODO: is "writeback" the best term here?
+       writeback:
+         - location: Procedure.basedOn.reference
+           value: $setRef([ServiceRequest])
+
+ - name: testCreateResources_getAttribute
+   create_resource: 
+     - resourceType: Patient
+       fields:
+         - location: Patient.name.text
+           value: $getAttribute([name])
+         - location: Patient.name.given
+           value: $getAttribute([first_name])
+         - location: Patient.name.family
+           value: $getAttribute([last_name])
+
+
+
+# TODO: on keep/delete, check for references to removed items!!
+ - name: testKeepResources
+   keep_resources:
+     - Patient
+     - Encounter
+     - Condition
+
+ - name: testDeleteResources
+   delete_resources:
+     - Provenance

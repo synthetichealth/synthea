@@ -58,6 +58,11 @@ dependencies {
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:6.1.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.1.0'
   implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:6.1.0'
+
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:6.1.0'
   // C-CDA export uses Apache FreeMarker templates
   implementation 'org.freemarker:freemarker:2.3.31'
 
@@ -123,10 +128,6 @@ dependencies {
   testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
   testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
   testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.2'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:6.1.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:6.1.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:6.1.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:6.1.0'
   testImplementation 'com.helger:ph-schematron:5.6.5'
   testImplementation 'com.helger:ph-commons:9.5.5'
   testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
@@ -178,6 +179,7 @@ task graphviz(type: JavaExec) {
   mainClass = "Graphviz"
 }
 
+
 task rifMinimize(type: JavaExec) {
   group 'Application'
   description 'Filter exported RIF files to produce minimal set that covers all claim types'
@@ -227,6 +229,19 @@ shadowJar {
 }
 
 task uberJar() {
+}
+
+task flexporter(type: JavaExec) {
+  group 'Application'
+  description 'Apply transformations to FHIR'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "RunFlexporter"
+  // args are called "arams" because they are called with -P,
+  // ex. gradle run -Params="['arg1', 'args2']"
+  // see https://stackoverflow.com/questions/27604283/gradle-task-pass-arguments-to-java-application
+  if (project.hasProperty("arams")) {
+    args Eval.me(arams)
+  }
 }
 
 task concepts(type: JavaExec) {
