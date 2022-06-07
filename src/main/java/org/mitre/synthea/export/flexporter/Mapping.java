@@ -14,7 +14,7 @@ public class Mapping {
   public String applicability;
 
   /**
-   * Each action is a Map<String,?>. Nested fields within the YAML become ArrayLists and
+   * Each action is a Map&lt;String,?&gt;. Nested fields within the YAML become ArrayLists and
    * LinkedHashMaps.
    */
   public List<Map<String, Object>> actions;

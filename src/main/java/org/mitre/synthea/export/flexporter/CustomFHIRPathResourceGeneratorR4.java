@@ -33,14 +33,14 @@ import ca.uhn.fhir.context.RuntimeResourceBlockDefinition;
  *  -- add support for BackboneElements
  *  -- swapped constructors, pass in a FhirContext to avoid recreating it for each resource
  *  -- add support for extensions on primitives
- *  -- more advanced java generics (some functions now take in Class<? extends T> instead of just T
+ *  -- more advanced java generics (some functions now take in Class&lt;? extends T&gt; instead of just T
  *  -- reformatted per Synthea style guidelines
  *
  *  Original:
  * https://github.com/hapifhir/hapi-fhir/blob/master/hapi-fhir-validation/src/main/java/org/hl7/fhir/common/hapi/validation/validator/FHIRPathResourceGeneratorR4.java
  *
  *
- * @author Marcel Parciak <marcel.parciak@med.uni-goettingen.de>
+ * @author Marcel Parciak marcel.parciak@med.uni-goettingen.de
  *
  */
 public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
@@ -92,7 +92,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   /**
    * Setter for the FHIRPath mapping Map instance.
    *
-   * @param mapping Map<String, String> a mapping of FHIRPath to value Strings that will be used to
+   * @param mapping Map&lt;String, String&gt; a mapping of FHIRPath to value Strings that will be used to
    *        create a Resource.
    */
   public void setMapping(Map<String, String> mapping) {
@@ -109,9 +109,8 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   }
 
   /**
-   * Getter for a generated Resource. null if no Resource has been generated yet.
-   *
-   * @return T the generated Resource or null.
+   * Sets the resource to apply FHIRPath changes to. 
+   * If not set, calling generateResource will instantiate a new resource.
    */
   public void setResource(T resource) {
     this.resource = resource;
@@ -135,7 +134,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * The generation method that yields a new instance of class `resourceClass` with every value set
    * in the FHIRPath mapping.
    *
-   * @param resourceClass Class<T> The class of the Resource that shall be created.
+   * @param resourceClass Class&lt;T&gt; The class of the Resource that shall be created.
    * @return T a new FHIR Resource instance of class `resourceClass`.
    */
   public T generateResource(Class<? extends T> resourceClass) {
