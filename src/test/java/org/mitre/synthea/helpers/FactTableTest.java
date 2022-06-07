@@ -45,6 +45,7 @@ public class FactTableTest {
     // Insert some facts.
     int h = table.addFact("H", "Hydrogen,Highly flammable gas");
     Assert.assertNull(table.getFactByKey("Iwcz&T&5+;N4Sb)kE+#P"));
+    Assert.assertEquals("Hydrogen,Highly flammable gas", table.getFactByKey("H"));
   }
 
 }
