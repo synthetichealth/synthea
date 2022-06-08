@@ -237,11 +237,15 @@ public class PayerManager {
     double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     boolean medicareSupplement = Boolean.parseBoolean(line.remove("medicare_supplement"));
     String eligibilityName = line.remove("eligibility_algorithm");
-    String startAvailable = line.remove("start_available");
-    String endAvailable = line.remove("end_available");
+    int startAvailable = Integer.parseInt(line.remove("start_availability"));
+    String endAvailableStr = line.remove("end_availablity");
+    int endAvailable = 0;
+    if (!endAvailableStr.equals("")) {
+      endAvailable = Integer.parseInt(endAvailableStr);
+    }
     Payer payer = PayerManager.getPayerById(payerId);
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremium, medicareSupplement, eligibilityName);
+        defaultCopay, monthlyPremium, medicareSupplement, eligibilityName, startAvailable, endAvailable);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -274,7 +278,7 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, "generic");
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, "generic", 0, 0);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
@@ -332,7 +336,7 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = getAllPlans(getAllPayers());
+    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove medicare supplement plans from this check.
     plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
         .collect(Collectors.toSet());
@@ -356,9 +360,16 @@ public class PayerManager {
    * Returns all plans loaded by the set of payers.
    * @return The set of plans.
    */
-  public static Set<InsurancePlan> getAllPlans(List<Payer> payers) {
+  /**
+   * Returns all active plans in the given payers based on the given time.
+   * @param payers  The payers.
+   * @param time  The time for the plan to be active in.
+   * @return The set of active plans.
+   */
+  public static Set<InsurancePlan> getActivePlans(List<Payer> payers, long time) {
     Set<InsurancePlan> plans = payers.stream().map(payer ->
         payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
+    plans = plans.stream().filter(plan -> plan.isActive(time)).collect(Collectors.toSet());
     return plans;
   }
 
@@ -379,7 +390,7 @@ public class PayerManager {
    */
   public static InsurancePlan findMedicareSupplement(Person person,
       EncounterType service, long time) {
-    Set<InsurancePlan> plans = getAllPlans(getAllPayers());
+    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove non-medicare supplement plans from this check.
     plans = plans.stream().filter(plan ->
         plan.isMedicareSupplementPlan()).collect(Collectors.toSet());

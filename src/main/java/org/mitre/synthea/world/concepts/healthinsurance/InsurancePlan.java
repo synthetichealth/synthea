@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
 
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
@@ -28,8 +29,11 @@ public class InsurancePlan implements Serializable {
   private final BigDecimal monthlyPremium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
-  // Plan Eligibilty strategy.
+  // Plan Eligibilty.
   private final IPlanEligibility planEligibility;
+  // Start/end date of plan availablity.
+  private final long activeStart;
+  private final long activeEnd;
 
   /**
    * Constructor for an InsurancePlan.
@@ -43,7 +47,7 @@ public class InsurancePlan implements Serializable {
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
       BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
-      BigDecimal monthlyPremium, boolean medicareSupplement, String eligibilityName) {
+      BigDecimal monthlyPremium, boolean medicareSupplement, String eligibilityName, int yearAvailable, int yearEnd) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -54,6 +58,15 @@ public class InsurancePlan implements Serializable {
     // Set the payer's eligibility criteria.
     this.planEligibility
         = PlanEligibilityFinder.getEligibilityAlgorithm(eligibilityName);
+    // Set the availablity window of this plan.
+    if(yearEnd == 0){
+      yearEnd = 3000;
+    }
+    if (yearAvailable >= yearEnd) {
+      throw new RuntimeException("Plan start year cannot be after its end year. Got start year: " + yearAvailable + " and end year " + yearEnd + ".");
+    }
+    this.activeStart = Utilities.convertCalendarYearsToTime(yearAvailable);
+    this.activeEnd = Utilities.convertCalendarYearsToTime(yearEnd);
   }
 
   /**
@@ -243,6 +256,15 @@ public class InsurancePlan implements Serializable {
    */
   public boolean isCopayBased() {
     return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  /**
+   * Returns wether this plan is active at the given time.
+   * @param time The time to check if the plan is active at.
+   * @return wether this plan is active at the given time.
+   */
+  public boolean isActive(long time) {
+    return this.activeStart <= time && time <= this.activeEnd;
   }
 
 }
