@@ -1,0 +1,77 @@
+{
+  "name": "Lost Care Colorectal Cancer",
+  "remarks": [
+    "A module that simulate the lost care impacts on Colorectal Cancer."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_Colorectal_Cancer_Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Yearly_Mortality_Check",
+          "distribution": 0.32999999999999996
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.67
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_COLORECTAL_CANCER"
+        }
+      ]
+    },
+    "Yearly_Mortality_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_Colorectal_Cancer_Care"
+    },
+    "Check_For_Missed_Colorectal_Cancer_Care": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pause_Colorectal_Cancer_Module",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "395082007",
+                "display": "Colorectal cancer care plan"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Check"
+        }
+      ]
+    },
+    "Pause_Colorectal_Cancer_Module": {
+      "type": "Simple",
+      "direct_transition": "Mortality_Check",
+      "modulesToPause": "breast_cancer"
+    }
+  },
+  "gmf_version": 2
+}

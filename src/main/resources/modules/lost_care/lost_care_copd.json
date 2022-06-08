@@ -1,0 +1,77 @@
+{
+  "name": "Lost Care COPD",
+  "remarks": [
+    "A module that simulate the lost care impacts on COPD."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_COPD_Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Yearly_Mortality_Check",
+          "distribution": 0.32999999999999996
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.67
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_COPD"
+        }
+      ]
+    },
+    "Yearly_Mortality_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_COPD_Care"
+    },
+    "Check_For_Missed_COPD_Care": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pause_COPD_Module",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "127783003",
+                "display": "COPD care (Spirometry (procedure))"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Check"
+        }
+      ]
+    },
+    "Pause_COPD_Module": {
+      "type": "Simple",
+      "direct_transition": "Mortality_Check",
+      "modulesToPause": "copd"
+    }
+  },
+  "gmf_version": 2
+}
