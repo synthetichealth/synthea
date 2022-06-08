@@ -57,7 +57,7 @@ public class PayerManager {
   /* U.S. States loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
 
-  /* Payer Finder. */
+  // Plan Finder.
   private static IPlanFinder planFinder;
   // Payer selection algorithm choices:
   private static final String RANDOM = "random";
@@ -213,9 +213,8 @@ public class PayerManager {
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
-    String eligibilityName = line.remove("eligibility_algorithm");
 
-    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, eligibilityName);
+    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
 
     // Add remaining columns we didn't map to first-class fields to payer's
     // attributes map.
@@ -237,9 +236,12 @@ public class PayerManager {
     double defaultCopay = Double.parseDouble(line.remove("default_copay"));
     double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     boolean medicareSupplement = Boolean.parseBoolean(line.remove("medicare_supplement"));
+    String eligibilityName = line.remove("eligibility_algorithm");
+    String startAvailable = line.remove("start_available");
+    String endAvailable = line.remove("end_available");
     Payer payer = PayerManager.getPayerById(payerId);
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremium, medicareSupplement);
+        defaultCopay, monthlyPremium, medicareSupplement, eligibilityName);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -271,8 +273,8 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
-        statesCovered, NO_INSURANCE, "generic");
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false);
+        statesCovered, NO_INSURANCE);
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, "generic");
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 

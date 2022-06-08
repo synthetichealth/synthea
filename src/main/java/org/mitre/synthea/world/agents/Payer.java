@@ -56,10 +56,7 @@ public class Payer implements Serializable {
   private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
   private transient Table<Integer, String, AtomicInteger> entryUtilization;
-
   private final String planLinkId;
-
-  private final String eligibilityName;
 
   /**
    * Simple bean used to add Java Serialization support to
@@ -118,13 +115,11 @@ public class Payer implements Serializable {
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
    */
-  public Payer(String name, String id, Set<String> statesCovered,
-      String ownership, String eligibilityName) {
+  public Payer(String name, String id, Set<String> statesCovered, String ownership) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name. Payer ID: " + id + ".");
     }
     this.name = name;
-    this.eligibilityName = eligibilityName;
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
@@ -148,11 +143,11 @@ public class Payer implements Serializable {
    * @param monthlyPremium  The monthly premium.
    */
   public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
-      double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
+      double defaultCopay, double monthlyPremium, boolean medicareSupplement, String eligibilityName) {
     InsurancePlan newPlan = new InsurancePlan(
         this, servicesCovered, BigDecimal.valueOf(deductible),
         BigDecimal.valueOf(defaultCoinsurance), BigDecimal.valueOf(defaultCopay),
-        BigDecimal.valueOf(monthlyPremium), medicareSupplement);
+        BigDecimal.valueOf(monthlyPremium), medicareSupplement, eligibilityName);
     this.plans.add(newPlan);
   }
 
@@ -576,10 +571,6 @@ public class Payer implements Serializable {
 
   public String getPlanLinkId() {
     return this.planLinkId;
-  }
-
-  public String getEligibilityName() {
-    return this.eligibilityName;
   }
 
 }
