@@ -191,3 +191,10 @@ $(window).scroll(function(event) {
     updateActiveOnPage(window.location.pathname);
 }); 
 
+$(document).ready(function(){
+    // binding click events to elements
+    var locationHash = window.location.hash.substring(1);
+    if(locationHash == 'thankyou'){
+        $('#thankYouModal').modal("show");
+    }
+});
