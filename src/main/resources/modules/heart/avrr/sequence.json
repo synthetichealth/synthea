@@ -1,5 +1,6 @@
 {
   "name": "sequence",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "AVRR sequence."
   ],
@@ -260,7 +261,7 @@
         {
           "system": "SNOMED-CT",
           "code": 306185001,
-          "display": "Referral to cardiac surgery service (procedure"
+          "display": "Referral to cardiac surgery service (procedure)"
         }
       ],
       "distribution": {

@@ -93,7 +93,19 @@ public class PerformTAVR extends Module {
         surgeonsById.put(surgeonId, clin);
       }
 
-      provider.clinicianMap.put(ClinicianSpecialty.CARDIAC_SURGERY, new ArrayList<Clinician>(surgeonsById.values()));
+      synchronized (provider.clinicianMap) {
+        if (!provider.clinicianMap.containsKey(ClinicianSpecialty.CARDIAC_SURGERY)) {
+          provider.clinicianMap.put(ClinicianSpecialty.CARDIAC_SURGERY,
+              new ArrayList<Clinician>(surgeonsById.values()));
+        } else {
+          List<Clinician> alreadyExist =
+              provider.clinicianMap.get(ClinicianSpecialty.CARDIAC_SURGERY);
+          surgeonsById.clear();
+          for (Clinician doc : alreadyExist) {
+            surgeonsById.put((String) doc.attributes.get(Clinician.NAME), doc);
+          }
+        }
+      }
       
       // Finally, go back through the surgeon file data and create distributions
       // for each surgery...
@@ -117,7 +129,7 @@ public class PerformTAVR extends Module {
         clin.attributes.put(operation, distribution);
         // note that surgeons have different mean times for on/off pump
         
-        clin.attributes.put("mean_surgeon_time", mean);
+        clin.attributes.put("mean_surgeon_time_tavr", mean);
         surgeons.add(weight, clin);
       }
     } catch (Exception e) {
@@ -161,10 +173,11 @@ public class PerformTAVR extends Module {
       tavr.clinician = surgeon;
 
       surgeon.incrementEncounters();
+      surgeon.incrementProcedures();
       surgeon.getOrganization().incrementEncounters(EncounterType.INPATIENT, Utilities.getYear(time));
 
       // hack this clinician back onto the record?
-      person.record.currentEncounter(stopTime).clinician = surgeon;
+      person.record.currentEncounter(time).clinician = surgeon;
 
       String reason = "cardiac_surgery_reason";
 
@@ -209,7 +222,7 @@ public class PerformTAVR extends Module {
 
     double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
 
-    double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time");
+    double meanSurgeonTime = (double) surgeon.attributes.get("mean_surgeon_time_tavr");
 
     double gaussianNoise = person.randGaussian();
     

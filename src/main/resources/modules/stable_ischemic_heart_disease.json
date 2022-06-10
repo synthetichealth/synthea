@@ -1,5 +1,6 @@
 {
   "name": "Stable Ischemic Heart Disease",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "states": {
     "Initial": {
       "type": "Initial",

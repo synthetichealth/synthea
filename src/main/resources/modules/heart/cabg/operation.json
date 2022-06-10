@@ -1,5 +1,6 @@
 {
   "name": "operation",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "This submodule of Cardiac Surgery models the CABG Operation.",
     " ",

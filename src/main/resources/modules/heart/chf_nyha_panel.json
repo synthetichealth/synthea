@@ -1,5 +1,6 @@
 {
   "name": "chf_nyha_panel",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Create NYHA Panel"
   ],

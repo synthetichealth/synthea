@@ -828,8 +828,12 @@ public abstract class State implements Cloneable, Serializable {
         }
       } else {
         EncounterType type = EncounterType.fromString(encounterClass);
+        String specialty = ClinicianSpecialty.GENERAL_PRACTICE;
+        if (this.module.specialty != null) {
+          specialty = this.module.specialty;
+        }
         HealthRecord.Encounter encounter = EncounterModule.createEncounter(person, time, type,
-            ClinicianSpecialty.GENERAL_PRACTICE, null);
+            specialty, null);
         entry = encounter;
         if (codes != null) {
           encounter.codes.addAll(codes);

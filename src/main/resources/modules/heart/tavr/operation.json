@@ -1,5 +1,6 @@
 {
   "name": "operation",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Note: the Encounter used for everything here is expected to have been started in the AVRr referral submodule"
   ],

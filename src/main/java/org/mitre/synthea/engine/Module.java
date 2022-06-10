@@ -263,6 +263,7 @@ public class Module implements Cloneable, Serializable {
   }
 
   public String name;
+  public String specialty;
   public boolean submodule;
   public Double gmfVersion;
   public List<String> remarks;
@@ -280,6 +281,10 @@ public class Module implements Cloneable, Serializable {
    */
   public Module(JsonObject definition, boolean submodule) throws Exception {
     name = String.format("%s Module", definition.get("name").getAsString());
+
+    if (definition.has("specialty")) {
+      specialty = definition.get("specialty").getAsString();
+    }
 
     if (definition.has("gmf_version")) {
       this.gmfVersion = definition.get("gmf_version").getAsDouble();
@@ -313,6 +318,7 @@ public class Module implements Cloneable, Serializable {
   public Module clone() {
     Module clone = new Module();
     clone.name = this.name;
+    clone.specialty = this.specialty;
     clone.submodule = this.submodule;
     clone.remarks = this.remarks;
     if (this.states != null) {

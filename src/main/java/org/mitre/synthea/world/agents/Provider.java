@@ -496,6 +496,9 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public Clinician chooseClinicianList(String specialty, RandomNumberGenerator rand) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
+    if (clinicians == null || clinicians.isEmpty()) {
+      clinicians = this.clinicianMap.get(ClinicianSpecialty.GENERAL_PRACTICE);
+    }
     Clinician doc = clinicians.get(rand.randInt(clinicians.size()));
     doc.incrementEncounters();
     return doc;

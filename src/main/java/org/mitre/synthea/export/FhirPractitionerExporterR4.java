@@ -1,6 +1,5 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
 import com.google.common.collect.Table;
 
 import java.io.File;
@@ -29,6 +28,8 @@ public abstract class FhirPractitionerExporterR4 {
 
   private static final String EXTENSION_URI = 
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
+  private static final String PROC_EXTENSION_URI =
+      "http://synthetichealth.github.io/synthea/utilization-procedures-extension";
 
   /**
    * Export the practitioner in FHIR R4 format.
@@ -59,6 +60,11 @@ public abstract class FhirPractitionerExporterR4 {
                 practitioner.addExtension()
                   .setUrl(EXTENSION_URI)
                   .setValue(new IntegerType(doc.getEncounterCount()));
+                if (doc.getProcedureCount() > 0) {
+                  practitioner.addExtension()
+                    .setUrl(PROC_EXTENSION_URI)
+                    .setValue(new IntegerType(doc.getProcedureCount()));
+                }
               }
             }
           }

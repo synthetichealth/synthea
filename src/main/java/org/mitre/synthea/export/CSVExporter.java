@@ -298,7 +298,7 @@ public class CSVExporter {
     organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,REVENUE,UTILIZATION");
     organizations.write(NEWLINE);
     providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
-        + "UTILIZATION");
+        + "ENCOUNTERS,PROCEDURES");
     providers.write(NEWLINE);
     payers.write("Id,NAME,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
         + "AMOUNT_UNCOVERED,REVENUE,COVERED_ENCOUNTERS,UNCOVERED_ENCOUNTERS,COVERED_MEDICATIONS,"
@@ -1120,7 +1120,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void provider(Clinician provider, String orgId) throws IOException {
-    // Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,UTILIZATION
+    // Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,ENCOUNTERS,PROCEDURES
 
     StringBuilder s = new StringBuilder();
     s.append(provider.getResourceID()).append(',');
@@ -1133,7 +1133,8 @@ public class CSVExporter {
     }
     s.append(provider.getY()).append(',');
     s.append(provider.getX()).append(',');
-    s.append(provider.getEncounterCount());
+    s.append(provider.getEncounterCount()).append(',');
+    s.append(provider.getProcedureCount());
 
     s.append(NEWLINE);
 

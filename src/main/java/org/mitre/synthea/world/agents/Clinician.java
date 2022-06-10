@@ -43,6 +43,7 @@ public class Clinician implements Serializable, QuadTreeElement {
   private ArrayList<String> servicesProvided;
   private Provider organization;
   private int encounters;
+  private int procedures;
   public long populationSeed;
 
   /**
@@ -118,6 +119,21 @@ public class Clinician implements Serializable, QuadTreeElement {
     return encounters;
   }
 
+  /**
+   * Increment the number of procedures performed by this Clinician.
+   * @return The incremented number of procedures.
+   */
+  public synchronized int incrementProcedures() {
+    return procedures++;
+  }
+
+  /**
+   * Get the number of procedures performed by this Clinician.
+   * @return The number of procedures.
+   */
+  public int getProcedureCount() {
+    return procedures;
+  }
   public int randInt(int bound) {
     return random.nextInt(bound);
   }

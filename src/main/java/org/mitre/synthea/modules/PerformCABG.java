@@ -53,7 +53,7 @@ public class PerformCABG extends Module {
   static {
     try {
       // Load the Surgeon File
-      String cabgSurgeonsCsv = Utilities.readResource("surgeon_stats.csv");
+      String cabgSurgeonsCsv = Utilities.readResource("surgeon_stats_new.csv");
       List<LinkedHashMap<String,String>> surgeonsFile = SimpleCSV.parse(cabgSurgeonsCsv);
 
       // First, extract the unique list of surgeon identifiers
@@ -99,13 +99,25 @@ public class PerformCABG extends Module {
         surgeons.put(surgeonId, clin);
       }
 
-      provider.clinicianMap.put(ClinicianSpecialty.CARDIAC_SURGERY, new ArrayList<Clinician>(surgeons.values()));
-      
+      synchronized (provider.clinicianMap) {
+        if (!provider.clinicianMap.containsKey(ClinicianSpecialty.CARDIAC_SURGERY)) {
+          provider.clinicianMap.put(ClinicianSpecialty.CARDIAC_SURGERY,
+              new ArrayList<Clinician>(surgeons.values()));
+        } else {
+          List<Clinician> alreadyExist =
+              provider.clinicianMap.get(ClinicianSpecialty.CARDIAC_SURGERY);
+          surgeons.clear();
+          for (Clinician doc : alreadyExist) {
+            surgeons.put((String) doc.attributes.get(Clinician.NAME), doc);
+          }
+        }
+      }
+
       // Finally, go back through the surgeon file data and create distributions
       // for each surgery...
       for (LinkedHashMap<String,String> row : surgeonsFile) {
-        String operation = row.get("Surgery_cat_2");
-        if (!(operation.equals("OnPumpCABG") || operation.equals("OffPumpCABG"))) {
+        String operation = row.get("new_surgery_cat");
+        if (!(operation.equals("CABG_OnPump") || operation.equals("CABG_OffPump"))) {
           // we only care about these 2 operation types
           continue;
         }
@@ -123,10 +135,10 @@ public class PerformCABG extends Module {
         clin.attributes.put(operation, distribution);
         // note that surgeons have different mean times for on/off pump
         
-        if (operation.equals("OnPumpCABG")) {
+        if (operation.equals("CABG_OnPump")) {
           clin.attributes.put("mean_surgeon_time_OnPump", mean);
           onPumpCabgSurgeons.add(weight, clin);
-        } else if (operation.equals("OffPumpCABG")) {
+        } else if (operation.equals("CABG_OffPump")) {
           clin.attributes.put("mean_surgeon_time_OffPump", mean);
           offPumpCabgSurgeons.add(weight, clin);
         }
@@ -185,10 +197,11 @@ public class PerformCABG extends Module {
       cabg.clinician = surgeon;
 
       surgeon.incrementEncounters();
+      surgeon.incrementProcedures();
       surgeon.getOrganization().incrementEncounters(EncounterType.INPATIENT, Utilities.getYear(time));
 
       // hack this clinician back onto the record?
-      person.record.currentEncounter(stopTime).clinician = surgeon;
+      person.record.currentEncounter(time).clinician = surgeon;
 
       String reason = "cardiac_surgery_reason";
 
