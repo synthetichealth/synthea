@@ -1,5 +1,6 @@
 {
   "name": "Congestive Heart Failure",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "states": {
     "Initial": {
       "type": "Initial",

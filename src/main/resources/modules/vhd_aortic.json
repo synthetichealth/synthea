@@ -1,5 +1,6 @@
 {
   "name": "vhd_aortic",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Aortic Valvular Heart Disease (VHD) Progression model."
   ],

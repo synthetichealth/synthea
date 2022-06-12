@@ -1,5 +1,6 @@
 {
   "name": "preoperative",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "states": {
     "Initial": {
       "type": "Initial",

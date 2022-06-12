@@ -1,5 +1,6 @@
 {
   "name": "or_labs_meds",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "This submodule of Cardiac Surgery models common Labs, Medications, and Blood Components during the CABG Operation. ",
     "",

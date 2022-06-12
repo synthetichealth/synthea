@@ -8,6 +8,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
@@ -126,7 +127,7 @@ public final class EncounterModule extends Module {
   }
 
   /**
-   * Create an Encounter that is coded, with a provider organzation, and a clinician.
+   * Create an Encounter that is coded, with a provider organization, and a clinician.
    * @param person The patient.
    * @param time The time of the encounter.
    * @param type The type of encounter (e.g. emergency).
@@ -144,7 +145,13 @@ public final class EncounterModule extends Module {
       encounter.codes.add(code);
     }
     // assign a provider organization
-    Provider prov = person.getProvider(type, time);
+    Provider prov = null;
+    if  (specialty.equalsIgnoreCase(ClinicianSpecialty.CARDIOLOGY)) {
+      // Get the first provider in the list that was loaded
+      prov = Provider.getProviderList().get(0);
+    } else {
+      prov = person.getProvider(type, time);
+    }
     prov.incrementEncounters(type, year);
     encounter.provider = prov;
     // assign a clinician

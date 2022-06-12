@@ -1,5 +1,6 @@
 {
   "name": "operative_status",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "SAVReplace_Operative_Status",
     "",
@@ -7,11 +8,7 @@
     "* Priority 1 = Surgery performed within 0-48 hours; the patient has no delay in surgery and/or is actively undergoing resuscitation or extracorporeal membrane oxygenation to sustain life.",
     "* Priority 2 = Surgery performed within <=14 days, often during the same hospitalization to minimize risk of further clinical deterioration.",
     "* Priority 3 = Surgery performed within <=42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure should preferentially not be deferred if needed due to increased risk of poor outcome.",
-    "* Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome.",
-    "",
-    "",
-    "",
-    " "
+    "* Priority 4 = Surgery performed within > 42 days; the patient’s clinical condition is stable over days or weeks prior to the operation, but the procedure could be deferred if needed without increased risk of poor outcome."
   ],
   "states": {
     "Initial": {

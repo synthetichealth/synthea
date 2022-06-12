@@ -1,5 +1,6 @@
 {
   "name": "postop_blood",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "states": {
     "Initial": {
       "type": "Initial",

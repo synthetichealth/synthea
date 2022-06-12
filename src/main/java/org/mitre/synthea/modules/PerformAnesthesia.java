@@ -49,7 +49,7 @@ public class PerformAnesthesia extends Module {
   
   static {
     try {
-      // Load the Surgeon File
+      // Load the Anesthetist File
       String anesthetistsCsv = Utilities.readResource("anesthetist_stats.csv");
       List<LinkedHashMap<String,String>> anesthetistsFile = SimpleCSV.parse(anesthetistsCsv);
 
@@ -72,17 +72,17 @@ public class PerformAnesthesia extends Module {
         Provider.getProviderList().add(dummyProvider);
       }
 
-      // Now create a Clinician representing each surgeon...
+      // Now create a Clinician representing each anesthetist...
       Provider provider = Provider.getProviderList().get(0);
       Random clinicianRand = new Random(-9);
       int id = 0;
-      for (String surgeonId : identifierSet) {
+      for (String anesthetistId : identifierSet) {
         Clinician clin = new Clinician(-1, clinicianRand, id++, provider);
 
         clin.attributes.put(Clinician.SPECIALTY, "Anesthesiology");
-        clin.attributes.put(Clinician.FIRST_NAME, surgeonId);
-        clin.attributes.put(Clinician.LAST_NAME, surgeonId);
-        clin.attributes.put(Clinician.NAME, surgeonId);
+        clin.attributes.put(Clinician.FIRST_NAME, anesthetistId);
+        clin.attributes.put(Clinician.LAST_NAME, anesthetistId);
+        clin.attributes.put(Clinician.NAME, anesthetistId);
         clin.attributes.put(Clinician.NAME_PREFIX, "Dr.");
 
         clin.attributes.put(Clinician.GENDER, clinicianRand.nextBoolean() ? "F" : "M");
@@ -93,12 +93,12 @@ public class PerformAnesthesia extends Module {
         clin.attributes.put(Person.ZIP, provider.zip);
         clin.attributes.put(Person.COORDINATE, provider.getLonLat());
 
-        anesthetists.put(surgeonId, clin);
+        anesthetists.put(anesthetistId, clin);
       }
 
       provider.clinicianMap.put(ClinicianSpecialty.ANESTHESIOLOGY, new ArrayList<Clinician>(anesthetists.values()));
       
-      // Finally, go back through the surgeon file data and create distributions
+      // Finally, go back through the anesthetist file data and create distributions
       // for each surgery...
       for (LinkedHashMap<String,String> row : anesthetistsFile) {
         String operation = row.get("new_surgery_col");
@@ -117,7 +117,7 @@ public class PerformAnesthesia extends Module {
         // note that surgeons have different mean times for on/off pump
         
 
-        clin.attributes.put("mean_surgeon_time", mean);
+        clin.attributes.put("mean_anesthesia_time", mean);
         
         RandomCollection<Clinician> clins = anesthetistsBySurgeryType.get(operation);
         
@@ -201,10 +201,12 @@ public class PerformAnesthesia extends Module {
       anesthesiaProc.clinician = anesthetist;
 
       anesthetist.incrementEncounters();
+      anesthetist.incrementProcedures();
       anesthetist.getOrganization().incrementEncounters(EncounterType.INPATIENT, Utilities.getYear(time));
 
       // hack this clinician back onto the record?
-      person.record.currentEncounter(stopTime).clinician = anesthetist;
+      // only do this for the surgeon
+      // person.record.currentEncounter(time).clinician = anesthetist;
 
       String reason = "cardiac_surgery_reason";
 
@@ -242,7 +244,7 @@ public class PerformAnesthesia extends Module {
   public static final double getProcedureDuration(Person person, String cardiacSurgery, Clinician clin, long time) {
     double calculatedBMI = person.getVitalSign(VitalSign.BMI, time);
 
-    double meanSurgeonTime = (double) clin.attributes.get("mean_surgeon_time");
+    double meanSurgeonTime = (double) clin.attributes.get("mean_anesthesia_time");
     
     double gaussianNoise = person.randGaussian();
     

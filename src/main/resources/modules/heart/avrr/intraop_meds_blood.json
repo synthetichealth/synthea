@@ -1,5 +1,6 @@
 {
   "name": "intraop_meds_blood",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "This submodule of Cardiac Surgery models common Labs, Medications, and Blood Components during operation. ",
     "",

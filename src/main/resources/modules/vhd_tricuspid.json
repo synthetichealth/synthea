@@ -1,5 +1,6 @@
 {
   "name": "vhd_tricuspid",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Tricuspid Valvular Heart Disease (VHD) Progression model."
   ],

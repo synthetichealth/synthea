@@ -1,5 +1,6 @@
 {
   "name": "chf_lab_work",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "This submodule captures all the initial lab work based on the STS data dictionary and standard of care.",
     "",
