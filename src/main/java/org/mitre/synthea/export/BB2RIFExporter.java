@@ -116,8 +116,8 @@ public class BB2RIFExporter {
       new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
   private static AtomicLong claimId =
       new AtomicLong(Config.getAsLong("exporter.bfd.clm_id_start", -1));
-  private static AtomicInteger claimGroupId =
-      new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
+  private static AtomicLong claimGroupId =
+      new AtomicLong(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
   private static AtomicLong pdeId =
       new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
   private static AtomicLong fiDocCntlNum =
@@ -884,7 +884,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
@@ -1104,7 +1104,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
@@ -1369,7 +1369,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
@@ -2085,7 +2085,7 @@ public class BB2RIFExporter {
     for (PrescriptionFill fill: prescriptionFills) {
 
       long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, PDE.class, person);
@@ -2256,7 +2256,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
 
       double latestHemoglobin = 0;
@@ -2428,7 +2428,7 @@ public class BB2RIFExporter {
 
       homeVisits += 1;
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
@@ -2625,7 +2625,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HOSPICE.class, person);
@@ -2829,7 +2829,7 @@ public class BB2RIFExporter {
       previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
