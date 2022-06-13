@@ -37,4 +37,15 @@ public class FactTableTest {
     Assert.assertTrue(output.contains(he + ",He"));
   }
 
+  @Test
+  public void testGetFactByKey() {
+    // Setup a basic fact table with a header.
+    FactTable table = new FactTable();
+    table.setHeader("ID,KEY,NAME,DESCRIPTION");
+    // Insert some facts.
+    int h = table.addFact("H", "Hydrogen,Highly flammable gas");
+    Assert.assertNull(table.getFactByKey("Iwcz&T&5+;N4Sb)kE+#P"));
+    Assert.assertEquals("Hydrogen,Highly flammable gas", table.getFactByKey("H"));
+  }
+
 }
