@@ -478,11 +478,16 @@ public class BB2RIFExporter {
               (String)person.attributes.get(Person.ETHNICITY),
               (String)person.attributes.get(Person.RACE));
       fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
-      fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI alogorithm
+      fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI algorithm
       fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
               (String)person.attributes.get(Person.LAST_NAME));
       String givenName = (String)person.attributes.get(Person.FIRST_NAME);
       fieldValues.put(BENEFICIARY.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
+      if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+        String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+        middleName = middleName.substring(0, 1);
+        fieldValues.put(BENEFICIARY.BENE_MDL_NAME, middleName);
+      }
       long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
       fieldValues.put(BENEFICIARY.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
       fieldValues.put(BENEFICIARY.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
@@ -813,6 +818,11 @@ public class BB2RIFExporter {
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
+    if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+      String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+      middleName = middleName.substring(0, 1);
+      fieldValues.put(BENEFICIARY_HISTORY.BENE_MDL_NAME, middleName);
+    }
     String terminationCode = "0";
     if (person.attributes.get(Person.DEATHDATE) != null) {
       long deathDate = (long)person.attributes.get(Person.DEATHDATE);

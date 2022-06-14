@@ -127,6 +127,7 @@ public class FixedRecord {
     person.attributes.put(Person.STATE, this.state);
     person.attributes.put(Person.CITY, this.city);
     person.attributes.put(Person.ZIP, this.zipcode);
+    person.attributes.remove(Person.MIDDLE_NAME);
 
     person.attributes.putAll(this.getFixedRecordAttributes());
   }

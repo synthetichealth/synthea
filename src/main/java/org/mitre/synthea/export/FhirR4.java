@@ -514,6 +514,9 @@ public class FhirR4 {
     HumanName name = patientResource.addName();
     name.setUse(HumanName.NameUse.OFFICIAL);
     name.addGiven((String) person.attributes.get(Person.FIRST_NAME));
+    if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+      name.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
+    }
     name.setFamily((String) person.attributes.get(Person.LAST_NAME));
     if (person.attributes.get(Person.NAME_PREFIX) != null) {
       name.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
@@ -525,6 +528,9 @@ public class FhirR4 {
       HumanName maidenName = patientResource.addName();
       maidenName.setUse(HumanName.NameUse.MAIDEN);
       maidenName.addGiven((String) person.attributes.get(Person.FIRST_NAME));
+      if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+        maidenName.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
+      }
       maidenName.setFamily((String) person.attributes.get(Person.MAIDEN_NAME));
       if (person.attributes.get(Person.NAME_PREFIX) != null) {
         maidenName.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
