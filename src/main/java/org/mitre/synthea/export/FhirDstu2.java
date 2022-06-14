@@ -373,6 +373,9 @@ public class FhirDstu2 {
     HumanNameDt name = patientResource.addName();
     name.setUse(NameUseEnum.OFFICIAL);
     name.addGiven((String) person.attributes.get(Person.FIRST_NAME));
+    if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+      name.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
+    }
     List<StringDt> officialFamilyNames = new ArrayList<StringDt>();
     officialFamilyNames.add(new StringDt((String) person.attributes.get(Person.LAST_NAME)));
     name.setFamily(officialFamilyNames);
@@ -386,6 +389,9 @@ public class FhirDstu2 {
       HumanNameDt maidenName = patientResource.addName();
       maidenName.setUse(NameUseEnum.MAIDEN);
       maidenName.addGiven((String) person.attributes.get(Person.FIRST_NAME));
+      if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+        maidenName.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
+      }
       List<StringDt> maidenFamilyNames = new ArrayList<StringDt>();
       maidenFamilyNames.add(new StringDt((String) person.attributes.get(Person.MAIDEN_NAME)));
       maidenName.setFamily(maidenFamilyNames);

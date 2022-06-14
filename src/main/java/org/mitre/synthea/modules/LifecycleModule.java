@@ -51,6 +51,8 @@ public final class LifecycleModule extends Module {
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+  private static final Double MIDDLE_NAME_PROBABILITY =
+      Config.getAsDouble("generate.middle_names", 0.80);
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
@@ -124,11 +126,19 @@ public final class LifecycleModule extends Module {
     String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
     String firstName = Names.fakeFirstName(gender, language, person);
-    String lastName = Names.fakeLastName(language, person);
     attributes.put(Person.FIRST_NAME, firstName);
+    String middleName = null;
+    if (person.rand() <= MIDDLE_NAME_PROBABILITY) {
+      middleName = Names.fakeFirstName(gender, language, person);
+      attributes.put(Person.MIDDLE_NAME, middleName);
+    }
+    String lastName = Names.fakeLastName(language, person);
     attributes.put(Person.LAST_NAME, lastName);
-    attributes.put(Person.NAME, firstName + " " + lastName);
-
+    if (middleName != null) {
+      attributes.put(Person.NAME, firstName + " " + middleName + " " + lastName);
+    } else {
+      attributes.put(Person.NAME, firstName + " " + lastName);
+    }
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
@@ -307,10 +317,19 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
+              String middleName = null;
+              if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+                middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+              }
               String language = (String) person.attributes.get(Person.FIRST_LANGUAGE);
               String newLastName = Names.fakeLastName(language, person);
               person.attributes.put(Person.LAST_NAME, newLastName);
-              person.attributes.put(Person.NAME, firstName + " " + newLastName);
+              if (middleName != null) {
+                person.attributes.put(Person.NAME,
+                    firstName + " " + middleName + " " + newLastName);
+              } else {
+                person.attributes.put(Person.NAME, firstName + " " + newLastName);
+              }
             }
           } else {
             person.attributes.put(Person.MARITAL_STATUS, "S");
@@ -1121,6 +1140,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
+    Attributes.inventory(attributes, m, Person.MIDDLE_NAME, true, true, null);
     Attributes.inventory(attributes, m, "osteoporosis", true, false, null);
     Attributes.inventory(attributes, m, "prediabetes", true, false, null);
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, true, false, null);

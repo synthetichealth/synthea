@@ -45,6 +45,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String BIRTHDATE = "birthdate";
   public static final String DEATHDATE = "deathdate";
   public static final String FIRST_NAME = "first_name";
+  public static final String MIDDLE_NAME = "middle_name";
   public static final String LAST_NAME = "last_name";
   public static final String MAIDEN_NAME = "maiden_name";
   public static final String NAME_PREFIX = "name_prefix";
