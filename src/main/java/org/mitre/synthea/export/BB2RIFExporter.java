@@ -117,7 +117,7 @@ public class BB2RIFExporter {
   private static AtomicLong claimId =
       new AtomicLong(Config.getAsLong("exporter.bfd.clm_id_start", -1));
   private static AtomicLong claimGroupId =
-      new AtomicLong(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
+      new AtomicLong(Config.getAsLong("exporter.bfd.clm_grp_id_start", -1));
   private static AtomicLong pdeId =
       new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
   private static AtomicLong fiDocCntlNum =
