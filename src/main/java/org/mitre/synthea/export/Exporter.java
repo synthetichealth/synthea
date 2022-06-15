@@ -430,8 +430,6 @@ public abstract class Exporter {
       deferredExports.clear();
     }
 
-    String bulk = Config.get("exporter.fhir.bulk_data");
-
     // Before we force bulk data to be off...
     try {
       FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
@@ -439,7 +437,6 @@ public abstract class Exporter {
       e.printStackTrace();
     }
 
-    Config.set("exporter.fhir.bulk_data", "false");
     try {
       HospitalExporterR4.export(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
@@ -475,7 +472,6 @@ public abstract class Exporter {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    Config.set("exporter.fhir.bulk_data", bulk);
 
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
