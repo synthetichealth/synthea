@@ -2,8 +2,9 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.mdht.uml.cda.util.BasicValidationHandler;
 import org.eclipse.mdht.uml.cda.util.CDAUtil;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -95,6 +97,38 @@ public class CCDAExporterTest {
     } else {
       System.out.println("There were no people generated that have wellness providers... odd.");
     }
+  }
+
+  @Ignore("Manual test to debug failed CCDA exports.")
+  @Test
+  public void testFailedCCDAExports() throws Exception {
+    System.out.println("Revalidating Failed CCDA Exports...");
+    TestHelper.loadTestProperties();
+    CDAUtil.loadPackages();
+    List<String> validationErrors = new ArrayList<String>();
+    List<File> failures = FailedExportHelper.loadFailures("CCDA");
+    for (File failure : failures) {
+      System.out.println("Validating " + failure.getAbsolutePath() + "...");
+      validationErrors.clear();
+      String content = new String(Files.readAllBytes(failure.toPath()));
+      InputStream inputStream = IOUtils.toInputStream(content, "UTF-8");
+      try {
+        CDAUtil.load(inputStream, new BasicValidationHandler() {
+          public void handleError(Diagnostic diagnostic) {
+            System.out.println("ERROR: " + diagnostic.getMessage());
+            validationErrors.add(diagnostic.getMessage());
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (validationErrors.isEmpty()) {
+        System.out.println("  No validation errors.");
+      } else {
+        System.out.println("Validation Errors: " + validationErrors.size());
+      }
+    }
+    System.out.println("Done.");
   }
 
 }
