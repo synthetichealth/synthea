@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.mdht.uml.cda.util.BasicValidationHandler;
 import org.eclipse.mdht.uml.cda.util.CDAUtil;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,12 +35,16 @@ public class CCDAExporterTest {
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
+  @BeforeClass
+  public static void loadCDAUtils() {
+    CDAUtil.loadPackages();
+  }
+
   @Test
   public void testCCDAExport() throws Exception {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    CDAUtil.loadPackages();
     List<String> errors = ParallelTestingService.runInParallel((person) -> {
       List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
@@ -104,7 +109,6 @@ public class CCDAExporterTest {
   public void testFailedCCDAExports() throws Exception {
     System.out.println("Revalidating Failed CCDA Exports...");
     TestHelper.loadTestProperties();
-    CDAUtil.loadPackages();
     List<String> validationErrors = new ArrayList<String>();
     List<File> failures = FailedExportHelper.loadFailures("CCDA");
     for (File failure : failures) {
