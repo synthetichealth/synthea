@@ -430,7 +430,6 @@ public abstract class Exporter {
       deferredExports.clear();
     }
 
-    // Before we force bulk data to be off...
     try {
       FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
