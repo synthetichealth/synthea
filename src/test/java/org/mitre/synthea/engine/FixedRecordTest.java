@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class FixedRecordTest {
 
   @Test
   public void fixedDemographicsImportTest() {
-
     // List of raw RecordGroups imported directly from the input file for later comparison.
     List<FixedRecordGroup> rawRecordGroups = generator.importFixedPatientDemographicsFile();
 
@@ -56,19 +56,19 @@ public class FixedRecordTest {
 
     // Make sure that the correct number of people were imported from the fixed records.
     // Do not count the DECEASED patients.
-    int livingPatients = 0;
+    List<Person> livingPatients = new ArrayList<Person>();
     for (Person p : generator.internalStore) {
       if (p.alive(System.currentTimeMillis())) {
-        livingPatients += 1;
+        livingPatients.add(p);
       }
     }
-    assertEquals(4, livingPatients);
-    assertEquals(livingPatients, rawRecordGroups.size());
+    assertEquals(4, livingPatients.size());
+    assertEquals(livingPatients.size(), rawRecordGroups.size());
 
     // Check that each person has HealthRecords that match their fixed demographic records.
-    for (int p = 0; p < generator.internalStore.size(); p++) {
+    for (int p = 0; p < livingPatients.size(); p++) {
       // Get the current person and pull their list of records.
-      Person currentPerson = generator.internalStore.get(p);
+      Person currentPerson = livingPatients.get(p);
       FixedRecordGroup recordGroup
           = (FixedRecordGroup) currentPerson.attributes.get(Person.RECORD_GROUP);
       // Make sure the person has the correct number of records.
