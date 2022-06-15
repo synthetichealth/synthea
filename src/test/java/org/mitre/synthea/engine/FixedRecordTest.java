@@ -55,8 +55,15 @@ public class FixedRecordTest {
     }
 
     // Make sure that the correct number of people were imported from the fixed records.
-    assertEquals(4, generator.internalStore.size());
-    assertEquals(generator.internalStore.size(), rawRecordGroups.size());
+    // Do not count the DECEASED patients.
+    int livingPatients = 0;
+    for (Person p : generator.internalStore) {
+      if (p.alive(System.currentTimeMillis())) {
+        livingPatients += 1;
+      }
+    }
+    assertEquals(4, livingPatients);
+    assertEquals(livingPatients, rawRecordGroups.size());
 
     // Check that each person has HealthRecords that match their fixed demographic records.
     for (int p = 0; p < generator.internalStore.size(); p++) {
