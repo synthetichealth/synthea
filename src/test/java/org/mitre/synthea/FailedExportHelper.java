@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +51,23 @@ public class FailedExportHelper {
     Path jsonFile = Paths.get(directory, String.format("%s.%s.json", id, exporterName));
     String json = JSONExporter.export(person);
     Files.write(jsonFile, json.getBytes());
+  }
+
+  /**
+   * Read failed export files.
+   * @param exporterName "CCDA", "FHIRR4", etc.
+   * @return List of Files, each containing the contents of a failed export file.
+   * @throws IOException when bad things happen
+   */
+  public static List<File> loadFailures(String exporterName) throws IOException {
+    checkExportDirectory();
+    List<File> failures = new ArrayList<File>();
+    Path exportPath = Paths.get(directory);
+    for (File file : exportPath.toFile().listFiles()) {
+      if (file.isFile() && file.getName().endsWith(exporterName)) {
+        failures.add(file);
+      }
+    }
+    return failures;
   }
 }
