@@ -74,10 +74,12 @@ public abstract class ValueTransforms {
     return DateTimeFormatter.ISO_LOCAL_TIME.format(dateTime);
   }
 
-  private static DateTimeFormatter YEAR = DateTimeFormatter.ofPattern("yyyy");
+  private static final DateTimeFormatter YEAR = DateTimeFormatter.ofPattern("yyyy");
 
-  private static DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
+  private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
 
+  private static final ZoneId UTC = ZoneId.of("UTC");
+  
   private static ZonedDateTime parse(String src) {
     // assume src is one of the four formats already
 
@@ -96,7 +98,7 @@ public abstract class ValueTransforms {
       case 8:
         // hh:mm:ss
         return LocalDateTime.parse(src, DateTimeFormatter.ISO_LOCAL_TIME)
-            .atZone(ZoneId.systemDefault());
+            .atZone(UTC);
       case 10:
         // YYYY-MM-DD
         return LocalDate.parse(src, DateTimeFormatter.ISO_LOCAL_DATE)
