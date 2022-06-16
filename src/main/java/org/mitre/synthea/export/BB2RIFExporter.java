@@ -1493,6 +1493,23 @@ public class BB2RIFExporter {
               ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
             }
           }
+          if (icdReasonCode == null) {
+            // If there is an icdReasonCode, then then LINE_ICD_DGNS_CD is already set.
+            // If not, we might choose a value for each line item.
+            double probability = person.rand();
+            if (probability <= 0.06) {
+              // Random code
+              int index = person.randInt(mappedDiagnosisCodes.size());
+              String code = mappedDiagnosisCodes.get(index);
+              fieldValues.put(CARRIER.LINE_ICD_DGNS_CD, code);
+            } else if (probability <= 0.48) {
+              // The principal diagnosis code
+              fieldValues.put(CARRIER.LINE_ICD_DGNS_CD, fieldValues.get(CARRIER.PRNCPAL_DGNS_CD));
+            } else {
+              // No line item diagnosis code
+              fieldValues.remove(CARRIER.LINE_ICD_DGNS_CD);
+            }
+          }
           // TBD: decide whether line item skip logic is needed here and in other files
           // TBD: affects ~80% of carrier claim lines, so left out for now
           // if (hcpcsCode == null) {
