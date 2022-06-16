@@ -46,6 +46,7 @@ import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY;
 import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY_HISTORY;
 import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
 import org.mitre.synthea.export.BB2RIFStructure.DME;
+import org.mitre.synthea.export.BB2RIFStructure.EXPORT_SUMMARY;
 import org.mitre.synthea.export.BB2RIFStructure.HHA;
 import org.mitre.synthea.export.BB2RIFStructure.HOSPICE;
 import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
@@ -393,17 +394,27 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
-    exportBeneficiary(person, stopTime);
+    Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
+    exportCounts.put(EXPORT_SUMMARY.BENE_ID, exportBeneficiary(person, stopTime));
     exportBeneficiaryHistory(person, stopTime);
     long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
-    exportInpatient(person, startTime, stopTime);
-    exportOutpatient(person, startTime, stopTime);
-    exportCarrier(person, startTime, stopTime);
-    exportPrescription(person, startTime, stopTime);
-    exportDME(person, startTime, stopTime);
-    exportHome(person, startTime, stopTime);
-    exportHospice(person, startTime, stopTime);
-    exportSNF(person, startTime, stopTime);
+    exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
+            Long.toString(exportInpatient(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.OUTPATIENT_CLAIMS,
+            Long.toString(exportOutpatient(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.CARRIER_CLAIMS,
+            Long.toString(exportCarrier(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.PDE_CLAIMS,
+            Long.toString(exportPrescription(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.DME_CLAIMS,
+            Long.toString(exportDME(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.HHA_CLAIMS,
+            Long.toString(exportHome(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.HOSPICE_CLAIMS,
+            Long.toString(exportHospice(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.SNF_CLAIMS,
+            Long.toString(exportSNF(person, startTime, stopTime)));
+    rifWriters.getOrCreateWriter(EXPORT_SUMMARY.class, -1, "csv", ",").writeValues(exportCounts);
   }
 
   /**
@@ -412,7 +423,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiary(Person person,
+  private String exportBeneficiary(Person person,
         long stopTime) throws IOException {
     String beneIdStr = Long.toString(BB2RIFExporter.beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
@@ -586,6 +597,7 @@ public class BB2RIFExporter {
       rifWriters.writeValues(BENEFICIARY.class, fieldValues, year);
       firstYearOutput = false;
     }
+    return beneIdStr;
   }
 
   private static String getEntitlementBuyIn(String dualEligibleStatusCode,
@@ -864,10 +876,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long startTime, long stopTime)
+  private long exportOutpatient(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -1082,7 +1096,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -1090,12 +1106,13 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long startTime, long stopTime)
+  private long exportInpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<INPATIENT, String> fieldValues = new HashMap<>();
-
+    long claimCount = 0;
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -1348,7 +1365,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(INPATIENT.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -1356,11 +1375,13 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return number of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportCarrier(Person person, long startTime, long stopTime) throws IOException {
+  private long exportCarrier(Person person, long startTime, long stopTime) throws IOException {
     HashMap<CARRIER, String> fieldValues = new HashMap<>();
 
+    long claimCount = 0;
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -1572,7 +1593,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(CARRIER.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   private static String bb2TaxId(String ssn) {
@@ -2057,10 +2080,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long startTime, long stopTime)
+  private long exportPrescription(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
     // Build a chronologically ordered list of prescription fills (including refills where
@@ -2172,7 +2197,9 @@ public class BB2RIFExporter {
       }
 
       rifWriters.writeValues(PDE.class, fieldValues);
+      claimCount++;
     }
+    return claimCount;
   }
 
   private static class PrescriptionFill implements Comparable<PrescriptionFill> {
@@ -2263,10 +2290,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportDME(Person person, long startTime, long stopTime)
+  private long exportDME(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -2425,7 +2454,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(DME.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -2433,10 +2464,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportHome(Person person, long startTime, long stopTime) throws IOException {
+  private long exportHome(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HHA, String> fieldValues = new HashMap<>();
+    long claimCount = 0;
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
@@ -2618,7 +2651,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(HHA.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -2626,9 +2661,11 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportHospice(Person person, long startTime, long stopTime) throws IOException {
+  private long exportHospice(Person person, long startTime, long stopTime) throws IOException {
+    long claimCount = 0;
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
@@ -2823,7 +2860,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(HOSPICE.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -2831,9 +2870,11 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportSNF(Person person, long startTime, long stopTime) throws IOException {
+  private long exportSNF(Person person, long startTime, long stopTime) throws IOException {
+    long claimCount = 0;
     HashMap<SNF, String> fieldValues = new HashMap<>();
     boolean previousEmergency;
     boolean previousUrgent;
@@ -3086,7 +3127,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(SNF.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
