@@ -216,7 +216,7 @@ public class ActionsTest {
 
     // NOTE: this expected value may change if we ever add randomness to the date -> dateTime
     // transform
-    assertEquals("1999-09-29T04:00:00Z",
+    assertEquals("1999-09-29T00:00:00Z",
         ((DateTimeType) date.getExtension().get(0).getValue()).getValueAsString());
   }
 

@@ -97,12 +97,11 @@ public abstract class ValueTransforms {
         return LocalDate.parse(src, YEAR_MONTH).atStartOfDay(ZoneId.systemDefault());
       case 8:
         // hh:mm:ss
-        return LocalDateTime.parse(src, DateTimeFormatter.ISO_LOCAL_TIME)
-            .atZone(UTC);
+        return ZonedDateTime.parse(src, DateTimeFormatter.ISO_LOCAL_TIME);
       case 10:
         // YYYY-MM-DD
         return LocalDate.parse(src, DateTimeFormatter.ISO_LOCAL_DATE)
-            .atStartOfDay(ZoneId.systemDefault());
+            .atStartOfDay(UTC);
       default:
         // TODO: make sure this actually works -- the docs are weird
         return ZonedDateTime.parse(src, DateTimeFormatter.ISO_ZONED_DATE_TIME);
