@@ -208,7 +208,7 @@ public class PayerTest {
     for (int age = 65; age < 70; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep * 3;
       healthInsuranceModule.process(person, currentTime);
-      assertTrue(person.coverage.getPlanAtTime(currentTime).isMedicarePlan());
+      assertTrue(person.coverage.getPlanAtTime(currentTime).getPayer().getName().equals("Medicare"));
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
       currentYear++;
     }

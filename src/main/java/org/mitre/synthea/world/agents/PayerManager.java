@@ -21,7 +21,7 @@ import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentR
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
-import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderGovPriority;
+import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderPriority;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -62,7 +62,7 @@ public class PayerManager {
   // Payer selection algorithm choices:
   private static final String RANDOM = "random";
   private static final String BESTRATE = "best_rate";
-  private static final String GOVPRIORITY = "gov_priority";
+  private static final String PRIORITY = "priority";
 
   /**
    * Load into cache the list of payers for a state.
@@ -162,8 +162,8 @@ public class PayerManager {
       case RANDOM:
         finder = new PlanFinderRandom();
         break;
-      case GOVPRIORITY:
-        finder = new PlanFinderGovPriority();
+      case PRIORITY:
+        finder = new PlanFinderPriority();
         break;
       default:
         throw new RuntimeException("Not a valid Payer Selection Algorithm: " + behavior);
@@ -213,8 +213,9 @@ public class PayerManager {
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
+    int priority = Integer.parseInt(line.remove("priority_level"));
 
-    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
+    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, priority);
 
     // Add remaining columns we didn't map to first-class fields to payer's
     // attributes map.
@@ -277,7 +278,7 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
-        statesCovered, NO_INSURANCE);
+        statesCovered, NO_INSURANCE, 0);
     PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, "generic", 0, 0);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }

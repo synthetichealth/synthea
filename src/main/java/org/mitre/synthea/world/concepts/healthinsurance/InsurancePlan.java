@@ -8,7 +8,6 @@ import java.util.Set;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
@@ -119,14 +118,6 @@ public class InsurancePlan implements Serializable {
 
   public Payer getPayer() {
     return this.payer;
-  }
-
-  /**
-   * Returns whether this plan is a Medicare provided plan.
-   * @return  Whether this is a medicar provided plan.
-   */
-  public boolean isMedicarePlan() {
-    return this.payer.equals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE));
   }
 
   /**
@@ -265,6 +256,14 @@ public class InsurancePlan implements Serializable {
    */
   public boolean isActive(long time) {
     return this.activeStart <= time && time <= this.activeEnd;
+  }
+
+  /**
+   * Returns whether a customer may buy a supplement to this plan.
+   * @return  Whether a person may buy a supplement plan.
+   */
+  public boolean mayPurchaseSupplement() {
+    return this.getPayer().getName().equals("Medicare");
   }
 
 }

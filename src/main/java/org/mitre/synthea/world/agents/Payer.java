@@ -43,6 +43,7 @@ public class Payer implements Serializable {
   public final String uuid;
   private final Set<InsurancePlan> plans;
   private final String ownership;
+  private final int priority;
 
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
@@ -114,18 +115,26 @@ public class Payer implements Serializable {
    * @param id  The payer ID.
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
+   * @param priority
    */
-  public Payer(String name, String id, Set<String> statesCovered, String ownership) {
+  public Payer(String name, String id, Set<String> statesCovered, String ownership, int priority) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name. Payer ID: " + id + ".");
     }
+    // Attributes.
     this.name = name;
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
     this.plans = new HashSet<InsurancePlan>();
     this.ownership = ownership;
+    if (priority == 0) {
+      priority = Integer.MAX_VALUE;
+    }
+    this.priority = priority;
     this.attributes = new LinkedTreeMap<>();
+
+    // Tracking values.
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = Claim.ZERO_CENTS;
@@ -170,6 +179,13 @@ public class Payer implements Serializable {
    */
   public String getOwnership() {
     return this.ownership;
+  }
+
+  /**
+   * Returns the priority level of this payer.
+   */
+  public int getPriority() {
+    return this.priority;
   }
 
   /**

@@ -1,16 +1,16 @@
 package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
-public class PlanFinderGovPriority implements IPlanFinder {
+public class PlanFinderPriority implements IPlanFinder {
 
   @Override
   public InsurancePlan find(Set<InsurancePlan> plans, Person person,
@@ -25,16 +25,8 @@ public class PlanFinderGovPriority implements IPlanFinder {
       }
     }
 
-    if (eligiblePlans.stream().anyMatch(plan
-        -> plan.getPayer().getName().equals(PayerManager.DUAL_ELIGIBLE))) {
-      // Dual Eligble plans take priority.
-      eligiblePlans = eligiblePlans.stream().filter(plan -> plan.getPayer().getName()
-          .equals(PayerManager.DUAL_ELIGIBLE)).collect(Collectors.toList());
-    } else if (eligiblePlans.stream().anyMatch(plan -> plan.isGovernmentPlan())) {
-      // Government plans (that are not dual eligible) take secondary priority.
-      eligiblePlans = eligiblePlans.stream().filter(plan -> plan.isGovernmentPlan())
-          .collect(Collectors.toList());
-    }
+    int maxPriorityEligible = Collections.max(eligiblePlans.stream().map(plan -> plan.getPayer().getPriority()).collect(Collectors.toList()));
+    eligiblePlans = eligiblePlans.stream().filter(plan -> plan.getPayer().getPriority() == maxPriorityEligible).collect(Collectors.toList());
     return chooseRandomPlan(eligiblePlans, person);
   }
 }
