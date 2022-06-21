@@ -2402,6 +2402,7 @@ public class BB2RIFExporter {
 
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
+        boolean wroteAtLeastOneLine = false;
         // Now generate the line items...
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device || lineItem.entry instanceof Supply)) {
@@ -2452,9 +2453,12 @@ public class BB2RIFExporter {
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
           rifWriters.writeValues(DME.class, fieldValues);
+          wroteAtLeastOneLine = true;
+        }
+        if (wroteAtLeastOneLine) {
+          claimCount++;
         }
       }
-      claimCount++;
     }
     return claimCount;
   }
