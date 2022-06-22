@@ -126,7 +126,7 @@ public class SimpleCSV {
           throws IOException {
     CsvMapper mapper = new CsvMapper();
     CsvSchema.Builder schemaBuilder = CsvSchema.builder();
-    schemaBuilder.setUseHeader(true).setColumnSeparator(separator);
+    schemaBuilder.setUseHeader(true).setColumnSeparator(separator).disableQuoteChar();
 
     Collection<String> columns = data.get(0).keySet();
     schemaBuilder.addColumns(columns, ColumnType.STRING);
@@ -153,6 +153,30 @@ public class SimpleCSV {
    *          Otherwise returns False
    */
   public static boolean isValid(String csvData) {
+    return isValid(csvData, ',');
+  }
+
+  /**
+   * Simple CSV validator that ensures the number of columns in each file matches
+   * the number of elements in each row.
+   *
+   * <p>csvData is split based on NEWLINE into a stream of strings.
+   *
+   * <p>The stream is converted to a string of longs equaling the number of commas
+   * found for each csv line.
+   *
+   * <p>Finally each distinct counts are taken from the stream. If the number of
+   * distinct counts is only one, we can confirm the CSV is valid.
+   *
+   * @param csvData
+   *          Raw CSV data
+   * @param separator
+   *          The separator used in the CSV
+   * @return
+   *          True if number of commas is consistent for each line
+   *          Otherwise returns False
+   */
+  public static boolean isValid(String csvData, char separator) {
     Stream<String> csvLines = Arrays.stream(csvData.split("\n"));
     Stream<Long> csvLineElementCount =
         csvLines.map(line -> line.chars().filter(c -> c == ',').count());

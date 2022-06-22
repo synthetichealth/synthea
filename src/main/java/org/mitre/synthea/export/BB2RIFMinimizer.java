@@ -79,6 +79,10 @@ public class BB2RIFMinimizer {
     }
 
     String csvData = new String(Files.readAllBytes(summaryPath));
+    return getMinimalSetOfBenes(csvData);
+  }
+
+  static List<String> getMinimalSetOfBenes(String csvData) throws IOException {
     List<LinkedHashMap<String, String>> csv = SimpleCSV.parse(csvData);
     List<BeneClaims> beneClaims = new ArrayList<>(csv.size());
     for (LinkedHashMap<String, String> csvRow: csv) {
