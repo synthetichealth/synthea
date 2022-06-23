@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -154,13 +154,21 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#isValid-java.lang.String-char-">isValid</a></span>(java.lang.String&nbsp;csvData,
+       char&nbsp;separator)</code>
+<div class="block">Simple CSV validator that ensures the number of columns in each file matches
+ the number of elements in each row.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static java.util.List&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;csvData)</code>
 <div class="block">Parse the data from the given CSV file into a List of Maps, where the key is the
  column name.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#parse-java.lang.String-char-">parse</a></span>(java.lang.String&nbsp;csvData,
      char&nbsp;fieldSeparator)</code>
@@ -168,16 +176,23 @@ extends java.lang.Object</pre>
  column name.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.util.Iterator&lt;java.util.LinkedHashMap&lt;java.lang.String,java.lang.String&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#parseLineByLine-java.lang.String-">parseLineByLine</a></span>(java.lang.String&nbsp;csvData)</code>
 <div class="block">Parse the data from the given CSV file into an Iterator of Maps, where the key is the
  column name.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#unparse-java.util.List-">unparse</a></span>(java.util.List&lt;? extends java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;data)</code>
+<div class="block">Convert the data in the given List of Maps to a String of CSV data.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/SimpleCSV.html#unparse-java.util.List-char-">unparse</a></span>(java.util.List&lt;? extends java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;data,
+       char&nbsp;separator)</code>
 <div class="block">Convert the data in the given List of Maps to a String of CSV data.</div>
 </td>
 </tr>
@@ -310,10 +325,36 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a name="unparse-java.util.List-char-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>unparse</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;unparse(java.util.List&lt;? extends java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;data,
+                                       char&nbsp;separator)
+                                throws java.io.IOException</pre>
+<div class="block">Convert the data in the given List of Maps to a String of CSV data.
+ Each Map in the List represents one line of the resulting CSV. Uses the keySet from the
+ first Map to populate the set of columns. This means that the first Map must contain all
+ the columns desired in the final CSV. The order of the columns is specified by the order
+ provided by the first Map's keySet, so using an ordered Map implementation
+ (such as LinkedHashMap) is recommended.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>data</code> - List of Map data. CSV data read/modified from SimpleCSV.parse(...)</dd>
+<dd><code>separator</code> - The separator used in the CSV</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>data formatted as a String containing raw CSV data</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - on file IO write errors.</dd>
+</dl>
+</li>
+</ul>
 <a name="isValid-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>isValid</h4>
 <pre>public static&nbsp;boolean&nbsp;isValid(java.lang.String&nbsp;csvData)</pre>
@@ -330,6 +371,34 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>csvData</code> - Raw CSV data</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if number of commas is consistent for each line
+          Otherwise returns False</dd>
+</dl>
+</li>
+</ul>
+<a name="isValid-java.lang.String-char-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>isValid</h4>
+<pre>public static&nbsp;boolean&nbsp;isValid(java.lang.String&nbsp;csvData,
+                              char&nbsp;separator)</pre>
+<div class="block">Simple CSV validator that ensures the number of columns in each file matches
+ the number of elements in each row.
+
+ <p>csvData is split based on NEWLINE into a stream of strings.
+
+ <p>The stream is converted to a string of longs equaling the number of commas
+ found for each csv line.
+
+ <p>Finally each distinct counts are taken from the stream. If the number of
+ distinct counts is only one, we can confirm the CSV is valid.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>csvData</code> - Raw CSV data</dd>
+<dd><code>separator</code> - The separator used in the CSV</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if number of commas is consistent for each line
           Otherwise returns False</dd>
