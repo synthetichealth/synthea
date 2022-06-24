@@ -1,8 +1,8 @@
 package org.mitre.synthea.export;
 
-import com.google.common.collect.Table;
-
 import ca.uhn.fhir.parser.IParser;
+
+import com.google.common.collect.Table;
 
 import java.io.File;
 import java.nio.file.Path;

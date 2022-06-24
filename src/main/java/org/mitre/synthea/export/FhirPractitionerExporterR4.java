@@ -1,8 +1,8 @@
 package org.mitre.synthea.export;
 
-import com.google.common.collect.Table;
-
 import ca.uhn.fhir.parser.IParser;
+
+import com.google.common.collect.Table;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -78,7 +78,8 @@ public abstract class FhirPractitionerExporterR4 {
         }
       } else {
         parser = parser.setPrettyPrint(true);
-        Path outFilePath = outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
+        Path outFilePath =
+            outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
         String bundleJson = parser.encodeResourceToString(bundle);
         Exporter.overwriteFile(outFilePath, bundleJson);
       }

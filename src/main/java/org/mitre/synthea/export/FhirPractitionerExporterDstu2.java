@@ -72,7 +72,8 @@ public abstract class FhirPractitionerExporterDstu2 {
         }
       } else {
         parser = parser.setPrettyPrint(true);
-        Path outFilePath = outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
+        Path outFilePath =
+            outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
         String bundleJson = parser.encodeResourceToString(bundle);
         Exporter.overwriteFile(outFilePath, bundleJson);
       }
