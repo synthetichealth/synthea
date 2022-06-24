@@ -585,6 +585,7 @@ public class BB2RIFExporter {
       String dualEligibleStatusCode = getDualEligibilityCode(person, year);
       String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
               isBlind(person));
+      fieldValues.put(BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
       String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
         fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
@@ -858,6 +859,9 @@ public class BB2RIFExporter {
     if (initialBeneEntitlementReason != null) {
       fieldValues.put(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
     }
+    String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd,
+              isBlind(person));
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
     rifWriters.writeValues(BENEFICIARY_HISTORY.class, fieldValues);
   }
 
