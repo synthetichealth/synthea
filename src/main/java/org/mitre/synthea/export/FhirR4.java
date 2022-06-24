@@ -874,12 +874,17 @@ public class FhirR4 {
    * @return Location.fullUrl if found, otherwise null.
    */
   private static String findLocationUrl(Provider provider, Bundle bundle) {
+    if (provider == null) {
+      return null;
+    }
     for (BundleEntryComponent entry : bundle.getEntry()) {
       if (entry.getResource().fhirType().equals("Location")) {
         org.hl7.fhir.r4.model.Location location =
             (org.hl7.fhir.r4.model.Location) entry.getResource();
         Reference managingOrg = location.getManagingOrganization();
         if (managingOrg != null
+            && managingOrg.hasIdentifier()
+            && managingOrg.getIdentifier().hasValue()
             && managingOrg.getIdentifier().getValue().equals(provider.getResourceID())) {
           return entry.getFullUrl();
         }
