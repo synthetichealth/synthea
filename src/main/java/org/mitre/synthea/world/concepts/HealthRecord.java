@@ -1165,7 +1165,10 @@ public class HealthRecord implements Serializable {
       medication.chronic = chronic;
       Encounter encounter = currentEncounter(time);
       encounter.medications.add(medication);
-      encounter.claim.addLineItem(medication);
+      /* Do not add medications to the Encounter claim.
+       * Medications submit separate claims.
+       */
+      // encounter.claim.addLineItem(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);
@@ -1175,6 +1178,31 @@ public class HealthRecord implements Serializable {
     if (chronic) {
       person.chronicMedications.put(type, medication);
     }
+
+    return medication;
+  }
+
+  /**
+   * Administer a medication without altering existing medications.
+   * @param time the time of the administration.
+   * @param type the type of the medication to administer.
+   * @param codes the medication codes, these are required for determining costs.
+   * @return new medication of the specified type.
+   */
+  public Medication medicationAdministration(long time, String type, List<Code> codes) {
+    Medication medication = new Medication(time, type);
+    medication.stop = time;
+    medication.administration = true;
+    medication.mergeCodeList(codes);
+    medication.determineCost();
+    medication.claim.assignCosts();
+
+    Encounter encounter = currentEncounter(time);
+    encounter.medications.add(medication);
+    /* Do not add medications to the Encounter claim.
+     * Medications submit separate claims.
+     */
+    // encounter.claim.addLineItem(medication);
 
     return medication;
   }
@@ -1193,7 +1221,7 @@ public class HealthRecord implements Serializable {
 
       chronicMedicationEnd(type);
 
-      // Update Costs/Claim infomation.
+      // Update Costs/Claim information.
       medication.determineCost();
       medication.claim.assignCosts();
       present.remove(type);
