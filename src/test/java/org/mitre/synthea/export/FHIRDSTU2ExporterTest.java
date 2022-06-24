@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -46,7 +46,7 @@ import org.mockito.Mockito;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRDSTU2ExporterTest {
-  private boolean physStateEnabled;
+  private static boolean physStateEnabled;
 
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
@@ -57,8 +57,8 @@ public class FHIRDSTU2ExporterTest {
   /**
    * Setup state for exporter test.
    */
-  @Before
-  public void setup() {
+  @BeforeClass
+  public static void setup() {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
@@ -67,8 +67,8 @@ public class FHIRDSTU2ExporterTest {
   /**
    * Reset state after exporter test.
    */
-  @After
-  public void tearDown() {
+  @AfterClass
+  public static void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
 

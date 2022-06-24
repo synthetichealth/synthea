@@ -849,7 +849,7 @@ public final class LifecycleModule extends Module {
       Config.getAsBoolean("lifecycle.death_by_natural_causes");
   protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
       Config.getAsBoolean("lifecycle.death_by_loss_of_care");
-  protected static boolean ENABLE_PHYSIOLOGY_GENERATORS =
+  public static boolean ENABLE_PHYSIOLOGY_GENERATORS =
       Config.getAsBoolean("physiology.generators.enabled", false);
 
   // Death From Natural Causes SNOMED Code

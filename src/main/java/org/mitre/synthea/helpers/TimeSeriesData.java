@@ -1,9 +1,10 @@
 package org.mitre.synthea.helpers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeSeriesData {
+public class TimeSeriesData implements Serializable {
   /** Provides a collection of time series values as well as sampling metadata
    *  concerning those values.
    */

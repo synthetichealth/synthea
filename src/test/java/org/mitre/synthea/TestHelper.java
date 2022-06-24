@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -149,6 +150,10 @@ public abstract class TestHelper {
   public static synchronized Person[] getGeneratedPeople() throws IOException,
       ClassNotFoundException {
     if (serializedPatients == null) {
+      // Ensure Physiology state is enabled
+      boolean physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
+      State.ENABLE_PHYSIOLOGY_STATE = true;
+
       int numberOfPeople = 10;
       Generator generator = new Generator(numberOfPeople);
       generator.options.overflow = false;
@@ -162,6 +167,9 @@ public abstract class TestHelper {
       oos.writeObject(people);
       oos.close();
       serializedPatients = baos.toByteArray();
+
+      // Reset state after exporter test.
+      State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
     }
     ByteArrayInputStream bais = new ByteArrayInputStream(serializedPatients);
     ObjectInputStream ois = new ObjectInputStream(bais);
@@ -169,5 +177,4 @@ public abstract class TestHelper {
     ois.close();
     return rehydrated;
   }
-
 }
