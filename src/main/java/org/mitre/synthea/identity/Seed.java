@@ -12,6 +12,21 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * A representation of demographic information for an Entity for a period of time. A seed is
+ * considered "ground truth" for the simulation. The city and state supplied in the seed are what
+ * Synthea will use determine location, which will impact the providers used.
+ * <p>
+ *   Seeds have an associated Period, which is the time range that they should be used for in the
+ *   simulation. The last seed in a Entity should have an open ended Period. That is, the Period
+ *   should have an end date set to null. This means that the seed will be used from its start date
+ *   until the end of the simulation.
+ * </p>
+ * <p>
+ *   Seeds may have one or more Variants. These variants can be used to capture error or other
+ *   deviation from the demographic information in the seeds.
+ * </p>
+ */
 public class Seed implements IdentityRecord {
   private String seedId;
   private Period period;

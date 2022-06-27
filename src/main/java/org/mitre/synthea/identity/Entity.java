@@ -7,6 +7,29 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a set of desired demographic information about a Person to be simulated.
+ * Typically in Synthea, a person's demographic information is made via random weighted selections
+ * and an individual stays in the same place for their entire life. An Entity can be used to
+ * specify demographic information. Additionally, information can be supplied that allows the
+ * simulation to mimic someone moving their primary place of residence.
+ *
+ * <p>
+ *   This class contains basic-level demographic information, such as date of birth and gender.
+ *   More detailed information is contained in Seeds. Each Entity is made up of a list of Seeds,
+ *   which represent the demographic information for a Person over a specified time range.
+ * </p>
+ * <p>
+ *   As an example, a Person can have a seed to represent their birthplace. 10 years later, their
+ *   family moves, so another seed would be added to their record reflecting their new address
+ * </p>
+ * <p>
+ *   Seeds have one or more Variants. This is a representation of have the demographic information
+ *   will be when placed in the exported health record. It can be used to represent data errors or
+ *   variations typically seen in demographic information, such as nicknames, typos, old addresses,
+ *   etc.
+ * </p>
+ */
 public class Entity {
   private List<Seed> seeds;
   private LocalDate dateOfBirth;
@@ -43,11 +66,6 @@ public class Entity {
     LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp)
         .atZone(ZoneId.systemDefault())).toLocalDate();
     return seedAt(date);
-  }
-
-  public boolean isBeforeOrDuringFirstSeed(long timestamp) {
-    Seed firstSeed = seeds.get(0);
-    return firstSeed.getPeriod().isBefore(timestamp) || firstSeed.getPeriod().contains(timestamp);
   }
 
   /**

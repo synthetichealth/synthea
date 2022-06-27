@@ -10,6 +10,17 @@ import java.util.stream.Collectors;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * A representation of demographic information for a person. The expectation is that it will be a
+ * deviation from its associated Seed, reproducing the variability usually observed in demographic
+ * data, such as nicknames, typos, or even placeholder values. Variant information is only used for
+ * supplying information to write into the exported record, so it can contain an incorrect date of
+ * birth or non-existent city.
+ * <p>
+ *   Variants may be sparsely populated. If a value for a field is null, it will pull the value from
+ *   the associated seed.
+ * </p>
+ */
 public class Variant implements IdentityRecord {
   private String variantId;
   private String givenName;
@@ -23,10 +34,6 @@ public class Variant implements IdentityRecord {
   private String gender;
   private String socialSecurityNumber;
   private transient Seed seed;
-
-  public Variant() {
-
-  }
 
   public String getVariantId() {
     return variantId;

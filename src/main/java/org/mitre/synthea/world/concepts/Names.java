@@ -2,7 +2,6 @@ package org.mitre.synthea.world.concepts;
 
 import java.util.List;
 
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;

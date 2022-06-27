@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Singleton class that manages all Entities in a simulation. This class will typically be
+ * instantiated using the fromJSON static method.
+ */
 public class EntityManager {
   private List<Entity> records;
   private transient Map<String, Entity> entityLookup;
-
-  public EntityManager() {
-
-  }
 
   public List<Entity> getRecords() {
     return records;

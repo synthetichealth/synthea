@@ -4,13 +4,13 @@ import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
 
 import java.time.LocalDate;
 
+/**
+ * A simple representation of a time period with a start and end date. End date may be null for
+ * usage with Seeds to represent an open-ended range, if it is the last Seed for an Entity.
+ */
 public class Period {
   private LocalDate start;
   private LocalDate end;
-
-  public Period() {
-
-  }
 
   public Period(LocalDate start, LocalDate end) {
     this.start = start;
@@ -31,11 +31,6 @@ public class Period {
     return (localDateToTimestamp(this.start) <= timestamp)
         && ((this.end == null)
         || (localDateToTimestamp(this.end) >= timestamp));
-  }
-
-  public boolean isBefore(long timestamp) {
-    long startStamp = localDateToTimestamp(this.start);
-    return timestamp <= startStamp;
   }
 
   public LocalDate getStart() {
