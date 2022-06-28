@@ -328,7 +328,7 @@ public class FhirR4 {
 
       // one claim per encounter
       BundleEntryComponent encounterClaim =
-          encounterClaim(person, personEntry, bundle, encounterEntry, encounter.claim);
+          encounterClaim(person, personEntry, bundle, encounterEntry, encounter);
 
       explanationOfBenefit(personEntry, bundle, encounterEntry, person,
           encounterClaim, encounter, encounter.claim);
@@ -990,28 +990,32 @@ public class FhirR4 {
    * @param person         The patient having the encounter.
    * @param personEntry    Entry for the person
    * @param bundle         The Bundle to add to
-   * @param encounterEntry The current Encounter
-   * @param claim          the Claim object
+   * @param encounterEntry Entry for the Encounter
+   * @param encounter      The health record encounter
    * @return the added Entry
    */
   private static BundleEntryComponent encounterClaim(
       Person person, BundleEntryComponent personEntry,
-      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
+      Bundle bundle, BundleEntryComponent encounterEntry, Encounter encounter) {
     org.hl7.fhir.r4.model.Claim claimResource = new org.hl7.fhir.r4.model.Claim();
     org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
     claimResource.setStatus(ClaimStatus.ACTIVE);
     CodeableConcept type = new CodeableConcept();
-    type.getCodingFirstRep()
-      .setSystem("http://terminology.hl7.org/CodeSystem/claim-type")
-      .setCode("institutional");
+    type.getCodingFirstRep().setSystem("http://terminology.hl7.org/CodeSystem/claim-type");
+    EncounterType encType = EncounterType.fromString(encounter.type);
+    if (encType.code().equals(EncounterType.OUTPATIENT.code())) {
+      type.getCodingFirstRep().setCode("professional");
+    } else {
+      type.getCodingFirstRep().setCode("institutional");
+    }
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(claim.payer.getName()));
+    insuranceComponent.setCoverage(new Reference().setDisplay(encounter.claim.payer.getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1043,7 +1047,7 @@ public class FhirR4 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (Claim.ClaimEntry claimEntry : claim.items) {
+    for (Claim.ClaimEntry claimEntry : encounter.claim.items) {
       HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
@@ -1104,7 +1108,7 @@ public class FhirR4 {
 
     Money moneyResource = new Money();
     moneyResource.setCurrency("USD");
-    moneyResource.setValue(claim.getTotalClaimCost());
+    moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(person, bundle, claimResource);
