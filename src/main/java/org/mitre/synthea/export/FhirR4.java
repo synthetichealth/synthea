@@ -127,7 +127,6 @@ import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
-import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
@@ -2022,6 +2021,10 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest");
       medicationResource.setMeta(meta);
+
+      Code category = new Code("http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+          "community", "Community");
+      medicationResource.addCategory(mapCodeToCodeableConcept(category, null));
     } else if (USE_SHR_EXTENSIONS) {
       medicationResource.addExtension()
         .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
@@ -2065,6 +2068,22 @@ public class FhirR4 {
       drugResource.setStatus(MedicationStatus.ACTIVE);
       BundleEntryComponent drugEntry = newEntry(person, bundle, drugResource);
       medicationResource.setMedication(new Reference(drugEntry.getFullUrl()));
+
+      // Set the MedicationRequest.category
+      EncounterType type = EncounterType.fromString(encounter.type);
+      if (type.code().equals(EncounterType.INPATIENT.code())) {
+        CodeableConcept concept = medicationResource.getCategoryFirstRep();
+        concept.setText("Inpatient");
+        Coding category = concept.getCodingFirstRep();
+        category.setCode("inpatient");
+        category.setDisplay("Inpatient");
+      } else if (type.code().equals(EncounterType.OUTPATIENT.code())) {
+        CodeableConcept concept = medicationResource.getCategoryFirstRep();
+        concept.setText("Outpatient");
+        Coding category = concept.getCodingFirstRep();
+        category.setCode("outpatient");
+        category.setDisplay("Outpatient");
+      }
     }
 
     medicationResource.setAuthoredOn(new Date(medication.start));
