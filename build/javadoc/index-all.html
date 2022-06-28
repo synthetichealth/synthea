@@ -422,6 +422,13 @@
 <dd>
 <div class="block">Class to manage mapping values in the static BFD TSV writer to the exported writers.</div>
 </dd>
+<dt><a href="org/mitre/synthea/export/BB2RIFMinimizer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFMinimizer</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">Functionality to filter a set of RIF files to leave only enough beneficiaries to cover all
+ claim types.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/BB2RIFMinimizer.html#BB2RIFMinimizer--">BB2RIFMinimizer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFMinimizer.html" title="class in org.mitre.synthea.export">BB2RIFMinimizer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/BB2RIFStructure.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFStructure</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
 <dd>
 <div class="block">A collection of enums and related that describe the structure of RIF files.</div>
@@ -3608,6 +3615,11 @@
 <div class="block">Simple CSV validator that ensures the number of columns in each file matches
  the number of elements in each row.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/SimpleCSV.html#isValid-java.lang.String-char-">isValid(String, char)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleCSV.html" title="class in org.mitre.synthea.helpers">SimpleCSV</a></dt>
+<dd>
+<div class="block">Simple CSV validator that ensures the number of columns in each file matches
+ the number of elements in each row.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Encounter.html#isWellness--">isWellness()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Encounter.html" title="class in org.mitre.synthea.engine">State.Encounter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#items">items</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
@@ -3984,6 +3996,11 @@
 <dd>
 <div class="block">Executes a physiology simulation according to a given configuration file.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/BB2RIFMinimizer.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFMinimizer.html" title="class in org.mitre.synthea.export">BB2RIFMinimizer</a></dt>
+<dd>
+<div class="block">Filters a set of RIF files to leave only enough beneficiaries to cover all
+ claim types.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Attributes.html#main-java.lang.String:A-">main(String[])</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Attributes.html" title="class in org.mitre.synthea.helpers">Attributes</a></dt>
 <dd>
 <div class="block">Generate an output file containing all Person attributes used in Synthea.</div>
@@ -4061,6 +4078,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationActive-java.lang.String-">medicationActive(String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationAdministration-long-java.lang.String-java.util.List-">medicationAdministration(long, String, List&lt;HealthRecord.Code&gt;)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
+<dd>
+<div class="block">Administer a medication without altering existing medications.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.MedicationEnd.html#MedicationEnd--">MedicationEnd()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.MedicationEnd.html" title="class in org.mitre.synthea.engine">State.MedicationEnd</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationEnd-long-java.lang.String-org.mitre.synthea.world.concepts.HealthRecord.Code-">medicationEnd(long, String, HealthRecord.Code)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
@@ -4104,6 +4125,8 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TransitionMetrics.Metric.html#Metric--">Metric()</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TransitionMetrics.Metric.html" title="class in org.mitre.synthea.helpers">TransitionMetrics.Metric</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#metrics">metrics</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#MIDDLE_NAME">MIDDLE_NAME</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.DateInput.html#millisecond">millisecond</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.DateInput.html" title="class in org.mitre.synthea.engine">Components.DateInput</a></dt>
 <dd>&nbsp;</dd>
@@ -6284,6 +6307,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html#unit">unit</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Observation.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Observation</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/SimpleCSV.html#unparse-java.util.List-">unparse(List&lt;? extends Map&lt;String, String&gt;&gt;)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleCSV.html" title="class in org.mitre.synthea.helpers">SimpleCSV</a></dt>
+<dd>
+<div class="block">Convert the data in the given List of Maps to a String of CSV data.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/SimpleCSV.html#unparse-java.util.List-char-">unparse(List&lt;? extends Map&lt;String, String&gt;&gt;, char)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleCSV.html" title="class in org.mitre.synthea.helpers">SimpleCSV</a></dt>
 <dd>
 <div class="block">Convert the data in the given List of Maps to a String of CSV data.</div>
 </dd>
