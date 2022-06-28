@@ -843,7 +843,7 @@ public class CSVExporter {
     String value = ExportHelper.getObservationValue(observation);
     String type = ExportHelper.getObservationType(observation);
     s.append(clean(value)).append(',');
-    s.append(observation.unit).append(',');
+    s.append(clean(observation.unit)).append(',');
     s.append(type);
 
     s.append(NEWLINE);
