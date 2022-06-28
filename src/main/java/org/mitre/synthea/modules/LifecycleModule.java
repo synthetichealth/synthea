@@ -196,8 +196,18 @@ public final class LifecycleModule extends Module {
     double heightPercentile = person.rand();
     PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.getSeed(), time);
     double weightPercentile = pgt.reverseWeightPercentile(gender, heightPercentile);
+    // make the head percentile within 5% of the height percentile
+    double headPercentile = heightPercentile + person.rand(0.025, 0.025);
+    if (headPercentile < 0.01) {
+      headPercentile = 0.01;
+    } else if (headPercentile > 1) {
+      headPercentile = 1.0;
+    }
+    // Convert and store as percentage (0 to 100%) because it is recorded in an Observation.
+    headPercentile = (100.0 * headPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
+    person.setVitalSign(VitalSign.HEAD_PERCENTILE, headPercentile);
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
 
     // Temporarily generate a mother
@@ -416,7 +426,7 @@ public final class LifecycleModule extends Module {
     String gender = (String) person.attributes.get(Person.GENDER);
     int ageInMonths = person.ageInMonths(time);
     return lookupGrowthChart("head", gender, ageInMonths,
-        person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time));
+        (person.getVitalSign(VitalSign.HEAD_PERCENTILE, time) / 100.0));
   }
 
   private static double adjustWeight(Person person, long time) {

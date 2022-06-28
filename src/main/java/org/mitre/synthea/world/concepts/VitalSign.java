@@ -10,6 +10,7 @@ public enum VitalSign {
   @SerializedName("Weight Percentile") WEIGHT_PERCENTILE,
   @SerializedName("BMI") BMI,
   @SerializedName("Head Circumference") HEAD,
+  @SerializedName("Head Circumference Percentile") HEAD_PERCENTILE,
   @SerializedName("Systolic Blood Pressure") SYSTOLIC_BLOOD_PRESSURE,
   @SerializedName("Diastolic Blood Pressure") DIASTOLIC_BLOOD_PRESSURE,
   @SerializedName("Oxygen Saturation") OXYGEN_SATURATION,
