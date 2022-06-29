@@ -5,9 +5,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
 
+import org.apache.commons.lang3.Range;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.IPlanEligibility;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
@@ -28,8 +29,10 @@ public class InsurancePlan implements Serializable {
   private final BigDecimal monthlyPremium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
-  // Plan Eligibilty strategy.
+  // Plan Eligibilty.
   private final IPlanEligibility planEligibility;
+  // Start/end date of plan availablity.
+  private final Range<Long> activeTimeRange;
 
   /**
    * Constructor for an InsurancePlan.
@@ -43,7 +46,7 @@ public class InsurancePlan implements Serializable {
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
       BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
-      BigDecimal monthlyPremium, boolean medicareSupplement, String eligibilityName) {
+      BigDecimal monthlyPremium, boolean medicareSupplement, int activeYearStart, int activeYearEnd, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -51,8 +54,23 @@ public class InsurancePlan implements Serializable {
     this.monthlyPremium = monthlyPremium;
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
+    if (activeYearStart >= activeYearEnd) {
+      throw new RuntimeException("Plan start year cannot be after its end year. Was given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
+    }
+    long activeTimeStart = Utilities.convertCalendarYearsToTime(activeYearStart);
+    long activeTimeEnd = Utilities.convertCalendarYearsToTime(activeYearEnd);
+    this.activeTimeRange = Range.between(activeTimeStart, activeTimeEnd);
     // Set the payer's eligibility criteria.
     this.planEligibility = PlanEligibilityFinder.getEligibilityAlgorithm(eligibilityName);
+  }
+
+  /**
+   * Returns wether this plan is active at the given time.
+   * @param time The time to check if the plan is active at.
+   * @return wether this plan is active at the given time.
+   */
+  public boolean isActive(long time) {
+    return this.activeTimeRange.contains(time);
   }
 
   /**

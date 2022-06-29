@@ -57,7 +57,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    Payer payer = finder.find(PayerManager.getAllPlans(PayerManager.getPrivatePayers()),
+    Payer payer = finder.find(PayerManager.getActivePlans(PayerManager.getPrivatePayers(), 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());
@@ -81,7 +81,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Payer payer = finder.find(PayerManager.getAllPlans(PayerManager.getPrivatePayers()),
+    Payer payer = finder.find(PayerManager.getActivePlans(PayerManager.getPrivatePayers(), 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());
