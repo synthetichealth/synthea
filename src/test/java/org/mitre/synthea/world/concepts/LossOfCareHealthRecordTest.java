@@ -203,8 +203,6 @@ public class LossOfCareHealthRecordTest {
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of an encounter.
     person.attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
-    // Set person's birthdate
-    person.attributes.put(Person.BIRTHDATE, time);
 
     // First encounter of current year is uncovered but affordable.
     Encounter coveredEncounterYearOne = person.encounterStart(time, EncounterType.WELLNESS);

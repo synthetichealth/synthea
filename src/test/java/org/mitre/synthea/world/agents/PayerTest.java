@@ -208,7 +208,8 @@ public class PayerTest {
     for (int age = 65; age < 70; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep * 3;
       healthInsuranceModule.process(person, currentTime);
-      assertTrue(person.coverage.getPlanAtTime(currentTime).getPayer().getName().equals("Medicare"));
+      String payerName = person.coverage.getPlanAtTime(currentTime).getPayer().getName();
+      assertTrue("Expected Medicare but was " + payerName + ".", payerName.equals("Medicare"));
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
       currentYear++;
     }
@@ -217,16 +218,18 @@ public class PayerTest {
   @Test
   public void receiveMedicareEsrdEligible() {
     // ESRD
+    long time = Utilities.convertCalendarYearsToTime(1980);
     person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put("end_stage_renal_disease", true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, 0L);
-    assertEquals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE),
-        person.coverage.getPlanAtTime(0L).getPayer());
+    healthInsuranceModule.process(person, time);
+    Payer currentPayer = person.coverage.getPlanAtTime(time).getPayer();
+    assertEquals("Expected Medicare but was " + currentPayer.getName() + ".",
+        PayerManager.getGovernmentPayer(PayerManager.MEDICARE), currentPayer);
   }
 
   @Test
@@ -312,7 +315,7 @@ public class PayerTest {
 
   @Test
   public void receiveDualEligible() {
-    long birthTime = System.currentTimeMillis();
+    long birthTime = Utilities.convertCalendarYearsToTime(1950);
     long age65Time = birthTime + Utilities.convertTime("years", 65) + sixMonths;
 
     // Below Poverty Level and Over 65, thus Dual Eligble.
@@ -368,7 +371,7 @@ public class PayerTest {
   @Test
   public void receivePrivateInsurancePostMandate() {
     // Post 2006 Mandate.
-    long time = mandateTime + Utilities.convertTime("years", 50);
+    long time = mandateTime + Utilities.convertTime("years", 1);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
