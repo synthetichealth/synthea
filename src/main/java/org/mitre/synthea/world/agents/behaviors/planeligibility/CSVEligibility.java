@@ -99,7 +99,7 @@ public class CSVEligibility implements IPlanEligibility {
    * @return  The converted logical operator.
    */
   private static String convertToLogicalOperator(String logicalOperator) {
-    logicalOperator = logicalOperator.trim();
+    logicalOperator = logicalOperator.replaceAll("\\s", "");
     if (logicalOperator.equalsIgnoreCase("and")) {
       return "AND";
     }

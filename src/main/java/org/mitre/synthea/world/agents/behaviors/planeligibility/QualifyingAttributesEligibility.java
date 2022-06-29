@@ -72,15 +72,19 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
   }
 
   private static AttributeQualifier covertAttributeExpressionToLogic(String attributeExpression) {
-    String regex = " ";
-    String[] splitExpression = attributeExpression.split(regex);
-    if (splitExpression.length != 3) {
-      throw new RuntimeException("Invalid attribute expression '" + attributeExpression + "'.");
+    attributeExpression = attributeExpression.replaceAll("\\s", "");
+    // We will specifically iterate over the possible operators in this order.
+    String[] operatorRegexes = {"<=", ">=", "!=", "==", "<", ">", "="};
+    for(String regex : operatorRegexes) {
+      String[] splitExpression = attributeExpression.split(regex);
+      if (splitExpression.length == 2) {
+        String attribute = splitExpression[0];
+        String operator = regex;
+        String value = splitExpression[1];
+        return new AttributeQualifier(attribute, value, operator);
+      }
     }
-    String attribute = splitExpression[0];
-    String operator = splitExpression[1];
-    String value = splitExpression[2];
-    return new AttributeQualifier(attribute, value, operator);
+    throw new RuntimeException("Invalid attribute logic expression '" + attributeExpression + "'.");
   }
 
   /**
