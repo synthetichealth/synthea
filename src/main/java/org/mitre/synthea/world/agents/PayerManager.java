@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -57,7 +58,7 @@ public class PayerManager {
   /* U.S. States loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
 
-  /* Payer Finder. */
+  // Payer Finder.
   private static IPlanFinder planFinder;
   // Payer selection algorithm choices:
   private static final String RANDOM = "random";
@@ -230,8 +231,11 @@ public class PayerManager {
     return newPayer;
   }
 
+  /**
+   * Converts a key-value CSV line to a plan.
+   * @param line The Map with the CSV key-value pairs.
+   */
   private static void csvLineToPlan(Map<String, String> line) {
-    // Uses .remove() instead of .get() so we can iterate over remaining keys later.
     String payerId = line.remove("payer_id");
     String planId = line.remove("plan_id");
     String planName = line.remove("name");
@@ -241,9 +245,13 @@ public class PayerManager {
     double defaultCopay = Double.parseDouble(line.remove("default_copay"));
     double monthlyPremium = Double.parseDouble(line.remove("monthly_premium"));
     boolean medicareSupplement = Boolean.parseBoolean(line.remove("medicare_supplement"));
+    String startAvailable = line.remove("start_available");
+    String endAvailable = line.remove("end_available");
+    String eligibilityName = line.remove("eligibility_algorithm");
+
     Payer payer = PayerManager.getPayerById(payerId);
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremium, medicareSupplement);
+        defaultCopay, monthlyPremium, medicareSupplement, eligibilityName);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -276,7 +284,7 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE, Integer.MAX_VALUE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false);
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 

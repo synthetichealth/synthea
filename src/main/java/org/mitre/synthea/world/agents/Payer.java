@@ -148,11 +148,11 @@ public class Payer implements Serializable {
    * @param monthlyPremium  The monthly premium.
    */
   public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
-      double defaultCopay, double monthlyPremium, boolean medicareSupplement) {
+      double defaultCopay, double monthlyPremium, boolean medicareSupplement, String eligibilityName) {
     InsurancePlan newPlan = new InsurancePlan(
         this, servicesCovered, BigDecimal.valueOf(deductible),
         BigDecimal.valueOf(defaultCoinsurance), BigDecimal.valueOf(defaultCopay),
-        BigDecimal.valueOf(monthlyPremium), medicareSupplement);
+        BigDecimal.valueOf(monthlyPremium), medicareSupplement, eligibilityName);
     this.plans.add(newPlan);
   }
 
@@ -575,18 +575,18 @@ public class Payer implements Serializable {
 
   /**
    * Returns whether this is the no insurance payer.
-   * @return
+   * @return  Returns whether this is no insurance.
    */
   public boolean isNoInsurance() {
     return this.name.equals(PayerManager.NO_INSURANCE);
   }
 
+  /**
+   * Returns the plan link id for this payer.
+   * @return  The plan link id.
+   */
   public String getPlanLinkId() {
     return this.planLinkId;
-  }
-
-  public String getEligibilityName() {
-    return this.eligibilityName;
   }
 
 }

@@ -19,7 +19,7 @@ public class PlanEligibilityFinder {
   private static Map<String, IPlanEligibility> planEligibilities;
 
   private static final String ELIGIBILITY_NAME = "name";
-  private static final String GENERIC = "generic";
+  public static final String GENERIC = "generic";
 
   /**
    * Returns the correct elgibility algorithm based on the given string.
