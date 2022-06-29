@@ -43,6 +43,8 @@ public class Payer implements Serializable {
   public final String uuid;
   private final Set<InsurancePlan> plans;
   private final String ownership;
+  private final int priority;
+  private final String planLinkId;
 
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
@@ -56,10 +58,6 @@ public class Payer implements Serializable {
   private final Map<String, AtomicInteger> customerUtilization;
   // row: year, column: type, value: count.
   private transient Table<Integer, String, AtomicInteger> entryUtilization;
-
-  private final String planLinkId;
-
-  private final String eligibilityName;
 
   /**
    * Simple bean used to add Java Serialization support to
@@ -118,19 +116,21 @@ public class Payer implements Serializable {
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
    */
-  public Payer(String name, String id, Set<String> statesCovered,
-      String ownership, String eligibilityName) {
+  public Payer(String name, String id, Set<String> statesCovered, String ownership, int priority) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name. Payer ID: " + id + ".");
     }
+    // Initialize attributes.
     this.name = name;
-    this.eligibilityName = eligibilityName;
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
     this.plans = new HashSet<InsurancePlan>();
     this.ownership = ownership;
     this.attributes = new LinkedTreeMap<>();
+    this.priority = priority;
+
+    // Initial tracking values.
     this.entryUtilization = HashBasedTable.create();
     this.customerUtilization = new HashMap<String, AtomicInteger>();
     this.costsCovered = Claim.ZERO_CENTS;
@@ -175,6 +175,13 @@ public class Payer implements Serializable {
    */
   public String getOwnership() {
     return this.ownership;
+  }
+
+  /**
+   * Returns the priority level of this payer.
+   */
+  public int getPriority() {
+    return this.priority;
   }
 
   /**

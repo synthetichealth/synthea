@@ -108,14 +108,6 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Returns whether this plan is a Medicare provided plan.
-   * @return  Whether this is a medicar provided plan.
-   */
-  public boolean isMedicarePlan() {
-    return this.payer.equals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE));
-  }
-
-  /**
    * Returns the insurance status dictated by this plan's payer.
    * @return  The insurance status.
    */
@@ -227,6 +219,14 @@ public class InsurancePlan implements Serializable {
    */
   public boolean isGovernmentPlan() {
     return this.payer.isGovernmentPayer();
+  }
+
+  /**
+   * Returns whether a customer may buy a supplement to this plan.
+   * @return  Whether a person may buy a supplement plan.
+   */
+  public boolean mayPurchaseSupplement() {
+    return this.getPayer().getName().equals("Medicare");
   }
 
   /**
