@@ -26,14 +26,11 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
    */
   public QualifyingAttributesEligibility(String attributeInput) {
     if (attributeInput.contains("/")) {
-      // The input is a file, so we have a file that defines the eligible conditions.
+      // The input is a file, convert it to a list of attribute expressions.
       qualifyingAttributes = buildQualifyingAttributesFile(attributeInput);
     } else {
       // The input is a set of attributes.
-      qualifyingAttributes = new ArrayList<>();
-      for (String attributeExpression : Arrays.asList(attributeInput.split("\\|"))) {
-        qualifyingAttributes.add(covertAttributeExpressionToLogic(attributeExpression));
-      }
+      qualifyingAttributes = convertAttributeExpressionSet(attributeInput);
     }
   }
 
@@ -41,6 +38,30 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
   public boolean isPersonEligible(Person person, long time) {
     return qualifyingAttributes.stream().anyMatch(attributeLogic ->
       attributeLogic.checkLogic(person));
+  }
+
+  private static List<AttributeQualifier> convertAttributeExpressionSet(String attributeInput) {
+    List<AttributeQualifier> qualifyingAttributes = new ArrayList<>();
+    for (String attributeExpression : Arrays.asList(attributeInput.split("\\|"))) {
+      qualifyingAttributes.add(covertAttributeExpressionToLogic(attributeExpression));
+    }
+    return qualifyingAttributes;
+  }
+
+  private static AttributeQualifier covertAttributeExpressionToLogic(String attributeExpression) {
+    attributeExpression = attributeExpression.replaceAll("\\s", "");
+    // We will specifically iterate over the possible operators in this order.
+    String[] operatorRegexes = {"<=", ">=", "!=", "==", "<", ">", "="};
+    for(String regex : operatorRegexes) {
+      String[] splitExpression = attributeExpression.split(regex);
+      if (splitExpression.length == 2) {
+        String attribute = splitExpression[0];
+        String operator = regex;
+        String value = splitExpression[1];
+        return new AttributeQualifier(attribute, value, operator);
+      }
+    }
+    throw new RuntimeException("Invalid attribute logic expression '" + attributeExpression + "'.");
   }
 
   /**
@@ -62,29 +83,9 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
       String attributeRow = row.get("attributes");
-      String[] attributes = attributeRow.split("\\|");
-      for (String attributeExpression : attributes) {
-        AttributeQualifier attributeLogic = covertAttributeExpressionToLogic(attributeExpression);
-        attributeEligibilities.add(attributeLogic);
-      }
+      attributeEligibilities.addAll(convertAttributeExpressionSet(attributeRow));
     }
     return attributeEligibilities;
-  }
-
-  private static AttributeQualifier covertAttributeExpressionToLogic(String attributeExpression) {
-    attributeExpression = attributeExpression.replaceAll("\\s", "");
-    // We will specifically iterate over the possible operators in this order.
-    String[] operatorRegexes = {"<=", ">=", "!=", "==", "<", ">", "="};
-    for(String regex : operatorRegexes) {
-      String[] splitExpression = attributeExpression.split(regex);
-      if (splitExpression.length == 2) {
-        String attribute = splitExpression[0];
-        String operator = regex;
-        String value = splitExpression[1];
-        return new AttributeQualifier(attribute, value, operator);
-      }
-    }
-    throw new RuntimeException("Invalid attribute logic expression '" + attributeExpression + "'.");
   }
 
   /**
