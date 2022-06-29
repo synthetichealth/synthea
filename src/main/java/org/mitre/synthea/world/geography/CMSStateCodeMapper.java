@@ -58,7 +58,7 @@ public class CMSStateCodeMapper {
    * @param state abbreviation or name of state
    * @return
    */
-  public String changeStateFormat(String state) {
+  private String changeStateFormat(String state) {
     if (state.length() == 2) {
       return this.abbrevToState.getOrDefault(state.toUpperCase(), null);
     } else {

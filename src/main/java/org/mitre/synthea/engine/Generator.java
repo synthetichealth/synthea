@@ -46,7 +46,6 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.CMSStateCodeMapper;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
@@ -685,7 +684,7 @@ public class Generator implements RandomNumberGenerator {
           person.attributes.putAll(currentSeed.demographicAttributesForPerson());
           String state = currentSeed.getState();
           if (state.length() == 2) {
-            state = new CMSStateCodeMapper().changeStateFormat(state);
+            state = Location.getStateName(state);
           }
           Location newLocation = new Location(state, currentSeed.getCity());
           newLocation.assignPoint(person, currentSeed.getCity());
@@ -845,7 +844,7 @@ public class Generator implements RandomNumberGenerator {
     Seed firstSeed = entity.getSeeds().get(0);
     String state = firstSeed.getState();
     if (state.length() == 2) {
-      state = new CMSStateCodeMapper().changeStateFormat(state);
+      state = Location.getStateName(state);
     }
     this.location = new Location(
       state,
