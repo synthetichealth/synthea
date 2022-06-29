@@ -294,7 +294,8 @@ public class PayerTest {
   @Test
   public void receiveMedicaidMnilEligble() {
     long time = Utilities.convertCalendarYearsToTime(1980);
-    // Receive Medciare after having too high of an income, but later qualifying for MNIL.
+    // Receive Medciare after having too high of an income, but later qualifying for MNIL
+    // via spenddowns.
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "M");

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 /**
  * Returns the requested Payer elgibility algorithm. This prevents redundant
@@ -39,7 +40,12 @@ public class PlanEligibilityFinder {
    */
   public static void buildPlanEligibilities(String state, String fileName) {
     planEligibilities = new HashMap<>();
-    planEligibilities.put(PlanEligibilityFinder.GENERIC, new GenericPayerEligibilty());
+    // Generic eliigblities always return true.
+    planEligibilities.put(PlanEligibilityFinder.GENERIC, new IPlanEligibility() {
+      @Override
+      public boolean isPersonEligible(Person person, long time) {
+        return true;
+      }});
     // Build the CSV input eligbility algorithms.
     CSVEligibility.buildEligibilityOptions(state);
     String resource = null;

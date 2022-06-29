@@ -61,7 +61,7 @@ public class PayerManager {
   private static IPlanFinder planFinder;
   // Payer selection algorithm choices:
   private static final String RANDOM = "random";
-  private static final String BESTRATE = "best_rate";
+  private static final String BEST_RATE = "best_rate";
   private static final String PRIORITY = "priority";
 
   /**
@@ -156,7 +156,7 @@ public class PayerManager {
     IPlanFinder finder;
     String behavior = Config.get("generate.payers.selection_behavior").toLowerCase();
     switch (behavior) {
-      case BESTRATE:
+      case BEST_RATE:
         finder = new PlanFinderBestRates();
         break;
       case RANDOM:

@@ -13,16 +13,16 @@ import org.mitre.synthea.world.agents.Person;
 public class CSVEligibility implements IPlanEligibility {
 
   // The possible columns of the CSV input file.
-  private static final String POVERTY_MULTIPLIER = "poverty_multiplier";
-  private static final String INCOME_THRESHOLD = "income_threshold";
-  private static final String AGE_THRESHOLD = "age_threshold";
-  private static final String QUALIFYING_CONDITIONS = "qualifying_codes";
-  private static final String QUALIFYING_ATTRIBUTES = "qualifying_attributes";
-  private static final String ACCEPTANCE_LIKELIHOOD = "acceptance_likelihood";
-  private static final String POVERTY_MULTIPLIER_FILE = "poverty_multiplier_file";
-  private static final String MNIL_FILE = "mnil_file";
-  static final String LOGICAL_OPERATOR = "logical_operator";
-  private static final Object SUB_ELIGIBILITIES = "sub_eligibilities";
+  private static final String POVERTY_MULTIPLIER = "Poverty Multiplier";
+  private static final String INCOME_THRESHOLD = "Income Threshold";
+  private static final String AGE_THRESHOLD = "Age Threshold";
+  private static final String QUALIFYING_CONDITIONS = "Qualifying Codes";
+  private static final String QUALIFYING_ATTRIBUTES = "Qualifying Attributes";
+  private static final String ACCEPTANCE_LIKELIHOOD = "Acceptance Likelihood";
+  private static final String POVERTY_MULTIPLIER_FILE = "Poverty Multiplier File";
+  private static final String SPENDDOWN_FILE = "Spenddown File";
+  private static final String LOGICAL_OPERATOR = "Logical Operator";
+  private static final Object SUB_ELIGIBILITIES = "Sub-Eligibilities";
 
   // A map that maps a column to the type of eligibilty it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
@@ -89,8 +89,8 @@ public class CSVEligibility implements IPlanEligibility {
         -> new AcceptanceLikelihoodEligibility(Double.parseDouble(input)));
     eligbilityOptions.put(POVERTY_MULTIPLIER_FILE, (input)
         -> new PovertyMultiplierFileEligibility(state, input));
-    eligbilityOptions.put(MNIL_FILE, (input)
-        -> new MedicallyNeedyIncomeEligibility(state, input));
+    eligbilityOptions.put(SPENDDOWN_FILE, (input)
+        -> new IncomeSpenddownEligibility(state, input));
   }
 
   /**
@@ -99,14 +99,15 @@ public class CSVEligibility implements IPlanEligibility {
    * @return  The converted logical operator.
    */
   private static String convertToLogicalOperator(String logicalOperator) {
+    logicalOperator = logicalOperator.trim();
     if (logicalOperator.equalsIgnoreCase("and")) {
       return "AND";
     }
     if (logicalOperator.equalsIgnoreCase("or") || logicalOperator.isEmpty()) {
       return "OR";
     }
-    throw new IllegalArgumentException("Invalid logical operator "
-        + logicalOperator + " for input csv.");
+    throw new IllegalArgumentException("Invalid logical operator '"
+        + logicalOperator + "' for input eligibilities table.");
   }
 
   @Override

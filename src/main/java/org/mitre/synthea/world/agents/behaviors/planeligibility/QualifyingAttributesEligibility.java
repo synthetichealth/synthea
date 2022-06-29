@@ -54,7 +54,8 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
       resource = Utilities.readResource(fileName);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("There was an issue reading the file '"
+          + fileName + "'. This issue was caused by " + e.getMessage());
     }
 
     List<AttributeQualifier> attributeEligibilities = new ArrayList<AttributeQualifier>();
