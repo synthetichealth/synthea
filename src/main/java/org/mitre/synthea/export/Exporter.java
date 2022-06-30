@@ -230,14 +230,14 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
       org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-      
+
       if (options.flexporterMappings != null) {
-    	  for (Mapping mapping : options.flexporterMappings) {
-    		  // flexport on the bundle here
-    		  Actions.applyMapping(bundle, mapping, person);
-    	  }
+        for (Mapping mapping : options.flexporterMappings) {
+          // flexport on the bundle here
+          Actions.applyMapping(bundle, mapping, person);
+        }
       }
-      
+
       IParser parser = FhirR4.getContext().newJsonParser();
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         parser.setPrettyPrint(false);

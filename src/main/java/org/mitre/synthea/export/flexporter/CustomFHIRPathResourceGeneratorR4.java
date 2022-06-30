@@ -30,6 +30,7 @@ import ca.uhn.fhir.context.RuntimeResourceBlockDefinition;
  *
  * Modified for the Flexporter:
  *  -- allow adding to an existing resource
+ *  -- add class lookup by resourceType
  *  -- add support for BackboneElements
  *  -- swapped constructors, pass in a FhirContext to avoid recreating it for each resource
  *  -- add support for extensions on primitives
@@ -130,6 +131,24 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
     }
   }
 
+  /**
+   * The generation method that yields a new instance of the given resourceTypue with every value set
+   * in the FHIRPath mapping.
+   *
+   * @param resourceType String The class name of the Resource that shall be created.
+   * @return T a new FHIR Resource instance of the given resource type.
+   */
+  public T generateResource(String resourceType) {
+    try {
+      Class<T> resourceClass =
+          (Class<T>) Class.forName("org.hl7.fhir.r4.model." + resourceType);
+      
+      return generateResource(resourceClass);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   /**
    * The generation method that yields a new instance of class `resourceClass` with every value set
    * in the FHIRPath mapping.

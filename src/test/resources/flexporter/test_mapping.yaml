@@ -20,28 +20,7 @@ actions:
      applicability: Patient
    - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter
      applicability: Encounter
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition
-   #   applicability: Condition
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation
-   #   applicability: Observation
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure
-   #   applicability: Procedure
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest
-   #   applicability: MedicationRequest
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunization
-   #   applicability: Immunization
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careplan
-   #   applicability: CarePlan
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy
-   #   applicability: ImagingStudy
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-device
-   #   applicability: Device
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitioner
-   #   applicability: Practitioner
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-allergyintolerance
-   #   applicability: AllergyIntolerance
-   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-claim
-   #   applicability: Claim
+
 
 
  - name: testSetValues
@@ -63,6 +42,8 @@ actions:
            # since that's what's actually in the JSON
            # but that doesn't seem to work with HAPI's FhirPath
 
+
+
  - name: testSetValues_overwrite
    set_values:
      - applicability: Observation
@@ -76,6 +57,8 @@ actions:
      #     - location: Observation.derivedFrom.reference
      #       value: $findRef([Observation]) 
 
+
+
  - name: testSetValues_transform
    set_values:
      - applicability: Patient
@@ -83,6 +66,20 @@ actions:
          - location: Patient.birthDate.extension.where(url='http://hl7.org/fhir/StructureDefinition/patient-birthTime').valueDateTime
            value: $getField([Patient.birthDate])
            transform: toDateTime
+
+
+
+ - name: testSetValues_object
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.maritalStatus.coding
+           value:
+               system: http://snomedct.io
+               code: "1100348239483"
+               display: "Found the one"
+
+
 
  - name: testCreateResources_createSingle
    create_resource: 
@@ -96,6 +93,7 @@ actions:
            value: $findRef([Patient])
 
 
+
  - name: testCreateResources_createBasedOn
    create_resource: 
      - resourceType: ServiceRequest
@@ -105,6 +103,10 @@ actions:
            value: plan
          - location: ServiceRequest.encounter.reference
            value: $getField([Procedure.encounter.reference])
+         - location: ServiceRequest.subject.reference
+           value: $findRef([Patient])
+         - location: ServiceRequest.code.coding
+           value: $getField([Procedure.code.coding])      # <-- STILL WIP
        # TODO: is "writeback" the best term here?
        writeback:
          - location: Procedure.basedOn.reference

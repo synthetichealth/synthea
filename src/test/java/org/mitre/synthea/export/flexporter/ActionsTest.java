@@ -15,7 +15,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.BooleanType;
@@ -29,6 +31,7 @@ import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
@@ -221,6 +224,21 @@ public class ActionsTest {
   }
 
   @Test
+  public void testSetValues_object() {
+    Patient p = new Patient();
+    p.addName().addGiven("Mel").setFamily("Maroon");
+
+    Bundle b = new Bundle();
+    b.addEntry().setResource(p);
+
+    Map<String, Object> action = getActionByName("testSetValues_object");
+
+    Actions.applyAction(b, action, null);
+    
+    System.out.println(b);
+  }
+  
+  @Test
   public void testKeepResources() throws Exception {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
 
@@ -294,24 +312,48 @@ public class ActionsTest {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
 
     long countSR = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest).count();
+        .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest)
+        .count();
     assertEquals(0, countSR);
 
-    long countProc = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Procedure).count();
-    assertTrue(countProc > 0);
-
+    
+    List<Procedure> procedures = b.getEntry().stream()
+        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Procedure)
+        .map(bec -> (Procedure) bec.getResource())
+        .collect(Collectors.toList());
+    
     Map<String, Object> action = getActionByName("testCreateResources_createBasedOn");
 
     Actions.applyAction(b, action, null);
 
     // there should now be one ServiceRequest per Procedure
-    countSR = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest).count();
-    assertEquals(countProc, countSR);
 
-    // TODO: fill out the rest of this test, check the "writeback"
+    // get a map of id --> servicerequest, for easy lookups 
+    Map<String, ServiceRequest> serviceRequests = b.getEntry().stream()
+        .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest)
+        .map(bec -> (ServiceRequest) bec.getResource())
+        .collect(Collectors.toMap(ServiceRequest::getId, Function.identity()));
 
+    assertEquals(procedures.size(), serviceRequests.size());
+
+    String patientId = b.getEntryFirstRep().getResource().getId();
+    
+    // iterate over the procedures so we can find the servicerequest for each
+    for (Procedure proc : procedures) {
+      
+      // "ServiceRequest/".length == 15
+      String basedOn = proc.getBasedOnFirstRep().getReference().substring(15);
+      
+      ServiceRequest sr = serviceRequests.remove(basedOn);
+      assertNotNull(sr);
+      assertEquals("plan", sr.getIntent().toCode());
+      assertEquals(patientId, sr.getSubject().getReference());
+      assertEquals(proc.getEncounter().getReference(), sr.getEncounter().getReference());
+    }
+    
+    // we removed each SR as we checked it, to ensure there are none left
+    assertEquals(0, serviceRequests.size());
+    
   }
 
   @Test

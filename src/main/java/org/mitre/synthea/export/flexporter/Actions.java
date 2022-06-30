@@ -76,7 +76,7 @@ public abstract class Actions {
   public static void setValues(Bundle bundle, List<Map<String, Object>> items, Person person) {
     for (Map<String, Object> entry : items) {
       String applicability = (String) entry.get("applicability");
-      List<Map<String, String>> fields = (List<Map<String, String>>) entry.get("fields");
+      List<Map<String, Object>> fields = (List<Map<String, Object>>) entry.get("fields");
 
       List<Base> matchingResources = FhirPathUtils.evaluateBundle(bundle, applicability, true);
 
@@ -108,7 +108,7 @@ public abstract class Actions {
       List<String> profiles = (List<String>) newResourceDef.get("profiles");
 
       List<Base> basedOnResources;
-      List<Map<String, String>> writeback;
+      List<Map<String, Object>> writeback;
 
       if (basedOnPath == null) {
         basedOnResources = Collections.singletonList(null);
@@ -117,10 +117,10 @@ public abstract class Actions {
         basedOnResources = FhirPathUtils.evaluateBundle(bundle, basedOnPath, true);
         // this may return empty list, in which no new resources will be created
 
-        writeback = (List<Map<String, String>>) newResourceDef.get("writeback");
+        writeback = (List<Map<String, Object>>) newResourceDef.get("writeback");
       }
 
-      List<Map<String, String>> fields = (List<Map<String, String>>) newResourceDef.get("fields");
+      List<Map<String, Object>> fields = (List<Map<String, Object>>) newResourceDef.get("fields");
 
       for (Base basedOnItem : basedOnResources) {
         // IMPORTANT: basedOnItem may be null
@@ -132,78 +132,121 @@ public abstract class Actions {
             new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
         fhirPathgenerator.setMapping(fhirPathMapping);
 
-        try {
-          Class<? extends Resource> resourceClass =
-              (Class<? extends Resource>) Class.forName("org.hl7.fhir.r4.model." + resourceType);
+        Resource createdResource = fhirPathgenerator.generateResource(resourceType);
 
-          Resource createdResource = fhirPathgenerator.generateResource(resourceClass);
+        // ensure the new resource has an ID
+        // seems like this should work as part of the fhirpathgenerator, but it didn't
+        // this might be easier anyway
+        createdResource.setId(UUID.randomUUID().toString());
+        if (profiles != null) {
+          profiles.forEach(p -> applyProfile(createdResource, p));
+        }
 
-          // ensure the new resource has an ID
-          // seems like this should work as part of the fhirpathgenerator, but it didn't
-          // this might be easier anyway
-          createdResource.setId(UUID.randomUUID().toString());
-          if (profiles != null) {
-            profiles.forEach(p -> applyProfile(createdResource, p));
-          }
+        // TODO: see if there's a good way to add the resource after the based-on resource
+        BundleEntryComponent newEntry = bundle.addEntry();
 
-          // TODO: see if there's a good way to add the resource after the based-on resource
-          BundleEntryComponent newEntry = bundle.addEntry();
+        newEntry.setResource(createdResource);
 
-          newEntry.setResource(createdResource);
+        if (bundle.getType().equals(BundleType.TRANSACTION)) {
+          BundleEntryRequestComponent request = newEntry.getRequest();
+          // as of now everything in synthea is POST to resourceType.
+          request.setMethod(HTTPVerb.POST);
+          request.setUrl(resourceType);
+        }
 
-          if (bundle.getType().equals(BundleType.TRANSACTION)) {
-            BundleEntryRequestComponent request = newEntry.getRequest();
-            // as of now everything in synthea is POST to resourceType.
-            request.setMethod(HTTPVerb.POST);
-            request.setUrl(resourceType);
-          }
+        if (writeback != null && !writeback.isEmpty()) {
+          Map<String, String> writebackMapping =
+              createFhirPathMapping(writeback, bundle, createdResource, person);
 
-          if (writeback != null && !writeback.isEmpty()) {
-            Map<String, String> writebackMapping =
-                createFhirPathMapping(writeback, bundle, createdResource, person);
+          CustomFHIRPathResourceGeneratorR4<Resource> writebackGenerator =
+              new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
+          writebackGenerator.setMapping(writebackMapping);
+          writebackGenerator.setResource((Resource) basedOnItem);
 
-            CustomFHIRPathResourceGeneratorR4<Resource> writebackGenerator =
-                new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
-            writebackGenerator.setMapping(writebackMapping);
-            writebackGenerator.setResource((Resource) basedOnItem);
-
-            writebackGenerator.generateResource((Class<? extends Resource>) basedOnItem.getClass());
-          }
-
-        } catch (ClassNotFoundException e) {
-          e.printStackTrace();
+          writebackGenerator.generateResource((Class<? extends Resource>) basedOnItem.getClass());
         }
       }
     }
   }
 
 
-  private static Map<String, String> createFhirPathMapping(List<Map<String, String>> fields,
+  private static Map<String, String> createFhirPathMapping(List<Map<String, Object>> fields,
       Bundle sourceBundle, Resource sourceResource, Person person) {
     Map<String, String> fhirPathMapping = new HashMap<>();
 
-    for (Map<String, String> field : fields) {
-      String location = field.get("location");
-      String valueDef = field.get("value");
-      String transform = field.get("transform");
+    for (Map<String, Object> field : fields) {
+      String location = (String)field.get("location");
+      Object valueDef = field.get("value");
+      String transform = (String)field.get("transform");
 
-      if (valueDef == null || valueDef.isEmpty() || valueDef.equals("null")) {
-        valueDef = null;
-      } else if (valueDef.startsWith("$")) {
-        valueDef = getValue(sourceBundle, valueDef, sourceResource, person);
-      } // else - assume it's a raw value
+      if (valueDef == null) {
+        // do nothing, leave it null
+      } else if (valueDef instanceof String) {
+        String valueString = (String)valueDef;
+        
+        if (valueString.startsWith("$")) {
+          valueDef = getValue(sourceBundle, valueString, sourceResource, person);
+        } // else - assume it's a raw value
+        
+      } else if (valueDef instanceof Map<?,?>) {
+        System.out.println("breakpoint me");
+      }
 
       // TODO: consider a "skip-resource-if-null" kind of thing
       // or "don't create this resource if the referenced field on the source resource is missing"
 
+      // Things are starting to get a little wonky with types.
+      // What else could we have here?
+      if (valueDef instanceof Base && ((Base) valueDef).isPrimitive()) {
+        valueDef = ((Base)valueDef).primitiveValue();
+      }
+      
       if (transform != null) {
-        valueDef = ValueTransforms.apply(valueDef, transform);
+        // TODO: valuetransforms should support objects
+        valueDef = ValueTransforms.apply((String)valueDef, transform);
       }
 
       // TODO: the $getField option allows copying a single primitive value
       // do we want to allow copying an entire object somehow?
 
-      fhirPathMapping.put(location, valueDef);
+
+      
+      if (valueDef instanceof String) {
+        String valueString = (String)valueDef;
+        
+        fhirPathMapping.put(location, valueString);
+        
+      } else if (valueDef instanceof Map<?,?>) {
+        // TODO: objects should be nestable to >1 level
+        Map<String,String> valueMap = (Map<String, String>) valueDef;
+        for(Map.Entry<String,String> entry : valueMap.entrySet()) {
+          String key = entry.getKey();
+          String value = entry.getValue();
+          
+          fhirPathMapping.put(location + "." + key, value);
+        }
+      } else if (valueDef instanceof Base) {
+        // we plucked a full FHIR object from somewhere.
+        // the ugly/slow way to handle it is to convert it to a Map<String,?>
+        // and plug it into the fhirpath mapping as above
+        
+        // note that hapi has strange internal state,
+        // ex a CodeableConcept.coding.system is a string,
+        // but internally represented as an object with multiple fields
+        // "myStringValue", "myCoercedValue", "disallowExtensions"
+        // so a trivial Gson conversion is out
+        
+        // ideally we'd be able to find the right setter function
+        // and set it on the target directly
+        // TODO 
+        
+        System.err.println("FHIR Types not yet handled in createFhirPathMapping: " + valueDef.getClass());
+        
+        
+      } else {
+        // 
+        System.err.println("Unhandled type in createFhirPathMapping: " + valueDef.getClass());
+      }
     }
 
     return fhirPathMapping;
@@ -257,7 +300,7 @@ public abstract class Actions {
   }
 
 
-  private static String getValue(Bundle bundle, String valueDef, Resource currentResource,
+  private static Object getValue(Bundle bundle, String valueDef, Resource currentResource,
       Person person) {
     // The flag has the format of $flagName([flagValue1, flagValue2, ..., flagValueN])
 
@@ -313,7 +356,7 @@ public abstract class Actions {
     return resource.getResourceType().toString() + "/" + id;
   }
 
-  private static String getField(Resource currentResource, String... args) {
+  private static Base getField(Resource currentResource, String... args) {
     // args[0] = FHIRPath, from this resource
     // args[1] = how to disambiguate if there are multiple? TODO
 
@@ -322,7 +365,7 @@ public abstract class Actions {
     if (fieldValues.isEmpty())
       return null;
 
-    return fieldValues.get(0).primitiveValue();
+    return fieldValues.get(0);
   }
 
 

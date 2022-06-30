@@ -9,14 +9,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ca.uhn.fhir.parser.IParser;
+
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Resource;
 import org.mitre.synthea.export.flexporter.Actions;
 import org.mitre.synthea.export.flexporter.FhirPathUtils;
 import org.mitre.synthea.export.flexporter.Mapping;
-
-import ca.uhn.fhir.parser.IParser;
 
 
 public class RunFlexporter {
@@ -47,9 +47,8 @@ public class RunFlexporter {
           throw new FileNotFoundException(
               String.format("Specified implementation guide directory (%s) is empty", value));
         }
-      }
 
-      else if (currArg.equals("-m")) {
+      } else if (currArg.equals("-m")) {
         String value = argsQ.poll();
 
         if (value == null) {
@@ -62,9 +61,8 @@ public class RunFlexporter {
           throw new FileNotFoundException(
               String.format("Specified mapping file (%s) does not exist", value));
         }
-      }
 
-      else if (currArg.equals("-s")) {
+      } else if (currArg.equals("-s")) {
         String value = argsQ.poll();
         sourceFile = new File(value);
 
