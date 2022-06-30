@@ -1,0 +1,408 @@
+{
+  "name": "eye conditions",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_Retinopathy"
+    },
+    "Check_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "422034002",
+                      "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "422034002",
+                    "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Retinopathy"
+        },
+        {
+          "transition": "Check_Nonproliferative_Retinopathy"
+        }
+      ]
+    },
+    "Diagnose_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "422034002",
+          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nonproliferative_Retinopathy"
+    },
+    "End_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "422034002",
+          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Nonproliferative_Retinopathy"
+    },
+    "Check_Nonproliferative_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nonproliferative_retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "1551000119108",
+                      "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Nonproliferative_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "nonproliferative_retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1551000119108",
+                    "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Nonproliferative_Retinopathy"
+        },
+        {
+          "transition": "Check_Proliferative_Retinopathy"
+        }
+      ]
+    },
+    "Diagnose_Nonproliferative_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1551000119108",
+          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proliferative_Retinopathy"
+    },
+    "End_Nonproliferative_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1551000119108",
+          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Proliferative_Retinopathy"
+    },
+    "Check_Proliferative_Retinopathy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proliferative_retinopathy",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "1501000119109",
+                      "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Proliferative_Retinopathy"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "proliferative_retinopathy",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "1501000119109",
+                    "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Proliferative_Retinopathy"
+        },
+        {
+          "transition": "Check_Macular_Edema"
+        }
+      ]
+    },
+    "Diagnose_Proliferative_Retinopathy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1501000119109",
+          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Macular_Edema"
+    },
+    "End_Proliferative_Retinopathy": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1501000119109",
+          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Macular_Edema"
+    },
+    "Check_Macular_Edema": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "macular_edema",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "97331000119101",
+                      "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Macular_Edema"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "macular_edema",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "97331000119101",
+                    "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Macular_Edema"
+        },
+        {
+          "transition": "Check_Blindness"
+        }
+      ]
+    },
+    "Diagnose_Macular_Edema": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "97331000119101",
+          "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Blindness"
+    },
+    "End_Macular_Edema": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "97331000119101",
+          "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Check_Blindness"
+    },
+    "Check_Blindness": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "blindness",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Active Condition",
+                  "codes": [
+                    {
+                      "system": "SNOMED-CT",
+                      "code": "60951000119105",
+                      "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Diagnose_Blindness"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "blindness",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": "60951000119105",
+                    "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "End_Blindness"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Diagnose_Blindness": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "60951000119105",
+          "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "End_Blindness": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "60951000119105",
+          "display": "Blindness due to type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -110,6 +110,31 @@ public class SimpleCSV {
   }
 
   /**
+   * Convert the data in the given List of Maps to a String of CSV data.
+   * Each Map in the List represents one line of the resulting CSV. Uses the keySet from the
+   * first Map to populate the set of columns. This means that the first Map must contain all
+   * the columns desired in the final CSV. The order of the columns is specified by the order
+   * provided by the first Map's keySet, so using an ordered Map implementation
+   * (such as LinkedHashMap) is recommended.
+   *
+   * @param data List of Map data. CSV data read/modified from SimpleCSV.parse(...)
+   * @param separator The separator used in the CSV
+   * @return data formatted as a String containing raw CSV data
+   * @throws IOException on file IO write errors.
+   */
+  public static String unparse(List<? extends Map<String, String>> data, char separator)
+          throws IOException {
+    CsvMapper mapper = new CsvMapper();
+    CsvSchema.Builder schemaBuilder = CsvSchema.builder();
+    schemaBuilder.setUseHeader(true).setColumnSeparator(separator).disableQuoteChar();
+
+    Collection<String> columns = data.get(0).keySet();
+    schemaBuilder.addColumns(columns, ColumnType.STRING);
+
+    return mapper.writer(schemaBuilder.build()).writeValueAsString(data);
+  }
+
+  /**
    * Simple CSV validator that ensures the number of columns in each file matches
    * the number of elements in each row.
    *
@@ -128,6 +153,30 @@ public class SimpleCSV {
    *          Otherwise returns False
    */
   public static boolean isValid(String csvData) {
+    return isValid(csvData, ',');
+  }
+
+  /**
+   * Simple CSV validator that ensures the number of columns in each file matches
+   * the number of elements in each row.
+   *
+   * <p>csvData is split based on NEWLINE into a stream of strings.
+   *
+   * <p>The stream is converted to a string of longs equaling the number of commas
+   * found for each csv line.
+   *
+   * <p>Finally each distinct counts are taken from the stream. If the number of
+   * distinct counts is only one, we can confirm the CSV is valid.
+   *
+   * @param csvData
+   *          Raw CSV data
+   * @param separator
+   *          The separator used in the CSV
+   * @return
+   *          True if number of commas is consistent for each line
+   *          Otherwise returns False
+   */
+  public static boolean isValid(String csvData, char separator) {
     Stream<String> csvLines = Arrays.stream(csvData.split("\n"));
     Stream<Long> csvLineElementCount =
         csvLines.map(line -> line.chars().filter(c -> c == ',').count());

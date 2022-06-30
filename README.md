@@ -13,7 +13,7 @@ Currently, Synthea<sup>TM</sup> features include:
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
-  - HL7 FHIR (STU3 v3.0.1, DSTU2 v1.0.2 and R4)
+  - HL7 FHIR (R4, STU3 v3.0.1, and DSTU2 v1.0.2)
   - Bulk FHIR in ndjson format (set `exporter.fhir.bulk_data = true` to activate)
   - C-CDA (set `exporter.ccda.export = true` to activate)
   - CSV (set `exporter.csv.export = true` to activate)
@@ -70,7 +70,6 @@ Options: [-s seed]
          [-g gender]
          [-a minAge-maxAge]
          [-o overflowPopulation]
-         [-m moduleFileWildcardList]
          [-c localConfigFilePath]
          [-d localModulesDirPath]
          [-i initialPopulationSnapshotPath]
@@ -78,7 +77,7 @@ Options: [-s seed]
          [-t updateTimePeriodInDays]
          [-f fixedRecordPath]
          [-k keepMatchingPatientsPath]
-         [--config* value]
+         [--config*=value]
           * any setting from src/main/resources/synthea.properties
 
 Examples:
@@ -89,9 +88,8 @@ run_synthea -p 1000
 run_synthea -s 987 Washington Seattle
 run_synthea -s 21 -p 100 Utah "Salt Lake City"
 run_synthea -g M -a 60-65
-run_synthea -p 10 --exporter.fhir.export true
-run_synthea -m moduleFilename:anotherModule:module*
-run_synthea --exporter.baseDirectory "./output_tx/" Texas
+run_synthea -p 10 --exporter.fhir.export=true
+run_synthea --exporter.baseDirectory="./output_tx/" Texas
 ```
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.

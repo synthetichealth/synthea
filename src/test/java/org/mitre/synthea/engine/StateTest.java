@@ -1340,6 +1340,7 @@ public class StateTest {
     HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes
         .get("Diabetes Medication");
     assertTrue(medication.administration);
+    assertTrue(medication.stop != 0L);
   }
 
   @Test

@@ -1,6 +1,5 @@
 package org.mitre.synthea;
 
-import ca.uhn.fhir.context.FhirContext;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -16,14 +15,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 
 public abstract class TestHelper {
@@ -102,29 +98,32 @@ public abstract class TestHelper {
     Config.set("exporter.use_uuid_filenames", "false");
     Config.set("exporter.fhir.use_shr_extensions", "false");
     Config.set("exporter.subfolders_by_id_substring", "false");
-    Config.set("exporter.ccda.export", "false");
-    Config.set("exporter.fhir_stu3.export", "false");
-    Config.set("exporter.fhir_dstu2.export", "false");
-    Config.set("exporter.fhir.export", "false");
-    Config.set("exporter.fhir.transaction_bundle", "false");
-    Config.set("exporter.text.export", "false");
-    Config.set("exporter.text.per_encounter_export", "false");
-    Config.set("exporter.json.export", "false");
-    Config.set("exporter.metadata.export", "false");
-    Config.set("exporter.csv.export", "false");
     Config.set("exporter.split_records", "false");
     Config.set("exporter.split_records.duplicate_data", "false");
-    Config.set("exporter.bfd.export", "false");
-    Config.set("exporter.symptoms.csv.export", "false");
-    Config.set("exporter.symptoms.text.export", "false");
-    Config.set("exporter.cpcds.export", "false");
-    Config.set("exporter.cdw.export", "false");
+    Config.set("exporter.metadata.export", "false");
+    Config.set("exporter.ccda.export", "false");
+    Config.set("exporter.fhir.export", "false");
+    Config.set("exporter.fhir_stu3.export", "false");
+    Config.set("exporter.fhir_dstu2.export", "false");
+    Config.set("exporter.fhir.transaction_bundle", "false");
+    Config.set("exporter.fhir.bulk_data", "false");
+    Config.set("exporter.groups.fhir.export", "false");
+    Config.set("exporter.hospital.fhir.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");
     Config.set("exporter.hospital.fhir_dstu2.export", "false");
-    Config.set("exporter.hospital.fhir.export", "false");
+    Config.set("exporter.practitioner.fhir.export", "false");
     Config.set("exporter.practitioner.fhir_stu3.export", "false");
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
-    Config.set("exporter.practitioner.fhir.export", "false");
+    Config.set("exporter.json.export", "false");
+    Config.set("exporter.csv.export", "false");
+    Config.set("exporter.cpcds.export", "false");
+    Config.set("exporter.bfd.export", "false");
+    Config.set("exporter.cdw.export", "false");
+    Config.set("exporter.text.export", "false");
+    Config.set("exporter.text.per_encounter_export", "false");
+    Config.set("exporter.clinical_note.export", "false");
+    Config.set("exporter.symptoms.csv.export", "false");
+    Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cost_access_outcomes_report", "false");
     Config.set("generate.terminology_service_url", "");
   }

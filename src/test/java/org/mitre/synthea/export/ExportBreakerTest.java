@@ -49,7 +49,7 @@ public class ExportBreakerTest {
       final int personIndex = i;
       service.submit(() -> {
         try {
-          Person p = generator.generatePerson(personIndex);
+          Person p = generator.generatePerson(personIndex,personIndex);
           // Export work goes here
           String ccdaXml = CCDAExporter.export(p, System.currentTimeMillis());
           InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");

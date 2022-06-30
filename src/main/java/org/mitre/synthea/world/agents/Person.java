@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +23,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
@@ -45,6 +45,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String BIRTHDATE = "birthdate";
   public static final String DEATHDATE = "deathdate";
   public static final String FIRST_NAME = "first_name";
+  public static final String MIDDLE_NAME = "middle_name";
   public static final String LAST_NAME = "last_name";
   public static final String MAIDEN_NAME = "maiden_name";
   public static final String NAME_PREFIX = "name_prefix";
@@ -101,8 +102,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String BLINDNESS = "blindness";
   private static final String LAST_MONTH_PAID = "last_month_paid";
 
-  private final Random random;
-  public final long seed;
+  private final DefaultRandomNumberGenerator random;
   public long populationSeed;
   /**
    * Tracks the last time that the person was updated over a serialize/deserialize.
@@ -145,8 +145,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Person constructor.
    */
   public Person(long seed) {
-    this.seed = seed;
-    random = new Random(seed);
+    random = new DefaultRandomNumberGenerator(seed);
     attributes = new ConcurrentHashMap<String, Object>();
     vitalSigns = new ConcurrentHashMap<VitalSign, ValueGenerator>();
     symptoms = new ConcurrentHashMap<String, ExpressedSymptom>();
@@ -173,49 +172,59 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Returns a random double.
    */
   public double rand() {
-    return random.nextDouble();
+    return random.rand();
   }
 
   /**
    * Returns a random boolean.
    */
   public boolean randBoolean() {
-    return random.nextBoolean();
+    return random.randBoolean();
   }
 
   /**
    * Returns a random integer.
    */
   public int randInt() {
-    return random.nextInt();
+    return random.randInt();
   }
 
   /**
    * Returns a random integer in the given bound.
    */
   public int randInt(int bound) {
-    return random.nextInt(bound);
+    return random.randInt(bound);
   }
 
   /**
    * Returns a double from a normal distribution.
    */
   public double randGaussian() {
-    return random.nextGaussian();
+    return random.randGaussian();
   }
 
   /**
    * Return a random long.
    */
   public long randLong() {
-    return random.nextLong();
+    return random.randLong();
   }
 
   /**
    * Return a random UUID.
    */
   public UUID randUUID() {
-    return new UUID(randLong(), randLong());
+    return random.randUUID();
+  }
+
+  @Override
+  public long getCount() {
+    return random.getCount();
+  }
+
+  @Override
+  public long getSeed() {
+    return random.getSeed();
   }
 
   /**

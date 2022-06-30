@@ -36,6 +36,7 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,6 +46,7 @@ import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY;
 import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY_HISTORY;
 import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
 import org.mitre.synthea.export.BB2RIFStructure.DME;
+import org.mitre.synthea.export.BB2RIFStructure.EXPORT_SUMMARY;
 import org.mitre.synthea.export.BB2RIFStructure.HHA;
 import org.mitre.synthea.export.BB2RIFStructure.HOSPICE;
 import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
@@ -116,8 +118,8 @@ public class BB2RIFExporter {
       new AtomicLong(Config.getAsLong("exporter.bfd.bene_id_start", -1));
   private static AtomicLong claimId =
       new AtomicLong(Config.getAsLong("exporter.bfd.clm_id_start", -1));
-  private static AtomicInteger claimGroupId =
-      new AtomicInteger(Config.getAsInteger("exporter.bfd.clm_grp_id_start", -1));
+  private static AtomicLong claimGroupId =
+      new AtomicLong(Config.getAsLong("exporter.bfd.clm_grp_id_start", -1));
   private static AtomicLong pdeId =
       new AtomicLong(Config.getAsLong("exporter.bfd.pde_id_start", -1));
   private static AtomicLong fiDocCntlNum =
@@ -300,10 +302,10 @@ public class BB2RIFExporter {
                      .toString()));
     manifest.write("sequenceId=\"0\">\n");
     for (Class<?> rifFile: BB2RIFStructure.RIF_FILES) {
-      for (RifEntryStatus status: RifEntryStatus.values()) {
+      for (int year: rifWriters.getYears()) {
         // generics and arrays are weird so need to cast below rather than declare on the array
         Class<? extends Enum> rifEnum = (Class<? extends Enum>) rifFile;
-        SynchronizedBBLineWriter writer = rifWriters.getWriter(rifEnum, status);
+        SynchronizedBBLineWriter writer = rifWriters.getWriter(rifEnum, year);
         if (writer != null) {
           manifest.write(String.format("  <entry name=\"%s\" type=\"%s\"/>\n",
                   writer.getFile().getName(), rifEnum.getSimpleName()));
@@ -322,7 +324,7 @@ public class BB2RIFExporter {
   public void exportNPIs() throws IOException {
     HashMap<NPI, String> fieldValues = new HashMap<>();
     SynchronizedBBLineWriter rifWriter = rifWriters.getOrCreateWriter(NPI.class,
-            RifEntryStatus.INITIAL, "tsv", "\t");
+            -1, "tsv", "\t");
 
     for (Provider h : Provider.getProviderList()) {
 
@@ -393,17 +395,27 @@ public class BB2RIFExporter {
    * @throws IOException if something goes wrong
    */
   public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
-    exportBeneficiary(person, stopTime);
+    Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
+    exportCounts.put(EXPORT_SUMMARY.BENE_ID, exportBeneficiary(person, stopTime));
     exportBeneficiaryHistory(person, stopTime);
     long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
-    exportInpatient(person, startTime, stopTime);
-    exportOutpatient(person, startTime, stopTime);
-    exportCarrier(person, startTime, stopTime);
-    exportPrescription(person, startTime, stopTime);
-    exportDME(person, startTime, stopTime);
-    exportHome(person, startTime, stopTime);
-    exportHospice(person, startTime, stopTime);
-    exportSNF(person, startTime, stopTime);
+    exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
+            Long.toString(exportInpatient(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.OUTPATIENT_CLAIMS,
+            Long.toString(exportOutpatient(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.CARRIER_CLAIMS,
+            Long.toString(exportCarrier(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.PDE_CLAIMS,
+            Long.toString(exportPrescription(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.DME_CLAIMS,
+            Long.toString(exportDME(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.HHA_CLAIMS,
+            Long.toString(exportHome(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.HOSPICE_CLAIMS,
+            Long.toString(exportHospice(person, startTime, stopTime)));
+    exportCounts.put(EXPORT_SUMMARY.SNF_CLAIMS,
+            Long.toString(exportSNF(person, startTime, stopTime)));
+    rifWriters.getOrCreateWriter(EXPORT_SUMMARY.class, -1, "csv", ",").writeValues(exportCounts);
   }
 
   /**
@@ -412,7 +424,7 @@ public class BB2RIFExporter {
    * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  private void exportBeneficiary(Person person,
+  private String exportBeneficiary(Person person,
         long stopTime) throws IOException {
     String beneIdStr = Long.toString(BB2RIFExporter.beneId.getAndDecrement());
     person.attributes.put(BB2_BENE_ID, beneIdStr);
@@ -440,153 +452,154 @@ public class BB2RIFExporter {
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     person.attributes.put(BB2_PARTD_CONTRACTS, partDContracts); // used in exportPrescription
 
-    RifEntryStatus entryStatus = RifEntryStatus.INITIAL;
+    boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
-    synchronized (rifWriters.getOrCreateWriter(BENEFICIARY.class, entryStatus)) {
-      for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
-        HashMap<BENEFICIARY, String> fieldValues = new HashMap<>();
-        staticFieldConfig.setValues(fieldValues, BENEFICIARY.class, person);
-        if (entryStatus != RifEntryStatus.INITIAL) {
-          // The first year output is set via staticFieldConfig to "INSERT", subsequent years
-          // need to be "UPDATE"
-          fieldValues.put(BENEFICIARY.DML_IND, "UPDATE");
-        }
+    for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
+      HashMap<BENEFICIARY, String> fieldValues = new HashMap<>();
+      staticFieldConfig.setValues(fieldValues, BENEFICIARY.class, person);
+      if (!firstYearOutput) {
+        // The first year output is set via staticFieldConfig to "INSERT", subsequent years
+        // need to be "UPDATE"
+        fieldValues.put(BENEFICIARY.DML_IND, "UPDATE");
+      }
 
-        fieldValues.put(BENEFICIARY.RFRNC_YR, String.valueOf(year));
-        int monthCount = year == endYear ? endMonth : 12;
-        String monthCountStr = String.valueOf(monthCount);
-        fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
-        fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
-        fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
-        int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
-        fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
-        fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
-        fieldValues.put(BENEFICIARY.BENE_CRNT_HIC_NUM, hicId);
-        fieldValues.put(BENEFICIARY.MBI_NUM, mbiStr);
-        fieldValues.put(BENEFICIARY.BENE_SEX_IDENT_CD,
-                getBB2SexCode((String)person.attributes.get(Person.GENDER)));
-        String zipCode = (String)person.attributes.get(Person.ZIP);
-        fieldValues.put(BENEFICIARY.BENE_ZIP_CD, zipCode);
-        fieldValues.put(BENEFICIARY.BENE_COUNTY_CD,
-                locationMapper.zipToCountyCode(zipCode));
-        for (int i = 0; i < monthCount; i++) {
-          fieldValues.put(BB2RIFStructure.beneficiaryFipsStateCntyFields[i],
-              locationMapper.zipToFipsCountyCode(zipCode));
-        }
-        fieldValues.put(BENEFICIARY.STATE_CODE,
-                locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-        String raceCode = bb2RaceCode(
-                (String)person.attributes.get(Person.ETHNICITY),
-                (String)person.attributes.get(Person.RACE));
-        fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
-        fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI alogorithm
-        fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
-                (String)person.attributes.get(Person.LAST_NAME));
-        String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-        fieldValues.put(BENEFICIARY.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
-        long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-        fieldValues.put(BENEFICIARY.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
-        fieldValues.put(BENEFICIARY.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
-        fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "0");
-        fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "0");
-        if (deathDate != -1) {
-          // only add death date for years when it was (presumably) known. E.g. If we are outputting
-          // record for 2005 and patient died in 2007 we don't include the death date.
-          if (Utilities.getYear(deathDate) <= year) {
-            fieldValues.put(BENEFICIARY.DEATH_DT, bb2DateFromTimestamp(deathDate));
-            fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
-            fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
-          }
-        }
-        boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
-        boolean esrdThisYear = hasESRD(person, year);
-        fieldValues.put(BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
-        // "0" = old age, "2" = ESRD
-        if (medicareAgeThisYear) {
-          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "0");
-        } else if (esrdThisYear) {
-          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "2");
-        }
-        if (initialBeneEntitlementReason == null) {
-          initialBeneEntitlementReason = fieldValues.get(BENEFICIARY.BENE_ENTLMT_RSN_CURR);
-        }
-        if (initialBeneEntitlementReason != null) {
-          fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
-        }
-
-        for (PartCContractHistory.ContractPeriod period:
-                partCContracts.getContractPeriods(year)) {
-          PartCContractID partCContractID = period.getContractID();
-          if (partCContractID != null) {
-            String partCContractIDStr = partCContractID.toString();
-            String partCPBPIDStr = period.getPlanBenefitPackageID().toString();
-            List<Integer> coveredMonths = period.getCoveredMonths(year);
-            for (int i: coveredMonths) {
-              fieldValues.put(BB2RIFStructure.beneficiaryPartCContractFields[i - 1],
-                      partCContractIDStr);
-              fieldValues.put(BB2RIFStructure.beneficiaryPartCPBPFields[i - 1],
-                      partCPBPIDStr);
-            }
-          }
-        }
-
-        // TODO: make claim copay match the designated cost sharing code
-        String partDCostSharingCode = getPartDCostSharingCode(person);
-        int rdsMonthCount = 0;
-        for (PartDContractHistory.ContractPeriod period:
-                partDContracts.getContractPeriods(year)) {
-          PartDContractID partDContractID = period.getContractID();
-          String partDDrugSubsidyIndicator =
-                  partDContracts.getEmployeePDPIndicator(partDContractID);
-          if (partDContractID != null) {
-            String partDContractIDStr = partDContractID.toString();
-            String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
-            List<Integer> coveredMonths = period.getCoveredMonths(year);
-            if (partDDrugSubsidyIndicator != null && partDDrugSubsidyIndicator.equals("Y")) {
-              rdsMonthCount += coveredMonths.size();
-            }
-            for (int i: coveredMonths) {
-              fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
-                      partDContractIDStr);
-              fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[i - 1],
-                      partDPBPIDStr);
-              fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
-              fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
-                      partDCostSharingCode);
-              if (partDDrugSubsidyIndicator != null) {
-                fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
-                        partDDrugSubsidyIndicator);
-              }
-            }
-          } else {
-            for (int i: period.getCoveredMonths(year)) {
-              // Not enrolled this month
-              fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
-            }
-          }
-        }
-        fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
-
-        String dualEligibleStatusCode = getDualEligibilityCode(person, year);
-        String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
-                isBlind(person));
-        String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
-        for (int month = 0; month < monthCount; month++) {
-          fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
-                  dualEligibleStatusCode);
-          fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
-                  medicareStatusCode);
-          fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
-                  buyInIndicator);
-        }
-        rifWriters.writeValues(BENEFICIARY.class, fieldValues, entryStatus);
-        if (year == (endYear - 1)) {
-          entryStatus = RifEntryStatus.FINAL;
-        } else {
-          entryStatus = RifEntryStatus.INTERIM;
+      fieldValues.put(BENEFICIARY.RFRNC_YR, String.valueOf(year));
+      int monthCount = year == endYear ? endMonth : 12;
+      String monthCountStr = String.valueOf(monthCount);
+      fieldValues.put(BENEFICIARY.A_MO_CNT, monthCountStr);
+      fieldValues.put(BENEFICIARY.B_MO_CNT, monthCountStr);
+      fieldValues.put(BENEFICIARY.BUYIN_MO_CNT, monthCountStr);
+      int partDMonthsCovered = partDContracts.getCoveredMonthsCount(year);
+      fieldValues.put(BENEFICIARY.PLAN_CVRG_MO_CNT, String.valueOf(partDMonthsCovered));
+      fieldValues.put(BENEFICIARY.BENE_ID, beneIdStr);
+      fieldValues.put(BENEFICIARY.BENE_CRNT_HIC_NUM, hicId);
+      fieldValues.put(BENEFICIARY.MBI_NUM, mbiStr);
+      fieldValues.put(BENEFICIARY.BENE_SEX_IDENT_CD,
+              getBB2SexCode((String)person.attributes.get(Person.GENDER)));
+      String zipCode = (String)person.attributes.get(Person.ZIP);
+      fieldValues.put(BENEFICIARY.BENE_ZIP_CD, zipCode);
+      fieldValues.put(BENEFICIARY.BENE_COUNTY_CD,
+              locationMapper.zipToCountyCode(zipCode));
+      for (int i = 0; i < monthCount; i++) {
+        fieldValues.put(BB2RIFStructure.beneficiaryFipsStateCntyFields[i],
+            locationMapper.zipToFipsCountyCode(zipCode));
+      }
+      fieldValues.put(BENEFICIARY.STATE_CODE,
+              locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+      String raceCode = bb2RaceCode(
+              (String)person.attributes.get(Person.ETHNICITY),
+              (String)person.attributes.get(Person.RACE));
+      fieldValues.put(BENEFICIARY.BENE_RACE_CD, raceCode);
+      fieldValues.put(BENEFICIARY.RTI_RACE_CD, raceCode); // TODO: implement RTI algorithm
+      fieldValues.put(BENEFICIARY.BENE_SRNM_NAME,
+              (String)person.attributes.get(Person.LAST_NAME));
+      String givenName = (String)person.attributes.get(Person.FIRST_NAME);
+      fieldValues.put(BENEFICIARY.BENE_GVN_NAME, StringUtils.truncate(givenName, 15));
+      if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+        String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+        middleName = middleName.substring(0, 1);
+        fieldValues.put(BENEFICIARY.BENE_MDL_NAME, middleName);
+      }
+      long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+      fieldValues.put(BENEFICIARY.BENE_BIRTH_DT, bb2DateFromTimestamp(birthdate));
+      fieldValues.put(BENEFICIARY.AGE, String.valueOf(ageAtEndOfYear(birthdate, year)));
+      fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "0");
+      fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "0");
+      if (deathDate != -1) {
+        // only add death date for years when it was (presumably) known. E.g. If we are outputting
+        // record for 2005 and patient died in 2007 we don't include the death date.
+        if (Utilities.getYear(deathDate) <= year) {
+          fieldValues.put(BENEFICIARY.DEATH_DT, bb2DateFromTimestamp(deathDate));
+          fieldValues.put(BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
+          fieldValues.put(BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
         }
       }
+      boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
+      boolean esrdThisYear = hasESRD(person, year);
+      fieldValues.put(BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
+      // "0" = old age, "2" = ESRD
+      if (medicareAgeThisYear) {
+        fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "0");
+      } else if (esrdThisYear) {
+        fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_CURR, "2");
+      }
+      if (initialBeneEntitlementReason == null) {
+        initialBeneEntitlementReason = fieldValues.get(BENEFICIARY.BENE_ENTLMT_RSN_CURR);
+      }
+      if (initialBeneEntitlementReason != null) {
+        fieldValues.put(BENEFICIARY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
+      }
+
+      for (PartCContractHistory.ContractPeriod period:
+              partCContracts.getContractPeriods(year)) {
+        PartCContractID partCContractID = period.getContractID();
+        if (partCContractID != null) {
+          String partCContractIDStr = partCContractID.toString();
+          String partCPBPIDStr = period.getPlanBenefitPackageID().toString();
+          List<Integer> coveredMonths = period.getCoveredMonths(year);
+          for (int i: coveredMonths) {
+            fieldValues.put(BB2RIFStructure.beneficiaryPartCContractFields[i - 1],
+                    partCContractIDStr);
+            fieldValues.put(BB2RIFStructure.beneficiaryPartCPBPFields[i - 1],
+                    partCPBPIDStr);
+          }
+        }
+      }
+
+      // TODO: make claim copay match the designated cost sharing code
+      String partDCostSharingCode = getPartDCostSharingCode(person);
+      int rdsMonthCount = 0;
+      for (PartDContractHistory.ContractPeriod period:
+              partDContracts.getContractPeriods(year)) {
+        PartDContractID partDContractID = period.getContractID();
+        String partDDrugSubsidyIndicator =
+                partDContracts.getEmployeePDPIndicator(partDContractID);
+        if (partDContractID != null) {
+          String partDContractIDStr = partDContractID.toString();
+          String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
+          List<Integer> coveredMonths = period.getCoveredMonths(year);
+          if (partDDrugSubsidyIndicator != null && partDDrugSubsidyIndicator.equals("Y")) {
+            rdsMonthCount += coveredMonths.size();
+          }
+          for (int i: coveredMonths) {
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[i - 1],
+                    partDContractIDStr);
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[i - 1],
+                    partDPBPIDStr);
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[i - 1], "000");
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1],
+                    partDCostSharingCode);
+            if (partDDrugSubsidyIndicator != null) {
+              fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[i - 1],
+                      partDDrugSubsidyIndicator);
+            }
+          }
+        } else {
+          for (int i: period.getCoveredMonths(year)) {
+            // Not enrolled this month
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[i - 1], "00");
+          }
+        }
+      }
+      fieldValues.put(BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
+
+      String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+      String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
+              isBlind(person));
+      fieldValues.put(BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
+      String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
+      for (int month = 0; month < monthCount; month++) {
+        fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
+                dualEligibleStatusCode);
+        fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
+                medicareStatusCode);
+        fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
+                buyInIndicator);
+      }
+      rifWriters.writeValues(BENEFICIARY.class, fieldValues, year);
+      firstYearOutput = false;
     }
+    return beneIdStr;
   }
 
   private static String getEntitlementBuyIn(String dualEligibleStatusCode,
@@ -819,6 +832,11 @@ public class BB2RIFExporter {
             (String)person.attributes.get(Person.LAST_NAME));
     fieldValues.put(BENEFICIARY_HISTORY.BENE_GVN_NAME,
             (String)person.attributes.get(Person.FIRST_NAME));
+    if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+      String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+      middleName = middleName.substring(0, 1);
+      fieldValues.put(BENEFICIARY_HISTORY.BENE_MDL_NAME, middleName);
+    }
     String terminationCode = "0";
     if (person.attributes.get(Person.DEATHDATE) != null) {
       long deathDate = (long)person.attributes.get(Person.DEATHDATE);
@@ -842,6 +860,9 @@ public class BB2RIFExporter {
     if (initialBeneEntitlementReason != null) {
       fieldValues.put(BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, initialBeneEntitlementReason);
     }
+    String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd,
+              isBlind(person));
+    fieldValues.put(BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
     rifWriters.writeValues(BENEFICIARY_HISTORY.class, fieldValues);
   }
 
@@ -860,10 +881,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportOutpatient(Person person, long startTime, long stopTime)
+  private long exportOutpatient(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -890,7 +913,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       staticFieldConfig.setValues(fieldValues, OUTPATIENT.class, person);
@@ -1080,7 +1103,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -1088,12 +1113,13 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportInpatient(Person person, long startTime, long stopTime)
+  private long exportInpatient(Person person, long startTime, long stopTime)
         throws IOException {
     HashMap<INPATIENT, String> fieldValues = new HashMap<>();
-
+    long claimCount = 0;
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -1112,7 +1138,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
@@ -1348,7 +1374,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(INPATIENT.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -1356,11 +1384,13 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return number of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportCarrier(Person person, long startTime, long stopTime) throws IOException {
+  private long exportCarrier(Person person, long startTime, long stopTime) throws IOException {
     HashMap<CARRIER, String> fieldValues = new HashMap<>();
 
+    long claimCount = 0;
     double latestHemoglobin = 0;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -1379,7 +1409,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
@@ -1494,6 +1524,23 @@ public class BB2RIFExporter {
               ndcCode = medicationCodeMapper.map(med.codes.get(0).code, person);
             }
           }
+          if (icdReasonCode == null) {
+            // If there is an icdReasonCode, then then LINE_ICD_DGNS_CD is already set.
+            // If not, we might choose a value for each line item.
+            double probability = person.rand();
+            if (probability <= 0.06) {
+              // Random code
+              int index = person.randInt(mappedDiagnosisCodes.size());
+              String code = mappedDiagnosisCodes.get(index);
+              fieldValues.put(CARRIER.LINE_ICD_DGNS_CD, code);
+            } else if (probability <= 0.48) {
+              // The principal diagnosis code
+              fieldValues.put(CARRIER.LINE_ICD_DGNS_CD, fieldValues.get(CARRIER.PRNCPAL_DGNS_CD));
+            } else {
+              // No line item diagnosis code
+              fieldValues.remove(CARRIER.LINE_ICD_DGNS_CD);
+            }
+          }
           // TBD: decide whether line item skip logic is needed here and in other files
           // TBD: affects ~80% of carrier claim lines, so left out for now
           // if (hcpcsCode == null) {
@@ -1556,7 +1603,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(CARRIER.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   private static String bb2TaxId(String ssn) {
@@ -2041,10 +2090,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportPrescription(Person person, long startTime, long stopTime)
+  private long exportPrescription(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(BB2_PARTD_CONTRACTS);
     // Build a chronologically ordered list of prescription fills (including refills where
@@ -2096,7 +2147,7 @@ public class BB2RIFExporter {
     for (PrescriptionFill fill: prescriptionFills) {
 
       long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
 
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, PDE.class, person);
@@ -2156,7 +2207,9 @@ public class BB2RIFExporter {
       }
 
       rifWriters.writeValues(PDE.class, fieldValues);
+      claimCount++;
     }
+    return claimCount;
   }
 
   private static class PrescriptionFill implements Comparable<PrescriptionFill> {
@@ -2247,10 +2300,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportDME(Person person, long startTime, long stopTime)
+  private long exportDME(Person person, long startTime, long stopTime)
         throws IOException {
+    long claimCount = 0;
     HashMap<DME, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
@@ -2267,7 +2322,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long carrClmId = BB2RIFExporter.carrClmCntlNum.getAndDecrement();
 
       double latestHemoglobin = 0;
@@ -2357,6 +2412,7 @@ public class BB2RIFExporter {
 
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
+        boolean wroteAtLeastOneLine = false;
         // Now generate the line items...
         for (ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof Device || lineItem.entry instanceof Supply)) {
@@ -2408,9 +2464,14 @@ public class BB2RIFExporter {
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
           rifWriters.writeValues(DME.class, fieldValues);
+          wroteAtLeastOneLine = true;
+        }
+        if (wroteAtLeastOneLine) {
+          claimCount++;
         }
       }
     }
+    return claimCount;
   }
 
   /**
@@ -2418,10 +2479,12 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportHome(Person person, long startTime, long stopTime) throws IOException {
+  private long exportHome(Person person, long startTime, long stopTime) throws IOException {
     HashMap<HHA, String> fieldValues = new HashMap<>();
+    long claimCount = 0;
     int homeVisits = 0;
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
@@ -2440,7 +2503,7 @@ public class BB2RIFExporter {
 
       homeVisits += 1;
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
@@ -2605,7 +2668,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(HHA.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -2613,9 +2678,11 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportHospice(Person person, long startTime, long stopTime) throws IOException {
+  private long exportHospice(Person person, long startTime, long stopTime) throws IOException {
+    long claimCount = 0;
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
@@ -2639,7 +2706,7 @@ public class BB2RIFExporter {
       }
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
       fieldValues.clear();
       staticFieldConfig.setValues(fieldValues, HOSPICE.class, person);
@@ -2812,7 +2879,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(HOSPICE.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -2820,9 +2889,11 @@ public class BB2RIFExporter {
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
+   * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  private void exportSNF(Person person, long startTime, long stopTime) throws IOException {
+  private long exportSNF(Person person, long startTime, long stopTime) throws IOException {
+    long claimCount = 0;
     HashMap<SNF, String> fieldValues = new HashMap<>();
     boolean previousEmergency;
     boolean previousUrgent;
@@ -2845,7 +2916,7 @@ public class BB2RIFExporter {
       previousUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
 
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
-      int claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
+      long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
@@ -3077,7 +3148,9 @@ public class BB2RIFExporter {
           rifWriters.writeValues(SNF.class, fieldValues);
         }
       }
+      claimCount++;
     }
+    return claimCount;
   }
 
   /**
@@ -3750,71 +3823,75 @@ public class BB2RIFExporter {
     }
   }
 
-  private enum RifEntryStatus {
-    INITIAL,
-    INTERIM,
-    FINAL
-  }
-
   private static class RifWriters {
-    private final Map<RifEntryStatus, Map<Class, SynchronizedBBLineWriter>> allWriters;
+    private final Map<Integer, Map<Class, SynchronizedBBLineWriter>> allWriters;
     private final Path outputDir;
 
     public RifWriters(Path outputDir) {
       this.outputDir = outputDir;
-      allWriters = Collections.synchronizedMap(new HashMap<>());
-      for (RifEntryStatus status: RifEntryStatus.values()) {
-        allWriters.put(status, Collections.synchronizedMap(new HashMap<>()));
+      allWriters = Collections.synchronizedMap(new TreeMap<>());
+    }
+
+    public Set<Integer> getYears() {
+      return allWriters.keySet();
+    }
+
+    private synchronized Map<Class, SynchronizedBBLineWriter> getWriters(int year) {
+      Map<Class, SynchronizedBBLineWriter> writers = allWriters.get(year);
+      if (writers == null) {
+        writers = Collections.synchronizedMap(new HashMap<>());
+        allWriters.put(year, writers);
       }
+      return writers;
     }
 
     public <E extends Enum<E>> SynchronizedBBLineWriter<E> getWriter(Class<E> rifEnum,
-            RifEntryStatus status) {
-      return allWriters.get(status).get(rifEnum);
+            int year) {
+      return getWriters(year).get(rifEnum);
     }
 
-    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status) {
-      return getFilePath(enumClass, status, "csv");
+    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, int year) {
+      return getFilePath(enumClass, year, "csv");
     }
 
-    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, RifEntryStatus status,
+    private <E extends Enum<E>> Path getFilePath(Class<E> enumClass, int year,
             String ext) {
       String prefix = enumClass.getSimpleName().toLowerCase();
-      String suffix = status == RifEntryStatus.INITIAL ? "" : "_" + status.toString().toLowerCase();
+      String suffix = year == -1 ? "" : "_" + year;
       String fileName = String.format("%s%s.%s", prefix, suffix, ext);
       return outputDir.resolve(fileName);
     }
 
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
             Class<E> enumClass) {
-      return getOrCreateWriter(enumClass, RifEntryStatus.INITIAL);
+      return getOrCreateWriter(enumClass, -1);
     }
 
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
-            Class<E> enumClass, RifEntryStatus status) {
-      return getOrCreateWriter(enumClass, status, "csv", "|");
+            Class<E> enumClass, int year) {
+      return getOrCreateWriter(enumClass, year, "csv", "|");
     }
 
     public synchronized <E extends Enum<E>> SynchronizedBBLineWriter<E> getOrCreateWriter(
-            Class<E> enumClass, RifEntryStatus status, String ext, String separator) {
-      SynchronizedBBLineWriter<E> writer = getWriter(enumClass, status);
+            Class<E> enumClass, int year, String ext, String separator) {
+      SynchronizedBBLineWriter<E> writer = getWriter(enumClass, year);
       if (writer == null) {
-        Path filePath = getFilePath(enumClass, status, ext);
+        Path filePath = getFilePath(enumClass, year, ext);
         writer = new SynchronizedBBLineWriter<>(
                 enumClass, filePath, separator);
-        allWriters.get(status).put(enumClass, writer);
+        getWriters(year).put(enumClass, writer);
       }
       return writer;
     }
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues)
             throws IOException {
-      writeValues(enumClass, fieldValues, RifEntryStatus.INITIAL);
+      writeValues(enumClass, fieldValues, -1);
     }
 
     public <E extends Enum<E>> void writeValues(Class<E> enumClass, Map<E, String> fieldValues,
-            RifEntryStatus status) throws IOException {
-      getOrCreateWriter(enumClass, status).writeValues(fieldValues);
+            int year) throws IOException {
+      getOrCreateWriter(enumClass, year).writeValues(fieldValues);
     }
   }
 }

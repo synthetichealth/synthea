@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.FailedExportHelper;
 import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -150,7 +151,7 @@ public class FHIRR4ExporterTest {
         }
       }
       if (! validationErrors.isEmpty()) {
-        Exporter.export(person, System.currentTimeMillis());
+        FailedExportHelper.dumpInfo("FHIRR4", fhirJson, validationErrors, person);
       }
       return validationErrors;
     });

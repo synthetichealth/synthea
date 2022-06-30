@@ -25,6 +25,8 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -272,8 +274,8 @@ public class GeneratorTest {
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      RandomNumberGenerator random = new DefaultRandomNumberGenerator(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(random);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       generator.recordPerson(people[i], i);
     }
@@ -333,8 +335,8 @@ public class GeneratorTest {
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      RandomNumberGenerator random = new DefaultRandomNumberGenerator(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(random);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       //generator.recordPerson(people[i], i);
     }
