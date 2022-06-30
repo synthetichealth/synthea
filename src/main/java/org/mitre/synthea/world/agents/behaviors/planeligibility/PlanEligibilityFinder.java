@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -45,7 +46,8 @@ public class PlanEligibilityFinder {
       @Override
       public boolean isPersonEligible(Person person, long time) {
         return true;
-      }});
+      }
+    });
     // Build the CSV input eligbility algorithms.
     CSVEligibility.buildEligibilityOptions(state);
     String resource = null;
@@ -58,23 +60,19 @@ public class PlanEligibilityFinder {
     }
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-      removeEmptyValues(row);
+      removeEmptyMapValues(row);
       String eligblilityName = row.remove(ELIGIBILITY_NAME);
       if (planEligibilities.containsKey(eligblilityName)) {
-        throw new IllegalArgumentException("Plan eligibility name "
-            + eligblilityName + " is reserved or already in use.");
+        throw new IllegalArgumentException("Plan eligibility name '"
+            + eligblilityName + "'' is reserved or already in use.");
       }
       planEligibilities.put(eligblilityName, new CSVEligibility(row));
     }
   }
 
-  private static void removeEmptyValues(Map<String, String> map) {
-    Set<String> keysToRemove = new HashSet<>();
-    for (String key : map.keySet()) {
-      if (map.get(key).isEmpty()) {
-        keysToRemove.add(key);
-      }
-    }
+  private static void removeEmptyMapValues(Map<String, String> map) {
+    Set<String> keysToRemove = map.keySet().stream()
+        .filter(key -> map.get(key).isEmpty()).collect(Collectors.toSet());
     map.keySet().removeAll(keysToRemove);
   }
 

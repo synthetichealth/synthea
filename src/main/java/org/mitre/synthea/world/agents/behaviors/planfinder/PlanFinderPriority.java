@@ -24,9 +24,11 @@ public class PlanFinderPriority implements IPlanFinder {
 
     if (!eligiblePlans.isEmpty()) {
       // If there are affordable/eligible plans, choose the ones with the highest priority.
-      Set<Integer> eligiblePriorities = eligiblePlans.stream().map(plan -> plan.getPayer().getPriority()).collect(Collectors.toSet());
+      Set<Integer> eligiblePriorities = eligiblePlans.stream().map(plan ->
+          plan.getPayer().getPriority()).collect(Collectors.toSet());
       int maxEligiblePriority = Collections.min(eligiblePriorities);
-      eligiblePlans = eligiblePlans.stream().filter(plan -> plan.getPayer().getPriority() == maxEligiblePriority).collect(Collectors.toList());
+      eligiblePlans = eligiblePlans.stream().filter(plan ->
+          plan.getPayer().getPriority() == maxEligiblePriority).collect(Collectors.toList());
     }
 
     return chooseRandomPlan(eligiblePlans, person);

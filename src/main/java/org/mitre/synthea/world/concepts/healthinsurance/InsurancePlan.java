@@ -45,8 +45,8 @@ public class InsurancePlan implements Serializable {
    * @param eligibilityName The eligibilty algorithm to use.
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
-      BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
-      BigDecimal monthlyPremium, boolean medicareSupplement, int activeYearStart, int activeYearEnd, String eligibilityName) {
+      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, BigDecimal monthlyPremium,
+      boolean medicareSupplement, int activeYearStart, int activeYearEnd, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -55,7 +55,8 @@ public class InsurancePlan implements Serializable {
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
     if (activeYearStart >= activeYearEnd) {
-      throw new RuntimeException("Plan start year cannot be after its end year. Was given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
+      throw new RuntimeException("Plan start year cannot be after its end year."
+      + "Was given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
     }
     long activeTimeStart = Utilities.convertCalendarYearsToTime(activeYearStart);
     long activeTimeEnd = Utilities.convertCalendarYearsToTime(activeYearEnd);

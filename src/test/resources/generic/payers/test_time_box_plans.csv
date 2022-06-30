@@ -1,0 +1,7 @@
+,payer_id,plan_id,name,services_covered,deductible,default_coinsurance,default_copay,monthly_premium,medicare_supplement,eligibility_algorithm,start_availability,end_availablity,notes
+0,10000,10001,Medicare Plan,*,0,0.7,60,200,false,StandardMedicare,0,,
+1,20000,20001,Medicaid Plan,*,0,0.8,40,300,false,StandardMedicaid,0,,
+2,30000,30001,Dual Eligible Plan,*,0,0.9,100,500,false,StandardDualEligible,0,,
+3,40000,40001,Test Private Plan 1,*,0,0,10,670,false,generic,0,,
+4,50000,50001,Test Private Plan 2,wellness,0,0.8,0,690,false,generic,0,,
+5,30000,20002,Fake time-boxed Dual Eligible Plan,*,0,0.9,100,500,false,TimeBoxedDualEligible,1965,1968,

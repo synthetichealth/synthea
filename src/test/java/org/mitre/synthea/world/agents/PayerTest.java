@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -78,12 +79,19 @@ public class PayerTest {
   public void before() {
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    Config.set("generate.payers.insurance_plans.eligibilities_file",
+        "payers/insurance_eligibilities.csv");
     // Clear any Payers that may have already been statically loaded.
     PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
-    testPrivatePayer1 = PayerManager.getPrivatePayers().get(0);
-    testPrivatePayer2 = PayerManager.getPrivatePayers().get(1);
+    Set<Payer> privatePayers = PayerManager.getPrivatePayers();
+    testPrivatePayer1 = privatePayers.stream().filter(payer ->
+        payer.getName().equals("Test Private Payer 1")).iterator().next();
+    testPrivatePayer2 = privatePayers.stream().filter(payer ->
+        payer.getName().equals("Test Private Payer 2")).iterator().next();
   }
 
   /**
@@ -93,7 +101,10 @@ public class PayerTest {
   public static void cleanup() {
     Config.set("generate.payers.insurance_companies.default_file",
         "payers/insurance_companies.csv");
-    Config.set("generate.payers.insurance_plans.default_file", "payers/insurance_plans.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "payers/insurance_plans.csv");
+    Config.set("generate.payers.insurance_plans.eligibilities_file",
+        "payers/insurance_eligibilities.csv");
   }
 
   @Test
@@ -289,6 +300,47 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
     healthInsuranceModule.process(person, 0L);
     assertEquals("Medicaid", person.coverage.getPlanAtTime(0L).getPayer().getName());
+  }
+
+  @Test
+  public void planTimeBoxRanges() {
+    // There is a "Fake time-boxed Medicaid Plan" that has an eligibility unique to this test:
+    // If a patient has the attribute "time-boxed-test" as true, they will get Dual Eligible.
+    // However, this unique path to Medicaid is only avaiable from 1965-1968.
+    // Load in the time-boxed plan/eligibility.
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_time_box_plans.csv");
+    Config.set("generate.payers.insurance_plans.eligibilities_file",
+        "generic/payers/test_time_box_eligibilities.csv");
+    // Reload any Payers that may have already been statically loaded.
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testState, null));
+
+    long time = Utilities.convertCalendarYearsToTime(1960);
+    long oneYear = Utilities.convertTime("years", 1) + 1;
+    person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put("time-boxed-test", true);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+
+    // For the first 5 years, they should not have Dual Eligible.
+    for (int i = 0; i < 5; i++) {
+      healthInsuranceModule.process(person, time);
+      assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
+      time += oneYear;
+    }
+    // For the next 3 years, they should have Dual Eligible.
+    for (int i = 0; i < 3; i++) {
+      healthInsuranceModule.process(person, time);
+      assertEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
+      time += oneYear;
+    }
+
+    // After that, they should not longer have Dual Eligible.
+    healthInsuranceModule.process(person, time);
+    assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
 
   @Test

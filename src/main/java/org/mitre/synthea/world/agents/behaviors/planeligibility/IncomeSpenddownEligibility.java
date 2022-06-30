@@ -9,7 +9,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A class that defines the elgibility logic for Income medical cost spenddowns (MNIL, in the case of Medicaid).
+ * A class that defines the elgibility logic for Income medical cost spenddowns
+ * (MNIL, in the case of Medicaid).
  * MNIL allows people who don't qualify for income-based Medicaid to qualify if their expenses
  * bring them down to a certain income bracket.
  * By-age and by-state Standard Medicaid MNIL data from:

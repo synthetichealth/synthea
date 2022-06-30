@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,7 +50,9 @@ public class LossOfCareHealthRecordTest {
     // Load in the .csv list of Payers for MA.
     PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
-    testPrivatePayer = PayerManager.getPrivatePayers().get(0);
+    Set<Payer> privatePayers = PayerManager.getPrivatePayers();
+    testPrivatePayer = privatePayers.stream().filter(payer ->
+        payer.getName().equals("Test Private Payer 1")).iterator().next();
 
     // Parse out testPrivatePayer's Copay.
     Person person = new Person(0L);

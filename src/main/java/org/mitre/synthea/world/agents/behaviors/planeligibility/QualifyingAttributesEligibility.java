@@ -52,7 +52,7 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
     attributeExpression = attributeExpression.replaceAll("\\s", "");
     // We will specifically iterate over the possible operators in this order.
     String[] operatorRegexes = {"<=", ">=", "!=", "==", "<", ">", "="};
-    for(String regex : operatorRegexes) {
+    for (String regex : operatorRegexes) {
       String[] splitExpression = attributeExpression.split(regex);
       if (splitExpression.length == 2) {
         String attribute = splitExpression[0];
@@ -155,6 +155,5 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
     boolean checkLogic(Person person) {
       return this.logic.checkAttributeLogic(person);
     }
-
   }
 }

@@ -1,7 +1,6 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,10 +46,10 @@ public class PayerManager {
   public static final String DUAL_ELIGIBLE =
       Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
-  /* ArrayList of all Private Payers imported. */
-  private static List<Payer> privatePayers = new ArrayList<Payer>();
+  /* Set of all Private Payers imported. */
+  private static final Set<Payer> privatePayers = new HashSet<Payer>();
   /* Map of all Government Payers imported. */
-  private static Map<String, Payer> governmentPayers = new HashMap<String, Payer>();
+  private static final Map<String, Payer> governmentPayers = new HashMap<String, Payer>();
   /* No Insurance Payer. */
   public static Payer noInsurance;
 
@@ -287,29 +286,30 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE, Integer.MAX_VALUE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, 0, Utilities.getYear(System.currentTimeMillis()) + 1,PlanEligibilityFinder.GENERIC);
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, 0,
+        Utilities.getYear(System.currentTimeMillis()) + 1,PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
   /**
    * Returns the list of all loaded private payers.
    */
-  public static List<Payer> getPrivatePayers() {
+  public static Set<Payer> getPrivatePayers() {
     return PayerManager.privatePayers;
   }
 
   /**
    * Returns the List of all loaded government payers.
    */
-  public static List<Payer> getGovernmentPayers() {
-    return PayerManager.governmentPayers.values().stream().collect(Collectors.toList());
+  public static Set<Payer> getGovernmentPayers() {
+    return PayerManager.governmentPayers.values().stream().collect(Collectors.toSet());
   }
 
   /**
    * Returns a List of all loaded payers.
    */
-  public static List<Payer> getAllPayers() {
-    List<Payer> allPayers = new ArrayList<>();
+  public static Set<Payer> getAllPayers() {
+    Set<Payer> allPayers = new HashSet<>();
     allPayers.addAll(PayerManager.getGovernmentPayers());
     allPayers.addAll(PayerManager.getPrivatePayers());
     return allPayers;
@@ -358,6 +358,7 @@ public class PayerManager {
     InsurancePlan previousPlan = person.coverage
         .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
     if (previousPlan != null && !previousPlan.isNoInsurance()
+        && previousPlan.accepts(person, time) && previousPlan.isActive(time)
         && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
       // People will keep their previous year's insurance if they can.
       return previousPlan;
@@ -371,7 +372,7 @@ public class PayerManager {
    * @param time  The time for the plan to be active in.
    * @return The set of active plans.
    */
-  public static Set<InsurancePlan> getActivePlans(List<Payer> payers, long time) {
+  public static Set<InsurancePlan> getActivePlans(Set<Payer> payers, long time) {
     Set<InsurancePlan> plans = payers.stream().map(payer ->
         payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
     plans = plans.stream().filter(plan -> plan.isActive(time)).collect(Collectors.toSet());

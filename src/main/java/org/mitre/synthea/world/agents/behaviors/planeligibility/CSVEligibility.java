@@ -22,13 +22,16 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String POVERTY_MULTIPLIER_FILE = "Poverty Multiplier File";
   private static final String SPENDDOWN_FILE = "Spenddown File";
   private static final String LOGICAL_OPERATOR = "Logical Operator";
-  private static final Object SUB_ELIGIBILITIES = "Sub-Eligibilities";
+  private static final String SUB_ELIGIBILITIES = "Sub-Eligibilities";
 
-  // A map that maps a column to the type of eligibilty it should create.
+  private static final String AND = "and";
+  private static final String OR = "or";
+
+  // A map of column names to the type of eligibilty it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
 
   private final List<IPlanEligibility> eligibilityCriteria;
-  private String logicalOperator;
+  private final String logicalOperator;
 
   /**
    * Constructor.
@@ -36,17 +39,20 @@ public class CSVEligibility implements IPlanEligibility {
    */
   public CSVEligibility(Map<String, String> inputEligibilities) throws IllegalArgumentException {
     this.eligibilityCriteria = new ArrayList<>();
+
+    String logicalOperatorStr = inputEligibilities.remove(LOGICAL_OPERATOR);
+    if (logicalOperatorStr == null) {
+      logicalOperatorStr = "";
+    }
+    this.logicalOperator = convertToLogicalOperator(logicalOperatorStr);
+    String subEligibilitiesStr = inputEligibilities.remove(SUB_ELIGIBILITIES);
+    if (subEligibilitiesStr != null) {
+      List<String> subEligibilities = Arrays.asList(subEligibilitiesStr.split("\\|"));
+      subEligibilities.forEach(subEligibility -> this.eligibilityCriteria.add(
+          PlanEligibilityFinder.getEligibilityAlgorithm(subEligibility)));
+    }
+
     for (String key : inputEligibilities.keySet()) {
-      if (key.equals(LOGICAL_OPERATOR)) {
-        this.logicalOperator = convertToLogicalOperator(inputEligibilities.get(key));
-        continue;
-      }
-      if (key.equals(SUB_ELIGIBILITIES)) {
-        List<String> subEligibilities = Arrays.asList(inputEligibilities.get(key).split("\\|"));
-        subEligibilities.forEach(subEligibility -> this.eligibilityCriteria.add(
-            PlanEligibilityFinder.getEligibilityAlgorithm(subEligibility)));
-        continue;
-      }
       if (!eligbilityOptions.containsKey(key)) {
         throw new IllegalArgumentException("Invalid CSV eligibility input column: " + key + ".");
       }
@@ -58,11 +64,11 @@ public class CSVEligibility implements IPlanEligibility {
 
   @Override
   public boolean isPersonEligible(Person person, long time) {
-    if (logicalOperator.equalsIgnoreCase("AND")) {
+    if (logicalOperator.equalsIgnoreCase(AND)) {
       return eligibilityCriteria.stream().allMatch(eligibility
           -> eligibility.isPersonEligible(person, time));
     }
-    if (logicalOperator.equalsIgnoreCase("OR")) {
+    if (logicalOperator.equalsIgnoreCase(OR)) {
       return eligibilityCriteria.stream().anyMatch(eligibility
           -> eligibility.isPersonEligible(person, time));
     }
@@ -100,11 +106,11 @@ public class CSVEligibility implements IPlanEligibility {
    */
   private static String convertToLogicalOperator(String logicalOperator) {
     logicalOperator = logicalOperator.replaceAll("\\s", "");
-    if (logicalOperator.equalsIgnoreCase("and")) {
-      return "AND";
+    if (logicalOperator.isEmpty() || logicalOperator.equalsIgnoreCase(OR)) {
+      return OR;
     }
-    if (logicalOperator.equalsIgnoreCase("or") || logicalOperator.isEmpty()) {
-      return "OR";
+    if (logicalOperator.equalsIgnoreCase(AND)) {
+      return AND;
     }
     throw new IllegalArgumentException("Invalid logical operator '"
         + logicalOperator + "' for input eligibilities table.");
