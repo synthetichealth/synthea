@@ -76,6 +76,8 @@ public class ValueSetCodeResolverTest {
     PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
     PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     encounter = person.encounterStart(time, EncounterType.WELLNESS);

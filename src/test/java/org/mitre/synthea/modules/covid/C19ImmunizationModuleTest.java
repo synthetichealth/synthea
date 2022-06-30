@@ -11,7 +11,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.modules.Immunizations;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;

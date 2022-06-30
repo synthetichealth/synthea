@@ -136,10 +136,10 @@ public class InsurancePlan implements Serializable {
 
   /**
    * Increments the number of customers that have used this plan's payers.
-   * @param person  The person for whom to increment.
+   * @param personId  The person Id for whom to increment.
    */
-  public void incrementCustomers(Person person) {
-    this.payer.incrementCustomers(person);
+  public void incrementCustomers(String personId) {
+    this.payer.incrementCustomers(personId);
   }
 
   /**

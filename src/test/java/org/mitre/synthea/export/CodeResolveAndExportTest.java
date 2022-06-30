@@ -130,6 +130,8 @@ public class CodeResolveAndExportTest {
     PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
     PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);

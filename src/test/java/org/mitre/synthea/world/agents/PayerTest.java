@@ -83,7 +83,7 @@ public class PayerTest {
         "generic/payers/test_plans.csv");
     Config.set("generate.payers.insurance_plans.eligibilities_file",
         "payers/insurance_eligibilities.csv");
-    // Clear any Payers that may have already been statically loaded.
+    // Clear and reset Payers that may have already been statically loaded.
     PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
@@ -105,6 +105,9 @@ public class PayerTest {
         "payers/insurance_plans.csv");
     Config.set("generate.payers.insurance_plans.eligibilities_file",
         "payers/insurance_eligibilities.csv");
+    // Clear and reset Payers that may have already been statically loaded.
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testState, null));
   }
 
   @Test
@@ -138,13 +141,15 @@ public class PayerTest {
     processInsuranceForAges(secondPerson, 55, 60);
 
     // Ensure the first person was with the Payers for 12 years.
-    assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPerson)
-        + testPrivatePayer2.getCustomerUtilization(firstPerson));
+    String firstPersonId = (String) firstPerson.attributes.get(Person.ID);
+    assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPersonId)
+        + testPrivatePayer2.getCustomerUtilization(firstPersonId));
     // Ensure the second person was with the Payers for 20 years.
-    assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPerson)
-        + testPrivatePayer2.getCustomerUtilization(secondPerson));
+    String secondPersonId = (String) secondPerson.attributes.get(Person.ID);
+    assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPersonId)
+        + testPrivatePayer2.getCustomerUtilization(secondPersonId));
     assertEquals(41, PayerManager.getGovernmentPayer(PayerManager.MEDICAID)
-        .getCustomerUtilization(secondPerson));
+        .getCustomerUtilization(secondPersonId));
     // Ensure that there were betwen 2 and 4 unique customers for the Payers.
     assertTrue(testPrivatePayer1.getUniqueCustomers()
         + testPrivatePayer2.getUniqueCustomers() >= 2);
@@ -499,10 +504,11 @@ public class PayerTest {
     // Predetermine person's Payer.
     processInsuranceForAges(person, 0, 64);
 
+    String personId = (String) person.attributes.get(Person.ID);
     BigDecimal payer1MemberYears
-        = BigDecimal.valueOf(testPrivatePayer1.getCustomerUtilization(person));
+        = BigDecimal.valueOf(testPrivatePayer1.getCustomerUtilization(personId));
     BigDecimal payer2MemberYears
-        = BigDecimal.valueOf(testPrivatePayer2.getCustomerUtilization(person));
+        = BigDecimal.valueOf(testPrivatePayer2.getCustomerUtilization(personId));
 
     BigDecimal totalMonthlyPremiumsOwed = BigDecimal.ZERO;
     totalMonthlyPremiumsOwed = totalMonthlyPremiumsOwed.add(testPrivatePayer1.getPlans().iterator()
@@ -682,7 +688,7 @@ public class PayerTest {
     // Person's coverage should equal $0.0.
     assertTrue(person.coverage.getTotalCoverage().equals(Claim.ZERO_CENTS));
     // Person's expenses should equal the total cost of the encounter.
-    // TODO: OR SHOULD IT BE getTotalHealthcareExpenses?
+    // TODO: should this be getTotalHealthcareExpenses()?
     assertTrue(person.coverage.getTotalExpenses().equals(encounter.getCost()));
   }
 

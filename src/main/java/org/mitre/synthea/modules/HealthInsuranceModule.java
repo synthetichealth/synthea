@@ -88,9 +88,10 @@ public class HealthInsuranceModule extends Module {
     // Set the person's new plan(s).
     person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
     // Update the new Payer's customer statistics.
-    newPlan.incrementCustomers(person);
+    String personId = (String) person.attributes.get(Person.ID);
+    newPlan.incrementCustomers(personId);
     if (!secondaryPlan.isNoInsurance()) {
-      secondaryPlan.incrementCustomers(person);
+      secondaryPlan.incrementCustomers(personId);
     }
   }
 

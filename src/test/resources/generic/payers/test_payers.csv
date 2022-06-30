@@ -1,4 +1,4 @@
-﻿,id,name,address,city,state_headquartered,zip,phone,states_covered,ownership,priority_level
+﻿,Id,Name,Address,City,State Headquarterd,Zip,Phone,States Covered,Ownership,Priority Level
 0,10000,Medicare,7500 Security Blvd,Baltimore,MD,21244,1-800-633-4227,*,Government,2
 1,20000,Medicaid,7500 Security Blvd,Baltimore,MD,21244,877-267-2323,*,Government,2
 2,30000,Dual Eligible,7500 Security Blvd,Baltimore,MD,21244,877-267-2323,*,Government,1

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 
@@ -128,7 +129,7 @@ public class CSVEligibility implements IPlanEligibility {
    */
   private static String convertToLogicalOperator(String logicalOperator) {
     logicalOperator = logicalOperator.replaceAll("\\s", "");
-    if (logicalOperator.isEmpty() || logicalOperator.equalsIgnoreCase(OR)) {
+    if (StringUtils.isBlank(logicalOperator) || logicalOperator.equalsIgnoreCase(OR)) {
       return OR;
     }
     if (logicalOperator.equalsIgnoreCase(AND)) {

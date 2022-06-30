@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -19,8 +19,8 @@ public class PlanEligibilityFinder {
 
   private static Map<String, IPlanEligibility> planEligibilities;
 
-  private static final String ELIGIBILITY_NAME = "name";
-  public static final String GENERIC = "generic";
+  private static final String ELIGIBILITY_NAME = "Name";
+  public static final String GENERIC = "GENERIC";
 
   /**
    * Returns the correct elgibility algorithm based on the given string.
@@ -28,8 +28,9 @@ public class PlanEligibilityFinder {
    * @return  The requested payer eligibilty algorithm.
    */
   public static IPlanEligibility getEligibilityAlgorithm(String eligibility) {
-    if (planEligibilities.containsKey(eligibility)) {
-      return planEligibilities.get(eligibility);
+    String modEligibility = eligibility.replaceAll("\\s", "").toUpperCase();
+    if (planEligibilities.containsKey(modEligibility)) {
+      return planEligibilities.get(modEligibility);
     }
     throw new RuntimeException("Plan eligiblity " + eligibility + " does not exist.");
   }
@@ -58,9 +59,9 @@ public class PlanEligibilityFinder {
       e.printStackTrace();
     }
     while (csv.hasNext()) {
-      Map<String, String> row = csv.next();
-      removeEmptyMapValues(row);
-      String eligblilityName = row.remove(ELIGIBILITY_NAME);
+      Map<String, String> row = removeBlankMapStringValues(csv.next());
+      row.keySet().forEach(key -> row.put(key, row.get(key).trim()));
+      String eligblilityName = row.remove(ELIGIBILITY_NAME).replaceAll("\\s", "").toUpperCase();
       if (planEligibilities.containsKey(eligblilityName)) {
         throw new IllegalArgumentException("Plan eligibility name '"
             + eligblilityName + "'' is reserved or already in use.");
@@ -69,10 +70,11 @@ public class PlanEligibilityFinder {
     }
   }
 
-  private static void removeEmptyMapValues(Map<String, String> map) {
-    Set<String> keysToRemove = map.keySet().stream()
-        .filter(key -> map.get(key).isEmpty()).collect(Collectors.toSet());
-    map.keySet().removeAll(keysToRemove);
+  private static <T> Map<T, String> removeBlankMapStringValues(Map<T, String> map) {
+    Map<T, String> mapValuesToKeep = map.entrySet().stream()
+        .filter(entry -> !StringUtils.isBlank(entry.getValue())).collect(
+        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    return mapValuesToKeep;
   }
 
 }

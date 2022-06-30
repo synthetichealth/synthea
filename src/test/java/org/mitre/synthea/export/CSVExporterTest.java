@@ -45,6 +45,13 @@ public class CSVExporterTest {
 
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
+
+    PayerManager.clear();
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
   }
 
   @Test
@@ -52,11 +59,6 @@ public class CSVExporterTest {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
-
-    PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -102,11 +104,6 @@ public class CSVExporterTest {
     Config.set("exporter.csv.included_files", "patients.csv,medications.csv,procedures.csv");
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
-
-    PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -172,11 +169,6 @@ public class CSVExporterTest {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers");
     CSVExporter.getInstance().init();
-
-    PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();

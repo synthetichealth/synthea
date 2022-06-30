@@ -238,10 +238,9 @@ public class Payer implements Serializable {
   /**
    * Increments the number of unique users.
    *
-   * @param person the person to add to the payer.
+   * @param personId the person id who utilized the payer.
    */
-  public synchronized void incrementCustomers(Person person) {
-    String personId = (String) person.attributes.get(Person.ID);
+  public synchronized void incrementCustomers(String personId) {
     if (!customerUtilization.containsKey(personId)) {
       customerUtilization.put(personId, new AtomicInteger(0));
     }
@@ -352,9 +351,10 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of years the given customer was with this Payer.
+   * @param personId  The person to check for.
+   * @return  The number of years the person was with the payer.
    */
-  public int getCustomerUtilization(Person person) {
-    String personId = (String) person.attributes.get(Person.ID);
+  public int getCustomerUtilization(String personId) {
     if (!customerUtilization.containsKey(personId)) {
       return 0;
     }

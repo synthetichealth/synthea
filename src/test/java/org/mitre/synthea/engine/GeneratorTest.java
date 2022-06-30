@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -143,6 +142,12 @@ public class GeneratorTest {
     String testTownDefault = Config.get("test_town.default", "Bedford");
     String testStateAlt = Config.get("test_state.alternative", "California");
     String testTownAlt = Config.get("test_town.alternative", "South Gate");
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testStateAlt, testTownAlt));
 
     int numberOfPeople = 2;
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
@@ -158,6 +163,9 @@ public class GeneratorTest {
       assertEquals(testStateAlt, p.attributes.get(Person.STATE));
       assertTrue(zipCodes.contains(p.attributes.get(Person.ZIP)));
     }
+
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
 
     opts = new Generator.GeneratorOptions();
     opts.population = numberOfPeople;

@@ -35,6 +35,8 @@ public class PlanFinderTest {
     // Load in the .csv test list of payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
     TestHelper.loadTestProperties();
     person.attributes.put(Person.STATE, Config.get("test_state.default", "Massachusetts"));
   }
