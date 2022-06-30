@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -215,7 +216,7 @@ public class PayerManager {
     String priorityString = line.remove("priority_level");
     int priority = Integer.MAX_VALUE;
     // A blank priority is minimum priority, so give it the maximum value.
-    if (!priorityString.isBlank()) {
+    if (!StringUtils.isBlank(priorityString)) {
       priority = Integer.parseInt(priorityString);
     }
 
@@ -246,7 +247,7 @@ public class PayerManager {
     int yearStart = Integer.parseInt(line.remove("start_availability"));
     String yearEndStr = line.remove("end_availablity");
     int yearEnd = Utilities.getYear(System.currentTimeMillis()) + 1;
-    if (!yearEndStr.isBlank()) {
+    if (!StringUtils.isBlank(yearEndStr)) {
       yearEnd = Integer.parseInt(yearEndStr);
     }
     String eligibilityName = line.remove("eligibility_algorithm");
