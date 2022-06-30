@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 
 public class CSVEligibility implements IPlanEligibility {
@@ -81,18 +82,39 @@ public class CSVEligibility implements IPlanEligibility {
    */
   static void buildEligibilityOptions(String state) {
     eligbilityOptions = new HashMap<>();
-    eligbilityOptions.put(POVERTY_MULTIPLIER, (input)
-        -> new PovertyMultiplierEligibility(Double.parseDouble(input)));
-    eligbilityOptions.put(INCOME_THRESHOLD, (input)
-        -> new IncomeThresholdEligibility(Double.parseDouble(input)));
-    eligbilityOptions.put(AGE_THRESHOLD, (input)
-        -> new AgeThresholdEligibility(Integer.parseInt(input)));
+    eligbilityOptions.put(INCOME_THRESHOLD, (input) -> new IPlanEligibility() {
+          public boolean isPersonEligible(Person person, long time) {
+            int income = (int) person.attributes.get(Person.INCOME);
+            double incomeThreshold = Double.parseDouble(input);
+            return income >= incomeThreshold;
+          }
+        });
+    eligbilityOptions.put(POVERTY_MULTIPLIER, (input) -> new IPlanEligibility() {
+          public boolean isPersonEligible(Person person, long time) {
+            double povertyMultiplier = Double.parseDouble(input);
+            double povertyLevel = HealthInsuranceModule.povertyLevel;
+            double incomeThreshold = povertyLevel * povertyMultiplier;
+            int income = (int) person.attributes.get(Person.INCOME);
+            return income <= incomeThreshold;
+          }
+        });
+    eligbilityOptions.put(AGE_THRESHOLD, (input) -> new IPlanEligibility() {
+          public boolean isPersonEligible(Person person, long time) {
+            int age = person.ageInYears(time);
+            int ageThreshold = Integer.parseInt(input);
+            return age >= ageThreshold;
+          }
+        });
     eligbilityOptions.put(QUALIFYING_CONDITIONS, (input)
         -> new QualifyingConditionCodesEligibility(input));
     eligbilityOptions.put(QUALIFYING_ATTRIBUTES, (input)
         -> new QualifyingAttributesEligibility(input));
-    eligbilityOptions.put(ACCEPTANCE_LIKELIHOOD, (input)
-        -> new AcceptanceLikelihoodEligibility(Double.parseDouble(input)));
+    eligbilityOptions.put(ACCEPTANCE_LIKELIHOOD, (input) -> new IPlanEligibility() {
+          public boolean isPersonEligible(Person person, long time) {
+            double acceptanceLikelihood = Double.parseDouble(input);
+            return person.rand() < acceptanceLikelihood;
+          }
+        });
     eligbilityOptions.put(POVERTY_MULTIPLIER_FILE, (input)
         -> new PovertyMultiplierFileEligibility(state, input));
     eligbilityOptions.put(SPENDDOWN_FILE, (input)

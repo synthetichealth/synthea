@@ -135,7 +135,7 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Increments the number of customers that have used this plan.
+   * Increments the number of customers that have used this plan's payers.
    * @param person  The person for whom to increment.
    */
   public void incrementCustomers(Person person) {
