@@ -1,13 +1,13 @@
 package org.mitre.synthea.identity;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.Map;
 
 import org.junit.Test;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
-
-import static org.junit.Assert.assertEquals;
 
 public class VariantTest {
 
