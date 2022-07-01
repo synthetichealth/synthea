@@ -162,6 +162,9 @@ public class Claim implements Serializable {
       if ((claimEntry.entry instanceof HealthRecord.Encounter)
           || (claimEntry.entry instanceof HealthRecord.Medication)) {
         claimEntry.copay = payer.determineCopay(claimEntry.entry);
+        if (claimEntry.copay.compareTo(claimEntry.cost) > 0) {
+          claimEntry.copay = claimEntry.cost;
+        }
         remaining = remaining.subtract(claimEntry.copay);
       }
       // Check if the patient has remaining deductible

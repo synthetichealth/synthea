@@ -140,6 +140,7 @@ public class BB2RIFExporter {
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
   private Map<String, RandomCollection<String>> externalCodes;
+  private Map<Integer, Double> pdeOutOfPocketThresholds;
 
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -195,6 +196,17 @@ public class BB2RIFExporter {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
       // and if these do throw ioexceptions there's nothing we can do anyway
+      throw new RuntimeException(e);
+    }
+    pdeOutOfPocketThresholds = new HashMap<Integer, Double>();
+    try {
+      String csv = Utilities.readResourceAndStripBOM("costs/pde_oop_thresholds.csv");
+      for (LinkedHashMap<String, String> row : SimpleCSV.parse(csv)) {
+        int year = Integer.parseInt(row.get("YEAR"));
+        double threshold = Double.parseDouble(row.get("THRESHOLD"));
+        pdeOutOfPocketThresholds.put(year, threshold);
+      }
+    } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -2138,6 +2150,7 @@ public class BB2RIFExporter {
     HashMap<PDE, String> fieldValues = new HashMap<>();
     BigDecimal costs = Claim.ZERO_CENTS;
     int costYear = 0;
+    String catastrophicCode = "";
     for (PrescriptionFill fill: prescriptionFills) {
 
       long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
@@ -2172,24 +2185,44 @@ public class BB2RIFExporter {
       if (year != costYear) {
         costYear = year;
         costs = Claim.ZERO_CENTS;
+        catastrophicCode = ""; // Blank = Attachment point not met
       }
+      BigDecimal threshold = getDrugOutOfPocketThreshold(year);
       costs = costs.add(fill.medication.claim.getPatientCost());
-      if (costs.compareTo(BigDecimal.valueOf(4550)) <= 0) {
+      if (costs.compareTo(threshold) < 0) {
         fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
         fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
+        fieldValues.put(PDE.CTSTRPHC_CVRG_CD, catastrophicCode);
       } else {
-        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, "4550.00");
+        if (catastrophicCode.equals("")) {
+          catastrophicCode = "A"; // A = Attachment point met on this event
+        } else if (catastrophicCode.equals("A")) {
+          catastrophicCode  = "C"; // C = Above attachment point
+        }
+        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", threshold));
         fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
-                String.format("%.2f", costs.subtract(BigDecimal.valueOf(4550))));
+                String.format("%.2f", costs.subtract(threshold)));
+        fieldValues.put(PDE.CTSTRPHC_CVRG_CD, catastrophicCode);
       }
+      fieldValues.put(PDE.TOT_RX_CST_AMT,
+          String.format("%.2f", fill.medication.claim.getTotalClaimCost()));
+      // Under normal circumstances, the following fields summed together,
+      // should equal TOT_RX_CST_AMT:
+      // - PTNT_PAY_AMT       : what the patient paid
+      // - OTHR_TROOP_AMT     : what 3rd party paid out of pocket
+      // - LICS_AMT           : low income subsidized payment
+      // - PLRO_AMT           : what other 3rd party insurances paid
+      // - CVRD_D_PLAN_PD_AMT : what Part D paid
+      // - NCVRD_PLAN_PD_AMT  : part of total not covered by Part D whatsoever
       fieldValues.put(PDE.PTNT_PAY_AMT,
-              String.format("%.2f", fill.medication.claim.getPatientCost()));
+          String.format("%.2f", fill.medication.claim.getPatientCost()));
+      fieldValues.put(PDE.PLRO_AMT,
+          String.format("%.2f", fill.medication.claim.totals.secondaryPayer));
       fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
           String.format("%.2f", fill.medication.claim.getCoveredCost()));
       fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
-          String.format("%.2f", fill.medication.claim.getPatientCost()));
-      fieldValues.put(PDE.TOT_RX_CST_AMT,
-          String.format("%.2f", fill.medication.claim.getTotalClaimCost()));
+          String.format("%.2f", fill.medication.claim.totals.adjustment));
+
       fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
       fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(fill.time));
       // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
@@ -2204,6 +2237,11 @@ public class BB2RIFExporter {
       claimCount++;
     }
     return claimCount;
+  }
+
+  protected BigDecimal getDrugOutOfPocketThreshold(int year) {
+    double threshold = pdeOutOfPocketThresholds.getOrDefault(year, 4550.0);
+    return BigDecimal.valueOf(threshold);
   }
 
   private static class PrescriptionFill implements Comparable<PrescriptionFill> {
