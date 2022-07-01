@@ -457,10 +457,10 @@ public class Generator {
       if (entityManager != null) {
         // Get the fixed demographic attributes for the person.
         Entity entity = entityManager.getRecords().get(index);
-        demoAttributes = pickFixedDemographics(entity, random);
+        demoAttributes = pickFixedDemographics(entity, person);
       } else {
         // Standard random demographics.
-        demoAttributes = randomDemographics(randomForDemographics);
+        demoAttributes = randomDemographics(person);
       }
 
       boolean patientMeetsCriteria;
@@ -837,7 +837,7 @@ public class Generator {
    * @param entity The record group to pull demographics from.
    * @param random Random object.
    */
-  public Map<String, Object> pickFixedDemographics(Entity entity, Random random) {
+  public Map<String, Object> pickFixedDemographics(Entity entity, RandomNumberGenerator random) {
     Seed firstSeed = entity.getSeeds().get(0);
     String state = firstSeed.getState();
     if (state.length() == 2) {
