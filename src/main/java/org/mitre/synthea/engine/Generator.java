@@ -337,11 +337,6 @@ public class Generator implements RandomNumberGenerator {
         Config.set("generate.append_numbers_to_person_names", "false");
         // Since we're using FixedRecords, split records must be true.
         Config.set("exporter.split_records", "true");
-        // We want every person to survive the simulation.
-        Config.set("generate.only_alive_patients", "true");
-        Config.set("generate.only_dead_patients", "false");
-        // We want full years of history.
-        Config.set("exporter.years_of_history", "0");
       } catch (IOException ioe) {
         throw new RuntimeException("Couldn't open the fixed patient demographics "
             + "records file", ioe);
@@ -517,7 +512,7 @@ public class Generator implements RandomNumberGenerator {
           // if we've tried and failed > 10 times to generate someone over age 90
           // and the options allow for ages as low as 85
           // reduce the age to increase the likelihood of success
-          if ((int)person.attributes.get(TARGET_AGE) > 90
+          if (tryNumber > 10 && (int)person.attributes.get(TARGET_AGE) > 90
               && (!options.ageSpecified || options.minAge <= 85)) {
             // pick a new target age between 85 and 90
             int newTargetAge = randomForDemographics.nextInt(5) + 85;
@@ -531,11 +526,8 @@ public class Generator implements RandomNumberGenerator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        if (Generator.entityManager == null || isAlive) {
-          // This if-statement prevents dead patients from being exported during
-          // fixed demographics runs.
-          Exporter.export(person, finishTime, exporterRuntimeOptions);
-        }
+        Exporter.export(person, finishTime, exporterRuntimeOptions);
+
       } while (!patientMeetsCriteria);
       //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
