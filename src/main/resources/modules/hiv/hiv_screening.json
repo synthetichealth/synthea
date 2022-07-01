@@ -1,0 +1,144 @@
+{
+  "name": "hiv_screening",
+  "remarks": [
+    "Simple module containing HIV screening procedures."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "HIV Screening"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "HIV Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71121004,
+          "display": "Human immunodeficiency virus screening (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "HIV Panel Positive",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_infection",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "HIV Panel Negative"
+        }
+      ]
+    },
+    "HIV Panel Positive": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75622-1",
+          "display": "HIV 1 and 2 tests - Meaningful Use set"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "7917-8",
+              "display": "HIV 1 Ab [Presence] in Serum"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 165816005,
+            "display": "Human immunodeficiency virus positive (finding)"
+          }
+        }
+      ],
+      "direct_transition": "Counseling"
+    },
+    "HIV Panel Negative": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "75622-1",
+          "display": "HIV 1 and 2 tests - Meaningful Use set"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "7917-8",
+              "display": "HIV 1 Ab [Presence] in Serum"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 165815009,
+            "display": "Human immunodeficiency virus negative (finding)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Counseling": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 313077009,
+          "display": "Human immunodeficiency virus counseling (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "HIV Care Referral"
+    },
+    "HIV Care Referral": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 3457005,
+          "display": "Patient referral (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

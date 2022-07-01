@@ -20,7 +20,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 public class LocationTest {
-
+  private static String locationDoesNotExist = "The Lost City of Atlantis";
   private static String testState = null;
   private static String testTown = null;
   private static Location location = null;
@@ -56,6 +56,26 @@ public class LocationTest {
     List<String> zipcodes = location.getZipCodes(testTown);
     String zipcode = location.getZipCode(testTown, new Person(1));
     Assert.assertTrue(zipcodes.contains(zipcode));
+  }
+
+  @Test
+  public void testLocationWithoutZipCode() {
+    Assert.assertFalse(location.getPopulation(locationDoesNotExist) > 0);
+    List<String> zipcodes = location.getZipCodes(locationDoesNotExist);
+    Assert.assertTrue(zipcodes.size() == 1);
+    Assert.assertTrue(zipcodes.contains("00000"));
+  }
+
+  @Test
+  public void testAssignPointPersonWithLocationThatDoesNotExist() {
+    Person p = new Person(1);
+    String zipcode = location.getZipCode(locationDoesNotExist, p);
+    p.attributes.put(Person.ZIP, zipcode);
+    location.assignPoint(p, locationDoesNotExist);
+    Point2D.Double coord = (Point2D.Double) p.attributes.get(Person.COORDINATE);
+    Assert.assertNotNull(coord);
+    Assert.assertNotNull(coord.x);
+    Assert.assertNotNull(coord.y);
   }
 
   @Test

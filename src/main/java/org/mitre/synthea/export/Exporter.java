@@ -431,20 +431,20 @@ public abstract class Exporter {
 
     // Before we force bulk data to be off...
     try {
-      FhirGroupExporterR4.exportAndSave(generator, generator.stop);
+      FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     Config.set("exporter.fhir.bulk_data", "false");
     try {
-      HospitalExporterR4.export(generator, generator.stop);
+      HospitalExporterR4.export(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      FhirPractitionerExporterR4.export(generator, generator.stop);
+      FhirPractitionerExporterR4.export(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }

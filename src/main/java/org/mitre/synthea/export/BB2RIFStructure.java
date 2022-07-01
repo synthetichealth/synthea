@@ -19,6 +19,19 @@ public class BB2RIFStructure {
     SNF.class
   };
 
+  @SuppressWarnings("checkstyle:typename")
+  enum EXPORT_SUMMARY {
+    BENE_ID,
+    CARRIER_CLAIMS,
+    DME_CLAIMS,
+    HHA_CLAIMS,
+    HOSPICE_CLAIMS,
+    INPATIENT_CLAIMS,
+    OUTPATIENT_CLAIMS,
+    PDE_CLAIMS,
+    SNF_CLAIMS
+  }
+
   enum BENEFICIARY {
     DML_IND,
     BENE_ID,

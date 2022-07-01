@@ -11,6 +11,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.geography.Location;
 
@@ -34,7 +35,7 @@ public class EncounterModuleTest {
     String testState = Config.get("test_state.default", "Massachusetts");
     location = new Location(testState, null);
     location.assignPoint(person, location.randomCityName(person));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
     Payer.loadNoInsurance();

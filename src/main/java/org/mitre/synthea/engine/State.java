@@ -1300,12 +1300,45 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
+      Medication medication = null;
+      boolean createPrescription = true;
       String primaryCode = codes.get(0).code;
-      Medication medication = person.record.medicationStart(time, primaryCode, chronic);
+      if (this.administration) {
+        medication = person.record.medicationAdministration(time, primaryCode, codes);
+        applyFeatures(person, medication);
+
+        if (!this.chronic) {
+          createPrescription = false;
+        }
+      }
+      if (createPrescription) {
+        medication = person.record.medicationStart(time, primaryCode, chronic);
+        applyFeatures(person, medication);
+      }
+      // increment number of prescriptions prescribed by respective hospital
+      Provider medicationProvider = person.getCurrentProvider(module.name);
+      if (medicationProvider == null) {
+        // no provider associated with encounter or medication order
+        medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
+      }
+
+      int year = Utilities.getYear(time);
+      medicationProvider.incrementPrescriptions(year);
+      return true;
+    }
+
+    /**
+     * Apply all the various features to the medication.
+     * @param person the Person.
+     * @param medication the Medication.
+     */
+    private void applyFeatures(Person person, Medication medication) {
       entry = medication;
       medication.name = this.name;
       medication.mergeCodeList(codes);
-
+      if (shouldAssignAttribute()) {
+        person.attributes.put(assignToAttribute, medication);
+      }
       if (reason != null) {
         // "reason" is an attribute or stateName referencing a previous conditionOnset state
         if (person.attributes.containsKey(reason)) {
@@ -1321,23 +1354,7 @@ public abstract class State implements Cloneable, Serializable {
           }
         }
       }
-
       medication.prescriptionDetails = prescription;
-      medication.administration = administration;
-
-      if (shouldAssignAttribute()) {
-        person.attributes.put(assignToAttribute, medication);
-      }
-      // increment number of prescriptions prescribed by respective hospital
-      Provider medicationProvider = person.getCurrentProvider(module.name);
-      if (medicationProvider == null) {
-        // no provider associated with encounter or medication order
-        medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
-      }
-
-      int year = Utilities.getYear(time);
-      medicationProvider.incrementPrescriptions(year);
-      return true;
     }
   }
 
@@ -2213,6 +2230,30 @@ public abstract class State implements Cloneable, Serializable {
         person.recordDeath(time, reason);
         return true;
       }
+    }
+  }
+
+  /**
+   * The Vaccine state type indicates a point in the module where the patient is vaccinated.
+   */
+  public static class Vaccine extends State {
+    private int series;
+    private List<Code> codes;
+
+    @Override
+    public Vaccine clone() {
+      Vaccine clone = (Vaccine) super.clone();
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      HealthRecord.Immunization entry = person.record.immunization(time, codes.get(0).display);
+      for (Code code : codes) {
+        entry.codes.add(code);
+      }
+      entry.series = this.series;
+      return true;
     }
   }
 }

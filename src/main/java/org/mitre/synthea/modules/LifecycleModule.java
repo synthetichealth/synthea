@@ -49,6 +49,8 @@ public final class LifecycleModule extends Module {
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+  private static final Double MIDDLE_NAME_PROBABILITY =
+      Config.getAsDouble("generate.middle_names", 0.80);
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
@@ -125,6 +127,10 @@ public final class LifecycleModule extends Module {
       String firstName = Names.fakeFirstName(gender, language, person);
       String lastName = Names.fakeLastName(language, person);
       attributes.put(Person.FIRST_NAME, firstName);
+      if (person.rand() <= MIDDLE_NAME_PROBABILITY) {
+          middleName = Names.fakeFirstName(gender, language, person);
+          attributes.put(Person.MIDDLE_NAME, middleName);
+      }
       attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
 
@@ -177,9 +183,8 @@ public final class LifecycleModule extends Module {
     attributes.put(Person.ACTIVE_WEIGHT_MANAGEMENT, false);
     // TODO: Why are the percentiles a vital sign? Sounds more like an attribute?
     double heightPercentile = person.rand();
-    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.seed, time);
-    double weightPercentile = pgt.reverseWeightPercentile((String) attributes.get(Person.GENDER),
-        heightPercentile);
+    PediatricGrowthTrajectory pgt = new PediatricGrowthTrajectory(person.getSeed(), time);
+    double weightPercentile = pgt.reverseWeightPercentile(gender, heightPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
     person.attributes.put(Person.GROWTH_TRAJECTORY, pgt);
@@ -301,10 +306,19 @@ public final class LifecycleModule extends Module {
               person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
+              String middleName = null;
+              if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
+                middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
+              }
               String language = (String) person.attributes.get(Person.FIRST_LANGUAGE);
               String newLastName = Names.fakeLastName(language, person);
               person.attributes.put(Person.LAST_NAME, newLastName);
-              person.attributes.put(Person.NAME, firstName + " " + newLastName);
+              if (middleName != null) {
+                person.attributes.put(Person.NAME,
+                    firstName + " " + middleName + " " + newLastName);
+              } else {
+                person.attributes.put(Person.NAME, firstName + " " + newLastName);
+              }
             }
           } else {
             person.attributes.put(Person.MARITAL_STATUS, "S");
@@ -629,7 +643,8 @@ public final class LifecycleModule extends Module {
       // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
       // NCHS Data Brief - No. 363 - April 2020
       // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015–2018
-      boolean lowHDL, highTotalChol;
+      boolean lowHDL;
+      boolean highTotalChol;
       if (person.attributes.containsKey("low_hdl")) {
         // cache low or high status, so it's consistent
         lowHDL = (boolean)person.attributes.get("low_hdl");
@@ -643,7 +658,7 @@ public final class LifecycleModule extends Module {
         //   had low high-density lipoprotein cholesterol (HDL-C)."
         double chanceOfLowHDL = female ? .085 : .266;
 
-        lowHDL = person.rand() < chanceOfLowHDL; 
+        lowHDL = person.rand() < chanceOfLowHDL;
 
         person.attributes.put("low_hdl", lowHDL);
 
@@ -1126,6 +1141,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
+    Attributes.inventory(attributes, m, Person.MIDDLE_NAME, true, true, null);
     Attributes.inventory(attributes, m, "osteoporosis", true, false, null);
     Attributes.inventory(attributes, m, "prediabetes", true, false, null);
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, true, false, null);

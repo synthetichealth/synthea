@@ -1339,6 +1339,7 @@ public class StateTest {
     HealthRecord.Medication medication = (HealthRecord.Medication) person.attributes
         .get("Diabetes Medication");
     assertTrue(medication.administration);
+    assertTrue(medication.stop != 0L);
   }
 
   @Test
@@ -2290,7 +2291,6 @@ public class StateTest {
     assertEquals(time, device.stop);
   }
 
-
   @Test
   public void testSupplyList() throws Exception {
     Module module = TestHelper.getFixture("artificial_heart_device.json");
@@ -2318,6 +2318,32 @@ public class StateTest {
       assertEquals(expectedCodes[i], code.code);
       assertEquals(expectedDisplays[i], code.display);
       assertEquals(expectedQuantities[i], supply.quantity);
+    }
+  }
+
+  @Test
+  public void testVaccine() throws Exception {
+    Module module = TestHelper.getFixture("vaccine.json");
+
+    State encounterState = module.getState("Encounter");
+    assertTrue(encounterState.process(person, time));
+
+    State supplyListState = module.getState("Vaccine");
+    assertTrue(supplyListState.process(person, time));
+
+    Encounter encounter = person.getCurrentEncounter(module);
+    List<HealthRecord.Immunization> vaccines = encounter.immunizations;
+    assertNotNull(vaccines);
+    assertEquals(1, vaccines.size());
+
+    String[] expectedCodes = { "123" };
+    String[] expectedDisplays = { "CVX Vaccine Code" };
+
+    for (int i = 0; i < vaccines.size(); i++) {
+      HealthRecord.Immunization vaccine = vaccines.get(i);
+      Code code = vaccine.codes.get(0);
+      assertEquals(expectedCodes[i], code.code);
+      assertEquals(expectedDisplays[i], code.display);
     }
   }
 }

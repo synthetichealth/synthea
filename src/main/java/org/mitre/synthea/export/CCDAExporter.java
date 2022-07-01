@@ -10,6 +10,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 /**
@@ -96,6 +97,12 @@ public class CCDAExporter {
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
     person.attributes.put("ehr_imaging_studies", superEncounter.imagingStudies);
+
+    Observation smokingHistory = person.record.getLatestObservation("72166-2");
+
+    if (smokingHistory != null) {
+      person.attributes.put("ehr_smoking_history", smokingHistory);
+    }
     person.attributes.put("time", time);
     person.attributes.put("race_lookup", RaceAndEthnicity.LOOK_UP_CDC_RACE);
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
@@ -107,6 +114,10 @@ public class CCDAExporter {
       // the provider reset and they don't have a provider until their next wellness visit. There
       // may be other cases. This ensures the preferred provider is there for the CCDA template
       Encounter encounter = person.record.lastWellnessEncounter();
+      if (encounter == null) {
+        // If there are absolutely no wellness encounters, then use the last encounter.
+        encounter = person.record.encounters.get(person.record.encounters.size() - 1);
+      }
       if (encounter != null) {
         person.attributes.put(Person.PREFERREDYPROVIDER + "wellness", encounter.provider);
       } else {

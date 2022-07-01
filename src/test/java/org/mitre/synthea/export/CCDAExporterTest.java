@@ -2,7 +2,9 @@ package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,9 +14,12 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.mdht.uml.cda.util.BasicValidationHandler;
 import org.eclipse.mdht.uml.cda.util.CDAUtil;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.FailedExportHelper;
 import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -30,12 +35,16 @@ public class CCDAExporterTest {
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
+  @BeforeClass
+  public static void loadCDAUtils() {
+    CDAUtil.loadPackages();
+  }
+
   @Test
   public void testCCDAExport() throws Exception {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
-    CDAUtil.loadPackages();
     List<String> errors = ParallelTestingService.runInParallel((person) -> {
       List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
@@ -54,7 +63,7 @@ public class CCDAExporterTest {
         validationErrors.add(e.getMessage());
       }
       if (! validationErrors.isEmpty()) {
-        Exporter.export(person, System.currentTimeMillis());
+        FailedExportHelper.dumpInfo("CCDA", ccdaXml, validationErrors, person);
       }
       return validationErrors;
     });
@@ -93,6 +102,37 @@ public class CCDAExporterTest {
     } else {
       System.out.println("There were no people generated that have wellness providers... odd.");
     }
+  }
+
+  @Ignore("Manual test to debug failed CCDA exports.")
+  @Test
+  public void testFailedCCDAExports() throws Exception {
+    System.out.println("Revalidating Failed CCDA Exports...");
+    TestHelper.loadTestProperties();
+    List<String> validationErrors = new ArrayList<String>();
+    List<File> failures = FailedExportHelper.loadFailures("CCDA");
+    for (File failure : failures) {
+      System.out.println("Validating " + failure.getAbsolutePath() + "...");
+      validationErrors.clear();
+      String content = new String(Files.readAllBytes(failure.toPath()));
+      InputStream inputStream = IOUtils.toInputStream(content, "UTF-8");
+      try {
+        CDAUtil.load(inputStream, new BasicValidationHandler() {
+          public void handleError(Diagnostic diagnostic) {
+            System.out.println("ERROR: " + diagnostic.getMessage());
+            validationErrors.add(diagnostic.getMessage());
+          }
+        });
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (validationErrors.isEmpty()) {
+        System.out.println("  No validation errors.");
+      } else {
+        System.out.println("Validation Errors: " + validationErrors.size());
+      }
+    }
+    System.out.println("Done.");
   }
 
 }
