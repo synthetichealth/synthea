@@ -18,7 +18,10 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Resource;
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+
 
 // For now
 @SuppressWarnings("unchecked")
@@ -322,6 +325,8 @@ public abstract class Actions {
       return findValues(bundle, flagValues);
     } else if (flag.equals("getAttribute")) {
       return getAttribute(person, flagValues);
+    } else if (flag.equals("randomCode")) {
+      return randomCode(flagValues[0]);
     }
 
     return null;
@@ -392,5 +397,16 @@ public abstract class Actions {
       return null;
 
     return fieldValues.get(0).primitiveValue();
+  }
+  
+  private static Map<String,String> randomCode(String valueSetUrl) {
+    Code code = RandomCodeGenerator.getCode(valueSetUrl, (int)(Math.random() * Integer.MAX_VALUE), null);
+    
+    Map<String,String> codeAsMap = new HashMap<>();
+    codeAsMap.put("system", code.system);
+    codeAsMap.put("code", code.code);
+    codeAsMap.put("display", code.display);
+    
+    return codeAsMap;
   }
 }

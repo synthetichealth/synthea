@@ -90,17 +90,67 @@ public abstract class RandomCodeGenerator {
       } catch (IOException e) {
         throw new RuntimeException("Issue when expanding the value set", e);
       }
-
+      
+      loadValueSet(valueSetUri, valueSet);
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static void loadValueSet(String valueSetUri, Map<String, Object> valueSet) {
+    if (valueSetUri == null) {
+      valueSetUri = (String)valueSet.get("url");
+    }
+    
+    if (valueSetUri != null && !codeListCache.containsKey(valueSetUri)) {
       Map<String, Object> expansion = (Map<String, Object>) valueSet.get("expansion");
-      validateExpansion(expansion);
-      codeListCache.put(valueSetUri, (List<Object>) expansion.get("contains"));
+      if (expansion != null) {
+        validateExpansion(expansion);
+        codeListCache.put(valueSetUri, (List<Object>) expansion.get("contains"));
+
+      } else {
+        Map<String, Object> compose  = (Map<String, Object>) valueSet.get("compose");
+        
+        if (compose == null) {
+          throw new RuntimeException("ValueSet does not contain compose or expansion");
+        }
+        
+        // TODO: why is this List<Object> instead of something more specific?
+        // we know the contents are Map<String,String>
+        List<Object> codes = new ArrayList<>();
+        
+        List<Map<String, Object>> includeList = (List<Map<String, Object>>) compose.get("include");
+        
+        for (Map<String, Object> include : includeList) {
+          String system = (String)include.get("system");
+          
+          List<Map<String, Object>> conceptList = (List<Map<String, Object>>) include.get("concept");
+
+          for (Map<String, Object> concept : conceptList) {
+            Map<String,String> codeAsMap = new HashMap<>();
+            codeAsMap.put("system", system);
+            codeAsMap.put("code", (String)concept.get("code"));
+            codeAsMap.put("display", (String)concept.get("display"));
+            
+            codes.add(codeAsMap);
+          }
+          
+          
+        }
+        
+        if (codes.isEmpty()) {
+          throw new RuntimeException("ValueSet does not contain any codes defined within compose");
+        }
+        
+        codeListCache.put(valueSetUri, codes);
+
+ 
+      }
+      System.out.println("Loaded " + valueSetUri);
     }
   }
 
   private static void validateExpansion(@Nonnull Map<String, Object> expansion) {
-    if (expansion == null) {
-      throw new RuntimeException("ValueSet does not contain expansion");
-    } else if (!expansion.containsKey("contains")
+    if (!expansion.containsKey("contains")
         || ((Collection) expansion.get("contains")).isEmpty()) {
       throw new RuntimeException("ValueSet expansion does not contain any codes");
     } else if (!expansion.containsKey("total")) {
