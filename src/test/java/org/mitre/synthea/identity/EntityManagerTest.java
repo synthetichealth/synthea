@@ -1,20 +1,19 @@
 package org.mitre.synthea.identity;
 
+import com.google.common.io.Resources;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import com.google.common.io.Resources;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -51,6 +50,9 @@ public class EntityManagerTest {
     Assert.assertTrue(em.validate());
   }
 
+  /**
+   * Clean up and reset the Generator.
+   */
   @AfterClass
   public static void cleanUp() throws Exception {
     Generator.DEFAULT_STATE =  Config.get("test_state.default", "Massachusetts");

@@ -12,11 +12,15 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.identity.Entity;
+import org.mitre.synthea.identity.LocalDateDeserializer;
+import org.mitre.synthea.identity.Period;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 
@@ -42,6 +46,7 @@ public class JSONExporter {
             new PersonSerializer(!Config.getAsBoolean("exporter.json.include_module_history")))
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
         .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
+        .registerTypeHierarchyAdapter(LocalDate.class, new LocalDateSerializer())
         .create();
     return gson.toJson(person);
   }
@@ -56,6 +61,17 @@ public class JSONExporter {
       payerOut.add("name", new JsonPrimitive(src.getName()));
       payerOut.add("uuid", new JsonPrimitive(src.uuid));
       return payerOut;
+    }
+  }
+
+  /**
+   * Custom serialization for LocalDates as Java 17 does not allow Gson to automatically serialize
+   * them.
+   */
+  public static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+    @Override
+    public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString());
     }
   }
 

@@ -70,7 +70,7 @@ public class Variant implements IdentityRecord {
    */
   public String getFamilyName() {
     if (familyName == null) {
-      return familyName;
+      return seed.getFamilyName();
     }
     return familyName;
   }

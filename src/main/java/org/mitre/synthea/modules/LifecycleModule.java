@@ -129,8 +129,8 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.FIRST_NAME, firstName);
       String middleName = null;
       if (person.rand() <= MIDDLE_NAME_PROBABILITY) {
-          middleName = Names.fakeFirstName(gender, language, person);
-          attributes.put(Person.MIDDLE_NAME, middleName);
+        middleName = Names.fakeFirstName(gender, language, person);
+        attributes.put(Person.MIDDLE_NAME, middleName);
       }
       attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
