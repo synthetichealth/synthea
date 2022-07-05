@@ -8,6 +8,22 @@
 
 </script>
 
+<script>
+  var requiredFields = false;
+
+  function recaptchaFilled() {
+    requiredFields = true;
+  }
+
+  function recaptchaReset() {
+    requiredFields = false;
+  }
+
+  function verifyRecaptcha(event) {
+    return requiredFields;
+  }
+</script>
+
 <!-- Bootstrap -->
 <link rel="stylesheet" type="text/css" href="/synthea/assets/css/bootstrap.min.css">
 <!-- Bootstrap Material Design -->
@@ -44,7 +60,7 @@
 
 <!--  Public salesforce endpoint. Change to login.salesforce.com when pointing to production  -->
 
-<form action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
+<form onsubmit="verifyRecaptcha()" action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
 
 <!--  NOTE: These fields are debugging elements.                                              -->
 <!--  <input type="hidden" name="debug" value=1>                                           -->
@@ -116,7 +132,9 @@
 </select>
 </p>
 
-<div class="g-recaptcha" data-sitekey="6LfayngfAAAAAD2PExDu8cMOEk_rSYr_19z6M-Th"></div><br>
+<div class="g-recaptcha" data-sitekey="6LfayngfAAAAAD2PExDu8cMOEk_rSYr_19z6M-Th"
+  data-callback="recaptchaFilled"
+  data-expired-callback="recaptchaReset"></div><br>
 
 <input type="submit" name="submit">
 
