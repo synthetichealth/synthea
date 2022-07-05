@@ -60,7 +60,7 @@
 
 <!--  Public salesforce endpoint. Change to login.salesforce.com when pointing to production  -->
 
-<form onsubmit="verifyRecaptcha()" action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
+<form onsubmit="return verifyRecaptcha()" action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
 
 <!--  NOTE: These fields are debugging elements.                                              -->
 <!--  <input type="hidden" name="debug" value=1>                                           -->
