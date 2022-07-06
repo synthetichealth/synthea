@@ -501,7 +501,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -527,7 +527,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -553,7 +553,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -573,6 +573,10 @@
           "amount": 1,
           "frequency": 1,
           "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -596,6 +600,10 @@
           "frequency": 1,
           "period": 1,
           "unit": "days"
+        },
+        "duration": {
+          "quantity": 90,
+          "unit": "days"
         }
       },
       "chronic": true,
@@ -617,6 +625,10 @@
           "amount": 1,
           "frequency": 1,
           "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -645,7 +657,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -671,7 +683,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -691,6 +703,10 @@
           "amount": 1,
           "frequency": 1,
           "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -719,7 +735,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -745,7 +761,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -1078,7 +1094,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -1137,7 +1153,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -1184,7 +1200,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       },
@@ -1232,7 +1248,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       }
@@ -1279,7 +1295,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         }
       }

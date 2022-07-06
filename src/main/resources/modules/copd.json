@@ -1077,7 +1077,7 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 1,
+          "quantity": 90,
           "unit": "days"
         },
         "as_needed": true
