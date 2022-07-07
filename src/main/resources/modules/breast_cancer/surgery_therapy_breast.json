@@ -292,7 +292,8 @@
       ],
       "direct_transition": "Advanced Drugs IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Denosumab": {
       "type": "MedicationOrder",
@@ -305,7 +306,8 @@
       ],
       "direct_transition": "Advanced Drugs IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Pamidronate": {
       "type": "MedicationOrder",
@@ -318,7 +320,8 @@
       ],
       "direct_transition": "Pamidronate IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Breast_Surgery": {
       "type": "Simple",
@@ -649,12 +652,13 @@
         "Weakness and fracture of the ribs in rare cases",
         "Fluid collecting in the breast (seroma) ",
         " "
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "BCS Follow-Up Treatment": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -950,7 +954,7 @@
     "Start New Advanced Drug Cycle": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1046,7 +1050,8 @@
             "name": "Hypofractionated radiation therapy"
           }
         }
-      ]
+      ],
+      "reason": "breast_cancer_condition"
     },
     "Excision_Of_Sentinel_Lymph_Node": {
       "type": "Procedure",
