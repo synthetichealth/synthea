@@ -1556,7 +1556,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -1569,7 +1570,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -1582,7 +1584,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Anthracyclines": {
       "type": "Simple",

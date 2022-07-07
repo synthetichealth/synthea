@@ -116,7 +116,8 @@
           "display": "1 ML medroxyprogesterone acetate 150 MG/ML Injection"
         }
       ],
-      "direct_transition": "Initial_Injection_By_Physician"
+      "direct_transition": "Initial_Injection_By_Physician",
+      "administration": true
     },
     "Prescribe_Depo_SubQ": {
       "type": "MedicationOrder",
@@ -128,7 +129,8 @@
           "display": "1 ML medroxyPROGESTERone acetate 150 MG/ML Injection"
         }
       ],
-      "direct_transition": "Initial_Injection_By_Physician"
+      "direct_transition": "Initial_Injection_By_Physician",
+      "administration": true
     },
     "Initial_Injection_By_Physician": {
       "type": "Procedure",
