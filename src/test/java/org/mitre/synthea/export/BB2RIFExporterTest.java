@@ -64,6 +64,8 @@ public class BB2RIFExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.bfd.export", "true");
     Config.set("exporter.bfd.require_code_maps", "false");
+    Config.set("exporter.bfd.years_of_history", "10");
+    Config.set("generate.only_alive_patients", "true");
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
     BB2RIFExporter.getInstance().prepareOutputFiles();
@@ -75,10 +77,15 @@ public class BB2RIFExporterTest {
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     generatorOpts.population = numberOfPeople;
+    generatorOpts.seed = 1010;
+    RandomNumberGenerator rand = new DefaultRandomNumberGenerator(generatorOpts.seed);
+    generatorOpts.minAge = 70;
+    generatorOpts.maxAge = 80;
+    generatorOpts.ageSpecified = true;
+    generatorOpts.overflow = false;
     Generator generator = new Generator(generatorOpts, exportOpts);
-    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
-      generator.generatePerson(i, i);
+      generator.generatePerson(i, rand.randLong());
     }
     // Adding post completion exports to generate organizations and providers CSV files
     Exporter.runPostCompletionExports(generator, exportOpts);
@@ -130,7 +137,10 @@ public class BB2RIFExporterTest {
       assertTrue(outpatientFile.exists() && outpatientFile.isFile());
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
-      validateCarrierFile(carrierFile);
+      validateClaimTotals(carrierFile);
+      File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
+      assertTrue(dmeFile.exists() && dmeFile.isFile());
+      validateClaimTotals(dmeFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
@@ -140,7 +150,7 @@ public class BB2RIFExporterTest {
     }
   }
 
-  private static class CarrierClaimInfo {
+  private static class ClaimTotals {
     private final String claimID;
     private final BigDecimal claimPaymentAmount;
     private final BigDecimal claimAllowedAmount;
@@ -155,7 +165,7 @@ public class BB2RIFExporterTest {
     private BigDecimal lineProviderPaymentAmount;
     private BigDecimal lineProviderPaymentAmountTotal;
 
-    CarrierClaimInfo(LinkedHashMap<String, String> row) {
+    ClaimTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
       claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
       claimAllowedAmount = new BigDecimal(row.get("NCH_CARR_CLM_ALOWD_AMT")).setScale(2);
@@ -181,7 +191,7 @@ public class BB2RIFExporterTest {
     }
   }
 
-  private void validateCarrierFile(File file) throws IOException {
+  private void validateClaimTotals(File file) throws IOException {
     String csvData = new String(Files.readAllBytes(file.toPath()));
 
     // the BB2 exporter doesn't use the SimpleCSV class to write the data,
@@ -190,16 +200,16 @@ public class BB2RIFExporterTest {
     assertTrue(
             "Expected at least 1 row in the carrier file, found " + rows.size(),
             rows.size() >= 1);
-    Map<String, CarrierClaimInfo> claims = new HashMap<>();
+    Map<String, ClaimTotals> claims = new HashMap<>();
     rows.forEach(row -> {
       assertTrue("Expected non-zero length claim ID",
               row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
       String claimID = row.get("CLM_ID");
       if (!claims.containsKey(claimID)) {
-        CarrierClaimInfo claim = new CarrierClaimInfo(row);
+        ClaimTotals claim = new ClaimTotals(row);
         claims.put(claimID, claim);
       }
-      CarrierClaimInfo claim = claims.get(claimID);
+      ClaimTotals claim = claims.get(claimID);
       claim.addLineItems(row);
       assertTrue(claim.linePaymentAmount.equals(
               claim.lineBenePaymentAmount.add(claim.lineProviderPaymentAmount)));
