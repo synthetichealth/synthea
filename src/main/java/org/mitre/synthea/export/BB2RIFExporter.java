@@ -2286,18 +2286,28 @@ public class BB2RIFExporter {
         JsonObject dosage = medication.prescriptionDetails.getAsJsonObject("dosage");
         long amount = dosage.get("amount").getAsLong();
         long frequency = dosage.get("frequency").getAsLong();
+        long perPeriod = amount * frequency;
         long period = dosage.get("period").getAsLong();
         String units = dosage.get("unit").getAsString();
         long periodTime = Utilities.convertTime(units, period);
-
-        long perPeriod = amount * frequency;
-        amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
+        long oneDay = Utilities.convertTime("days", 1);
+        if (periodTime < oneDay) {
+          amountPerDay = ((double) perPeriod * ((double) oneDay / (double) periodTime));
+        } else if (periodTime > oneDay) {
+          amountPerDay = ((double) perPeriod / ((double) periodTime / (double) oneDay));
+        } else {
+          amountPerDay = perPeriod;
+        }
+        //amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
         if (amountPerDay == 0) {
           amountPerDay = 1;
         }
       }
 
       this.quantity = (int) (amountPerDay * days);
+      if (this.quantity < 1) {
+        this.quantity = 1;
+      }
     }
 
     private int getDays(long stopTime) {
@@ -2314,6 +2324,9 @@ public class BB2RIFExporter {
         if (durationTimeInDays < calcDays) {
           calcDays = durationTimeInDays;
         }
+      }
+      if (calcDays <= 0) {
+        calcDays = 1;
       }
       return (int) calcDays;
     }

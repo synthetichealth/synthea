@@ -756,12 +756,26 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-  private static void prescribeMedication(String med, Person person, long time, boolean chronic) {
-    Medication entry = person.record.medicationStart(time, med, chronic);
+  /**
+   * Add a prescription.
+   * @param med The medication key, corresponding to a value in the LOOKUP table.
+   * @param person The patient.
+   * @param time The time the medication was given or prescribed.
+   * @param rx If true, prescribe as a chronic medication.
+   *     If false, administer the drug immediately.
+   */
+  private static void prescribeMedication(String med, Person person, long time, boolean rx) {
+    Medication entry;
+    if (rx) {
+      entry = person.record.medicationStart(time, med, rx);
+    } else {
+      entry = person.record.medicationAdministration(time, med);
+    }
     HealthRecord.Code medicationCode = LOOKUP.get(med);
     if (! entry.containsCode(medicationCode.code, medicationCode.system)) {
       entry.codes.add(medicationCode);
     }
+    entry.claim.assignCosts();
 
     // increment number of prescriptions prescribed
     Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
