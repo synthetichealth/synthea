@@ -945,8 +945,7 @@ public abstract class State implements Cloneable, Serializable {
         // IMPORTANT: 3rd par is false to prevent modification of chronic meds
         // list as we iterate over it According to the documentation, the
         // results of modifying the array (x remove) are undefined
-        Medication medication = person.record.medicationStart(time, primaryCode,
-            false);
+        Medication medication = person.record.medicationStart(time, primaryCode, false);
 
         // Copy over the characteristics from old medication to new medication
         medication.name = chronicMedication.name;
@@ -958,6 +957,7 @@ public abstract class State implements Cloneable, Serializable {
         // person.record.medicationStart, but we are avoiding modifying the
         // chronic meds list until we are done iterating
         medication.chronic = true;
+        medication.claim.assignCosts();
 
         // increment number of prescriptions prescribed by respective hospital
         Provider medicationProvider = person.getCurrentProvider(module.name);
@@ -1304,7 +1304,7 @@ public abstract class State implements Cloneable, Serializable {
       boolean createPrescription = true;
       String primaryCode = codes.get(0).code;
       if (this.administration) {
-        medication = person.record.medicationAdministration(time, primaryCode, codes);
+        medication = person.record.medicationAdministration(time, primaryCode);
         applyFeatures(person, medication);
 
         if (!this.chronic) {
@@ -1355,6 +1355,7 @@ public abstract class State implements Cloneable, Serializable {
         }
       }
       medication.prescriptionDetails = prescription;
+      medication.claim.assignCosts();
     }
   }
 
