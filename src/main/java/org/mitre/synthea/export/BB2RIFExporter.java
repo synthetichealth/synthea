@@ -2214,6 +2214,7 @@ public class BB2RIFExporter {
       // - PLRO_AMT           : what other 3rd party insurances paid
       // - CVRD_D_PLAN_PD_AMT : what Part D paid
       // - NCVRD_PLAN_PD_AMT  : part of total not covered by Part D whatsoever
+      // OTHR_TROOP_AMT and LICS_AMT are always 0, set in field value spreadsheet
       fieldValues.put(PDE.PTNT_PAY_AMT,
           String.format("%.2f", fill.medication.claim.getPatientCost()));
       fieldValues.put(PDE.PLRO_AMT,
