@@ -71,18 +71,7 @@
           "display": "predniSONE 5 MG Oral Tablet"
         }
       ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 1,
-          "unit": "days"
-        }
-      },
+      "administration": true,
       "direct_transition": "End_Mild_Steroid"
     },
     "End_Mild_Steroid": {

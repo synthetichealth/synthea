@@ -661,7 +661,8 @@
           "display": "Sodium Chloride 9 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Antiemetic"
+      "direct_transition": "Antiemetic",
+      "administration": false
     },
     "Antiemetic": {
       "type": "MedicationOrder",
@@ -676,7 +677,8 @@
       "remarks": [
         "Based on the safety and efficacy of ondansetron, it may be used as a first-line agent for relief of nausea or vomiting for most patient populations in the ED.",
         "https://www.ncbi.nlm.nih.gov/pubmed/20022195"
-      ]
+      ],
+      "administration": true
     },
     "Morphine": {
       "type": "MedicationOrder",
@@ -687,7 +689,8 @@
           "display": "1 ML Morphine Sulfate 5 MG/ML Injection"
         }
       ],
-      "direct_transition": "Delay_for_Surgical_Appointment"
+      "direct_transition": "Delay_for_Surgical_Appointment",
+      "administration": true
     },
     "Gall_Bladder_Imaging": {
       "type": "ImagingStudy",
@@ -1190,7 +1193,8 @@
       "remarks": [
         "Assuming the patient is not allergic to Penicillin, piperacillin is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
-      ]
+      ],
+      "administration": true
     },
     "Cefotaxime": {
       "type": "MedicationOrder",
@@ -1205,7 +1209,8 @@
         "For patients allergic to penicillin, a 3rd-gen cephalosporin-based antibiotic is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
       ],
-      "direct_transition": "Cefotaxime_End"
+      "direct_transition": "Cefotaxime_End",
+      "administration": true
     },
     "Anesthesia": {
       "type": "CallSubmodule",
@@ -1310,7 +1315,8 @@
           "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
         }
       ],
-      "direct_transition": "Heparin_End"
+      "direct_transition": "Heparin_End",
+      "administration": true
     },
     "Gallstones_Removed": {
       "type": "ConditionEnd",

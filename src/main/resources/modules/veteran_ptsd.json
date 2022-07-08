@@ -515,18 +515,6 @@
       ],
       "assign_to_attribute": "SSRI",
       "reason": "ptsd",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 1,
-          "unit": "days"
-        }
-      },
       "distributed_transition": [
         {
           "transition": "Pain_Vital_4",

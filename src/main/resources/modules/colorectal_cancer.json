@@ -1448,7 +1448,8 @@
           "display": "Leucovorin 100 MG Injection"
         }
       ],
-      "direct_transition": "Chemotherapy_Drugs_II"
+      "direct_transition": "Chemotherapy_Drugs_II",
+      "administration": true
     },
     "Chemotherapy_Drugs_II": {
       "type": "MedicationOrder",
@@ -1460,7 +1461,8 @@
           "display": "10 ML oxaliplatin 5 MG/ML Injection"
         }
       ],
-      "direct_transition": "Chemotherapy_Procedure"
+      "direct_transition": "Chemotherapy_Procedure",
+      "administration": true
     },
     "Chemotherapy_Procedure": {
       "type": "Procedure",

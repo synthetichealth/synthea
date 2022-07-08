@@ -299,6 +299,54 @@ public class HealthRecord implements Serializable {
         this.prescriptionDetails = gson.fromJson(prescriptionJson, JsonObject.class);
       }
     }
+
+    /**
+     * Get the quantity of medication prescribed or administered.
+     * If "prescriptionDetails" was specified, the quantity is calculated based
+     * on the amount, frequency, period, and duration. If those details are not
+     * present, the default quantity for an administration is 1 and the default
+     * quantity for a prescription is 30 (daily prescription for one month).
+     * @return calculated quantity of medication, or 30 by default.
+     */
+    public long getQuantity() {
+      if (this.prescriptionDetails == null) {
+        if (this.administration) {
+          return 1; // a single administration
+        } else {
+          return 30; // daily prescription for one month
+        }
+      } else {
+        BigDecimal amount = BigDecimal.ONE;
+        BigDecimal frequency = BigDecimal.ONE;
+        BigDecimal period = BigDecimal.ONE;
+        String periodUOM = "days";
+        BigDecimal duration = BigDecimal.ONE;
+        String durationUOM = "months";
+
+        if (this.prescriptionDetails.has("dosage")) {
+          JsonObject dosage = this.prescriptionDetails.get("dosage").getAsJsonObject();
+          amount = dosage.get("amount").getAsBigDecimal();
+          frequency = dosage.get("frequency").getAsBigDecimal();
+          period = dosage.get("period").getAsBigDecimal();
+          periodUOM = dosage.get("unit").getAsString();
+        }
+        if (this.prescriptionDetails.has("duration")) {
+          JsonObject drtn = this.prescriptionDetails.get("duration").getAsJsonObject();
+          duration = drtn.get("quantity").getAsBigDecimal();
+          durationUOM = drtn.get("unit").getAsString();
+        }
+
+        // convert period into milliseconds
+        period = BigDecimal.valueOf(Utilities.convertTime(periodUOM, period.longValue()));
+        // convert duration into milliseconds
+        duration = BigDecimal.valueOf(Utilities.convertTime(durationUOM, duration.longValue()));
+
+        BigDecimal quantityPerPeriod = amount.multiply(frequency);
+        BigDecimal periodsPerDuration = duration.divide(period);
+        BigDecimal quantity =  quantityPerPeriod.multiply(periodsPerDuration);
+        return quantity.longValue();
+      }
+    }
   }
 
   public class Immunization extends Entry {
@@ -1163,6 +1211,7 @@ public class HealthRecord implements Serializable {
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
       medication.chronic = chronic;
+
       Encounter encounter = currentEncounter(time);
       encounter.medications.add(medication);
       /* Do not add medications to the Encounter claim.
@@ -1186,16 +1235,12 @@ public class HealthRecord implements Serializable {
    * Administer a medication without altering existing medications.
    * @param time the time of the administration.
    * @param type the type of the medication to administer.
-   * @param codes the medication codes, these are required for determining costs.
    * @return new medication of the specified type.
    */
-  public Medication medicationAdministration(long time, String type, List<Code> codes) {
+  public Medication medicationAdministration(long time, String type) {
     Medication medication = new Medication(time, type);
     medication.stop = time;
     medication.administration = true;
-    medication.mergeCodeList(codes);
-    medication.determineCost();
-    medication.claim.assignCosts();
 
     Encounter encounter = currentEncounter(time);
     encounter.medications.add(medication);
@@ -1221,9 +1266,6 @@ public class HealthRecord implements Serializable {
 
       chronicMedicationEnd(type);
 
-      // Update Costs/Claim information.
-      medication.determineCost();
-      medication.claim.assignCosts();
       present.remove(type);
     }
   }
