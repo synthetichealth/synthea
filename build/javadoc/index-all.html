@@ -1157,6 +1157,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Costs.html#Costs--">Costs()</a></span> - Constructor for class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.html" title="class in org.mitre.synthea.world.concepts">Costs</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Costs.CostData</span></a> - Class in <a href="org/mitre/synthea/world/concepts/package-summary.html">org.mitre.synthea.world.concepts</a></dt>
+<dd>
+<div class="block">Helper class to store a grouping of cost data for a single concept.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/input/FixedRecordGroup.html#count">count</a></span> - Variable in class org.mitre.synthea.input.<a href="org/mitre/synthea/input/FixedRecordGroup.html" title="class in org.mitre.synthea.input">FixedRecordGroup</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Counter.html#Counter--">Counter()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Counter.html" title="class in org.mitre.synthea.engine">State.Counter</a></dt>
@@ -2396,6 +2400,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19Vaccine.html#getDisplay--">getDisplay()</a></span> - Method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19Vaccine.html" title="class in org.mitre.synthea.modules.covid">C19Vaccine</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/BB2RIFExporter.html#getDrugOutOfPocketThreshold-int-">getDrugOutOfPocketThreshold(int)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFExporter.html" title="class in org.mitre.synthea.export">BB2RIFExporter</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html#getDuration--">getDuration()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html" title="class in org.mitre.synthea.engine">PhysiologySimulator.SimConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.Base64EncodedChart.html#getEncodedBytes--">getEncodedBytes()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.Base64EncodedChart.html" title="class in org.mitre.synthea.helpers">ChartRenderer.Base64EncodedChart</a></dt>
@@ -2745,6 +2751,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getQolsForYear-int-">getQolsForYear(int)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Returns the person's QOL at the given time.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html#getQuantity--">getQuantity()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Medication.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Medication</a></dt>
+<dd>
+<div class="block">Get the quantity of medication prescribed or administered.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.html#getRandomizer--">getRandomizer()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a></dt>
 <dd>
@@ -4078,7 +4088,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationActive-java.lang.String-">medicationActive(String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationAdministration-long-java.lang.String-java.util.List-">medicationAdministration(long, String, List&lt;HealthRecord.Code&gt;)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.html#medicationAdministration-long-java.lang.String-">medicationAdministration(long, String)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></dt>
 <dd>
 <div class="block">Administer a medication without altering existing medications.</div>
 </dd>
@@ -6268,6 +6278,10 @@
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TrendingValueGenerator.html#TrendingValueGenerator-org.mitre.synthea.world.agents.Person-double-double-double-long-long-java.lang.Double-java.lang.Double-">TrendingValueGenerator(Person, double, double, double, long, long, Double, Double)</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TrendingValueGenerator.html" title="class in org.mitre.synthea.helpers">TrendingValueGenerator</a></dt>
 <dd>
 <div class="block">A ValueGenerator that generates values which follow a trend.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Costs.CostData.html#triangularDistribution-double-double-double-double-">triangularDistribution(double, double, double, double)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts">Costs.CostData</a></dt>
+<dd>
+<div class="block">Pick a single value based on a triangular distribution.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.True.html#True--">True()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.True.html" title="class in org.mitre.synthea.engine">Logic.True</a></dt>
 <dd>&nbsp;</dd>
