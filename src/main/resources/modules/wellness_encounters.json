@@ -518,13 +518,13 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 449868002,
-        "display": "Current every day smoker"
+        "display": "Smokes tobacco daily (finding)"
       },
       "direct_transition": "SDoH Check"
     },
@@ -536,14 +536,14 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8517006,
-        "display": "Former smoker"
+        "display": "Ex-smoker (finding)"
       }
     },
     "Record_Never_Smoker": {
@@ -554,14 +554,14 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 266919005,
-        "display": "Never smoker"
+        "display": "Never smoked tobacco (finding)"
       }
     },
     "check_CBC": {
