@@ -62,12 +62,12 @@
               "refills": 1,
               "dosage": {
                 "amount": 1,
-                "frequency": 1,
+                "frequency": 2,
                 "period": 1,
                 "unit": "days"
               },
               "duration": {
-                "quantity": 1,
+                "quantity": 3,
                 "unit": "months"
               },
               "instructions": [

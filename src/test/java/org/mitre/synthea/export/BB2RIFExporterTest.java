@@ -18,9 +18,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -64,6 +66,8 @@ public class BB2RIFExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.bfd.export", "true");
     Config.set("exporter.bfd.require_code_maps", "false");
+    Config.set("exporter.bfd.years_of_history", "10");
+    Config.set("generate.only_alive_patients", "true");
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
     BB2RIFExporter.getInstance().prepareOutputFiles();
@@ -75,10 +79,15 @@ public class BB2RIFExporterTest {
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     generatorOpts.population = numberOfPeople;
+    generatorOpts.seed = 1010;
+    RandomNumberGenerator rand = new DefaultRandomNumberGenerator(generatorOpts.seed);
+    generatorOpts.minAge = 70;
+    generatorOpts.maxAge = 80;
+    generatorOpts.ageSpecified = true;
+    generatorOpts.overflow = false;
     Generator generator = new Generator(generatorOpts, exportOpts);
-    generator.options.overflow = false;
     for (int i = 0; i < numberOfPeople; i++) {
-      generator.generatePerson(i, i);
+      generator.generatePerson(i, rand.randLong());
     }
     // Adding post completion exports to generate organizations and providers CSV files
     Exporter.runPostCompletionExports(generator, exportOpts);
@@ -130,17 +139,24 @@ public class BB2RIFExporterTest {
       assertTrue(outpatientFile.exists() && outpatientFile.isFile());
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
-      validateCarrierFile(carrierFile);
+      validateClaimTotals(carrierFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
       // TODO: more meaningful testing of contents
       File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
       assertTrue(dmeFile.exists() && dmeFile.isFile());
+      validateClaimTotals(dmeFile);
+    }
+
+    if (bb2Exporter.medicationCodeMapper.hasMap()) {
+      File pdeFile = expectedExportFolder.toPath().resolve("pde.csv").toFile();
+      assertTrue(pdeFile.exists() && pdeFile.isFile());
+      validatePDETotals(pdeFile);
     }
   }
 
-  private static class CarrierClaimInfo {
+  private static class ClaimTotals {
     private final String claimID;
     private final BigDecimal claimPaymentAmount;
     private final BigDecimal claimAllowedAmount;
@@ -155,7 +171,7 @@ public class BB2RIFExporterTest {
     private BigDecimal lineProviderPaymentAmount;
     private BigDecimal lineProviderPaymentAmountTotal;
 
-    CarrierClaimInfo(LinkedHashMap<String, String> row) {
+    ClaimTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
       claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
       claimAllowedAmount = new BigDecimal(row.get("NCH_CARR_CLM_ALOWD_AMT")).setScale(2);
@@ -181,25 +197,25 @@ public class BB2RIFExporterTest {
     }
   }
 
-  private void validateCarrierFile(File file) throws IOException {
+  private void validateClaimTotals(File file) throws IOException {
     String csvData = new String(Files.readAllBytes(file.toPath()));
 
     // the BB2 exporter doesn't use the SimpleCSV class to write the data,
     // so we can use it here for a level of validation
     List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
     assertTrue(
-            "Expected at least 1 row in the carrier file, found " + rows.size(),
+            "Expected at least 1 row in the claim file, found " + rows.size(),
             rows.size() >= 1);
-    Map<String, CarrierClaimInfo> claims = new HashMap<>();
+    Map<String, ClaimTotals> claims = new HashMap<>();
     rows.forEach(row -> {
       assertTrue("Expected non-zero length claim ID",
-              row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+          row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
       String claimID = row.get("CLM_ID");
       if (!claims.containsKey(claimID)) {
-        CarrierClaimInfo claim = new CarrierClaimInfo(row);
+        ClaimTotals claim = new ClaimTotals(row);
         claims.put(claimID, claim);
       }
-      CarrierClaimInfo claim = claims.get(claimID);
+      ClaimTotals claim = claims.get(claimID);
       claim.addLineItems(row);
       assertTrue(claim.linePaymentAmount.equals(
               claim.lineBenePaymentAmount.add(claim.lineProviderPaymentAmount)));
@@ -212,6 +228,57 @@ public class BB2RIFExporterTest {
       assertTrue(claim.lineBenePaymentAmountTotal.equals(claim.claimBenePaymentAmount));
       assertTrue(claim.lineProviderPaymentAmountTotal.equals(claim.claimProviderPaymentAmount));
       assertTrue(claim.lineBeneDDblAmountTotal.equals(claim.claimBeneDDblAmount));
+    });
+  }
+
+  private static class PDETotals {
+    private final String pdeID;
+    private BigDecimal lineTotalRxAmount;
+    private BigDecimal linePatientAmount;
+    private BigDecimal lineOtherPocketAmount;
+    private BigDecimal lineSubsidizedAmount;
+    private BigDecimal lineOtherInsuranceAmount;
+    private BigDecimal linePartDCoveredAmount;
+    private BigDecimal linePartDNotCoveredAmount;
+
+    PDETotals(LinkedHashMap<String, String> row) {
+      pdeID = row.get("PDE_ID");
+      lineTotalRxAmount = new BigDecimal(row.get("TOT_RX_CST_AMT")).setScale(2);
+      linePatientAmount = new BigDecimal(row.get("PTNT_PAY_AMT")).setScale(2);
+      lineOtherPocketAmount = new BigDecimal(row.get("OTHR_TROOP_AMT")).setScale(2);
+      lineSubsidizedAmount = new BigDecimal(row.get("LICS_AMT")).setScale(2);
+      lineOtherInsuranceAmount = new BigDecimal(row.get("PLRO_AMT")).setScale(2);
+      linePartDCoveredAmount = new BigDecimal(row.get("CVRD_D_PLAN_PD_AMT")).setScale(2);
+      linePartDNotCoveredAmount = new BigDecimal(row.get("NCVRD_PLAN_PD_AMT")).setScale(2);
+    }
+
+    boolean isValid() {
+      BigDecimal sum = Claim.ZERO_CENTS;
+      sum = sum.add(linePatientAmount).add(lineOtherPocketAmount).add(lineSubsidizedAmount);
+      sum = sum.add(lineOtherInsuranceAmount).add(linePartDCoveredAmount);
+      sum = sum.add(linePartDNotCoveredAmount);
+      return (sum.compareTo(lineTotalRxAmount) == 0);
+    }
+  }
+
+  private void validatePDETotals(File file) throws IOException {
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in the claim file, found " + rows.size(),
+            rows.size() >= 1);
+    Set<String> pdeIds = new HashSet<String>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length PDE ID",
+          row.containsKey("PDE_ID") && row.get("PDE_ID").length() > 0);
+      String pdeId = row.get("PDE_ID");
+      assertFalse("PDE IDs should be unique.", pdeIds.contains(pdeId));
+      pdeIds.add(pdeId);
+      PDETotals event = new PDETotals(row);
+      assertTrue("PDE dollar amounts do not add up correctly.", event.isValid());
     });
   }
 

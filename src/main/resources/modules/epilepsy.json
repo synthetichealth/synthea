@@ -294,7 +294,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "Diazepam": {
       "type": "MedicationOrder",
@@ -317,7 +318,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "Clonazepam": {
       "type": "MedicationOrder",
@@ -340,7 +342,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "End_Seizure_Encounter": {
       "type": "EncounterEnd",

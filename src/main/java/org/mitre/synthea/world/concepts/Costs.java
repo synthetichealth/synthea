@@ -149,6 +149,11 @@ public class Costs {
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
       baseCost = costs.get(code).chooseCost(person);
+      if (entry instanceof HealthRecord.Medication) {
+        // baseCost for medications is PER UNIT, so need to multiply by quantity
+        HealthRecord.Medication rx = (HealthRecord.Medication) entry;
+        baseCost = baseCost * rx.getQuantity();
+      }
     } else {
       baseCost = defaultCost;
     }
@@ -289,7 +294,7 @@ public class Costs {
    * Selection of individual prices based on this cost data should be done using
    * the chooseCost method.
    */
-  private static class CostData {
+  protected static class CostData {
     private double min;
     private double mode;
     private double max;

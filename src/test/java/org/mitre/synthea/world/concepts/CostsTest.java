@@ -3,6 +3,9 @@ package org.mitre.synthea.world.concepts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Random;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
@@ -10,6 +13,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
+import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 public class CostsTest {
 
@@ -35,7 +39,8 @@ public class CostsTest {
     double minCost = 8.5;
     double maxCost = 400;
 
-    Entry fakeMedication = person.record.medicationStart(time, code.display, true);
+    Medication fakeMedication = person.record.medicationStart(time, code.display, true);
+    fakeMedication.administration = true; // quantity of 1
     fakeMedication.codes.add(code);
 
     double cost = Costs.determineCostOfEntry(fakeMedication, person);
@@ -102,17 +107,18 @@ public class CostsTest {
     double minCost = 816.12;
     double maxCost = 1237.68;
 
-    Entry fakeEntry = person.record.medicationStart(time, code.display, true);
-    fakeEntry.codes.add(code);
+    Medication fakeMedication = person.record.medicationStart(time, code.display, true);
+    fakeMedication.administration = true; // quantity of 1
+    fakeMedication.codes.add(code);
 
-    double cost = Costs.determineCostOfEntry(fakeEntry, person);
-    // At this point there is no state set, so there is no geogeaphic factor applied.
+    double cost = Costs.determineCostOfEntry(fakeMedication, person);
+    // At this point there is no state set, so there is no geographic factor applied.
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
     // Now test cost with adjustment factor.
     person.attributes.put(Person.STATE, "California");
     double adjFactor = 1.0227;
-    cost = Costs.determineCostOfEntry(fakeEntry, person);
+    cost = Costs.determineCostOfEntry(fakeMedication, person);
     assertTrue(cost <= (maxCost * adjFactor));
     assertTrue(cost >= (minCost * adjFactor));
 
@@ -122,7 +128,7 @@ public class CostsTest {
     minCost = 235;
     maxCost = 1690;
 
-    fakeEntry = person.record.procedure(time, code.display);
+    Entry fakeEntry = person.record.procedure(time, code.display);
     fakeEntry.codes.add(code);
 
     cost = Costs.determineCostOfEntry(fakeEntry, person);
@@ -151,5 +157,17 @@ public class CostsTest {
     double cost = Costs.determineCostOfEntry(fakeMedication, person);
     double expectedCost = Config.getAsDouble("generate.costs.default_medication_cost");
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
+  }
+
+  @Test public void testTriangularDistributionLimits() {
+    Random random = new Random();
+    double min = 0;
+    double max = 1;
+    double mode = 0.5;
+    for (int i = 0; i < 10000; i++) {
+      double value = Costs.CostData.triangularDistribution(min, max, mode, random.nextDouble());
+      assertTrue(value >= min);
+      assertTrue(value <= max);
+    }
   }
 }
