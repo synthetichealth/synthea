@@ -43,7 +43,6 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
-import org.mitre.synthea.world.concepts.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -56,6 +55,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Supply;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 
 /**
  * Researchers have requested a simple table-based format that could easily be
@@ -1629,9 +1629,9 @@ public class CSVExporter {
 
     BigDecimal remainder = claimEntry.cost;
     if (mainEntry) {
-      if (claimEntry.copay.compareTo(Claim.ZERO_CENTS) > 0) {
+      if (claimEntry.copayPaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
         // COPAY
-        remainder = remainder.subtract(claimEntry.copay);
+        remainder = remainder.subtract(claimEntry.copayPaidByPatient);
         if (remainder.compareTo(Claim.ZERO_CENTS) < 0) {
           // If the cost of the copay is greater than the medication cost.
           remainder = Claim.ZERO_CENTS;
@@ -1640,7 +1640,7 @@ public class CSVExporter {
             claim, claimId, chargeId, claimEntry, rand);
         t.type = ClaimTransactionType.PAYMENT;
         t.method = PaymentMethod.COPAY;
-        t.payment = claimEntry.copay;
+        t.payment = claimEntry.copayPaidByPatient;
         t.unpaid = remainder;
         t.departmentId = departmentId;
         t.diagnosisCodes = diagnosisCodes;

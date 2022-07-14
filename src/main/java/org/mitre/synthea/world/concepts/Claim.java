@@ -2,17 +2,18 @@ package org.mitre.synthea.world.concepts;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 
 public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;
@@ -25,88 +26,94 @@ public class Claim implements Serializable {
     /** total cost of the entry. */
     public BigDecimal cost = ZERO_CENTS;
     /** copay paid by patient. */
-    public BigDecimal copay = ZERO_CENTS;
+    public BigDecimal copayPaidByPatient = ZERO_CENTS;
     /** deductible paid by patient. */
-    public BigDecimal paidTowardDeductible = ZERO_CENTS;
-    /** amount paid by deductible. */
-    public BigDecimal paidByDeductible = ZERO_CENTS;
+    public BigDecimal deductiblePaidByPatient = ZERO_CENTS;
     /** amount the charge was decreased by payer adjustment. */
     public BigDecimal adjustment = ZERO_CENTS;
     /** coinsurance paid by payer. */
     public BigDecimal coinsurancePaidByPayer = ZERO_CENTS;
-    /** coinsurance paid by payer. */
-    public BigDecimal coinsurancePaidByPatient = ZERO_CENTS;
     /** otherwise paid by payer. */
     public BigDecimal paidByPayer = ZERO_CENTS;
     /** otherwise paid by secondary payer. */
     public BigDecimal paidBySecondaryPayer = ZERO_CENTS;
     /** otherwise paid by patient out of pocket. */
-    public BigDecimal paidByPatient = ZERO_CENTS;
+    public BigDecimal patientOutOfPocket = ZERO_CENTS;
 
     public ClaimEntry(Entry entry) {
       this.entry = entry;
     }
 
-    void assignCosts(PlanRecord planRecord) {
+    /**
+     * Assign costs for this ClaimEntry.
+     * @param planRecord  The planrecord to check patient costs from.
+     */
+    private void assignCosts(PlanRecord planRecord) {
       this.cost = this.entry.getCost();
+      BigDecimal remainingBalance = this.cost;
 
       if (!plan.coversService(this.entry)) {
         plan.incrementUncoveredEntries(this.entry);
-        // Plan does not cover care
-        this.paidByPatient = this.cost;
+        // Payer does not cover care
+        this.patientOutOfPocket = remainingBalance;
         return;
       }
 
       plan.incrementCoveredEntries(this.entry);
-      // Check if the plan has a cost adjustment
-      BigDecimal adjustment = plan.adjustClaim(this, person);
-      final BigDecimal adjustedCost = cost.subtract(adjustment);
-      // Check if the patient has remaining deductible (if the plan is deductible-based)
-      if (planRecord.remainingDeductible.compareTo(BigDecimal.ONE) == -1
-          && planRecord.isDedctiblePlan()) {
-        this.paidByDeductible = adjustedCost;
-        this.paidByPatient = BigDecimal.ZERO;
-        this.paidByPayer = this.paidByDeductible;
-        return;
-      }
       // Apply copay to Encounters and Medication claims only
-      if (plan.isCopayBased() && ((this.entry instanceof HealthRecord.Encounter)
-          || (this.entry instanceof HealthRecord.Medication))) {
-        BigDecimal copay = plan.determineCopay(this.entry);
-        this.copay = copay;
-        this.paidByPatient = paidByPatient.add(copay);
-        this.paidByPayer = paidByPayer.add(adjustedCost.subtract(copay));
-        planRecord.remainingDeductible = planRecord.remainingDeductible.subtract(copay);
-        if (planRecord.isDedctiblePlan()) {
-          this.paidTowardDeductible = this.paidTowardDeductible.add(this.paidByPatient);
+      if ((this.entry instanceof HealthRecord.Encounter)
+          || (this.entry instanceof HealthRecord.Medication)) {
+        this.copayPaidByPatient = plan.determineCopay(this.entry);
+        if (this.copayPaidByPatient.compareTo(this.cost) > 0) {
+          this.copayPaidByPatient = this.cost;
         }
-        return;
+        remainingBalance = remainingBalance.subtract(this.copayPaidByPatient);
       }
-      // Check if the patient has coinsurance to pay.
-      BigDecimal patientCoinsurance = plan.getPatientCoinsurance();
-      if (patientCoinsurance.compareTo(BigDecimal.ZERO) == 1) {
-        BigDecimal payerCoinsurance = plan.getPayerCoinsurance();
-        BigDecimal coinsurancePatientToPay = adjustedCost.multiply(patientCoinsurance);
-        // If the person has secondary insurance, they cover the coinusurance.
-        if (!planRecord.secondaryPlan.getPayer().isNoInsurance()) {
-          this.paidBySecondaryPayer = coinsurancePatientToPay;
-          coinsurancePatientToPay = BigDecimal.ZERO;
+      // Check if the patient has remaining deductible
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0 && planRecord.remainingDeductible
+              .compareTo(Claim.ZERO_CENTS) > 0) {
+        if (planRecord.remainingDeductible.compareTo(remainingBalance) >= 0) {
+          this.deductiblePaidByPatient = remainingBalance;
+        } else {
+          this.deductiblePaidByPatient = planRecord.remainingDeductible;
         }
-        paidByPatient = paidByPatient.add(coinsurancePatientToPay);
-        coinsurancePaidByPatient = coinsurancePaidByPatient.add(coinsurancePatientToPay);
-        BigDecimal coinsurancePayerToPay = adjustedCost.multiply(payerCoinsurance);
-        paidByPayer = paidByPayer.add(coinsurancePayerToPay);
-        this.coinsurancePaidByPayer = coinsurancePayerToPay;
-        planRecord.remainingDeductible
-            = planRecord.remainingDeductible.subtract(coinsurancePatientToPay);
-        if (planRecord.isDedctiblePlan()) {
-          this.paidTowardDeductible = this.paidTowardDeductible.add(this.paidByPatient);
-        }
-        return;
+        remainingBalance = remainingBalance.subtract(this.deductiblePaidByPatient);
+        planRecord.remainingDeductible = planRecord.remainingDeductible
+            .subtract(this.deductiblePaidByPatient);
       }
-      // Since the patient has not been covered up to this point, they incur the total cost.
-      this.paidByPatient = this.paidByPatient.add(adjustedCost);
-      planRecord.remainingDeductible = planRecord.remainingDeductible.subtract(this.paidByPatient);
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
+        // Check if the payer has an adjustment
+        BigDecimal adjustment = plan.adjustClaim(this, person);
+        remainingBalance = remainingBalance.subtract(adjustment);
+      }
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
+        // Check if the patient has coinsurance
+        BigDecimal patientCoinsurance = plan.getPatientCoinsurance();
+        if (patientCoinsurance.compareTo(Claim.ZERO_CENTS) > 0) {
+          BigDecimal payerCoinsurance = BigDecimal.ONE.subtract(plan.getPatientCoinsurance());
+          // Payer covers some
+          this.coinsurancePaidByPayer = payerCoinsurance.multiply(remainingBalance)
+                  .setScale(2, RoundingMode.HALF_EVEN);
+          remainingBalance = remainingBalance.subtract(this.coinsurancePaidByPayer);
+        } else {
+          // Payer covers all
+          this.paidByPayer = remainingBalance;
+          remainingBalance = remainingBalance.subtract(this.paidByPayer);
+        }
+      }
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
+        // If secondary insurance, payer covers remainder, not patient.
+        if (!secondaryPlan.isNoInsurance()) {
+          this.paidBySecondaryPayer = remainingBalance;
+          remainingBalance = remainingBalance.subtract(this.paidBySecondaryPayer);
+        }
+      }
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
+        // Patient amount
+        this.patientOutOfPocket = remainingBalance;
+        remainingBalance = remainingBalance.subtract(this.patientOutOfPocket);
+      }
+
     }
 
     /**
@@ -115,13 +122,14 @@ public class Claim implements Serializable {
      */
     public void addCosts(ClaimEntry other) {
       this.cost = this.cost.add(other.cost);
-      this.copay = this.copay.add(other.copay);
-      this.paidByDeductible = this.paidByDeductible.add(other.paidByDeductible);
+      this.copayPaidByPatient = this.copayPaidByPatient.add(other.copayPaidByPatient);
+      this.deductiblePaidByPatient
+          = this.deductiblePaidByPatient.add(other.deductiblePaidByPatient);
       this.adjustment = this.adjustment.add(other.adjustment);
       this.coinsurancePaidByPayer = this.coinsurancePaidByPayer.add(other.coinsurancePaidByPayer);
       this.paidByPayer = this.paidByPayer.add(other.paidByPayer);
       this.paidBySecondaryPayer = this.paidBySecondaryPayer.add(other.paidBySecondaryPayer);
-      this.paidByPatient = this.paidByPatient.add(other.paidByPatient);
+      this.patientOutOfPocket = this.patientOutOfPocket.add(other.patientOutOfPocket);
     }
 
     /**
@@ -130,10 +138,12 @@ public class Claim implements Serializable {
      * @return the amount of coinsurance paid
      */
     public BigDecimal getCoinsurancePaid() {
-      if (this.paidBySecondaryPayer.compareTo(Claim.ZERO_CENTS) == 1) {
+      if (this.paidBySecondaryPayer.compareTo(Claim.ZERO_CENTS) > 0) {
         return this.paidBySecondaryPayer;
+      } else if (this.coinsurancePaidByPayer.compareTo(Claim.ZERO_CENTS) > 0) {
+        return this.patientOutOfPocket;
       }
-      return this.coinsurancePaidByPatient;
+      return Claim.ZERO_CENTS;
     }
   }
 
@@ -172,6 +182,7 @@ public class Claim implements Serializable {
       if (this.plan == null) {
         this.plan = PayerManager.getNoInsurancePlan();
       }
+      this.secondaryPlan = PayerManager.getNoInsurancePlan();
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);
@@ -186,7 +197,7 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Assign costs between the payer and patient.
+   * Assign costs between the payer and patient for all ClaimEntries in this claim.
    */
   public void assignCosts() {
     PlanRecord planRecord = person.coverage.getPlanRecordAtTime(mainEntry.entry.start);
@@ -205,12 +216,12 @@ public class Claim implements Serializable {
       totals.addCosts(item);
     }
 
-    planRecord.incrementExpenses(totals.paidByPatient);
-    planRecord.incrementCoverage(totals.paidByPayer);
-    planRecord.incrementCoverage(totals.paidBySecondaryPayer);
-    planRecord.plan.addCoveredCost(totals.paidByPayer);
-    planRecord.plan.addUncoveredCost(totals.paidByPatient);
-    planRecord.secondaryPlan.addCoveredCost(totals.paidBySecondaryPayer);
+    BigDecimal patientExpenses = totals.copayPaidByPatient.add(totals.deductiblePaidByPatient)
+        .add(totals.patientOutOfPocket);
+    planRecord.incrementPatientExpenses(patientExpenses);
+    BigDecimal payerCoverage = totals.coinsurancePaidByPayer.add(totals.paidByPayer);
+    planRecord.incrementPrimaryCoverage(payerCoverage);
+    planRecord.incrementSecondaryCoverage(totals.paidBySecondaryPayer);
   }
 
   /**
@@ -224,15 +235,15 @@ public class Claim implements Serializable {
    * Returns the total cost that the Payer covered for this claim.
    */
   public BigDecimal getCoveredCost() {
-    return this.totals.paidByPayer;
+    return this.totals.coinsurancePaidByPayer.add(this.totals.paidByPayer);
   }
 
   public BigDecimal getDeductiblePaid() {
-    return this.totals.paidTowardDeductible;
+    return this.totals.deductiblePaidByPatient;
   }
 
   public BigDecimal getCopayPaid() {
-    return this.totals.copay;
+    return this.totals.copayPaidByPatient;
   }
 
   /**
@@ -241,17 +252,19 @@ public class Claim implements Serializable {
    * @return the amount of coinsurance paid
    */
   public BigDecimal getCoinsurancePaid() {
-    BigDecimal totalCoinsurancePaid = mainEntry.getCoinsurancePaid();
-    for (ClaimEntry entry : this.items) {
-      totalCoinsurancePaid = totalCoinsurancePaid.add(entry.getCoinsurancePaid());
+    if (this.totals.paidBySecondaryPayer.compareTo(Claim.ZERO_CENTS) > 0) {
+      return this.totals.paidBySecondaryPayer;
+    } else if (this.totals.coinsurancePaidByPayer.compareTo(Claim.ZERO_CENTS) > 0) {
+      return this.totals.patientOutOfPocket;
     }
-    return totalCoinsurancePaid;
+    return Claim.ZERO_CENTS;
   }
 
   /**
    * Returns the total cost to the patient, including copay, coinsurance, and deductible.
    */
   public BigDecimal getPatientCost() {
-    return this.totals.paidByPatient;
+    return this.totals.patientOutOfPocket.add(this.totals.copayPaidByPatient)
+        .add(this.totals.deductiblePaidByPatient);
   }
 }

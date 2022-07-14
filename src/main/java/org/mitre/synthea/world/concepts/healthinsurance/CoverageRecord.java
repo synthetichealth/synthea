@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.concepts;
+package org.mitre.synthea.world.concepts.healthinsurance;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.Claim;
 
 /**
  * A class that manages a history of coverage.
@@ -69,12 +69,19 @@ public class CoverageRecord implements Serializable {
       return sb.toString();
     }
 
-    public void incrementExpenses(BigDecimal expenses) {
+    public void incrementPatientExpenses(BigDecimal expenses) {
       this.healthcareExpenses = this.healthcareExpenses.add(expenses);
+      this.plan.addUncoveredCost(expenses);
     }
 
-    public void incrementCoverage(BigDecimal coverage) {
+    public void incrementPrimaryCoverage(BigDecimal coverage) {
       this.coveredExpenses = this.coveredExpenses.add(coverage);
+      this.plan.addCoveredCost(coverage);
+    }
+
+    public void incrementSecondaryCoverage(BigDecimal coverage) {
+      this.coveredExpenses = this.coveredExpenses.add(coverage);
+      this.secondaryPlan.addCoveredCost(coverage);
     }
 
     public BigDecimal getHealthcareExpenses() {

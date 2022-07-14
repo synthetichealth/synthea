@@ -364,7 +364,7 @@ public class PayerTest {
     // They should have not have Medicaid in this first year.
     assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
     // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
-    person.coverage.getPlanRecordAtTime(time).incrementExpenses(BigDecimal.valueOf(19699));
+    person.coverage.getPlanRecordAtTime(time).incrementPatientExpenses(BigDecimal.valueOf(19699));
     // Now process their insurance and they should switch to Medicaid.
     time += Utilities.convertTime("years", 1.001);
     healthInsuranceModule.process(person, time);
@@ -549,13 +549,16 @@ public class PayerTest {
     BigDecimal expectedTotalCost = fakeEncounter.getCost();
     person.record.encounterEnd(0L, EncounterType.WELLNESS);
     // Check that the deductibles are accurate.
-    assertTrue(plan.getDeductible().compareTo(fakeEncounter.claim.totals.paidByDeductible) == 0.0);
+    assertTrue(plan.getDeductible()
+        .compareTo(fakeEncounter.claim.totals.deductiblePaidByPatient) == 0.0);
     // check that totals match
     assertEquals(expectedTotalCost, fakeEncounter.claim.totals.cost);
     BigDecimal resultCost = fakeEncounter.claim.totals.paidByPayer
-        .add(fakeEncounter.claim.totals.paidByPatient);
+        .add(fakeEncounter.claim.totals.patientOutOfPocket)
+        .add(fakeEncounter.claim.totals.coinsurancePaidByPayer)
+        .add(fakeEncounter.claim.totals.copayPaidByPatient)
+        .add(fakeEncounter.claim.totals.deductiblePaidByPatient);
     assertEquals(expectedTotalCost, resultCost);
-    assertEquals(fakeEncounter.claim.totals.paidByPatient, fakeEncounter.claim.totals.copay);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
     assertEquals(expectedTotalCost, testPrivatePayer1.getAmountCovered()
         .add(fakeEncounter.claim.getPatientCost()));
@@ -563,7 +566,7 @@ public class PayerTest {
     assertEquals(expectedTotalCost,
         testPrivatePayer1.getAmountCovered().add(testPrivatePayer1.getAmountUncovered()));
     // The total coverage by the payer should equal the person's covered costs.
-    assertTrue(person.coverage.getTotalCoverage().equals(testPrivatePayer1.getAmountCovered()));
+    assertEquals(person.coverage.getTotalCoverage(), (testPrivatePayer1.getAmountCovered()));
   }
 
   @Test
@@ -664,13 +667,19 @@ public class PayerTest {
     BigDecimal coverage = encounter.claim.totals.coinsurancePaidByPayer.add(
         encounter.claim.totals.paidByPayer);
     assertEquals(person.coverage.getTotalCoverage(), coverage);
-    BigDecimal result = encounter.claim.totals.paidByPayer.add(
-        encounter.claim.totals.paidByPatient);
-    assertTrue(encounter.getCost().compareTo(result) == 0);
+    BigDecimal resultCost = encounter.claim.totals.paidByPayer
+        .add(encounter.claim.totals.patientOutOfPocket)
+        .add(encounter.claim.totals.coinsurancePaidByPayer)
+        .add(encounter.claim.totals.copayPaidByPatient)
+        .add(encounter.claim.totals.deductiblePaidByPatient);
+    assertTrue("Test Failed: Encounter cost was " + encounter.getCost() + " and the result was "
+        + resultCost + ". Expected equality.", encounter.getCost().compareTo(resultCost) == 0);
     // Person's expenses should equal the copay.
-    BigDecimal expenses = encounter.claim.totals.paidByPatient;
+    BigDecimal expenses = encounter.claim.totals.patientOutOfPocket
+        .add(encounter.claim.totals.deductiblePaidByPatient)
+        .add(encounter.claim.totals.copayPaidByPatient);
     assertEquals(person.coverage.getTotalHealthcareExpenses(), expenses);
-    assertEquals(encounter.claim.totals.copay, expenses);
+    assertEquals(encounter.claim.totals.copayPaidByPatient, expenses);
   }
 
   @Test
@@ -688,8 +697,8 @@ public class PayerTest {
     // Person's coverage should equal $0.0.
     assertTrue(person.coverage.getTotalCoverage().equals(Claim.ZERO_CENTS));
     // Person's expenses should equal the total cost of the encounter.
-    // TODO: should this be getTotalHealthcareExpenses()?
-    assertTrue(person.coverage.getTotalExpenses().equals(encounter.getCost()));
+    assertEquals(person.coverage.getTotalExpenses(), encounter.getCost());
+    assertEquals(person.coverage.getTotalHealthcareExpenses(), encounter.getCost());
   }
 
   @Test
@@ -829,9 +838,10 @@ public class PayerTest {
     BigDecimal copayPaid = fakeEncounter.claim.getCopayPaid();
 
     assertEquals(BigDecimal.ONE.subtract(plan.getPatientCoinsurance()), plan.getPayerCoinsurance());
-    assertEquals("The amount paid should be equal to the plan's coinsurance rate plus the copay."
-        + " The payer is " + plan.getPayer().getName() + ".",
-        expectedPaid, coinsurancePaid.add(copayPaid));
+    assertTrue("The amount paid should be equal to the plan's coinsurance rate plus the copay."
+        + " The payer is " + plan.getPayer().getName() + ". Expected " + expectedPaid + " but was "
+        + coinsurancePaid.add(copayPaid) + ".",
+        expectedPaid.compareTo(coinsurancePaid.add(copayPaid)) == 0);
   }
 
   @Test

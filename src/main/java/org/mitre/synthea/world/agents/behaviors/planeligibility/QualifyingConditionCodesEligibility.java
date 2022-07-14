@@ -53,7 +53,7 @@ public class QualifyingConditionCodesEligibility implements IPlanEligibility {
   private static List<String> buildQualifyingConditionsFile(String fileName) {
     String resource = null;
     try {
-      resource = Utilities.readResource(fileName);
+      resource = Utilities.readResourceAndStripBOM(fileName);
     } catch (IOException e) {
       e.printStackTrace();
     }

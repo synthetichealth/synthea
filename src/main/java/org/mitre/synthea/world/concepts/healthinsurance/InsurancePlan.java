@@ -178,7 +178,7 @@ public class InsurancePlan implements Serializable {
    * Adds a covered cost to this plan.
    * @param coveredCosts  The cost covered.
    */
-  public void addCoveredCost(BigDecimal coveredCosts) {
+  protected void addCoveredCost(BigDecimal coveredCosts) {
     this.payer.addCoveredCost(coveredCosts);
   }
 
@@ -186,7 +186,7 @@ public class InsurancePlan implements Serializable {
    * Adds an uncovered cost to this plan.
    * @param uncoveredCosts  The cost covered.
    */
-  public void addUncoveredCost(BigDecimal uncoveredCosts) {
+  protected void addUncoveredCost(BigDecimal uncoveredCosts) {
     this.payer.addUncoveredCost(uncoveredCosts);
   }
 

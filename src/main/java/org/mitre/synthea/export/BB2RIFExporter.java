@@ -59,9 +59,7 @@ import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -141,6 +139,7 @@ public class BB2RIFExporter {
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
   private Map<String, RandomCollection<String>> externalCodes;
+  private Map<Integer, Double> pdeOutOfPocketThresholds;
 
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -196,6 +195,17 @@ public class BB2RIFExporter {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
       // and if these do throw ioexceptions there's nothing we can do anyway
+      throw new RuntimeException(e);
+    }
+    pdeOutOfPocketThresholds = new HashMap<Integer, Double>();
+    try {
+      String csv = Utilities.readResourceAndStripBOM("costs/pde_oop_thresholds.csv");
+      for (LinkedHashMap<String, String> row : SimpleCSV.parse(csv)) {
+        int year = Integer.parseInt(row.get("YEAR"));
+        double threshold = Double.parseDouble(row.get("THRESHOLD"));
+        pdeOutOfPocketThresholds.put(year, threshold);
+      }
+    } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -895,7 +905,7 @@ public class BB2RIFExporter {
       }
       boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
       boolean isVirtualOutpatient = isVirtual
-          && (ProviderType.HOSPITAL == encounter.provider.type);
+              && (ProviderType.HOSPITAL == encounter.provider.type);
       boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
       boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
       boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
@@ -934,8 +944,8 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1088,8 +1098,8 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
 
@@ -1161,8 +1171,8 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1345,17 +1355,17 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
-          if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -1435,8 +1445,8 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
@@ -1554,7 +1564,7 @@ public class BB2RIFExporter {
           }
           fieldValues.put(CARRIER.LINE_NDC_CD, ndcCode);
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.paidByDeductible));
+                  String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.coinsurancePaidByPayer));
 
@@ -2144,6 +2154,7 @@ public class BB2RIFExporter {
     HashMap<PDE, String> fieldValues = new HashMap<>();
     BigDecimal costs = Claim.ZERO_CENTS;
     int costYear = 0;
+    String catastrophicCode = "";
     for (PrescriptionFill fill: prescriptionFills) {
 
       long pdeId = BB2RIFExporter.pdeId.getAndDecrement();
@@ -2178,24 +2189,45 @@ public class BB2RIFExporter {
       if (year != costYear) {
         costYear = year;
         costs = Claim.ZERO_CENTS;
+        catastrophicCode = ""; // Blank = Attachment point not met
       }
+      BigDecimal threshold = getDrugOutOfPocketThreshold(year);
       costs = costs.add(fill.medication.claim.getPatientCost());
-      if (costs.compareTo(BigDecimal.valueOf(4550)) <= 0) {
+      if (costs.compareTo(threshold) < 0) {
         fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
         fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
+        fieldValues.put(PDE.CTSTRPHC_CVRG_CD, catastrophicCode);
       } else {
-        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, "4550.00");
+        if (catastrophicCode.equals("")) {
+          catastrophicCode = "A"; // A = Attachment point met on this event
+        } else if (catastrophicCode.equals("A")) {
+          catastrophicCode  = "C"; // C = Above attachment point
+        }
+        fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", threshold));
         fieldValues.put(PDE.GDC_ABV_OOPT_AMT,
-                String.format("%.2f", costs.subtract(BigDecimal.valueOf(4550))));
+                String.format("%.2f", costs.subtract(threshold)));
+        fieldValues.put(PDE.CTSTRPHC_CVRG_CD, catastrophicCode);
       }
+      fieldValues.put(PDE.TOT_RX_CST_AMT,
+          String.format("%.2f", fill.medication.claim.getTotalClaimCost()));
+      // Under normal circumstances, the following fields summed together,
+      // should equal TOT_RX_CST_AMT:
+      // - PTNT_PAY_AMT       : what the patient paid
+      // - OTHR_TROOP_AMT     : what 3rd party paid out of pocket
+      // - LICS_AMT           : low income subsidized payment
+      // - PLRO_AMT           : what other 3rd party insurances paid
+      // - CVRD_D_PLAN_PD_AMT : what Part D paid
+      // - NCVRD_PLAN_PD_AMT  : part of total not covered by Part D whatsoever
+      // OTHR_TROOP_AMT and LICS_AMT are always 0, set in field value spreadsheet
       fieldValues.put(PDE.PTNT_PAY_AMT,
-              String.format("%.2f", fill.medication.claim.getPatientCost()));
+          String.format("%.2f", fill.medication.claim.getPatientCost()));
+      fieldValues.put(PDE.PLRO_AMT,
+          String.format("%.2f", fill.medication.claim.totals.paidBySecondaryPayer));
       fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
           String.format("%.2f", fill.medication.claim.getCoveredCost()));
       fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
-          String.format("%.2f", fill.medication.claim.getPatientCost()));
-      fieldValues.put(PDE.TOT_RX_CST_AMT,
-          String.format("%.2f", fill.medication.claim.getTotalClaimCost()));
+          String.format("%.2f", fill.medication.claim.totals.adjustment));
+
       fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
       fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(fill.time));
       // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
@@ -2210,6 +2242,11 @@ public class BB2RIFExporter {
       claimCount++;
     }
     return claimCount;
+  }
+
+  protected BigDecimal getDrugOutOfPocketThreshold(int year) {
+    double threshold = pdeOutOfPocketThresholds.getOrDefault(year, 4550.0);
+    return BigDecimal.valueOf(threshold);
   }
 
   private static class PrescriptionFill implements Comparable<PrescriptionFill> {
@@ -2254,18 +2291,28 @@ public class BB2RIFExporter {
         JsonObject dosage = medication.prescriptionDetails.getAsJsonObject("dosage");
         long amount = dosage.get("amount").getAsLong();
         long frequency = dosage.get("frequency").getAsLong();
+        long perPeriod = amount * frequency;
         long period = dosage.get("period").getAsLong();
         String units = dosage.get("unit").getAsString();
         long periodTime = Utilities.convertTime(units, period);
-
-        long perPeriod = amount * frequency;
-        amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
+        long oneDay = Utilities.convertTime("days", 1);
+        if (periodTime < oneDay) {
+          amountPerDay = ((double) perPeriod * ((double) oneDay / (double) periodTime));
+        } else if (periodTime > oneDay) {
+          amountPerDay = ((double) perPeriod / ((double) periodTime / (double) oneDay));
+        } else {
+          amountPerDay = perPeriod;
+        }
+        //amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
         if (amountPerDay == 0) {
           amountPerDay = 1;
         }
       }
 
       this.quantity = (int) (amountPerDay * days);
+      if (this.quantity < 1) {
+        this.quantity = 1;
+      }
     }
 
     private int getDays(long stopTime) {
@@ -2282,6 +2329,9 @@ public class BB2RIFExporter {
         if (durationTimeInDays < calcDays) {
           calcDays = durationTimeInDays;
         }
+      }
+      if (calcDays <= 0) {
+        calcDays = 1;
       }
       return (int) calcDays;
     }
@@ -2398,17 +2448,18 @@ public class BB2RIFExporter {
         }
       }
       fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-          String.format("%.2f", subTotals.paidByDeductible));
-      fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
-          String.format("%.2f", subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer)));
-      fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
-          String.format("%.2f", subTotals.cost.subtract(subTotals.adjustment)));
+          String.format("%.2f", subTotals.deductiblePaidByPatient));
       fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
           String.format("%.2f", subTotals.cost));
+      BigDecimal paidAmount = subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer);
+      fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
+          String.format("%.2f", paidAmount));
+      fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
+          String.format("%.2f", paidAmount));
       fieldValues.put(DME.NCH_CLM_PRVDR_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer)));
+          String.format("%.2f", paidAmount));
       fieldValues.put(DME.CLM_PMT_AMT,
-          String.format("%.2f", subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer)));
+          String.format("%.2f", paidAmount));
 
       synchronized (rifWriters.getOrCreateWriter(DME.class)) {
         int lineNum = 1;
@@ -2444,22 +2495,22 @@ public class BB2RIFExporter {
                           DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
           fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.paidByDeductible));
+                  String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(DME.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.getCoinsurancePaid()));
-          fieldValues.put(DME.LINE_BENE_PMT_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
+          // LINE_BENE_PMT_AMT and NCH_CLM_BENE_PMT_AMT are always 0, set in field value spreadsheet
+          BigDecimal providerAmount = lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer);
           fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+              String.format("%.2f", providerAmount));
+          fieldValues.put(DME.LINE_NCH_PMT_AMT,
+              String.format("%.2f", providerAmount));
           fieldValues.put(DME.LINE_SBMTD_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
+          BigDecimal allowedAmount = lineItem.cost.subtract(lineItem.adjustment);
           fieldValues.put(DME.LINE_ALOWD_CHRG_AMT,
-              String.format("%.2f", lineItem.cost.subtract(lineItem.adjustment)));
+              String.format("%.2f", allowedAmount));
           fieldValues.put(DME.LINE_PRMRY_ALOWD_CHRG_AMT,
-              String.format("%.2f", lineItem.cost.subtract(lineItem.adjustment)));
-          fieldValues.put(DME.LINE_NCH_PMT_AMT,
-              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+              String.format("%.2f", allowedAmount));
 
           // set the line number and write out field values
           fieldValues.put(DME.LINE_NUM, Integer.toString(lineNum++));
@@ -2526,8 +2577,8 @@ public class BB2RIFExporter {
 
       fieldValues.put(HHA.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -2639,17 +2690,17 @@ public class BB2RIFExporter {
           fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
-          if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -2726,8 +2777,8 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HOSPICE.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -2850,17 +2901,17 @@ public class BB2RIFExporter {
           fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
-          if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -2940,8 +2991,8 @@ public class BB2RIFExporter {
 
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan.getPayer()
-          == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -3118,17 +3169,17 @@ public class BB2RIFExporter {
           fieldValues.put(SNF.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(SNF.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.paidTowardDeductible)
-              .add(lineItem.paidByPatient)));
-          if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.paidTowardDeductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.paidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {

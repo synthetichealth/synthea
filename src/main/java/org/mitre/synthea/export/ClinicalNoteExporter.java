@@ -105,10 +105,10 @@ public class ClinicalNoteExporter {
     }
 
     InsurancePlan plan = person.coverage.getPlanAtTime(encounter.start);
-    Payer payer = plan.getPayer();
-    if (payer == null) {
+    if (plan == null || plan.getPayer() == null) {
       person.attributes.put("ehr_insurance", "unknown insurance coverage");
     } else {
+      Payer payer = plan.getPayer();
       person.attributes.put("ehr_insurance", payer.getName());
     }
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
