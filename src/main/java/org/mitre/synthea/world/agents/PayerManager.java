@@ -312,7 +312,7 @@ public class PayerManager {
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE, Integer.MAX_VALUE);
     PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, 0,
-        Utilities.getYear(System.currentTimeMillis()) + 1,PlanEligibilityFinder.GENERIC);
+        Utilities.getYear(System.currentTimeMillis()) + 1, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 

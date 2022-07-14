@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -17,9 +17,12 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.geography.Location;
 
 public class HealthRecordTest {
 
+  InsurancePlan noInsurance;
   long time;
 
   /**
@@ -27,7 +30,8 @@ public class HealthRecordTest {
    */
   @Before
   public void setup() {
-    PayerManager.loadNoInsurance();
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    noInsurance = PayerManager.getNoInsurancePlan();
     time = 0L;
   }
 
@@ -90,7 +94,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationAdministrationQuantity() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanAtTime(time, noInsurance);
     Medication med = person.record.medicationStart(time, "foobar", false);
     med.administration = true;
     long quantity = med.getQuantity();
@@ -100,7 +105,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationPrescriptionQuantity() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanAtTime(time, noInsurance);
     Medication med = person.record.medicationStart(time, "foobar", true);
     long quantity = med.getQuantity();
     Assert.assertEquals(30, quantity);
@@ -109,7 +115,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationDetailedQuantity() throws Exception {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanAtTime(time, noInsurance);
     person.setProvider(EncounterType.WELLNESS, new Provider());
 
     Module module = TestHelper.getFixture("medication_order.json");
