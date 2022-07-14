@@ -422,13 +422,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * Get a vital sign value.
    */
   public Double getVitalSign(VitalSign vitalSign, long time) {
-    ValueGenerator valueGenerator = null;
-    try {
-      valueGenerator = vitalSigns.get(vitalSign);
-    } catch (NullPointerException e) {
-      System.out.println(vitalSign);
-      e.printStackTrace();
-    }
+    ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
     if (valueGenerator == null) {
       throw new NullPointerException(
           "Vital sign '" + vitalSign + "' not set. Valid vital signs: " + vitalSigns.keySet());
