@@ -31,11 +31,6 @@ public class EntityManagerTest {
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @AfterClass
-  public static void initialize() throws Exception {
-    PayerManager.clear();
-  }
-
   @Test
   public void fromJSON() throws IOException {
     String rawJSON = Utilities.readResource("identity/test_records.json");
@@ -78,6 +73,7 @@ public class EntityManagerTest {
     Generator.DEFAULT_STATE = "North Carolina";
     String baseDirectory = tempFolder.newFolder().toString();
     Config.set("exporter.baseDirectory", baseDirectory);
+    PayerManager.clear();
     Generator generator = new Generator(0);
     generator.options.overflow = false;
     URL url = Resources.getResource("identity/test_records.json");

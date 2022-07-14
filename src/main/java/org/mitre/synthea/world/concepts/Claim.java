@@ -12,8 +12,8 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;
