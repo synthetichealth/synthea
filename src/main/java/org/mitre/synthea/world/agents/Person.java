@@ -27,6 +27,7 @@ import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
+import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -85,7 +86,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";
   public static final String IDENTIFIER_SITE = "identifier_site";
-  public static final String IDENTIFIER_RECORD_ID = "identifier_record_id";
+  public static final String IDENTIFIER_VARIANT_ID = "identifier_variant_id";
+  public static final String IDENTIFIER_SEED_ID = "identifier_seed_id";
   public static final String CONTACT_FAMILY_NAME = "contact_family_name";
   public static final String CONTACT_GIVEN_NAME = "contact_given_name";
   public static final String CONTACT_EMAIL = "contact_email";
@@ -96,11 +98,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String BMI_PERCENTILE = "bmi_percentile";
   public static final String GROWTH_TRAJECTORY = "growth_trajectory";
   public static final String CURRENT_WEIGHT_LENGTH_PERCENTILE = "current_weight_length_percentile";
-  public static final String RECORD_GROUP = "record_group";
+  public static final String HOUSEHOLD = "household";
   public static final String LINK_ID = "link_id";
   public static final String VETERAN = "veteran";
   public static final String BLINDNESS = "blindness";
   private static final String LAST_MONTH_PAID = "last_month_paid";
+  public static final String HOUSEHOLD_ROLE = "household_role";
+  public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";
+  public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
+  public static final String ENTITY = "ENTITY";
 
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
@@ -153,19 +159,25 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     onsetConditionRecord = new ExpressedConditionRecord(this);
     /* Chronic Medications which will be renewed at each Wellness Encounter */
     chronicMedications = new ConcurrentHashMap<String, HealthRecord.Medication>();
-    hasMultipleRecords =
-        Config.getAsBoolean("exporter.split_records", false);
+    hasMultipleRecords = Config.getAsBoolean("exporter.split_records", false);
     if (hasMultipleRecords) {
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
-    defaultRecord = new HealthRecord(this);
-    lossOfCareEnabled =
-        Config.getAsBoolean("generate.payers.loss_of_care", false);
-    if (lossOfCareEnabled) {
-      lossOfCareRecord = new HealthRecord(this);
-    }
-    record = defaultRecord;
+    this.initializeDefaultHealthRecords();
     coverage = new CoverageRecord(this);
+  }
+
+  /**
+   * Initializes person's default health records. May need to be called if attributes
+   * change due to fixed demographics.
+   */
+  public void initializeDefaultHealthRecords() {
+    this.defaultRecord = new HealthRecord(this);
+    this.record = this.defaultRecord;
+    this.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    if (this.lossOfCareEnabled) {
+      this.lossOfCareRecord = new HealthRecord(this);
+    }
   }
 
   /**
@@ -532,7 +544,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param provider the provider of the encounter
    * @param time the current time (To determine person's current income and payer)
    */
-  private synchronized HealthRecord getHealthRecord(Provider provider, long time) {
+  public synchronized HealthRecord getHealthRecord(Provider provider, long time) {
 
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
@@ -544,9 +556,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
       String key = provider.getResourceID();
+      // Check If the given provider does not have a health record for this person.
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {
+          // If the active healthrecord does not have a provider, assign it as the active record.
           record = this.record;
         } else {
           record = new HealthRecord(this);
@@ -631,6 +645,21 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     String key = PREFERREDYPROVIDER + type;
     if (!attributes.containsKey(key)) {
       setProvider(type, time);
+    } else {
+      Entity entity = (Entity) attributes.get(ENTITY);
+      // check to see if this is a fixed identity
+      if (entity != null) {
+        Provider provider = (Provider) attributes.get(key);
+        HealthRecord healthRecord = getHealthRecord(provider, time);
+        long lastEncounterTime = healthRecord.lastEncounterTime();
+        // check to see if the provider is valid for this see range
+        if (lastEncounterTime != Long.MIN_VALUE
+            && !entity.seedAt(time).getPeriod().contains(lastEncounterTime)) {
+          // The provider is not in the seed range. Force finding a new provider.
+          System.out.println("Move reset for " + type);
+          setProvider(type, time);
+        }
+      }
     }
     return (Provider) attributes.get(key);
   }

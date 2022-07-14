@@ -43,6 +43,7 @@ public class Names {
     } else {
       choices = (List<String>) names.get("english." + gender);
     }
+
     // pick a random item from the list
     String name = choices.get(person.randInt(choices.size()));
 

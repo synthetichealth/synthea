@@ -13,10 +13,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -114,6 +119,10 @@ public class Utilities {
     Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     calendar.setTimeInMillis(time);
     return calendar.get(Calendar.MONTH) + 1;
+  }
+
+  public static long localDateToTimestamp(LocalDate date) {
+    return date.atStartOfDay().toInstant(OffsetDateTime.now().getOffset()).toEpochMilli();
   }
 
   /**
@@ -541,5 +550,25 @@ public class Utilities {
         .filter(Files::isRegularFile)
         .filter(p -> p.toString().endsWith(".json"))
         .forEach(p -> action.accept(p));
+  }
+
+  /**
+   * Iterate through a Map and remove any entries where there is a key, but the value is null.
+   * This method modifies the input Map.
+   * @param input The Map to clean
+   * @return a null-free Map
+   */
+  public static Map cleanMap(Map input) {
+    List keysToRemove = new ArrayList();
+    Set keys = input.keySet();
+    keys.forEach(key -> {
+      if (input.get(key) == null) {
+        keysToRemove.add(key);
+      }
+    });
+    keysToRemove.forEach(key -> {
+      input.remove(key);
+    });
+    return input;
   }
 }

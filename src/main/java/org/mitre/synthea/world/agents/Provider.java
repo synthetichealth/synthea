@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -287,6 +288,26 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
+   * Find a provider that does not already have a healthrecord for the given person.
+   */
+  public static Provider findServiceNewProvider(Person person, EncounterType service, long time,
+      List<String> takenIds) {
+    double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
+    double degrees = 0.125;
+    List<Provider> options = null;
+    Provider provider = null;
+    while (degrees <= maxDistance) {
+      options = findNewProvidersByLocation(person, degrees, takenIds);
+      provider = providerFinder.find(options, person, service, time);
+      if (provider != null && !takenIds.contains(provider.uuid)) {
+        return provider;
+      }
+      degrees *= 2.0;
+    }
+    return null;
+  }
+
+  /**
    * Find a service around a given point.
    * @param person The patient who requires the service.
    * @param distance in degrees
@@ -297,6 +318,18 @@ public class Provider implements QuadTreeElement, Serializable {
     List<Provider> providers = new ArrayList<Provider>();
     for (QuadTreeElement item : results) {
       providers.add((Provider) item);
+    }
+    return providers;
+  }
+
+  private static List<Provider> findNewProvidersByLocation(Person person, double distance,
+      List<String> takenIds) {
+    List<QuadTreeElement> results = providerMap.query(person, distance);
+    List<Provider> providers = new ArrayList<Provider>();
+    for (QuadTreeElement item : results) {
+      if (!takenIds.contains(((Provider) item).uuid)) {
+        providers.add((Provider) item);
+      }
     }
     return providers;
   }
@@ -446,8 +479,6 @@ public class Provider implements QuadTreeElement, Serializable {
         }
 
         parsed.location = location;
-        // String city = parsed.city;
-        // String address = parsed.address;
 
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {

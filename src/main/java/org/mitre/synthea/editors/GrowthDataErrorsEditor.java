@@ -34,7 +34,7 @@ public class GrowthDataErrorsEditor implements HealthRecordEditor {
 
   public GrowthDataErrorsEditor() { }
 
-  public static int MAX_AGE = 20;
+  public static int MAX_AGE = 65;
   public static double POUNDS_PER_KG = 2.205;
   public static double INCHES_PER_CM = 0.394;
 
