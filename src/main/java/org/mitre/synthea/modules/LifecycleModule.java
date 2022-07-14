@@ -18,8 +18,6 @@ import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.FixedRecordGroup;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.BMI;
@@ -122,49 +120,41 @@ public final class LifecycleModule extends Module {
     Map<String, Object> attributes = person.attributes;
 
     attributes.put(Person.ID, person.randUUID().toString());
-    attributes.put(Person.BIRTHDATE, time);
-    String gender = (String) attributes.get(Person.GENDER);
     String language = (String) attributes.get(Person.FIRST_LANGUAGE);
-    String firstName = Names.fakeFirstName(gender, language, person);
-    attributes.put(Person.FIRST_NAME, firstName);
-    String middleName = null;
-    if (person.rand() <= MIDDLE_NAME_PROBABILITY) {
-      middleName = Names.fakeFirstName(gender, language, person);
-      attributes.put(Person.MIDDLE_NAME, middleName);
-    }
-    String lastName = Names.fakeLastName(language, person);
-    attributes.put(Person.LAST_NAME, lastName);
-    if (middleName != null) {
-      attributes.put(Person.NAME, firstName + " " + middleName + " " + lastName);
-    } else {
+    String gender = (String) attributes.get(Person.GENDER);
+    if (attributes.get(Person.ENTITY) == null) {
+      attributes.put(Person.BIRTHDATE, time);
+      String firstName = Names.fakeFirstName(gender, language, person);
+      String lastName = Names.fakeLastName(language, person);
+      attributes.put(Person.FIRST_NAME, firstName);
+      String middleName = null;
+      if (person.rand() <= MIDDLE_NAME_PROBABILITY) {
+        middleName = Names.fakeFirstName(gender, language, person);
+        attributes.put(Person.MIDDLE_NAME, middleName);
+      }
+      attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
+
+      String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
+          + ((person.randInt(9999 - 1000 + 1) + 1000));
+      attributes.put(Person.TELECOM, phoneNumber);
+
+      boolean hasStreetAddress2 = person.rand() < 0.5;
+      attributes.put(Person.ADDRESS, Names.fakeAddress(hasStreetAddress2, person));
     }
+
     String motherFirstName = Names.fakeFirstName("F", language, person);
     String motherLastName = Names.fakeLastName(language, person);
     attributes.put(Person.NAME_MOTHER, motherFirstName + " " + motherLastName);
 
     String fatherFirstName = Names.fakeFirstName("M", language, person);
     // this is anglocentric where the baby gets the father's last name
-    attributes.put(Person.NAME_FATHER, fatherFirstName + " " + lastName);
+    attributes.put(Person.NAME_FATHER, fatherFirstName + " " + attributes.get(Person.LAST_NAME));
 
     double prevalenceOfTwins =
         (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
-    }
-
-    String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
-        + ((person.randInt(9999 - 1000 + 1) + 1000));
-    attributes.put(Person.TELECOM, phoneNumber);
-
-    boolean hasStreetAddress2 = person.rand() < 0.5;
-    attributes.put(Person.ADDRESS, Names.fakeAddress(hasStreetAddress2, person));
-
-    // If using FixedRecords, overwrite the person's attributes with the FixedRecord attributes.
-    if (person.attributes.get(Person.RECORD_GROUP) != null) {
-      FixedRecordGroup recordGroup = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-      FixedRecord fr = recordGroup.records.get(0);
-      attributes.putAll(fr.getFixedRecordAttributes());
     }
 
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
@@ -450,6 +440,18 @@ public final class LifecycleModule extends Module {
           double geriatricWeightLoss = person.rand(GERIATRIC_WEIGHT_LOSS_RANGE);
           weight -= geriatricWeightLoss;
         }
+      }
+      // If the person needs to gain weight that's been triggered by a module:
+      Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
+      if (kgToGain != null && ((double) kgToGain) > 0.0) {
+        // We'll reuse the same adult weight gain used for standard adult weight gain.
+        // This will result in about double weight gained per year until target kilograms to gain
+        // has been reached.
+        double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
+        weight += adultWeightGain;
+        // Update the weight they have yet to gain.
+        double remainingKgToGain = ((double) kgToGain) - adultWeightGain;
+        person.attributes.put(Person.KILOGRAMS_TO_GAIN, remainingKgToGain);
       }
     }
     return weight;

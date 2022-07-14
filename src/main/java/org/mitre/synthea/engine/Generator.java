@@ -1,18 +1,15 @@
 package org.mitre.synthea.engine;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,8 +26,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.StringUtils;
-
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
@@ -39,8 +34,9 @@ import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.FixedRecordGroup;
+import org.mitre.synthea.identity.Entity;
+import org.mitre.synthea.identity.EntityManager;
+import org.mitre.synthea.identity.Seed;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -54,7 +50,8 @@ import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
 
 /**
- * Generator creates a population by running the generic modules each timestep per Person.
+ * Generator creates a population by running the generic modules each timestep
+ * per Person.
  */
 public class Generator {
 
@@ -81,7 +78,7 @@ public class Generator {
   public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
-  private List<FixedRecordGroup> recordGroups;
+  public static EntityManager entityManager;
   public final int threadPoolSize;
 
   /**
@@ -138,8 +135,7 @@ public class Generator {
     /** File used to store a population snapshot. */
     public File updatedPopulationSnapshotPath;
     /** Time period in days to evolve the population loaded from initialPopulationSnapshotPath. A
-     *  value of -1 will evolve the population to the current system time.
-     */
+     *  value of -1 will evolve the population to the current system time. */
     public int daysToTravelForward = -1;
     /** Path to a module defining which patients should be kept and exported. */
     public File keepPatientsModulePath;
@@ -153,7 +149,7 @@ public class Generator {
   }
 
   /**
-   * Create a Generator, with the given population size.
+   * Create a Generator, with the given population size and seed.
    * All other settings are left as defaults.
    *
    * @param population Target population size
@@ -165,8 +161,8 @@ public class Generator {
   }
 
   /**
-   * Create a Generator, with the given population size and seed.
-   * All other settings are left as defaults.
+   * Create a Generator, with the given population size and seed. All other
+   * settings are left as defaults.
    *
    * @param population Target population size
    * @param seed Seed used for randomness
@@ -181,6 +177,7 @@ public class Generator {
 
   /**
    * Create a Generator, with the given options.
+   *
    * @param o Desired configuration options
    */
   public Generator(GeneratorOptions o) {
@@ -189,6 +186,7 @@ public class Generator {
 
   /**
    * Create a Generator, with the given options.
+   *
    * @param o Desired configuration options
    * @param ero Desired exporter options
    */
@@ -296,8 +294,7 @@ public class Generator {
         "Population: %d\nSeed: %d\nProvider Seed:%d\nReference Time: %d\nLocation: %s",
         options.population, options.seed, options.clinicianSeed, options.referenceTime,
         locationName));
-    System.out.println(String.format("Min Age: %d\nMax Age: %d",
-        options.minAge, options.maxAge));
+    System.out.println(String.format("Min Age: %d\nMax Age: %d", options.minAge, options.maxAge));
     if (options.gender != null) {
       System.out.println(String.format("Gender: %s", options.gender));
     }
@@ -316,13 +313,12 @@ public class Generator {
 
   /**
    * Extracts a list of names from the supplied list of modules.
+   *
    * @param modules A collection of modules
    * @return A list of module names.
    */
   private List<String> getModuleNames(List<Module> modules) {
-    return modules.stream()
-            .map(m -> m.name)
-            .collect(Collectors.toList());
+    return modules.stream().map(m -> m.name).collect(Collectors.toList());
   }
 
   /**
@@ -332,11 +328,22 @@ public class Generator {
 
     // Import the fixed patient demographics records file, if a file path is given.
     if (this.options.fixedRecordPath != null) {
-      importFixedPatientDemographicsFile();
-      // Since we're using FixedRecords, split records must be true.
-      Config.set("exporter.split_records", "true");
-      // We'll be using the FixedRecord names, so no numbers should be appended to them.
-      Config.set("generate.append_numbers_to_person_names", "false");
+      try {
+        // Import demographics
+        String rawJSON = new String(Files.readAllBytes(
+            Paths.get(this.options.fixedRecordPath.getPath())));
+        entityManager = EntityManager.fromJSON(rawJSON);
+        // Update the population size based on number of people.
+        this.options.population = entityManager.getPopulationSize();
+        // We'll be using the FixedRecord names, so no numbers should be appended to them.
+        Config.set("generate.append_numbers_to_person_names", "false");
+        // Since we're using FixedRecords, split records must be true.
+        Config.set("exporter.split_records", "true");
+      } catch (IOException ioe) {
+        throw new RuntimeException("Couldn't open the fixed patient demographics "
+            + "records file", ioe);
+      }
+
     }
 
     ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
@@ -356,7 +363,7 @@ public class Generator {
         // default is to run until current system time.
         if (options.daysToTravelForward > 0) {
           stop = initialPopulation.get(0).lastUpdated
-                  + Utilities.convertTime("days", options.daysToTravelForward);
+              + Utilities.convertTime("days", options.daysToTravelForward);
         }
         for (int i = 0; i < initialPopulation.size(); i++) {
           final int index = i;
@@ -409,32 +416,6 @@ public class Generator {
   }
 
   /**
-   * Imports the fixed demographics records file when using fixed patient
-   * demographics.
-   *
-   * @return A list of the groups of records imported.
-   */
-  public List<FixedRecordGroup> importFixedPatientDemographicsFile() {
-    Gson gson = new Gson();
-    Type listType = new TypeToken<List<FixedRecordGroup>>() {}.getType();
-    try {
-      System.out.println("Loading fixed patient demographic records file: "
-          + this.options.fixedRecordPath);
-      this.recordGroups = gson.fromJson(new FileReader(this.options.fixedRecordPath), listType);
-      int linkIdStart = 100000;
-      for (int i = 0; i < this.recordGroups.size(); i++) {
-        this.recordGroups.get(i).linkId = linkIdStart + i;
-      }
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException("Couldn't open the fixed patient demographics records file", e);
-    }
-    // Update the population size to reflect the number of patients in the fixed records file.
-    this.options.population = this.recordGroups.size();
-    // Return the record groups.
-    return recordGroups;
-  }
-
-  /**
    * Generate a completely random Person. The returned person will be alive at the end of the
    * simulation. This means that if in the course of the simulation the person dies, a new person
    * will be started to replace them.
@@ -471,10 +452,15 @@ public class Generator {
     try {
       int tryNumber = 0; // Number of tries to create these demographics
 
-      Map<String, Object> demoAttributes = randomDemographics(person);
-      if (this.recordGroups != null) {
-        // Pick fixed demographics if a fixed demographics record file is used.
-        demoAttributes = pickFixedDemographics(index, person);
+      Map<String, Object> demoAttributes;
+
+      if (entityManager != null) {
+        // Get the fixed demographic attributes for the person.
+        Entity entity = entityManager.getRecords().get(index);
+        demoAttributes = pickFixedDemographics(entity, person);
+      } else {
+        // Standard random demographics.
+        demoAttributes = randomDemographics(person);
       }
 
       boolean patientMeetsCriteria;
@@ -545,6 +531,7 @@ public class Generator {
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
         Exporter.export(person, finishTime, exporterRuntimeOptions);
+
       } while (!patientMeetsCriteria);
       //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
@@ -618,12 +605,6 @@ public class Generator {
     int providerCount = person.providerCount();
     int providerMinimum = 1;
 
-    if (this.recordGroups != null) {
-      // If fixed records are used, there must be 1 provider for each of this person's records.
-      FixedRecordGroup recordGroup = this.recordGroups.get(index);
-      providerMinimum = recordGroup.count;
-    }
-
     check.insufficientProviders = providerCount < providerMinimum;
     // if provider count less than provider min new patient is needed
 
@@ -651,27 +632,32 @@ public class Generator {
   }
 
   /**
-   * Create a new person and update them until until Generator.stop or
+   * Create a new person and update them until Generator.stop or
    * they die, whichever comes sooner.
    * @param personSeed Seed for the random person
    * @param demoAttributes Demographic attributes for the new person, {@link #randomDemographics}
    * @return the new person
    */
   public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
+
+    // Initialize person.
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
     person.attributes.putAll(demoAttributes);
-    person.attributes.put(Person.LOCATION, location);
+    person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
     location.setSocialDeterminants(person);
 
     LifecycleModule.birth(person, person.lastUpdated);
+
     person.currentModules = Module.getModules(modulePredicate);
 
+    // Enter the loop of updating the person's life.
     updatePerson(person);
 
     return person;
   }
+
 
   /**
    * Update a previously created person from the time they were last updated until Generator.stop or
@@ -684,7 +670,27 @@ public class Generator {
 
     long time = person.lastUpdated;
     while (person.alive(time) && time < stop) {
+
+      // If fixed demographics are in use then check to update the person's current fixed record.
+      Entity entity = (Entity) person.attributes.get(Person.ENTITY);
+      if (entity != null) {
+        Seed currentSeed = entity.seedAt(time);
+        // Check to see if the seed has changed
+        if (! currentSeed.getSeedId().equals(person.attributes.get(Person.IDENTIFIER_SEED_ID))) {
+          person.attributes.putAll(currentSeed.demographicAttributesForPerson());
+          String state = currentSeed.getState();
+          if (state.length() == 2) {
+            state = Location.getStateName(state);
+          }
+          Location newLocation = new Location(state, currentSeed.getCity());
+          newLocation.assignPoint(person, currentSeed.getCity());
+
+        }
+      }
+
+      // Process Health Insurance.
       healthInsuranceModule.process(person, time + timestep);
+      // Process encounters.
       encounterModule.process(person, time);
 
       Iterator<Module> iter = person.currentModules.iterator();
@@ -707,11 +713,10 @@ public class Generator {
   /**
    * Create a set of random demographics.
    * @param random The random number generator to use.
-   * @return demographics
    */
   public Map<String, Object> randomDemographics(RandomNumberGenerator random) {
     Demographics city = location.randomCity(random);
-    Map<String, Object> demoAttributes = pickDemographics(random, city);
+    Map<String, Object> demoAttributes = this.pickDemographics(random, city);
     return demoAttributes;
   }
 
@@ -828,35 +833,30 @@ public class Generator {
   }
 
   /**
-   * Pick a person's demographics based on their FixedRecords.
-   * @param index The index to use.
+   * Pick a person's demographics based on their seed fixed record.
+   * @param entity The record group to pull demographics from.
    * @param random Random object.
    */
-  private Map<String, Object> pickFixedDemographics(int index, RandomNumberGenerator random) {
+  public Map<String, Object> pickFixedDemographics(Entity entity, RandomNumberGenerator random) {
+    Seed firstSeed = entity.getSeeds().get(0);
+    String state = firstSeed.getState();
+    if (state.length() == 2) {
+      state = Location.getStateName(state);
+    }
+    this.location = new Location(
+      state,
+      firstSeed.getCity());
 
-    // Get the first FixedRecord from the current RecordGroup
-    FixedRecordGroup recordGroup = this.recordGroups.get(index);
-    FixedRecord fr = recordGroup.records.get(0);
-    // Get the city from the location in the fixed record.
-    this.location = new Location(fr.state, recordGroup.getSafeCity());
     Demographics city = this.location.randomCity(random);
     // Pick the rest of the demographics based on the location of the fixed record.
-    Map<String, Object> demoAttributes = pickDemographics(random, city);
+    Map<String, Object> demoAttributes = this.pickDemographics(random, city);
 
-    // Overwrite the person's attributes with the FixedRecord.
-    demoAttributes.put(Person.BIRTHDATE, recordGroup.getValidBirthdate());
+    // Overwrite the person's attributes with the seed of the fixed record group.
+    demoAttributes.putAll(firstSeed.demographicAttributesForPerson());
+    demoAttributes.put(Person.ENTITY, entity);
     demoAttributes.put(Person.BIRTH_CITY, city.city);
-    String g = fr.gender;
-    if (g.equalsIgnoreCase("None") || StringUtils.isBlank(g)) {
-      g = "F";
-    }
-    demoAttributes.put(Person.GENDER, g);
+    demoAttributes.put(Person.BIRTHDATE, firstSeed.birthdateTimestamp());
 
-    // Give the person their FixedRecordGroup of FixedRecords.
-    demoAttributes.put(Person.RECORD_GROUP, recordGroup);
-    demoAttributes.put(Person.LINK_ID, recordGroup.linkId);
-
-    // Return the Demographic Attributes of the current person.
     return demoAttributes;
   }
 

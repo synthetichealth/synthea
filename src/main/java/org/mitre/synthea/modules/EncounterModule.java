@@ -138,8 +138,11 @@ public final class EncounterModule extends Module {
       String specialty, Code code) {
     // what year is it?
     int year = Utilities.getYear(time);
+
     // create the encounter
     Encounter encounter = person.encounterStart(time, type);
+
+
     if (code != null) {
       encounter.codes.add(code);
     }

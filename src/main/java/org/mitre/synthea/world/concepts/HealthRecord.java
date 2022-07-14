@@ -740,6 +740,8 @@ public class HealthRecord implements Serializable {
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
+  /** The person's demographics at the time of record creation. */
+  public Map<String, Object> demographicsAtRecordCreation;
 
   /**
    * Construct a health record for the supplied person.
@@ -749,6 +751,9 @@ public class HealthRecord implements Serializable {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      this.demographicsAtRecordCreation = new HashMap<String,Object>(person.attributes);
+    }
   }
 
   /**
@@ -1181,6 +1186,10 @@ public class HealthRecord implements Serializable {
         return;
       }
     }
+  }
+
+  public long lastEncounterTime() {
+    return encounters.stream().mapToLong(e -> e.stop).max().orElse(Long.MIN_VALUE);
   }
 
   /**

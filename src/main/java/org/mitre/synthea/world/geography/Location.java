@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -70,7 +71,8 @@ public class Location implements Serializable {
 
       if (city != null
           && demographics.values().stream().noneMatch(d -> d.city.equalsIgnoreCase(city))) {
-        throw new Exception("The city " + city + " was not found in the demographics file.");
+        throw new Exception("The city " + city
+            + " was not found in the demographics file for state " + state + ".");
       }
 
       long runningPopulation = 0;

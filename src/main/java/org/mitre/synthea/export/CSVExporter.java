@@ -291,7 +291,7 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE");
+        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
         + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
@@ -442,6 +442,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
+
     String personID = patient(person, time);
 
     for (Encounter encounter : person.record.encounters) {
@@ -601,7 +602,7 @@ public class CSVExporter {
         Person.CITY,
         Person.STATE,
         "county",
-        Person.ZIP
+        Person.ZIP,
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
@@ -611,7 +612,9 @@ public class CSVExporter {
     // HEALTHCARE_EXPENSES
     s.append(person.coverage.getTotalExpenses()).append(',');
     // HEALTHCARE_COVERAGE
-    s.append(person.coverage.getTotalCoverage());
+    s.append(person.coverage.getTotalCoverage()).append(',');
+    // INCOME
+    s.append(person.attributes.get(Person.INCOME));
     // QALYS
     // s.append(person.attributes.get("most-recent-qaly")).append(',');
     // DALYS
@@ -676,10 +679,14 @@ public class CSVExporter {
       s.append(',');
     }
     // CODE
-    Code coding = encounter.codes.get(0);
+    Code coding = null;
+
+    coding = encounter.codes.get(0);
+    // CODE
     s.append(coding.code).append(',');
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
+
     // BASE_ENCOUNTER_COST
     s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
     // TOTAL_COST
