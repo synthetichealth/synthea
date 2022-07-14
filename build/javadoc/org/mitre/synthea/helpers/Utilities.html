@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -166,6 +166,12 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static java.util.Map</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#cleanMap-java.util.Map-">cleanMap</a></span>(java.util.Map&nbsp;input)</code>
+<div class="block">Iterate through a Map and remove any entries where there is a key, but the value is null.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-java.lang.Boolean-java.lang.Boolean-java.lang.String-">compare</a></span>(java.lang.Boolean&nbsp;lhs,
        java.lang.Boolean&nbsp;rhs,
@@ -173,7 +179,7 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Booleans.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-java.lang.Double-java.lang.Double-java.lang.String-">compare</a></span>(java.lang.Double&nbsp;lhs,
        java.lang.Double&nbsp;rhs,
@@ -181,7 +187,7 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Doubles.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-org.mitre.synthea.world.concepts.HealthRecord.Code-org.mitre.synthea.world.concepts.HealthRecord.Code-java.lang.String-">compare</a></span>(<a href="../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;lhs,
        <a href="../../../../org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&nbsp;rhs,
@@ -189,7 +195,7 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Codes.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-java.lang.Integer-java.lang.Integer-java.lang.String-">compare</a></span>(java.lang.Integer&nbsp;lhs,
        java.lang.Integer&nbsp;rhs,
@@ -197,7 +203,7 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Integers.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-java.lang.Object-java.lang.Object-java.lang.String-">compare</a></span>(java.lang.Object&nbsp;lhs,
        java.lang.Object&nbsp;rhs,
@@ -205,7 +211,7 @@ extends java.lang.Object</pre>
 <div class="block">Compare two objects.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#compare-java.lang.String-java.lang.String-java.lang.String-">compare</a></span>(java.lang.String&nbsp;lhs,
        java.lang.String&nbsp;rhs,
@@ -213,20 +219,20 @@ extends java.lang.Object</pre>
 <div class="block">Compare two Strings.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertCalendarYearsToTime-int-">convertCalendarYearsToTime</a></span>(int&nbsp;years)</code>
 <div class="block">Convert a calendar year (e.g.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertRiskToTimestep-double-double-">convertRiskToTimestep</a></span>(double&nbsp;risk,
                      double&nbsp;originalPeriodInMS)</code>
 <div class="block">Calculates 1 - (1-risk)^(currTimeStepInMS/originalPeriodInMS).</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertRiskToTimestep-double-double-double-">convertRiskToTimestep</a></span>(double&nbsp;risk,
                      double&nbsp;originalPeriodInMS,
@@ -234,51 +240,55 @@ extends java.lang.Object</pre>
 <div class="block">Calculates 1 - (1-risk)^(newTimeStepInMS/originalPeriodInMS).</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertTime-java.lang.String-double-">convertTime</a></span>(java.lang.String&nbsp;units,
            double&nbsp;value)</code>
 <div class="block">Convert a quantity of time in a specified units into milliseconds.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#convertTime-java.lang.String-long-">convertTime</a></span>(java.lang.String&nbsp;units,
            long&nbsp;value)</code>
 <div class="block">Convert a quantity of time in a specified units into milliseconds.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static com.google.gson.Gson</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getGson--">getGson</a></span>()</code>
 <div class="block">Get a Gson object, preconfigured to load the GMF modules into classes.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getMonth-long-">getMonth</a></span>(long&nbsp;time)</code>
 <div class="block">Get the month of a Unix timestamp.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#getYear-long-">getYear</a></span>(long&nbsp;time)</code>
 <div class="block">Get the year of a Unix timestamp.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#localDateToTimestamp-java.time.LocalDate-">localDateToTimestamp</a></span>(java.time.LocalDate&nbsp;date)</code>&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static org.apache.commons.lang3.Range&lt;java.lang.Long&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#parseDateRange-java.lang.String-">parseDateRange</a></span>(java.lang.String&nbsp;range)</code>
 <div class="block">Parse a range of Synthea timestamps (milliseconds since the epoch) from a String.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#primitive-com.google.gson.JsonPrimitive-">primitive</a></span>(com.google.gson.JsonPrimitive&nbsp;p)</code>
 <div class="block">Converts a JsonPrimitive into a primitive Boolean, Double, or String.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#randomDicomUid-org.mitre.synthea.helpers.RandomNumberGenerator-long-int-int-">randomDicomUid</a></span>(<a href="../../../../org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random,
               long&nbsp;time,
@@ -287,32 +297,32 @@ extends java.lang.Object</pre>
 <div class="block">Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResource-java.lang.String-">readResource</a></span>(java.lang.String&nbsp;filename)</code>
 <div class="block">Read the entire contents of a file in resources into a String.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#readResourceAndStripBOM-java.lang.String-">readResourceAndStripBOM</a></span>(java.lang.String&nbsp;filename)</code>
 <div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#strToObject-java.lang.Class-java.lang.String-">strToObject</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.util.function.BiConsumer-">walkAllModules</a></span>(java.util.function.BiConsumer&lt;java.nio.file.Path,java.nio.file.Path&gt;&nbsp;action)</code>
 <div class="block">Walk the directory structure of the modules, and apply the given function for every module.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/mitre/synthea/helpers/Utilities.html#walkAllModules-java.nio.file.Path-java.util.function.Consumer-">walkAllModules</a></span>(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code>
@@ -442,6 +452,15 @@ extends java.lang.Object</pre>
 <h4>getMonth</h4>
 <pre>public static&nbsp;int&nbsp;getMonth(long&nbsp;time)</pre>
 <div class="block">Get the month of a Unix timestamp.</div>
+</li>
+</ul>
+<a name="localDateToTimestamp-java.time.LocalDate-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>localDateToTimestamp</h4>
+<pre>public static&nbsp;long&nbsp;localDateToTimestamp(java.time.LocalDate&nbsp;date)</pre>
 </li>
 </ul>
 <a name="primitive-com.google.gson.JsonPrimitive-">
@@ -710,7 +729,7 @@ extends java.lang.Object</pre>
 <a name="walkAllModules-java.nio.file.Path-java.util.function.Consumer-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>walkAllModules</h4>
 <pre>public static&nbsp;void&nbsp;walkAllModules(java.nio.file.Path&nbsp;modulesPath,
@@ -724,6 +743,23 @@ extends java.lang.Object</pre>
         (currentModulePath) -&gt; {...}</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
+</dl>
+</li>
+</ul>
+<a name="cleanMap-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>cleanMap</h4>
+<pre>public static&nbsp;java.util.Map&nbsp;cleanMap(java.util.Map&nbsp;input)</pre>
+<div class="block">Iterate through a Map and remove any entries where there is a key, but the value is null.
+ This method modifies the input Map.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>input</code> - The Map to clean</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a null-free Map</dd>
 </dl>
 </li>
 </ul>

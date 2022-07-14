@@ -4,7 +4,7 @@ org.mitre.synthea.engine
 org.mitre.synthea.export
 org.mitre.synthea.helpers
 org.mitre.synthea.helpers.physiology
-org.mitre.synthea.input
+org.mitre.synthea.identity
 org.mitre.synthea.modules
 org.mitre.synthea.modules.covid
 org.mitre.synthea.world.agents

@@ -76,7 +76,7 @@
 <li><a href="org/mitre/synthea/export/package-tree.html">org.mitre.synthea.export</a>, </li>
 <li><a href="org/mitre/synthea/helpers/package-tree.html">org.mitre.synthea.helpers</a>, </li>
 <li><a href="org/mitre/synthea/helpers/physiology/package-tree.html">org.mitre.synthea.helpers.physiology</a>, </li>
-<li><a href="org/mitre/synthea/input/package-tree.html">org.mitre.synthea.input</a>, </li>
+<li><a href="org/mitre/synthea/identity/package-tree.html">org.mitre.synthea.identity</a>, </li>
 <li><a href="org/mitre/synthea/modules/package-tree.html">org.mitre.synthea.modules</a>, </li>
 <li><a href="org/mitre/synthea/modules/covid/package-tree.html">org.mitre.synthea.modules.covid</a>, </li>
 <li><a href="org/mitre/synthea/world/agents/package-tree.html">org.mitre.synthea.world.agents</a>, </li>
@@ -149,6 +149,9 @@
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">DefaultRandomNumberGenerator</span></a> (implements org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>, java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Demographics.html" title="class in org.mitre.synthea.world.geography"><span class="typeNameLink">Demographics</span></a> (implements java.lang.Comparable&lt;T&gt;, java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Distribution</span></a> (implements java.io.Serializable)</li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Entity.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Entity</span></a></li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/EntityDeserializer.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">EntityDeserializer</span></a> (implements com.google.gson.JsonDeserializer&lt;T&gt;)</li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/EntityManager.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">EntityManager</span></a></li>
 <li type="circle">org.apache.commons.math3.distribution.EnumeratedDistribution&lt;T&gt; (implements java.io.Serializable)
 <ul>
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SyncedEnumeratedDistro.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">SyncedEnumeratedDistro</span></a>&lt;T&gt;</li>
@@ -175,8 +178,6 @@
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4</span></a></li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4PatientHome</span></a></li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirStu3</span></a></li>
-<li type="circle">org.mitre.synthea.input.<a href="org/mitre/synthea/input/FixedRecord.html" title="class in org.mitre.synthea.input"><span class="typeNameLink">FixedRecord</span></a></li>
-<li type="circle">org.mitre.synthea.input.<a href="org/mitre/synthea/input/FixedRecordGroup.html" title="class in org.mitre.synthea.input"><span class="typeNameLink">FixedRecordGroup</span></a></li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Generator</span></a></li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Generator.GeneratorOptions</span></a></li>
 <li type="circle"><a href="Graphviz.html" title="class in &lt;Unnamed&gt;"><span class="typeNameLink">Graphviz</span></a></li>
@@ -215,12 +216,14 @@
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/InnerClassTypeAdapterFactory.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">InnerClassTypeAdapterFactory</span></a>&lt;T&gt; (implements com.google.gson.TypeAdapterFactory)</li>
 <li type="circle">org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology"><span class="typeNameLink">IoMapper</span></a> (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter</span></a></li>
+<li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.LocalDateSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.LocalDateSerializer</span></a> (implements com.google.gson.JsonSerializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.PersonSerializer</span></a> (implements com.google.gson.JsonSerializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.RandomSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.RandomSerializer</span></a> (implements com.google.gson.JsonSerializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.ShortPayerSerializer</span></a> (implements com.google.gson.JsonSerializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.StateSerializer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.StateSerializer</span></a> (implements com.google.gson.JsonSerializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.SyntheaExclusionStrategy.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">JSONExporter.SyntheaExclusionStrategy</span></a> (implements com.google.gson.ExclusionStrategy)</li>
 <li type="circle">org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/LateAdopterModel.html" title="class in org.mitre.synthea.modules.covid"><span class="typeNameLink">LateAdopterModel</span></a> (implements java.io.Serializable)</li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/LocalDateDeserializer.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">LocalDateDeserializer</span></a> (implements com.google.gson.JsonDeserializer&lt;T&gt;)</li>
 <li type="circle">org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Location.html" title="class in org.mitre.synthea.world.geography"><span class="typeNameLink">Location</span></a> (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Logic</span></a> (implements java.io.Serializable)
 <ul>
@@ -281,6 +284,7 @@
 <li type="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">PediatricGrowthTrajectory</span></a> (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.Point.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">PediatricGrowthTrajectory.Point</span></a> (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.YearInformation.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">PediatricGrowthTrajectory.YearInformation</span></a></li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Period.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Period</span></a></li>
 <li type="circle">org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Person</span></a> (implements org.mitre.synthea.world.geography.quadtree.<a href="org/mitre/synthea/world/geography/quadtree/QuadTreeElement.html" title="interface in org.mitre.synthea.world.geography.quadtree">QuadTreeElement</a>, org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>, java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology"><span class="typeNameLink">PhysiologyGeneratorConfig</span></a></li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/PhysiologySimulator.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">PhysiologySimulator</span></a></li>
@@ -298,6 +302,7 @@
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">RandomCollection</span></a>&lt;E&gt; (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities</span></a> (implements java.io.Serializable)</li>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities.SeverityProbability</span></a> (implements java.io.Serializable)</li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Seed</span></a> (implements org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity">IdentityRecord</a>)</li>
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleCSV.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">SimpleCSV</span></a></li>
 <li type="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleYML.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">SimpleYML</span></a></li>
 <li type="circle">org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/SimRunner.html" title="class in org.mitre.synthea.helpers.physiology"><span class="typeNameLink">SimRunner</span></a></li>
@@ -382,12 +387,14 @@
 </ul>
 </li>
 <li type="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/ValueSetCodeResolver.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">ValueSetCodeResolver</span></a></li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Variant</span></a> (implements org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity">IdentityRecord</a>)</li>
 </ul>
 </li>
 </ul>
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
 <li type="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/HealthRecordEditor.html" title="interface in org.mitre.synthea.engine"><span class="typeNameLink">HealthRecordEditor</span></a></li>
+<li type="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity"><span class="typeNameLink">IdentityRecord</span></a></li>
 <li type="circle">org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">IPayerAdjustment</span></a></li>
 <li type="circle">org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/IPayerFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">IPayerFinder</span></a></li>
 <li type="circle">org.mitre.synthea.world.agents.behaviors.<a href="org/mitre/synthea/world/agents/behaviors/IProviderFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="typeNameLink">IProviderFinder</span></a></li>
