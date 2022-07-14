@@ -21,6 +21,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.PayerManager;
 
 public class EntityManagerTest {
 
@@ -29,6 +30,11 @@ public class EntityManagerTest {
    */
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
+
+  @AfterClass
+  public static void initialize() throws Exception {
+    PayerManager.clear();
+  }
 
   @Test
   public void fromJSON() throws IOException {

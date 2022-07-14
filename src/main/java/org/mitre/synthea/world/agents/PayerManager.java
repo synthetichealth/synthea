@@ -284,8 +284,8 @@ public class PayerManager {
       return payerList.get(0);
     }
     if (payerList.size() > 1) {
-      throw new RuntimeException("Multiple (" + payerList.size()
-          + ") payers have id '" + payerId + "'.");
+      throw new RuntimeException(payerList.size()
+          + " payers have id '" + payerId + "'. Ids should be unique.");
     }
     throw new RuntimeException("Requested payer with id '" + payerId + "' does not exist.");
   }
