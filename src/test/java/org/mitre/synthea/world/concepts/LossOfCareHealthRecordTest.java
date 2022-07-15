@@ -172,7 +172,7 @@ public class LossOfCareHealthRecordTest {
             .subtract(BigDecimal.ONE).intValue());
 
     // Pay monthly premium 8 times.
-    long oneMonth = Utilities.convertTime("months", 1);
+    long oneMonth = Utilities.convertTime("years", 1) / 12;
     long currTime = time;
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     for (int i = 0; i < 8; i++) {
