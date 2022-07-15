@@ -59,6 +59,7 @@ public class EntityManagerTest {
     Generator.DEFAULT_STATE =  Config.get("test_state.default", "Massachusetts");
     Generator.entityManager = null;
     TestHelper.loadTestProperties();
+    PayerManager.clear();
   }
 
   @Test
