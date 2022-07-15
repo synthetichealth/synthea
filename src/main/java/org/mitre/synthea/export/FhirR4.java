@@ -2285,7 +2285,11 @@ public class FhirR4 {
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
-    if (USE_US_CORE_IG) {
+    boolean labsOnly = true;
+    for (Observation observation : report.observations) {
+      labsOnly = labsOnly && observation.category.equalsIgnoreCase("laboratory");
+    }
+    if (labsOnly && USE_US_CORE_IG) {
       Meta meta = new Meta();
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab");
@@ -2295,8 +2299,10 @@ public class FhirR4 {
       reportResource.addPerformer(encounterResource.getServiceProvider());
     }
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
-    reportResource.addCategory(new CodeableConcept(
-        new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
+    if (labsOnly) {
+      reportResource.addCategory(new CodeableConcept(
+          new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
+    }
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
@@ -2342,7 +2348,7 @@ public class FhirR4 {
     reportResource.addCategory(new CodeableConcept(
         new Coding(LOINC_URI, "34117-2", "History and physical note")));
     reportResource.getCategoryFirstRep().addCoding(
-        new Coding(LOINC_URI, "51847-2", "Evaluation+Plan note"));
+        new Coding(LOINC_URI, "51847-2", "Evaluation + Plan note"));
     reportResource.setCode(reportResource.getCategoryFirstRep());
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
