@@ -69,6 +69,14 @@ public abstract class Transition implements Serializable {
     private Object distribution;
     private Double numericDistribution;
     private NamedDistribution namedDistribution;
+
+    public DistributedTransitionOption() {
+    }
+
+    public DistributedTransitionOption(String transition, double probability) {
+      this.transition = transition;
+      this.numericDistribution = probability;
+    }
   }
 
   /**
@@ -86,7 +94,7 @@ public abstract class Transition implements Serializable {
    * have an effective distribution of 0.25, and the last transition will have an
    * effective distribution of 0.0).
    */
-  public static final class DistributedTransition extends Transition {
+  public static class DistributedTransition extends Transition {
     private List<DistributedTransitionOption> transitions;
 
     public DistributedTransition(List<DistributedTransitionOption> transitions) {
@@ -96,6 +104,47 @@ public abstract class Transition implements Serializable {
     @Override
     public String follow(Person person, long time) {
       return pickDistributedTransition(transitions, person);
+    }
+  }
+
+  /**
+   * Subclass of DistributedTransition with a focus on telemedicine. Transitions may be made to
+   * three states, "inperson", "virtual" and "emergency". These are transformed into a
+   * DistributedTransition with weights controlled by properties in the configuration file.
+   */
+  public static class VirtualMedicineTransition extends DistributedTransition {
+    public VirtualMedicineTransition(VirtualTransitionOptions options) {
+      super(options.toOptionList());
+    }
+  }
+
+  public static final class VirtualTransitionOptions {
+    private String inperson;
+    private String virtual;
+    private String emergency;
+
+    /**
+     * Convert this object into a List of DistributedTransitionOptions.
+     *
+     * @return A List of DistributedTransitionOptions based on the global virtual medicine
+     *     properties
+     */
+    public List<DistributedTransitionOption> toOptionList() {
+      List<DistributedTransitionOption> options = new ArrayList<>();
+      if (this.inperson != null && !this.inperson.isEmpty()) {
+        double inpersonProb = Config.getAsDouble("virtualmedicine.inperson.probability");
+        options.add(new DistributedTransitionOption(this.inperson, inpersonProb));
+      }
+      if (this.virtual != null && !this.virtual.isEmpty()) {
+        double virtualProb = Config.getAsDouble("virtualmedicine.virtual.probability");
+        options.add(new DistributedTransitionOption(this.virtual, virtualProb));
+      }
+      if (this.emergency != null && !this.emergency.isEmpty()) {
+        double emergencyProb = Config.getAsDouble("virtualmedicine.emergency.probability");
+        options.add(new DistributedTransitionOption(this.emergency, emergencyProb));
+      }
+
+      return options;
     }
   }
 

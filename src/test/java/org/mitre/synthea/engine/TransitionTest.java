@@ -1,6 +1,7 @@
 package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,5 +92,30 @@ public class TransitionTest {
     assertEquals(0, counts.get("Terminal1").intValue());
     assertEquals(0, counts.get("Terminal2").intValue());
     assertEquals(100, counts.get("Terminal3").intValue());
+  }
+
+  @Test
+  public void testVirtualTransition() throws Exception {
+    Module virtualMedicineTransition = TestHelper.getFixture("virtual_medicine_transition.json");
+
+    Map<String, Integer> counts = new HashMap<>();
+    counts.put("Terminal1", 0);
+    counts.put("Terminal2", 0);
+    counts.put("Terminal3", 0);
+
+    for (int i = 0; i < 100; i++) {
+      virtualMedicineTransition.process(person, 0L);
+      @SuppressWarnings("unchecked")
+      List<State> history = (List<State>) person.attributes.remove("Virtual Medicine Module");
+      String finalStateName = history.get(0).name;
+      int count = counts.get(finalStateName);
+      counts.put(finalStateName, count + 1);
+    }
+
+    // Numbers are off of actual probabilities, but I didn't want to mess with the seed and
+    // upset the distributed transition test.
+    assertEquals(62, counts.get("Terminal1").intValue());
+    assertEquals(32, counts.get("Terminal2").intValue());
+    assertEquals(6, counts.get("Terminal3").intValue());
   }
 }

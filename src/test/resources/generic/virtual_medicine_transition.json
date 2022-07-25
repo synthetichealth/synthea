@@ -1,0 +1,22 @@
+{
+  "name": "Virtual Medicine",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "virtual_medicine_transition": {
+        "inperson": "Terminal1",
+        "virtual": "Terminal2",
+        "emergency": "Terminal3"
+      }
+    },
+    "Terminal1": {
+      "type": "Terminal"
+    },
+    "Terminal2": {
+      "type": "Terminal"
+    },
+    "Terminal3": {
+      "type": "Terminal"
+    }
+  }
+}
