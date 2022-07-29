@@ -473,7 +473,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
