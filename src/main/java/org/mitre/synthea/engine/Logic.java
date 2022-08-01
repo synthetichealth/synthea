@@ -119,6 +119,16 @@ public abstract class Logic implements Serializable {
     private DateInput date;
     private String operator;
 
+    /**
+     * Create new Date logic using a year for comparison.
+     * @param year to check
+     * @param operator how to compare
+     */
+    public Date(Integer year, String operator) {
+      this.year = year;
+      this.operator = operator;
+    }
+
     @Override
     public boolean test(Person person, long time) {
       if (year != null) {
