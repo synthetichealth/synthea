@@ -112,15 +112,15 @@ public abstract class Transition implements Serializable {
    * three states, "inperson", "virtual" and "emergency". These are transformed into a
    * DistributedTransition with weights controlled by properties in the configuration file.
    */
-  public static class VirtualMedicineTransition extends DistributedTransition {
-    public VirtualMedicineTransition(VirtualTransitionOptions options) {
+  public static class TelemedicineTransition extends ComplexTransition {
+    public TelemedicineTransition(TelemedicineTransitionOptions options) {
       super(options.toOptionList());
     }
   }
 
-  public static final class VirtualTransitionOptions {
-    private String inperson;
-    private String virtual;
+  public static final class TelemedicineTransitionOptions {
+    private String ambulatory;
+    private String telemedicine;
     private String emergency;
 
     /**
@@ -129,20 +129,44 @@ public abstract class Transition implements Serializable {
      * @return A List of DistributedTransitionOptions based on the global virtual medicine
      *     properties
      */
-    public List<DistributedTransitionOption> toOptionList() {
-      List<DistributedTransitionOption> options = new ArrayList<>();
-      if (this.inperson != null && !this.inperson.isEmpty()) {
-        double inpersonProb = Config.getAsDouble("virtualmedicine.inperson.probability");
-        options.add(new DistributedTransitionOption(this.inperson, inpersonProb));
-      }
-      if (this.virtual != null && !this.virtual.isEmpty()) {
-        double virtualProb = Config.getAsDouble("virtualmedicine.virtual.probability");
-        options.add(new DistributedTransitionOption(this.virtual, virtualProb));
+    public List<ComplexTransitionOption> toOptionList() {
+      List<ComplexTransitionOption> options = new ArrayList<>();
+
+      int telemedicineStartYear = Config.getAsInteger("telemedicine.startyear");
+
+      List<DistributedTransitionOption> preTelemedicineOptions = new ArrayList<>();
+      if (this.ambulatory != null && !this.ambulatory.isEmpty()) {
+        double ambulatoryProb = Config.getAsDouble("telemedicine.pre.ambulatory.probability");
+        preTelemedicineOptions.add(new DistributedTransitionOption(this.ambulatory,
+                ambulatoryProb));
       }
       if (this.emergency != null && !this.emergency.isEmpty()) {
-        double emergencyProb = Config.getAsDouble("virtualmedicine.emergency.probability");
-        options.add(new DistributedTransitionOption(this.emergency, emergencyProb));
+        double emergencyProb = Config.getAsDouble("telemedicine.pre.emergency.probability");
+        preTelemedicineOptions.add(new DistributedTransitionOption(this.emergency, emergencyProb));
       }
+
+      Logic preTelemedicine = new Logic.Date(telemedicineStartYear,"<");
+      options.add(new ComplexTransitionOption(preTelemedicine, preTelemedicineOptions));
+
+      List<DistributedTransitionOption> duringTelemedicineOptions = new ArrayList<>();
+      if (this.ambulatory != null && !this.ambulatory.isEmpty()) {
+        double ambulatoryProb = Config.getAsDouble("telemedicine.ambulatory.probability");
+        duringTelemedicineOptions.add(new DistributedTransitionOption(this.ambulatory,
+                ambulatoryProb));
+      }
+      if (this.telemedicine != null && !this.telemedicine.isEmpty()) {
+        double telemedicineProb = Config.getAsDouble("telemedicine.telemedicine.probability");
+        duringTelemedicineOptions.add(new DistributedTransitionOption(this.telemedicine,
+                telemedicineProb));
+      }
+      if (this.emergency != null && !this.emergency.isEmpty()) {
+        double emergencyProb = Config.getAsDouble("telemedicine.emergency.probability");
+        duringTelemedicineOptions.add(new DistributedTransitionOption(this.emergency,
+                emergencyProb));
+      }
+
+      Logic duringTelemedicine = new Logic.Date(telemedicineStartYear,">=");
+      options.add(new ComplexTransitionOption(duringTelemedicine, duringTelemedicineOptions));
 
       return options;
     }
@@ -527,6 +551,17 @@ public abstract class Transition implements Serializable {
   public static final class ComplexTransitionOption extends TransitionOption {
     private Logic condition;
     private List<DistributedTransitionOption> distributions;
+
+    /**
+     * Create a new ComplexTransitionOption.
+     * @param condition to check to see if the option should be taken
+     * @param distributions transitions to take if condition is met
+     */
+    public ComplexTransitionOption(Logic condition,
+                                   List<DistributedTransitionOption> distributions) {
+      this.condition = condition;
+      this.distributions = distributions;
+    }
   }
 
   /**

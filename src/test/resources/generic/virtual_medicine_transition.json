@@ -1,11 +1,11 @@
 {
-  "name": "Virtual Medicine",
+  "name": "Telemedicine",
   "states": {
     "Initial": {
       "type": "Initial",
-      "virtual_medicine_transition": {
-        "inperson": "Terminal1",
-        "virtual": "Terminal2",
+      "telemedicine_transition": {
+        "ambulatory": "Terminal1",
+        "telemedicine": "Terminal2",
         "emergency": "Terminal3"
       }
     },

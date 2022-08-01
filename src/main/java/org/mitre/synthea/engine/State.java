@@ -32,8 +32,8 @@ import org.mitre.synthea.engine.Transition.DistributedTransition;
 import org.mitre.synthea.engine.Transition.DistributedTransitionOption;
 import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
-import org.mitre.synthea.engine.Transition.VirtualMedicineTransition;
-import org.mitre.synthea.engine.Transition.VirtualTransitionOptions;
+import org.mitre.synthea.engine.Transition.TelemedicineTransition;
+import org.mitre.synthea.engine.Transition.TelemedicineTransitionOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
@@ -70,7 +70,7 @@ public abstract class State implements Cloneable, Serializable {
   private List<DistributedTransitionOption> distributedTransition;
   private List<ComplexTransitionOption> complexTransition;
   private List<LookupTableTransitionOption> lookupTableTransition;
-  private VirtualTransitionOptions virtualMedicineTransition;
+  private TelemedicineTransitionOptions telemedicineTransition;
   public List<String> remarks;
 
   public static boolean ENABLE_PHYSIOLOGY_STATE =
@@ -90,8 +90,8 @@ public abstract class State implements Cloneable, Serializable {
       this.transition = new ComplexTransition(complexTransition);
     } else if (lookupTableTransition != null) {
       this.transition = new LookupTableTransition(lookupTableTransition);
-    } else if (virtualMedicineTransition != null) {
-      this.transition = new VirtualMedicineTransition(virtualMedicineTransition);
+    } else if (telemedicineTransition != null) {
+      this.transition = new TelemedicineTransition(telemedicineTransition);
     } else if (!(this instanceof Terminal)) {
       throw new RuntimeException("State `" + name + "` has no transition.\n");
     }
