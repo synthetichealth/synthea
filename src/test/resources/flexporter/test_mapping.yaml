@@ -107,33 +107,36 @@ actions:
            value: $findRef([Patient])
          # - location: ServiceRequest.code.coding
          #   value: $getField([Procedure.code.coding])      # <-- STILL WIP
-         - location: ServiceRequest.code.coding
-           value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
+
+         # this works if the VS is loaded but otherwise tries to make a network lookup
+         # so disable for now
+         # - location: ServiceRequest.code.coding
+         #   value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
        # TODO: is "writeback" the best term here?
        writeback:
          - location: Procedure.basedOn.reference
            value: $setRef([ServiceRequest])
 
- # - name: testCreateResources_getAttribute
- #   create_resource: 
- #     - resourceType: Patient
- #       fields:
- #         - location: Patient.name.text
- #           value: $getAttribute([name])
- #         - location: Patient.name.given
- #           value: $getAttribute([first_name])
- #         - location: Patient.name.family
- #           value: $getAttribute([last_name])
+ - name: testCreateResources_getAttribute
+   create_resource: 
+     - resourceType: Patient
+       fields:
+         - location: Patient.name.text
+           value: $getAttribute([name])
+         - location: Patient.name.given
+           value: $getAttribute([first_name])
+         - location: Patient.name.family
+           value: $getAttribute([last_name])
 
 
 
 # TODO: on keep/delete, check for references to removed items!!
- # - name: testKeepResources
- #   keep_resources:
- #     - Patient
- #     - Encounter
- #     - Condition
+ - name: testKeepResources
+   keep_resources:
+     - Patient
+     - Encounter
+     - Condition
 
- # - name: testDeleteResources
- #   delete_resources:
- #     - Provenance
+ - name: testDeleteResources
+   delete_resources:
+     - Provenance
