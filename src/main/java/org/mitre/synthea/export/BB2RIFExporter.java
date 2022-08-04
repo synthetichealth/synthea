@@ -311,7 +311,7 @@ public class BB2RIFExporter {
                      .atZone(java.time.ZoneId.of("Z"))
                      .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
                      .toString()));
-    manifest.write("sequenceId=\"0\">\n");
+    manifest.write("sequenceId=\"0\" syntheticData=\"true\">\n");
     for (Class<?> rifFile: BB2RIFStructure.RIF_FILES) {
       for (int year: rifWriters.getYears()) {
         // generics and arrays are weird so need to cast below rather than declare on the array
