@@ -54,10 +54,7 @@ public abstract class RandomCodeGenerator {
   @SuppressWarnings("unchecked")
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
-      expandValueSet(valueSetUri);
-      List<Object> codes = codeListCache.get(valueSetUri);
-      int randomIndex = new Random(seed).nextInt(codes.size());
-      Map<String, String> codeMap = (Map<String, String>) codes.get(randomIndex);
+      Map<String, String> codeMap = getCodeAsMap(valueSetUri, seed);
       validateCode(codeMap);
       Code newCode = new Code(codeMap.get("system"), codeMap.get("code"), codeMap.get("display"));
       selectedCodes.add(newCode);
@@ -65,7 +62,53 @@ public abstract class RandomCodeGenerator {
     }
     return code;
   }
-
+  
+  public static Map<String, String> getCodeAsMap(String valueSetUri, long seed) {
+    if (urlValidator.isValid(valueSetUri)) {
+      expandValueSet(valueSetUri);
+      List<Object> codes = codeListCache.get(valueSetUri);
+      int randomIndex = new Random(seed).nextInt(codes.size());
+      Map<String, String> codeMap = (Map<String, String>) codes.get(randomIndex);
+      validateCode(codeMap);
+      return codeMap;
+    }
+    return null;
+  }
+  
+  // TODO: this does not belong here, but this class is where the code cache is
+  public static boolean codeInValueSet(Code code, String valueSetUri) {
+    if (urlValidator.isValid(valueSetUri)) {
+      expandValueSet(valueSetUri);
+      
+      // TODO: there has to be a better way to do this
+      Map<String,String> codeAsMap = new HashMap<>();
+      codeAsMap.put("system", code.system);
+      codeAsMap.put("code", code.code);
+      codeAsMap.put("display", code.display);
+      
+      List<Object> cachedCodeList = codeListCache.get(valueSetUri);
+      
+      // this will only return true if everything is exactly identical
+      // ie, it will not match if display is different
+      if (cachedCodeList.contains(codeAsMap)) {
+        return true;
+      }
+      
+      // iterate through all the codes to see if it contains the system/code combo
+      // TODO: pick better data structures that support this
+      
+      for (Object cachedCodeObj : cachedCodeList) {
+        Map<String,String> cachedCode = (Map<String,String>)cachedCodeObj;
+        
+        if (cachedCode.get("system").equals(code.system) && cachedCode.get("code").equals(code.code)) {
+          return true;
+        }
+      }
+    }
+    // TODO??
+    return false;
+  }
+  
   @SuppressWarnings("unchecked")
   private static synchronized void expandValueSet(String valueSetUri) {
     if (!codeListCache.containsKey(valueSetUri)) {
