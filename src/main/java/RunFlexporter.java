@@ -57,7 +57,7 @@ public class RunFlexporter {
               String.format("Specified implementation guide directory (%s) is empty", value));
         }
 
-      } else if (currArg.equals("-m")) {
+      } else if (currArg.equals("-fm")) {
         String value = argsQ.poll();
 
         if (value == null) {
@@ -131,8 +131,10 @@ public class RunFlexporter {
 
       String bundleJson = parser.encodeResourceToString(bundle);
 
+      new File("./output/flexporter/").mkdirs();
+
       File outFile =
-          new File("./output/" + System.currentTimeMillis() + "_" + sourceFhir.getName());
+          new File("./output/flexporter/" + System.currentTimeMillis() + "_" + sourceFhir.getName());
 
       Files.write(outFile.toPath(), bundleJson.getBytes(), StandardOpenOption.CREATE_NEW);
 
@@ -140,7 +142,7 @@ public class RunFlexporter {
     }
   }
 
-  private static void loadIG(File igDirectory) throws IOException {
+  static void loadIG(File igDirectory) throws IOException {
       File[] artifacts = igDirectory.listFiles();
 
       for (File artifact : artifacts) {
@@ -221,6 +223,6 @@ public class RunFlexporter {
   }
 
   private static void usage() {
-    System.out.println("Usage: run_flexporter -m MAPPING_FILE -s SOURCE_FHIR [-i IG_FOLDER]");
+    System.out.println("Usage: run_flexporter -fm MAPPING_FILE -s SOURCE_FHIR [-ig IG_FOLDER]");
   }
 }

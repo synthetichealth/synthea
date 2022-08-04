@@ -84,6 +84,7 @@ public abstract class Exporter {
       terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
+      flexporterMappings=init.flexporterMappings;
     }
 
     /**
@@ -120,6 +121,14 @@ public abstract class Exporter {
      */
     public boolean isRecordQueueEmpty() {
       return recordQueue == null || recordQueue.size() == 0;
+    }
+    
+    public void addFlexporterMapping(Mapping mapping) {
+      if (this.flexporterMappings == null) {
+        this.flexporterMappings = new LinkedList<>();
+      }
+      
+      this.flexporterMappings.add(mapping);
     }
   }
 
