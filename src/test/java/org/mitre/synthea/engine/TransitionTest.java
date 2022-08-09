@@ -10,7 +10,9 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.CoverageRecord;
 
 public class TransitionTest {
 
@@ -20,6 +22,9 @@ public class TransitionTest {
   public void setup() {
     person = new Person(19L); // seed chosen specifically for testDistributedTransition()
     person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage = new CoverageRecord(person);
+    Payer.loadNoInsurance();
+    person.coverage.setPayerAtTime(TestHelper.timestamp(2021, 1,1,0,0,0), Payer.noInsurance);
   }
 
   @Test
@@ -114,8 +119,8 @@ public class TransitionTest {
 
     // Numbers are off of actual probabilities, but I didn't want to mess with the seed and
     // upset the distributed transition test.
-    assertEquals(62, counts.get("Terminal1").intValue());
-    assertEquals(32, counts.get("Terminal2").intValue());
-    assertEquals(6, counts.get("Terminal3").intValue());
+    assertEquals(60, counts.get("Terminal1").intValue());
+    assertEquals(8, counts.get("Terminal2").intValue());
+    assertEquals(32, counts.get("Terminal3").intValue());
   }
 }
