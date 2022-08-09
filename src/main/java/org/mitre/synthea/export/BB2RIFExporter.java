@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -430,6 +431,66 @@ public class BB2RIFExporter {
     exportCounts.put(EXPORT_SUMMARY.SNF_CLAIMS,
             Long.toString(exportSNF(person, startTime, stopTime)));
     rifWriters.getOrCreateWriter(EXPORT_SUMMARY.class, -1, "csv", ",").writeValues(exportCounts);
+  }
+
+  private enum ClaimType {
+    CARRIER,
+    OUTPATIENT,
+    INPATIENT,
+    HHA,
+    DME,
+    SNF,
+    PDE,
+    HOSPICE
+  }
+
+  private boolean isVAorIHS(HealthRecord.Encounter encounter) {
+    boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
+    // IHS facilities have valid 6 digit id, IHS centers don't
+    boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
+            && encounter.provider.id.length() != 6;
+    return isVA || isIHSCenter;
+  }
+
+  private Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
+    Set<ClaimType> types = new HashSet<>();
+
+    boolean isSNF = encounter.type.equals(EncounterType.SNF.toString());
+    boolean isHome = encounter.type.equals(EncounterType.HOME.toString());
+    boolean isHospice = encounter.type.equals(EncounterType.HOSPICE.toString());
+    boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
+    boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
+    boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
+    boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
+    boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
+    boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
+    boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
+
+    boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
+    boolean isVirtualOutpatient = isVirtual
+            && (ProviderType.HOSPITAL == encounter.provider.type);
+
+    if (!isVAorIHS(encounter)) {
+      if (isSNF) {
+        types.add(ClaimType.SNF);
+      } else if (isHome) {
+        types.add(ClaimType.HHA);
+      } else if (isHospice) {
+        types.add(ClaimType.HOSPICE);
+      } else if (isInpatient || isEmergency) {
+        types.add(ClaimType.INPATIENT);
+      } else if (isPrimary || isWellness || isUrgent) {
+        types.add(ClaimType.CARRIER);
+      } else if (isAmbulatory || isOutpatient || isVirtualOutpatient) {
+        types.add(ClaimType.OUTPATIENT);
+      }
+
+      if (types.isEmpty()) {
+        System.out.printf("BFD RIF unhandled encounter type");
+      }
+    }
+
+    return types;
   }
 
   /**
@@ -907,22 +968,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-      boolean isVirtual = encounter.type.equals(EncounterType.VIRTUAL.toString());
-      boolean isVirtualOutpatient = isVirtual
-              && (ProviderType.HOSPITAL == encounter.provider.type);
-      boolean isAmbulatory = encounter.type.equals(EncounterType.AMBULATORY.toString());
-      boolean isOutpatient = encounter.type.equals(EncounterType.OUTPATIENT.toString());
-      boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
-      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-
-      if (isVA || isIHSCenter || isPrimary || isUrgent) {
-        continue;
-      }
-      if (!isAmbulatory && !isOutpatient && !isVirtualOutpatient) {
+      if (!getClaimTypes(encounter).contains(ClaimType.OUTPATIENT)) {
         continue;
       }
 
@@ -1057,7 +1103,7 @@ public class BB2RIFExporter {
         continue; // skip this encounter
       }
       String revCenter = fieldValues.get(OUTPATIENT.REV_CNTR);
-      if (isVirtual) {
+      if (encounter.type.equals(EncounterType.VIRTUAL.toString())) {
         revCenter = person.randBoolean() ? "0780" : "0789";
         fieldValues.put(OUTPATIENT.REV_CNTR, revCenter);
       }
@@ -1140,13 +1186,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-      boolean isInpatient = encounter.type.equals(EncounterType.INPATIENT.toString());
-      boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      if (isVA || isIHSCenter || !(isInpatient || isEmergency)) {
+      if (!getClaimTypes(encounter).contains(ClaimType.INPATIENT)) {
         previousEmergency = false;
         continue;
       }
@@ -1202,6 +1242,7 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.NCH_PTNT_STATUS_IND_CD, patientStatus);
       fieldValues.put(INPATIENT.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
+      boolean isEmergency = encounter.type.equals(EncounterType.EMERGENCY.toString());
       if (isEmergency) {
         field = "1"; // emergency
         fieldValues.put(INPATIENT.REV_CNTR, "0450"); // emergency
@@ -1411,14 +1452,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-      boolean isPrimary = (ProviderType.PRIMARY == encounter.provider.type);
-      boolean isWellness = encounter.type.equals(EncounterType.WELLNESS.toString());
-      boolean isUrgent = encounter.type.equals(EncounterType.URGENTCARE.toString());
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      if (isVA || !(isIHSCenter || isPrimary || isWellness || isUrgent)) {
+      if (!getClaimTypes(encounter).contains(ClaimType.CARRIER)) {
         continue;
       }
 
@@ -2119,14 +2153,10 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      if (isVA || isIHSCenter) {
+      if (isVAorIHS(encounter)) {
         continue;
       }
+
       for (Medication medication : encounter.medications) {
         if (!medicationCodeMapper.canMap(medication.codes.get(0).code)) {
           continue; // skip codes that can't be mapped to NDC
@@ -2366,12 +2396,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      if (isVA || isIHSCenter) {
+      if (isVAorIHS(encounter)) {
         continue;
       }
 
@@ -2545,14 +2570,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      boolean isHome = encounter.type.equals(EncounterType.HOME.toString());
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-
-      if (isVA || isIHSCenter || !isHome) {
+      if (!getClaimTypes(encounter).contains(ClaimType.HHA)) {
         continue;
       }
 
@@ -2743,13 +2761,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      boolean isHospice = encounter.type.equals(EncounterType.HOSPICE.toString());
-      if (isVA || isIHSCenter || !isHospice) {
+      if (!getClaimTypes(encounter).contains(ClaimType.HOSPICE)) {
         continue;
       }
 
@@ -2957,13 +2969,7 @@ public class BB2RIFExporter {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
-
-      boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
-      // IHS facilities have valid 6 digit id, IHS centers don't
-      boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
-              && encounter.provider.id.length() != 6;
-      boolean isSNF = encounter.type.equals(EncounterType.SNF.toString());
-      if (isVA || isIHSCenter || !isSNF) {
+      if (!getClaimTypes(encounter).contains(ClaimType.SNF)) {
         continue;
       }
 
@@ -3135,37 +3141,35 @@ public class BB2RIFExporter {
       if (noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
-      String revCenter = fieldValues.get(SNF.REV_CNTR);
+      String defaultRevCenter = fieldValues.get(SNF.REV_CNTR); // set in spreadsheet
 
       synchronized (rifWriters.getOrCreateWriter(SNF.class)) {
         int claimLine = 1;
         for (ClaimEntry lineItem : encounter.claim.items) {
-          String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
               if (hcpcsCodeMapper.canMap(code.code)) {
-                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                String hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                fieldValues.put(SNF.HCPCS_CD, hcpcsCode);
+                // Override default REV_CNTR set in spreadsheet
+                // SNF claim paid under PPS submitted as type of bill (TOB) 21X
+                fieldValues.put(SNF.REV_CNTR, "0022");
                 break; // take the first mappable code for each procedure
               }
             }
-            fieldValues.put(SNF.REV_CNTR, revCenter);
             fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
             fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
-              hcpcsCode = "T1502";  // Administration of medication
+              fieldValues.put(SNF.HCPCS_CD, "T1502");  // Administration of medication
               fieldValues.put(SNF.REV_CNTR, "0250"); // Pharmacy-general classification
               fieldValues.put(SNF.REV_CNTR_NDC_QTY, "1"); // 1 Unit
               fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          if (hcpcsCode == null) {
-            continue;
-          }
 
           fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(SNF.HCPCS_CD, hcpcsCode);
           fieldValues.put(SNF.REV_CNTR_RATE_AMT,
               String.format("%.2f", lineItem.cost
                       .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
@@ -3195,11 +3199,11 @@ public class BB2RIFExporter {
 
         if (claimLine == 1) {
           // If claimLine still equals 1, then no line items were successfully added.
-          // Add a single top-level entry.
+          // Add a single top-level entry for the total charge
           fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine));
-          // G0299: "direct skilled nursing services of a registered nurse (RN) in the home health
-          // or hospice setting"
-          fieldValues.put(SNF.HCPCS_CD, "G0299");
+          fieldValues.remove(SNF.HCPCS_CD);
+          fieldValues.put(SNF.REV_CNTR, "0001"); // Total charge
+          fieldValues.put(SNF.REV_CNTR_UNIT_CNT, "0");
           rifWriters.writeValues(SNF.class, fieldValues);
         }
       }
