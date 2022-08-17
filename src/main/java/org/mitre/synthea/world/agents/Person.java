@@ -773,7 +773,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Returns whether the person's yearly expenses exceed their income. If they do,
    * then they will switch to No Insurance.
-   * NOTE: This could result in person being kicked off Medicaid/Medicare.
+   * Note: This could result in person being kicked off Medicaid/Medicare.
    *
    * @param time the current time
    */
@@ -785,6 +785,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       this.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
     }
     return stillHasIncome;
+  }
+
+  /**
+   * Returns the amount of income the person has remaining at the given time.
+   * @param time  The time to check for.
+   * @return  The amount of income the person has remaining.
+   */
+  public int incomeRemaining(long time) {
+    return this.coverage.incomeRemaining((int) this.attributes.get(Person.INCOME), time);
   }
 
   /**
@@ -844,32 +853,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   public Point2D.Double getLonLat() {
     return (Point2D.Double) attributes.get(Person.COORDINATE);
-  }
-
-  /**
-   * Returns the amount of income the person has remaining at the given time.
-   * @param time  The time to check for.
-   * @return  The amount of income the person has remaining.
-   */
-  public int incomeRemaining(long time) {
-    int income = (int) this.attributes.get(Person.INCOME);
-    // We need to check based on the last timestep since the person may not have inusurance
-    // for this timestep yet.
-    long timestep = Config.getAsLong("generate.timestep");
-    PlanRecord currentPlan = this.coverage.getPlanRecordAtTime(time - timestep);
-    int ageInDays = this.age(time).getDays();
-    double timestepDays = Utilities.getDurationDays(timestep);
-    if (currentPlan == null && ageInDays <= timestepDays) {
-      // Too young to have incurred expenses yet.
-      return income;
-    }
-    if (currentPlan == null) {
-      throw new RuntimeException("Person does not have insurance for age "
-          + this.age(time).getYears() + ".");
-    }
-    BigDecimal outOfPocketExpenses = currentPlan.getHealthcareExpenses();
-    outOfPocketExpenses = outOfPocketExpenses.add(currentPlan.getInsuranceCosts());
-    return (BigDecimal.valueOf(income).subtract(outOfPocketExpenses)).intValue();
   }
 
 }
