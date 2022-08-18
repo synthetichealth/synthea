@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -67,6 +68,7 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.Claim.ClaimCost;
 import org.mitre.synthea.world.concepts.Claim.ClaimEntry;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -3143,30 +3145,54 @@ public class BB2RIFExporter {
       }
       String defaultRevCenter = fieldValues.get(SNF.REV_CNTR); // set in spreadsheet
 
+      final String HCPCS_MED_ADMIN = "T1502";
+      ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
+      for (ClaimEntry lineItem : encounter.claim.items) {
+        if (lineItem.entry instanceof HealthRecord.Procedure) {
+          for (HealthRecord.Code code : lineItem.entry.codes) {
+            if (hcpcsCodeMapper.canMap(code.code)) {
+              String hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+              consolidatedClaimLines.addClaimLine(hcpcsCode, lineItem);
+              break; // take the first mappable code for each procedure
+            }
+          }
+        } else if (lineItem.entry instanceof HealthRecord.Medication) {
+          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+          if (med.administration) {
+            // Administration of medication
+            consolidatedClaimLines.addClaimLine(HCPCS_MED_ADMIN, lineItem);
+          }
+        }
+      }
+
       synchronized (rifWriters.getOrCreateWriter(SNF.class)) {
         int claimLine = 1;
-        for (ClaimEntry lineItem : encounter.claim.items) {
-          if (lineItem.entry instanceof HealthRecord.Procedure) {
-            for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (hcpcsCodeMapper.canMap(code.code)) {
-                String hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-                fieldValues.put(SNF.HCPCS_CD, hcpcsCode);
-                // Override default REV_CNTR set in spreadsheet
-                // SNF claim paid under PPS submitted as type of bill (TOB) 21X
-                fieldValues.put(SNF.REV_CNTR, "0022");
-                break; // take the first mappable code for each procedure
-              }
-            }
-            fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
-            fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
-          } else if (lineItem.entry instanceof HealthRecord.Medication) {
-            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-            if (med.administration) {
-              fieldValues.put(SNF.HCPCS_CD, "T1502");  // Administration of medication
-              fieldValues.put(SNF.REV_CNTR, "0250"); // Pharmacy-general classification
-              fieldValues.put(SNF.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+        for (ConsolidatedClaimLines.ConsolidatedClaimLine lineItem:
+                consolidatedClaimLines.getLines()) {
+          fieldValues.put(SNF.HCPCS_CD, lineItem.getCode());
+          switch (lineItem.getCode()) {
+            case "":
+              // Use default REV_CNTR code from spreadsheet
+              fieldValues.put(SNF.REV_CNTR_UNIT_CNT, Integer.toString(lineItem.getCount()));
+              fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
+              fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
+              break;
+            case HCPCS_MED_ADMIN:
+              // Override default REV_CNTR set in spreadsheet
+              // Pharmacy-general classification
+              fieldValues.put(SNF.REV_CNTR, "0250");
+              fieldValues.put(SNF.REV_CNTR_NDC_QTY, Integer.toString(lineItem.getCount()));
               fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
-            }
+              fieldValues.remove(SNF.REV_CNTR_UNIT_CNT);
+              break;
+            default:
+              // Override default REV_CNTR set in spreadsheet
+              // SNF claim paid under PPS submitted as type of bill (TOB) 21X
+              fieldValues.put(SNF.REV_CNTR, "0022");
+              fieldValues.put(SNF.REV_CNTR_UNIT_CNT, Integer.toString(lineItem.getCount()));
+              fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
+              fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
+              break;
           }
 
           fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
@@ -3210,6 +3236,55 @@ public class BB2RIFExporter {
       claimCount++;
     }
     return claimCount;
+  }
+
+  private static class ConsolidatedClaimLines {
+    static class ConsolidatedClaimLine extends ClaimCost {
+      private int count;
+      private String code;
+
+      public ConsolidatedClaimLine(ClaimCost initial, String code) {
+        super(initial);
+        this.code = code;
+        count = 1;
+      }
+
+      @Override
+      public void addCosts(ClaimCost other) {
+        super.addCosts(other);
+        count++;
+      }
+
+      public int getCount() {
+        return count;
+      }
+
+      public String getCode() {
+        return code;
+      }
+    }
+
+    private Map<String, ConsolidatedClaimLine> uniqueLineItems;
+
+    public ConsolidatedClaimLines() {
+      // use a sorted map to ensure we always emit claim lines in the same order
+      uniqueLineItems = new TreeMap<>();
+    }
+
+    public void addClaimLine(String hcpcsCode, ClaimCost cost) {
+      if (hcpcsCode == null) {
+        hcpcsCode = ""; // TreeMap doesn't like null keys unless you provide a custom comparator
+      }
+      if (uniqueLineItems.containsKey(hcpcsCode)) {
+        uniqueLineItems.get(hcpcsCode).addCosts(cost);
+      } else {
+        uniqueLineItems.put(hcpcsCode, new ConsolidatedClaimLine(cost, hcpcsCode));
+      }
+    }
+
+    public Collection<ConsolidatedClaimLine> getLines() {
+      return uniqueLineItems.values();
+    }
   }
 
   /**
