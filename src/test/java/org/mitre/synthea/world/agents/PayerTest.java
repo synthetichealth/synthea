@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.UUID;
 
@@ -119,7 +120,7 @@ public class PayerTest {
     firstPerson.attributes.put(Person.BIRTHDATE, time);
     firstPerson.attributes.put(Person.GENDER, "F");
     firstPerson.attributes.put(Person.INCOME, 100000);
-    // Payer has firstPerson customer from the ages of 0 - 11.
+    // Private payers should have firstPerson from the ages of 0 - 11.
     processInsuranceForAges(firstPerson, 0, 11);
 
     Person secondPerson = new Person(0L);
@@ -128,19 +129,19 @@ public class PayerTest {
     secondPerson.attributes.put(Person.BIRTHDATE, time);
     secondPerson.attributes.put(Person.GENDER, "F");
     secondPerson.attributes.put(Person.INCOME, (int) medicaidLevel - 10);
-    // Person should have medicaid from the ages of 0 - 9.
+    // Second person should have medicaid from the ages of 0 - 9.
     processInsuranceForAges(secondPerson, 0, 9);
-    // Person should have private insurance from the ages of 10 - 23.
+    // Second person should have private insurance from the ages of 10 - 23.
     secondPerson.attributes.put(Person.INCOME, 100000);
     processInsuranceForAges(secondPerson, 10, 23);
-    // Person should have medicaid from the ages of 24 - 54.
+    // Second person should have medicaid from the ages of 24 - 54.
     secondPerson.attributes.put(Person.INCOME, (int) medicaidLevel - 10);
     processInsuranceForAges(secondPerson, 24, 54);
-    // Person should have private insurance from the ages of 55 - 60.
+    // Second person should have private insurance from the ages of 55 - 60.
     secondPerson.attributes.put(Person.INCOME, 100000);
     processInsuranceForAges(secondPerson, 55, 60);
 
-    // Ensure the first person was with the Payers for 12 years.
+    // Ensure the first person was with the private for 12 years.
     String firstPersonId = (String) firstPerson.attributes.get(Person.ID);
     assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPersonId)
         + testPrivatePayer2.getCustomerUtilization(firstPersonId));
@@ -163,14 +164,14 @@ public class PayerTest {
   private void processInsuranceForAges(Person person, int startAge, int endAge) {
     HealthInsuranceModule him = new HealthInsuranceModule();
     long birthDate = (long) person.attributes.get(Person.BIRTHDATE);
-    long currentTime = birthDate;
+    int year = Utilities.getYear(birthDate);
     for (int currentAge = startAge; currentAge <= endAge; currentAge++) {
-      currentTime = birthDate + Utilities.convertTime("years", currentAge);
       for (int week = 0; week < 52; week++) {
         // Person checks to pay premiums every week.
-        long ctime = currentTime + Utilities.convertTime("weeks", week);
-        him.process(person, ctime);
+        // c.add(Calendar.WEEK_OF_YEAR, 1);
+        him.process(person, Utilities.convertCalendarYearsToTime(year) + Utilities.convertTime("weeks", week));
       }
+      year++;
     }
   }
 
@@ -202,32 +203,31 @@ public class PayerTest {
 
   @Test
   public void receiveMedicareAgeEligible() {
-    int currentYear = 1900;
-    long birthTime = Utilities.convertCalendarYearsToTime(currentYear);
-    person = new Person(0L);
+    final int birthYear = 1900;
+    long birthTime = Utilities.convertCalendarYearsToTime(birthYear);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    long timestep = Config.getAsLong("generate.timestep");
     // Process the person's health insurance for 64 years, should have private insurance for all.
     for (int age = 0; age < 65; age++) {
-      long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep;
+      long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
+      assertTrue("Expected " + age + " but got " + person.age(currentTime), person.age(currentTime).getYears() == age);
       healthInsuranceModule.process(person, currentTime);
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
-      currentYear++;
     }
     // Process their insurance for ages 65-69, should have medicare every year.
     for (int age = 65; age < 70; age++) {
-      long currentTime = Utilities.convertCalendarYearsToTime(currentYear) + timestep * 3;
+      long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
       healthInsuranceModule.process(person, currentTime);
       String payerName = person.coverage.getPlanAtTime(currentTime).getPayer().getName();
-      assertTrue("Expected Medicare but was " + payerName + ".", payerName.equals("Medicare"));
+      assertTrue(person.age(currentTime).getYears() == age);
+      assertTrue("Expected Medicare but was " + payerName + ". Person is age " + person.age(currentTime) + ".", payerName.equals("Medicare"));
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
-      currentYear++;
     }
   }
 
@@ -311,18 +311,17 @@ public class PayerTest {
   public void planTimeBoxRanges() {
     // There is a "Fake time-boxed Medicaid Plan" that has an eligibility unique to this test:
     // If a patient has the attribute "time-boxed-test" as true, they will get Dual Eligible.
-    // However, this unique path to Medicaid is only avaiable from 1965-1968.
-    // Load in the time-boxed plan/eligibility.
+    // However, this unique path to Medicaid is only available from 1965-1968.
+    // Load the time-boxed plans.
     Config.set("generate.payers.insurance_plans.default_file",
         "generic/payers/test_time_box_plans.csv");
     Config.set("generate.payers.insurance_plans.eligibilities_file",
         "generic/payers/test_time_box_eligibilities.csv");
-    // Reload any Payers that may have already been statically loaded.
     PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
 
-    long time = Utilities.convertCalendarYearsToTime(1960);
-    long oneYear = Utilities.convertTime("years", 1) + 1;
+    int currentYear = 1960;
+    long time = Utilities.convertCalendarYearsToTime(currentYear);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "M");
@@ -330,20 +329,22 @@ public class PayerTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
 
-    // For the first 5 years, they should not have Dual Eligible.
+    // For the first 5 years, they should not have Dual Eligible (1960-1964).
     for (int i = 0; i < 5; i++) {
       healthInsuranceModule.process(person, time);
       assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
-      time += oneYear;
+      currentYear++;
+      time = Utilities.convertCalendarYearsToTime(currentYear);
     }
-    // For the next 3 years, they should have Dual Eligible.
-    for (int i = 0; i < 3; i++) {
+    // For the next 4 years, they should have Dual Eligible (1965-1968).
+    for (int i = 0; i < 4; i++) {
       healthInsuranceModule.process(person, time);
       assertEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
-      time += oneYear;
+      currentYear++;
+      time = Utilities.convertCalendarYearsToTime(currentYear);
     }
 
-    // After that, they should not longer have Dual Eligible.
+    // After that, they should not longer have Dual Eligible (1969).
     healthInsuranceModule.process(person, time);
     assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
@@ -366,7 +367,10 @@ public class PayerTest {
     // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
     person.coverage.getPlanRecordAtTime(time).incrementPatientExpenses(BigDecimal.valueOf(19699));
     // Now process their insurance and they should switch to Medicaid.
-    time += Utilities.convertTime("years", 1.001);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, 1);
+    time = c.getTimeInMillis();
     healthInsuranceModule.process(person, time);
     assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
@@ -385,8 +389,8 @@ public class PayerTest {
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     // Check that their previous payer is Medicaid.
     long age64Time = birthTime + Utilities.convertTime("years", 64) + sixMonths;
-    person.coverage.setPlanAtTime(age64Time,
-        testPrivatePayer1.getPlans().stream().iterator().next());
+    person.coverage.setPlanAtTime(birthTime,
+        PayerManager.getNoInsurancePlan());
     healthInsuranceModule.process(person, age64Time);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
@@ -520,7 +524,7 @@ public class PayerTest {
     totalRevenue = totalRevenue.add(testPrivatePayer1.getRevenue());
     totalRevenue = totalRevenue.add(testPrivatePayer2.getRevenue());
     // The payer's revenue should equal the total monthly premiums.
-    assertTrue(totalMonthlyPremiumsOwed.compareTo(totalRevenue) == 0);
+    assertTrue("Expected " + totalMonthlyPremiumsOwed + " But was " + totalRevenue + ",", totalMonthlyPremiumsOwed.compareTo(totalRevenue) == 0);
     // The person's health care expenses should equal the total monthly premiums.
     assertTrue(totalMonthlyPremiumsOwed.compareTo(person.coverage.getTotalPremiumExpenses()) == 0);
   }
@@ -763,9 +767,12 @@ public class PayerTest {
 
     // Get private insurance for 55 years.
     int numberOfYears = 55;
+    Calendar c = Calendar.getInstance();
     for (int age = 0; age < numberOfYears; age++) {
       healthInsuranceModule.process(person, currentTime);
-      currentTime += Utilities.convertTime("years", 1);
+      c.setTimeInMillis(currentTime);
+      c.add(Calendar.YEAR, 1);
+      currentTime = c.getTimeInMillis();
     }
     int totalYearsCovered = testPrivatePayer1.getNumYearsCovered()
         + testPrivatePayer2.getNumYearsCovered();

@@ -689,7 +689,7 @@ public class Generator {
       }
 
       // Process Health Insurance.
-      healthInsuranceModule.process(person, time + timestep);
+      healthInsuranceModule.process(person, time);
       // Process encounters.
       encounterModule.process(person, time);
 

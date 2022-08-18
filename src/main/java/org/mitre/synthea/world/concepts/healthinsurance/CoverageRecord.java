@@ -3,6 +3,7 @@ package org.mitre.synthea.world.concepts.healthinsurance;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
@@ -41,7 +42,10 @@ public class CoverageRecord implements Serializable {
      */
     public PlanRecord(long time, InsurancePlan plan) {
       this.start = time;
-      this.stop = time + Utilities.convertTime("years", 1);
+      Calendar c = Calendar.getInstance();
+      c.setTimeInMillis(time);
+      c.add(Calendar.YEAR, 1);
+      this.stop = c.getTimeInMillis();
       this.plan = plan;
       this.remainingDeductible = plan.getDeductible();
     }
@@ -133,7 +137,7 @@ public class CoverageRecord implements Serializable {
    */
   public void setPlanAtTime(long time, InsurancePlan newPlan, InsurancePlan secondaryPlan) {
     if (this.planHistory.isEmpty()) {
-      if (person.age(time).getDays() > 365) {
+      if (person.ageInDecimalYears(time) >= 1.0) {
         throw new RuntimeException("Person was greater than the age"
             + " of 1 when recieving their initial insurance plan.");
       }
@@ -177,8 +181,6 @@ public class CoverageRecord implements Serializable {
    * @return the active plan.
    */
   public PlanRecord getPlanRecordAtTime(long time) {
-    System.out.println(this.planHistory);
-    System.out.println(this.person.attributes.get(Person.BIRTHDATE));
     for (PlanRecord planRecord : this.planHistory) {
       if (planRecord.start <= time && time < planRecord.stop) {
         return planRecord;
@@ -360,7 +362,7 @@ public class CoverageRecord implements Serializable {
    * @param yearlyIncome  The yearly income.
    * @param time  The time to check for.
    * @return
-   */
+  */
   public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
     return this.incomeRemaining(yearlyIncome, time) > 0;
   }
@@ -375,14 +377,15 @@ public class CoverageRecord implements Serializable {
     long timestep = Config.getAsLong("generate.timestep");
     PlanRecord currentPlanRecord = this.getPlanRecordAtTime(time);
     int ageInDays = this.person.age(time).getDays();
+    int ageInYears = this.person.age(time).getYears();
     double timestepDays = Utilities.getDurationDays(timestep);
-    if (currentPlanRecord == null && ageInDays <= timestepDays) {
+    if (currentPlanRecord == null && ageInYears < 1 && ageInDays <= timestepDays) {
       // Too young to have incurred any expenses yet.
       return income;
     }
     if (currentPlanRecord == null) {
       throw new RuntimeException("Person does not have insurance for age "
-          + ageInDays / 365.0d + " at time " + time + ".");
+          + person.age(time) + " at time " + time + ".");
     }
 
     BigDecimal currentYearlyExpenses = BigDecimal.ZERO;

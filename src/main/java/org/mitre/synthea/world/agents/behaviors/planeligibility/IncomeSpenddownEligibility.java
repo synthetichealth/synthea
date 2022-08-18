@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -67,7 +68,8 @@ public class IncomeSpenddownEligibility implements IPlanEligibility {
     if (!spenddownAvailable || spenddownDisabilityLimited) {
       return false;
     }
-    int incomeRemaining = person.incomeRemaining(time);
+    // Check for the previous year to see if they were spenddown eligible.
+    int incomeRemaining = person.incomeRemaining(time - Config.getAsLong("generate.timestep"));
     boolean spenddownEligible = incomeRemaining <= yearlySpenddown;
     return spenddownEligible;
   }

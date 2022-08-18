@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,16 +26,15 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String SPENDDOWN_FILE = "Spenddown File";
   private static final String LOGICAL_OPERATOR = "Logical Operator";
   private static final String SUB_ELIGIBILITIES = "Sub-Eligibilities";
-
   private static final String AND = "and";
   private static final String OR = "or";
 
   // A map of column names to the type of eligibilty it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
-
+  // An eligibilty logic function that takes a person and the current time.
+  private final BiFunction<Person, Long, Boolean> eligibilityLogic;
   private final List<IPlanEligibility> eligibilityCriteria;
-  private final String logicalOperator;
-
+  
   /**
    * Constructor.
    * @param inputEligibilities The row of eligiblity inputs.
@@ -42,11 +42,8 @@ public class CSVEligibility implements IPlanEligibility {
   public CSVEligibility(Map<String, String> inputEligibilities) throws IllegalArgumentException {
     this.eligibilityCriteria = new ArrayList<>();
 
-    String logicalOperatorStr = inputEligibilities.remove(LOGICAL_OPERATOR);
-    if (logicalOperatorStr == null) {
-      logicalOperatorStr = "";
-    }
-    this.logicalOperator = convertToLogicalOperator(logicalOperatorStr);
+    String logicalOperator = inputEligibilities.remove(LOGICAL_OPERATOR);
+    this.eligibilityLogic = this.convertToLogic(logicalOperator);
     String subEligibilitiesStr = inputEligibilities.remove(SUB_ELIGIBILITIES);
     if (subEligibilitiesStr != null) {
       List<String> subEligibilities = Arrays.asList(subEligibilitiesStr.split("\\|"));
@@ -66,16 +63,7 @@ public class CSVEligibility implements IPlanEligibility {
 
   @Override
   public boolean isPersonEligible(Person person, long time) {
-    if (logicalOperator.equalsIgnoreCase(AND)) {
-      return eligibilityCriteria.stream().allMatch(eligibility
-          -> eligibility.isPersonEligible(person, time));
-    }
-    if (logicalOperator.equalsIgnoreCase(OR)) {
-      return eligibilityCriteria.stream().anyMatch(eligibility
-          -> eligibility.isPersonEligible(person, time));
-    }
-    throw new RuntimeException("Error: invalid logical operator '"
-        + logicalOperator + "' for input eligibility.");
+    return this.eligibilityLogic.apply(person, time);
   }
 
   /**
@@ -123,17 +111,22 @@ public class CSVEligibility implements IPlanEligibility {
   }
 
   /**
-   * Converts the given string to a logic operator.
+   * Converts the given logical operator string to an eligibilty logic.
    * @param logicalOperator The input string.
-   * @return  The converted logical operator.
+   * @return  The converted eligibilty logic.
    */
-  private static String convertToLogicalOperator(String logicalOperator) {
+  private BiFunction<Person, Long, Boolean> convertToLogic(String logicalOperator) {
+    if (logicalOperator == null) {
+      logicalOperator = "";
+    }
     logicalOperator = logicalOperator.replaceAll("\\s", "");
     if (StringUtils.isBlank(logicalOperator) || logicalOperator.equalsIgnoreCase(OR)) {
-      return OR;
+      return (Person person, Long time) -> eligibilityCriteria.stream().anyMatch(eligibility
+          -> eligibility.isPersonEligible(person, time));
     }
     if (logicalOperator.equalsIgnoreCase(AND)) {
-      return AND;
+      return (Person person, Long time) -> eligibilityCriteria.stream().allMatch(eligibility
+          -> eligibility.isPersonEligible(person, time));
     }
     throw new IllegalArgumentException("Invalid logical operator '"
         + logicalOperator + "' for input eligibilities table.");
@@ -142,7 +135,6 @@ public class CSVEligibility implements IPlanEligibility {
   @Override
   public String toString() {
     return "{CSVEligiblity: " + this.eligibilityCriteria.stream().map(eligibility
-        -> eligibility.toString()).collect(Collectors.toList()).toString()
-        + " Logical operator: " + logicalOperator + "}";
+        -> eligibility.toString()).collect(Collectors.toList()).toString();
   }
 }
