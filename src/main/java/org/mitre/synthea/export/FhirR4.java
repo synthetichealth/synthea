@@ -1030,7 +1030,8 @@ public class FhirR4 {
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(encounter.claim.plan.getPayer().getName()));
+    insuranceComponent.setCoverage(new Reference()
+        .setDisplay(encounter.claim.plan.getPayer().getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter

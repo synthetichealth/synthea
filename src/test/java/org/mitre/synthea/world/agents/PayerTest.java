@@ -385,7 +385,6 @@ public class PayerTest {
     long birthTime = Utilities.convertCalendarYearsToTime(1950);
     Calendar c = Calendar.getInstance();
     c.setTimeInMillis(birthTime);
-    c.add(Calendar.YEAR, 65);
 
     // Below Poverty Level and Over 65, thus Dual Eligble.
     person = new Person(0L);
@@ -403,6 +402,7 @@ public class PayerTest {
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
     // The person is now 65 and qualifies for Medicare in addition to Medicaid.
+    c.add(Calendar.YEAR, 1);
     long age65Time = c.getTimeInMillis();
     healthInsuranceModule.process(person, age65Time);
     assertEquals(PayerManager.DUAL_ELIGIBLE,

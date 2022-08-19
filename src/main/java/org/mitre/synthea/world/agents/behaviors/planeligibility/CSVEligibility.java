@@ -1,5 +1,6 @@
 package org.mitre.synthea.world.agents.behaviors.planeligibility;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class CSVEligibility implements IPlanEligibility {
           public boolean isPersonEligible(Person person, long time) {
             int income = (int) person.attributes.get(Person.INCOME);
             double incomeThreshold = Double.parseDouble(input);
-            return income >= incomeThreshold;
+            return income <= incomeThreshold;
           }
         });
     eligbilityOptions.put(POVERTY_MULTIPLIER, (input) -> new IPlanEligibility() {
@@ -121,11 +122,13 @@ public class CSVEligibility implements IPlanEligibility {
     }
     logicalOperator = logicalOperator.replaceAll("\\s", "");
     if (StringUtils.isBlank(logicalOperator) || logicalOperator.equalsIgnoreCase(OR)) {
-      return (Person person, Long time) -> eligibilityCriteria.stream().anyMatch(eligibility
+      return (BiFunction<Person,Long,Boolean> & Serializable)
+          (Person person, Long time) -> eligibilityCriteria.stream().anyMatch(eligibility
           -> eligibility.isPersonEligible(person, time));
     }
     if (logicalOperator.equalsIgnoreCase(AND)) {
-      return (Person person, Long time) -> eligibilityCriteria.stream().allMatch(eligibility
+      return (BiFunction<Person,Long,Boolean> & Serializable)
+          (Person person, Long time) -> eligibilityCriteria.stream().allMatch(eligibility
           -> eligibility.isPersonEligible(person, time));
     }
     throw new IllegalArgumentException("Invalid logical operator '"

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.mitre.synthea.world.agents.Person;
 
+@FunctionalInterface
 public interface IPlanEligibility extends Serializable {
 
   /**

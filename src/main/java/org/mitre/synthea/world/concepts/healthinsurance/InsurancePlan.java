@@ -30,7 +30,7 @@ public class InsurancePlan implements Serializable {
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
   // Plan Eligibilty.
-  private final transient IPlanEligibility planEligibility;
+  private final IPlanEligibility planEligibility;
   // Start/end date of plan availablity.
   private final Range<Long> activeTimeRange;
 

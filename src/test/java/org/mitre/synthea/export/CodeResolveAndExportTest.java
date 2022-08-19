@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -147,13 +147,13 @@ public class CodeResolveAndExportTest {
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-    // Must process health insurance module from birth to encounter time to prevent null pointers.
+    // Must process health insurance from birth to encounter time to prevent null pointers.
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
-    long oneYear = Utilities.convertTime("years", 1);
-    long currentTime =  (long) person.attributes.get(Person.BIRTHDATE);
-    while (currentTime <= time) {
-      healthInsuranceModule.process(person, currentTime);
-      currentTime += oneYear;
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
+    while (c.getTimeInMillis() <= time) {
+      healthInsuranceModule.process(person, c.getTimeInMillis());
+      c.add(Calendar.YEAR, 1);
     }
     Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     String reasonCode = "417981005";
