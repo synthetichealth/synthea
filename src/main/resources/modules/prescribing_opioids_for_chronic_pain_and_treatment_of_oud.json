@@ -2624,7 +2624,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1853470,
+          "code": 185347001,
           "display": "Encounter for problem (procedure)"
         }
       ],

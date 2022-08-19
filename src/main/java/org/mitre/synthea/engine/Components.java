@@ -101,7 +101,7 @@ public abstract class Components {
     public Double lowerLimit; // Lower limit of detection
     public Double upperLimit; // Upper limit of detection
     public List<String> attributes; // Person attributes containing TimeSeriesData objects
-    public transient List<TimeSeriesData> series; // List of actual series data collections
+    public List<TimeSeriesData> series; // List of actual series data collections
 
     // Format for the output decimal numbers
     // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html

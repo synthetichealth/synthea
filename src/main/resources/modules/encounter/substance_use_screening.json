@@ -564,7 +564,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 10939881000119104,
+          "code": "10939881000119105",
           "display": "Unhealthy alcohol drinking behavior (finding)"
         }
       ],
