@@ -74,7 +74,7 @@ public class LossOfCareHealthRecordTest {
     time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of encounter
@@ -107,7 +107,7 @@ public class LossOfCareHealthRecordTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.01);
     person.attributes.put(Person.GENDER, "M");
     InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(time, plan);
+    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.INPATIENT, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Determine income
@@ -163,7 +163,7 @@ public class LossOfCareHealthRecordTest {
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
     InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(time, plan);
+    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of 8 monthly premiums.
@@ -201,7 +201,7 @@ public class LossOfCareHealthRecordTest {
     time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of an encounter.
@@ -227,7 +227,7 @@ public class LossOfCareHealthRecordTest {
 
     // Next year begins. Person should enough income to cover one encounter for the year.
     long oneYear = Utilities.convertTime("years", 1) + 1;
-    person.coverage.setPlanAtTime(time + oneYear, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time + oneYear);
     // First encounter of next year is uncovered but affordable.
     Encounter coveredEncounterYearTwo
         = person.encounterStart(time + oneYear, EncounterType.WELLNESS);

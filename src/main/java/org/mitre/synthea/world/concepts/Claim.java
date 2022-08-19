@@ -204,7 +204,7 @@ public class Claim implements Serializable {
     if (planRecord == null) {
       planRecord = person.coverage.getLastPlanRecord();
       if (planRecord == null) {
-        person.coverage.setPlanAtTime(mainEntry.entry.start, PayerManager.getNoInsurancePlan());
+        person.coverage.setPlanToNoInsurance(mainEntry.entry.start);
         planRecord = person.coverage.getLastPlanRecord();
       }
     }

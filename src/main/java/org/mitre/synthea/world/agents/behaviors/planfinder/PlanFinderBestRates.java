@@ -2,6 +2,7 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Set;
 
 import org.mitre.synthea.helpers.Utilities;
@@ -70,7 +71,10 @@ public class PlanFinderBestRates implements IPlanFinder {
    * @return The number of encounters during the last 12 months.
    */
   protected int twelveMonthEncounterCount(HealthRecord record, long time) {
-    double oneYearAgo = time - Utilities.convertTime("years", 1);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, -1);
+    long oneYearAgo = c.getTimeInMillis();
     int count = 0;
     for (int i = record.encounters.size() - 1; i >= 0; i--) {
       if (record.encounters.get(i).start >= oneYearAgo) {

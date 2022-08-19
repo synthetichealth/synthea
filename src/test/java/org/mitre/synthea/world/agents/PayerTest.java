@@ -45,7 +45,6 @@ public class PayerTest {
   private static double medicaidLevel;
   private static double povertyLevel;
   private static long mandateTime;
-  private static long sixMonths = Utilities.convertTime("months", 6);
 
   /**
    * Setup for Payer Tests.
@@ -141,11 +140,11 @@ public class PayerTest {
     secondPerson.attributes.put(Person.INCOME, 100000);
     processInsuranceForAges(secondPerson, 55, 60);
 
-    // Ensure the first person was with the private for 12 years.
+    // Ensure the first person was with the private payers for 12 years.
     String firstPersonId = (String) firstPerson.attributes.get(Person.ID);
     assertEquals(12, testPrivatePayer1.getCustomerUtilization(firstPersonId)
         + testPrivatePayer2.getCustomerUtilization(firstPersonId));
-    // Ensure the second person was with the Payers for 20 years.
+    // Ensure the second person was with the private payers for 20 years.
     String secondPersonId = (String) secondPerson.attributes.get(Person.ID);
     assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPersonId)
         + testPrivatePayer2.getCustomerUtilization(secondPersonId));
@@ -159,19 +158,22 @@ public class PayerTest {
   }
 
   /**
-   * Sets the person's payer for the given year range.
+   * Sets the person's payer for the given age ranges.
    */
   private void processInsuranceForAges(Person person, int startAge, int endAge) {
     HealthInsuranceModule him = new HealthInsuranceModule();
+    long timestep = Config.getAsLong("generate.timestep");
     long birthDate = (long) person.attributes.get(Person.BIRTHDATE);
-    int year = Utilities.getYear(birthDate);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(birthDate);
+    c.add(Calendar.YEAR, startAge);
+    long currentTime = c.getTimeInMillis();
     for (int currentAge = startAge; currentAge <= endAge; currentAge++) {
-      for (int week = 0; week < 52; week++) {
-        // Person checks to pay premiums every week.
-        // c.add(Calendar.WEEK_OF_YEAR, 1);
-        him.process(person, Utilities.convertCalendarYearsToTime(year) + Utilities.convertTime("weeks", week));
+      c.add(Calendar.YEAR, 1);
+      while (currentTime < c.getTimeInMillis()) {
+        him.process(person, currentTime);
+        currentTime += timestep;
       }
-      year++;
     }
   }
 
@@ -180,7 +182,8 @@ public class PayerTest {
     long time = Utilities.convertCalendarYearsToTime(1968);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next());
+    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans()
+        .iterator().next(), PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
 
     Code code = new Code("SNOMED-CT","705129","Fake Code");
@@ -215,7 +218,8 @@ public class PayerTest {
     // Process the person's health insurance for 64 years, should have private insurance for all.
     for (int age = 0; age < 65; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
-      assertTrue("Expected " + age + " but got " + person.age(currentTime), person.age(currentTime).getYears() == age);
+      assertTrue("Expected " + age + " but got " + person.age(currentTime),
+          person.age(currentTime).getYears() == age);
       healthInsuranceModule.process(person, currentTime);
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
@@ -226,7 +230,8 @@ public class PayerTest {
       healthInsuranceModule.process(person, currentTime);
       String payerName = person.coverage.getPlanAtTime(currentTime).getPayer().getName();
       assertTrue(person.age(currentTime).getYears() == age);
-      assertTrue("Expected Medicare but was " + payerName + ". Person is age " + person.age(currentTime) + ".", payerName.equals("Medicare"));
+      assertTrue("Expected Medicare but was " + payerName + ". Person is age "
+          + person.age(currentTime) + ".", payerName.equals("Medicare"));
       assertTrue(person.coverage.getPlanAtTime(currentTime).accepts(person, currentTime));
     }
   }
@@ -378,7 +383,9 @@ public class PayerTest {
   @Test
   public void receiveDualEligible() {
     long birthTime = Utilities.convertCalendarYearsToTime(1950);
-    long age65Time = birthTime + Utilities.convertTime("years", 65) + sixMonths;
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(birthTime);
+    c.add(Calendar.YEAR, 65);
 
     // Below Poverty Level and Over 65, thus Dual Eligble.
     person = new Person(0L);
@@ -388,13 +395,15 @@ public class PayerTest {
     // Below Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
     // Check that their previous payer is Medicaid.
-    long age64Time = birthTime + Utilities.convertTime("years", 64) + sixMonths;
-    person.coverage.setPlanAtTime(birthTime,
-        PayerManager.getNoInsurancePlan());
+    c.setTimeInMillis(birthTime);
+    c.add(Calendar.YEAR, 64);
+    long age64Time = c.getTimeInMillis();
+    person.coverage.setPlanToNoInsurance(birthTime);
     healthInsuranceModule.process(person, age64Time);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(age64Time).getPayer().getName());
     // The person is now 65 and qualifies for Medicare in addition to Medicaid.
+    long age65Time = c.getTimeInMillis();
     healthInsuranceModule.process(person, age65Time);
     assertEquals(PayerManager.DUAL_ELIGIBLE,
         person.coverage.getPlanAtTime(age65Time).getPayer().getName());
@@ -433,7 +442,10 @@ public class PayerTest {
   @Test
   public void receivePrivateInsurancePostMandate() {
     // Post 2006 Mandate.
-    long time = mandateTime + Utilities.convertTime("years", 1);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(mandateTime);
+    c.add(Calendar.YEAR, 1);
+    long time = c.getTimeInMillis();
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
@@ -447,7 +459,10 @@ public class PayerTest {
   @Test
   public void receivePrivateInsuranceWithWealth() {
     // Wealthy Enough to Purchase Private Insurance.
-    long time = mandateTime - Utilities.convertTime("years", 50);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(mandateTime);
+    c.add(Calendar.YEAR, -50);
+    long time = c.getTimeInMillis();
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
@@ -463,8 +478,8 @@ public class PayerTest {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(0L, plan);
-    person.coverage.setPlanAtTime(0L, plan);
+    person.coverage.setPlanAtTime(0L, plan, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(0L, plan, PayerManager.getNoInsurancePlan());
     assertEquals(2, person.coverage.getPlanHistory().size());
   }
 
@@ -514,17 +529,30 @@ public class PayerTest {
     BigDecimal payer2MemberYears
         = BigDecimal.valueOf(testPrivatePayer2.getCustomerUtilization(personId));
 
+    // The processInsuranceForAges method has an extra year's premiums for the last year on a plan.
+    if (person.coverage.getLastInsurancePlan().getPayer().getName()
+        .equals(testPrivatePayer1.getName())) {
+      payer1MemberYears = payer1MemberYears.add(BigDecimal.ONE);
+    } else {
+      payer2MemberYears = payer2MemberYears.add(BigDecimal.ONE);
+    }
+
     BigDecimal totalMonthlyPremiumsOwed = BigDecimal.ZERO;
-    totalMonthlyPremiumsOwed = totalMonthlyPremiumsOwed.add(testPrivatePayer1.getPlans().iterator()
-        .next().getMonthlyPremium()).multiply(BigDecimal.valueOf(12).multiply(payer1MemberYears));
-    totalMonthlyPremiumsOwed = totalMonthlyPremiumsOwed.add(testPrivatePayer2.getPlans().iterator()
-        .next().getMonthlyPremium().multiply(BigDecimal.valueOf(12).multiply(payer2MemberYears)));
+    BigDecimal payerOneYearlyPremium = testPrivatePayer1.getPlans().iterator()
+        .next().getMonthlyPremium().multiply(BigDecimal.valueOf(12));
+    totalMonthlyPremiumsOwed = totalMonthlyPremiumsOwed
+        .add(payerOneYearlyPremium.multiply(payer1MemberYears));
+    BigDecimal payerTwoYearlyPremium = testPrivatePayer2.getPlans().iterator()
+        .next().getMonthlyPremium().multiply(BigDecimal.valueOf(12));
+    totalMonthlyPremiumsOwed = totalMonthlyPremiumsOwed
+        .add(payerTwoYearlyPremium.multiply(payer2MemberYears));
 
     BigDecimal totalRevenue = BigDecimal.ZERO;
     totalRevenue = totalRevenue.add(testPrivatePayer1.getRevenue());
     totalRevenue = totalRevenue.add(testPrivatePayer2.getRevenue());
     // The payer's revenue should equal the total monthly premiums.
-    assertTrue("Expected " + totalMonthlyPremiumsOwed + " But was " + totalRevenue + ",", totalMonthlyPremiumsOwed.compareTo(totalRevenue) == 0);
+    assertTrue("Expected " + totalMonthlyPremiumsOwed + " But was "
+        + totalRevenue + ",", totalMonthlyPremiumsOwed.compareTo(totalRevenue) == 0);
     // The person's health care expenses should equal the total monthly premiums.
     assertTrue(totalMonthlyPremiumsOwed.compareTo(person.coverage.getTotalPremiumExpenses()) == 0);
   }
@@ -544,7 +572,7 @@ public class PayerTest {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(time, plan);
+    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
@@ -584,7 +612,8 @@ public class PayerTest {
 
     // Before Mandate.
     InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1Plan);
+    person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1Plan,
+        PayerManager.getNoInsurancePlan());
     Encounter wellnessBeforeMandate =
         person.record.encounterStart(beforeMandateTime, EncounterType.WELLNESS);
     wellnessBeforeMandate.codes.add(code);
@@ -630,7 +659,7 @@ public class PayerTest {
     long time = 0L;
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(0L, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(0L);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
@@ -659,7 +688,8 @@ public class PayerTest {
   public void payerCoversEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next());
+    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next(),
+        PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
@@ -690,7 +720,8 @@ public class PayerTest {
   public void payerDoesNotCoverEncounter() {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer2.getPlans().iterator().next());
+    person.coverage.setPlanAtTime(0L, testPrivatePayer2.getPlans().iterator().next(),
+        PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
     Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
     encounter.provider = new Provider();
@@ -747,7 +778,10 @@ public class PayerTest {
     Payer inititalPayer = person.coverage.getPlanAtTime(time).getPayer();
     assertFalse("Person should have insurance.", inititalPayer.isNoInsurance());
     assertFalse("Person should have private insurance.", inititalPayer.isGovernmentPayer());
-    time += Utilities.convertTime("years", 1);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, 1);
+    time = c.getTimeInMillis();
     hm.process(person, time);
     assertEquals("Person should keep the same insurance.",
         inititalPayer, person.coverage.getPlanAtTime(time).getPayer());
@@ -789,7 +823,8 @@ public class PayerTest {
     person.attributes.put(Person.GENDER, "F");
     HealthInsuranceModule hm = new HealthInsuranceModule();
 
-    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next());
+    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next(),
+        PayerManager.getNoInsurancePlan());
     hm.process(person, time);
     InsurancePlan plan = person.coverage.getPlanAtTime(time);
     assertFalse("Person should have insurance.", plan.getPayer().isNoInsurance());
@@ -824,7 +859,8 @@ public class PayerTest {
     person.attributes.put(Person.GENDER, "F");
     HealthInsuranceModule hm = new HealthInsuranceModule();
 
-    person.coverage.setPlanAtTime(time, testPrivatePayer2.getPlans().iterator().next());
+    person.coverage.setPlanAtTime(time, testPrivatePayer2.getPlans().iterator().next(),
+        PayerManager.getNoInsurancePlan());
     hm.process(person, time);
     InsurancePlan plan = person.coverage.getPlanAtTime(time);
     assertFalse("Person should have insurance.", plan.getPayer().isNoInsurance());
@@ -864,7 +900,10 @@ public class PayerTest {
     person = new Person(0L);
     him.process(person, time);
     InsurancePlan firstPlan = person.coverage.getPlanAtTime(time);
-    time += Utilities.convertTime("years", 1.5);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.MONTH, 16);
+    time = c.getTimeInMillis();
     InsurancePlan secondPlan = person.coverage.getPlanAtTime(time);
     // For now, this returns true by default because it is not yet implememted.
     assertEquals(firstPlan, secondPlan);

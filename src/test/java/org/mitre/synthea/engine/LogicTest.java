@@ -33,6 +33,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 public class LogicTest {
@@ -63,8 +64,10 @@ public class LogicTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
-    PayerManager.loadNoInsurance();
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    // PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");

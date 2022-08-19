@@ -34,9 +34,8 @@ public class QualityOfLifeTest {
 
     // Ensure Person's payer is not null
     PayerManager.loadNoInsurance();
-    person.coverage.setPlanAtTime(0L, PayerManager.getNoInsurancePlan());
-    person.coverage.setPlanAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)),
-        PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(0L);
+    person.coverage.setPlanToNoInsurance(TimeUnit.DAYS.toMillis((long) (365.25 * 10)));
 
     // Diabetes - code = 44054006;  dw = 0.031, 0.049, 0.072
     // ADD      - code = 192127007; dw = 0.028, 0.045, 0.066

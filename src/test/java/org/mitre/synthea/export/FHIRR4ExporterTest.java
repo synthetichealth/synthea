@@ -190,7 +190,7 @@ public class FHIRR4ExporterTest {
     PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time + Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
+      person.coverage.setPlanToNoInsurance(yearTime);
     }
 
     Module module = TestHelper.getFixture("observation.json");
@@ -254,7 +254,7 @@ public class FHIRR4ExporterTest {
     PayerManager.loadNoInsurance();
     for (int i = 0; i < age; i++) {
       long yearTime = time + Utilities.convertTime("years", i);
-      person.coverage.setPlanAtTime(yearTime, PayerManager.getNoInsurancePlan());
+      person.coverage.setPlanToNoInsurance(yearTime);
     }
 
     Module module = TestHelper.getFixture("observation.json");

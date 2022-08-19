@@ -70,7 +70,8 @@ public class C19ImmunizationModuleTest {
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     PayerManager.loadPayers(here);
     person.coverage.setPlanAtTime(decemberFifteenth,
-        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan());
+        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getNoInsurancePlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());

@@ -48,8 +48,8 @@ public class HealthInsuranceModule extends Module {
     }
 
     // If the payerHistory at the current age is null, they must get insurance for the new year.
-    // Note: This means the person will check to change insurance yearly, just after their
-    // birthday.
+    // Note: This means the person will check to change insurance yearly, within one timestep
+    // after their birthday.
     InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
     if (planAtTime == null) {
       // Update their last plan's payer with person's QOLS for that year.

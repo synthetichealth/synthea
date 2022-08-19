@@ -28,9 +28,9 @@ public class PlanEligibilityFinder {
    * @return  The requested payer eligibilty algorithm.
    */
   public static IPlanEligibility getEligibilityAlgorithm(String eligibility) {
-    String modEligibility = eligibility.replaceAll("\\s", "").toUpperCase();
-    if (planEligibilities.containsKey(modEligibility)) {
-      return planEligibilities.get(modEligibility);
+    String cleanedEigibility = eligibility.replaceAll("\\s", "").toUpperCase();
+    if (planEligibilities.containsKey(cleanedEigibility)) {
+      return planEligibilities.get(cleanedEigibility);
     }
     throw new RuntimeException("Plan eligiblity " + eligibility + " does not exist.");
   }

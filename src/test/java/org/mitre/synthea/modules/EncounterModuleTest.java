@@ -39,8 +39,7 @@ public class EncounterModuleTest {
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
     PayerManager.loadNoInsurance();
-    person.coverage.setPlanAtTime(System.currentTimeMillis(),
-        PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(System.currentTimeMillis());
   }
 
   @Test

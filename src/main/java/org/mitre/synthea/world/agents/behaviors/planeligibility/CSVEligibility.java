@@ -34,7 +34,7 @@ public class CSVEligibility implements IPlanEligibility {
   // An eligibilty logic function that takes a person and the current time.
   private final BiFunction<Person, Long, Boolean> eligibilityLogic;
   private final List<IPlanEligibility> eligibilityCriteria;
-  
+
   /**
    * Constructor.
    * @param inputEligibilities The row of eligiblity inputs.

@@ -39,7 +39,7 @@ public class HealthRecordTest {
   public void testReportAllObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -58,7 +58,7 @@ public class HealthRecordTest {
   public void testReportSomeObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -76,7 +76,7 @@ public class HealthRecordTest {
   public void testReportTooManyObs() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -95,7 +95,7 @@ public class HealthRecordTest {
   public void testMedicationAdministrationQuantity() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, noInsurance);
+    person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", false);
     med.administration = true;
     long quantity = med.getQuantity();
@@ -106,7 +106,7 @@ public class HealthRecordTest {
   public void testMedicationPrescriptionQuantity() {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, noInsurance);
+    person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", true);
     long quantity = med.getQuantity();
     Assert.assertEquals(30, quantity);
@@ -116,7 +116,7 @@ public class HealthRecordTest {
   public void testMedicationDetailedQuantity() throws Exception {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanAtTime(time, noInsurance);
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
 
     Module module = TestHelper.getFixture("medication_order.json");

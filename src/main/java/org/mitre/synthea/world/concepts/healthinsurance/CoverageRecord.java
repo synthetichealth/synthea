@@ -167,12 +167,11 @@ public class CoverageRecord implements Serializable {
   }
 
   /**
-   * Sets the person's payer history at the given time to the given payer.
+   * Sets the person's payer history at the given time to become no insurance.
    * @param time the current simulation time.
-   * @param newPlan the primary plan.
    */
-  public void setPlanAtTime(long time, InsurancePlan newPlan) {
-    this.setPlanAtTime(time, newPlan, PayerManager.getNoInsurancePlan());
+  public void setPlanToNoInsurance(long time) {
+    this.setPlanAtTime(time, PayerManager.getNoInsurancePlan(), PayerManager.getNoInsurancePlan());
   }
 
   /**
@@ -366,7 +365,7 @@ public class CoverageRecord implements Serializable {
   public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
     return this.incomeRemaining(yearlyIncome, time) > 0;
   }
-  
+
   /**
    * Returns the amount of income the person has remaining at the given time.
    * @param income The amount of income to compare against.
