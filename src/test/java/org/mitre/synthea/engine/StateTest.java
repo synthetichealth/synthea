@@ -37,7 +37,6 @@ import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -45,6 +44,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -86,12 +86,9 @@ public class StateTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    PayerManager.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPlanToNoInsurance(yearTime);
-    }
-
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
     // Ensure Physiology state is enabled by default
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;

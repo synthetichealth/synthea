@@ -69,6 +69,9 @@ public class C19ImmunizationModuleTest {
     person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     PayerManager.loadPayers(here);
+    person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
+        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getNoInsurancePlan());
     person.coverage.setPlanAtTime(decemberFifteenth,
         PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
         PayerManager.getNoInsurancePlan());

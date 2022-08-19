@@ -108,9 +108,9 @@ public class TransitionMetricsTest {
     // run until the module completes (it has no loops so it is guaranteed to)
     // reminder that process returns true when the module is "done"
     while (person.alive(time) && !singleModule.process(person, time)) {
-      time += Utilities.convertTime("years", 1);
       // Give the person No Insurance to prevent null pointers.
       person.coverage.setPlanToNoInsurance(time);
+      time += Utilities.convertTime("years", 1);
       // hack the wellness encounter just in case
       person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + singleModule.name,
           true);

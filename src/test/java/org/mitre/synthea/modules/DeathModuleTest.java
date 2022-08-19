@@ -17,6 +17,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 public class DeathModuleTest {
@@ -45,7 +46,8 @@ public class DeathModuleTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    PayerManager.loadNoInsurance();
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(time);
   }
 

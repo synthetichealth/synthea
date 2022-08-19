@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Quantity;
@@ -39,6 +38,7 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
 
@@ -62,7 +62,7 @@ public class FHIRR4ExporterTest {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
-    PayerManager.loadNoInsurance();
+    PayerManager.loadPayers(new Location("Massachusetts", null));
   }
 
   /**
@@ -188,10 +188,8 @@ public class FHIRR4ExporterTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     PayerManager.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time + Utilities.convertTime("years", i);
-      person.coverage.setPlanToNoInsurance(yearTime);
-    }
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -250,12 +248,8 @@ public class FHIRR4ExporterTest {
     int age = 35;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-
-    PayerManager.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time + Utilities.convertTime("years", i);
-      person.coverage.setPlanToNoInsurance(yearTime);
-    }
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
 
     Module module = TestHelper.getFixture("observation.json");
 

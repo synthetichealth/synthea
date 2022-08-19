@@ -38,7 +38,8 @@ public class EncounterModuleTest {
     Provider.loadProviders(location, ProviderTest.providerRandom);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
-    PayerManager.loadNoInsurance();
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(System.currentTimeMillis());
   }
 
