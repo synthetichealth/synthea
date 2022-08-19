@@ -23,9 +23,9 @@ import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.SampledData;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -49,7 +49,7 @@ import org.mockito.Mockito;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRSTU3ExporterTest {
-  private boolean physStateEnabled;
+  private static boolean physStateEnabled;
 
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
@@ -60,8 +60,8 @@ public class FHIRSTU3ExporterTest {
   /**
    * Setup state for exporter test.
    */
-  @Before
-  public void setup() {
+  @BeforeClass
+  public static void setup() {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
@@ -71,8 +71,8 @@ public class FHIRSTU3ExporterTest {
   /**
    * Reset state after exporter test.
    */
-  @After
-  public void tearDown() {
+  @AfterClass
+  public static void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
 

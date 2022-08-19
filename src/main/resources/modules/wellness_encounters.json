@@ -518,13 +518,13 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 449868002,
-        "display": "Current every day smoker"
+        "display": "Smokes tobacco daily (finding)"
       },
       "direct_transition": "SDoH Check"
     },
@@ -536,14 +536,14 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8517006,
-        "display": "Former smoker"
+        "display": "Ex-smoker (finding)"
       }
     },
     "Record_Never_Smoker": {
@@ -554,14 +554,14 @@
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status NHIS"
+          "display": "Tobacco smoking status"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 266919005,
-        "display": "Never smoker"
+        "display": "Never smoked tobacco (finding)"
       }
     },
     "check_CBC": {
@@ -842,7 +842,7 @@
         }
       ],
       "attribute": "current_weight_length_percentile",
-      "direct_transition": "Record Head Circumference"
+      "direct_transition": "Record_Head_Circumference_Percentile"
     },
     "Record Head Circumference": {
       "type": "Observation",
@@ -1015,6 +1015,20 @@
       "type": "CallSubmodule",
       "submodule": "encounter/substance_use_screening",
       "direct_transition": "End_Of_Wellness_Encounter"
+    },
+    "Record_Head_Circumference_Percentile": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8289-1",
+          "display": "Head Occipital-frontal circumference Percentile"
+        }
+      ],
+      "vital_sign": "Head Circumference Percentile",
+      "direct_transition": "Record Head Circumference"
     }
   },
   "gmf_version": 1

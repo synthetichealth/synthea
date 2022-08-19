@@ -127,7 +127,6 @@ import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
-import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
@@ -330,7 +329,7 @@ public class FhirR4 {
 
       // one claim per encounter
       BundleEntryComponent encounterClaim =
-          encounterClaim(person, personEntry, bundle, encounterEntry, encounter.claim);
+          encounterClaim(person, personEntry, bundle, encounterEntry, encounter);
 
       explanationOfBenefit(personEntry, bundle, encounterEntry, person,
           encounterClaim, encounter, encounter.claim);
@@ -1006,28 +1005,32 @@ public class FhirR4 {
    * @param person         The patient having the encounter.
    * @param personEntry    Entry for the person
    * @param bundle         The Bundle to add to
-   * @param encounterEntry The current Encounter
-   * @param claim          the Claim object
+   * @param encounterEntry Entry for the Encounter
+   * @param encounter      The health record encounter
    * @return the added Entry
    */
   private static BundleEntryComponent encounterClaim(
       Person person, BundleEntryComponent personEntry,
-      Bundle bundle, BundleEntryComponent encounterEntry, Claim claim) {
+      Bundle bundle, BundleEntryComponent encounterEntry, Encounter encounter) {
     org.hl7.fhir.r4.model.Claim claimResource = new org.hl7.fhir.r4.model.Claim();
     org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
     claimResource.setStatus(ClaimStatus.ACTIVE);
     CodeableConcept type = new CodeableConcept();
-    type.getCodingFirstRep()
-      .setSystem("http://terminology.hl7.org/CodeSystem/claim-type")
-      .setCode("institutional");
+    type.getCodingFirstRep().setSystem("http://terminology.hl7.org/CodeSystem/claim-type");
+    EncounterType encType = EncounterType.fromString(encounter.type);
+    if (encType.code().equals(EncounterType.OUTPATIENT.code())) {
+      type.getCodingFirstRep().setCode("professional");
+    } else {
+      type.getCodingFirstRep().setCode("institutional");
+    }
     claimResource.setType(type);
     claimResource.setUse(org.hl7.fhir.r4.model.Claim.Use.CLAIM);
 
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(claim.plan.getPayer().getName()));
+    insuranceComponent.setCoverage(new Reference().setDisplay(encounter.claim.plan.getPayer().getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1059,7 +1062,7 @@ public class FhirR4 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    for (Claim.ClaimEntry claimEntry : claim.items) {
+    for (Claim.ClaimEntry claimEntry : encounter.claim.items) {
       HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
         // update claimItems list
@@ -1120,7 +1123,7 @@ public class FhirR4 {
 
     Money moneyResource = new Money();
     moneyResource.setCurrency("USD");
-    moneyResource.setValue(claim.getTotalClaimCost());
+    moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(person, bundle, claimResource);
@@ -1669,7 +1672,7 @@ public class FhirR4 {
       if (codeMappingUri != null) {
         meta.addProfile(codeMappingUri);
         if (!codeMappingUri.contains("/us/core/") && observation.category.equals("vital-signs")) {
-          meta.addProfile("http://hl7.org/fhir/StructureDefinition/vitalsigns");
+          meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-vital-signs");
         }
       } else if (observation.report != null && observation.category.equals("laboratory")) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
@@ -2037,6 +2040,10 @@ public class FhirR4 {
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest");
       medicationResource.setMeta(meta);
+
+      Code category = new Code("http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+          "community", "Community");
+      medicationResource.addCategory(mapCodeToCodeableConcept(category, null));
     } else if (USE_SHR_EXTENSIONS) {
       medicationResource.addExtension()
         .setUrl(SHR_EXT + "shr-base-ActionCode-extension")
@@ -2080,6 +2087,22 @@ public class FhirR4 {
       drugResource.setStatus(MedicationStatus.ACTIVE);
       BundleEntryComponent drugEntry = newEntry(person, bundle, drugResource);
       medicationResource.setMedication(new Reference(drugEntry.getFullUrl()));
+
+      // Set the MedicationRequest.category
+      EncounterType type = EncounterType.fromString(encounter.type);
+      if (type.code().equals(EncounterType.INPATIENT.code())) {
+        CodeableConcept concept = medicationResource.getCategoryFirstRep();
+        concept.setText("Inpatient");
+        Coding category = concept.getCodingFirstRep();
+        category.setCode("inpatient");
+        category.setDisplay("Inpatient");
+      } else if (type.code().equals(EncounterType.OUTPATIENT.code())) {
+        CodeableConcept concept = medicationResource.getCategoryFirstRep();
+        concept.setText("Outpatient");
+        Coding category = concept.getCodingFirstRep();
+        category.setCode("outpatient");
+        category.setDisplay("Outpatient");
+      }
     }
 
     medicationResource.setAuthoredOn(new Date(medication.start));
@@ -2277,7 +2300,11 @@ public class FhirR4 {
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
-    if (USE_US_CORE_IG) {
+    boolean labsOnly = true;
+    for (Observation observation : report.observations) {
+      labsOnly = labsOnly && observation.category.equalsIgnoreCase("laboratory");
+    }
+    if (labsOnly && USE_US_CORE_IG) {
       Meta meta = new Meta();
       meta.addProfile(
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab");
@@ -2287,8 +2314,10 @@ public class FhirR4 {
       reportResource.addPerformer(encounterResource.getServiceProvider());
     }
     reportResource.setStatus(DiagnosticReportStatus.FINAL);
-    reportResource.addCategory(new CodeableConcept(
-        new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
+    if (labsOnly) {
+      reportResource.addCategory(new CodeableConcept(
+          new Coding("http://terminology.hl7.org/CodeSystem/v2-0074", "LAB", "Laboratory")));
+    }
     reportResource.setCode(mapCodeToCodeableConcept(report.codes.get(0), LOINC_URI));
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
@@ -2334,7 +2363,7 @@ public class FhirR4 {
     reportResource.addCategory(new CodeableConcept(
         new Coding(LOINC_URI, "34117-2", "History and physical note")));
     reportResource.getCategoryFirstRep().addCoding(
-        new Coding(LOINC_URI, "51847-2", "Evaluation+Plan note"));
+        new Coding(LOINC_URI, "51847-2", "Evaluation + Plan note"));
     reportResource.setCode(reportResource.getCategoryFirstRep());
     reportResource.setSubject(new Reference(personEntry.getFullUrl()));
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));

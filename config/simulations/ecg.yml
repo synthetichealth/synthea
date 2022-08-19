@@ -37,7 +37,7 @@ charts:
       axisParamX: time
       axisLabelX: time (s)
       axisLabelY: Current (A)
-      lowerBoundY: -0.05
-      upperBoundY: 0.15
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
       series:
         - param: zf
