@@ -79,7 +79,7 @@ public class BB2RIFExporterTest {
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     generatorOpts.population = numberOfPeople;
-    generatorOpts.seed = 1010;
+    generatorOpts.seed = 505;
     RandomNumberGenerator rand = new DefaultRandomNumberGenerator(generatorOpts.seed);
     generatorOpts.minAge = 70;
     generatorOpts.maxAge = 80;

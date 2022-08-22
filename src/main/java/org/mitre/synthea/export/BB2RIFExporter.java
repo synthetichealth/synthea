@@ -134,6 +134,7 @@ public class BB2RIFExporter {
       new AtomicReference<>(HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   private final CLIA[] cliaLabNumbers;
   private final long claimCutoff;
+  private final long snfPDPMCutover;
 
   private List<LinkedHashMap<String, String>> carrierLookup;
   CodeMapper conditionCodeMapper;
@@ -142,6 +143,9 @@ public class BB2RIFExporter {
   CodeMapper dmeCodeMapper;
   CodeMapper hcpcsCodeMapper;
   CodeMapper betosCodeMapper;
+  CodeMapper snfPPSMapper;
+  CodeMapper snfPDPMMapper;
+  CodeMapper snfRevCntrMapper;
   private Map<String, RandomCollection<String>> externalCodes;
   private Map<Integer, Double> pdeOutOfPocketThresholds;
 
@@ -182,6 +186,9 @@ public class BB2RIFExporter {
     dmeCodeMapper = new CodeMapper("export/dme_code_map.json");
     hcpcsCodeMapper = new CodeMapper("export/hcpcs_code_map.json");
     betosCodeMapper = new CodeMapper("export/betos_code_map.json");
+    snfPPSMapper = new CodeMapper("export/snf_pps_code_map.json");
+    snfPDPMMapper = new CodeMapper("export/snf_pdpm_code_map.json");
+    snfRevCntrMapper = new CodeMapper("export/snf_rev_cntr_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     externalCodes = loadExternalCodes();
     try {
@@ -195,6 +202,7 @@ public class BB2RIFExporter {
       SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
       format.setTimeZone(TimeZone.getTimeZone("UTC"));
       claimCutoff = format.parse(Config.get("exporter.bfd.cutoff_date", "20140529")).getTime();
+      snfPDPMCutover = format.parse("20191001").getTime();
     } catch (IOException | ParseException e) {
       // wrap the exception in a runtime exception.
       // the singleton pattern below doesn't work if the constructor can throw
@@ -3143,24 +3151,46 @@ public class BB2RIFExporter {
       if (noDiagnoses && noProcedures) {
         continue; // skip this encounter
       }
-      String defaultRevCenter = fieldValues.get(SNF.REV_CNTR); // set in spreadsheet
 
-      final String HCPCS_MED_ADMIN = "T1502";
+      /**
+       * PPS and PDPM codes are documented in the "Long-Term Care Facility Resident Assessment
+       * Instrument 3.0 User’s Manual", see
+       * https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/NursingHomeQualityInits/MDS30RAIManual
+       * For PPS and PDPM, the HCPCS code is used to describe patient characteristics that drive
+       * the level of care required, the revenue center captures the type of care provided.
+       **/
+      final String PPS_MED_ADMIN_CODE = "AAA00";
+      final String PDPM_MED_ADMIN_CODE = "KAGD1";
+      final String PHARMACY_REV_CNTR = "0250";
+      final boolean isPDPM = encounter.start > snfPDPMCutover;
+      final String SNF_MED_ADMIN_CODE = isPDPM ? PDPM_MED_ADMIN_CODE : PPS_MED_ADMIN_CODE;
+      final CodeMapper codeMapper = isPDPM ? snfPDPMMapper : snfPPSMapper;
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (ClaimEntry lineItem : encounter.claim.items) {
         if (lineItem.entry instanceof HealthRecord.Procedure) {
+          String snfCode = null;
+          String revCntr = null;
           for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (hcpcsCodeMapper.canMap(code.code)) {
-              String hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-              consolidatedClaimLines.addClaimLine(hcpcsCode, lineItem);
+            if (snfRevCntrMapper.canMap(code.code)) {
+              revCntr = snfRevCntrMapper.map(code.code, person, true);
+            }
+            if (codeMapper.canMap(code.code)) {
+              if (person.rand() < 0.15) {
+                snfCode = codeMapper.map(code.code, person, true);
+                consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem);
+              }
               break; // take the first mappable code for each procedure
             }
+          }
+          if (snfCode == null) {
+            // Add an entry for an empty code (either unmappable or 85% blank)
+            consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem);
           }
         } else if (lineItem.entry instanceof HealthRecord.Medication) {
           HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
           if (med.administration) {
             // Administration of medication
-            consolidatedClaimLines.addClaimLine(HCPCS_MED_ADMIN, lineItem);
+            consolidatedClaimLines.addClaimLine(SNF_MED_ADMIN_CODE, PHARMACY_REV_CNTR, lineItem);
           }
         }
       }
@@ -3172,21 +3202,26 @@ public class BB2RIFExporter {
           fieldValues.put(SNF.HCPCS_CD, lineItem.getCode());
           switch (lineItem.getCode()) {
             case "":
-              // Use default REV_CNTR code from spreadsheet
+              fieldValues.put(SNF.REV_CNTR, lineItem.getRevCntr());
               fieldValues.put(SNF.REV_CNTR_UNIT_CNT, Integer.toString(lineItem.getCount()));
               fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
               fieldValues.remove(SNF.REV_CNTR_NDC_QTY_QLFR_CD);
               break;
-            case HCPCS_MED_ADMIN:
-              // Override default REV_CNTR set in spreadsheet
-              // Pharmacy-general classification
-              fieldValues.put(SNF.REV_CNTR, "0250");
+            case PPS_MED_ADMIN_CODE:
+              fieldValues.put(SNF.REV_CNTR, lineItem.getRevCntr());
+              fieldValues.put(SNF.REV_CNTR_NDC_QTY, Integer.toString(lineItem.getCount()));
+              fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+              fieldValues.remove(SNF.REV_CNTR_UNIT_CNT);
+              break;
+            case PDPM_MED_ADMIN_CODE:
+              // TBD Java 14+ would allow this block to be merged with the prior one
+              fieldValues.put(SNF.REV_CNTR, lineItem.getRevCntr());
               fieldValues.put(SNF.REV_CNTR_NDC_QTY, Integer.toString(lineItem.getCount()));
               fieldValues.put(SNF.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
               fieldValues.remove(SNF.REV_CNTR_UNIT_CNT);
               break;
             default:
-              // Override default REV_CNTR set in spreadsheet
+              // Override mapped REV_CNTR when a PPS code is present and not a medication
               // SNF claim paid under PPS submitted as type of bill (TOB) 21X
               fieldValues.put(SNF.REV_CNTR, "0022");
               fieldValues.put(SNF.REV_CNTR_UNIT_CNT, Integer.toString(lineItem.getCount()));
@@ -3242,10 +3277,12 @@ public class BB2RIFExporter {
     static class ConsolidatedClaimLine extends ClaimCost {
       private int count;
       private String code;
+      private String revCntr;
 
-      public ConsolidatedClaimLine(ClaimCost initial, String code) {
+      public ConsolidatedClaimLine(ClaimCost initial, String code, String revCntr) {
         super(initial);
         this.code = code;
+        this.revCntr = revCntr;
         count = 1;
       }
 
@@ -3262,6 +3299,10 @@ public class BB2RIFExporter {
       public String getCode() {
         return code;
       }
+
+      public String getRevCntr() {
+        return revCntr;
+      }
     }
 
     private Map<String, ConsolidatedClaimLine> uniqueLineItems;
@@ -3271,14 +3312,18 @@ public class BB2RIFExporter {
       uniqueLineItems = new TreeMap<>();
     }
 
-    public void addClaimLine(String hcpcsCode, ClaimCost cost) {
+    public void addClaimLine(String hcpcsCode, String revCntr, ClaimCost cost) {
       if (hcpcsCode == null) {
         hcpcsCode = ""; // TreeMap doesn't like null keys unless you provide a custom comparator
       }
-      if (uniqueLineItems.containsKey(hcpcsCode)) {
-        uniqueLineItems.get(hcpcsCode).addCosts(cost);
+      if (revCntr == null) {
+        revCntr = "";
+      }
+      String key = hcpcsCode + '-' + revCntr;
+      if (uniqueLineItems.containsKey(key)) {
+        uniqueLineItems.get(key).addCosts(cost);
       } else {
-        uniqueLineItems.put(hcpcsCode, new ConsolidatedClaimLine(cost, hcpcsCode));
+        uniqueLineItems.put(key, new ConsolidatedClaimLine(cost, hcpcsCode, revCntr));
       }
     }
 
