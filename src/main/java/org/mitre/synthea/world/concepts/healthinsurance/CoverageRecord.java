@@ -357,28 +357,16 @@ public class CoverageRecord implements Serializable {
   }
 
   /**
-   * Determines whether the given income can afford the coverage based on its expenses.
-   * @param yearlyIncome  The yearly income.
-   * @param time  The time to check for.
-   * @return
-  */
-  public boolean canIncomeAffordExpenses(int yearlyIncome, long time) {
-    return this.incomeRemaining(yearlyIncome, time) > 0;
-  }
-
-  /**
    * Returns the amount of income the person has remaining at the given time.
-   * @param income The amount of income to compare against.
    * @param time  The time to check for.
    * @return  The amount of income the person has remaining.
    */
-  public int incomeRemaining(int income, long time) {
+  public int incomeRemaining(long time) {
+    int income = (int) person.attributes.get(Person.INCOME);
     long timestep = Config.getAsLong("generate.timestep");
+    long birthDate = (long) this.person.attributes.get(Person.BIRTHDATE);
     PlanRecord currentPlanRecord = this.getPlanRecordAtTime(time);
-    int ageInDays = this.person.age(time).getDays();
-    int ageInYears = this.person.age(time).getYears();
-    double timestepDays = Utilities.getDurationDays(timestep);
-    if (currentPlanRecord == null && ageInYears < 1 && ageInDays <= timestepDays) {
+    if (currentPlanRecord == null && time <= (birthDate + timestep)) {
       // Too young to have incurred any expenses yet.
       return income;
     }

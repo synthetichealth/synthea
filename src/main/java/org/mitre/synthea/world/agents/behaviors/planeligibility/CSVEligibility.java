@@ -124,12 +124,12 @@ public class CSVEligibility implements IPlanEligibility {
     if (StringUtils.isBlank(logicalOperator) || logicalOperator.equalsIgnoreCase(OR)) {
       return (BiFunction<Person,Long,Boolean> & Serializable)
           (Person person, Long time) -> eligibilityCriteria.stream().anyMatch(eligibility
-          -> eligibility.isPersonEligible(person, time));
+              -> eligibility.isPersonEligible(person, time));
     }
     if (logicalOperator.equalsIgnoreCase(AND)) {
       return (BiFunction<Person,Long,Boolean> & Serializable)
           (Person person, Long time) -> eligibilityCriteria.stream().allMatch(eligibility
-          -> eligibility.isPersonEligible(person, time));
+              -> eligibility.isPersonEligible(person, time));
     }
     throw new IllegalArgumentException("Invalid logical operator '"
         + logicalOperator + "' for input eligibilities table.");

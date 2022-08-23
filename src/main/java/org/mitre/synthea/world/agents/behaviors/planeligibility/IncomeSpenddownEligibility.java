@@ -69,7 +69,8 @@ public class IncomeSpenddownEligibility implements IPlanEligibility {
       return false;
     }
     // Check for the previous year to see if they were spenddown eligible.
-    int incomeRemaining = person.incomeRemaining(time - Config.getAsLong("generate.timestep"));
+    int incomeRemaining
+        = person.coverage.incomeRemaining(time - Config.getAsLong("generate.timestep"));
     boolean spenddownEligible = incomeRemaining <= yearlySpenddown;
     return spenddownEligible;
   }

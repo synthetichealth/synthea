@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -126,16 +125,6 @@ public class Utilities {
 
   public static long localDateToTimestamp(LocalDate date) {
     return date.atStartOfDay().toInstant(OffsetDateTime.now().getOffset()).toEpochMilli();
-  }
-
-  /**
-   * Get the the number of days from a Unix timestamp.
-   */
-  public static double getDurationDays(long time) {
-    long secondsInDay = 86400L;
-    BigDecimal oneDay = new BigDecimal(secondsInDay * 1000L);
-    BigDecimal durationDays = (new BigDecimal(time)).divide(oneDay);
-    return durationDays.doubleValue();
   }
 
   /**

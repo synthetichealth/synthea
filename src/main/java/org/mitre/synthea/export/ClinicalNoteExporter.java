@@ -108,8 +108,7 @@ public class ClinicalNoteExporter {
     if (plan == null || plan.getPayer() == null) {
       person.attributes.put("ehr_insurance", "unknown insurance coverage");
     } else {
-      Payer payer = plan.getPayer();
-      person.attributes.put("ehr_insurance", payer.getName());
+      person.attributes.put("ehr_insurance", plan.getPayer().getName());
     }
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
     person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));

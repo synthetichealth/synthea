@@ -778,22 +778,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    boolean stillHasIncome
-        = this.coverage.canIncomeAffordExpenses((int) this.attributes.get(Person.INCOME), time);
+    int incomeRemaining = this.coverage.incomeRemaining(time);
+    boolean stillHasIncome = incomeRemaining > 0;
     if (!stillHasIncome) {
       // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanToNoInsurance(time);
     }
     return stillHasIncome;
-  }
-
-  /**
-   * Returns the amount of income the person has remaining at the given time.
-   * @param time  The time to check for.
-   * @return  The amount of income the person has remaining.
-   */
-  public int incomeRemaining(long time) {
-    return this.coverage.incomeRemaining((int) this.attributes.get(Person.INCOME), time);
   }
 
   /**
