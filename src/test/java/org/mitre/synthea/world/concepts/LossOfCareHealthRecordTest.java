@@ -25,10 +25,7 @@ import org.mitre.synthea.world.geography.Location;
 
 public class LossOfCareHealthRecordTest {
 
-  private Payer testPrivatePayer;
-
-  private long time;
-  private Encounter dummyInpatientEncounter;
+  private InsurancePlan testPrivatePlan;
   private final double defaultEncounterCost
           = Config.getAsDouble("generate.costs.default_encounter_cost");
 
@@ -51,16 +48,9 @@ public class LossOfCareHealthRecordTest {
     PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
     Set<Payer> privatePayers = PayerManager.getPrivatePayers();
-    testPrivatePayer = privatePayers.stream().filter(payer ->
+    Payer testPrivatePayer = privatePayers.stream().filter(payer ->
         payer.getName().equals("Test Private Payer 1")).iterator().next();
-
-    // Parse out testPrivatePayer's Copay.
-    Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
-    person.attributes.put(Person.INCOME, 1);
-    dummyInpatientEncounter = person.encounterStart(time, EncounterType.WELLNESS);
-
-    time = Utilities.convertCalendarYearsToTime(1900);
+    testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
   }
 
   @AfterClass
@@ -71,7 +61,7 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfIncomeWithNoInsurance() {
-    time = Utilities.convertCalendarYearsToTime(1900);
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
@@ -101,23 +91,24 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfIncomeDueToCopayOrCoinsurance() {
-    time = Utilities.convertCalendarYearsToTime(1900);
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.01);
     person.attributes.put(Person.GENDER, "M");
-    InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
+    person.attributes.put(Person.INCOME, 1);
+    person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.INPATIENT, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Determine income
 
     double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
-    BigDecimal patientCoinsurance = plan.getPatientCoinsurance();
-    BigDecimal planCopay = plan.determineCopay(dummyInpatientEncounter);
+    BigDecimal patientCoinsurance = testPrivatePlan.getPatientCoinsurance();
+    Encounter dummyInpatientEncounter = person.encounterStart(time, EncounterType.INPATIENT);
+    BigDecimal planCopay = testPrivatePlan.determineCopay(dummyInpatientEncounter);
     BigDecimal income = BigDecimal.valueOf(encounterCost).multiply(patientCoinsurance)
         .multiply(BigDecimal.valueOf(2));
-    if (plan.isCopayBased()) {
+    if (testPrivatePlan.isCopayBased()) {
       income = planCopay.multiply(BigDecimal.valueOf(2));
     }
     income = income.subtract(BigDecimal.ONE);
@@ -158,16 +149,15 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfIncomeDueToMonthlyPremium() {
-    time = Utilities.convertCalendarYearsToTime(1900);
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
-    InsurancePlan plan = testPrivatePayer.getPlans().iterator().next();
-    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of 8 monthly premiums.
-    person.attributes.put(Person.INCOME, plan.getMonthlyPremium()
+    person.attributes.put(Person.INCOME, testPrivatePlan.getMonthlyPremium()
             .multiply(BigDecimal.valueOf(8))
             .subtract(BigDecimal.ONE).intValue());
 
@@ -198,7 +188,7 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfCurrentYearIncomeThenNextYearBegins() {
-    time = Utilities.convertCalendarYearsToTime(1900);
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
