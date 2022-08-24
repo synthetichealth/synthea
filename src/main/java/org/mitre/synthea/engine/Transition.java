@@ -111,16 +111,16 @@ public abstract class Transition implements Serializable {
 
   /**
    * Subclass of DistributedTransition with a focus on telemedicine. Transitions may be made to
-   * three states, "inperson", "virtual" and "emergency". These are transformed into a
+   * three states, "ambulatory", "emergency" and "emergency". These are transformed into a
    * DistributedTransition with weights controlled by properties in the configuration file.
    */
-  public static class TelemedicineTransition extends Transition {
+  public static class TypeOfCareTransition extends Transition {
     private String ambulatory;
     private String telemedicine;
     private String emergency;
     private TelemedicineConfig config;
 
-    public TelemedicineTransition(TelemedicineTransitionOptions options) {
+    public TypeOfCareTransition(TypeOfCareTransitionOptions options) {
       this.ambulatory = options.ambulatory;
       this.emergency = options.emergency;
       this.telemedicine = options.telemedicine;
@@ -174,58 +174,10 @@ public abstract class Transition implements Serializable {
     }
   }
 
-  public static final class TelemedicineTransitionOptions {
+  public static final class TypeOfCareTransitionOptions {
     private String ambulatory;
     private String telemedicine;
     private String emergency;
-
-    /**
-     * Convert this object into a List of DistributedTransitionOptions.
-     *
-     * @return A List of DistributedTransitionOptions based on the global virtual medicine
-     *     properties
-     */
-    public List<ComplexTransitionOption> toOptionList() {
-      List<ComplexTransitionOption> options = new ArrayList<>();
-
-      int telemedicineStartYear = Config.getAsInteger("telemedicine.startyear");
-
-      List<DistributedTransitionOption> preTelemedicineOptions = new ArrayList<>();
-      if (this.ambulatory != null && !this.ambulatory.isEmpty()) {
-        double ambulatoryProb = Config.getAsDouble("telemedicine.pre.ambulatory.probability");
-        preTelemedicineOptions.add(new DistributedTransitionOption(this.ambulatory,
-                ambulatoryProb));
-      }
-      if (this.emergency != null && !this.emergency.isEmpty()) {
-        double emergencyProb = Config.getAsDouble("telemedicine.pre.emergency.probability");
-        preTelemedicineOptions.add(new DistributedTransitionOption(this.emergency, emergencyProb));
-      }
-
-      Logic preTelemedicine = new Logic.Date(telemedicineStartYear,"<");
-      options.add(new ComplexTransitionOption(preTelemedicine, preTelemedicineOptions));
-
-      List<DistributedTransitionOption> duringTelemedicineOptions = new ArrayList<>();
-      if (this.ambulatory != null && !this.ambulatory.isEmpty()) {
-        double ambulatoryProb = Config.getAsDouble("telemedicine.ambulatory.probability");
-        duringTelemedicineOptions.add(new DistributedTransitionOption(this.ambulatory,
-                ambulatoryProb));
-      }
-      if (this.telemedicine != null && !this.telemedicine.isEmpty()) {
-        double telemedicineProb = Config.getAsDouble("telemedicine.telemedicine.probability");
-        duringTelemedicineOptions.add(new DistributedTransitionOption(this.telemedicine,
-                telemedicineProb));
-      }
-      if (this.emergency != null && !this.emergency.isEmpty()) {
-        double emergencyProb = Config.getAsDouble("telemedicine.emergency.probability");
-        duringTelemedicineOptions.add(new DistributedTransitionOption(this.emergency,
-                emergencyProb));
-      }
-
-      Logic duringTelemedicine = new Logic.Date(telemedicineStartYear,">=");
-      options.add(new ComplexTransitionOption(duringTelemedicine, duringTelemedicineOptions));
-
-      return options;
-    }
   }
 
   /**

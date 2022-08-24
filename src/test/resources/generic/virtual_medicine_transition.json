@@ -3,7 +3,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "telemedicine_transition": {
+      "type_of_care_transition": {
         "ambulatory": "Terminal1",
         "telemedicine": "Terminal2",
         "emergency": "Terminal3"
