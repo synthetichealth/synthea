@@ -100,8 +100,8 @@ public class TransitionTest {
   }
 
   @Test
-  public void testTelemedicineTransition() throws Exception {
-    Module telemedicineTransition = TestHelper.getFixture("virtual_medicine_transition.json");
+  public void testTypeOfCareTransition() throws Exception {
+    Module typeOfCareTransition = TestHelper.getFixture("virtual_medicine_transition.json");
 
     Map<String, Integer> counts = new HashMap<>();
     counts.put("Terminal1", 0);
@@ -109,7 +109,7 @@ public class TransitionTest {
     counts.put("Terminal3", 0);
 
     for (int i = 0; i < 100; i++) {
-      telemedicineTransition.process(person, TestHelper.timestamp(2021, 1,1,0,0,0));
+      typeOfCareTransition.process(person, TestHelper.timestamp(2021, 1,1,0,0,0));
       @SuppressWarnings("unchecked")
       List<State> history = (List<State>) person.attributes.remove("Telemedicine Module");
       String finalStateName = history.get(0).name;
