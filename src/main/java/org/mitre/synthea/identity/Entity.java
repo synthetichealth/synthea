@@ -64,7 +64,7 @@ public class Entity {
       return seeds.get(0);
     }
     LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp)
-        .atZone(ZoneId.systemDefault())).toLocalDate();
+        .atZone(ZoneId.of("UTC"))).toLocalDate();
     return seedAt(date);
   }
 
