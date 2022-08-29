@@ -15,8 +15,8 @@ import org.mitre.synthea.world.agents.Person;
 
 /**
  * An eligibility criteria based on whether a person has any of the given attributes.
- * Attributes can be checked with logical expressions (=,>,<,!=,etc.) and multiple checks
- * can be input by dividing attribute logic expressions with "|".
+ * Attributes can be checked with logical expressions (=, >, <, !=, etc.). Multiple logic
+ * checks can be input by dividing attribute logic expressions with "|".
  */
 public class QualifyingAttributesEligibility implements IPlanEligibility {
 

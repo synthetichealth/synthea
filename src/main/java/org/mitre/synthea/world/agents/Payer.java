@@ -167,6 +167,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the name of the payer.
+   * @return the name.
    */
   public String getName() {
     return this.name;
@@ -174,6 +175,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the ownership type of the payer (Government/Private).
+   * @return the ownership type.
    */
   public String getOwnership() {
     return this.ownership;
@@ -181,6 +183,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the priority level of this payer.
+   * @return The priority level of the payer.
    */
   public int getPriority() {
     return this.priority;
@@ -188,6 +191,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the Map of the payer's second class attributes.
+   * @return any second-class attributes.
    */
   public Map<String, Object> getAttributes() {
     return attributes;
@@ -195,6 +199,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the set of plans offered by this payer.
+   * @return the set of plans.
    */
   public Set<InsurancePlan> getPlans() {
     return this.plans;
@@ -215,6 +220,7 @@ public class Payer implements Serializable {
    * Returns whether or not this payer will cover the given entry.
    *
    * @param entry the entry that needs covering.
+   * @return whether this payer covers the care of the entry.
    */
   public boolean coversCare(Entry entry) {
     // Payer.isInNetwork() always returns true. For Now.
@@ -344,6 +350,7 @@ public class Payer implements Serializable {
   /**
    * Returns the total amount of money received from patients.
    * Consists of monthly premium payments.
+   * @return the total revenue.
    */
   public BigDecimal getRevenue() {
     return this.revenue;
@@ -363,6 +370,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the total number of unique customers of this payer.
+   * @return the number of unique customers.
    */
   public int getUniqueCustomers() {
     return customerUtilization.size();
@@ -370,6 +378,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the total number of member years covered by this payer.
+   * @return the number of years covered.
    */
   public int getNumYearsCovered() {
     return this.customerUtilization.values().stream().mapToInt(AtomicInteger::intValue).sum();
@@ -377,6 +386,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of encounters this payer paid for.
+   * @return the number of covered encounters.
    */
   public int getEncountersCoveredCount() {
     return entryUtilization.column("covered-"
@@ -385,6 +395,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of encounters this payer did not cover for their customers.
+   * @reutrn the number of uncovered patient encounters.
    */
   public int getEncountersUncoveredCount() {
     return entryUtilization.column("uncovered-"
@@ -393,6 +404,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of medications this payer paid for.
+   * @return the number of covered medications.
    */
   public int getMedicationsCoveredCount() {
     return entryUtilization.column("covered-"
@@ -401,6 +413,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of medications this payer did not cover for their customers.
+   * @return the number of uncovered patient medications.
    */
   public int getMedicationsUncoveredCount() {
     return entryUtilization.column("uncovered-"
@@ -409,6 +422,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of procedures this payer paid for.
+   * @return the number of covered procedures.
    */
   public int getProceduresCoveredCount() {
     return entryUtilization.column("covered-"
@@ -417,6 +431,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of procedures this payer did not cover for their customers.
+   * @return the number of uncovered patient procedures.
    */
   public int getProceduresUncoveredCount() {
     return entryUtilization.column("uncovered-"
@@ -425,6 +440,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of immunizations this payer paid for.
+   * @return the number of covered immunizations.
    */
   public int getImmunizationsCoveredCount() {
     return entryUtilization.column("covered-"
@@ -433,6 +449,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of immunizations this payer did not cover for their customers.
+   * @return the number of uncovered patient immunizations.
    */
   public int getImmunizationsUncoveredCount() {
     return entryUtilization.column("uncovered-"
@@ -440,14 +457,16 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the amount of money the payer paid to providers.
+   * Returns the amount of money the payer paid for healthcare.
+   * @return the total value of coverage paid.
    */
   public BigDecimal getAmountCovered() {
     return this.costsCovered;
   }
 
   /**
-   * Returns the amount of money the payer did not cover.
+   * Returns the amount of money the payer did not cover.'
+   * @return the total value of uncovered patient healthcare.
    */
   public BigDecimal getAmountUncovered() {
     return this.costsUncovered;
@@ -455,6 +474,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the average of the payer's QOLS of customers over the number of years covered.
+   * @return the average QOLS of the payer's patients.
    */
   public double getQolsAverage() {
     int numYears = this.getNumYearsCovered();
