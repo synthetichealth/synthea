@@ -199,7 +199,7 @@ public class CMSStateCodeMapper {
     providerStateCode.put("Wisconsin", "52");
     providerStateCode.put("Wyoming", "53");
     providerStateCode.put("Africa", "54");
-    providerStateCode.put("California", "55");
+    providerStateCode.put("Asia", "55");
     providerStateCode.put("Canada & Islands", "56");
     providerStateCode.put("Central America and West Indies", "57");
     providerStateCode.put("Europe", "58");
