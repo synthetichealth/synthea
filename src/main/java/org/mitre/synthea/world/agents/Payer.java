@@ -395,7 +395,7 @@ public class Payer implements Serializable {
 
   /**
    * Returns the number of encounters this payer did not cover for their customers.
-   * @reutrn the number of uncovered patient encounters.
+   * @return the number of uncovered patient encounters.
    */
   public int getEncountersUncoveredCount() {
     return entryUtilization.column("uncovered-"
