@@ -255,10 +255,8 @@ public class CSVExporter {
       claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
           includedFiles, excludedFiles);
 
-      if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
-        patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
-            append, includedFiles, excludedFiles);
-      }
+      patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
+          append, includedFiles, excludedFiles);
 
       if (!append) {
         writeCSVHeaders();
@@ -360,11 +358,9 @@ public class CSVExporter {
         + "TRANSFERTYPE,PAYMENTS,ADJUSTMENTS,TRANSFERS,OUTSTANDING,APPOINTMENTID,LINENOTE,"
         + "PATIENTINSURANCEID,FEESCHEDULEID,PROVIDERID,SUPERVISINGPROVIDERID");
     claimsTransactions.write(NEWLINE);
-    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
-      patientExpenses.write("PATIENT_ID,YEAR,PAYER_ID,"
-          + "HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS");
-      patientExpenses.write(NEWLINE);
-    }
+    patientExpenses.write("PATIENT_ID,YEAR,PAYER_ID,"
+        + "HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS");
+    patientExpenses.write(NEWLINE);
   }
 
   /**
@@ -478,9 +474,7 @@ public class CSVExporter {
       String encounterID = encounter(person, personID, encounter);
       String payerID = encounter.claim.plan.getPayer().uuid;
 
-      if (Config.getAsBoolean("exporter.csv.claim_transactions")) {
-        claim(person, encounter.claim, encounter, encounterID, time);
-      }
+      claim(person, encounter.claim, encounter, encounterID, time);
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         /* condition to ignore codes other then retrieved from terminology url */
@@ -510,9 +504,7 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        if (Config.getAsBoolean("exporter.csv.claim_transactions")) {
-          claim(person, medication.claim, encounter, encounterID, time);
-        }
+        claim(person, medication.claim, encounter, encounterID, time);
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -536,9 +528,7 @@ public class CSVExporter {
       }
     }
     CSVExporter.getInstance().exportPayerTransitions(person, time);
-    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
-      CSVExporter.getInstance().exportPatientExpenses(person, time);
-    }
+    CSVExporter.getInstance().exportPatientExpenses(person, time);
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     Calendar cutOff = new GregorianCalendar(1900, 0, 1);
     if (yearsOfHistory > 0) {
@@ -587,9 +577,7 @@ public class CSVExporter {
     supplies.flush();
     claims.flush();
     claimsTransactions.flush();
-    if (Config.getAsBoolean("exporter.csv.patient_expenses")) {
-      patientExpenses.flush();
-    }
+    patientExpenses.flush();
   }
 
   /**

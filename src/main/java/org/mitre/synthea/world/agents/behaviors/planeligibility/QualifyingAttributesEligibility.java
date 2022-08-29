@@ -14,7 +14,9 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * An eligibility criteria based on whether a person has the given attributes.
+ * An eligibility criteria based on whether a person has any of the given attributes.
+ * Attributes can be checked with logical expressions (=,>,<,!=,etc.) and multiple checks
+ * can be input by dividing attribute logic expressions with "|".
  */
 public class QualifyingAttributesEligibility implements IPlanEligibility {
 
@@ -25,8 +27,8 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
    * @param attributeInput  The "|" delimited string or file of attribute logics.
    */
   public QualifyingAttributesEligibility(String attributeInput) {
-    if (attributeInput.contains("/")) {
-      // The input is a file, convert it to a list of attribute expressions.
+    if (attributeInput.endsWith(".csv")) {
+      // The input is a csv file, convert it to a list of attribute expressions.
       qualifyingAttributes = buildQualifyingAttributesFile(attributeInput);
     } else {
       // The input is a set of attributes.
@@ -43,12 +45,12 @@ public class QualifyingAttributesEligibility implements IPlanEligibility {
   private static List<AttributeQualifier> convertAttributeExpressionSet(String attributeInput) {
     List<AttributeQualifier> qualifyingAttributes = new ArrayList<>();
     for (String attributeExpression : Arrays.asList(attributeInput.split("\\|"))) {
-      qualifyingAttributes.add(covertAttributeExpressionToLogic(attributeExpression));
+      qualifyingAttributes.add(convertAttributeExpressionToLogic(attributeExpression));
     }
     return qualifyingAttributes;
   }
 
-  private static AttributeQualifier covertAttributeExpressionToLogic(String attributeExpression) {
+  private static AttributeQualifier convertAttributeExpressionToLogic(String attributeExpression) {
     attributeExpression = attributeExpression.replaceAll("\\s", "");
     // We will specifically iterate over the possible operators in this order.
     String[] operatorRegexes = {"<=", ">=", "!=", "==", "<", ">", "="};

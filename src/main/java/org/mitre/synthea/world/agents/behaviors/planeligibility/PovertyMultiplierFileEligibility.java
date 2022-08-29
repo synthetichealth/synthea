@@ -70,13 +70,9 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
    */
   private void buildPovertyMultiplierEligibility(String state, String fileName) {
     String resource = null;
-    try {
-      resource = Utilities.readResource(fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     Iterator<? extends Map<String, String>> csv = null;
     try {
+      resource = Utilities.readResource(fileName);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();
@@ -93,7 +89,8 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
         return;
       }
     }
-    throw new RuntimeException("Invalid state " + state + " used.");
+    throw new RuntimeException("Poverty Eligibility File '" + fileName
+        + "' does not contain state '" + state + "'.");
   }
 
 }

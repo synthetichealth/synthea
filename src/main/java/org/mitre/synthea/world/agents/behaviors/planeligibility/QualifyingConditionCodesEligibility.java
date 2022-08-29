@@ -30,8 +30,8 @@ public class QualifyingConditionCodesEligibility implements IPlanEligibility {
    * @param codes  The "|" delimited string or file of qualifying attributes.
    */
   public QualifyingConditionCodesEligibility(String codes) {
-    if (codes.contains("/")) {
-      // The input is a file, so we have a file that defines the eligible conditions.
+    if (codes.endsWith(".csv")) {
+      // The input is a csv file, so we have a file that defines the eligible conditions.
       qualifyingCodes = buildQualifyingConditionsFile(codes);
     } else {
       // The input is a string set of codes.
