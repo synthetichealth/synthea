@@ -53,5 +53,8 @@ public class EntityTest {
         .atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
     seed = testEntity.seedAt(duringOpenEnd);
     assertEquals("1416", seed.getSeedId());
+    long startOfFirstSeed = -813960000000L;
+    seed = testEntity.seedAt(startOfFirstSeed);
+    assertEquals("5678", seed.getSeedId());
   }
 }
