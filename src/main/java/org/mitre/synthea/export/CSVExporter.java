@@ -147,7 +147,7 @@ public class CSVExporter {
   /**
    * Charset for specifying the character set of the output files.
    */
-  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
+  private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
