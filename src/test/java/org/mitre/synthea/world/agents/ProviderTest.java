@@ -85,10 +85,10 @@ public class ProviderTest {
   }
 
   @Test
-  public void testAllFacilitiesHaveAnId() {
+  public void testAllFacilitiesHaveAnIdOrNpi() {
     Provider.loadProviders(location, providerRandom);
     for (Provider p : Provider.getProviderList()) {
-      Assert.assertNotNull(p.name + " has a null ID.", p.id);
+      Assert.assertTrue(p.name + " has a null ID and null NPI.", (p.id != null || p.npi != null));
     }
   }
 

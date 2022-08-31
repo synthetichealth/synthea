@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.IProviderFinder;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderNearest;
-import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
 import org.mitre.synthea.world.agents.behaviors.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -52,7 +50,6 @@ public class Provider implements QuadTreeElement, Serializable {
 
   // Provider Selection Behavior algorithm choices:
   public static final String NEAREST = "nearest";
-  public static final String QUALITY = "quality";
   public static final String RANDOM = "random";
   public static final String NETWORK = "network";
 
@@ -76,19 +73,29 @@ public class Provider implements QuadTreeElement, Serializable {
   private String locationUuid;
   public String id;
   public String npi;
+
+  public String cmsProviderNum;
+  public String cmsPin;
+  public String cmsUpin;
+  public String cmsCategory;
+  public String cmsProviderType;
+  public String cmsRegion;
+  public String cliaNumber;
+  public Integer bedCount;
+
   public String name;
   private Location location;
   public String address;
   public String city;
   public String state;
   public String zip;
+  public String fipsCountyCode;
+
   public String phone;
-  public String rawType;
   public ProviderType type;
   public String ownership;
   /** institutional (e.g. hospital) else professional (e.g. PCP) */
   public boolean institutional;
-  public int quality;
   private double revenue;
   private Point2D.Double coordinates;
   public ArrayList<EncounterType> servicesProvided;
@@ -150,9 +157,6 @@ public class Provider implements QuadTreeElement, Serializable {
     String behavior =
         Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
     switch (behavior) {
-      case QUALITY:
-        finder = new ProviderFinderQuality();
-        break;
       case RANDOM:
       case NETWORK:
         finder = new ProviderFinderRandom();
@@ -217,11 +221,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * @return The number of beds, if they exist, otherwise null.
    */
   public Integer getBedCount() {
-    if (attributes.containsKey("bed_count")) {
-      return Integer.parseInt(attributes.get("bed_count").toString());
-    } else {
-      return null;
-    }
+    return bedCount;
   }
 
   /**
@@ -468,7 +468,8 @@ public class Provider implements QuadTreeElement, Serializable {
             (providerType == ProviderType.HOSPITAL || providerType == ProviderType.NURSING);
         parsed.servicesProvided.addAll(servicesProvided);
 
-        if ("Yes".equals(row.remove("emergency"))) {
+        String emergency = row.remove("emergency");
+        if ("Yes".equalsIgnoreCase(emergency) || "true".equalsIgnoreCase(emergency)) {
           parsed.servicesProvided.add(EncounterType.EMERGENCY);
         }
 
@@ -658,14 +659,20 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
-    // using remove instead of get here so that we can iterate over the remaining keys later
+    // using 'remove' instead of 'get' so that we can iterate over the remaining keys later
     d.id = line.remove("id");
-    d.npi = toProviderNPI(d.id, loaded);
+    d.npi = line.remove("npi");
+    if (d.npi == null) {
+      d.npi = toProviderNPI(d.id, loaded);
+    }
+    if (d.id == null) {
+      d.id = d.npi;
+    }
     d.name = line.remove("name");
     if (d.name == null || d.name.isEmpty()) {
       d.name = d.id;
     }
-    String base = d.id + d.name;
+    String base = d.npi + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     d.locationUuid = UUID.nameUUIDFromBytes(
             new StringBuilder(base).reverse().toString().getBytes()).toString();
@@ -673,18 +680,42 @@ public class Provider implements QuadTreeElement, Serializable {
     d.city = line.remove("city");
     d.state = line.remove("state");
     d.zip = line.remove("zip");
+    d.fipsCountyCode = line.remove("fips_county");
     d.phone = line.remove("phone");
-    d.rawType = line.remove("type");
     d.ownership = line.remove("ownership");
-    try {
-      d.quality = Integer.parseInt(line.remove("quality"));
-    } catch (Exception e) {
-      // Swallow invalid format data
-      d.quality = 0;
+
+    d.cmsCategory = line.remove("category");
+    d.cmsProviderType = line.remove("provider_type_code");
+    d.cmsProviderNum = line.remove("provider_num");
+    d.cmsPin = line.remove("pin");
+    d.cmsUpin = line.remove("upin");
+    d.cmsRegion = line.remove("region_code");
+    d.cliaNumber = line.remove("clia_lab_number");
+
+    String bedCount = line.remove("bed_count");
+    if (bedCount != null) {
+      try {
+        d.bedCount = Integer.parseInt(bedCount);
+      } catch (Exception e) {
+        // Ignore, this is an optional field.
+      }
+    }
+
+    String slat = null;
+    String slon = null;
+    if (line.containsKey("lat")) {
+      slat = line.remove("lat");
+    } else if (line.containsKey("LAT")) {
+      slat = line.remove("LAT");
+    }
+    if (line.containsKey("lon")) {
+      slon = line.remove("lon");
+    } else if (line.containsKey("LON")) {
+      slon = line.remove("LON");
     }
     try {
-      double lat = Double.parseDouble(line.remove("LAT"));
-      double lon = Double.parseDouble(line.remove("LON"));
+      double lat = Double.parseDouble(slat);
+      double lon = Double.parseDouble(slon);
       d.coordinates.setLocation(lon, lat);
     } catch (Exception e) {
       d.coordinates.setLocation(0.0, 0.0);

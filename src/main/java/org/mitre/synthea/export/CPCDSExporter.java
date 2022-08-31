@@ -955,7 +955,7 @@ public class CPCDSExporter {
       s.append(clean(encounter.provider.state)).append(',');
       s.append(clean(encounter.provider.zip)).append(',');
       s.append(clean(encounter.provider.phone)).append(',');
-      s.append(clean(encounter.provider.rawType)).append(NEWLINE);
+      s.append(clean(encounter.provider.cmsProviderType)).append(NEWLINE);
 
       exportedHospitals.add(attributes.getServiceSiteNPI());
 
@@ -1043,9 +1043,9 @@ public class CPCDSExporter {
       isInpatient(encounter.type);
 
       String doctorNPI = (encounter.clinician != null
-              ? String.valueOf(encounter.clinician.identifier) : "");
+              ? String.valueOf(encounter.clinician.npi) : "");
       String hospitalNPI = (encounter.provider != null
-              ? String.valueOf(encounter.provider.id) : "");
+              ? String.valueOf(encounter.provider.npi) : "");
       String newHospitalID = String.valueOf(randomLongWithBounds(100000, 999999))
               + String.valueOf(randomLongWithBounds(100000, 999999));
       String newPractitionerID = String.valueOf(randomLongWithBounds(100000, 999999))
