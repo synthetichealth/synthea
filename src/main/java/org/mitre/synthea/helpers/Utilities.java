@@ -101,6 +101,7 @@ public class Utilities {
   public static long convertCalendarYearsToTime(int years) {
     Calendar c = Calendar.getInstance();
     c.clear();
+    c.setTimeZone(TimeZone.getTimeZone("GMT"));    
     c.set(years, 0, 1, 0, 0, 0);
     return c.getTimeInMillis();
   }

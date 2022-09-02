@@ -30,9 +30,9 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String AND = "and";
   private static final String OR = "or";
 
-  // A map of column names to the type of eligibilty it should create.
+  // A map of column names to the type of eligibility it should create.
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
-  // An eligibilty logic function that takes a person and the current time.
+  // An eligibility logic function that takes a person and the current time.
   private final BiFunction<Person, Long, Boolean> eligibilityLogic;
   private final List<IPlanEligibility> eligibilityCriteria;
 
@@ -112,9 +112,9 @@ public class CSVEligibility implements IPlanEligibility {
   }
 
   /**
-   * Converts the given logical operator string to an eligibilty logic.
+   * Converts the given logical operator string to an eligibility logic.
    * @param logicalOperator The input string.
-   * @return  The converted eligibilty logic.
+   * @return  The converted eligibility logic.
    */
   private BiFunction<Person, Long, Boolean> convertToLogic(String logicalOperator) {
     if (logicalOperator == null) {

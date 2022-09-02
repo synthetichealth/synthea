@@ -45,7 +45,6 @@ public interface IPlanFinder {
     return plan.accepts(person, time)
         && (person.canAffordPlan(plan) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
-        && plan.getPayer().isInNetwork(null)
         && (plan.coversService(null)); // For a null service, Plan.coversService returns true.
   }
 

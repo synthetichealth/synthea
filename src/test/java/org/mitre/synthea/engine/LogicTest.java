@@ -64,7 +64,8 @@ public class LogicTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
-    PayerManager.loadPayers(new Location("Massachusetts", null));
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(time);
 

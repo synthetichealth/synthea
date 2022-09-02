@@ -29,7 +29,8 @@ public class InsurancePlan implements Serializable {
   private final BigDecimal monthlyPremium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
-  // Plan Eligibilty.
+  private final String insuranceStatus;
+  // Plan Eligibility.
   private final IPlanEligibility planEligibility;
   // Start/end date of plan availablity.
   private final Range<Long> activeTimeRange;
@@ -39,10 +40,10 @@ public class InsurancePlan implements Serializable {
    * @param payer The plan's payer.
    * @param servicesCovered The services covered.
    * @param deductible  The deductible.
-   * @param defaultCoinsurance  The default coinsuranc.
+   * @param defaultCoinsurance  The default coinsurance.
    * @param defaultCopay  The default copay.
-   * @param monthlyPremium  The montly premium.
-   * @param eligibilityName The eligibilty algorithm to use.
+   * @param monthlyPremium  The monthly premium.
+   * @param eligibilityName The eligibility algorithm to use.
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
       BigDecimal defaultCoinsurance, BigDecimal defaultCopay, BigDecimal monthlyPremium,
@@ -63,12 +64,13 @@ public class InsurancePlan implements Serializable {
     this.activeTimeRange = Range.between(activeTimeStart, activeTimeEnd);
     // Set the payer's eligibility criteria.
     this.planEligibility = PlanEligibilityFinder.getEligibilityAlgorithm(eligibilityName);
+    this.insuranceStatus = this.determineInsuranceStatus();
   }
 
   /**
-   * Returns wether this plan is active at the given time.
+   * Returns whether this plan is active at the given time.
    * @param time The time to check if the plan is active at.
-   * @return wether this plan is active at the given time.
+   * @return whether this plan is active at the given time.
    */
   public boolean isActive(long time) {
     return this.activeTimeRange.contains(time);
@@ -109,14 +111,11 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Pays the plan's to the Payer, increasing their revenue.
+   * Pays the plan's premium to the Payer, increasing their revenue.
    *
    * @return the monthly premium amount.
    */
   public BigDecimal payMonthlyPremium() {
-    // This will need to be updated to pull the correct monthly premium from the
-    // correct plan for a given person.
-    // Will need to take a person's ID?
     BigDecimal premiumPaid = this.getMonthlyPremium();
     this.payer.addRevenue(premiumPaid);
     return premiumPaid;
@@ -126,12 +125,28 @@ public class InsurancePlan implements Serializable {
     return this.payer;
   }
 
+
   /**
-   * Returns the insurance status dictated by this plan's payer.
+   * Determines and returns the insurance status that this plan's payer would have
+   * for its customers.
    * @return  The insurance status.
    */
-  public String getAssociatedInsuranceStatus() {
-    return this.payer.getAssociatedInsuranceStatus();
+  private String determineInsuranceStatus() {
+    if (this.isNoInsurance()) {
+      return "none";
+    }
+    if (this.payer.isGovernmentPayer()) {
+      return this.payer.getName().toLowerCase();
+    }
+    return "private";
+  }
+
+  /**
+   * Returns the insurance status type of this plan.
+   * @return  The insurance status.
+   */
+  public String getInsuranceStatus() {
+    return this.insuranceStatus;
   }
 
   /**
@@ -159,9 +174,9 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Determines whether this plan covere the request service type.
+   * Determines whether this plan covers the given service type.
    * @param entry The entry to cover.
-   * @return Whether this plan covere the request service type.
+   * @return Whether this plan covers the given service type.
    */
   public boolean coversService(Entry entry) {
     if (entry == null) {
@@ -170,8 +185,7 @@ public class InsurancePlan implements Serializable {
     String service = entry.type;
     return (service == null
         || this.servicesCovered.contains(service)
-        || this.servicesCovered.contains("*"))
-        && this.payer.isInNetwork(null);
+        || this.servicesCovered.contains("*"));
   }
 
   /**
@@ -256,7 +270,7 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
-   * Returns wether this plan is copay-based.
+   * Returns whether this plan is copay-based.
    * @return whether this is a copay-based plan.
    */
   public boolean isCopayBased() {

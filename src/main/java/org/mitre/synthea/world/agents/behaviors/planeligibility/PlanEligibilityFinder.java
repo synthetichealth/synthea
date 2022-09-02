@@ -25,7 +25,7 @@ public class PlanEligibilityFinder {
   /**
    * Returns the correct elgibility algorithm based on the given string.
    * @param eligibility The name of the eligibility type.
-   * @return  The requested payer eligibilty algorithm.
+   * @return  The requested payer eligibility algorithm.
    */
   public static IPlanEligibility getEligibilityAlgorithm(String eligibility) {
     String cleanedEigibility = eligibility.replaceAll("\\s", "").toUpperCase();

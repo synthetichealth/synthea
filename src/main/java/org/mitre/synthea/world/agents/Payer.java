@@ -206,27 +206,13 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Is the given Provider in this Payer's network?.
-   * Currently just returns true until Networks are implemented.
-   *
-   * @param provider Provider to consider
-   * @return whether or not the provider is in the payer network
-   */
-  public boolean isInNetwork(Provider provider) {
-    return true;
-  }
-
-  /**
    * Returns whether or not this payer will cover the given entry.
    *
    * @param entry the entry that needs covering.
    * @return whether this payer covers the care of the entry.
    */
   public boolean coversCare(Entry entry) {
-    // Payer.isInNetwork() always returns true. For Now.
-    return this.plans.iterator().next().coversService(entry)
-        && this.isInNetwork(null);
-    // Entry doesn't have a provider but encounter does, need to find a way to get provider.
+    return this.plans.iterator().next().coversService(entry);
   }
 
   /**
@@ -553,20 +539,6 @@ public class Payer implements Serializable {
 
   public boolean isGovernmentPayer() {
     return this.ownership.equals(PayerManager.GOV_OWNERSHIP);
-  }
-
-  /**
-   * Returns the insurance status that this payer would provide it's customers.
-   * @return
-   */
-  public String getAssociatedInsuranceStatus() {
-    if (this.isNoInsurance()) {
-      return "none";
-    }
-    if (this.isGovernmentPayer()) {
-      return this.name;
-    }
-    return "private";
   }
 
   /**

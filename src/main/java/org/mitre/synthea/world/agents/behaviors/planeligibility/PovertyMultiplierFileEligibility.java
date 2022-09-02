@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -15,15 +15,11 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class PovertyMultiplierFileEligibility implements IPlanEligibility {
 
-  private static final double povertyLevel = Config.getAsDouble(
-      "generate.demographics.socioeconomic.income.poverty", 11000);
-
   // Income limits.
   private static double povertyAge1;  // Poverty multiplier ages 0-1.
   private static double povertyAge5;  // Poverty multiplier ages 2-5.
   private static double povertyAge18;  // Poverty multiplier ages 6-18.
   private static double povertyPregnant;  // Poverty multiplier for pregnant women.
-  private static double povertyParent;  // Poverty multiplier for parents.
   private static double povertyAdult;  // Poverty multiplier for ages 19+.
 
   public PovertyMultiplierFileEligibility(String state, String fileName) {
@@ -34,7 +30,7 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
   public boolean isPersonEligible(Person person, long time) {
     int income = (Integer) person.attributes.get(Person.INCOME);
     double povertymultiplier = determinePovertyMultiplier(person, time);
-    double incomeThreshold = povertymultiplier * povertyLevel;
+    double incomeThreshold = povertymultiplier * HealthInsuranceModule.povertyLevel;
     return (income <= incomeThreshold);
   }
 
@@ -45,9 +41,6 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
    * @return  The poverty multuplier for this person at this time.
    */
   private double determinePovertyMultiplier(Person person, long time) {
-    boolean female = (person.attributes.get(Person.GENDER).equals("F"));
-    boolean pregnant = (person.attributes.containsKey("pregnant")
-        && (boolean) person.attributes.get("pregnant"));
     int age = person.ageInYears(time);
     if (age <= 1) {
       return povertyAge1;
@@ -58,6 +51,9 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
     if (age <= 18) {
       return povertyAge18;
     }
+    boolean female = (person.attributes.get(Person.GENDER).equals("F"));
+    boolean pregnant = (person.attributes.containsKey("pregnant")
+        && (boolean) person.attributes.get("pregnant"));
     if (female && pregnant) {
       return povertyPregnant;
     }
@@ -84,7 +80,6 @@ public class PovertyMultiplierFileEligibility implements IPlanEligibility {
         povertyAge5 = Double.parseDouble(row.get("2-5"));
         povertyAge18 = Double.parseDouble(row.get("6-18"));
         povertyPregnant = Double.parseDouble(row.get("pregnant"));
-        povertyParent = Double.parseDouble(row.get("parent"));
         povertyAdult = Double.parseDouble(row.get("adult"));
         return;
       }

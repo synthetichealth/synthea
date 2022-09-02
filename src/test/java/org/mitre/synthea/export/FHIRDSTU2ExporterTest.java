@@ -65,8 +65,9 @@ public class FHIRDSTU2ExporterTest {
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
     // Ensure plan and eligibilities are loaded.
-    PlanEligibilityFinder.buildPlanEligibilities(Config.get("test_state.default", "Massachusetts"),
-        Config.get("generate.payers.insurance_plans.eligibilities_file"));
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    String eligibilityFile = Config.get("generate.payers.insurance_plans.eligibilities_file");
+    PlanEligibilityFinder.buildPlanEligibilities(testStateDefault, eligibilityFile);
     PayerManager.loadNoInsurance();
   }
 
@@ -241,7 +242,8 @@ public class FHIRDSTU2ExporterTest {
     int age = 35;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    PayerManager.loadPayers(new Location("Massachusetts", null));
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(time);
 

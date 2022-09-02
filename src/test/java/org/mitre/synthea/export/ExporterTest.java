@@ -52,7 +52,8 @@ public class ExporterTest {
     Provider.loadProviders(location, ProviderTest.providerRandom);
     record = patient.record;
     // Ensure Person's Payer is not null.
-    PayerManager.loadPayers(new Location("Massachusetts", null));
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
     patient.coverage.setPlanToNoInsurance((long) patient.attributes.get(Person.BIRTHDATE));
     patient.coverage.setPlanToNoInsurance(time);
   }

@@ -43,7 +43,6 @@ public class PayerTest {
   private static HealthInsuranceModule healthInsuranceModule;
   private static Person person;
   private static double medicaidLevel;
-  private static double povertyLevel;
   private static long mandateTime;
 
   /**
@@ -56,9 +55,7 @@ public class PayerTest {
     testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsuranceModule = new HealthInsuranceModule();
-    povertyLevel =
-            Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
-    medicaidLevel = 1.33 * povertyLevel;
+    medicaidLevel = 1.33 * HealthInsuranceModule.povertyLevel;
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
     mandateTime = Utilities.convertCalendarYearsToTime(mandateYear);
@@ -269,7 +266,7 @@ public class PayerTest {
   }
 
   @Test
-  public void receiveMedicaidPregnancyElgible() {
+  public void receiveMedicaidPregnancyEligible() {
     long time = Utilities.convertCalendarYearsToTime(1980);
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
@@ -277,7 +274,7 @@ public class PayerTest {
     person.attributes.put("pregnant", true);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // A pregnant person is eligble in MA when their income is less than 2 * the poverty level.
-    person.attributes.put(Person.INCOME, (int) (povertyLevel * 2) - 1);
+    person.attributes.put(Person.INCOME, (int) (HealthInsuranceModule.povertyLevel * 2) - 1);
     healthInsuranceModule.process(person, time);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(time).getPayer().getName());
@@ -885,12 +882,6 @@ public class PayerTest {
         + " The payer is " + plan.getPayer().getName() + ". Expected " + expectedPaid + " but was "
         + coinsurancePaid.add(copayPaid) + ".",
         expectedPaid.compareTo(coinsurancePaid.add(copayPaid)) == 0);
-  }
-
-  @Test
-  public void payerInProviderNetwork() {
-    // For now, this returns true by default because it is not yet implememted.
-    assertTrue(testPrivatePayer1.isInNetwork(null));
   }
 
   @Test

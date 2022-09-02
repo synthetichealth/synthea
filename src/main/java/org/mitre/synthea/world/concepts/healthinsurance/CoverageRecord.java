@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -110,7 +109,6 @@ public class CoverageRecord implements Serializable {
   @JSONSkip
   private Person person;
   private List<PlanRecord> planHistory;
-  private String insuranceStatus;
 
   /**
    * Create a new CoverageRecord for the given Person.
@@ -163,7 +161,7 @@ public class CoverageRecord implements Serializable {
     }
     this.planHistory.add(planRecord);
     // Set the person's insurance status.
-    this.insuranceStatus = newPlan.getAssociatedInsuranceStatus();
+    person.attributes.put(Person.INSURANCE_STATUS, newPlan.getInsuranceStatus());
   }
 
   /**
