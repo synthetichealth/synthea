@@ -85,8 +85,10 @@ public class HospitalExporterTestR4 {
     Config.set("exporter.baseDirectory", tempOutputFolder.toString());
     Config.set("exporter.hospital.fhir.export", "true");
     Config.set("exporter.fhir.bulk_data", "true");
+    Config.set("exporter.fhir.use_us_core_ig", "true");
     Config.set("exporter.fhir.transaction_bundle", "false");
     FhirR4.TRANSACTION_BUNDLE = false; // set this manually, in case it has already been loaded.
+    FhirR4.USE_US_CORE_IG = true;
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
