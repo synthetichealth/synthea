@@ -123,7 +123,7 @@ test {
   }
   maxHeapSize = "6144m"
   jacoco {
-    excludes = ["org.hl7.*", "com.google.*"]
+    includes = ["org.mitre.*"]
   }
 }
 
