@@ -1,17 +1,11 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+
 import com.google.common.collect.Table;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hl7.fhir.dstu3.model.Bundle;
@@ -50,21 +44,21 @@ public abstract class HospitalExporterStu3 {
         }
       }
 
-      String bundleJson = FhirStu3.getContext().newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
+      File outputFolder = Exporter.getOutputFolder("fhir_stu3", null);
+      IParser parser = FhirStu3.getContext().newJsonParser();
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir_stu3");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (ndjson) {
+        Path outFilePath = outputFolder.toPath().resolve("Organization." + stop + ".ndjson");
+        for (BundleEntryComponent entry : bundle.getEntry()) {
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          Exporter.appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        parser = parser.setPrettyPrint(true);
+        Path outFilePath = outputFolder.toPath().resolve("hospitalInformation" + stop + ".json");
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Exporter.overwriteFile(outFilePath, bundleJson);
       }
     }
   }
