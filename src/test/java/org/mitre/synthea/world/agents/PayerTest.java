@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -203,6 +204,7 @@ public class PayerTest {
 
   @Test
   public void receiveMedicareAgeEligible() {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     final int birthYear = 1900;
     long birthTime = Utilities.convertCalendarYearsToTime(birthYear);
     Person person = new Person(0L);
