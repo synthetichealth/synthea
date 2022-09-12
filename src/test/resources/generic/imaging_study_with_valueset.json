@@ -44,7 +44,7 @@
             "system": "SNOMED-CT",
             "code": "719489001",
             "display": "Structure of right patella",
-            "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<6757004"
+            "value_set": "http://snomed.info/sct?fhir_vs=ecl%2F%3C%3C6757004"
           },
           "modality": {
             "system": "DICOM-DCM",

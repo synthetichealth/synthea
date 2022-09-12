@@ -157,7 +157,7 @@ public class CodeResolveAndExportTest {
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";
     encounter.reason = new Code(SNOMED_URI, reasonCode, reasonDisplay);
-    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<418307001";
+    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C418307001";
     encounter.codes.add(encounter.reason);
 
     String observationDisplay = OBSERVATION_DISPLAY;

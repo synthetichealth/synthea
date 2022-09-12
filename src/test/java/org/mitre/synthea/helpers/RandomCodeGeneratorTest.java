@@ -45,7 +45,7 @@ public class RandomCodeGeneratorTest {
 
     Code code = RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
 
-   // Assert.assertEquals(SNOMED_URI, code.system);
+    Assert.assertEquals(SNOMED_URI, code.system);
     Assert.assertEquals("312858004", code.code);
     Assert.assertEquals("Neonatal tracheobronchial haemorrhage", code.display);
   }
@@ -96,7 +96,8 @@ public class RandomCodeGeneratorTest {
     try {
       RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
     } catch (RuntimeException e) {
-      Assert.assertEquals("ValueSet contains element does not contain system, code and display", e.getMessage());
+      Assert.assertEquals("ValueSet contains element does not contain system, code and display",
+              e.getMessage());
       return;
     }
     Assert.fail("Should have thrown a missing elements exception");
@@ -109,7 +110,8 @@ public class RandomCodeGeneratorTest {
     try {
       RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
     } catch (RuntimeException e) {
-      Assert.assertEquals("JsonProcessingException while parsing valueSet response", e.getMessage());
+      Assert.assertEquals("JsonProcessingException while parsing valueSet response",
+              e.getMessage());
       return;
     }
     Assert.fail("Should have thrown a JsonProcessingException exception");
