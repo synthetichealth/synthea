@@ -2,6 +2,7 @@ package org.mitre.synthea.export;
 
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
 import org.mitre.synthea.world.agents.Person;
@@ -34,6 +35,9 @@ public class FhirR4PatientHome {
       // Not really generating a random UUID. Given that this is not tied to a particular provider
       // or person, this just makes up a person with a hardcoded random seed.
       patientHome.setId(new Person(1).randUUID().toString());
+      Identifier identifier = patientHome.addIdentifier();
+      identifier.setSystem(FhirR4.SYNTHEA_IDENTIFIER);
+      identifier.setValue(patientHome.getId());
     }
     return patientHome;
   }
