@@ -47,7 +47,7 @@ jobs:
   
   check_java11:
     runs-on: ubuntu-latest
-    name: Java 8
+    name: Java 11
     
     steps:
       - uses: actions/checkout@v2
