@@ -59,9 +59,8 @@ import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
@@ -945,7 +944,8 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1094,11 +1094,12 @@ public class BB2RIFExporter {
           fieldValues.put(OUTPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost)));
           fieldValues.put(OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance.add(lineItem.payer)));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
           fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
         }
 
@@ -1170,7 +1171,8 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -1353,16 +1355,17 @@ public class BB2RIFExporter {
           fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
-          if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(INPATIENT.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -1442,7 +1445,8 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
@@ -1560,13 +1564,13 @@ public class BB2RIFExporter {
           }
           fieldValues.put(CARRIER.LINE_NDC_CD, ndcCode);
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.deductible));
+                  String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.coinsurance));
+                  String.format("%.2f", lineItem.coinsurancePaidByPayer));
 
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
-          BigDecimal providerAmount = lineItem.coinsurance.add(lineItem.payer);
+          BigDecimal providerAmount = lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer);
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
@@ -2218,7 +2222,7 @@ public class BB2RIFExporter {
       fieldValues.put(PDE.PTNT_PAY_AMT,
           String.format("%.2f", fill.medication.claim.getPatientCost()));
       fieldValues.put(PDE.PLRO_AMT,
-          String.format("%.2f", fill.medication.claim.totals.secondaryPayer));
+          String.format("%.2f", fill.medication.claim.totals.paidBySecondaryPayer));
       fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
           String.format("%.2f", fill.medication.claim.getCoveredCost()));
       fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
@@ -2444,10 +2448,10 @@ public class BB2RIFExporter {
         }
       }
       fieldValues.put(DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-          String.format("%.2f", subTotals.deductible));
+          String.format("%.2f", subTotals.deductiblePaidByPatient));
       fieldValues.put(DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
           String.format("%.2f", subTotals.cost));
-      BigDecimal paidAmount = subTotals.coinsurance.add(subTotals.payer);
+      BigDecimal paidAmount = subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer);
       fieldValues.put(DME.CARR_CLM_PRMRY_PYR_PD_AMT,
           String.format("%.2f", paidAmount));
       fieldValues.put(DME.NCH_CARR_CLM_ALOWD_AMT,
@@ -2491,11 +2495,11 @@ public class BB2RIFExporter {
                           DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
           fieldValues.put(DME.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.deductible));
+                  String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(DME.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.getCoinsurancePaid()));
           // LINE_BENE_PMT_AMT and NCH_CLM_BENE_PMT_AMT are always 0, set in field value spreadsheet
-          BigDecimal providerAmount = lineItem.coinsurance.add(lineItem.payer);
+          BigDecimal providerAmount = lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer);
           fieldValues.put(DME.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(DME.LINE_NCH_PMT_AMT,
@@ -2573,7 +2577,8 @@ public class BB2RIFExporter {
 
       fieldValues.put(HHA.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -2681,20 +2686,21 @@ public class BB2RIFExporter {
                       .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
                       .setScale(2, RoundingMode.HALF_EVEN)));
           fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance.add(lineItem.payer)));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
           fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
-          if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -2771,7 +2777,8 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HOSPICE.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -2890,20 +2897,21 @@ public class BB2RIFExporter {
                       .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
                       .setScale(2, RoundingMode.HALF_EVEN)));
           fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurance.add(lineItem.payer)));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
           fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
-          if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(HOSPICE.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {
@@ -2983,7 +2991,8 @@ public class BB2RIFExporter {
 
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.payer == Payer.getGovernmentPayer(HealthInsuranceModule.MEDICARE)) {
+      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+          .getGovernmentPayerPlan()) {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
@@ -3160,16 +3169,17 @@ public class BB2RIFExporter {
           fieldValues.put(SNF.REV_CNTR_TOT_CHRG_AMT,
               String.format("%.2f", lineItem.cost));
           fieldValues.put(SNF.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copay.add(lineItem.deductible).add(lineItem.pocket)));
-          if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) == 0) {
+              String.format("%.2f", lineItem.copayPaidByPatient
+              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible or coinsurance
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductible.compareTo(Claim.ZERO_CENTS) > 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
             // Subject to deductible and coinsurance
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.pocket.compareTo(Claim.ZERO_CENTS) == 0) {
+          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
             // Not subject to deductible
             fieldValues.put(SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
           } else {

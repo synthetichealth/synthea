@@ -16,11 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
-import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
@@ -31,14 +29,14 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.ValueGenerator;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.modules.QualityOfLifeModule;
-import org.mitre.synthea.world.concepts.Claim;
-import org.mitre.synthea.world.concepts.CoverageRecord;
-import org.mitre.synthea.world.concepts.CoverageRecord.Plan;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
@@ -109,6 +107,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";
   public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
   public static final String ENTITY = "ENTITY";
+  public static final String INSURANCE_STATUS = "insurance_status";
 
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
@@ -762,41 +761,31 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * If a person's income is greater than a year of montlhy premiums + deductible
    * then they can afford the insurance.
    *
-   * @param payer the payer to check.
+   * @param plan the plan to check.
    */
-  public boolean canAffordPayer(Payer payer) {
+  public boolean canAffordPlan(InsurancePlan plan) {
+    double incomePercentage
+        = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
-    BigDecimal yearlyPremiumTotal = payer.getMonthlyPremium()
-            .multiply(BigDecimal.valueOf(12))
-            .setScale(2, RoundingMode.HALF_EVEN);
-    BigDecimal yearlyDeductible = payer.getDeductible();
-    return income.compareTo(yearlyPremiumTotal.add(yearlyDeductible)) > 0;
+    BigDecimal yearlyCost = plan.getYearlyCost();
+    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) == 1;
   }
 
   /**
    * Returns whether the person's yearly expenses exceed their income. If they do,
    * then they will switch to No Insurance.
-   * NOTE: This could result in person being kicked off Medicaid/Medicare.
+   * Note: This could result in person being kicked off Medicaid/Medicare.
    *
    * @param time the current time
    */
   private boolean stillHasIncome(long time) {
-    CoverageRecord.Plan plan = coverage.getPlanAtTime(time);
-    BigDecimal currentYearlyExpenses;
-    if (plan != null) {
-      currentYearlyExpenses = plan.totalExpenses;
-    } else {
-      currentYearlyExpenses = Claim.ZERO_CENTS;
+    int incomeRemaining = this.coverage.incomeRemaining(time);
+    boolean stillHasIncome = incomeRemaining > 0;
+    if (!stillHasIncome) {
+      // Person no longer has income for the year. They will switch to No Insurance.
+      this.coverage.setPlanToNoInsurance(time);
     }
-
-    BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
-    if (income.compareTo(currentYearlyExpenses) > 0) {
-      // Person has remaining income for the year.
-      return true;
-    }
-    // Person no longer has income for the year. They will switch to No Insurance.
-    this.coverage.setPayerAtTime(time, Payer.noInsurance);
-    return false;
+    return stillHasIncome;
   }
 
   /**
@@ -819,10 +808,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      Plan plan = this.coverage.getPlanAtTime(time);
-      plan.totalExpenses = plan.totalExpenses.add(plan.payer.payMonthlyPremium());
-      // Pay secondary insurance, if applicable
-      plan.totalExpenses = plan.totalExpenses.add(plan.secondaryPayer.payMonthlyPremium());
+      PlanRecord planRecord = this.coverage.getPlanRecordAtTime(time);
+      planRecord.payMonthlyPremiums();
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

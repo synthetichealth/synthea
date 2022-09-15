@@ -21,6 +21,7 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.PayerManager;
 
 public class EntityManagerTest {
 
@@ -58,6 +59,7 @@ public class EntityManagerTest {
     Generator.DEFAULT_STATE =  Config.get("test_state.default", "Massachusetts");
     Generator.entityManager = null;
     TestHelper.loadTestProperties();
+    PayerManager.clear();
   }
 
   @Test
@@ -72,6 +74,7 @@ public class EntityManagerTest {
     Generator.DEFAULT_STATE = "North Carolina";
     String baseDirectory = tempFolder.newFolder().toString();
     Config.set("exporter.baseDirectory", baseDirectory);
+    PayerManager.clear();
     Generator generator = new Generator(0);
     generator.options.overflow = false;
     URL url = Resources.getResource("identity/test_records.json");

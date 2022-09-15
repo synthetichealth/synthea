@@ -24,7 +24,9 @@ import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.geography.Location;
 
 /**
  * Uses Model Driven Health Tools (MDHT) to validate exported CCDA R2.1.
@@ -42,6 +44,8 @@ public class CCDAExporterTest {
 
   @Test
   public void testCCDAExport() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
@@ -74,6 +78,8 @@ public class CCDAExporterTest {
 
   @Test
   public void testExportWithNoPreferredWellnessProvider() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
     TestHelper.loadTestProperties();
     Person[] people = TestHelper.getGeneratedPeople();
     List<String> validationErrors = new ArrayList<String>();

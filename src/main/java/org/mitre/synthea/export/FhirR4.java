@@ -961,7 +961,7 @@ public class FhirR4 {
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(claim.payer.getName()));
+    insuranceComponent.setCoverage(new Reference().setDisplay(claim.plan.getPayer().getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1030,7 +1030,8 @@ public class FhirR4 {
     InsuranceComponent insuranceComponent = new InsuranceComponent();
     insuranceComponent.setSequence(1);
     insuranceComponent.setFocal(true);
-    insuranceComponent.setCoverage(new Reference().setDisplay(encounter.claim.payer.getName()));
+    insuranceComponent.setCoverage(new Reference()
+        .setDisplay(encounter.claim.plan.getPayer().getName()));
     claimResource.addInsurance(insuranceComponent);
 
     // duration of encounter
@@ -1229,7 +1230,7 @@ public class FhirR4 {
     eob.setReferral(new Reference().setReference("#referral"));
 
     // Get the insurance info at the time that the encounter occurred.
-    Payer payer = claim.payer;
+    Payer payer = claim.plan.getPayer();
     Coverage coverage = new Coverage();
     coverage.setId("coverage");
     coverage.setStatus(CoverageStatus.ACTIVE);

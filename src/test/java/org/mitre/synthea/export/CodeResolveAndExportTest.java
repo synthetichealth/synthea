@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,8 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.ProviderTest;
@@ -116,6 +118,7 @@ public class CodeResolveAndExportTest {
     person.attributes.put(Person.ETHNICITY, "other");
     person.attributes.put(Person.SEXUAL_ORIENTATION, "bisexual");
     person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.EDUCATION, "Middle");
 
     TestHelper.loadTestProperties();
@@ -124,10 +127,12 @@ public class CodeResolveAndExportTest {
     location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, ProviderTest.providerRandom);
 
-    Payer.clear();
+    PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);
     stu3OutputPath = stu3OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
@@ -142,6 +147,14 @@ public class CodeResolveAndExportTest {
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    // Must process health insurance from birth to encounter time to prevent null pointers.
+    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
+    while (c.getTimeInMillis() <= time) {
+      healthInsuranceModule.process(person, c.getTimeInMillis());
+      c.add(Calendar.YEAR, 1);
+    }
     Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";

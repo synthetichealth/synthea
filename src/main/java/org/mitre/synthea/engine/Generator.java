@@ -41,7 +41,7 @@ import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
@@ -264,7 +264,7 @@ public class Generator {
     // initialize hospitals
     Provider.loadProviders(location, this.clinicianRandom);
     // Initialize Payers
-    Payer.loadPayers(location);
+    PayerManager.loadPayers(location);
     // ensure modules load early
     if (options.localModuleDir != null) {
       Module.addModules(options.localModuleDir);
@@ -689,7 +689,7 @@ public class Generator {
       }
 
       // Process Health Insurance.
-      healthInsuranceModule.process(person, time + timestep);
+      healthInsuranceModule.process(person, time);
       // Process encounters.
       encounterModule.process(person, time);
 

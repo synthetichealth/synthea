@@ -99,7 +99,11 @@ public class Utilities {
    * Convert a calendar year (e.g. 2020) to a Unix timestamp
    */
   public static long convertCalendarYearsToTime(int years) {
-    return convertTime("years", (long) (years - 1970));
+    Calendar c = Calendar.getInstance();
+    c.clear();
+    c.setTimeZone(TimeZone.getTimeZone("GMT"));
+    c.set(years, 0, 1, 0, 0, 0);
+    return c.getTimeInMillis();
   }
 
   /**

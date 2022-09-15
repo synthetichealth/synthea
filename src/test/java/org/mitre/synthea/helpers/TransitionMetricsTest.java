@@ -8,21 +8,32 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.TransitionMetrics.Metric;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mockito.Mockito;
 
 public class TransitionMetricsTest {
 
-  @Test public void testExampleModule() throws Exception {
+  @BeforeClass
+  public static void setup() {
+    PlanEligibilityFinder.buildPlanEligibilities(Generator.DEFAULT_STATE,
+        Config.get("generate.payers.insurance_plans.eligibilities_file"));
+  }
+
+  @Test
+  public void testExampleModule() throws Exception {
     Person person = new Person(0L);
     person.attributes.put(Person.RACE, "black");
     person.attributes.put(Person.ETHNICITY, "nonhispanic");
@@ -93,13 +104,13 @@ public class TransitionMetricsTest {
 
   private long run(Person person, Module singleModule, long start) {
     long time = start;
-    Payer.loadNoInsurance();
+    PayerManager.loadNoInsurance();
     // run until the module completes (it has no loops so it is guaranteed to)
     // reminder that process returns true when the module is "done"
     while (person.alive(time) && !singleModule.process(person, time)) {
-      time += Utilities.convertTime("years", 1);
       // Give the person No Insurance to prevent null pointers.
-      person.coverage.setPayerAtTime(time, Payer.noInsurance);
+      person.coverage.setPlanToNoInsurance(time);
+      time += Utilities.convertTime("years", 1);
       // hack the wellness encounter just in case
       person.attributes.put(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + singleModule.name,
           true);

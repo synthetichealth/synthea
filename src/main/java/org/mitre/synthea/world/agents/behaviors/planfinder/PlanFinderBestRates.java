@@ -1,74 +1,80 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Set;
 
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Find a particular provider by service.
  */
-public class PayerFinderBestRates implements IPayerFinder {
+public class PlanFinderBestRates implements IPlanFinder {
+
   /**
    * Find a provider with a specific service for the person.
    *
-   * @param payers  The list of eligible payers.
+   * @param plans  The list of eligible plans.
    * @param person  The patient who requires the service.
    * @param service The service required.
    * @param time    The date/time within the simulated world, in milliseconds.
-   * @return Service provider or null if none is available.
+   * @return A plan or null if none is available.
    */
   @Override
-  public Payer find(List<Payer> payers, Person person, EncounterType service, long time) {
+  public InsurancePlan find(Set<InsurancePlan> plans, Person person,
+      EncounterType service, long time) {
     int numberOfExpectedEncounters = 0;
     if (person.hasMultipleRecords) {
       for (HealthRecord record : person.records.values()) {
-        numberOfExpectedEncounters += numberOfEncounterDuringLastTwelveMonths(record, time);
+        numberOfExpectedEncounters += twelveMonthEncounterCount(record, time);
       }
     } else {
-      numberOfExpectedEncounters =
-          numberOfEncounterDuringLastTwelveMonths(person.defaultRecord, time);
+      numberOfExpectedEncounters = twelveMonthEncounterCount(person.defaultRecord, time);
     }
 
-    HealthRecord.Encounter dummy =
-        person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
+    HealthRecord.Encounter dummy
+        = person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
 
-    Payer bestRatePayer = Payer.noInsurance;
+    InsurancePlan bestRatePlan = PayerManager.getNoInsurancePlan();
     BigDecimal bestExpectedRate = BigDecimal.valueOf(Double.MAX_VALUE);
 
-    for (Payer payer : payers) {
-      if (IPayerFinder.meetsBasicRequirements(payer, person, service, time)) {
+    for (InsurancePlan plan : plans) {
+      if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
         // First, calculate the annual premium.
-        BigDecimal expectedRate = payer.getMonthlyPremium().multiply(BigDecimal.valueOf(12))
-                .setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal expectedRate = plan.getMonthlyPremium().multiply(BigDecimal.valueOf(12))
+            .setScale(2, RoundingMode.HALF_EVEN);
         // Second, calculate expected copays based on last years visits.
         expectedRate = expectedRate.add(
-                payer.determineCopay(dummy).multiply(
-                        BigDecimal.valueOf(numberOfExpectedEncounters)))
+            plan.determineCopay(dummy).multiply(
+                BigDecimal.valueOf(numberOfExpectedEncounters)))
                 .setScale(2, RoundingMode.HALF_EVEN);
         // TODO consider deductibles, coinsurance, covered services, etc.
         if (expectedRate.compareTo(bestExpectedRate) < 0) {
           bestExpectedRate = expectedRate;
-          bestRatePayer = payer;
+          bestRatePlan = plan;
         }
       }
     }
-    return bestRatePayer;
+    return bestRatePlan;
   }
 
   /**
    * Calculates the number of encounters during the last 12 months.
    * @param record The health record being examined.
-   * @param time The date/time within the simulated world, in milliseconds.
+   * @param time   The date/time within the simulated world, in milliseconds.
    * @return The number of encounters during the last 12 months.
    */
-  protected int numberOfEncounterDuringLastTwelveMonths(HealthRecord record, long time) {
-    double oneYearAgo = time - Utilities.convertTime("years", 1);
+  protected int twelveMonthEncounterCount(HealthRecord record, long time) {
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, -1);
+    long oneYearAgo = c.getTimeInMillis();
     int count = 0;
     for (int i = record.encounters.size() - 1; i >= 0; i--) {
       if (record.encounters.get(i).start >= oneYearAgo) {

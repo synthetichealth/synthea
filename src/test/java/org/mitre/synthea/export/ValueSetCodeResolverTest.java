@@ -22,7 +22,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.ProviderTest;
@@ -65,6 +65,7 @@ public class ValueSetCodeResolverTest {
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2014-09-25").getTime();
+    person.attributes.put(Person.BIRTHDATE, time);
 
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
@@ -72,10 +73,12 @@ public class ValueSetCodeResolverTest {
     location.assignPoint(person, location.randomCityName(person));
     Provider.loadProviders(location, ProviderTest.providerRandom);
 
-    Payer.clear();
+    PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     encounter = person.encounterStart(time, EncounterType.WELLNESS);
     String reasonCode = "275926002";
