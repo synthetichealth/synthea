@@ -170,7 +170,7 @@ public class FhirR4 {
   private static final String UNITSOFMEASURE_URI = "http://unitsofmeasure.org";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/resources/ontology/DCM";
   private static final String MEDIA_TYPE_URI = "http://terminology.hl7.org/CodeSystem/media-type";
-  private static final String SYNTHEA_IDENTIFIER = "https://github.com/synthetichealth/synthea";
+  protected static final String SYNTHEA_IDENTIFIER = "https://github.com/synthetichealth/synthea";
 
   @SuppressWarnings("rawtypes")
   private static final Map raceEthnicityCodes = loadRaceEthnicityCodes();
