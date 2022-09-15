@@ -2681,7 +2681,7 @@
 <ul class="blockList">
 <li class="blockList">
 <h4>payerAdjustment</h4>
-<pre><a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors">IPayerAdjustment</a> payerAdjustment</pre>
+<pre><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors.payeradjustment">IPayerAdjustment</a> payerAdjustment</pre>
 </li>
 <li class="blockList">
 <h4>attributes</h4>
@@ -2696,32 +2696,24 @@
 <pre>java.lang.String uuid</pre>
 </li>
 <li class="blockList">
-<h4>deductible</h4>
-<pre>java.math.BigDecimal deductible</pre>
-</li>
-<li class="blockList">
-<h4>defaultCopay</h4>
-<pre>java.math.BigDecimal defaultCopay</pre>
-</li>
-<li class="blockList">
-<h4>defaultCoinsurance</h4>
-<pre>java.math.BigDecimal defaultCoinsurance</pre>
-</li>
-<li class="blockList">
-<h4>monthlyPremium</h4>
-<pre>java.math.BigDecimal monthlyPremium</pre>
+<h4>plans</h4>
+<pre>java.util.Set&lt;E&gt; plans</pre>
 </li>
 <li class="blockList">
 <h4>ownership</h4>
 <pre>java.lang.String ownership</pre>
 </li>
 <li class="blockList">
-<h4>statesCovered</h4>
-<pre>java.util.Set&lt;E&gt; statesCovered</pre>
+<h4>priority</h4>
+<pre>int priority</pre>
 </li>
 <li class="blockList">
-<h4>servicesCovered</h4>
-<pre>java.util.Set&lt;E&gt; servicesCovered</pre>
+<h4>planLinkId</h4>
+<pre>java.lang.String planLinkId</pre>
+</li>
+<li class="blockList">
+<h4>statesCovered</h4>
+<pre>java.util.Set&lt;E&gt; statesCovered</pre>
 </li>
 <li class="blockList">
 <h4>revenue</h4>
@@ -2841,7 +2833,7 @@
 </li>
 <li class="blockListLast">
 <h4>coverage</h4>
-<pre><a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a> coverage</pre>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a> coverage</pre>
 <div class="block">Record of insurance coverage.</div>
 </li>
 </ul>
@@ -2975,12 +2967,12 @@
 </ul>
 </li>
 <li class="blockList">
-<h2 title="Package">Package&nbsp;org.mitre.synthea.world.agents.behaviors</h2>
+<h2 title="Package">Package&nbsp;org.mitre.synthea.world.agents.behaviors.payeradjustment</h2>
 <ul class="blockList">
-<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.PayerAdjustmentFixed">
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors">org.mitre.synthea.world.agents.behaviors.PayerAdjustmentFixed</a> extends java.lang.Object implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed</a> extends java.lang.Object implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>-1515831606680338099L</dd>
@@ -2998,19 +2990,19 @@
 </li>
 </ul>
 </li>
-<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.PayerAdjustmentNone">
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentNone">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors">org.mitre.synthea.world.agents.behaviors.PayerAdjustmentNone</a> extends java.lang.Object implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentNone</a> extends java.lang.Object implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>3288715364746907944L</dd>
 </dl>
 </li>
-<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.PayerAdjustmentRandom">
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentRandom">
 <!--   -->
 </a>
-<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">org.mitre.synthea.world.agents.behaviors.PayerAdjustmentRandom</a> extends java.lang.Object implements Serializable</h3>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentRandom</a> extends java.lang.Object implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>-5292509643177122361L</dd>
@@ -3023,6 +3015,73 @@
 <h4>rate</h4>
 <pre>double rate</pre>
 <div class="block">Maximum adjustment rate.</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList">
+<h2 title="Package">Package&nbsp;org.mitre.synthea.world.agents.behaviors.planeligibility</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.planeligibility.CSVEligibility">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/CSVEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">org.mitre.synthea.world.agents.behaviors.planeligibility.CSVEligibility</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>eligibilityLogic</h4>
+<pre>java.util.function.BiFunction&lt;T,U,R&gt; eligibilityLogic</pre>
+</li>
+<li class="blockListLast">
+<h4>eligibilityCriteria</h4>
+<pre>java.util.List&lt;E&gt; eligibilityCriteria</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.planeligibility.IncomeSpenddownEligibility">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IncomeSpenddownEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">org.mitre.synthea.world.agents.behaviors.planeligibility.IncomeSpenddownEligibility</a> extends java.lang.Object implements Serializable</h3>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.planeligibility.PovertyMultiplierFileEligibility">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PovertyMultiplierFileEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">org.mitre.synthea.world.agents.behaviors.planeligibility.PovertyMultiplierFileEligibility</a> extends java.lang.Object implements Serializable</h3>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/QualifyingAttributesEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>qualifyingAttributes</h4>
+<pre>java.util.List&lt;E&gt; qualifyingAttributes</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/QualifyingConditionCodesEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>qualifyingCodes</h4>
+<pre>java.util.List&lt;E&gt; qualifyingCodes</pre>
 </li>
 </ul>
 </li>
@@ -3046,12 +3105,12 @@
 <h3>Serialized Fields</h3>
 <ul class="blockList">
 <li class="blockList">
-<h4>payer</h4>
-<pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> payer</pre>
+<h4>plan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
 </li>
 <li class="blockList">
-<h4>secondaryPayer</h4>
-<pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> secondaryPayer</pre>
+<h4>secondaryPlan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
 </li>
 <li class="blockList">
 <h4>person</h4>
@@ -3095,13 +3154,13 @@
 <div class="block">total cost of the entry.</div>
 </li>
 <li class="blockList">
-<h4>copay</h4>
-<pre>java.math.BigDecimal copay</pre>
+<h4>copayPaidByPatient</h4>
+<pre>java.math.BigDecimal copayPaidByPatient</pre>
 <div class="block">copay paid by patient.</div>
 </li>
 <li class="blockList">
-<h4>deductible</h4>
-<pre>java.math.BigDecimal deductible</pre>
+<h4>deductiblePaidByPatient</h4>
+<pre>java.math.BigDecimal deductiblePaidByPatient</pre>
 <div class="block">deductible paid by patient.</div>
 </li>
 <li class="blockList">
@@ -3110,104 +3169,24 @@
 <div class="block">amount the charge was decreased by payer adjustment.</div>
 </li>
 <li class="blockList">
-<h4>coinsurance</h4>
-<pre>java.math.BigDecimal coinsurance</pre>
+<h4>coinsurancePaidByPayer</h4>
+<pre>java.math.BigDecimal coinsurancePaidByPayer</pre>
 <div class="block">coinsurance paid by payer.</div>
 </li>
 <li class="blockList">
-<h4>payer</h4>
-<pre>java.math.BigDecimal payer</pre>
+<h4>paidByPayer</h4>
+<pre>java.math.BigDecimal paidByPayer</pre>
 <div class="block">otherwise paid by payer.</div>
 </li>
 <li class="blockList">
-<h4>secondaryPayer</h4>
-<pre>java.math.BigDecimal secondaryPayer</pre>
+<h4>paidBySecondaryPayer</h4>
+<pre>java.math.BigDecimal paidBySecondaryPayer</pre>
 <div class="block">otherwise paid by secondary payer.</div>
 </li>
 <li class="blockListLast">
-<h4>pocket</h4>
-<pre>java.math.BigDecimal pocket</pre>
+<h4>patientOutOfPocket</h4>
+<pre>java.math.BigDecimal patientOutOfPocket</pre>
 <div class="block">otherwise paid by patient out of pocket.</div>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a name="org.mitre.synthea.world.concepts.CoverageRecord">
-<!--   -->
-</a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.CoverageRecord</a> extends java.lang.Object implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>771457063723016307L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>person</h4>
-<pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
-</li>
-<li class="blockListLast">
-<h4>planHistory</h4>
-<pre>java.util.List&lt;E&gt; planHistory</pre>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a name="org.mitre.synthea.world.concepts.CoverageRecord.Plan">
-<!--   -->
-</a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">org.mitre.synthea.world.concepts.CoverageRecord.Plan</a> extends java.lang.Object implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>-547445624583743525L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>id</h4>
-<pre>java.lang.String id</pre>
-</li>
-<li class="blockList">
-<h4>start</h4>
-<pre>long start</pre>
-</li>
-<li class="blockList">
-<h4>stop</h4>
-<pre>long stop</pre>
-</li>
-<li class="blockList">
-<h4>payer</h4>
-<pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> payer</pre>
-</li>
-<li class="blockList">
-<h4>secondaryPayer</h4>
-<pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> secondaryPayer</pre>
-</li>
-<li class="blockList">
-<h4>owner</h4>
-<pre>java.lang.String owner</pre>
-</li>
-<li class="blockList">
-<h4>ownerName</h4>
-<pre>java.lang.String ownerName</pre>
-</li>
-<li class="blockList">
-<h4>totalExpenses</h4>
-<pre>java.math.BigDecimal totalExpenses</pre>
-</li>
-<li class="blockList">
-<h4>totalCoverage</h4>
-<pre>java.math.BigDecimal totalCoverage</pre>
-</li>
-<li class="blockListLast">
-<h4>remainingDeductible</h4>
-<pre>java.math.BigDecimal remainingDeductible</pre>
 </li>
 </ul>
 </li>
@@ -3940,6 +3919,147 @@
 <li class="blockListLast">
 <h4>bmi</h4>
 <pre>double bmi</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList">
+<h2 title="Package">Package&nbsp;org.mitre.synthea.world.concepts.healthinsurance</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord</a> extends java.lang.Object implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>771457063723016307L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>person</h4>
+<pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
+</li>
+<li class="blockListLast">
+<h4>planHistory</h4>
+<pre>java.util.List&lt;E&gt; planHistory</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord</a> extends java.lang.Object implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>-547445624583743525L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id</h4>
+<pre>java.lang.String id</pre>
+</li>
+<li class="blockList">
+<h4>start</h4>
+<pre>long start</pre>
+</li>
+<li class="blockList">
+<h4>stop</h4>
+<pre>long stop</pre>
+</li>
+<li class="blockList">
+<h4>plan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
+</li>
+<li class="blockList">
+<h4>secondaryPlan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
+</li>
+<li class="blockList">
+<h4>owner</h4>
+<pre>java.lang.String owner</pre>
+</li>
+<li class="blockList">
+<h4>ownerName</h4>
+<pre>java.lang.String ownerName</pre>
+</li>
+<li class="blockList">
+<h4>healthcareExpenses</h4>
+<pre>java.math.BigDecimal healthcareExpenses</pre>
+</li>
+<li class="blockList">
+<h4>coveredExpenses</h4>
+<pre>java.math.BigDecimal coveredExpenses</pre>
+</li>
+<li class="blockList">
+<h4>insuranceCosts</h4>
+<pre>java.math.BigDecimal insuranceCosts</pre>
+</li>
+<li class="blockListLast">
+<h4>remainingDeductible</h4>
+<pre>java.math.BigDecimal remainingDeductible</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>payer</h4>
+<pre><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> payer</pre>
+</li>
+<li class="blockList">
+<h4>deductible</h4>
+<pre>java.math.BigDecimal deductible</pre>
+</li>
+<li class="blockList">
+<h4>defaultCopay</h4>
+<pre>java.math.BigDecimal defaultCopay</pre>
+</li>
+<li class="blockList">
+<h4>defaultCoinsurance</h4>
+<pre>java.math.BigDecimal defaultCoinsurance</pre>
+</li>
+<li class="blockList">
+<h4>monthlyPremium</h4>
+<pre>java.math.BigDecimal monthlyPremium</pre>
+</li>
+<li class="blockList">
+<h4>servicesCovered</h4>
+<pre>java.util.Set&lt;E&gt; servicesCovered</pre>
+</li>
+<li class="blockList">
+<h4>medicareSupplement</h4>
+<pre>boolean medicareSupplement</pre>
+</li>
+<li class="blockList">
+<h4>insuranceStatus</h4>
+<pre>java.lang.String insuranceStatus</pre>
+</li>
+<li class="blockList">
+<h4>planEligibility</h4>
+<pre><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility">IPlanEligibility</a> planEligibility</pre>
+</li>
+<li class="blockListLast">
+<h4>activeTimeRange</h4>
+<pre>org.apache.commons.lang3.Range&lt;T&gt; activeTimeRange</pre>
 </li>
 </ul>
 </li>

@@ -164,16 +164,16 @@ implements java.io.Serializable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#mainEntry">mainEntry</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#payer">payer</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#person">person</a></span></code>&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#plan">plan</a></span></code>&nbsp;</td>
+</tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#secondaryPayer">secondaryPayer</a></span></code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#secondaryPlan">secondaryPlan</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a></code></td>
@@ -227,7 +227,7 @@ implements java.io.Serializable</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/concepts/Claim.html#assignCosts--">assignCosts</a></span>()</code>
-<div class="block">Assign costs between the payer and patient.</div>
+<div class="block">Assign costs between the payer and patient for all ClaimEntries in this claim.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -294,22 +294,22 @@ implements java.io.Serializable</pre>
 <pre>public static final&nbsp;java.math.BigDecimal ZERO_CENTS</pre>
 </li>
 </ul>
-<a name="payer">
+<a name="plan">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>payer</h4>
-<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> payer</pre>
+<h4>plan</h4>
+<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
 </li>
 </ul>
-<a name="secondaryPayer">
+<a name="secondaryPlan">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>secondaryPayer</h4>
-<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a> secondaryPayer</pre>
+<h4>secondaryPlan</h4>
+<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
 </li>
 </ul>
 <a name="person">
@@ -392,7 +392,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>assignCosts</h4>
 <pre>public&nbsp;void&nbsp;assignCosts()</pre>
-<div class="block">Assign costs between the payer and patient.</div>
+<div class="block">Assign costs between the payer and patient for all ClaimEntries in this claim.</div>
 </li>
 </ul>
 <a name="getTotalClaimCost--">

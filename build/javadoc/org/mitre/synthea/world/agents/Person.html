@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/mitre/synthea/world/agents/PayerManager.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -213,7 +213,7 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#COORDINATE">COORDINATE</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></code></td>
+<td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#coverage">coverage</a></span></code>
 <div class="block">Record of insurance coverage.</div>
 </td>
@@ -336,149 +336,153 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#KILOGRAMS_TO_GAIN">KILOGRAMS_TO_GAIN</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#INSURANCE_STATUS">INSURANCE_STATUS</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#LAST_NAME">LAST_NAME</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#KILOGRAMS_TO_GAIN">KILOGRAMS_TO_GAIN</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#LAST_NAME">LAST_NAME</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#lastUpdated">lastUpdated</a></span></code>
 <div class="block">Tracks the last time that the person was updated over a serialize/deserialize.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#LINK_ID">LINK_ID</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#LOCATION">LOCATION</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#lossOfCareEnabled">lossOfCareEnabled</a></span></code>
 <div class="block">Experimental feature flag.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#lossOfCareRecord">lossOfCareRecord</a></span></code>
 <div class="block">Only used if "lossOfCareEnabled" is true.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#MAIDEN_NAME">MAIDEN_NAME</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#MARITAL_STATUS">MARITAL_STATUS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#MIDDLE_NAME">MIDDLE_NAME</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#MULTIPLE_BIRTH_STATUS">MULTIPLE_BIRTH_STATUS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#NAME">NAME</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#NAME_FATHER">NAME_FATHER</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#NAME_MOTHER">NAME_MOTHER</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#NAME_PREFIX">NAME_PREFIX</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#NAME_SUFFIX">NAME_SUFFIX</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#OCCUPATION_LEVEL">OCCUPATION_LEVEL</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/engine/ExpressedConditionRecord.html" title="class in org.mitre.synthea.engine">ExpressedConditionRecord</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#onsetConditionRecord">onsetConditionRecord</a></span></code>
 <div class="block">Data structure for storing onset conditions (init_time, end_time).</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#populationSeed">populationSeed</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#POVERTY_RATIO">POVERTY_RATIO</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#PREFERREDYPROVIDER">PREFERREDYPROVIDER</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#RACE">RACE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#record">record</a></span></code>
 <div class="block">The active health record.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../../org/mitre/synthea/world/concepts/HealthRecord.html" title="class in org.mitre.synthea.world.concepts">HealthRecord</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#records">records</a></span></code>
 <div class="block">Individual provider health records (if "hasMultipleRecords" is enabled).</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SEXUAL_ORIENTATION">SEXUAL_ORIENTATION</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SMOKER">SMOKER</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SOCIOECONOMIC_CATEGORY">SOCIOECONOMIC_CATEGORY</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#SOCIOECONOMIC_SCORE">SOCIOECONOMIC_SCORE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#STATE">STATE</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#TARGET_WEIGHT_LOSS">TARGET_WEIGHT_LOSS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#TELECOM">TELECOM</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#VETERAN">VETERAN</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;<a href="../../../../../org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>,<a href="../../../../../org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#vitalSigns">vitalSigns</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#ZIP">ZIP</a></span></code>&nbsp;</td>
 </tr>
@@ -561,7 +565,7 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#canAffordPayer-org.mitre.synthea.world.agents.Payer-">canAffordPayer</a></span>(<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/mitre/synthea/world/agents/Person.html#canAffordPlan-org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan-">canAffordPlan</a></span>(<a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&nbsp;plan)</code>
 <div class="block">Returns whether or not a person can afford a given payer.</div>
 </td>
 </tr>
@@ -1680,6 +1684,19 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </dl>
 </li>
 </ul>
+<a name="INSURANCE_STATUS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>INSURANCE_STATUS</h4>
+<pre>public static final&nbsp;java.lang.String INSURANCE_STATUS</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.agents.Person.INSURANCE_STATUS">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a name="populationSeed">
 <!--   -->
 </a>
@@ -1826,7 +1843,7 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 <ul class="blockList">
 <li class="blockList">
 <h4>coverage</h4>
-<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a> coverage</pre>
+<pre>public&nbsp;<a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a> coverage</pre>
 <div class="block">Record of insurance coverage.</div>
 </li>
 </ul>
@@ -2430,19 +2447,19 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 <div class="block">Returns the sum of DALYS of this person's life.</div>
 </li>
 </ul>
-<a name="canAffordPayer-org.mitre.synthea.world.agents.Payer-">
+<a name="canAffordPlan-org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>canAffordPayer</h4>
-<pre>public&nbsp;boolean&nbsp;canAffordPayer(<a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer)</pre>
+<h4>canAffordPlan</h4>
+<pre>public&nbsp;boolean&nbsp;canAffordPlan(<a href="../../../../../org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&nbsp;plan)</pre>
 <div class="block">Returns whether or not a person can afford a given payer.
  If a person's income is greater than a year of montlhy premiums + deductible
  then they can afford the insurance.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>payer</code> - the payer to check.</dd>
+<dd><code>plan</code> - the plan to check.</dd>
 </dl>
 </li>
 </ul>
@@ -2541,7 +2558,7 @@ implements java.io.Serializable, <a href="../../../../../org/mitre/synthea/helpe
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/mitre/synthea/world/agents/PayerManager.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

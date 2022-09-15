@@ -8,7 +8,11 @@ org.mitre.synthea.identity
 org.mitre.synthea.modules
 org.mitre.synthea.modules.covid
 org.mitre.synthea.world.agents
-org.mitre.synthea.world.agents.behaviors
+org.mitre.synthea.world.agents.behaviors.payeradjustment
+org.mitre.synthea.world.agents.behaviors.planeligibility
+org.mitre.synthea.world.agents.behaviors.planfinder
+org.mitre.synthea.world.agents.behaviors.providerfinder
 org.mitre.synthea.world.concepts
+org.mitre.synthea.world.concepts.healthinsurance
 org.mitre.synthea.world.geography
 org.mitre.synthea.world.geography.quadtree

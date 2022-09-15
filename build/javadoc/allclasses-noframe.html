@@ -57,9 +57,10 @@
 <li><a href="org/mitre/synthea/helpers/ConstantValueGenerator.html" title="class in org.mitre.synthea.helpers">ConstantValueGenerator</a></li>
 <li><a href="org/mitre/synthea/world/concepts/Costs.html" title="class in org.mitre.synthea.world.concepts">Costs</a></li>
 <li><a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts">Costs.CostData</a></li>
-<li><a href="org/mitre/synthea/world/concepts/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord</a></li>
-<li><a href="org/mitre/synthea/world/concepts/CoverageRecord.Plan.html" title="class in org.mitre.synthea.world.concepts">CoverageRecord.Plan</a></li>
+<li><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></li>
+<li><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord.PlanRecord</a></li>
 <li><a href="org/mitre/synthea/export/CPCDSExporter.html" title="class in org.mitre.synthea.export">CPCDSExporter</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/CSVEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">CSVEligibility</a></li>
 <li><a href="org/mitre/synthea/export/CSVExporter.html" title="class in org.mitre.synthea.export">CSVExporter</a></li>
 <li><a href="org/mitre/synthea/export/CSVExporter.ClaimTransactionType.html" title="enum in org.mitre.synthea.export">CSVExporter.ClaimTransactionType</a></li>
 <li><a href="org/mitre/synthea/export/CSVExporter.PaymentMethod.html" title="enum in org.mitre.synthea.export">CSVExporter.PaymentMethod</a></li>
@@ -107,12 +108,15 @@
 <li><a href="org/mitre/synthea/export/HospitalExporterStu3.html" title="class in org.mitre.synthea.export">HospitalExporterStu3</a></li>
 <li><a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity"><span class="interfaceName">IdentityRecord</span></a></li>
 <li><a href="org/mitre/synthea/modules/Immunizations.html" title="class in org.mitre.synthea.modules">Immunizations</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IncomeSpenddownEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">IncomeSpenddownEligibility</a></li>
 <li><a href="org/mitre/synthea/helpers/InnerClassTypeAdapterFactory.html" title="class in org.mitre.synthea.helpers">InnerClassTypeAdapterFactory</a></li>
+<li><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a></li>
 <li><a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></li>
 <li><a href="org/mitre/synthea/helpers/physiology/IoMapper.IoType.html" title="enum in org.mitre.synthea.helpers.physiology">IoMapper.IoType</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="interfaceName">IPayerAdjustment</span></a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/IPayerFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="interfaceName">IPayerFinder</span></a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/IProviderFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors"><span class="interfaceName">IProviderFinder</span></a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/IPayerAdjustment.html" title="interface in org.mitre.synthea.world.agents.behaviors.payeradjustment"><span class="interfaceName">IPayerAdjustment</span></a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility"><span class="interfaceName">IPlanEligibility</span></a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planfinder/IPlanFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors.planfinder"><span class="interfaceName">IPlanFinder</span></a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/providerfinder/IProviderFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors.providerfinder"><span class="interfaceName">IProviderFinder</span></a></li>
 <li><a href="org/mitre/synthea/export/JSONExporter.html" title="class in org.mitre.synthea.export">JSONExporter</a></li>
 <li><a href="org/mitre/synthea/export/JSONExporter.LocalDateSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.LocalDateSerializer</a></li>
 <li><a href="org/mitre/synthea/export/JSONExporter.PersonSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.PersonSerializer</a></li>
@@ -154,11 +158,10 @@
 <li><a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></li>
 <li><a href="org/mitre/synthea/world/concepts/NHANESSample.html" title="class in org.mitre.synthea.world.concepts">NHANESSample</a></li>
 <li><a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentFixed</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentNone</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerAdjustmentRandom</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/PayerFinderBestRates.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerFinderBestRates</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/PayerFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">PayerFinderRandom</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentFixed.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">PayerAdjustmentFixed</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentNone.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">PayerAdjustmentNone</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/payeradjustment/PayerAdjustmentRandom.html" title="class in org.mitre.synthea.world.agents.behaviors.payeradjustment">PayerAdjustmentRandom</a></li>
+<li><a href="org/mitre/synthea/world/agents/PayerManager.html" title="class in org.mitre.synthea.world.agents">PayerManager</a></li>
 <li><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory</a></li>
 <li><a href="org/mitre/synthea/world/concepts/PediatricGrowthTrajectory.YearInformation.html" title="class in org.mitre.synthea.world.concepts">PediatricGrowthTrajectory.YearInformation</a></li>
 <li><a href="org/mitre/synthea/identity/Period.html" title="class in org.mitre.synthea.identity">Period</a></li>
@@ -169,15 +172,22 @@
 <li><a href="org/mitre/synthea/helpers/PhysiologyValueGenerator.html" title="class in org.mitre.synthea.helpers">PhysiologyValueGenerator</a></li>
 <li><a href="org/mitre/synthea/world/geography/Place.html" title="class in org.mitre.synthea.world.geography">Place</a></li>
 <li><a href="org/mitre/synthea/export/PlainBigDecimal.html" title="class in org.mitre.synthea.export">PlainBigDecimal</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PlanEligibilityFinder</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planfinder/PlanFinderBestRates.html" title="class in org.mitre.synthea.world.agents.behaviors.planfinder">PlanFinderBestRates</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planfinder/PlanFinderPriority.html" title="class in org.mitre.synthea.world.agents.behaviors.planfinder">PlanFinderPriority</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planfinder/PlanFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors.planfinder">PlanFinderRandom</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PovertyMultiplierFileEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PovertyMultiplierFileEligibility</a></li>
 <li><a href="org/mitre/synthea/helpers/physiology/PreGenerator.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator</a></li>
 <li><a href="org/mitre/synthea/helpers/physiology/PreGenerator.PreGeneratorArg.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator.PreGeneratorArg</a></li>
 <li><a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></li>
 <li><a href="org/mitre/synthea/world/agents/Provider.ProviderType.html" title="enum in org.mitre.synthea.world.agents">Provider.ProviderType</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/ProviderFinderNearest.html" title="class in org.mitre.synthea.world.agents.behaviors">ProviderFinderNearest</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/ProviderFinderQuality.html" title="class in org.mitre.synthea.world.agents.behaviors">ProviderFinderQuality</a></li>
-<li><a href="org/mitre/synthea/world/agents/behaviors/ProviderFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors">ProviderFinderRandom</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/providerfinder/ProviderFinderNearest.html" title="class in org.mitre.synthea.world.agents.behaviors.providerfinder">ProviderFinderNearest</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/providerfinder/ProviderFinderQuality.html" title="class in org.mitre.synthea.world.agents.behaviors.providerfinder">ProviderFinderQuality</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/providerfinder/ProviderFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors.providerfinder">ProviderFinderRandom</a></li>
 <li><a href="org/mitre/synthea/world/geography/quadtree/QuadTree.html" title="class in org.mitre.synthea.world.geography.quadtree">QuadTree</a></li>
 <li><a href="org/mitre/synthea/world/geography/quadtree/QuadTreeElement.html" title="interface in org.mitre.synthea.world.geography.quadtree"><span class="interfaceName">QuadTreeElement</span></a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/QualifyingAttributesEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">QualifyingAttributesEligibility</a></li>
+<li><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/QualifyingConditionCodesEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">QualifyingConditionCodesEligibility</a></li>
 <li><a href="org/mitre/synthea/modules/QualityOfLifeModule.html" title="class in org.mitre.synthea.modules">QualityOfLifeModule</a></li>
 <li><a href="org/mitre/synthea/world/concepts/RaceAndEthnicity.html" title="class in org.mitre.synthea.world.concepts">RaceAndEthnicity</a></li>
 <li><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></li>
