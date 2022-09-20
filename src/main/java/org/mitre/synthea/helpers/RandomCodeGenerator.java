@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -76,9 +77,14 @@ public abstract class RandomCodeGenerator {
       try {
         Response response = client.newCall(request).execute();
         ObjectMapper objectMapper = new ObjectMapper();
-        valueSet = objectMapper.readValue(response.body().byteStream(),
-            new TypeReference<Map<String, Object>>() {
+        ResponseBody body = response.body();
+        if (body != null) {
+          valueSet = objectMapper.readValue(body.byteStream(),
+                  new TypeReference<Map<String, Object>>() {
             });
+        } else {
+          throw new RuntimeException("Value Set Expansion contained no body");
+        }
       } catch (JsonProcessingException e) {
         throw new RuntimeException("JsonProcessingException while parsing valueSet response");
       } catch (IOException e) {

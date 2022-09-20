@@ -36,7 +36,7 @@
         "system": "SNOMED-CT",
         "code": "2501000087107",
         "display": "MRI of right knee with contrast",
-        "value_set": "http://snomed.info/sct?fhir_vs=ecl/<<2491000087104"
+        "value_set": "http://snomed.info/sct?fhir_vs=ecl%2F%3C%3C2491000087104"
       },
       "series": [
         {
