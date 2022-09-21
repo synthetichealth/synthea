@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -17,10 +17,12 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.geography.Location;
 
 public class HealthRecordTest {
 
-  Payer noInsurance;
+  InsurancePlan noInsurance;
   long time;
 
   /**
@@ -28,15 +30,16 @@ public class HealthRecordTest {
    */
   @Before
   public void setup() {
-    Payer.loadNoInsurance();
-    noInsurance = Payer.noInsurance;
+    PayerManager.loadPayers(new Location("Massachusetts", null));
+    noInsurance = PayerManager.getNoInsurancePlan();
     time = 0L;
   }
 
   @Test
   public void testReportAllObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -54,7 +57,8 @@ public class HealthRecordTest {
   @Test
   public void testReportSomeObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -71,7 +75,8 @@ public class HealthRecordTest {
   @Test
   public void testReportTooManyObs() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, 0L);
+    person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
     Encounter encounter = record.encounterStart(time, EncounterType.WELLNESS);
     record.observation(time, "A", "A");
@@ -89,7 +94,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationAdministrationQuantity() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", false);
     med.administration = true;
     long quantity = med.getQuantity();
@@ -99,7 +105,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationPrescriptionQuantity() {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", true);
     long quantity = med.getQuantity();
     Assert.assertEquals(30, quantity);
@@ -108,7 +115,8 @@ public class HealthRecordTest {
   @Test
   public void testMedicationDetailedQuantity() throws Exception {
     Person person = new Person(0L);
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
 
     Module module = TestHelper.getFixture("medication_order.json");

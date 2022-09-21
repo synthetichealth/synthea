@@ -1,0 +1,11 @@
+Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Medicare Supplement,Eligibility Policy,Start Year,End Year,Notes
+10000,10001,Standard Medicare Plan,*,233,0.8,0,170.10,false,StandardMedicare,0,,https://www.medicare.gov/your-medicare-costs/medicare-costs-at-a-glance
+20000,20001,Standard Medicaid Plan,*,100,0,50,10,false,StandardMedicaid,0,,
+30000,30001,Standard Dual Eligible Plan,*,0,0,35,10,false,StandardDualEligible,0,,
+40000,40001,Humana Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+50000,50001,BCBS Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+60000,60001,UnitedHealthCare Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+70000,70001,Aetna Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+80000,80001,Cigna Health Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+90000,90001,Anthem Plan,*,1644,0,30,574.67,false,Generic,0,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+50000,50002,BCBC Supplemental Medicare Plan,*,0,0,0,150.00,true,Generic,0,,https://www.retireguide.com/medicare/supplement-insurance/costs/#:~:text=The%20average%20cost%20of%20a-A%20and%20Part%20B)%20coverage.

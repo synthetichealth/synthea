@@ -11,7 +11,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.modules.Immunizations;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.ProviderTest;
@@ -68,8 +68,13 @@ public class C19ImmunizationModuleTest {
     Provider.loadProviders(here, ProviderTest.providerRandom);
     person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
         Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
-    Payer.loadPayers(here);
-    person.coverage.setPayerAtTime(decemberFifteenth, Payer.getGovernmentPayer("Medicare"));
+    PayerManager.loadPayers(here);
+    person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
+        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getNoInsurancePlan());
+    person.coverage.setPlanAtTime(decemberFifteenth,
+        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getNoInsurancePlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());

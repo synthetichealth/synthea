@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.payeradjustment;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

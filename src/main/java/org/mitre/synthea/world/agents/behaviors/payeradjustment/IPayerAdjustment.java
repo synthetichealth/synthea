@@ -1,4 +1,4 @@
-package org.mitre.synthea.world.agents.behaviors;
+package org.mitre.synthea.world.agents.behaviors.payeradjustment;
 
 import java.math.BigDecimal;
 import org.mitre.synthea.world.agents.Person;

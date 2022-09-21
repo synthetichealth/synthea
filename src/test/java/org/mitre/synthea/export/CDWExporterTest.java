@@ -13,6 +13,8 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
+import org.mitre.synthea.world.agents.PayerManager;
+import org.mitre.synthea.world.geography.Location;
 import org.powermock.reflect.Whitebox;
 
 public class CDWExporterTest {
@@ -24,6 +26,8 @@ public class CDWExporterTest {
 
   @Test
   public void testCDWExport() throws Exception {
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
     TestHelper.exportOff();
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");

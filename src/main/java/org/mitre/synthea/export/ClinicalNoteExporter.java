@@ -16,6 +16,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Export Clinical Notes using Apache FreeMarker templates.
@@ -103,11 +104,11 @@ public class ClinicalNoteExporter {
       }
     }
 
-    Payer payer = person.coverage.getPayerAtTime(encounter.start);
-    if (payer == null) {
+    InsurancePlan plan = person.coverage.getPlanAtTime(encounter.start);
+    if (plan == null || plan.getPayer() == null) {
       person.attributes.put("ehr_insurance", "unknown insurance coverage");
     } else {
-      person.attributes.put("ehr_insurance", payer.getName());
+      person.attributes.put("ehr_insurance", plan.getPayer().getName());
     }
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
     person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));

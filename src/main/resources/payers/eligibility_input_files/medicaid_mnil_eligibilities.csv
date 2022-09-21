@@ -1,0 +1,52 @@
+state,spenddown-available,age-blind-disabled-limit,monthly-spenddown-req
+Alabama,FALSE,na,na
+Alaska,FALSE,na,na
+Arizona,FALSE,na,na
+Arkansas,TRUE,TRUE,108
+California,TRUE,FALSE,600
+Colorado,FALSE,na,na
+Connecticut,TRUE,FALSE,941
+Delaware,FALSE,na,na
+District of Columbia,TRUE,FALSE,689
+Florida,TRUE,TRUE,180
+Georgia,TRUE,TRUE,317
+Hawaii,TRUE,FALSE,469
+Idaho,FALSE,na,na
+Illinois,TRUE,TRUE,1073
+Indiana,FALSE,na,na
+Iowa,TRUE,TRUE,483
+Kansas,TRUE,FALSE,475
+Kentucky,TRUE,TRUE,235
+Louisiana,TRUE,FALSE,100
+Maine,TRUE,FALSE,315
+Maryland,TRUE,FALSE,350
+Massachusetts,TRUE,FALSE,522
+Michigan,TRUE,FALSE,1133
+Minnesota,TRUE,FALSE,870
+Mississippi,FALSE,na,na
+Missouri,TRUE,TRUE,913
+Montana,TRUE,FALSE,525
+Nebraska,TRUE,FALSE,392
+Nevada,FALSE,na,na
+New Hampshire,TRUE,FALSE,591
+New Jersey,TRUE,TRUE,367
+New Mexico,FALSE,na,na
+New York,TRUE,FALSE,934
+North Carolina,TRUE,FALSE,242
+North Dakota,TRUE,FALSE,891
+Ohio,FALSE,na,na
+Oklahoma,FALSE,na,na
+Oregon,FALSE,na,na
+Pennsylvania,TRUE,FALSE,425
+Rhode Island,TRUE,FALSE,1008
+South Carolina,FALSE,na,na
+South Dakota,FALSE,na,na
+Tennessee,FALSE,na,na
+Texas,FALSE,na,na
+Utah,TRUE,FALSE,1073
+Vermont,TRUE,FALSE,1166
+Virginia,TRUE,FALSE,388
+Washington,TRUE,FALSE,841
+West Virginia,TRUE,FALSE,200
+Wisconsin,TRUE,FALSE,1132
+Wyoming,FALSE,na,na

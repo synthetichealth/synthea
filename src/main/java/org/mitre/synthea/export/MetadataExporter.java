@@ -18,7 +18,7 @@ import java.util.TimeZone;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Provider;
 
 public class MetadataExporter {
@@ -70,7 +70,7 @@ public class MetadataExporter {
     int providerCount = Provider.getProviderList().size();
     metadata.put("providerCount", providerCount);
 
-    int payerCount = Payer.getAllPayers().size();
+    int payerCount = PayerManager.getAllPayers().size();
     metadata.put("payerCount", payerCount);
 
     // Java version,

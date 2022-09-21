@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -18,7 +18,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 public class CostsTest {
 
   private Person person;
-  private Payer noInsurance;
   long time;
 
   /**
@@ -28,10 +27,10 @@ public class CostsTest {
   public void setup() {
     Costs.loadCostData();
     person = new Person(System.currentTimeMillis());
-    Payer.loadNoInsurance();
-    noInsurance = Payer.noInsurance;
+    PayerManager.loadNoInsurance();
     time = 0L;
-    person.coverage.setPayerAtTime(time, noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
   }
 
   @Test public void testCostByKnownCode() {
