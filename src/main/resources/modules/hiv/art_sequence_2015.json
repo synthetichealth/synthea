@@ -208,15 +208,7 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "date": {
-                  "year": 2019,
-                  "month": 4,
-                  "day": 8,
-                  "hour": 0,
-                  "minute": 0,
-                  "second": 0,
-                  "millisecond": 0
-                },
+                "year": 2019,
                 "value": 0
               },
               {
@@ -265,15 +257,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "date": {
-              "year": 2018,
-              "month": 2,
-              "day": 7,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "millisecond": 0
-            },
+            "year": 2018,
             "value": 0
           },
           "distributions": [

@@ -204,16 +204,8 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
-            "date": {
-              "year": 2008,
-              "month": 11,
-              "day": 1,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "millisecond": 0
-            }
+            "year": 2008,
+            "value": 0
           },
           "distributions": [
             {
@@ -335,15 +327,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "date": {
-              "year": 2006,
-              "month": 7,
-              "day": 12,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "millisecond": 0
-            },
+            "year": 2006,
             "value": 0
           }
         },

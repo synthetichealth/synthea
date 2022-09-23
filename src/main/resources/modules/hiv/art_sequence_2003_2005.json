@@ -327,15 +327,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "date": {
-              "year": 2004,
-              "month": 8,
-              "day": 2,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "millisecond": 0
-            },
+            "year": 2004,
             "value": 0
           },
           "distributions": [

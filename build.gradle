@@ -52,7 +52,7 @@ dependencies {
 
   // google guava for some data structures
   implementation 'com.google.guava:guava:31.1-jre'
-  implementation 'guru.nidi:graphviz-java:0.2.4'
+  implementation 'guru.nidi:graphviz-java:0.18.1'
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
