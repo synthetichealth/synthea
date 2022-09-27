@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -294,6 +295,9 @@ public class BB2RIFExporter {
     rifWriters = new RifWriters(outputDirectory);
   }
 
+  private static DateTimeFormatter MANIFEST_TIMESTAMP_FORMAT
+          = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
+
   /**
    * Export a manifest file that lists all of the other BFD files (except the NPI file
    * which is special).
@@ -309,7 +313,7 @@ public class BB2RIFExporter {
              java.time.Instant.now()
                      .atZone(java.time.ZoneId.of("Z"))
                      .truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
-                     .toString()));
+                     .format(MANIFEST_TIMESTAMP_FORMAT)));
     manifest.write("sequenceId=\"0\" syntheticData=\"true\">\n");
     for (Class<?> rifFile: BB2RIFStructure.RIF_FILES) {
       for (int year: rifWriters.getYears()) {
