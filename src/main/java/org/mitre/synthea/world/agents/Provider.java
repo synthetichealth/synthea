@@ -53,8 +53,8 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final String RANDOM = "random";
   public static final String NETWORK = "network";
 
-  // ArrayList of all providers imported
-  private static ArrayList<Provider> providerList = new ArrayList<Provider>();
+  /** Map of providers imported by UUID. */
+  private static Map<String, Provider> providerByUuid = new HashMap<String, Provider>();
   private static QuadTree providerMap = generateQuadTree();
   private static Set<String> statesLoaded = new HashSet<String>();
   private static int loaded = 0;
@@ -98,7 +98,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public boolean institutional;
   private double revenue;
   private Point2D.Double coordinates;
-  public ArrayList<EncounterType> servicesProvided;
+  public Set<EncounterType> servicesProvided;
   @JSONSkip
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
@@ -147,7 +147,7 @@ public class Provider implements QuadTreeElement, Serializable {
     attributes = new LinkedTreeMap<>();
     revenue = 0.0;
     utilization = HashBasedTable.create();
-    servicesProvided = new ArrayList<EncounterType>();
+    servicesProvided = new HashSet<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
     coordinates = new Point2D.Double();
   }
@@ -338,7 +338,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Clear the list of loaded and cached providers.
    */
   public static void clear() {
-    providerList.clear();
+    providerByUuid.clear();
     statesLoaded.clear();
     providerMap = generateQuadTree();
     providerFinder = buildProviderFinder();
@@ -503,13 +503,17 @@ public class Provider implements QuadTreeElement, Serializable {
           }
         }
 
-        providerList.add(parsed);
-        boolean inserted = providerMap.insert(parsed);
-        if (!inserted) {
-          throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
-              + parsed.name + " @ " + parsed.city);
+        if (providerByUuid.containsKey(parsed.uuid)) {
+          providerByUuid.get(parsed.uuid).merge(parsed);
         } else {
-          loaded++;
+          providerByUuid.put(parsed.uuid, parsed);
+          boolean inserted = providerMap.insert(parsed);
+          if (!inserted) {
+            throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
+                + parsed.name + " @ " + parsed.city);
+          } else {
+            loaded++;
+          }
         }
       }
     }
@@ -724,7 +728,79 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   public static List<Provider> getProviderList() {
-    return providerList;
+    return new ArrayList<Provider>(providerByUuid.values());
+  }
+
+  private void merge(Provider other) {
+    if (this.uuid == null) {
+      this.uuid = other.uuid;
+    }
+    if (this.id == null) {
+      this.id = other.id;
+    }
+    if (this.npi == null) {
+      this.npi = other.npi;
+    }
+    if (this.cmsProviderNum == null) {
+      this.cmsProviderNum = other.cmsProviderNum;
+    }
+    if (this.cmsPin == null) {
+      this.cmsPin = other.cmsPin;
+    }
+    if (this.cmsUpin == null) {
+      this.cmsUpin = other.cmsUpin;
+    }
+    if (this.cmsCategory == null) {
+      this.cmsCategory = other.cmsCategory;
+    }
+    if (this.cmsProviderType == null) {
+      this.cmsProviderType = other.cmsProviderType;
+    }
+    if (this.cmsRegion == null) {
+      this.cmsRegion = other.cmsRegion;
+    }
+    if (this.cliaNumber == null) {
+      this.cliaNumber = other.cliaNumber;
+    }
+    if (this.bedCount == null) {
+      this.bedCount = other.bedCount;
+    }
+    if (this.name == null) {
+      this.name = other.name;
+    }
+    if (this.address == null) {
+      this.address = other.address;
+    }
+    if (this.city == null) {
+      this.city = other.city;
+    }
+    if (this.state == null) {
+      this.state = other.state;
+    }
+    if (this.zip == null) {
+      this.zip = other.zip;
+    }
+    if (this.fipsCountyCode == null) {
+      this.fipsCountyCode = other.fipsCountyCode;
+    }
+    if (this.phone == null) {
+      this.phone = other.phone;
+    }
+    if (this.type == null) {
+      this.type = other.type;
+    }
+    if (this.ownership == null) {
+      this.ownership = other.ownership;
+    }
+    /*
+     * This is the most important piece of the merge function: we need to ensure that
+     * the de-duplicated provider offers all intended services.
+     */
+    if (this.servicesProvided == null) {
+      this.servicesProvided = other.servicesProvided;
+    } else {
+      this.servicesProvided.addAll(other.servicesProvided);
+    }
   }
 
   @Override
