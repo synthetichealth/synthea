@@ -61,8 +61,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String ID = "id";
   public static final String ADDRESS = "address";
   public static final String CITY = "city";
+  public static final String COUNTY = "county";
   public static final String STATE = "state";
   public static final String ZIP = "zip";
+  public static final String FIPS = "fips";
   public static final String BIRTHPLACE = "birthplace";
   public static final String BIRTH_CITY = "birth_city";
   public static final String BIRTH_STATE = "birth_state";

@@ -67,6 +67,21 @@ public class LocationTest {
   }
 
   @Test
+  public void testLocationWithFipsCode() {
+    Assert.assertTrue(location.getPopulation(testTown) > 0);
+    List<String> zipcodes = location.getZipCodes(testTown);
+    Assert.assertFalse(Location.getFipsCodeByZipCode(zipcodes.get(0)).isEmpty());
+  }
+
+  @Test
+  public void testLocationWithoutFipsCode() {
+    List<String> zipcodes = location.getZipCodes(locationDoesNotExist);
+    Assert.assertTrue(zipcodes.size() == 1);
+    Assert.assertTrue(zipcodes.contains("00000"));
+    Assert.assertTrue(Location.getFipsCodeByZipCode(zipcodes.get(0)).isEmpty());
+  }
+
+  @Test
   public void testAssignPointPersonWithLocationThatDoesNotExist() {
     Person p = new Person(1);
     String zipcode = location.getZipCode(locationDoesNotExist, p);

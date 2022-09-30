@@ -300,12 +300,12 @@ public class CPCDSExporter {
     } else {
       s.append(',');
     }
-    s.append(person.attributes.getOrDefault("county", "")).append(',');
+    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, "")).append(',');
 
-    s.append(person.attributes.getOrDefault("county", "")).append(',');
+    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, ""));
