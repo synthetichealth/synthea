@@ -29,6 +29,7 @@ src/main/resources/export/external_codes.csv
 src/main/resources/export/snf_pdpm_code_map.json
 src/main/resources/export/snf_pps_code_map.json
 src/main/resources/export/snf_rev_cntr_code_map.json
+src/main/resources/export/hha_rev_cntr_code_map.json
 
 # H2 database files
 **/*.mv.db

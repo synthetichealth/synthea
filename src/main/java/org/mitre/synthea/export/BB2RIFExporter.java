@@ -146,6 +146,7 @@ public class BB2RIFExporter {
   CodeMapper snfPPSMapper;
   CodeMapper snfPDPMMapper;
   CodeMapper snfRevCntrMapper;
+  CodeMapper hhaRevCntrMapper;
   private Map<String, RandomCollection<String>> externalCodes;
   private Map<Integer, Double> pdeOutOfPocketThresholds;
 
@@ -189,6 +190,7 @@ public class BB2RIFExporter {
     snfPPSMapper = new CodeMapper("export/snf_pps_code_map.json");
     snfPDPMMapper = new CodeMapper("export/snf_pdpm_code_map.json");
     snfRevCntrMapper = new CodeMapper("export/snf_rev_cntr_code_map.json");
+    hhaRevCntrMapper = new CodeMapper("export/hha_rev_cntr_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     externalCodes = loadExternalCodes();
     try {
@@ -2691,6 +2693,9 @@ public class BB2RIFExporter {
             for (HealthRecord.Code code : lineItem.entry.codes) {
               if (hcpcsCodeMapper.canMap(code.code)) {
                 hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                if (hhaRevCntrMapper.canMap(code.code)) {
+                  revCenter = hhaRevCntrMapper.map(code.code, person);
+                }
                 break; // take the first mappable code for each procedure
               }
             }
@@ -2706,13 +2711,12 @@ public class BB2RIFExporter {
               fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          if (hcpcsCode == null) {
-            continue;
+          if (hcpcsCode != null) {
+            fieldValues.put(HHA.HCPCS_CD, hcpcsCode);
           }
 
           fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
           fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(HHA.HCPCS_CD, hcpcsCode);
           fieldValues.put(HHA.REV_CNTR_RATE_AMT,
               String.format("%.2f", lineItem.cost
                       .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
@@ -3175,7 +3179,7 @@ public class BB2RIFExporter {
               revCntr = snfRevCntrMapper.map(code.code, person, true);
             }
             if (codeMapper.canMap(code.code)) {
-              if (person.rand() < 0.15) {
+              if (person.rand() < 0.15) { // Only 15% of SNF claim have a HCPCS code
                 snfCode = codeMapper.map(code.code, person, true);
                 consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem);
               }
@@ -3271,6 +3275,73 @@ public class BB2RIFExporter {
       claimCount++;
     }
     return claimCount;
+  }
+
+  /**
+   * Utility class to group encounters separated by less than a configurable amount of time.
+   */
+  static class ConsolidatedServicePeriods {
+    static class ConsolidatedServicePeriod {
+      private long start;
+      private long stop;
+      private List<HealthRecord.Encounter> encounters;
+
+      public ConsolidatedServicePeriod(HealthRecord.Encounter encounter) {
+        start = encounter.start;
+        stop = encounter.stop;
+        encounters = new ArrayList<>();
+        encounters.add(encounter);
+      }
+
+      public boolean isContiguous(HealthRecord.Encounter encounter, long maxSeparationTime) {
+        return (encounter.start >= start && encounter.start <= stop + maxSeparationTime) ||
+                (encounter.stop <= stop && encounter.stop >= start - maxSeparationTime) ||
+                (encounter.start <= start && encounter.stop >= stop);
+      }
+
+      public void addEncounter(HealthRecord.Encounter encounter) {
+        encounters.add(encounter);
+        start = Math.min(start, encounter.start);
+        stop = Math.max(stop, encounter.stop);
+      }
+
+      public List<HealthRecord.Encounter> getEncounters() {
+        return encounters;
+      }
+    }
+
+    private long maxSeparationTime;
+    private List<HealthRecord.Encounter> encounters;
+
+    public ConsolidatedServicePeriods(long maxSeparationTime) {
+      this.maxSeparationTime = maxSeparationTime;
+      encounters = new ArrayList<>();
+    }
+
+    public void addEncounter(HealthRecord.Encounter encounter) {
+      encounters.add(encounter);
+    }
+
+    private static void consolidate(HealthRecord.Encounter encounter,
+            List<ConsolidatedServicePeriod> servicePeriods, long maxSeparationTime) {
+      for (ConsolidatedServicePeriod currentPeriod: servicePeriods) {
+        if (currentPeriod.isContiguous(encounter, maxSeparationTime)) {
+          currentPeriod.addEncounter(encounter);
+          return;
+        }
+      }
+      ConsolidatedServicePeriod period = new ConsolidatedServicePeriod(encounter);
+      servicePeriods.add(period);
+    }
+
+    public List<ConsolidatedServicePeriod> getPeriods() {
+      List<ConsolidatedServicePeriod> servicePeriods = new ArrayList<>();
+      encounters.sort((e1, e2) -> {return (int)(e1.start - e2.start);});
+      for (HealthRecord.Encounter encounter: encounters) {
+        consolidate(encounter, servicePeriods, maxSeparationTime);
+      }
+      return servicePeriods;
+    }
   }
 
   private static class ConsolidatedClaimLines {
