@@ -178,7 +178,6 @@ public class CSVExporter {
 
       if (Config.getAsBoolean("exporter.csv.folder_per_run")) {
         // we want a folder per run, so name it based on the timestamp
-        // TODO: do we want to consider names based on the current generation options?
         String timestamp = ExportHelper.iso8601Timestamp(System.currentTimeMillis());
         String subfolderName = timestamp.replaceAll("\\W+", "_"); // make sure it's filename-safe
         outputDirectory = outputDirectory.resolve(subfolderName);
@@ -297,7 +296,8 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
+        + "ADDRESS,CITY,STATE,COUNTY,FIPS,ZIP,LAT,LON,"
+        + "HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
         + "REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2");
@@ -591,7 +591,7 @@ public class CSVExporter {
   private String patient(Person person, long time) throws IOException {
     // Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,PREFIX,
     // FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,ADDRESS
-    // CITY,STATE,COUNTY,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME
+    // CITY,STATE,COUNTY,FIPS,ZIP,LAT,LON,HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME
     String personID = (String) person.attributes.get(Person.ID);
 
     // check if we've already exported this patient demographic data yet,
@@ -626,7 +626,8 @@ public class CSVExporter {
         Person.ADDRESS,
         Person.CITY,
         Person.STATE,
-        "county",
+        Person.COUNTY,
+        Person.FIPS,
         Person.ZIP,
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");

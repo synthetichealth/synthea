@@ -767,7 +767,7 @@ public class Generator {
     // Pull the person's location data.
     demographicsOutput.put(Person.CITY, city.city);
     demographicsOutput.put(Person.STATE, city.state);
-    demographicsOutput.put("county", city.county);
+    demographicsOutput.put(Person.COUNTY, city.county);
 
     // Generate the person's race data based on their location.
     String race = city.pickRace(random);

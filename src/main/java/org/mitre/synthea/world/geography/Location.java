@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.text.WordUtils;
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -27,7 +26,7 @@ public class Location implements Serializable {
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
-
+  private static CMSStateCodeMapper cmsStateCodeMapper = new CMSStateCodeMapper();
   private long totalPopulation;
 
   // cache the population by city name for performance
@@ -208,12 +207,16 @@ public class Location implements Serializable {
       zipsForCity = zipCodes.get(cityName + " Town");
     }
 
-    if (zipsForCity == null || zipsForCity.isEmpty()) {
-      results.add("00000"); // if we don't have the city, just use a dummy
-    } else if (zipsForCity.size() >= 1) {
+    if (zipsForCity != null && zipsForCity.size() >= 1) {
       for (Place place : zipsForCity) {
-        results.add(place.postalCode);
+        if (place.postalCode != null && !place.postalCode.isEmpty()) {
+          results.add(place.postalCode);
+        }
       }
+    }
+
+    if (results.isEmpty()) {
+      results.add("00000"); // if we don't have the city, just use a dummy
     }
 
     return results;
@@ -384,7 +387,7 @@ public class Location implements Serializable {
    * @param person The person to assign attributes.
    */
   public void setSocialDeterminants(Person person) {
-    String county = (String) person.attributes.get("county");
+    String county = (String) person.attributes.get(Person.COUNTY);
     if (county == null) {
       county = "AVERAGE";
     }
@@ -517,5 +520,14 @@ public class Location implements Serializable {
    */
   public static String getTimezoneByState(String state) {
     return timezones.get(state);
+  }
+
+  /**
+   * Get the FIPS code, if it exists, for a given zip code.
+   * @param zipCode The zip code of the location.
+   * @return The FIPS county code of the location.
+   */
+  public static String getFipsCodeByZipCode(String zipCode) {
+    return Location.cmsStateCodeMapper.zipToFipsCountyCode(zipCode);
   }
 }
