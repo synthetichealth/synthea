@@ -3294,9 +3294,9 @@ public class BB2RIFExporter {
       }
 
       public boolean isContiguous(HealthRecord.Encounter encounter, long maxSeparationTime) {
-        return (encounter.start >= start && encounter.start <= stop + maxSeparationTime) ||
-                (encounter.stop <= stop && encounter.stop >= start - maxSeparationTime) ||
-                (encounter.start <= start && encounter.stop >= stop);
+        return (encounter.start >= start && encounter.start <= stop + maxSeparationTime)
+                || (encounter.stop <= stop && encounter.stop >= start - maxSeparationTime)
+                || (encounter.start <= start && encounter.stop >= stop);
       }
 
       public void addEncounter(HealthRecord.Encounter encounter) {
@@ -3336,7 +3336,9 @@ public class BB2RIFExporter {
 
     public List<ConsolidatedServicePeriod> getPeriods() {
       List<ConsolidatedServicePeriod> servicePeriods = new ArrayList<>();
-      encounters.sort((e1, e2) -> {return (int)(e1.start - e2.start);});
+      encounters.sort((e1, e2) -> {
+        return (int)(e1.start - e2.start);
+      });
       for (HealthRecord.Encounter encounter: encounters) {
         consolidate(encounter, servicePeriods, maxSeparationTime);
       }
