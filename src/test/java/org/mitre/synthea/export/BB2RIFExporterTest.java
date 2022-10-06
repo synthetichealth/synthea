@@ -31,8 +31,6 @@ import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
-import org.mitre.synthea.export.BB2RIFExporter.ConsolidatedServicePeriods;
-import org.mitre.synthea.export.BB2RIFExporter.ConsolidatedServicePeriods.ConsolidatedServicePeriod;
 import org.mitre.synthea.export.BB2RIFExporter.HICN;
 import org.mitre.synthea.export.BB2RIFExporter.MBI;
 import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
@@ -432,29 +430,5 @@ public class BB2RIFExporterTest {
     instant = pointInTime.atStartOfDay(ZoneId.systemDefault()).toInstant();
     timeInMillis = instant.toEpochMilli();
     assertFalse(period.covers(timeInMillis));
-  }
-
-  @Test
-  public void testEncounterConsolidation() {
-    Person person = new Person(System.currentTimeMillis());
-    long now = Instant.now().toEpochMilli();
-    person.record.encounterStart(now, HealthRecord.EncounterType.HOME);
-    person.record.encounterStart(now + Utilities.convertTime("days", 3),
-            HealthRecord.EncounterType.HOME);
-    person.record.encounterStart(now + Utilities.convertTime("days", 2),
-            HealthRecord.EncounterType.HOME);
-    person.record.encounterStart(now + Utilities.convertTime("days", 6),
-            HealthRecord.EncounterType.HOME);
-
-    ConsolidatedServicePeriods consolidated =
-            new ConsolidatedServicePeriods(Utilities.convertTime("days", 2));
-    for (HealthRecord.Encounter encounter: person.record.encounters) {
-      consolidated.addEncounter(encounter);
-    }
-
-    List<ConsolidatedServicePeriod> periods = consolidated.getPeriods();
-    assertEquals(2, periods.size());
-    assertEquals(3, periods.get(0).getEncounters().size());
-    assertEquals(1, periods.get(1).getEncounters().size());
   }
 }

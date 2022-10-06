@@ -87,6 +87,30 @@ public class Claim implements Serializable {
       }
       return Claim.ZERO_CENTS;
     }
+
+    /**
+     * Returns the total cost of the Claim, including immunizations/procedures tied to the
+     * encounter.
+     */
+    public BigDecimal getTotalClaimCost() {
+      return cost;
+    }
+
+    public BigDecimal getCoveredCost() {
+      return coinsurancePaidByPayer.add(paidByPayer);
+    }
+
+    public BigDecimal getDeductiblePaid() {
+      return deductiblePaidByPatient;
+    }
+
+    public BigDecimal getCopayPaid() {
+      return copayPaidByPatient;
+    }
+
+    public BigDecimal getPatientCost() {
+      return patientOutOfPocket.add(copayPaidByPatient).add(deductiblePaidByPatient);
+    }
   }
 
   public InsurancePlan plan;
@@ -259,15 +283,15 @@ public class Claim implements Serializable {
    * Returns the total cost that the Payer covered for this claim.
    */
   public BigDecimal getCoveredCost() {
-    return this.totals.coinsurancePaidByPayer.add(this.totals.paidByPayer);
+    return this.totals.getCoveredCost();
   }
 
   public BigDecimal getDeductiblePaid() {
-    return this.totals.deductiblePaidByPatient;
+    return this.totals.getDeductiblePaid();
   }
 
   public BigDecimal getCopayPaid() {
-    return this.totals.copayPaidByPatient;
+    return this.totals.getCopayPaid();
   }
 
   /**
@@ -276,19 +300,13 @@ public class Claim implements Serializable {
    * @return the amount of coinsurance paid
    */
   public BigDecimal getCoinsurancePaid() {
-    if (this.totals.paidBySecondaryPayer.compareTo(Claim.ZERO_CENTS) > 0) {
-      return this.totals.paidBySecondaryPayer;
-    } else if (this.totals.coinsurancePaidByPayer.compareTo(Claim.ZERO_CENTS) > 0) {
-      return this.totals.patientOutOfPocket;
-    }
-    return Claim.ZERO_CENTS;
+    return this.totals.getCoinsurancePaid();
   }
 
   /**
    * Returns the total cost to the patient, including copay, coinsurance, and deductible.
    */
   public BigDecimal getPatientCost() {
-    return this.totals.patientOutOfPocket.add(this.totals.copayPaidByPatient)
-        .add(this.totals.deductiblePaidByPatient);
+    return this.totals.getPatientCost();
   }
 }

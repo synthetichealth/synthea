@@ -58,6 +58,8 @@ import org.mitre.synthea.export.BB2RIFStructure.OUTPATIENT;
 import org.mitre.synthea.export.BB2RIFStructure.PDE;
 import org.mitre.synthea.export.BB2RIFStructure.SNF;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.ConsolidatedServicePeriods;
+import org.mitre.synthea.helpers.ConsolidatedServicePeriods.ConsolidatedServicePeriod;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -2578,6 +2580,10 @@ public class BB2RIFExporter {
     HashMap<HHA, String> fieldValues = new HashMap<>();
     long claimCount = 0;
     int homeVisits = 0;
+
+    long maxGapForContinuousHHAService = Utilities.convertTime("days", 2);
+    ConsolidatedServicePeriods servicePeriods = new ConsolidatedServicePeriods(
+            maxGapForContinuousHHAService);
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
@@ -2585,8 +2591,10 @@ public class BB2RIFExporter {
       if (!getClaimTypes(encounter).contains(ClaimType.HHA)) {
         continue;
       }
+      servicePeriods.addEncounter(encounter);
+    }
 
-      homeVisits += 1;
+    for (ConsolidatedServicePeriod servicePeriod: servicePeriods.getPeriods()) {
       long claimId = BB2RIFExporter.claimId.getAndDecrement();
       long claimGroupId = BB2RIFExporter.claimGroupId.getAndDecrement();
       long fiDocId = BB2RIFExporter.fiDocCntlNum.getAndDecrement();
@@ -2599,160 +2607,166 @@ public class BB2RIFExporter {
       fieldValues.put(HHA.CLM_ID, "" + claimId);
       fieldValues.put(HHA.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(HHA.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(HHA.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HHA.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HHA.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(HHA.CLM_FROM_DT, bb2DateFromTimestamp(servicePeriod.getStart()));
+      fieldValues.put(HHA.CLM_ADMSN_DT, bb2DateFromTimestamp(servicePeriod.getStart()));
+      fieldValues.put(HHA.CLM_THRU_DT, bb2DateFromTimestamp(servicePeriod.getStop()));
       fieldValues.put(HHA.NCH_WKLY_PROC_DT,
-          bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(HHA.PRVDR_NUM, encounter.provider.id);
-      fieldValues.put(HHA.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(HHA.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HHA.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+          bb2DateFromTimestamp(ExportHelper.nextFriday(servicePeriod.getStop())));
 
       fieldValues.put(HHA.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
-          .getGovernmentPayerPlan()) {
-        fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
-      } else {
-        fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
-            String.format("%.2f", encounter.claim.getCoveredCost()));
-      }
-      fieldValues.put(HHA.PRVDR_STATE_CD,
-          locationMapper.getStateCode(encounter.provider.state));
+          String.format("%.2f", servicePeriod.getTotalCost().getCoveredCost()));
       fieldValues.put(HHA.CLM_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + homeVisits);
-      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()));
+      fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + servicePeriod.getEncounters().size());
+      int days = (int) ((servicePeriod.getStop() - servicePeriod.getStart())
+              / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
       }
       fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "" + days);
       fieldValues.put(HHA.REV_CNTR_RATE_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()
+          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()
                   .divide(BigDecimal.valueOf(days), RoundingMode.HALF_EVEN)
                   .setScale(2, RoundingMode.HALF_EVEN)));
       fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
+          String.format("%.2f", servicePeriod.getTotalCost().getCoveredCost()));
       fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()));
+          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()));
       fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", servicePeriod.getTotalCost().getPatientCost()));
 
-      if (encounter.reason != null) {
-        // If the encounter has a recorded reason, enter the mapped
-        // values into the principle diagnoses code.
-        if (conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(HHA.PRNCPAL_DGNS_CD, icdCode);
-        }
-      }
 
-      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
-      String dischargeStatus = null;
-      if (encounter.ended) {
-        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
-      } else {
-        dischargeStatus = "30"; // the patient is still here
-      }
-      if (!person.alive(encounter.stop)) {
-        dischargeStatus = "20"; // the patient died before the encounter ended
-      }
-      fieldValues.put(HHA.PTNT_DSCHRG_STUS_CD, dischargeStatus);
-
-      // Use the active condition diagnoses to enter mapped values
-      // into the diagnoses codes.
-      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-      if (mappedDiagnosisCodes.isEmpty()) {
-        continue; // skip this encounter
-      }
-      int smallest = Math.min(mappedDiagnosisCodes.size(),
-              BB2RIFStructure.homeDxFields.length);
-      for (int i = 0; i < smallest; i++) {
-        HHA[] dxField = BB2RIFStructure.homeDxFields[i];
-        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-        fieldValues.put(dxField[1], "0"); // 0=ICD10
-      }
-      if (!fieldValues.containsKey(HHA.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-      }
-
-      // Check for external code...
-      setExternalCode(person, fieldValues,
-          HHA.PRNCPAL_DGNS_CD, HHA.ICD_DGNS_E_CD1, HHA.ICD_DGNS_E_VRSN_CD1);
-      setExternalCode(person, fieldValues,
-          HHA.PRNCPAL_DGNS_CD, HHA.FST_DGNS_E_CD, HHA.FST_DGNS_E_VRSN_CD);
 
       String revCenter = fieldValues.get(HHA.REV_CNTR);
-
       synchronized (rifWriters.getOrCreateWriter(HHA.class)) {
         int claimLine = 1;
-        for (ClaimEntry lineItem : encounter.claim.items) {
-          String hcpcsCode = null;
-          if (lineItem.entry instanceof HealthRecord.Procedure) {
-            for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (hcpcsCodeMapper.canMap(code.code)) {
-                hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
-                if (hhaRevCntrMapper.canMap(code.code)) {
-                  revCenter = hhaRevCntrMapper.map(code.code, person);
+        for (HealthRecord.Encounter encounter : servicePeriod.getEncounters()) {
+          fieldValues.put(HHA.PRVDR_NUM, encounter.provider.id);
+          fieldValues.put(HHA.ORG_NPI_NUM, encounter.provider.npi);
+          fieldValues.put(HHA.AT_PHYSN_NPI, encounter.clinician.npi);
+          fieldValues.put(HHA.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
+          fieldValues.put(HHA.PRVDR_STATE_CD,
+              locationMapper.getStateCode(encounter.provider.state));
+
+          if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+              .getGovernmentPayerPlan()) {
+            fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+          } else {
+            fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT,
+                String.format("%.2f", servicePeriod.getTotalCost().getCoveredCost()));
+          }
+
+          if (encounter.reason != null) {
+            // If the encounter has a recorded reason, enter the mapped
+            // values into the principle diagnoses code.
+            if (conditionCodeMapper.canMap(encounter.reason.code)) {
+              String icdCode = conditionCodeMapper.map(encounter.reason.code, person, true);
+              fieldValues.put(HHA.PRNCPAL_DGNS_CD, icdCode);
+            }
+          }
+
+          // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+          String dischargeStatus = null;
+          if (encounter.ended) {
+            dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+          } else {
+            dischargeStatus = "30"; // the patient is still here
+          }
+          if (!person.alive(encounter.stop)) {
+            dischargeStatus = "20"; // the patient died before the encounter ended
+          }
+          fieldValues.put(HHA.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+
+          // Use the active condition diagnoses to enter mapped values
+          // into the diagnoses codes.
+          List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+          if (mappedDiagnosisCodes.isEmpty()) {
+            continue; // skip this encounter
+          }
+          int smallest = Math.min(mappedDiagnosisCodes.size(),
+                  BB2RIFStructure.homeDxFields.length);
+          for (int i = 0; i < smallest; i++) {
+            HHA[] dxField = BB2RIFStructure.homeDxFields[i];
+            fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+            fieldValues.put(dxField[1], "0"); // 0=ICD10
+          }
+          if (!fieldValues.containsKey(HHA.PRNCPAL_DGNS_CD)) {
+            fieldValues.put(HHA.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+          }
+
+          // Check for external code...
+          setExternalCode(person, fieldValues,
+              HHA.PRNCPAL_DGNS_CD, HHA.ICD_DGNS_E_CD1, HHA.ICD_DGNS_E_VRSN_CD1);
+          setExternalCode(person, fieldValues,
+              HHA.PRNCPAL_DGNS_CD, HHA.FST_DGNS_E_CD, HHA.FST_DGNS_E_VRSN_CD);
+
+          for (ClaimEntry lineItem : encounter.claim.items) {
+            String hcpcsCode = null;
+            if (lineItem.entry instanceof HealthRecord.Procedure) {
+              for (HealthRecord.Code code : lineItem.entry.codes) {
+                if (hcpcsCodeMapper.canMap(code.code)) {
+                  hcpcsCode = hcpcsCodeMapper.map(code.code, person, true);
+                  if (hhaRevCntrMapper.canMap(code.code)) {
+                    revCenter = hhaRevCntrMapper.map(code.code, person);
+                  }
+                  break; // take the first mappable code for each procedure
                 }
-                break; // take the first mappable code for each procedure
+              }
+              fieldValues.put(HHA.REV_CNTR, revCenter);
+              fieldValues.remove(HHA.REV_CNTR_NDC_QTY);
+              fieldValues.remove(HHA.REV_CNTR_NDC_QTY_QLFR_CD);
+            } else if (lineItem.entry instanceof HealthRecord.Medication) {
+              HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+              if (med.administration) {
+                hcpcsCode = "T1502";  // Administration of medication
+                fieldValues.put(HHA.REV_CNTR, "0250"); // Pharmacy-general classification
+                fieldValues.put(HHA.REV_CNTR_NDC_QTY, "1"); // 1 Unit
+                fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
               }
             }
-            fieldValues.put(HHA.REV_CNTR, revCenter);
-            fieldValues.remove(HHA.REV_CNTR_NDC_QTY);
-            fieldValues.remove(HHA.REV_CNTR_NDC_QTY_QLFR_CD);
-          } else if (lineItem.entry instanceof HealthRecord.Medication) {
-            HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-            if (med.administration) {
-              hcpcsCode = "T1502";  // Administration of medication
-              fieldValues.put(HHA.REV_CNTR, "0250"); // Pharmacy-general classification
-              fieldValues.put(HHA.REV_CNTR_NDC_QTY, "1"); // 1 Unit
-              fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
+            if (hcpcsCode != null) {
+              fieldValues.put(HHA.HCPCS_CD, hcpcsCode);
             }
-          }
-          if (hcpcsCode != null) {
-            fieldValues.put(HHA.HCPCS_CD, hcpcsCode);
+
+            fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
+            fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
+            fieldValues.put(HHA.REV_CNTR_RATE_AMT,
+                String.format("%.2f", lineItem.cost
+                        .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
+                        .setScale(2, RoundingMode.HALF_EVEN)));
+            fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
+                String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+            fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
+                String.format("%.2f", lineItem.cost));
+            fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
+                String.format("%.2f", lineItem.copayPaidByPatient
+                .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+            if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+                    && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+              // Not subject to deductible or coinsurance
+              fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+            } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+                    && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
+              // Subject to deductible and coinsurance
+              fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+            } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
+              // Not subject to deductible
+              fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+            } else {
+              // Not subject to coinsurance
+              fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+            }
+            rifWriters.writeValues(HHA.class, fieldValues);
           }
 
-          fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.entry.start));
-          fieldValues.put(HHA.REV_CNTR_RATE_AMT,
-              String.format("%.2f", lineItem.cost
-                      .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
-                      .setScale(2, RoundingMode.HALF_EVEN)));
-          fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
-          fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
-              String.format("%.2f", lineItem.cost));
-          fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copayPaidByPatient
-              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
-          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
-            // Not subject to deductible or coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
-            // Subject to deductible and coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
-            // Not subject to deductible
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-          } else {
-            // Not subject to coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+          if (claimLine == 1) {
+            // If claimLine still equals 1, then no line items were successfully added.
+            // Add a single top-level entry.
+            fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine));
+            fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
+            fieldValues.put(HHA.HCPCS_CD, "T1021"); // home health visit
+            rifWriters.writeValues(HHA.class, fieldValues);
           }
-          rifWriters.writeValues(HHA.class, fieldValues);
-        }
-
-        if (claimLine == 1) {
-          // If claimLine still equals 1, then no line items were successfully added.
-          // Add a single top-level entry.
-          fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-          fieldValues.put(HHA.HCPCS_CD, "T1021"); // home health visit
-          rifWriters.writeValues(HHA.class, fieldValues);
         }
       }
       claimCount++;
@@ -2966,7 +2980,7 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Export Home Health Agency visits for a single person.
+   * Export Skilled Nursing Facility visits for a single person.
    * @param person the person to export
    * @param startTime earliest claim date to export
    * @param stopTime end time of simulation
@@ -3275,75 +3289,6 @@ public class BB2RIFExporter {
       claimCount++;
     }
     return claimCount;
-  }
-
-  /**
-   * Utility class to group encounters separated by less than a configurable amount of time.
-   */
-  static class ConsolidatedServicePeriods {
-    static class ConsolidatedServicePeriod {
-      private long start;
-      private long stop;
-      private List<HealthRecord.Encounter> encounters;
-
-      public ConsolidatedServicePeriod(HealthRecord.Encounter encounter) {
-        start = encounter.start;
-        stop = encounter.stop;
-        encounters = new ArrayList<>();
-        encounters.add(encounter);
-      }
-
-      public boolean isContiguous(HealthRecord.Encounter encounter, long maxSeparationTime) {
-        return (encounter.start >= start && encounter.start <= stop + maxSeparationTime)
-                || (encounter.stop <= stop && encounter.stop >= start - maxSeparationTime)
-                || (encounter.start <= start && encounter.stop >= stop);
-      }
-
-      public void addEncounter(HealthRecord.Encounter encounter) {
-        encounters.add(encounter);
-        start = Math.min(start, encounter.start);
-        stop = Math.max(stop, encounter.stop);
-      }
-
-      public List<HealthRecord.Encounter> getEncounters() {
-        return encounters;
-      }
-    }
-
-    private long maxSeparationTime;
-    private List<HealthRecord.Encounter> encounters;
-
-    public ConsolidatedServicePeriods(long maxSeparationTime) {
-      this.maxSeparationTime = maxSeparationTime;
-      encounters = new ArrayList<>();
-    }
-
-    public void addEncounter(HealthRecord.Encounter encounter) {
-      encounters.add(encounter);
-    }
-
-    private static void consolidate(HealthRecord.Encounter encounter,
-            List<ConsolidatedServicePeriod> servicePeriods, long maxSeparationTime) {
-      for (ConsolidatedServicePeriod currentPeriod: servicePeriods) {
-        if (currentPeriod.isContiguous(encounter, maxSeparationTime)) {
-          currentPeriod.addEncounter(encounter);
-          return;
-        }
-      }
-      ConsolidatedServicePeriod period = new ConsolidatedServicePeriod(encounter);
-      servicePeriods.add(period);
-    }
-
-    public List<ConsolidatedServicePeriod> getPeriods() {
-      List<ConsolidatedServicePeriod> servicePeriods = new ArrayList<>();
-      encounters.sort((e1, e2) -> {
-        return (int)(e1.start - e2.start);
-      });
-      for (HealthRecord.Encounter encounter: encounters) {
-        consolidate(encounter, servicePeriods, maxSeparationTime);
-      }
-      return servicePeriods;
-    }
   }
 
   private static class ConsolidatedClaimLines {
