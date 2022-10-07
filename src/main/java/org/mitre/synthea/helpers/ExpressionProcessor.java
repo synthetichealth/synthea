@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.JAXBException;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
@@ -31,8 +30,9 @@ import org.cqframework.cql.elm.execution.ExpressionDef;
 import org.cqframework.cql.elm.execution.Library;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.opencds.cqf.cql.execution.Context;
-import org.opencds.cqf.cql.execution.CqlLibraryReader;
+import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.serializing.CqlLibraryReader;
+import org.opencds.cqf.cql.engine.serializing.jackson.XmlCqlLibraryReader;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
@@ -106,9 +106,10 @@ public class ExpressionProcessor {
     this.elm = cqlToElm(wrappedExpression);
     synchronized (ExpressionProcessor.class) {
       try {
-        this.library = CqlLibraryReader.read(new ByteArrayInputStream(
+        CqlLibraryReader reader = new XmlCqlLibraryReader();
+        this.library = reader.read(new ByteArrayInputStream(
             elm.getBytes(StandardCharsets.UTF_8)));
-      } catch (IOException | JAXBException ex) {
+      } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
     }
@@ -378,7 +379,7 @@ public class ExpressionProcessor {
         .append(paramTypeMap.getOrDefault(paramEntry.getKey(), "Decimal"));
     }
 
-    wrappedExpression.append("\n\ncontext Patient\n\n");
+    wrappedExpression.append("\n\ncontext Unfiltered\n\n");
 
     String[] statements = expression.split("\n");
 
