@@ -2673,6 +2673,7 @@ public class BB2RIFExporter {
 
       // Use the final encounter in the service period to set all of the remaining field values that
       // are the same for all claim lines
+      // TODO: update ConsolidatedServicePeriods to separate encounters based on provider, clinician
       HealthRecord.Encounter encounter = servicePeriod.getEncounters().get(
               servicePeriod.getEncounters().size() - 1);
       fieldValues.put(HHA.PRVDR_NUM, encounter.provider.id);

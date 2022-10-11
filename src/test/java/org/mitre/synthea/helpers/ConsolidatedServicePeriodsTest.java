@@ -9,7 +9,7 @@ import org.mitre.synthea.helpers.ConsolidatedServicePeriods.ConsolidatedServiceP
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
-public class ConsolodatedServicePeriodsTest {
+public class ConsolidatedServicePeriodsTest {
   @Test
   public void testEncounterConsolidation() {
     Person person = new Person(System.currentTimeMillis());

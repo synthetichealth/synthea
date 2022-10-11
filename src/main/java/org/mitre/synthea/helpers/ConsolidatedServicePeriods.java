@@ -45,6 +45,7 @@ public class ConsolidatedServicePeriods {
      * @param encounter the encounter
      */
     public void addEncounter(HealthRecord.Encounter encounter) {
+      // TODO: separate encounters by provider, clinician
       encounters.add(encounter);
       start = Math.min(start, encounter.start);
       stop = Math.max(stop, encounter.stop);
