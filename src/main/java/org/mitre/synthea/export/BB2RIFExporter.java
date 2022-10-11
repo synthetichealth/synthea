@@ -500,7 +500,8 @@ public class BB2RIFExporter {
       }
 
       if (types.isEmpty()) {
-        System.out.printf("BFD RIF unhandled encounter type");
+        System.out.printf("BFD RIF unhandled encounter type (" + encounter.type
+            + ") and provider type (" + encounter.provider.type.toString() + ")");
       }
     }
 
