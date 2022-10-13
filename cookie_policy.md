@@ -5,9 +5,12 @@ title: Synthea Cookie Notice
 
 # Synthea<sup>TM</sup> Cookie Notice
 
-Last Updated: 13 September 2022
+Last Updated: 13 October 2022
 
-This Notice describes how MITRE uses cookies and tracking technologies on this website, [{{site.url}}{{site.baseurl}}]({{site.baseurl}}/#home). Like many companies, MITRE uses “cookies,” which are small data files that can be sent to your web browser and stored on your computer. MITRE uses cookies to distinguish you from other users of our website and enable us to improve website performance. 
+This Notice describes how MITRE uses cookies and tracking technologies on this website, [{{site.url}}{{site.baseurl}}]({{site.baseurl}}/#home). Like many companies, MITRE uses “cookies,” which are small data files that can be sent to your web browser and stored on your computer. MITRE uses cookies to distinguish you from other users of our website and enable us to improve website performance.
+
+<script type="text/javascript" src="{{site.baseurl}}/assets/js/cookiecode.js"></script>
+<a href="javascript:function cookie_settings_reveal() { document.cookie = 'cookieconsent_status=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'; location.href = '{{site.baseurl}}/#home'; } cookie_settings_reveal();">Cookie Settings</a>
 
 ## MITRE Uses the Following Types of Cookies on this Site
 
@@ -38,6 +41,8 @@ For more information about how long a cookie remains on your device, please see 
 |----------|----------|--------|----------------|
 | Google Analytics | PERFORMANCE/FUNCTIONALITY | _ga | 2 years |
 | Google Analytics | PERFORMANCE/FUNCTIONALITY | _gid | 24 hours |
+| Google Analytics | PERFORMANCE/FUNCTIONALITY | _gat | 1 minute |
+| {{site.url}}{{site.baseurl}} | PERFORMANCE/FUNCTIONALITY | cookieconsent_status | 1 year |
 |----------|----------|--------|----------------|
 
 ## Contact Information

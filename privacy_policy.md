@@ -5,9 +5,9 @@ title: MITRE Synthea Online Privacy Policy
 
 # MITRE Synthea<sup>TM</sup> Online Privacy Policy
 
-Effective Date: 13 September 2022
+Effective Date: 13 October 2022
 
-This Online Privacy Policy explains the types of personal information that The MITRE Corporation (“**MITRE**,” “**we**,” “**our**,” “**us**”) collects from visitors to [{{site.url}}{{site.baseurl}}]({{site.baseurl}}/#home) (the “Site”); how MITRE uses, shares, protects, stores, and otherwise processes that personal information; and your choices with respect to our use of your personal information. By using our Site, you acknowledge that you understand and agree to the terms outlined in this Privacy Policy. If you have any questions, you may contact us using the information provided at the end of this Privacy Policy.
+This Online Privacy Policy explains the types of personal information that The MITRE Corporation (“**MITRE**,” “**we**,” “**our**,” “**us**”) collects from visitors to [{{site.url}}{{site.baseurl}}]({{site.baseurl}}/#home) and [https://synthea.mitre.org](https://synthea.mitre.org) (the “**Site**”, “**Sites**”); how MITRE uses, shares, protects, stores, and otherwise processes that personal information; and your choices with respect to our use of your personal information. By using our Site, you acknowledge that you understand and agree to the terms outlined in this Privacy Policy. If you have any questions, you may contact us using the information provided at the end of this Privacy Policy.
 
 This notice is provided in a layered format so you can click through to the specific areas listed below.
 
@@ -69,7 +69,9 @@ MITRE may disclose your personal information to comply with applicable law, such
 
 ##  Information Collected by GitHub
 
-The Synthea<sup>TM</sup> Site is hosted on GitHub, which provides internet hosting for software development and version control. When GitHub is visited, the visitor's IP address is logged and stored for security purposes, regardless of whether the visitor has signed into GitHub or not. For more information about GitHub's privacy and security practices, see the [GitHub Privacy Statement](https://docs.github.com/en/github/site-policy/github-privacy-statement).
+The Synthea<sup>TM</sup> Site at [{{site.url}}{{site.baseurl}}]({{site.baseurl}}/#home) is hosted on GitHub, which provides internet hosting for software development and version control. When GitHub is visited, the visitor's IP address is logged and stored for security purposes, regardless of whether the visitor has signed into GitHub or not. For more information about GitHub's privacy and security practices, see the [GitHub Privacy Statement](https://docs.github.com/en/github/site-policy/github-privacy-statement).
+
+The Synthea<sup>TM</sup> Site at [https://synthea.mitre.org](https://synthea.mitre.org) is hosted in the Google Cloud&reg; using Apigee and the FHIR API. For more information on Google’s privacy and security practices, see the [Google Cloud Privacy Notice](https://cloud.google.com/terms/cloud-privacy-notice#?text=This%20Google%20Cloud%20Privacy%20Notice%20describes%20how%20we,Services%20either%20directly%20or%20via%20our%20authorized%20partners.).
 
 ## Linked Websites
 
@@ -89,16 +91,16 @@ MITRE is based in the United States. If you are visiting our Site from outside t
 
 ## Information for Visitors from the European Economic Area and the United Kingdom
 
-This section provides a GDPR Notice (“Notice”) for residents of the European Economic Area (“EEA”) and United Kingdom (“UK”) regarding their respective rights under the European Union’s General Data Protection Regulation and the United Kingdom’s General Data Protection Regulation (collectively, the “GDPR”). MITRE is the data controller for personal data collected through the Site.
+This section provides a GDPR Notice (“**Notice**”) for residents of the European Economic Area (“**EEA**”) and United Kingdom (“**UK**”) regarding their respective rights under the European Union’s General Data Protection Regulation and the United Kingdom’s General Data Protection Regulation (collectively, the “**GDPR**”). MITRE is the data controller for personal data collected through the Site.
 
 This Notice supplements the information in this Privacy Policy and other MITRE privacy policies and notices. If there is a conflict between any other MITRE privacy policy, statement, or notice and this Notice, this Notice will prevail.
 
 ## Our Collection and Use of Personal Data
 
 Personal data collected through the MITRE Site may include:
-- Contact Data. You may provide your contact details, such as your name, phone number, postal address, email address, and company affiliation; for example, when you contact us for further information or subscribe to receive our news and information offerings.
-- Device Data. We may obtain information about devices that access our Site, including the type of device, operating system, device settings, unique device identifiers, and error data.
-- Other Data You Provide. This includes personal data you include in communications you send to us, such as inquiries about our services.
+- **Contact Data**. You may provide your contact details, such as your name, phone number, postal address, email address, and company affiliation; for example, when you contact us for further information or subscribe to receive our news and information offerings.
+- **Device Data**. We may obtain information about devices that access our Site, including the type of device, operating system, device settings, unique device identifiers, and error data.
+- **Other Data You Provide**. This includes personal data you include in communications you send to us, such as inquiries about our services.
 
 ### Our Processing of Your Personal Data
 

@@ -21,91 +21,10 @@
   <script src="{{site.baseurl}}/assets/js/material.min.js"></script>
   <script src="{{site.baseurl}}/assets/js/snackbar.min.js"></script>
   <script> $.material.init(); </script>
-  <script type="text/javascript" src="{{site.baseurl}}/assets/js/main.js"></script>  
+  <script type="text/javascript" src="{{site.baseurl}}/assets/js/main.js"></script>
     {% if jekyll.environment == 'production' %}
       {% include _analytics.html %}
     {% endif %}
-  <script>
-    window.cookieconsent.initialise({
-      "palette": {
-        "popup": {
-          "background": "#295677",
-          "text": "#fff"
-        },
-        "button": {
-          "background": "#f1d600"
-        }
-      },
-      "theme": "classic",
-      "type": "opt-in",
-      "content": {
-        "message": "We use cookies to improve your experience and analyze usage to help improve our site.",
-        "dismiss": "Agree",
-        "deny": "Deny",
-        "link": "Cookie Policy",
-        "href": "cookie_policy.html"
-      },
-      onInitialise: function (status) {
-        var type = this.options.type;
-        var didConsent = this.hasConsented();
-
-        if (didConsent) {
-          // console.log("Initialize GA CREATE");
-          if (typeof ga !== 'undefined') {
-            ga('create', '{{ site.google_analytics }}', 'auto');
-            ga('send', 'pageview');
-          }
-        } else {
-          // console.log("Initialize GA REMOVE");
-          if (typeof ga !== 'undefined') {
-            ga('remove');
-          }
-          document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gat=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gid=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-        }
-      },
-      onStatusChange: function(status, chosenBefore) {
-        var type = this.options.type;
-        var didConsent = this.hasConsented();
-
-        if (didConsent) {
-          // console.log("Status Change GA CREATE");
-          if (typeof ga !== 'undefined') {
-            ga('create', '{{ site.google_analytics }}', 'auto');
-            ga('send', 'pageview');
-          }
-        } else {
-          // console.log("Status Change GA REMOVE");
-          if (typeof ga !== 'undefined') {
-            ga('remove');
-          }
-          document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gat=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gid=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-        }
-      },
-      onRevokeChoice: function() {
-        var type = this.options.type;
-        var didConsent = this.hasConsented();
-
-        if (didConsent) {
-          // console.log("Revoke GA CREATE");
-          if (typeof ga !== 'undefined') {
-            ga('create', '{{ site.google_analytics }}', 'auto');
-            ga('send', 'pageview');
-          }
-        } else {
-          // console.log("Revoke GA REMOVE");
-          if (typeof ga !== 'undefined') {
-            ga('remove');
-          }
-          document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gat=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-          document.cookie = '_gid=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
-        }
-      }
-    });
-  </script>
+  <script type="text/javascript" src="{{site.baseurl}}/assets/js/cookiecode.js"></script>
   </body>
 </html>
