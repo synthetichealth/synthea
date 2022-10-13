@@ -565,7 +565,7 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 563	RDS_NOV_IND	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 564	RDS_OCT_IND	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 565	RDS_SEPT_IND	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-566	REV_CNTR	N/A	N/A	"0001 (total charge, lots of alternatives)"	"0001 (total charge, lots of alternatives)"	N/A	N/A	N/A	"0551,0551,0551,0421,0421,0023,0001 (hha codes)"	"0571,0571,0551,0551,0651,0001 (hospice codes)"	"0022,0001,0120 (snf codes)"	FALSE	
+566	REV_CNTR	N/A	N/A	"0001 (total charge, lots of alternatives)"	"0001 (total charge, lots of alternatives)"	N/A	N/A	N/A	"0551,0551,0551,0421,0421,0023,0001 (hha codes)"	"0571,0571,0551,0551,0651,0001 (hospice codes)"	Coded	FALSE	
 567	REV_CNTR_1ST_ANSI_CD	N/A	N/A	N/A		N/A	N/A	N/A		N/A	N/A	TRUE	
 568	REV_CNTR_1ST_MSP_PD_AMT	N/A	N/A	N/A	0	N/A	N/A	N/A	N/A	N/A	N/A	FALSE	
 569	REV_CNTR_2ND_ANSI_CD	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	N/A	TRUE	

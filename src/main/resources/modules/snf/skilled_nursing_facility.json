@@ -1,7 +1,7 @@
 {
   "name": "Skilled Nursing Facility",
   "remarks": [
-    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling."
+    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling. Length of stay statistics: https://us.milliman.com/-/media/milliman/pdfs/2021-articles/1-21-21_variation_in_snf_alos_for_medicare_beneficiaries.ashx"
   ],
   "states": {
     "Initial": {
@@ -47,7 +47,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.35,
+          "distribution": 0.364,
           "transition": "SNF_1-15_Days"
         },
         {
@@ -59,7 +59,7 @@
           "transition": "SNF_31-99_Days"
         },
         {
-          "distribution": 0.02,
+          "distribution": 0.006,
           "transition": "SNF_100_Days"
         }
       ]
@@ -152,11 +152,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.94,
+          "distribution": 0.1,
           "transition": "Physical_Therapy"
         },
         {
-          "distribution": 0.06,
+          "distribution": 0.9,
           "transition": "Occupational_Therapy_Check"
         }
       ]
@@ -181,11 +181,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.94,
+          "distribution": 0.1,
           "transition": "Occupational_Therapy"
         },
         {
-          "distribution": 0.06,
+          "distribution": 0.9,
           "transition": "Speech_Language_Therapy_Check"
         }
       ]
@@ -205,11 +205,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.43,
+          "distribution": 0.05,
           "transition": "Speech_Language_Therapy"
         },
         {
-          "distribution": 0.57,
+          "distribution": 0.95,
           "transition": "NTA_Check"
         }
       ]
@@ -229,11 +229,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.75,
+          "distribution": 0.25,
           "transition": "Professional_Services_Care"
         },
         {
-          "distribution": 0.25,
+          "distribution": 0.75,
           "transition": "Status_Change_Check"
         }
       ]
@@ -274,7 +274,14 @@
       "direct_transition": "End_Day"
     },
     "End_Day": {
-      "type": "Simple",
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
       "conditional_transition": [
         {
           "transition": "Begin_Day",
