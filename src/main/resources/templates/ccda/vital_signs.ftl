@@ -8,7 +8,7 @@
     <!--Vital Signs section template-->
     <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital signs"/>
     <title>Vital Signs</title>
-    <@narrative.narrative entries=ehr_observations section="observations"/>
+    <@narrative.narrative entries=ehr_vital_signs section="observations"/>
     <entry typeCode="DRIV">
       <organizer classCode="CLUSTER" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.26"/>
@@ -20,7 +20,7 @@
         </code>
         <statusCode code="completed"/>
         <effectiveTime value="${time?number_to_date?string["yyyyMMddHHmmss"]}"/>
-        <#list ehr_observations as entry>
+        <#list ehr_vital_signs as entry>
         <#if entry.value??>
         <component>
           <observation classCode="OBS" moodCode="EVN">

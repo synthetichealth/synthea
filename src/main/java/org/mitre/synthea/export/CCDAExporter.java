@@ -6,6 +6,8 @@ import freemarker.template.TemplateException;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.stream.Collectors;
+
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
@@ -97,6 +99,11 @@ public class CCDAExporter {
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
     person.attributes.put("ehr_imaging_studies", superEncounter.imagingStudies);
+
+    person.attributes.put("ehr_vital_signs", superEncounter.observations
+            .stream()
+            .filter(vs -> vs.category.equals("vital-signs"))
+            .collect(Collectors.toList()));
 
     Observation smokingHistory = person.record.getLatestObservation("72166-2");
 
