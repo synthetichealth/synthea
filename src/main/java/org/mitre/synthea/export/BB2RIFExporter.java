@@ -2607,6 +2607,10 @@ public class BB2RIFExporter {
       if (!getClaimTypes(encounter).contains(ClaimType.HHA)) {
         continue;
       }
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+      if (mappedDiagnosisCodes.isEmpty()) {
+        continue; // skip this encounter
+      }
       servicePeriods.addEncounter(encounter);
     }
 
@@ -2629,33 +2633,11 @@ public class BB2RIFExporter {
       fieldValues.put(HHA.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(servicePeriod.getStop())));
 
-      fieldValues.put(HHA.CLM_PMT_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getCoveredCost()));
-      fieldValues.put(HHA.CLM_TOT_CHRG_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()));
-      fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + servicePeriod.getEncounters().size());
-      int days = (int) ((servicePeriod.getStop() - servicePeriod.getStart())
-              / (1000 * 60 * 60 * 24));
-      if (days <= 0) {
-        days = 1;
-      }
-      fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "" + days);
-      fieldValues.put(HHA.REV_CNTR_RATE_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()
-                  .divide(BigDecimal.valueOf(days), RoundingMode.HALF_EVEN)
-                  .setScale(2, RoundingMode.HALF_EVEN)));
-      fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getCoveredCost()));
-      fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getTotalClaimCost()));
-      fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", servicePeriod.getTotalCost().getPatientCost()));
-
       // random from fields TSV, may be overriden below
       String revCenter = fieldValues.get(HHA.REV_CNTR);
 
       final String HHA_TOTAL_CHARGE_REV_CNTR = "0001"; // Total charge
-      final String HHA_MEDICATION_REV_CNTR = "0270"; // General medical/surgical supplies
+      final String HHA_GENERAL_REV_CNTR = "0270"; // General medical/surgical supplies
       final String HHA_MEDICATION_CODE = "T1502"; // Administration of medication
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (HealthRecord.Encounter encounter : servicePeriod.getEncounters()) {
@@ -2672,19 +2654,25 @@ public class BB2RIFExporter {
               }
             }
             if (hcpcsCode == null) {
-              revCenter = HHA_TOTAL_CHARGE_REV_CNTR;
+              revCenter = HHA_GENERAL_REV_CNTR;
             }
             consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = HHA_MEDICATION_CODE;
-              revCenter = HHA_MEDICATION_REV_CNTR;
+              revCenter = HHA_GENERAL_REV_CNTR;
               consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem);
             }
           }
         }
       }
+
+      fieldValues.put(HHA.CLM_PMT_AMT,
+          String.format("%.2f", consolidatedClaimLines.getCoveredCost()));
+      fieldValues.put(HHA.CLM_TOT_CHRG_AMT,
+          String.format("%.2f", consolidatedClaimLines.getTotalClaimCost()));
+      fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + servicePeriod.getEncounters().size());
 
       // Use the final encounter in the service period to set all of the remaining field values that
       // are the same for all claim lines
@@ -2723,9 +2711,6 @@ public class BB2RIFExporter {
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
       List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-      if (mappedDiagnosisCodes.isEmpty()) {
-        continue; // skip this encounter
-      }
       int smallest = Math.min(mappedDiagnosisCodes.size(),
               BB2RIFStructure.homeDxFields.length);
       for (int i = 0; i < smallest; i++) {
@@ -2749,65 +2734,67 @@ public class BB2RIFExporter {
         for (ConsolidatedClaimLines.ConsolidatedClaimLine lineItem:
                 consolidatedClaimLines.getLines()) {
           fieldValues.put(HHA.HCPCS_CD, lineItem.getCode());
+          int revCntrCount = lineItem.getCount();
           switch (lineItem.getCode()) {
             case HHA_MEDICATION_CODE:
               fieldValues.put(HHA.REV_CNTR, lineItem.getRevCntr());
-              fieldValues.put(HHA.REV_CNTR_NDC_QTY, Integer.toString(lineItem.getCount()));
+              fieldValues.put(HHA.REV_CNTR_NDC_QTY, Integer.toString(revCntrCount));
               fieldValues.put(HHA.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
               fieldValues.remove(HHA.REV_CNTR_UNIT_CNT);
               break;
             default:
               fieldValues.put(HHA.REV_CNTR, lineItem.getRevCntr());
-              fieldValues.put(HHA.REV_CNTR_UNIT_CNT, Integer.toString(lineItem.getCount()));
+              fieldValues.put(HHA.REV_CNTR_UNIT_CNT, Integer.toString(revCntrCount));
               fieldValues.remove(HHA.REV_CNTR_NDC_QTY);
               fieldValues.remove(HHA.REV_CNTR_NDC_QTY_QLFR_CD);
               break;
           }
 
           fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(HHA.REV_CNTR_RATE_AMT,
-              String.format("%.2f", lineItem.cost
-                      .divide(BigDecimal.valueOf(Integer.max(1, days)), RoundingMode.HALF_EVEN)
-                      .setScale(2, RoundingMode.HALF_EVEN)));
-          fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
-          fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
-              String.format("%.2f", lineItem.cost));
-          fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copayPaidByPatient
-              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
-          if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
-                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
-            // Not subject to deductible or coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
-          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
-                  && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
-            // Subject to deductible and coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
-          } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
-            // Not subject to deductible
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
-          } else {
-            // Not subject to coinsurance
-            fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
-          }
+          setClaimLineCosts(fieldValues, lineItem, revCntrCount);
           rifWriters.writeValues(HHA.class, fieldValues);
         }
 
-        if (claimLine == 1) {
-          // If claimLine still equals 1, then no line items were successfully added.
-          // Add a single top-level entry.
-          fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.remove(HHA.HCPCS_CD);
-          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-          fieldValues.put(HHA.REV_CNTR, HHA_TOTAL_CHARGE_REV_CNTR);
-          fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "0");
-          rifWriters.writeValues(HHA.class, fieldValues);
-        }
+        // Add a total charge entry.
+        fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
+        fieldValues.remove(HHA.HCPCS_CD);
+        fieldValues.put(HHA.REV_CNTR, HHA_TOTAL_CHARGE_REV_CNTR);
+        fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "0");
+        setClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
+        rifWriters.writeValues(HHA.class, fieldValues);
       }
       claimCount++;
     }
     return claimCount;
+  }
+
+  private void setClaimLineCosts(HashMap<HHA, String> fieldValues, ClaimCost lineItem, int count) {
+    fieldValues.put(HHA.REV_CNTR_RATE_AMT,
+            String.format("%.2f", lineItem.cost
+                    .divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN)
+                    .setScale(2, RoundingMode.HALF_EVEN)));
+    fieldValues.put(HHA.REV_CNTR_PMT_AMT_AMT,
+            String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+    fieldValues.put(HHA.REV_CNTR_TOT_CHRG_AMT,
+            String.format("%.2f", lineItem.cost));
+    fieldValues.put(HHA.REV_CNTR_NCVRD_CHRG_AMT,
+            String.format("%.2f", lineItem.copayPaidByPatient
+                    .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+    if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0
+            && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) == 0) {
+      // Not subject to deductible or coinsurance
+      fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "3");
+    } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) > 0
+            && lineItem.deductiblePaidByPatient.compareTo(Claim.ZERO_CENTS) > 0) {
+      // Subject to deductible and coinsurance
+      fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "0");
+    } else if (lineItem.patientOutOfPocket.compareTo(Claim.ZERO_CENTS) == 0) {
+      // Not subject to deductible
+      fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "1");
+    } else {
+      // Not subject to coinsurance
+      fieldValues.put(HHA.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
+    }
   }
 
   /**
@@ -3327,7 +3314,7 @@ public class BB2RIFExporter {
     return claimCount;
   }
 
-  private static class ConsolidatedClaimLines {
+  private static class ConsolidatedClaimLines extends ClaimCost {
     static class ConsolidatedClaimLine extends ClaimCost {
       private int count;
       private String code;
@@ -3379,6 +3366,7 @@ public class BB2RIFExporter {
       } else {
         uniqueLineItems.put(key, new ConsolidatedClaimLine(cost, hcpcsCode, revCntr));
       }
+      this.addCosts(cost);
     }
 
     public Collection<ConsolidatedClaimLine> getLines() {
