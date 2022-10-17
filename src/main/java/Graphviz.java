@@ -9,6 +9,7 @@ import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Records;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Link;
@@ -65,7 +66,7 @@ public class Graphviz {
           JsonObject module = loadFile(t, inputPath);
           String relativePath = Module.relativePath(t, inputPath);
           generateJsonModuleGraph(module, outputFolder, relativePath);
-        } catch (IOException e) {
+        } catch (IOException | GraphvizException e) {
           e.printStackTrace();
         }
       });
@@ -85,7 +86,7 @@ public class Graphviz {
   }
 
   private static void generateJsonModuleGraph(JsonObject module, File outputFolder,
-      String relativePath) throws IOException {
+      String relativePath) throws IOException, GraphvizException {
     // TODO -- a lot of this uses immutable objects. refactor to use mutable ones
     Graph g = Factory.graph().directed();
 
