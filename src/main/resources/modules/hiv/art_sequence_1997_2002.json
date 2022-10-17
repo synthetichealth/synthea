@@ -45,7 +45,15 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 1997,
+                "date": {
+                  "year": 1997,
+                  "month": 9,
+                  "day": 26,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                },
                 "value": 0
               }
             ]
@@ -349,7 +357,15 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1998,
+            "date": {
+              "year": 1998,
+              "month": 9,
+              "day": 17,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            },
             "value": 0
           }
         },
@@ -358,8 +374,16 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1997,
-            "value": 0
+            "value": 0,
+            "date": {
+              "year": 1997,
+              "month": 9,
+              "day": 30,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
           }
         },
         {

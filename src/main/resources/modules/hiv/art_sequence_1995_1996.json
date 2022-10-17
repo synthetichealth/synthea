@@ -162,7 +162,15 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">",
-            "year": 1995
+            "date": {
+              "year": 1995,
+              "month": 11,
+              "day": 17,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
           },
           "distributions": [],
           "transition": "3TC"

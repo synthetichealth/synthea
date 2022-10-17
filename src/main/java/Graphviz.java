@@ -20,11 +20,16 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
@@ -628,8 +633,23 @@ public class Graphviz {
       case "Race":
         return "race is " + logic.get("race").getAsString() + NEWLINE;
       case "Date":
-        return "Year is \\" + logic.get("operator").getAsString() + " "
-            + logic.get("year").getAsString() + NEWLINE;
+        if (logic.has("year")) {
+          return "Year is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("year").getAsString() + NEWLINE;
+        } else if (logic.has("month")) {
+          return "Month is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("month").getAsString() + NEWLINE;
+        } else if (logic.has("date")) {
+          JsonObject date = logic.get("date").getAsJsonObject();
+          ZonedDateTime testDate = ZonedDateTime.of(date.get("year").getAsInt(),
+              date.get("month").getAsInt() - 1, date.get("day").getAsInt(),
+              date.get("hour").getAsInt(), date.get("minute").getAsInt(),
+              date.get("second").getAsInt(), date.get("millisecond").getAsInt(),
+              ZoneId.of("UTC"));
+          return "Date is \\" + logic.get("operator").getAsString() + " "
+              + testDate.format(DateTimeFormatter.ISO_DATE_TIME) + NEWLINE;
+        }
+        return "Date is \\" + logic.get("operator").getAsString() + " X";
       case "Symptom":
         return "Symptom: " + logic.get("symptom").getAsString() + " \\"
             + logic.get("operator").getAsString() + " " + logic.get("value").getAsString()

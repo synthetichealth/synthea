@@ -101,8 +101,16 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1991,
-            "value": 0
+            "value": 0,
+            "date": {
+              "year": 1991,
+              "month": 10,
+              "day": 9,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
           }
         },
         {
@@ -162,8 +170,16 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1994,
-            "value": 0
+            "value": 0,
+            "date": {
+              "year": 1994,
+              "month": 6,
+              "day": 24,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
           },
           "distributions": [],
           "transition": "d4T"
@@ -172,8 +188,16 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1992,
-            "value": 0
+            "value": 0,
+            "date": {
+              "year": 1992,
+              "month": 6,
+              "day": 19,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            }
           },
           "distributions": [
             {
