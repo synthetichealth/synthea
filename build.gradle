@@ -52,7 +52,10 @@ dependencies {
 
   // google guava for some data structures
   implementation 'com.google.guava:guava:31.1-jre'
-  implementation 'guru.nidi:graphviz-java:0.2.4'
+  implementation 'guru.nidi:graphviz-java:0.18.1'
+  // JavaScript engine included for graphviz. It gets used
+  // if someone does not have graphviz installed in their environment
+  implementation 'org.graalvm.js:js:22.2.0'
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
@@ -99,7 +102,9 @@ dependencies {
   implementation 'org.jfree:jfreechart:1.5.3'
 
   // Use JUnit test framework
-  testImplementation 'junit:junit:4.13.2'
+  testImplementation('junit:junit:4.13.2') {
+    force = true
+  }
   testImplementation fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
   testImplementation fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
   testImplementation 'org.mockito:mockito-core:4.7.0'
