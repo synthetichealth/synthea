@@ -948,7 +948,7 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
               encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -1175,7 +1175,7 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -1449,7 +1449,7 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
@@ -2581,7 +2581,7 @@ public class BB2RIFExporter {
 
       fieldValues.put(HHA.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -2781,7 +2781,7 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HOSPICE.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
@@ -2995,7 +2995,7 @@ public class BB2RIFExporter {
 
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+      if (encounter.claim.planRecord.getPlan() == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {

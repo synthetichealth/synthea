@@ -937,7 +937,7 @@ public final class LifecycleModule extends Module {
   public static boolean deathFromLossOfCare(Person person) {
     // Search the person's lossOfCareHealthRecord for missed treatments.
     // Based on missed treatments, increase likelihood of death.
-    if (person.lossOfCareEnabled) {
+    if (Person.lossOfCareEnabled) {
       for (Encounter encounter : person.lossOfCareRecord.encounters) {
         for (Procedure procedure : encounter.procedures) {
           for (Code code : procedure.codes) {
