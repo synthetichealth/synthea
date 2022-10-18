@@ -3,3 +3,13 @@
 
 @import "variables";
 @import "layout";
+
+table, tr, th, td {
+  border: 1px solid;
+  border-collapse: collapse;
+  padding: 10px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
