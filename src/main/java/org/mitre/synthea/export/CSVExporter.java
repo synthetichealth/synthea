@@ -1537,12 +1537,14 @@ public class CSVExporter {
       // STATUSP for Patient as Payer
       s.append("BILLED,");
       // OUTSTANDING1 (TODO this should be the outstanding payer balance)
-      s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
+      s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
+              .append(',');
       // OUTSTANDING2
       if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         // TODO this is not correct
-        s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
+        s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
+                .append(',');
       } else {
         s.append(',');
       }
