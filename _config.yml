@@ -18,7 +18,7 @@ email:
 description: > 
  Synthea is a Synthetic Patient Population Simulator that generates synthetic, realistic (but not real) patient data and associated health records in a variety of formats.
 baseurl: "/synthea" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "synthetichealth.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
 github_username:  jekyll
 
