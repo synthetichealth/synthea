@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -41,8 +43,7 @@ public class PayerTest {
   private static Payer testPrivatePayer1;
   // Covers only wellness encounters.
   private static Payer testPrivatePayer2;
-  private static HealthInsuranceModule healthInsuranceModule;
-  private static Person person;
+  private static HealthInsuranceModule healthInsModule;
   private static double medicaidLevel;
   private static long mandateTime;
 
@@ -55,7 +56,7 @@ public class PayerTest {
     TestHelper.loadTestProperties();
     testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
-    healthInsuranceModule = new HealthInsuranceModule();
+    healthInsModule = new HealthInsuranceModule();
     medicaidLevel = 1.33 * HealthInsuranceModule.povertyLevel;
     // Set up Mandate year.
     int mandateYear = Integer.parseInt(Config.get("generate.insurance.mandate.year", "2006"));
@@ -111,21 +112,25 @@ public class PayerTest {
   @Test
   public void incrementCustomers() {
     long time = Utilities.convertCalendarYearsToTime(1930);
-    Person firstPerson = new Person(0L);
-    firstPerson.attributes.put(Person.ID, UUID.randomUUID().toString());
-    firstPerson.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    firstPerson.attributes.put(Person.BIRTHDATE, time);
-    firstPerson.attributes.put(Person.GENDER, "F");
-    firstPerson.attributes.put(Person.INCOME, 100000);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.ID, UUID.randomUUID().toString());
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.INCOME, 100000);
+    Person firstPerson = new Person(0L, attributes);
+
     // Private payers should have firstPerson from the ages of 0 - 11.
     processInsuranceForAges(firstPerson, 0, 11);
 
-    Person secondPerson = new Person(0L);
-    secondPerson.attributes.put(Person.ID, UUID.randomUUID().toString());
-    secondPerson.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
-    secondPerson.attributes.put(Person.BIRTHDATE, time);
-    secondPerson.attributes.put(Person.GENDER, "F");
-    secondPerson.attributes.put(Person.INCOME, (int) medicaidLevel - 10);
+    attributes = new HashMap<>();
+    attributes.put(Person.ID, UUID.randomUUID().toString());
+    attributes.put(Person.OCCUPATION_LEVEL, 0.001);
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.INCOME, (int) medicaidLevel - 10);
+    Person secondPerson = new Person(0L, attributes);
+
     // Second person should have medicaid from the ages of 0 - 9.
     processInsuranceForAges(secondPerson, 0, 9);
     // Second person should have private insurance from the ages of 10 - 23.
@@ -159,7 +164,6 @@ public class PayerTest {
    * Sets the person's payer for the given age ranges.
    */
   private void processInsuranceForAges(Person person, int startAge, int endAge) {
-    HealthInsuranceModule him = new HealthInsuranceModule();
     long timestep = Config.getAsLong("generate.timestep");
     long birthDate = (long) person.attributes.get(Person.BIRTHDATE);
     Calendar c = Calendar.getInstance();
@@ -169,7 +173,7 @@ public class PayerTest {
     for (int currentAge = startAge; currentAge <= endAge; currentAge++) {
       c.add(Calendar.YEAR, 1);
       while (currentTime < c.getTimeInMillis()) {
-        him.process(person, currentTime);
+        healthInsModule.process(person, currentTime);
         currentTime += timestep;
       }
     }
@@ -178,8 +182,13 @@ public class PayerTest {
   @Test
   public void incrementEncounters() {
     long time = Utilities.convertCalendarYearsToTime(1968);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.INCOME, 0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans()
         .iterator().next(), PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
@@ -194,7 +203,7 @@ public class PayerTest {
     fakeEncounter.provider = new Provider();
     fakeEncounter.codes.add(code);
     healthRecord.encounterEnd(time, EncounterType.AMBULATORY);
-    fakeEncounter = healthRecord.encounterStart(0L, EncounterType.EMERGENCY);
+    fakeEncounter = healthRecord.encounterStart(time, EncounterType.EMERGENCY);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
     healthRecord.encounterEnd(time, EncounterType.EMERGENCY);
@@ -207,26 +216,28 @@ public class PayerTest {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     final int birthYear = 1900;
     long birthTime = Utilities.convertCalendarYearsToTime(birthYear);
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put("end_stage_renal_disease", false);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, birthTime);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put("end_stage_renal_disease", false);
     // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
+
     // Process the person's health insurance for 64 years, should have private insurance for all.
     for (int age = 0; age < 65; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
       assertTrue("Expected " + age + " but got " + person.age(currentTime),
           person.age(currentTime).getYears() == age);
-      healthInsuranceModule.process(person, currentTime);
+      healthInsModule.process(person, currentTime);
       assertEquals(PayerManager.PRIVATE_OWNERSHIP,
           person.coverage.getPlanAtTime(currentTime).getPayer().getOwnership());
     }
     // Process their insurance for ages 65-69, should have medicare every year.
     for (int age = 65; age < 70; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
-      healthInsuranceModule.process(person, currentTime);
+      healthInsModule.process(person, currentTime);
       String payerName = person.coverage.getPlanAtTime(currentTime).getPayer().getName();
       assertTrue(person.age(currentTime).getYears() == age);
       assertTrue("Expected Medicare but was " + payerName + ". Person is age "
@@ -239,14 +250,15 @@ public class PayerTest {
   public void receiveMedicareEsrdEligible() {
     // ESRD
     long time = Utilities.convertCalendarYearsToTime(1980);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "M");
-    person.attributes.put("end_stage_renal_disease", true);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "M");
+    attributes.put("end_stage_renal_disease", true);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, time);
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     Payer currentPayer = person.coverage.getPlanAtTime(time).getPayer();
     assertEquals("Expected Medicare but was " + currentPayer.getName() + ".",
         PayerManager.getGovernmentPayer(PayerManager.MEDICARE), currentPayer);
@@ -255,14 +267,22 @@ public class PayerTest {
   @Test
   public void receiveMedicareSsdBreastCancerEligible() {
     long time = Utilities.convertCalendarYearsToTime(1980);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "F");
-    person.record.conditionStart(time, "254837009");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, time);
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
+    // Process health insurance prior to condition start to prevent null pointer.
+    healthInsModule.process(person, time);
+    person.record.conditionStart(time, "254837009");
+    // Process health insurance after condition start now that the person is eligible.
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, 1);
+    time = c.getTimeInMillis();
+    healthInsModule.process(person, time);
     assertEquals(PayerManager.getGovernmentPayer(PayerManager.MEDICARE),
         person.coverage.getPlanAtTime(time).getPayer());
   }
@@ -270,14 +290,15 @@ public class PayerTest {
   @Test
   public void receiveMedicaidPregnancyEligible() {
     long time = Utilities.convertCalendarYearsToTime(1980);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put("pregnant", true);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put("pregnant", true);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // A pregnant person is eligble in MA when their income is less than 2 * the poverty level.
-    person.attributes.put(Person.INCOME, (int) (HealthInsuranceModule.povertyLevel * 2) - 1);
-    healthInsuranceModule.process(person, time);
+    attributes.put(Person.INCOME, (int) (HealthInsuranceModule.povertyLevel * 2) - 1);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     assertEquals(PayerManager.MEDICAID,
         person.coverage.getPlanAtTime(time).getPayer().getName());
     assertTrue(person.coverage.getPlanAtTime(time).accepts(person, time));
@@ -286,29 +307,166 @@ public class PayerTest {
   @Test
   public void receiveMedicaidPovertyEligible() {
     // Poverty Level
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put(Person.BLINDNESS, false);
+    long time = 0L;
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.BLINDNESS, false);
     // Below Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
-    healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicaid", person.coverage.getPlanAtTime(0L).getPayer().getName());
+    attributes.put(Person.INCOME, (int) medicaidLevel - 1);
+    Person person = new Person(0L, attributes);
+
+    healthInsModule.process(person, time);
+    assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
 
   @Test
   public void receiveMedicaidBlindnessEligble() {
     // Blindness
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.attributes.put(Person.GENDER, "M");
-    person.attributes.put(Person.BLINDNESS, true);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    long time = 0L;
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "M");
+    attributes.put(Person.BLINDNESS, true);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, 0L);
-    assertEquals("Medicaid", person.coverage.getPlanAtTime(0L).getPayer().getName());
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
+    assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
+  }
+
+  @Test
+  public void receiveMedicaidMnilEligble() {
+    long time = Utilities.convertCalendarYearsToTime(1980);
+    // Receive Medciare after having too high of an income, but later qualifying for MNIL
+    // via spenddowns.
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "M");
+    attributes.put(Person.OCCUPATION_LEVEL, 0.1);
+    // The minimum income that does not qualify for MA Medicaid at age 0 is 12880 * 2.0 + 1 = 25761
+    attributes.put(Person.INCOME, 25761);
+    Person person = new Person(0L, attributes);
+
+    healthInsModule.process(person, time);
+    // They should have not have Medicaid in this first year.
+    assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
+    // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
+    person.coverage.getPlanRecordAtTime(time).incrementPatientExpenses(BigDecimal.valueOf(19699));
+    // Now process their insurance and they should switch to Medicaid.
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(time);
+    c.add(Calendar.YEAR, 1);
+    time = c.getTimeInMillis();
+    healthInsModule.process(person, time);
+    assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
+  }
+
+  @Test
+  public void receiveDualEligible() {
+    int birthYear = 1950;
+    long birthTime = Utilities.convertCalendarYearsToTime(birthYear);
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(birthTime);
+
+    // Below Poverty Level and Over 65, thus Dual Eligble.
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, birthTime);
+    attributes.put(Person.GENDER, "M");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    // Below Medicaid Income Level.
+    attributes.put(Person.INCOME, (int) medicaidLevel - 1);
+    Person person = new Person(0L, attributes);
+    // Process the person's health insurance for 64 years, should have Medicaid for all.
+    for (int age = 0; age < 65; age++) {
+      long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
+      assertTrue("Expected " + age + " but got " + person.age(currentTime),
+          person.age(currentTime).getYears() == age);
+      healthInsModule.process(person, currentTime);
+      assertEquals(PayerManager.getGovernmentPayer("Medicaid"),
+          person.coverage.getPlanAtTime(currentTime).getPayer());
+    }
+    c.setTimeInMillis(birthTime);
+    c.add(Calendar.YEAR, 64);
+    long age64Time = c.getTimeInMillis();
+    assertEquals(PayerManager.MEDICAID,
+        person.coverage.getPlanAtTime(age64Time).getPayer().getName());
+    // The person is now 65 and qualifies for Medicare in addition to Medicaid.
+    c.add(Calendar.YEAR, 1);
+    long age65Time = c.getTimeInMillis();
+    healthInsModule.process(person, age65Time);
+    assertEquals(PayerManager.DUAL_ELIGIBLE,
+        person.coverage.getPlanAtTime(age65Time).getPayer().getName());
+    assertTrue(person.coverage.getPlanAtTime(age65Time)
+        .accepts(person, age65Time));
+  }
+
+  @Test
+  public void receiveNoInsurance() {
+    // Person's income cannot afford the test private insurance.
+    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
+    BigDecimal monthlyPremium = plan.getMonthlyPremium();
+    BigDecimal deductible = plan.getDeductible();
+    BigDecimal totalYearlyCost = monthlyPremium.multiply(BigDecimal.valueOf(12)).add(deductible);
+    long birthTime = Utilities.convertCalendarYearsToTime(1980);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, birthTime);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 0.001);
+    Person person = new Person(0L, attributes);
+
+    // Give the person an income lower than the totalYearlyCost divided by the max
+    // income ratio a person is willing to spend on health insurance.
+    // This value is greater than a 0-year-old's poverty multiplier in MA (2 * 12880).
+    BigDecimal costThreshold = totalYearlyCost.divide(BigDecimal.valueOf(
+        Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio")),
+        RoundingMode.HALF_UP);
+    costThreshold = costThreshold.subtract(BigDecimal.valueOf(10));
+    person.attributes.put(Person.INCOME, costThreshold.intValue());
+
+    healthInsModule.process(person, birthTime);
+    InsurancePlan newPlan = person.coverage.getPlanAtTime(birthTime);
+    assertTrue("Expected No Insurance but was " + newPlan.getPayer().getName()
+        + ".", newPlan.isNoInsurance());
+  }
+
+  @Test
+  public void receivePrivateInsurancePostMandate() {
+    // Post 2006 Mandate.
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(mandateTime);
+    c.add(Calendar.YEAR, 1);
+    long time = c.getTimeInMillis();
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    // Barely above Medicaid Income Level.
+    attributes.put(Person.INCOME, (int) medicaidLevel + 100);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
+    assertFalse(person.coverage.getPlanAtTime(time).isNoInsurance());
+  }
+
+  @Test
+  public void receivePrivateInsuranceWithWealth() {
+    // Wealthy Enough to Purchase Private Insurance.
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(mandateTime);
+    c.add(Calendar.YEAR, -50);
+    long time = c.getTimeInMillis();
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    // Above Medicaid Income Level.
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
+
+    healthInsModule.process(person, time);
+    assertFalse(person.coverage.getPlanAtTime(time).isNoInsurance());
   }
 
   @Test
@@ -326,155 +484,37 @@ public class PayerTest {
 
     int currentYear = 1960;
     long time = Utilities.convertCalendarYearsToTime(currentYear);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "M");
-    person.attributes.put("time-boxed-test", true);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.GENDER, "M");
+    attributes.put("time-boxed-test", true);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.INCOME, (int) medicaidLevel * 100);
+    Person person = new Person(0L, attributes);
 
     // For the first 5 years, they should not have Dual Eligible (1960-1964).
     for (int i = 0; i < 5; i++) {
-      healthInsuranceModule.process(person, time);
+      healthInsModule.process(person, time);
       assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
       currentYear++;
       time = Utilities.convertCalendarYearsToTime(currentYear);
     }
     // For the next 4 years, they should have Dual Eligible (1965-1968).
     for (int i = 0; i < 4; i++) {
-      healthInsuranceModule.process(person, time);
+      healthInsModule.process(person, time);
       assertEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
       currentYear++;
       time = Utilities.convertCalendarYearsToTime(currentYear);
     }
 
-    // After that, they should not longer have Dual Eligible (1969).
-    healthInsuranceModule.process(person, time);
+    // After that, they should no longer have Dual Eligible (1969).
+    healthInsModule.process(person, time);
     assertNotEquals("Dual Eligible", person.coverage.getPlanAtTime(time).getPayer().getName());
   }
 
   @Test
-  public void receiveMedicaidMnilEligble() {
-    long time = Utilities.convertCalendarYearsToTime(1980);
-    // Receive Medciare after having too high of an income, but later qualifying for MNIL
-    // via spenddowns.
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "M");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 0.1);
-
-    // The minimum income that does not qualify for MA Medicaid at age 0 is 12880 * 2.0 + 1 = 25761
-    person.attributes.put(Person.INCOME, 25761);
-    healthInsuranceModule.process(person, time);
-    // They should have not have Medicaid in this first year.
-    assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
-    // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
-    person.coverage.getPlanRecordAtTime(time).incrementPatientExpenses(BigDecimal.valueOf(19699));
-    // Now process their insurance and they should switch to Medicaid.
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(time);
-    c.add(Calendar.YEAR, 1);
-    time = c.getTimeInMillis();
-    healthInsuranceModule.process(person, time);
-    assertEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
-  }
-
-  @Test
-  public void receiveDualEligible() {
-    long birthTime = Utilities.convertCalendarYearsToTime(1950);
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(birthTime);
-
-    // Below Poverty Level and Over 65, thus Dual Eligble.
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.attributes.put(Person.GENDER, "M");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // Below Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
-    // Check that their previous payer is Medicaid.
-    c.setTimeInMillis(birthTime);
-    c.add(Calendar.YEAR, 64);
-    long age64Time = c.getTimeInMillis();
-    person.coverage.setPlanToNoInsurance(birthTime);
-    healthInsuranceModule.process(person, age64Time);
-    assertEquals(PayerManager.MEDICAID,
-        person.coverage.getPlanAtTime(age64Time).getPayer().getName());
-    // The person is now 65 and qualifies for Medicare in addition to Medicaid.
-    c.add(Calendar.YEAR, 1);
-    long age65Time = c.getTimeInMillis();
-    healthInsuranceModule.process(person, age65Time);
-    assertEquals(PayerManager.DUAL_ELIGIBLE,
-        person.coverage.getPlanAtTime(age65Time).getPayer().getName());
-    assertTrue(person.coverage.getPlanAtTime(age65Time)
-        .accepts(person, age65Time));
-  }
-
-  @Test
-  public void receiveNoInsurance() {
-    // Person's income cannot afford the test private insurance.
-    InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
-    BigDecimal monthlyPremium = plan.getMonthlyPremium();
-    BigDecimal deductible = plan.getDeductible();
-    BigDecimal totalYearlyCost = monthlyPremium.multiply(BigDecimal.valueOf(12)).add(deductible);
-    long birthTime = Utilities.convertCalendarYearsToTime(1980);
-
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 0.001);
-    // Give the person an income lower than the totalYearlyCost divided by the max
-    // income ratio a person is willing to spend on health insurance.
-    // This value is greater than a 0-year-old's poverty multiplier in MA (2 * 12880).
-    BigDecimal costThreshold = totalYearlyCost.divide(BigDecimal.valueOf(
-        Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio")),
-        RoundingMode.HALF_UP);
-    costThreshold = costThreshold.subtract(BigDecimal.valueOf(10));
-    person.attributes.put(Person.INCOME, costThreshold.intValue());
-
-    healthInsuranceModule.process(person, birthTime);
-    InsurancePlan newPlan = person.coverage.getPlanAtTime(birthTime);
-    assertTrue("Expected No Insurance but was " + newPlan.getPayer().getName()
-        + ".", newPlan.isNoInsurance());
-  }
-
-  @Test
-  public void receivePrivateInsurancePostMandate() {
-    // Post 2006 Mandate.
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(mandateTime);
-    c.add(Calendar.YEAR, 1);
-    long time = c.getTimeInMillis();
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // Barely above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel + 100);
-    healthInsuranceModule.process(person, time);
-    assertFalse(person.coverage.getPlanAtTime(time).isNoInsurance());
-  }
-
-  @Test
-  public void receivePrivateInsuranceWithWealth() {
-    // Wealthy Enough to Purchase Private Insurance.
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis(mandateTime);
-    c.add(Calendar.YEAR, -50);
-    long time = c.getTimeInMillis();
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // Above Medicaid Income Level.
-    person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    healthInsuranceModule.process(person, time);
-    assertFalse(person.coverage.getPlanAtTime(time).isNoInsurance());
-  }
-
-  @Test
   public void overwriteInsurance() {
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     person.coverage.setPlanAtTime(0L, plan, PayerManager.getNoInsurancePlan());
@@ -513,12 +553,14 @@ public class PayerTest {
 
   @Test
   public void monthlyPremiumPayment() {
-    person = new Person(0L);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.ID, UUID.randomUUID().toString());
-    person.attributes.put(Person.INCOME, 100000);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put(Person.BIRTHDATE, Utilities.convertCalendarYearsToTime(1930));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.ID, UUID.randomUUID().toString());
+    attributes.put(Person.INCOME, 100000);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.BIRTHDATE, Utilities.convertCalendarYearsToTime(1930));
+    Person person = new Person(0L, attributes);
+
     // Predetermine person's Payer.
     processInsuranceForAges(person, 0, 64);
 
@@ -527,14 +569,6 @@ public class PayerTest {
         = BigDecimal.valueOf(testPrivatePayer1.getCustomerUtilization(personId));
     BigDecimal payer2MemberYears
         = BigDecimal.valueOf(testPrivatePayer2.getCustomerUtilization(personId));
-
-    // The processInsuranceForAges method has an extra year's premiums for the last year on a plan.
-    if (person.coverage.getLastInsurancePlan().getPayer().getName()
-        .equals(testPrivatePayer1.getName())) {
-      payer1MemberYears = payer1MemberYears.add(BigDecimal.ONE);
-    } else {
-      payer2MemberYears = payer2MemberYears.add(BigDecimal.ONE);
-    }
 
     BigDecimal totalMonthlyPremiumsOwed = BigDecimal.ZERO;
     BigDecimal payerOneYearlyPremium = testPrivatePayer1.getPlans().iterator()
@@ -558,7 +592,7 @@ public class PayerTest {
 
   @Test(expected = RuntimeException.class)
   public void monthlyPremiumPaymentToNullPayer() {
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ID, UUID.randomUUID().toString());
     person.checkToPayMonthlyPremium(0L);
@@ -568,9 +602,13 @@ public class PayerTest {
   public void costsCoveredByPayer() {
     long time = 0L;
     Costs.loadCostData();
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Person person = new Person(0L, attributes);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
+    healthInsModule.process(person, time);
     person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
     Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
@@ -606,10 +644,14 @@ public class PayerTest {
     final long beforeMandateTime = mandateTime - 100;
     final long afterMandateTime = mandateTime + 100;
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    person = new Person(beforeMandateTime);
-    person.attributes.put(Person.BIRTHDATE, beforeMandateTime);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    attributes.put(Person.BIRTHDATE, beforeMandateTime);
+    Person person = new Person(beforeMandateTime, attributes);
 
     // Before Mandate.
+    healthInsModule.process(person, beforeMandateTime);
     InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     person.coverage.setPlanAtTime(beforeMandateTime, testPrivatePayer1Plan,
         PayerManager.getNoInsurancePlan());
@@ -656,14 +698,18 @@ public class PayerTest {
     Costs.loadCostData();
     PayerManager.loadNoInsurance();
     long time = 0L;
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.coverage.setPlanToNoInsurance(0L);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
+    person.coverage.setPlanToNoInsurance(time);
     Code code = new Code("SNOMED-CT","705129","Fake SNOMED with the same code as an RxNorm code");
-    Encounter fakeEncounter = person.record.encounterStart(0L, EncounterType.WELLNESS);
+    Encounter fakeEncounter = person.record.encounterStart(time, EncounterType.WELLNESS);
     fakeEncounter.codes.add(code);
     fakeEncounter.provider = new Provider();
-    person.record.encounterEnd(0L, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.WELLNESS);
     // The No Insurance payer should have $0.0 coverage.
     assertTrue(PayerManager.noInsurance.getAmountCovered().equals(Claim.ZERO_CENTS));
     // The No Insurance's uncovered costs should equal the total cost.
@@ -675,27 +721,37 @@ public class PayerTest {
   @Test
   public void determineCoveredCostWithNullPayer() {
     // Default to No Insurance
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    long time = 0L;
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     HealthRecord healthRecord = new HealthRecord(person);
-    Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    Encounter encounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
-    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
+    healthRecord.encounterEnd(time, EncounterType.INPATIENT);
   }
 
   @Test
   public void payerCoversEncounter() {
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage.setPlanAtTime(0L, testPrivatePayer1.getPlans().iterator().next(),
+    long time = 0L;
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
+    person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next(),
         PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
-    Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    Encounter encounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     InsurancePlan testPrivatePayer1Plan = testPrivatePayer1.getPlans().iterator().next();
     assertTrue(testPrivatePayer1Plan.coversService(encounter));
-    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
+    healthRecord.encounterEnd(time, EncounterType.INPATIENT);
     // Person's coverage should equal the cost of the encounter
     BigDecimal coverage = encounter.claim.totals.coinsurancePaidByPayer.add(
         encounter.claim.totals.paidByPayer);
@@ -717,17 +773,22 @@ public class PayerTest {
 
   @Test
   public void payerDoesNotCoverEncounter() {
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    long time = 0L;
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 0);
+    attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     person.coverage.setPlanAtTime(0L, testPrivatePayer2.getPlans().iterator().next(),
         PayerManager.getNoInsurancePlan());
     HealthRecord healthRecord = new HealthRecord(person);
-    Encounter encounter = healthRecord.encounterStart(0L, EncounterType.INPATIENT);
+    Encounter encounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
     encounter.provider = new Provider();
     encounter.codes.add(new Code("SNOMED-CT","705129","Fake SNOMED for null entry"));
     InsurancePlan testPrivatePayer2Plan = testPrivatePayer2.getPlans().iterator().next();
     assertFalse(testPrivatePayer2Plan.coversService(encounter));
-    healthRecord.encounterEnd(0L, EncounterType.INPATIENT);
+    healthRecord.encounterEnd(time, EncounterType.INPATIENT);
     // Person's coverage should equal $0.0.
     assertTrue(person.coverage.getTotalCoverage().equals(Claim.ZERO_CENTS));
     // Person's expenses should equal the total cost of the encounter.
@@ -740,7 +801,7 @@ public class PayerTest {
     String willingToSpend = Config.get("generate.payers.insurance_plans.income_premium_ratio");
     // Set their willinginess to spend to 100%.
     Config.set("generate.payers.insurance_plans.income_premium_ratio", "1.0");
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     BigDecimal yearlyCostOfPayer = plan.getMonthlyPremium().multiply(BigDecimal.valueOf(12)).add(
@@ -754,7 +815,7 @@ public class PayerTest {
 
   @Test
   public void personCannotAffordPayer() {
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, 0L);
     InsurancePlan plan = testPrivatePayer1.getPlans().iterator().next();
     BigDecimal yearlyCostOfPayer = plan.getMonthlyPremium().multiply(BigDecimal.valueOf(12)).add(
@@ -767,13 +828,13 @@ public class PayerTest {
   @Test
   public void keepPreviousInsurance() {
     long time = Utilities.convertCalendarYearsToTime(1960);
-    person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, time);
-    person.attributes.put(Person.INCOME, 100000);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    person.attributes.put(Person.GENDER, "F");
-    HealthInsuranceModule hm = new HealthInsuranceModule();
-    hm.process(person, time);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, 100000);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    attributes.put(Person.GENDER, "F");
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     Payer inititalPayer = person.coverage.getPlanAtTime(time).getPayer();
     assertFalse("Person should have insurance.", inititalPayer.isNoInsurance());
     assertFalse("Person should have private insurance.", inititalPayer.isGovernmentPayer());
@@ -781,7 +842,7 @@ public class PayerTest {
     c.setTimeInMillis(time);
     c.add(Calendar.YEAR, 1);
     time = c.getTimeInMillis();
-    hm.process(person, time);
+    healthInsModule.process(person, time);
     assertEquals("Person should keep the same insurance.",
         inititalPayer, person.coverage.getPlanAtTime(time).getPayer());
   }
@@ -791,18 +852,19 @@ public class PayerTest {
   public void payerMemberYears() {
     int startYear = 1950;
     long currentTime = Utilities.convertCalendarYearsToTime(startYear);
-    person = new Person(0L);
-    person.attributes.put(Person.GENDER, "F");
-    person.attributes.put(Person.BIRTHDATE, currentTime);
-    person.attributes.put(Person.ID, UUID.randomUUID().toString());
-    person.attributes.put(Person.INCOME, (int) HealthInsuranceModule.povertyLevel * 100);
-    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.GENDER, "F");
+    attributes.put(Person.BIRTHDATE, currentTime);
+    attributes.put(Person.ID, UUID.randomUUID().toString());
+    attributes.put(Person.INCOME, (int) HealthInsuranceModule.povertyLevel * 100);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Person person = new Person(0L, attributes);
 
     // Get private insurance for 55 years.
     int numberOfYears = 55;
     Calendar c = Calendar.getInstance();
     for (int age = 0; age < numberOfYears; age++) {
-      healthInsuranceModule.process(person, currentTime);
+      healthInsModule.process(person, currentTime);
       c.setTimeInMillis(currentTime);
       c.add(Calendar.YEAR, 1);
       currentTime = c.getTimeInMillis();
@@ -815,16 +877,15 @@ public class PayerTest {
   @Test
   public void checkCopayPaid() {
     long time = Utilities.convertCalendarYearsToTime(1960);
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.GENDER, "F");
-    HealthInsuranceModule hm = new HealthInsuranceModule();
 
     person.coverage.setPlanAtTime(time, testPrivatePayer1.getPlans().iterator().next(),
         PayerManager.getNoInsurancePlan());
-    hm.process(person, time);
+    healthInsModule.process(person, time);
     InsurancePlan plan = person.coverage.getPlanAtTime(time);
     assertFalse("Person should have insurance.", plan.getPayer().isNoInsurance());
     assertFalse("Person should have private insurance.", plan.getPayer().isGovernmentPayer());
@@ -851,16 +912,15 @@ public class PayerTest {
   @Test
   public void checkCoinsurancePaid() {
     long time = Utilities.convertCalendarYearsToTime(1960);
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.INCOME, 100000);
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.GENDER, "F");
-    HealthInsuranceModule hm = new HealthInsuranceModule();
 
     person.coverage.setPlanAtTime(time, testPrivatePayer2.getPlans().iterator().next(),
         PayerManager.getNoInsurancePlan());
-    hm.process(person, time);
+    healthInsModule.process(person, time);
     InsurancePlan plan = person.coverage.getPlanAtTime(time);
     assertFalse("Person should have insurance.", plan.getPayer().isNoInsurance());
     assertFalse("Person should have private insurance.", plan.getPayer().isGovernmentPayer());
@@ -888,15 +948,19 @@ public class PayerTest {
 
   @Test
   public void personKeepsPreviousInsurance() {
-    HealthInsuranceModule him = new HealthInsuranceModule();
     long time = Utilities.convertCalendarYearsToTime(1980);
-    person = new Person(0L);
-    him.process(person, time);
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put(Person.BIRTHDATE, time);
+    attributes.put(Person.INCOME, (int) HealthInsuranceModule.povertyLevel * 100);
+    attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    Person person = new Person(0L, attributes);
+    healthInsModule.process(person, time);
     InsurancePlan firstPlan = person.coverage.getPlanAtTime(time);
     Calendar c = Calendar.getInstance();
     c.setTimeInMillis(time);
-    c.add(Calendar.MONTH, 16);
-    time = c.getTimeInMillis();
+    c.add(Calendar.YEAR, 1);
+    time = c.getTimeInMillis() + 1;
+    healthInsModule.process(person, time);
     InsurancePlan secondPlan = person.coverage.getPlanAtTime(time);
     // For now, this returns true by default because it is not yet implememted.
     assertEquals(firstPlan, secondPlan);
@@ -907,7 +971,7 @@ public class PayerTest {
     String fileName = "generic/payers/test_attributes_eligibility.csv";
     QualifyingAttributesEligibility qae = new QualifyingAttributesEligibility(fileName);
     long time = Utilities.convertCalendarYearsToTime(1975);
-    person = new Person(0L);
+    Person person = new Person(0L);
     person.attributes.put("test2", "TEST");
     assertFalse(qae.isPersonEligible(person, time));
     person.attributes.put("test1", true);
