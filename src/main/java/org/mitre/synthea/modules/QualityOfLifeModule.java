@@ -144,7 +144,7 @@ public class QualityOfLifeModule extends Module {
 
     // Get counts of uncovered healthcare.
     int uncoveredEntries;
-    if (person.lossOfCareEnabled) {
+    if (Person.lossOfCareEnabled) {
       List<Entry> allLossOfCareConditions = new ArrayList<Entry>();
       int uncoveredMedicationCount = 0;
       int uncoveredProcedureCount = 0;

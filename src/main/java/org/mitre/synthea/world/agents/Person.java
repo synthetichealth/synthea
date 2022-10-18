@@ -35,7 +35,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
@@ -137,7 +136,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public HealthRecord lossOfCareRecord;
   /** Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
    * care due to cost or lack of health insurance coverage. */
-  public boolean lossOfCareEnabled;
+  public static boolean lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
   /** Individual provider health records (if "hasMultipleRecords" is enabled). */
   public Map<String, HealthRecord> records;
   /** Flag that enables each provider having a different health record for each patient.
@@ -146,7 +145,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /** History of the currently active module. */
   public List<State> history;
   /** Record of insurance coverage. */
-  public CoverageRecord coverage;
+  public final CoverageRecord coverage;
 
   /**
    * Person constructor.
@@ -169,14 +168,23 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
+   * Person constructor.
+   */
+  public Person(long seed, Map<String, Object> attributes) {
+    this(seed);
+    this.attributes.putAll(attributes);
+    this.coverage.updateEnrollmentPeriod();
+    this.lastUpdated = (long) this.attributes.get(Person.BIRTHDATE);
+  }
+
+  /**
    * Initializes person's default health records. May need to be called if attributes
    * change due to fixed demographics.
    */
   public void initializeDefaultHealthRecords() {
     this.defaultRecord = new HealthRecord(this);
     this.record = this.defaultRecord;
-    this.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
-    if (this.lossOfCareEnabled) {
+    if (Person.lossOfCareEnabled) {
       this.lossOfCareRecord = new HealthRecord(this);
     }
   }
@@ -550,7 +558,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
     // meaning we can guarantee that they currently have no insurance.
-    if (lossOfCareEnabled && !this.stillHasIncome(time)) {
+    if (Person.lossOfCareEnabled && !this.stillHasIncome(time)) {
       return this.lossOfCareRecord;
     }
 
@@ -782,8 +790,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     int incomeRemaining = this.coverage.incomeRemaining(time);
     boolean stillHasIncome = incomeRemaining > 0;
     if (!stillHasIncome) {
-      // Person no longer has income for the year. They will switch to No Insurance.
+      // if(Config.getAsBoolean("generate.payers.income_exceeded_coverage_loss")) {
+        // Person no longer has income for the year. They will switch to No Insurance.
+        // System.out.println("YO");
       this.coverage.setPlanToNoInsurance(time);
+      // }
     }
     return stillHasIncome;
   }
@@ -808,8 +819,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      PlanRecord planRecord = this.coverage.getPlanRecordAtTime(time);
-      planRecord.payMonthlyPremiums();
+      this.coverage.payMonthlyPremiumsAtTime(time);
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

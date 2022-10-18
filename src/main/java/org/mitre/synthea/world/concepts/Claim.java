@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mitre.synthea.export.JSONSkip;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class Claim implements Serializable {
@@ -51,6 +50,8 @@ public class Claim implements Serializable {
     private void assignCosts(PlanRecord planRecord) {
       this.cost = this.entry.getCost();
       BigDecimal remainingBalance = this.cost;
+
+      InsurancePlan plan = planRecord.getPlan();
 
       if (!plan.coversService(this.entry)) {
         plan.incrementUncoveredEntries(this.entry);
@@ -103,6 +104,7 @@ public class Claim implements Serializable {
       }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
         // If secondary insurance, payer covers remainder, not patient.
+        InsurancePlan secondaryPlan = planRecord.getSecondaryPlan();
         if (!secondaryPlan.isNoInsurance()) {
           this.paidBySecondaryPayer = remainingBalance;
           remainingBalance = remainingBalance.subtract(this.paidBySecondaryPayer);
@@ -147,8 +149,7 @@ public class Claim implements Serializable {
     }
   }
 
-  public InsurancePlan plan;
-  public InsurancePlan secondaryPlan;
+  public PlanRecord planRecord;
   @JSONSkip
   public Person person;
   public ClaimEntry mainEntry;
@@ -168,21 +169,14 @@ public class Claim implements Serializable {
     }
     // Set the Person.
     this.person = person;
-    // Set the Payer(s)
-    PlanRecord planRecord = this.person.coverage.getPlanRecordAtTime(entry.start);
-    if (planRecord != null) {
-      this.plan = planRecord.plan;
-      this.secondaryPlan = planRecord.secondaryPlan;
-    }
-    if (this.plan == null) {
+    // Set the plan record associated with this claim.
+    if (person.alive(entry.start)) {
       // This can rarely occur when an death certification encounter
       // occurs on the birthday or immediately afterwards before a new
       // insurance plan is selected.
-      this.plan = this.person.coverage.getLastInsurancePlan();
-      if (this.plan == null) {
-        this.plan = PayerManager.getNoInsurancePlan();
-      }
-      this.secondaryPlan = PayerManager.getNoInsurancePlan();
+      this.planRecord = this.person.coverage.getPlanRecordAtTime(entry.start);
+    } else {
+      this.planRecord = this.person.coverage.getLastPlanRecord();
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);

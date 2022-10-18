@@ -385,14 +385,16 @@ public class PayerManager {
       // Person will always choose a government plan.
       return potentialPlan;
     }
-    // If the person cannot get a government plan, they will try to keep their existing insurance.
-    InsurancePlan previousPlan = person.coverage
-        .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
-    if (previousPlan != null && !previousPlan.isNoInsurance()
-        && previousPlan.accepts(person, time) && previousPlan.isActive(time)
-        && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
-      // People will keep their previous year's insurance if they can.
-      return previousPlan;
+    if(!person.coverage.getPlanHistory().isEmpty()) {
+      // If the person cannot get a government plan, they will try to keep their existing insurance.
+      InsurancePlan previousPlan = person.coverage
+          .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
+      if (!previousPlan.isNoInsurance() && previousPlan.accepts(person, time)
+          && previousPlan.isActive(time) 
+          && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
+        // People will keep their previous year's insurance if they can.
+        return previousPlan;
+      }
     }
     return potentialPlan;
   }
