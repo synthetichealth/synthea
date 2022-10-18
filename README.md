@@ -27,7 +27,7 @@ These instructions are intended for those wishing to examine the Synthea source 
 ### Installation
 
 **System Requirements:**
-Synthea<sup>TM</sup> requires Java 1.8 or above.
+Synthea<sup>TM</sup> requires Java 11 or newer.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```

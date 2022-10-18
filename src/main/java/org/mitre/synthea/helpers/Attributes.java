@@ -449,7 +449,7 @@ public class Attributes {
 
     File graphFile = new File("./output/" + filename + ".png");
     try {
-      Graphviz.fromGraph(graph).rasterizer(Rasterizer.BATIK).render(Format.PNG).toFile(graphFile);
+      Graphviz.fromGraph(graph).render(Format.PNG).toFile(graphFile);
     } catch (IOException e) {
       e.printStackTrace();
     }

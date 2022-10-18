@@ -37,7 +37,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
-import org.springframework.web.client.RestTemplate;
 
 public class ValueSetCodeResolverTest {
 
@@ -61,7 +60,6 @@ public class ValueSetCodeResolverTest {
       WireMock.startRecording(getTxRecordingSource());
     }
     RandomCodeGenerator.setBaseUrl(mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2014-09-25").getTime();
@@ -120,7 +118,7 @@ public class ValueSetCodeResolverTest {
     Code procedureType = new Code(SNOMED_URI, "236172004",
         "Nephroscopic lithotripsy of ureteric calculus");
     Code procedureReason = new Code(SNOMED_URI, "95570007", "Renal calculus");
-    procedureReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + procedureReason.code;
+    procedureReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + procedureReason.code;
     Procedure procedure = person.record.procedure(time, procedureType.display);
     procedure.reasons.add(procedureReason);
 
@@ -142,9 +140,9 @@ public class ValueSetCodeResolverTest {
   public void resolveMedicationCodes() {
     Code medicationCode = new Code(SNOMED_URI, "372756006", "Warfarin");
     Code reasonCode = new Code(SNOMED_URI, "128053003", "Deep venuous thrombosis");
-    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + reasonCode.code;
+    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + reasonCode.code;
     Code stopReason = new Code(SNOMED_URI, "401207004", "Medicine side effects present");
-    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<309298003";
+    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C309298003";
     Medication medication = person.record.medicationStart(time, medicationCode.display, false);
     medication.codes.add(medicationCode);
     medication.reasons.add(reasonCode);
@@ -174,9 +172,9 @@ public class ValueSetCodeResolverTest {
   public void resolveCodesInCarePlan() {
     Code carePlanCode = new Code(SNOMED_URI, "734163000", "Care plan");
     Code reasonCode = new Code(SNOMED_URI, "90935002", "Haemophilia");
-    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl/<64779008";
+    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C64779008";
     Code stopReason = new Code(SNOMED_URI, "301857004", "Finding of body region");
-    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + stopReason.code;
+    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + stopReason.code;
     CarePlan carePlan = person.record.careplanStart(time, carePlanCode.display);
     carePlan.reasons.add(reasonCode);
     person.record.careplanEnd(time, carePlanCode.display, stopReason);
