@@ -1002,7 +1002,7 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(OUTPATIENT.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(OUTPATIENT.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(OUTPATIENT.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(OUTPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(OUTPATIENT.ORG_NPI_NUM, encounter.provider.npi);
@@ -1224,7 +1224,7 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.NCH_BENE_DSCHRG_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(INPATIENT.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(INPATIENT.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(INPATIENT.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(INPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(INPATIENT.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
@@ -1514,8 +1514,8 @@ public class BB2RIFExporter {
               String.format("%.2f", encounter.claim.getCoveredCost()));
       fieldValues.put(CARRIER.CARR_CLM_CASH_DDCTBL_APLD_AMT,
               String.format("%.2f", encounter.claim.getDeductiblePaid()));
-      fieldValues.put(CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.id);
-      fieldValues.put(CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.id);
+      fieldValues.put(CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.cmsPin);
+      fieldValues.put(CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(CARRIER.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(CARRIER.RFR_PHYSN_NPI, encounter.clinician.npi);
@@ -1536,6 +1536,11 @@ public class BB2RIFExporter {
       fieldValues.put(CARRIER.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
       // OPTIONAL
+      fieldValues.put(CARRIER.PRF_PHYSN_UPIN, encounter.provider.cmsUpin);
+      fieldValues.put(CARRIER.RFR_PHYSN_UPIN, encounter.provider.cmsUpin);
+      fieldValues.put(CARRIER.PRVDR_STATE_CD, encounter.provider.state);
+      fieldValues.put(CARRIER.PRVDR_ZIP, encounter.provider.zip);
+
       String icdReasonCode = null;
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
@@ -1635,7 +1640,11 @@ public class BB2RIFExporter {
 
           // If this item is a lab report, add the number of the clinical lab...
           if  (lineItem.entry instanceof HealthRecord.Report) {
-            fieldValues.put(CARRIER.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
+            if (encounter.provider.cliaNumber != null) {
+              fieldValues.put(CARRIER.CARR_LINE_CLIA_LAB_NUM, encounter.provider.cliaNumber);
+            } else {
+              fieldValues.put(CARRIER.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
+            }
           }
 
           // set the line number and write out field values
@@ -2217,7 +2226,7 @@ public class BB2RIFExporter {
       fieldValues.put(PDE.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(PDE.BENE_ID, (String) person.attributes.get(BB2_BENE_ID));
       fieldValues.put(PDE.SRVC_DT, bb2DateFromTimestamp(fill.time));
-      fieldValues.put(PDE.SRVC_PRVDR_ID, fill.encounter.provider.id);
+      fieldValues.put(PDE.SRVC_PRVDR_ID, fill.encounter.provider.cmsProviderNum);
       fieldValues.put(PDE.PRSCRBR_ID,
           "" + (9_999_999_999L - fill.encounter.clinician.identifier));
       fieldValues.put(PDE.RX_SRVC_RFRNC_NUM, "" + pdeId);
@@ -2439,9 +2448,10 @@ public class BB2RIFExporter {
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(DME.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(DME.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(DME.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(DME.PRVDR_NPI, encounter.provider.npi);
       fieldValues.put(DME.RFR_PHYSN_NPI, encounter.clinician.npi);
+      fieldValues.put(DME.RFR_PHYSN_UPIN, encounter.provider.cmsUpin);
       fieldValues.put(DME.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
@@ -2676,7 +2686,7 @@ public class BB2RIFExporter {
       // TODO: update ConsolidatedServicePeriods to separate encounters based on provider, clinician
       HealthRecord.Encounter encounter = servicePeriod.getEncounters().get(
               servicePeriod.getEncounters().size() - 1);
-      fieldValues.put(HHA.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HHA.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(HHA.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(HHA.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(HHA.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
@@ -2836,7 +2846,7 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(HOSPICE.NCH_WKLY_PROC_DT,
               bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(HOSPICE.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(HOSPICE.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(HOSPICE.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(HOSPICE.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
@@ -3042,7 +3052,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(SNF.NCH_WKLY_PROC_DT,
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(SNF.PRVDR_NUM, encounter.provider.id);
+      fieldValues.put(SNF.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(SNF.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(SNF.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(SNF.OP_PHYSN_NPI, encounter.clinician.npi);

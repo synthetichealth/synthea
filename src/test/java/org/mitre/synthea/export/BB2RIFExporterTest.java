@@ -80,7 +80,7 @@ public class BB2RIFExporterTest {
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     generatorOpts.population = numberOfPeople;
-    generatorOpts.seed = 1010;
+    generatorOpts.seed = 505;
     RandomNumberGenerator rand = new DefaultRandomNumberGenerator(generatorOpts.seed);
     generatorOpts.minAge = 70;
     generatorOpts.maxAge = 80;
@@ -205,7 +205,7 @@ public class BB2RIFExporterTest {
     // so we can use it here for a level of validation
     List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
     assertTrue(
-            "Expected at least 1 row in the claim file, found " + rows.size(),
+            "Expected at least 1 row in " + file.getName() + ", found " + rows.size(),
             rows.size() >= 1);
     Map<String, ClaimTotals> claims = new HashMap<>();
     rows.forEach(row -> {

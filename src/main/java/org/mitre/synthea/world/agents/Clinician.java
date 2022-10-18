@@ -54,7 +54,7 @@ public class Clinician implements Serializable, QuadTreeElement {
   public Clinician(long clinicianSeed, RandomNumberGenerator clinicianRand,
       long identifier, Provider organization) {
     String base = clinicianSeed + ":" + identifier + ":"
-        + organization.id + ":" + clinicianRand.randLong();
+        + organization.npi + ":" + clinicianRand.randLong();
     this.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     this.identifier = identifier;
     this.npi = toClinicianNPI(this.identifier);
