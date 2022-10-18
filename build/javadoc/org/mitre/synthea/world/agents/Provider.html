@@ -6,15 +6,16 @@
 <title>Provider (synthea API)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../../../jquery/jquery-ui.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../../script.js"></script>
 <script type="text/javascript" src="../../../../../jquery/jszip/dist/jszip.min.js"></script>
 <script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../jquery/jquery-3.5.1.js"></script>
-<script type="text/javascript" src="../../../../../jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
 <script type="text/javascript"><!--
@@ -148,7 +149,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <ul class="blockList">
 <li class="blockList">
 <!-- ======== NESTED CLASS SUMMARY ======== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="nested.class.summary">
 <!--   -->
@@ -171,7 +172,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </ul>
 </section>
 <!-- =========== FIELD SUMMARY =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="field.summary">
 <!--   -->
@@ -195,13 +196,53 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>java.lang.Integer</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bedCount">bedCount</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#city">city</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cliaNumber">cliaNumber</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.util.ArrayList&lt;<a href="Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clinicianMap">clinicianMap</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsCategory">cmsCategory</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsPin">cmsPin</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsProviderNum">cmsProviderNum</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsProviderType">cmsProviderType</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsRegion">cmsRegion</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cmsUpin">cmsUpin</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -211,88 +252,78 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id">id</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fipsCountyCode">fipsCountyCode</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id">id</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#institutional">institutional</a></span></code></th>
 <td class="colLast">
 <div class="block">institutional (e.g.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LABS">LABS</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name">name</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NEAREST">NEAREST</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NETWORK">NETWORK</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#npi">npi</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ownership">ownership</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#phone">phone</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PRESCRIPTIONS">PRESCRIPTIONS</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROCEDURES">PROCEDURES</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROVIDER_SELECTION_BEHAVIOR">PROVIDER_SELECTION_BEHAVIOR</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#quality">quality</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#QUALITY">QUALITY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RANDOM">RANDOM</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rawType">rawType</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.util.ArrayList&lt;<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.Set&lt;<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#servicesProvided">servicesProvided</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -326,7 +357,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </ul>
 </section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="constructor.summary">
 <!--   -->
@@ -349,7 +380,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </ul>
 </section>
 <!-- ========== METHOD SUMMARY =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.summary">
 <!--   -->
@@ -540,7 +571,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <ul class="blockList">
 <li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="field.detail">
 <!--   -->
@@ -608,19 +639,6 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.agents.Provider.NEAREST">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="QUALITY">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>QUALITY</h4>
-<pre>public static final&nbsp;java.lang.String QUALITY</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.agents.Provider.QUALITY">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -704,6 +722,78 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <pre>public&nbsp;java.lang.String npi</pre>
 </li>
 </ul>
+<a id="cmsProviderNum">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsProviderNum</h4>
+<pre>public&nbsp;java.lang.String cmsProviderNum</pre>
+</li>
+</ul>
+<a id="cmsPin">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsPin</h4>
+<pre>public&nbsp;java.lang.String cmsPin</pre>
+</li>
+</ul>
+<a id="cmsUpin">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsUpin</h4>
+<pre>public&nbsp;java.lang.String cmsUpin</pre>
+</li>
+</ul>
+<a id="cmsCategory">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsCategory</h4>
+<pre>public&nbsp;java.lang.String cmsCategory</pre>
+</li>
+</ul>
+<a id="cmsProviderType">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsProviderType</h4>
+<pre>public&nbsp;java.lang.String cmsProviderType</pre>
+</li>
+</ul>
+<a id="cmsRegion">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cmsRegion</h4>
+<pre>public&nbsp;java.lang.String cmsRegion</pre>
+</li>
+</ul>
+<a id="cliaNumber">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cliaNumber</h4>
+<pre>public&nbsp;java.lang.String cliaNumber</pre>
+</li>
+</ul>
+<a id="bedCount">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>bedCount</h4>
+<pre>public&nbsp;java.lang.Integer bedCount</pre>
+</li>
+</ul>
 <a id="name">
 <!--   -->
 </a>
@@ -749,6 +839,15 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <pre>public&nbsp;java.lang.String zip</pre>
 </li>
 </ul>
+<a id="fipsCountyCode">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fipsCountyCode</h4>
+<pre>public&nbsp;java.lang.String fipsCountyCode</pre>
+</li>
+</ul>
 <a id="phone">
 <!--   -->
 </a>
@@ -756,15 +855,6 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <li class="blockList">
 <h4>phone</h4>
 <pre>public&nbsp;java.lang.String phone</pre>
-</li>
-</ul>
-<a id="rawType">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>rawType</h4>
-<pre>public&nbsp;java.lang.String rawType</pre>
 </li>
 </ul>
 <a id="type">
@@ -795,22 +885,13 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 <div class="block">institutional (e.g. hospital) else professional (e.g. PCP)</div>
 </li>
 </ul>
-<a id="quality">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>quality</h4>
-<pre>public&nbsp;int quality</pre>
-</li>
-</ul>
 <a id="servicesProvided">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>servicesProvided</h4>
-<pre>public&nbsp;java.util.ArrayList&lt;<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&gt; servicesProvided</pre>
+<pre>public&nbsp;java.util.Set&lt;<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&gt; servicesProvided</pre>
 </li>
 </ul>
 <a id="clinicianMap">
@@ -826,7 +907,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </ul>
 </section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="constructor.detail">
 <!--   -->
@@ -846,7 +927,7 @@ implements <a href="../geography/quadtree/QuadTreeElement.html" title="interface
 </ul>
 </section>
 <!-- ============ METHOD DETAIL ========== -->
-<section role="region">
+<section>
 <ul class="blockList">
 <li class="blockList"><a id="method.detail">
 <!--   -->
