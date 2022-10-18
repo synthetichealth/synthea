@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
 
 /**
  * Utility class for converting between state names and abbreviations and CMS provider state codes.
@@ -232,7 +233,8 @@ public class CMSStateCodeMapper {
    * @param countyName The name of the county.
    * @return The SSA county code.
    */
-  public String stateCountyNameToCountyCode(String state, String countyName, Person person) {
+  public String stateCountyNameToCountyCode(String state, String countyName,
+      RandomNumberGenerator rand) {
     String ssaCounty = null;
     String abbrv = stateToAbbrev.get(state);
     Map<String, String> stateData = ssaStateCountyNameCountyCode.get(abbrv);
@@ -242,7 +244,7 @@ public class CMSStateCodeMapper {
       if (ssaCounty == null) {
         // TODO ideally, we'd search by Lat/Lon and pick the closest county
         // instead, we pick a random county within the state
-        int index = person.randInt(stateData.keySet().size());
+        int index = rand.randInt(stateData.keySet().size());
         key = (String) stateData.keySet().toArray()[index];
         ssaCounty = stateData.get(key);
       }
