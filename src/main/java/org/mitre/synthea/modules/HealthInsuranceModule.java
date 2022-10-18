@@ -7,7 +7,6 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -47,16 +46,12 @@ public class HealthInsuranceModule extends Module {
       return true;
     }
 
-    // If the payerHistory at the current age is null, they must get insurance for the new year.
+    // Enroll in new insurance for the year if a new yearly enrollment period is reached.
     // Note: This means the person will check to change insurance yearly, within one timestep
     // after their birthday.
-    InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
-    if (planAtTime == null) {
+    if (person.coverage.newEnrollmentPeriod(time)) {
       // Update their last plan's payer with person's QOLS for that year.
-      Payer lastPayer = person.coverage.getLastPayer();
-      if (lastPayer != null) {
-        lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
-      }
+      person.coverage.updateLastPayerQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       // Update the insurance for this person at this time.
       this.updateInsurance(person, time);
     }
