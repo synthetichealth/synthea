@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -187,12 +187,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stateCountyNameToCountyCode(java.lang.String,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">stateCountyNameToCountyCode</a></span>&#8203;(java.lang.String&nbsp;state,
+                           java.lang.String&nbsp;countyName,
+                           <a href="../../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</code></th>
+<td class="colLast">
+<div class="block">Get the SSA county code for a given state and county.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#zipToCountyCode(java.lang.String)">zipToCountyCode</a></span>&#8203;(java.lang.String&nbsp;zipcode)</code></th>
 <td class="colLast">
 <div class="block">Get the SSA county code for a given zipcode.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#zipToFipsCountyCode(java.lang.String)">zipToFipsCountyCode</a></span>&#8203;(java.lang.String&nbsp;zipcode)</code></th>
 <td class="colLast">
@@ -266,12 +275,31 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>zipToCountyCode</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;zipToCountyCode&#8203;(java.lang.String&nbsp;zipcode)</pre>
-<div class="block">Get the SSA county code for a given zipcode. Will eventually use countyname, but wanted
- to use a unique key</div>
+<div class="block">Get the SSA county code for a given zipcode.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>zipcode</code> - the ZIP</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>The SSA county code.</dd>
+</dl>
+</li>
+</ul>
+<a id="stateCountyNameToCountyCode(java.lang.String,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>stateCountyNameToCountyCode</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;stateCountyNameToCountyCode&#8203;(java.lang.String&nbsp;state,
+                                                    java.lang.String&nbsp;countyName,
+                                                    <a href="../../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</pre>
+<div class="block">Get the SSA county code for a given state and county.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>state</code> - The abbreviation of the state.</dd>
+<dd><code>countyName</code> - The name of the county.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The SSA county code.</dd>
 </dl>
 </li>
 </ul>
