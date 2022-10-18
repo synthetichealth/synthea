@@ -76,6 +76,7 @@ import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
@@ -458,7 +459,7 @@ public class BB2RIFExporter {
     HOSPICE
   }
 
-  private boolean isVAorIHS(HealthRecord.Encounter encounter) {
+  private boolean isVAorIHS(Encounter encounter) {
     boolean isVA = (ProviderType.VETERAN == encounter.provider.type);
     // IHS facilities have valid 6 digit id, IHS centers don't
     boolean isIHSCenter = (ProviderType.IHS == encounter.provider.type)
@@ -466,7 +467,7 @@ public class BB2RIFExporter {
     return isVA || isIHSCenter;
   }
 
-  private Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
+  private Set<ClaimType> getClaimTypes(Encounter encounter) {
     Set<ClaimType> types = new HashSet<>();
 
     boolean isSNF = encounter.type.equals(EncounterType.SNF.toString());
@@ -848,7 +849,7 @@ public class BB2RIFExporter {
     // Collect the active diagnoses at the given time,
     // keeping only those diagnoses that are mappable.
     List<Entry> diagnoses = new ArrayList<Entry>();
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.start <= time) {
         for (Entry dx : encounter.conditions) {
           if (dx.start <= time && (dx.stop == 0L || dx.stop > time)) {
@@ -984,7 +985,7 @@ public class BB2RIFExporter {
     long claimCount = 0;
     HashMap<OUTPATIENT, String> fieldValues = new HashMap<>();
 
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -1019,7 +1020,7 @@ public class BB2RIFExporter {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
-                String.format("%.2f", encounter.claim.getCoveredCost()));
+                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       fieldValues.put(OUTPATIENT.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
@@ -1039,25 +1040,25 @@ public class BB2RIFExporter {
       fieldValues.put(OUTPATIENT.CLM_OP_PRVDR_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getPatientCost()));
+              String.format("%.2f", encounter.claim.getTotalPatientCost()));
       fieldValues.put(OUTPATIENT.NCH_BENE_PTB_DDCTBL_AMT,
-              String.format("%.2f", encounter.claim.getDeductiblePaid()));
+              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(OUTPATIENT.REV_CNTR_CASH_DDCTBL_AMT,
-              String.format("%.2f", encounter.claim.getDeductiblePaid()));
+              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(OUTPATIENT.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
-              String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+              String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
       fieldValues.put(OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(OUTPATIENT.REV_CNTR_PRVDR_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(OUTPATIENT.REV_CNTR_PTNT_RSPNSBLTY_PMT,
               String.format("%.2f",
-                      encounter.claim.getDeductiblePaid()
-                              .add(encounter.claim.getCoinsurancePaid())));
+                      encounter.claim.getTotalDeductiblePaid()
+                              .add(encounter.claim.getTotalCoinsurancePaid())));
       fieldValues.put(OUTPATIENT.REV_CNTR_RDCD_COINSRNC_AMT,
-              String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+              String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
 
       String icdReasonCode = null;
       if (encounter.reason != null) {
@@ -1202,7 +1203,7 @@ public class BB2RIFExporter {
     long claimCount = 0;
     boolean previousEmergency = false;
 
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -1240,7 +1241,7 @@ public class BB2RIFExporter {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
-                String.format("%.2f", encounter.claim.getCoveredCost()));
+                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       fieldValues.put(INPATIENT.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
@@ -1273,13 +1274,13 @@ public class BB2RIFExporter {
       }
       fieldValues.put(INPATIENT.CLM_IP_ADMSN_TYPE_CD, field);
       fieldValues.put(INPATIENT.NCH_BENE_IP_DDCTBL_AMT,
-          String.format("%.2f", encounter.claim.getDeductiblePaid()));
+          String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(INPATIENT.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
-          String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+          String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
       fieldValues.put(INPATIENT.NCH_IP_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
       fieldValues.put(INPATIENT.NCH_IP_TOT_DDCTN_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       fieldValues.put(INPATIENT.CLM_UTLZTN_DAY_CNT, "" + days);
       if (days > 60) {
@@ -1297,9 +1298,9 @@ public class BB2RIFExporter {
       }
       fieldValues.put(INPATIENT.CLM_DRG_OUTLIER_STAY_CD, field);
       fieldValues.put(INPATIENT.REV_CNTR_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(INPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
 
       // OPTIONAL FIELDS
       fieldValues.put(INPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
@@ -1468,7 +1469,7 @@ public class BB2RIFExporter {
     long claimCount = 0;
     double latestHemoglobin = 0;
 
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -1502,23 +1503,23 @@ public class BB2RIFExporter {
       fieldValues.put(CARRIER.CARR_NUM,
               getCarrier(encounter.provider.state, CARRIER.CARR_NUM));
       fieldValues.put(CARRIER.CLM_PMT_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
-                String.format("%.2f", encounter.claim.getCoveredCost()));
+                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       // NCH_CLM_BENE_PMT_AMT, is always zero (set in field value spreadsheet)
       fieldValues.put(CARRIER.NCH_CLM_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(CARRIER.NCH_CARR_CLM_SBMTD_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(CARRIER.NCH_CARR_CLM_ALOWD_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(CARRIER.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-              String.format("%.2f", encounter.claim.getDeductiblePaid()));
+              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(CARRIER.ORG_NPI_NUM, encounter.provider.npi);
@@ -1662,19 +1663,19 @@ public class BB2RIFExporter {
           // Add a single top-level entry.
           fieldValues.put(CARRIER.LINE_NUM, Integer.toString(lineNum));
           fieldValues.put(CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", encounter.claim.getDeductiblePaid()));
+                  String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
           fieldValues.put(CARRIER.LINE_COINSRNC_AMT,
-                  String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+                  String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
           fieldValues.put(CARRIER.LINE_SBMTD_CHRG_AMT,
                   String.format("%.2f", encounter.claim.getTotalClaimCost()));
           fieldValues.put(CARRIER.LINE_ALOWD_CHRG_AMT,
-                  String.format("%.2f", encounter.claim.getCoveredCost()));
+                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
           fieldValues.put(CARRIER.LINE_PRVDR_PMT_AMT,
-                  String.format("%.2f", encounter.claim.getCoveredCost()));
+                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           fieldValues.put(CARRIER.LINE_NCH_PMT_AMT,
-                  String.format("%.2f", encounter.claim.getCoveredCost()));
+                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(CARRIER.HCPCS_CD, "99241");
           rifWriters.writeValues(CARRIER.class, fieldValues);
@@ -1708,7 +1709,7 @@ public class BB2RIFExporter {
    * @param encounter The encounter.
    * @return non-null place of service code.
    */
-  private String getPlaceOfService(HealthRecord.Encounter encounter) {
+  private String getPlaceOfService(Encounter encounter) {
     String placeOfServiceCode = "11"; // Default to "11" = Office
     if (encounter.type.equalsIgnoreCase(EncounterType.VIRTUAL.toString())) {
       placeOfServiceCode = "02"; // telehealth
@@ -2178,7 +2179,7 @@ public class BB2RIFExporter {
     // Build a chronologically ordered list of prescription fills (including refills where
     // specified).
     List<PrescriptionFill> prescriptionFills = new LinkedList<>();
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -2255,7 +2256,7 @@ public class BB2RIFExporter {
         catastrophicCode = ""; // Blank = Attachment point not met
       }
       BigDecimal threshold = getDrugOutOfPocketThreshold(year);
-      costs = costs.add(fill.medication.claim.getPatientCost());
+      costs = costs.add(fill.medication.claim.getTotalPatientCost());
       if (costs.compareTo(threshold) < 0) {
         fieldValues.put(PDE.GDC_BLW_OOPT_AMT, String.format("%.2f", costs));
         fieldValues.put(PDE.GDC_ABV_OOPT_AMT, "0");
@@ -2283,13 +2284,13 @@ public class BB2RIFExporter {
       // - NCVRD_PLAN_PD_AMT  : part of total not covered by Part D whatsoever
       // OTHR_TROOP_AMT and LICS_AMT are always 0, set in field value spreadsheet
       fieldValues.put(PDE.PTNT_PAY_AMT,
-          String.format("%.2f", fill.medication.claim.getPatientCost()));
+          String.format("%.2f", fill.medication.claim.getTotalPatientCost()));
       fieldValues.put(PDE.PLRO_AMT,
-          String.format("%.2f", fill.medication.claim.totals.paidBySecondaryPayer));
+          String.format("%.2f", fill.medication.claim.getTotalPaidBySecondaryPayer()));
       fieldValues.put(PDE.CVRD_D_PLAN_PD_AMT,
-          String.format("%.2f", fill.medication.claim.getCoveredCost()));
+          String.format("%.2f", fill.medication.claim.getTotalCoveredCost()));
       fieldValues.put(PDE.NCVRD_PLAN_PD_AMT,
-          String.format("%.2f", fill.medication.claim.totals.adjustment));
+          String.format("%.2f", fill.medication.claim.getTotalAdjustment()));
 
       fieldValues.put(PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
       fieldValues.put(PDE.PD_DT, bb2DateFromTimestamp(fill.time));
@@ -2314,7 +2315,7 @@ public class BB2RIFExporter {
 
   private static class PrescriptionFill implements Comparable<PrescriptionFill> {
     long time;
-    HealthRecord.Encounter encounter;
+    Encounter encounter;
     Medication medication;
     PartDContractID partDContractID;
     int quantity;
@@ -2323,7 +2324,7 @@ public class BB2RIFExporter {
     String medicationCode;
     int refills = 0;
 
-    PrescriptionFill(long time, HealthRecord.Encounter encounter, Medication medication,
+    PrescriptionFill(long time, Encounter encounter, Medication medication,
             String medicationCode, int fillNo, PartDContractID partDContractID,
             long supplyInterval, long end) {
       this.time = time;
@@ -2421,7 +2422,7 @@ public class BB2RIFExporter {
     long claimCount = 0;
     HashMap<DME, String> fieldValues = new HashMap<>();
 
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -2600,7 +2601,7 @@ public class BB2RIFExporter {
     long maxGapForContinuousHHAService = Utilities.convertTime("days", 2);
     ConsolidatedServicePeriods servicePeriods = new ConsolidatedServicePeriods(
             maxGapForContinuousHHAService);
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -2640,7 +2641,7 @@ public class BB2RIFExporter {
       final String HHA_GENERAL_REV_CNTR = "0270"; // General medical/surgical supplies
       final String HHA_MEDICATION_CODE = "T1502"; // Administration of medication
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
-      for (HealthRecord.Encounter encounter : servicePeriod.getEncounters()) {
+      for (Encounter encounter : servicePeriod.getEncounters()) {
         for (ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
@@ -2656,13 +2657,13 @@ public class BB2RIFExporter {
             if (hcpcsCode == null) {
               revCenter = HHA_GENERAL_REV_CNTR;
             }
-            consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem);
+            consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem, encounter);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = HHA_MEDICATION_CODE;
               revCenter = HHA_GENERAL_REV_CNTR;
-              consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem);
+              consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem, encounter);
             }
           }
         }
@@ -2673,20 +2674,16 @@ public class BB2RIFExporter {
       fieldValues.put(HHA.CLM_TOT_CHRG_AMT,
           String.format("%.2f", consolidatedClaimLines.getTotalClaimCost()));
       fieldValues.put(HHA.CLM_HHA_TOT_VISIT_CNT, "" + servicePeriod.getEncounters().size());
+      fieldValues.put(HHA.PRVDR_NUM, servicePeriod.getProvider().cmsProviderNum);
+      fieldValues.put(HHA.ORG_NPI_NUM, servicePeriod.getProvider().npi);
+      fieldValues.put(HHA.PRVDR_STATE_CD,
+          locationMapper.getStateCode(servicePeriod.getProvider().state));
 
       // Use the final encounter in the service period to set all of the remaining field values that
       // are the same for all claim lines
       // TODO: update ConsolidatedServicePeriods to separate encounters based on provider, clinician
-      HealthRecord.Encounter encounter = servicePeriod.getEncounters().get(
+      Encounter encounter = servicePeriod.getEncounters().get(
               servicePeriod.getEncounters().size() - 1);
-      fieldValues.put(HHA.PRVDR_NUM, encounter.provider.cmsProviderNum);
-      fieldValues.put(HHA.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(HHA.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HHA.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(HHA.PRVDR_STATE_CD,
-          locationMapper.getStateCode(encounter.provider.state));
-      fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(encounter.start));
-
       if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
@@ -2706,6 +2703,10 @@ public class BB2RIFExporter {
       String dischargeStatus = "1"; //discharged
       if (!person.alive(servicePeriod.getStop())) {
         dischargeStatus = "20"; // the patient died before the service period ended
+      } else if (servicePeriod.getStop() > stopTime) {
+        // TBD: revisit if we break up service periods into multiple billing periods, can then set
+        // this for all but the final billing period within a service period.
+        dischargeStatus = "30"; // the patient is still having treatment
       }
       fieldValues.put(HHA.PTNT_DSCHRG_STUS_CD, dischargeStatus);
       // Use the active condition diagnoses to enter mapped values
@@ -2734,6 +2735,9 @@ public class BB2RIFExporter {
         for (ConsolidatedClaimLines.ConsolidatedClaimLine lineItem:
                 consolidatedClaimLines.getLines()) {
           fieldValues.put(HHA.HCPCS_CD, lineItem.getCode());
+          fieldValues.put(HHA.AT_PHYSN_NPI, lineItem.getClinician().npi);
+          fieldValues.put(HHA.RNDRNG_PHYSN_NPI, lineItem.getClinician().npi);
+          fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(lineItem.getStart()));
           int revCntrCount = lineItem.getCount();
           switch (lineItem.getCode()) {
             case HHA_MEDICATION_CODE:
@@ -2758,8 +2762,11 @@ public class BB2RIFExporter {
         // Add a total charge entry.
         fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.remove(HHA.HCPCS_CD);
+        fieldValues.remove(HHA.AT_PHYSN_NPI);
+        fieldValues.remove(HHA.RNDRNG_PHYSN_NPI);
         fieldValues.put(HHA.REV_CNTR, HHA_TOTAL_CHARGE_REV_CNTR);
         fieldValues.put(HHA.REV_CNTR_UNIT_CNT, "0");
+        fieldValues.put(HHA.REV_CNTR_DT, bb2DateFromTimestamp(servicePeriod.getStart()));
         setClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
         rifWriters.writeValues(HHA.class, fieldValues);
       }
@@ -2808,7 +2815,7 @@ public class BB2RIFExporter {
   private long exportHospice(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
     HashMap<HOSPICE, String> fieldValues = new HashMap<>();
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -2849,7 +2856,7 @@ public class BB2RIFExporter {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
-                String.format("%.2f", encounter.claim.getCoveredCost()));
+                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       fieldValues.put(HOSPICE.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
@@ -2879,13 +2886,13 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.CLM_TOT_CHRG_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(HOSPICE.REV_CNTR_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
       fieldValues.put(HOSPICE.REV_CNTR_PMT_AMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(HOSPICE.REV_CNTR_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
 
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
@@ -3016,7 +3023,7 @@ public class BB2RIFExporter {
     boolean previousEmergency;
     boolean previousUrgent;
 
-    for (HealthRecord.Encounter encounter : person.record.encounters) {
+    for (Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < claimCutoff) {
         continue;
       }
@@ -3051,13 +3058,13 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
       fieldValues.put(SNF.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
           .getGovernmentPayerPlan()) {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
-            String.format("%.2f", encounter.claim.getCoveredCost()));
+            String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       fieldValues.put(SNF.PRVDR_STATE_CD,
           locationMapper.getStateCode(encounter.provider.state));
@@ -3071,14 +3078,14 @@ public class BB2RIFExporter {
         fieldValues.put(SNF.CLM_IP_ADMSN_TYPE_CD, "3");
       }
       fieldValues.put(SNF.NCH_BENE_IP_DDCTBL_AMT,
-          String.format("%.2f", encounter.claim.getDeductiblePaid()));
+          String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(SNF.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
-          String.format("%.2f", encounter.claim.getCoinsurancePaid()));
+          String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
       fieldValues.put(SNF.NCH_IP_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
       fieldValues.put(SNF.NCH_IP_TOT_DDCTN_AMT,
-          String.format("%.2f", encounter.claim.getDeductiblePaid().add(
-                  encounter.claim.getCoinsurancePaid())));
+          String.format("%.2f", encounter.claim.getTotalDeductiblePaid().add(
+                  encounter.claim.getTotalCoinsurancePaid())));
       int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
       if (days <= 0) {
         days = 1;
@@ -3097,7 +3104,7 @@ public class BB2RIFExporter {
       fieldValues.put(SNF.REV_CNTR_TOT_CHRG_AMT,
           String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(SNF.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getPatientCost()));
+          String.format("%.2f", encounter.claim.getTotalPatientCost()));
 
       // OPTIONAL CODES
       if (encounter.reason != null) {
@@ -3218,20 +3225,21 @@ public class BB2RIFExporter {
             if (codeMapper.canMap(code.code)) {
               if (person.rand() < 0.15) { // Only 15% of SNF claim have a HCPCS code
                 snfCode = codeMapper.map(code.code, person, true);
-                consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem);
+                consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
               }
               break; // take the first mappable code for each procedure
             }
           }
           if (snfCode == null) {
             // Add an entry for an empty code (either unmappable or 85% blank)
-            consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem);
+            consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
           }
         } else if (lineItem.entry instanceof HealthRecord.Medication) {
           HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
           if (med.administration) {
             // Administration of medication
-            consolidatedClaimLines.addClaimLine(SNF_MED_ADMIN_CODE, PHARMACY_REV_CNTR, lineItem);
+            consolidatedClaimLines.addClaimLine(SNF_MED_ADMIN_CODE, PHARMACY_REV_CNTR, lineItem,
+                    encounter);
           }
         }
       }
@@ -3317,13 +3325,18 @@ public class BB2RIFExporter {
   private static class ConsolidatedClaimLines extends ClaimCost {
     static class ConsolidatedClaimLine extends ClaimCost {
       private int count;
-      private String code;
-      private String revCntr;
+      private final String code;
+      private final String revCntr;
+      private final Clinician clinician;
+      private final long start;
 
-      public ConsolidatedClaimLine(ClaimCost initial, String code, String revCntr) {
+      public ConsolidatedClaimLine(ClaimCost initial, String code, String revCntr,
+              Encounter encounter) {
         super(initial);
         this.code = code;
         this.revCntr = revCntr;
+        this.clinician = encounter.clinician;
+        this.start = encounter.start;
         count = 1;
       }
 
@@ -3344,6 +3357,14 @@ public class BB2RIFExporter {
       public String getRevCntr() {
         return revCntr;
       }
+
+      public Clinician getClinician() {
+        return clinician;
+      }
+
+      public long getStart() {
+        return start;
+      }
     }
 
     private Map<String, ConsolidatedClaimLine> uniqueLineItems;
@@ -3353,18 +3374,23 @@ public class BB2RIFExporter {
       uniqueLineItems = new TreeMap<>();
     }
 
-    public void addClaimLine(String hcpcsCode, String revCntr, ClaimCost cost) {
+    public void addClaimLine(String hcpcsCode, String revCntr, ClaimCost cost,
+            Encounter encounter) {
       if (hcpcsCode == null) {
         hcpcsCode = ""; // TreeMap doesn't like null keys unless you provide a custom comparator
       }
       if (revCntr == null) {
         revCntr = "";
       }
-      String key = hcpcsCode + '-' + revCntr;
+      String clinicianId = "";
+      if (encounter.clinician != null && encounter.clinician.npi != null) {
+        clinicianId = encounter.clinician.npi;
+      }
+      String key = clinicianId + '-' + hcpcsCode + '-' + revCntr;
       if (uniqueLineItems.containsKey(key)) {
         uniqueLineItems.get(key).addCosts(cost);
       } else {
-        uniqueLineItems.put(key, new ConsolidatedClaimLine(cost, hcpcsCode, revCntr));
+        uniqueLineItems.put(key, new ConsolidatedClaimLine(cost, hcpcsCode, revCntr, encounter));
       }
       this.addCosts(cost);
     }

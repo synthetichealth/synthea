@@ -1,12 +1,16 @@
 package org.mitre.synthea.helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
- * Utility class to group encounters separated by less than a configurable amount of time.
+ * Utility class to group encounters by provider that are separated by less than a configurable
+ * amount of time.
  */
 public class ConsolidatedServicePeriods {
   public static class ConsolidatedServicePeriod {
@@ -14,6 +18,7 @@ public class ConsolidatedServicePeriods {
     private long stop;
     private final List<HealthRecord.Encounter> encounters;
     private final Claim.ClaimCost totalCost;
+    private final Provider provider;
 
     /**
      * Create a new instance initialized with the time bounds and costs of the supplied encounter.
@@ -25,6 +30,7 @@ public class ConsolidatedServicePeriods {
       encounters = new ArrayList<>();
       encounters.add(encounter);
       totalCost = new Claim.ClaimCost(encounter.claim.totals);
+      provider = encounter.provider;
     }
 
     /**
@@ -67,18 +73,29 @@ public class ConsolidatedServicePeriods {
     public Claim.ClaimCost getTotalCost() {
       return totalCost;
     }
+
+    public Provider getProvider() {
+      return provider;
+    }
   }
 
   private long maxSeparationTime;
-  private List<HealthRecord.Encounter> encounters;
+  private Map<String, List<HealthRecord.Encounter>> providerEncounters;
 
   public ConsolidatedServicePeriods(long maxSeparationTime) {
     this.maxSeparationTime = maxSeparationTime;
-    encounters = new ArrayList<>();
+    providerEncounters = new HashMap<>();
   }
 
+  /**
+   * Add the supplied encounter to the list managed by this instance.
+   * @param encounter the encounter to add
+   */
   public void addEncounter(HealthRecord.Encounter encounter) {
-    encounters.add(encounter);
+    if (!providerEncounters.containsKey(encounter.provider.npi)) {
+      providerEncounters.put(encounter.provider.npi, new ArrayList<>());
+    }
+    providerEncounters.get(encounter.provider.npi).add(encounter);
   }
 
   private static void consolidate(HealthRecord.Encounter encounter,
@@ -94,17 +111,25 @@ public class ConsolidatedServicePeriods {
   }
 
   /**
-   * Create a list of consolidated service periods from the encounters previously added.
-   * @return the list
+   * Create a list of consolidated service periods from the encounters previously added. Each
+   * member of the list is a consolidated service period for a particular provider.
+   * @return the list, sorted by period start time
    */
   public List<ConsolidatedServicePeriod> getPeriods() {
-    List<ConsolidatedServicePeriod> servicePeriods = new ArrayList<>();
-    encounters.sort((e1, e2) -> {
-      return (int)(e1.start - e2.start);
-    });
-    for (HealthRecord.Encounter encounter: encounters) {
-      consolidate(encounter, servicePeriods, maxSeparationTime);
+    List<ConsolidatedServicePeriod> allServicePeriods = new ArrayList<>();
+    for (List<HealthRecord.Encounter> encounters: providerEncounters.values()) {
+      List<ConsolidatedServicePeriod> providerServicePeriods = new ArrayList<>();
+      encounters.sort((e1, e2) -> {
+        return (int)(e1.start - e2.start);
+      });
+      for (HealthRecord.Encounter encounter: encounters) {
+        consolidate(encounter, providerServicePeriods, maxSeparationTime);
+      }
+      allServicePeriods.addAll(providerServicePeriods);
     }
-    return servicePeriods;
+    allServicePeriods.sort((e1, e2) -> {
+      return (int)(e1.getStart() - e2.getStart());
+    });
+    return allServicePeriods;
   }
 }

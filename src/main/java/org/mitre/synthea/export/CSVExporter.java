@@ -718,7 +718,7 @@ public class CSVExporter {
     // TOTAL_COST
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
     // PAYER_COVERAGE
-    s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
     // REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");
@@ -957,7 +957,7 @@ public class CSVExporter {
     BigDecimal cost = medication.getCost();
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
     // PAYER_COVERAGE
-    s.append(String.format(Locale.US, "%.2f", medication.claim.getCoveredCost())).append(',');
+    s.append(String.format(Locale.US, "%.2f", medication.claim.getTotalCoveredCost())).append(',');
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
 
@@ -1537,17 +1537,17 @@ public class CSVExporter {
       // STATUSP for Patient as Payer
       s.append("BILLED,");
       // OUTSTANDING1 (TODO this should be the outstanding payer balance)
-      s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+      s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
       // OUTSTANDING2
       if (claim.secondaryPlan != null
           && claim.secondaryPlan.isNoInsurance()) {
         // TODO this is not correct
-        s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+        s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
       } else {
         s.append(',');
       }
       // OUTSTANDINGP (TODO this should be the outstanding patient balance)
-      BigDecimal patientCost = claim.getTotalClaimCost().subtract(claim.getCoveredCost());
+      BigDecimal patientCost = claim.getTotalClaimCost().subtract(claim.getTotalCoveredCost());
       s.append(String.format(Locale.US, "%.2f", patientCost)).append(',');
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');

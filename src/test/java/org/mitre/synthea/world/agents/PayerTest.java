@@ -592,7 +592,7 @@ public class PayerTest {
     assertEquals(expectedTotalCost, resultCost);
     // The total cost should equal the Cost to the Payer summed with the Payer's copay amount.
     assertEquals(expectedTotalCost, testPrivatePayer1.getAmountCovered()
-        .add(fakeEncounter.claim.getPatientCost()));
+        .add(fakeEncounter.claim.getTotalPatientCost()));
     // The total cost should equal the Payer's uncovered costs plus the Payer's covered costs.
     assertEquals(expectedTotalCost,
         testPrivatePayer1.getAmountCovered().add(testPrivatePayer1.getAmountUncovered()));
@@ -840,8 +840,8 @@ public class PayerTest {
     assertTrue(plan.isCopayBased());
     BigDecimal encounterCost = fakeEncounter.getCost();
     BigDecimal expectedPaid = patientCoinsurance.multiply(encounterCost).add(copay);
-    BigDecimal coinsurancePaid = fakeEncounter.claim.getCoinsurancePaid();
-    BigDecimal copayPaid = fakeEncounter.claim.getCopayPaid();
+    BigDecimal coinsurancePaid = fakeEncounter.claim.getTotalCoinsurancePaid();
+    BigDecimal copayPaid = fakeEncounter.claim.getTotalCopayPaid();
 
     assertEquals("The amount paid should be equal to the plan's coinsurance rate plus the copay."
         + " The payer is " + plan.getPayer().getName() + ".",
@@ -876,8 +876,8 @@ public class PayerTest {
     assertFalse(plan.isCopayBased());
     BigDecimal encounterCost = fakeEncounter.getCost();
     BigDecimal expectedPaid = patientCoinsurance.multiply(encounterCost).add(copay);
-    BigDecimal coinsurancePaid = fakeEncounter.claim.getCoinsurancePaid();
-    BigDecimal copayPaid = fakeEncounter.claim.getCopayPaid();
+    BigDecimal coinsurancePaid = fakeEncounter.claim.getTotalCoinsurancePaid();
+    BigDecimal copayPaid = fakeEncounter.claim.getTotalCopayPaid();
 
     assertEquals(BigDecimal.ONE.subtract(plan.getPatientCoinsurance()), plan.getPayerCoinsurance());
     assertTrue("The amount paid should be equal to the plan's coinsurance rate plus the copay."

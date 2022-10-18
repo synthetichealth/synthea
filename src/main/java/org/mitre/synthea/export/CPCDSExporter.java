@@ -460,7 +460,7 @@ public class CPCDSExporter {
 
       // totals
       BigDecimal totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
-      BigDecimal coveredCost = encounter.claim.getCoveredCost();
+      BigDecimal coveredCost = encounter.claim.getTotalCoveredCost();
       BigDecimal disallowed = totalCost.subtract(coveredCost);
       BigDecimal patientPaid = Claim.ZERO_CENTS;
       BigDecimal memberReimbursement = Claim.ZERO_CENTS;
