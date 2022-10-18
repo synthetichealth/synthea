@@ -8,9 +8,9 @@ function handle_cookie_action(didConsent) {
     if (typeof ga !== 'undefined') {
       ga('remove');
     }
-    document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
-    document.cookie = '_gat=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
-    document.cookie = '_gid=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+    document.cookie = '_ga=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=.synthetichealth.github.io';
+    document.cookie = '_gat=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=.synthetichealth.github.io';
+    document.cookie = '_gid=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=.synthetichealth.github.io';
   }
 }
 
