@@ -59,7 +59,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
-import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -101,7 +100,6 @@ public class CodeResolveAndExportTest {
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
     Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
@@ -159,7 +157,7 @@ public class CodeResolveAndExportTest {
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";
     encounter.reason = new Code(SNOMED_URI, reasonCode, reasonDisplay);
-    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<418307001";
+    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C418307001";
     encounter.codes.add(encounter.reason);
 
     String observationDisplay = OBSERVATION_DISPLAY;

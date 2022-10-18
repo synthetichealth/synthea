@@ -5,7 +5,7 @@
     "url" : "/fhir/ValueSet/$expand",
     "method" : "POST",
     "bodyPatterns" : [ {
-      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl/<<6757004\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
+      "equalToJson" : "{\"resourceType\":\"Parameters\",\"parameter\":[{\"name\":\"url\",\"valueUri\":\"http://snomed.info/sct?fhir_vs=ecl%2F%3C%3C6757004\"},{\"name\":\"count\",\"valueInteger\":1000},{\"name\":\"offset\",\"valueInteger\":0}]}",
       "ignoreArrayOrder" : true,
       "ignoreExtraElements" : true
     } ]

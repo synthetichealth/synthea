@@ -45,6 +45,7 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class BB2RIFExporterTest {
   /**

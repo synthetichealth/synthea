@@ -255,6 +255,13 @@ public class PayerManager {
    */
   private static void csvLineToPlan(Map<String, String> line) {
     String payerId = line.remove(PAYER_ID).trim();
+    Payer payer = PayerManager.getPayerById(payerId);
+    if (payer == null) {
+      // return without an error, because the given payer might
+      // only exist in another state.
+      return;
+    }
+
     String planId = line.remove(PLAN_ID).trim();
     String planName = line.remove(NAME).trim();
     Set<String> servicesCovered
@@ -272,7 +279,6 @@ public class PayerManager {
     }
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
-    Payer payer = PayerManager.getPayerById(payerId);
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
         defaultCopay, monthlyPremium, medicareSupplement, yearStart, yearEnd, eligibilityName);
   }
@@ -287,7 +293,7 @@ public class PayerManager {
       throw new RuntimeException(payerList.size()
           + " payers have id '" + payerId + "'. Ids should be unique.");
     }
-    throw new RuntimeException("Requested payer with id '" + payerId + "' does not exist.");
+    return null;
   }
 
   /**

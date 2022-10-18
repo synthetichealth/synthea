@@ -12,7 +12,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
 
       - name: Gradle cache
         uses: actions/cache@v2
@@ -20,9 +20,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk8
+            ${{ runner.os }}-gradle-jdk11
             
       - name: Create Artifacts
         run: |

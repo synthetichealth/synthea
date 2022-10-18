@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.withSettings;
 
 import java.io.IOException;
@@ -178,7 +178,7 @@ public class StateTest {
     // Should pass through this state immediately without calling the record
     assertTrue(condition.process(person, time));
 
-    verifyZeroInteractions(person.record);
+    verifyNoInteractions(person.record);
   }
 
   @Test
@@ -301,7 +301,7 @@ public class StateTest {
     // Should pass through this state immediately without calling the record
     assertTrue(allergy.process(person, time));
 
-    verifyZeroInteractions(person.record);
+    verifyNoInteractions(person.record);
   }
 
   @Test
@@ -545,7 +545,7 @@ public class StateTest {
     assertTrue(person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) >= 110);
     assertTrue(person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time) <= 130);
 
-    verifyZeroInteractions(person.record);
+    verifyNoInteractions(person.record);
   }
 
 
@@ -562,7 +562,7 @@ public class StateTest {
 
     assertEquals(120.0, person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time), 0.0);
 
-    verifyZeroInteractions(person.record);
+    verifyNoInteractions(person.record);
   }
 
   @Test
