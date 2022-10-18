@@ -641,13 +641,10 @@ public class Generator {
   public Person createPerson(long personSeed, Map<String, Object> demoAttributes) {
 
     // Initialize person.
-    Person person = new Person(personSeed);
+    Person person = new Person(personSeed, demoAttributes);
     person.populationSeed = this.options.seed;
-    person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, this.location);
-    person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
     location.setSocialDeterminants(person);
-
     LifecycleModule.birth(person, person.lastUpdated);
 
     person.currentModules = Module.getModules(modulePredicate);
