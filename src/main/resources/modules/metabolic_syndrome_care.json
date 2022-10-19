@@ -435,12 +435,12 @@
         "based on https://github.com/clinical-cloud/sample-careplans"
       ],
       "reason": "diabetes_stage",
-      "direct_transition": "Prescribe_Medications"
+      "direct_transition": "Glucose_Monitor"
     },
     "Prescribe_Medications": {
       "type": "CallSubmodule",
       "submodule": "metabolic_syndrome/medications",
-      "direct_transition": "Check_Complications"
+      "direct_transition": "Glucose_Test_Strips"
     },
     "Check_Complications": {
       "type": "Simple",
@@ -719,6 +719,29 @@
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Wellness_Encounter"
+    },
+    "Glucose_Monitor": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 337414009,
+        "display": "Blood glucose meter (physical object)"
+      },
+      "direct_transition": "Prescribe_Medications"
+    },
+    "Glucose_Test_Strips": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 50,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 337388004,
+            "display": "Blood glucose testing strips (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Check_Complications"
     }
   },
   "gmf_version": 1
