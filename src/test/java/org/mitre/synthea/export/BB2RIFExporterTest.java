@@ -9,6 +9,7 @@ import static org.mitre.synthea.world.agents.Person.INCOME_LEVEL;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
 import org.mitre.synthea.export.BB2RIFExporter.HICN;
 import org.mitre.synthea.export.BB2RIFExporter.MBI;
@@ -45,9 +47,32 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
-import org.mitre.synthea.world.concepts.HealthRecord;
 
 public class BB2RIFExporterTest {
+
+  public class MockMapper extends BB2RIFExporter.CodeMapper {
+    public MockMapper() {
+      super("MOCK_MAPPING_FILE_THAT_DOES_NOT_EXIST.JSON");
+    }
+
+    public boolean canMap(String codeToMap) {
+      return true;
+    }
+
+    public boolean hasMap() {
+      return true;
+    }
+
+    public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand,
+        boolean stripDots) {
+      if (bfdCodeType.equalsIgnoreCase("code")) {
+        return "XXXX";
+      } else {
+        return "R";
+      }
+    }
+  }
+
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
    */
@@ -76,6 +101,11 @@ public class BB2RIFExporterTest {
 
   @Test
   public void testBB2Export() throws Exception {
+    BB2RIFExporter.getInstance().dmeCodeMapper = new MockMapper();
+
+    URI uri = BB2RIFExporterTest.class.getResource("/module").toURI();
+    File file = new File(uri);
+    Module.addModules(file);
     int numberOfPeople = 10;
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();

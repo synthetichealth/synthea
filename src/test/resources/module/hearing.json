@@ -1,0 +1,90 @@
+{
+  "name": "Hearing",
+  "remarks": [
+    "One in eight people in the United States (13 percent, or 30 million) aged 12 years or older has hearing loss in both ears, based on standard hearing examinations. About 2 percent of adults aged 45 to 54 have disabling hearing loss. The rate increases to 8.5 percent for adults aged 55 to 64.",
+    "cite: https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Initial Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Hearing Aid": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 6012004,
+        "display": "Hearing aid, device (physical object)"
+      },
+      "direct_transition": "End Encounter"
+    },
+    "Hearing Disorder": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 128540005,
+          "display": "Hearing disorder (disorder)"
+        }
+      ],
+      "direct_transition": "Hearing Aid"
+    },
+    "Wellness": {
+      "type": "Encounter",
+      "telemedicine_possibility": "none",
+      "direct_transition": "Hearing Examination",
+      "wellness": true
+    },
+    "Initial Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 64,
+          "low": 55
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Wellness"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Repeated Delay"
+    },
+    "Repeated Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 16,
+          "low": 8
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Wellness"
+    },
+    "Hearing Examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 398171003,
+          "display": "Hearing examination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Hearing Disorder"
+    }
+  },
+  "gmf_version": 2
+}
