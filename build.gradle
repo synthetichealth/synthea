@@ -95,6 +95,7 @@ dependencies {
   implementation files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
   implementation 'org.sbml.jsbml:jsbml:1.6.1', {
       exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+      exclude group:'junit', module: 'junit'
   }
   implementation 'org.apache.commons:commons-math:2.2'
 
