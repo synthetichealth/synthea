@@ -1,6 +1,7 @@
 package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -37,6 +38,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
@@ -108,6 +111,7 @@ public class FHIRR4ExporterTest {
     List<String> errors = ParallelTestingService.runInParallel((person) -> {
       List<String> validationErrors = new ArrayList<String>();
       TestHelper.exportOff();
+      FhirR4.reloadIncludeExclude();
       FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
       FhirR4.USE_US_CORE_IG = person.randBoolean();
       FhirR4.USE_SHR_EXTENSIONS = false;
@@ -292,5 +296,156 @@ public class FHIRR4ExporterTest {
         }
       }
     }
+  }
+
+  @Test
+  public void testShouldExport() {
+    // nothing set for either == allow everything
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    assertTrue(FhirR4.shouldExport("MedicationRequest"));
+    assertTrue(FhirR4.shouldExport("Procedure"));
+    assertTrue(FhirR4.shouldExport("Condition"));
+    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+
+    // a few items included, all others excluded
+    Config.set("exporter.fhir.included_resources", "MedicationRequest, Procedure");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    assertTrue(FhirR4.shouldExport("MedicationRequest"));
+    assertTrue(FhirR4.shouldExport("Procedure"));
+
+    assertFalse(FhirR4.shouldExport("Condition"));
+    assertFalse(FhirR4.shouldExport("NotEvenARealResourceType"));
+
+
+    // a few items excluded, all others included
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "MedicationRequest,Procedure");
+    FhirR4.reloadIncludeExclude();
+
+    assertFalse(FhirR4.shouldExport("MedicationRequest"));
+    assertFalse(FhirR4.shouldExport("Procedure"));
+
+    assertTrue(FhirR4.shouldExport("Condition"));
+    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+
+
+    // both set in config == both disabled == allow everything
+    Config.set("exporter.fhir.included_resources", "Condition,Observation");
+    Config.set("exporter.fhir.excluded_resources", "MedicationRequest ,Procedure");
+    FhirR4.reloadIncludeExclude();
+
+    assertTrue(FhirR4.shouldExport("MedicationRequest"));
+    assertTrue(FhirR4.shouldExport("Procedure"));
+    assertTrue(FhirR4.shouldExport("Condition"));
+    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+  }
+
+  @Test
+  public void testFHIRExportIncludes() throws Exception {
+    Config.set("exporter.fhir.included_resources", "MedicationRequest  ,Procedure");
+    Config.set("exporter.fhir.excluded_resources", "");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+
+    p.record.provider = new Provider(); // dummy
+
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = p.record.provider;
+
+    Code dummyCode = new Code("","","");
+
+    p.record.conditionStart(0, "Terminal Examplitis :(").codes.add(dummyCode);
+    p.record.procedure(0, "Examplotomy").codes.add(dummyCode);
+    p.record.medicationStart(0, "Examplitol", true).codes.add(dummyCode);
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 0);
+
+
+    boolean foundMedications = false;
+    boolean foundProcedures = false;
+    boolean foundConditions = false;
+
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      switch (entry.getResource().getResourceType().toString()) {
+        case "Condition":
+          foundConditions = true;
+          break;
+        case "MedicationRequest":
+          foundMedications = true;
+          break;
+        case "Procedure":
+          foundProcedures = true;
+          break;
+        default:
+          // do nothing
+      }
+    }
+
+    assertTrue("MedicationRequest missing but should have been included", foundMedications);
+    assertTrue("Procedure resource missing but should have been included", foundProcedures);
+    assertFalse("Condition resource found but should not have been included", foundConditions);
+  }
+
+  @Test
+  public void testFHIRExportExcludes() throws Exception {
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "MedicationRequest,Procedure,Observaton");
+    FhirR4.reloadIncludeExclude();
+
+    Person p = new Person(0L);
+    p.attributes.put(Person.RACE, "dummy value to prevent NPE");
+    p.attributes.put(Person.ETHNICITY, "dummy value to prevent NPE");
+    p.attributes.put(Person.FIRST_LANGUAGE, "english");
+    p.attributes.put(Person.BIRTHDATE, 0L);
+    p.attributes.put(Person.GENDER, "F");
+
+    p.record.provider = new Provider(); // dummy
+
+    HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
+    e.provider = p.record.provider;
+
+    Code dummyCode = new Code("","","");
+
+    p.record.conditionStart(0, "Terminal Examplitis :(").codes.add(dummyCode);
+    p.record.procedure(0, "Examplotomy").codes.add(dummyCode);
+    p.record.medicationStart(0, "Examplitol", true).codes.add(dummyCode);
+
+    Bundle bundle = FhirR4.convertToFHIR(p, 0);
+
+
+    boolean foundMedications = false;
+    boolean foundProcedures = false;
+    boolean foundConditions = false;
+
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      switch (entry.getResource().getResourceType().toString()) {
+        case "Condition":
+          foundConditions = true;
+          break;
+        case "MedicationRequest":
+          foundMedications = true;
+          break;
+        case "Procedure":
+          foundProcedures = true;
+          break;
+        default:
+          // do nothing
+      }
+    }
+
+    assertFalse("MedicationRequest found but should not have been included", foundMedications);
+    assertFalse("Procedure resource found but should not have been included", foundProcedures);
+    assertTrue("Condition resource missing but should have been included", foundConditions);
   }
 }

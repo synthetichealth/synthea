@@ -108,6 +108,8 @@ public abstract class TestHelper {
     Config.set("exporter.fhir_dstu2.export", "false");
     Config.set("exporter.fhir.transaction_bundle", "false");
     Config.set("exporter.fhir.bulk_data", "false");
+    Config.set("exporter.fhir.included_resources", "");
+    Config.set("exporter.fhir.excluded_resources", "");
     Config.set("exporter.groups.fhir.export", "false");
     Config.set("exporter.hospital.fhir.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");

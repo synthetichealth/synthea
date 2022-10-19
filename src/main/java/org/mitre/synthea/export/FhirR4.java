@@ -11,9 +11,12 @@ import com.google.gson.JsonObject;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +194,56 @@ public class FhirR4 {
   private static final Table<String, String, String> US_CORE_MAPPING =
       loadMapping("us_core_mapping.csv");
 
+  private static final HashSet<String> includedResources = new HashSet<>();
+  private static final HashSet<String> excludedResources = new HashSet<>();
+
+  static {
+    reloadIncludeExclude();
+  }
+
+  static void reloadIncludeExclude() {
+    includedResources.clear();
+    excludedResources.clear();
+    String includedResourcesStr = Config.get("exporter.fhir.included_resources", "").trim();
+    String excludedResourcesStr = Config.get("exporter.fhir.excluded_resources", "").trim();
+
+    List<String> includedResourcesList = Collections.emptyList();
+    List<String> excludedResourcesList = Collections.emptyList();
+
+    if (!includedResourcesStr.isEmpty() && !excludedResourcesStr.isEmpty()) {
+      System.err.println(
+          "FHIR exporter: Included and Excluded resource settings are both set -- ignoring both");
+    } else if (!includedResourcesStr.isEmpty()) {
+      includedResourcesList = propStringToList(includedResourcesStr);
+    } else if (!excludedResourcesStr.isEmpty()) {
+      excludedResourcesList = propStringToList(excludedResourcesStr);
+    }
+
+    includedResources.addAll(includedResourcesList);
+    excludedResources.addAll(excludedResourcesList);
+  }
+
+  static boolean shouldExport(String resourceType) {
+    return (includedResources.isEmpty() || includedResources.contains(resourceType))
+            && !excludedResources.contains(resourceType);
+  }
+
+  /**
+   * Helper function to convert a string of resource type names
+   *  from synthea.properties into a list of FHIR ResourceTypes.
+   * @param propString String directly from Config, ex "Patient,Condition , Procedure"
+   * @return normalized list of filenames as strings
+   */
+  private static List<String> propStringToList(String propString) {
+    List<String> files = Arrays.asList(propString.split(","));
+    // normalize filenames by trimming
+    files = files.stream().map(f ->  f.trim()).collect(Collectors.toList());
+
+    // TODO: convert these into FHIR resource enums
+
+    return files;
+  }
+
   @SuppressWarnings("rawtypes")
   private static Map loadRaceEthnicityCodes() {
     String filename = "race_ethnicity_codes.json";
@@ -267,72 +320,105 @@ public class FhirR4 {
     for (Encounter encounter : person.record.encounters) {
       BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
 
-      for (HealthRecord.Entry condition : encounter.conditions) {
-        condition(person, personEntry, bundle, encounterEntry, condition);
+      if (shouldExport("Condition")) {
+        for (HealthRecord.Entry condition : encounter.conditions) {
+          condition(person, personEntry, bundle, encounterEntry, condition);
+        }
       }
 
-      for (HealthRecord.Allergy allergy : encounter.allergies) {
-        allergy(person, personEntry, bundle, encounterEntry, allergy);
+      if (shouldExport("AllergyIntolerance")) {
+        for (HealthRecord.Allergy allergy : encounter.allergies) {
+          allergy(person, personEntry, bundle, encounterEntry, allergy);
+        }
       }
+
+      final boolean shouldExportMedia = shouldExport("Media");
+      final boolean shouldExportObservation = shouldExport("Observation");
 
       for (Observation observation : encounter.observations) {
         // If the Observation contains an attachment, use a Media resource, since
         // Observation resources in v4 don't support Attachments
         if (observation.value instanceof Attachment) {
-          media(person, personEntry, bundle, encounterEntry, observation);
-        } else {
+          if (shouldExportMedia) {
+            media(person, personEntry, bundle, encounterEntry, observation);
+          }
+        } else if (shouldExportObservation) {
           observation(person, personEntry, bundle, encounterEntry, observation);
         }
       }
 
-      for (Procedure procedure : encounter.procedures) {
-        procedure(person, personEntry, bundle, encounterEntry, procedure);
+      if (shouldExport("Procedure")) {
+        for (Procedure procedure : encounter.procedures) {
+          procedure(person, personEntry, bundle, encounterEntry, procedure);
+        }
       }
 
-      for (HealthRecord.Device device : encounter.devices) {
-        device(person, personEntry, bundle, device);
+      if (shouldExport("Device")) {
+        for (HealthRecord.Device device : encounter.devices) {
+          device(person, personEntry, bundle, device);
+        }
       }
 
-      for (HealthRecord.Supply supply : encounter.supplies) {
-        supplyDelivery(person, personEntry, bundle, supply, encounter);
+      if (shouldExport("SupplyDelivery")) {
+        for (HealthRecord.Supply supply : encounter.supplies) {
+          supplyDelivery(person, personEntry, bundle, supply, encounter);
+        }
       }
 
-      for (Medication medication : encounter.medications) {
-        medicationRequest(person, personEntry, bundle, encounterEntry, encounter, medication);
+      if (shouldExport("MedicationRequest")) {
+        for (Medication medication : encounter.medications) {
+          medicationRequest(person, personEntry, bundle, encounterEntry, encounter, medication);
+        }
       }
 
-      for (HealthRecord.Entry immunization : encounter.immunizations) {
-        immunization(person, personEntry, bundle, encounterEntry, immunization);
+      if (shouldExport("Immunization")) {
+        for (HealthRecord.Entry immunization : encounter.immunizations) {
+          immunization(person, personEntry, bundle, encounterEntry, immunization);
+        }
       }
 
-      for (Report report : encounter.reports) {
-        report(person, personEntry, bundle, encounterEntry, report);
+      if (shouldExport("DiagnosticReport")) {
+        for (Report report : encounter.reports) {
+          report(person, personEntry, bundle, encounterEntry, report);
+        }
       }
 
-      for (CarePlan careplan : encounter.careplans) {
-        BundleEntryComponent careTeamEntry =
-                careTeam(person, personEntry, bundle, encounterEntry, careplan);
-        carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
-                careplan);
+      if (shouldExport("CarePlan")) {
+        final boolean shouldExportCareTeam = shouldExport("CareTeam");
+        for (CarePlan careplan : encounter.careplans) {
+          BundleEntryComponent careTeamEntry = null;
+
+          if (shouldExportCareTeam) {
+            careTeamEntry = careTeam(person, personEntry, bundle, encounterEntry, careplan);
+          }
+          carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
+                  careplan);
+        }
       }
 
-      for (ImagingStudy imagingStudy : encounter.imagingStudies) {
-        imagingStudy(person, personEntry, bundle, encounterEntry, imagingStudy);
+      if (shouldExport("ImagingStudy")) {
+        for (ImagingStudy imagingStudy : encounter.imagingStudies) {
+          imagingStudy(person, personEntry, bundle, encounterEntry, imagingStudy);
+        }
       }
 
-      if (USE_US_CORE_IG) {
+      if (USE_US_CORE_IG && shouldExport("DiagnosticReport")) {
         String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
         boolean lastNote =
             (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
         clinicalNote(person, personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);
       }
 
-      // one claim per encounter
-      BundleEntryComponent encounterClaim =
-          encounterClaim(person, personEntry, bundle, encounterEntry, encounter);
+      if (shouldExport("Claim")) {
+        // one claim per encounter
+        BundleEntryComponent encounterClaim =
+            encounterClaim(person, personEntry, bundle, encounterEntry, encounter);
 
-      explanationOfBenefit(personEntry, bundle, encounterEntry, person,
-          encounterClaim, encounter, encounter.claim);
+        if (shouldExport("ExplanationOfBenefit")) {
+          explanationOfBenefit(personEntry, bundle, encounterEntry, person,
+              encounterClaim, encounter, encounter.claim);
+        }
+      }
     }
 
     if (USE_US_CORE_IG) {
@@ -2075,7 +2161,7 @@ public class FhirR4 {
     CodeableConcept medicationCodeableConcept = mapCodeToCodeableConcept(code, system);
     medicationResource.setMedication(medicationCodeableConcept);
 
-    if (USE_US_CORE_IG && medication.administration) {
+    if (USE_US_CORE_IG && medication.administration && shouldExport("Medication")) {
       // Occasionally, rather than use medication codes, we want to use a Medication
       // Resource. We only want to do this when we use US Core, to make sure we
       // sometimes produce a resource for the us-core-medication profile, and the
@@ -2196,12 +2282,15 @@ public class FhirR4 {
     }
 
     BundleEntryComponent medicationEntry = newEntry(person, bundle, medicationResource);
-    // create new claim for medication
-    medicationClaim(person, personEntry, bundle, encounterEntry, encounter,
-        medication.claim, medicationEntry, medicationCodeableConcept);
+
+    if (shouldExport("Claim")) {
+      // create new claim for medication
+      medicationClaim(person, personEntry, bundle, encounterEntry, encounter,
+          medication.claim, medicationEntry, medicationCodeableConcept);
+    }
 
     // Create new administration for medication, if needed
-    if (medication.administration) {
+    if (medication.administration && shouldExport("MedicationAdministration")) {
       medicationAdministration(person, personEntry, bundle, encounterEntry, medication,
               medicationResource);
     }
@@ -2326,10 +2415,14 @@ public class FhirR4 {
     reportResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
     reportResource.setEffective(convertFhirDateTime(report.start, true));
     reportResource.setIssued(new Date(report.start));
-    for (Observation observation : report.observations) {
-      Reference reference = new Reference(observation.fullUrl);
-      reference.setDisplay(observation.codes.get(0).display);
-      reportResource.addResult(reference);
+
+    if (shouldExport("Observation")) {
+      // if observations are not exported, we can't reference them
+      for (Observation observation : report.observations) {
+        Reference reference = new Reference(observation.fullUrl);
+        reference.setDisplay(observation.codes.get(0).display);
+        reportResource.addResult(reference);
+      }
     }
 
     return newEntry(rand, bundle, reportResource);
@@ -2347,7 +2440,7 @@ public class FhirR4 {
    * @param currentNote If this is the most current note.
    * @return The entry for the DocumentReference.
    */
-  private static BundleEntryComponent clinicalNote(RandomNumberGenerator rand,
+  private static void clinicalNote(RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           String clinicalNoteText, boolean currentNote) {
     // We'll need the encounter...
@@ -2382,40 +2475,42 @@ public class FhirR4 {
         .setData(clinicalNoteText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     newEntry(rand, bundle, reportResource);
 
-    // Add a DocumentReference
-    DocumentReference documentReference = new DocumentReference();
-    if (USE_US_CORE_IG) {
-      Meta meta = new Meta();
-      meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference");
-      documentReference.setMeta(meta);
-    }
-    if (currentNote) {
-      documentReference.setStatus(DocumentReferenceStatus.CURRENT);
-    } else {
-      documentReference.setStatus(DocumentReferenceStatus.SUPERSEDED);
-    }
-    documentReference.addIdentifier()
-      .setSystem("urn:ietf:rfc:3986")
-      .setValue("urn:uuid:" + reportResource.getId());
-    documentReference.setType(reportResource.getCategoryFirstRep());
-    documentReference.addCategory(new CodeableConcept(
-        new Coding("http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
-            "clinical-note", "Clinical Note")));
-    documentReference.setSubject(new Reference(personEntry.getFullUrl()));
-    documentReference.setDate(encounter.getPeriod().getStart());
-    documentReference.addAuthor(reportResource.getPerformerFirstRep());
-    documentReference.setCustodian(encounter.getServiceProvider());
-    documentReference.addContent()
-        .setAttachment(reportResource.getPresentedFormFirstRep())
-        .setFormat(
-          new Coding("http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
-              "urn:ihe:iti:xds:2017:mimeTypeSufficient", "mimeType Sufficient"));
-    documentReference.setContext(new DocumentReferenceContextComponent()
-        .addEncounter(reportResource.getEncounter())
-        .setPeriod(encounter.getPeriod()));
+    if (shouldExport("DocumentReference")) {
+      // Add a DocumentReference
+      DocumentReference documentReference = new DocumentReference();
+      if (USE_US_CORE_IG) {
+        Meta meta = new Meta();
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference");
+        documentReference.setMeta(meta);
+      }
+      if (currentNote) {
+        documentReference.setStatus(DocumentReferenceStatus.CURRENT);
+      } else {
+        documentReference.setStatus(DocumentReferenceStatus.SUPERSEDED);
+      }
+      documentReference.addIdentifier()
+        .setSystem("urn:ietf:rfc:3986")
+        .setValue("urn:uuid:" + reportResource.getId());
+      documentReference.setType(reportResource.getCategoryFirstRep());
+      documentReference.addCategory(new CodeableConcept(
+          new Coding("http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
+              "clinical-note", "Clinical Note")));
+      documentReference.setSubject(new Reference(personEntry.getFullUrl()));
+      documentReference.setDate(encounter.getPeriod().getStart());
+      documentReference.addAuthor(reportResource.getPerformerFirstRep());
+      documentReference.setCustodian(encounter.getServiceProvider());
+      documentReference.addContent()
+          .setAttachment(reportResource.getPresentedFormFirstRep())
+          .setFormat(
+            new Coding("http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
+                "urn:ihe:iti:xds:2017:mimeTypeSufficient", "mimeType Sufficient"));
+      documentReference.setContext(new DocumentReferenceContextComponent()
+          .addEncounter(reportResource.getEncounter())
+          .setPeriod(encounter.getPeriod()));
 
-    return newEntry(rand, bundle, documentReference);
+      newEntry(rand, bundle, documentReference);
+    }
   }
 
   /**
@@ -2448,7 +2543,9 @@ public class FhirR4 {
     careplanResource.setIntent(CarePlanIntent.ORDER);
     careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
     careplanResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
-    careplanResource.addCareTeam(new Reference(careTeamEntry.getFullUrl()));
+    if (careTeamEntry != null) {
+      careplanResource.addCareTeam(new Reference(careTeamEntry.getFullUrl()));
+    }
 
     Code code = carePlan.codes.get(0);
     careplanResource.addCategory(mapCodeToCodeableConcept(code, SNOMED_URI));
