@@ -63,6 +63,14 @@ public class BB2RIFExporterTest {
       return true;
     }
 
+    /**
+     * Get one of the BFD codes for the supplied Synthea code.
+     * @param codeToMap the Synthea code to look for
+     * @param bfdCodeType the type of BFD code to map to
+     * @param rand a source of random numbers used to pick one of the list of BFD codes
+     * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+     * @return the BFD code or null if the code can't be mapped
+     */
     public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand,
         boolean stripDots) {
       if (bfdCodeType.equalsIgnoreCase("code")) {
