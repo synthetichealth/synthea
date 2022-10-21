@@ -789,12 +789,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   private boolean stillHasIncome(long time) {
     int incomeRemaining = this.coverage.incomeRemaining(time);
     boolean stillHasIncome = incomeRemaining > 0;
-    if (!stillHasIncome) {
-      // if(Config.getAsBoolean("generate.payers.income_exceeded_coverage_loss")) {
-        // Person no longer has income for the year. They will switch to No Insurance.
-        // System.out.println("YO");
+    if (!stillHasIncome
+        && Config.getAsBoolean("generate.payers.income_exceeded_coverage_loss")) {
+      // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanToNoInsurance(time);
-      // }
     }
     return stillHasIncome;
   }
