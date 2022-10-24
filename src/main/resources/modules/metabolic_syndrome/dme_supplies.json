@@ -1,0 +1,113 @@
+{
+  "name": "dme_supplies",
+  "remarks": [
+    "DME Supply module for metabolic syndrome based on sample of approximately 3/4 million CMS DME claims."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Strip Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Glucose_Test_Strips": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 50,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 337388004,
+            "display": "Blood glucose testing strips (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Even More Strips"
+    },
+    "Lancets": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 100,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 1137596000,
+            "display": "Blood lancet (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Calibrator Solution Check"
+    },
+    "Calibrator Solution": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 100,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 8537005,
+            "display": "Solution (substance)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Normal, low and high calibrator solution / chips"
+      ]
+    },
+    "Strip Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Glucose_Test_Strips",
+          "distribution": 0.7514
+        },
+        {
+          "transition": "Lancet Check",
+          "distribution": 0.24860000000000015
+        }
+      ]
+    },
+    "Lancet Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Lancets",
+          "distribution": 0.2856
+        },
+        {
+          "transition": "Calibrator Solution Check",
+          "distribution": 0.7144
+        }
+      ]
+    },
+    "Calibrator Solution Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Calibrator Solution",
+          "distribution": 0.032
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.968
+        }
+      ]
+    },
+    "Even More Strips": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Glucose_Test_Strips",
+          "distribution": 0.0303
+        },
+        {
+          "transition": "Lancet Check",
+          "distribution": 0.9697
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

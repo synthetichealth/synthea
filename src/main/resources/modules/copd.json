@@ -13,7 +13,9 @@
     "The National Health Interview Survey reports the prevalence of emphysema",
     "at 18 cases per 1000 persons and chronic bronchitis at 34 cases per 1000 persons",
     "The term COPD was first used in the 1960s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2706597/ ",
-    "the terms bronchitis and emphysema have been around longer"
+    "the terms bronchitis and emphysema have been around longer",
+    "Oxygen Concentrators: \"States also varied significantly in the number of oxygen concentrators prescribed, ranging from 0.51% to 8.20% of the local Medicare population.\" -- doi:10.1001/jamanetworkopen.2021.29967",
+    "DME based on analysis of 898K oxygen-related claim lines."
   ],
   "states": {
     "Initial": {
@@ -1029,18 +1031,28 @@
         "Ardestani ME, Abbaszadeh M. The association between forced expiratory volume in one second (FEV1) and pulse oximetric measurements of arterial oxygen saturation (SpO2) in the patients with COPD: A preliminary study. J Res Med Sci. 2014;19(3):257-261.",
         "The study may demonstrate that oxygen saturation measured by pulse oximetry appears to be independent of the degree of airways obstruction as quantified by the FEV1; although further evidence needs to be assessed these preliminary findings."
       ],
-      "conditional_transition": [
+      "complex_transition": [
         {
-          "transition": "Oxygen System",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "smoker",
             "operator": "==",
             "value": true
-          }
+          },
+          "distributions": [],
+          "transition": "Oxygen Systems"
         },
         {
-          "transition": "End_COPD_Followup_Enc1"
+          "distributions": [
+            {
+              "transition": "Oxygen Systems",
+              "distribution": 0.08
+            },
+            {
+              "transition": "End_COPD_Followup_Enc1",
+              "distribution": 0.9199999999999999
+            }
+          ]
         }
       ]
     },
@@ -1066,7 +1078,7 @@
           "display": "albuterol 5 MG/ML Inhalation Solution"
         }
       ],
-      "direct_transition": "Nebulizer",
+      "direct_transition": "End Previous Nebulizer",
       "reason": "copd_variant",
       "chronic": true,
       "prescription": {
@@ -1099,7 +1111,95 @@
         "code": 336621006,
         "display": "Oxygen concentrator (physical object)"
       },
+      "distributed_transition": [
+        {
+          "transition": "End_Portable_Oxygen_System",
+          "distribution": 0.13
+        },
+        {
+          "transition": "End_Previous_Gaseous_Oxygen",
+          "distribution": 0.35
+        },
+        {
+          "transition": "End_COPD_Followup_Enc1",
+          "distribution": 0.52
+        }
+      ]
+    },
+    "Portable_Oxygen_System": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 464173000,
+        "display": "Portable oxygen concentrator (physical object)"
+      },
       "direct_transition": "End_COPD_Followup_Enc1"
+    },
+    "Portable_Gaseous_Oxygen": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 261323006,
+        "display": "Portable oxygen cylinder (physical object)"
+      },
+      "direct_transition": "End_COPD_Followup_Enc1"
+    },
+    "Oxygen Systems": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "End_Previous_Gaseous_Oxygen",
+          "distribution": 0.073
+        },
+        {
+          "transition": "End Previous Oxygen System",
+          "distribution": 0.927
+        }
+      ]
+    },
+    "End Previous Oxygen System": {
+      "type": "DeviceEnd",
+      "direct_transition": "Oxygen System",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 336621006,
+          "display": "Oxygen concentrator (physical object)"
+        }
+      ]
+    },
+    "End_Previous_Gaseous_Oxygen": {
+      "type": "DeviceEnd",
+      "direct_transition": "Portable_Gaseous_Oxygen",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 336621006,
+          "display": "Oxygen concentrator (physical object)"
+        }
+      ]
+    },
+    "End_Portable_Oxygen_System": {
+      "type": "DeviceEnd",
+      "direct_transition": "Portable_Oxygen_System",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 464173000,
+          "display": "Portable oxygen concentrator (physical object)"
+        }
+      ]
+    },
+    "End Previous Nebulizer": {
+      "type": "DeviceEnd",
+      "direct_transition": "Nebulizer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 170615005,
+          "display": "Home nebulizer (physical object)"
+        }
+      ]
     }
   },
   "gmf_version": 1

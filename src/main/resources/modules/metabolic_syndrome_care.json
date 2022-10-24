@@ -440,7 +440,7 @@
     "Prescribe_Medications": {
       "type": "CallSubmodule",
       "submodule": "metabolic_syndrome/medications",
-      "direct_transition": "Glucose_Test_Strips"
+      "direct_transition": "DME and Supplies"
     },
     "Check_Complications": {
       "type": "Simple",
@@ -729,18 +729,9 @@
       },
       "direct_transition": "Prescribe_Medications"
     },
-    "Glucose_Test_Strips": {
-      "type": "SupplyList",
-      "supplies": [
-        {
-          "quantity": 50,
-          "code": {
-            "system": "SNOMED-CT",
-            "code": 337388004,
-            "display": "Blood glucose testing strips (physical object)"
-          }
-        }
-      ],
+    "DME and Supplies": {
+      "type": "CallSubmodule",
+      "submodule": "metabolic_syndrome/dme_supplies",
       "direct_transition": "Check_Complications"
     }
   },

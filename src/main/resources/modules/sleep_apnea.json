@@ -324,7 +324,7 @@
     },
     "End 2nd Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Wellness Encounter"
     },
     "Sleep Apnea Care Plan": {
       "type": "CarePlanStart",
@@ -379,16 +379,16 @@
             ]
           },
           "distributions": [],
-          "transition": "Home CPAP Unit"
+          "transition": "Set Device CPAP"
         },
         {
           "distributions": [
             {
-              "transition": "Home CPAP Unit",
+              "transition": "Set Device CPAP",
               "distribution": 0.8
             },
             {
-              "transition": "Intraoral Appliance",
+              "transition": "Set_Device_Oral_Appliance",
               "distribution": 0.2
             }
           ]
@@ -402,7 +402,7 @@
         "code": 272265001,
         "display": "Appliance for sleep apnea (physical object)"
       },
-      "direct_transition": "End 2nd Encounter"
+      "direct_transition": "Set Visit Count"
     },
     "Home CPAP Unit": {
       "type": "Device",
@@ -413,11 +413,11 @@
       },
       "distributed_transition": [
         {
-          "transition": "Face Mask",
+          "transition": "Oral_Mask_Supplies",
           "distribution": 0.5
         },
         {
-          "transition": "Nasal Mask",
+          "transition": "Nasal Mask Supplies",
           "distribution": 0.5
         }
       ]
@@ -584,24 +584,6 @@
       "unit": "hours",
       "direct_transition": "Sleep Apnea"
     },
-    "Nasal Mask": {
-      "type": "Device",
-      "code": {
-        "system": "SNOMED-CT",
-        "code": 442398003,
-        "display": "Nasal mask (physical object)"
-      },
-      "direct_transition": "End 2nd Encounter"
-    },
-    "Face Mask": {
-      "type": "Device",
-      "code": {
-        "system": "SNOMED-CT",
-        "code": 704718009,
-        "display": "CPAP/BPAP oral mask (physical object)"
-      },
-      "direct_transition": "End 2nd Encounter"
-    },
     "Follow Up": {
       "type": "Encounter",
       "encounter_class": "inpatient",
@@ -614,6 +596,403 @@
         }
       ],
       "direct_transition": "Return Home Sleep Device"
+    },
+    "Wellness Encounter": {
+      "type": "Encounter",
+      "reason": "",
+      "telemedicine_possibility": "none",
+      "wellness": true,
+      "direct_transition": "Assessment Check"
+    },
+    "Set Device CPAP": {
+      "type": "SetAttribute",
+      "attribute": "sleep_apnea_treatment",
+      "direct_transition": "Home CPAP Unit",
+      "value": "cpap"
+    },
+    "Set_Device_Oral_Appliance": {
+      "type": "SetAttribute",
+      "attribute": "sleep_apnea_treatment",
+      "direct_transition": "Intraoral Appliance",
+      "value": "oral_appliance"
+    },
+    "CPAP Renewal": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Stop previous CPAP unit",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_until_sleep_apnea_renewal",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "CPAP Supply Renewal"
+        }
+      ]
+    },
+    "Oral Appliance Renewal": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Stop previous oral device",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_until_sleep_apnea_renewal",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Reset Counter"
+        }
+      ]
+    },
+    "End Wellness Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wellness Encounter"
+    },
+    "Periodic Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103750000,
+          "display": "Sleep apnea assessment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "reason": "Sleep Disorder",
+      "direct_transition": "Device Renewal Check"
+    },
+    "Device Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "CPAP Renewal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sleep_apnea_treatment",
+            "operator": "==",
+            "value": "cpap"
+          }
+        },
+        {
+          "transition": "Oral Appliance Renewal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sleep_apnea_treatment",
+            "operator": "==",
+            "value": "oral_appliance"
+          }
+        },
+        {
+          "transition": "Reset Counter"
+        }
+      ]
+    },
+    "Assessment Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Periodic Assessment",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Device Renewal Check",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Set Visit Count": {
+      "type": "SetAttribute",
+      "attribute": "years_until_sleep_apnea_renewal",
+      "direct_transition": "End 2nd Encounter",
+      "value": 5
+    },
+    "Decrement Counter": {
+      "type": "Counter",
+      "attribute": "years_until_sleep_apnea_renewal",
+      "action": "decrement",
+      "direct_transition": "Device Check"
+    },
+    "Device Renewal Check": {
+      "type": "Simple",
+      "direct_transition": "Decrement Counter"
+    },
+    "Reset Counter": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Reset_Visit_Count",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_until_sleep_apnea_renewal",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End Wellness Visit"
+        }
+      ]
+    },
+    "Reset_Visit_Count": {
+      "type": "SetAttribute",
+      "attribute": "years_until_sleep_apnea_renewal",
+      "value": 5,
+      "direct_transition": "End Wellness Visit"
+    },
+    "Home_CPAP_Unit": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 702172008,
+        "display": "Home continuous positive airway pressure unit (physical object)"
+      },
+      "distributed_transition": [
+        {
+          "distribution": 0.5
+        },
+        {
+          "distribution": 0.5
+        }
+      ],
+      "direct_transition": "Stop_previous_humidifier"
+    },
+    "Intraoral_Appliance": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 272265001,
+        "display": "Appliance for sleep apnea (physical object)"
+      },
+      "direct_transition": "Reset Counter"
+    },
+    "Humidifier": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 706180003,
+        "display": "Respiratory humidifier (physical object)"
+      },
+      "direct_transition": "Set Visit Count"
+    },
+    "Nasal Mask Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 467645007,
+            "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
+          }
+        },
+        {
+          "quantity": 5,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 972002,
+            "display": "Air filter, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 463659001,
+            "display": "Medical air low pressure tubing (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 706226000,
+            "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Humidifier"
+    },
+    "Oral_Mask_Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 704718009,
+            "display": "CPAP/BPAP oral mask (physical object)"
+          }
+        },
+        {
+          "quantity": 5,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 972002,
+            "display": "Air filter, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 463659001,
+            "display": "Medical air low pressure tubing (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 706226000,
+            "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Humidifier"
+    },
+    "CPAP Supply Renewal": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Nasal_Mask_Supplies",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Oral_Mask_Supplies_2",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Nasal_Mask_Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 467645007,
+            "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
+          }
+        },
+        {
+          "quantity": 5,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 972002,
+            "display": "Air filter, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 463659001,
+            "display": "Medical air low pressure tubing (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 706226000,
+            "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Reset Counter"
+    },
+    "Oral_Mask_Supplies_2": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 704718009,
+            "display": "CPAP/BPAP oral mask (physical object)"
+          }
+        },
+        {
+          "quantity": 5,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 972002,
+            "display": "Air filter, device (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 463659001,
+            "display": "Medical air low pressure tubing (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 706226000,
+            "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Reset Counter"
+    },
+    "Humidifier_2": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 706180003,
+        "display": "Respiratory humidifier (physical object)"
+      },
+      "direct_transition": "CPAP Supply Renewal"
+    },
+    "Stop previous oral device": {
+      "type": "DeviceEnd",
+      "direct_transition": "Intraoral_Appliance",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 272265001,
+          "display": "Appliance for sleep apnea (physical object)"
+        }
+      ]
+    },
+    "Stop previous CPAP unit": {
+      "type": "DeviceEnd",
+      "direct_transition": "Home_CPAP_Unit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 702172008,
+          "display": "Home continuous positive airway pressure unit (physical object)"
+        }
+      ]
+    },
+    "Stop_previous_humidifier": {
+      "type": "DeviceEnd",
+      "direct_transition": "Humidifier_2",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 706180003,
+          "display": "Respiratory humidifier (physical object)"
+        }
+      ]
     }
   },
   "gmf_version": 2
