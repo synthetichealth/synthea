@@ -9,8 +9,8 @@
     <!--Diagnostic Results section template-->
     <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Results"/>
     <title>Diagnostic Results</title>
-    <@narrative.narrative entries=ehr_reports section="reports"/>
-    <#list ehr_reports as entry>
+    <@narrative.narrative entries=ehr_results section="reports"/>
+    <#list ehr_results as entry>
     <entry typeCode="DRIV">
       <organizer classCode="BATTERY" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2015-08-01"/>
