@@ -3058,9 +3058,6 @@ public class BB2RIFExporter {
           bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(SNF.PRVDR_NUM, encounter.provider.cmsProviderNum);
       fieldValues.put(SNF.ORG_NPI_NUM, encounter.provider.npi);
-      fieldValues.put(SNF.AT_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(SNF.OP_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(SNF.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
 
       fieldValues.put(SNF.CLM_PMT_AMT,
           String.format("%.2f", encounter.claim.getTotalCoveredCost()));
@@ -3249,6 +3246,9 @@ public class BB2RIFExporter {
         for (ConsolidatedClaimLines.ConsolidatedClaimLine lineItem:
                 consolidatedClaimLines.getLines()) {
           fieldValues.put(SNF.HCPCS_CD, lineItem.getCode());
+          fieldValues.put(SNF.AT_PHYSN_NPI, lineItem.getClinician().npi);
+          fieldValues.put(SNF.OP_PHYSN_NPI, lineItem.getClinician().npi);
+          fieldValues.put(SNF.RNDRNG_PHYSN_NPI, lineItem.getClinician().npi);
           int revCntrCount = lineItem.getCount();
           switch (lineItem.getCode()) {
             case "":
@@ -3291,6 +3291,7 @@ public class BB2RIFExporter {
         fieldValues.remove(SNF.HCPCS_CD);
         fieldValues.remove(SNF.AT_PHYSN_NPI);
         fieldValues.remove(SNF.RNDRNG_PHYSN_NPI);
+        fieldValues.remove(SNF.OP_PHYSN_NPI);
         fieldValues.put(SNF.REV_CNTR, "0001"); // Total charge
         fieldValues.remove(SNF.REV_CNTR_NDC_QTY);
         fieldValues.remove(SNF.REV_CNTR_UNIT_CNT);
