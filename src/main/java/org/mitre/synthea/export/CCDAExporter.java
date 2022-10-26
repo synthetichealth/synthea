@@ -109,6 +109,15 @@ public class CCDAExporter {
 
     person.attributes.put("ehr_vital_signs", vitalSigns);
 
+    List<Observation> surveyResults = superEncounter.observations
+            .stream()
+            .filter(vs -> vs.category != null && vs.category.equals("survey"))
+            .filter(vs -> vs.value != null && vs.value instanceof Double)
+            .collect(Collectors.toList());
+
+    // sadly, the correct plural of status is statuses and not stati
+    person.attributes.put("ehr_functional_statuses", surveyResults);
+
     person.attributes.put("ehr_results", superEncounter.reports);
 
     Observation smokingHistory = person.record.getLatestObservation("72166-2");

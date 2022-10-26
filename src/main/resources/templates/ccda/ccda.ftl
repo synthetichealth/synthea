@@ -140,6 +140,9 @@
       <#if ehr_medical_equipment?has_content>
         <#include "medical_equipment.ftl">
       </#if>
+      <#if ehr_functional_statuses?has_content>
+        <#include "functional_status.ftl">
+      </#if>
     </structuredBody>
   </component>
 </ClinicalDocument>
