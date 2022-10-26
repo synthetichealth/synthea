@@ -33,6 +33,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.LostCareHealthRecord;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -134,9 +135,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /** Only used if "lossOfCareEnabled" is true. In that case, this health record
    * contains entries that should have, but did not, occur. */
   public HealthRecord lossOfCareRecord;
-  /** Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
-   * care due to cost or lack of health insurance coverage. */
-  public static boolean lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
   /** Individual provider health records (if "hasMultipleRecords" is enabled). */
   public Map<String, HealthRecord> records;
   /** Flag that enables each provider having a different health record for each patient.
@@ -184,8 +182,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public void initializeDefaultHealthRecords() {
     this.defaultRecord = new HealthRecord(this);
     this.record = this.defaultRecord;
-    if (Person.lossOfCareEnabled) {
-      this.lossOfCareRecord = new HealthRecord(this);
+    if (LostCareHealthRecord.lossOfCareEnabled) {
+      lossOfCareRecord = new LostCareHealthRecord(this);
     }
   }
 
@@ -558,7 +556,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
     // meaning we can guarantee that they currently have no insurance.
-    if (Person.lossOfCareEnabled && !this.stillHasIncome(time)) {
+    boolean stillHasIncome = this.stillHasIncome(time);
+    if (LostCareHealthRecord.lossOfCareEnabled && !stillHasIncome) {
       return this.lossOfCareRecord;
     }
 
