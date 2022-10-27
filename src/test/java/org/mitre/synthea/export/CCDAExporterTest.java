@@ -7,13 +7,19 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.io.IOUtils;
-import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.mdht.uml.cda.util.BasicValidationHandler;
-import org.eclipse.mdht.uml.cda.util.CDAUtil;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -27,19 +33,51 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.geography.Location;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
- * Uses Model Driven Health Tools (MDHT) to validate exported CCDA R2.1.
- * https://github.com/mdht/mdht-models
+ * This is a rudimentary check of the CCDA Export. It uses XPath expressions to ensure that the
+ * mandatory sections for the Continuity of Care Document (CCD) (V3) are present as specified in
+ * HL7 Implementation Guide for CDA® Release 2: Consolidated CDA Templates for Clinical Notes
+ * Specification Version: 2.1.0.7 September 2022.
  */
 public class CCDAExporterTest {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
+  public static HashMap<String, XPathExpression> sectionExpressions = new HashMap<>();
+
+  /**
+   * Creates XPath expressions to find each mandatory section in the CCDA / CCD document.
+   * @throws XPathExpressionException should never happen
+   */
   @BeforeClass
-  public static void loadCDAUtils() {
-    CDAUtil.loadPackages();
+  public static void loadXPathExpressions() throws XPathExpressionException {
+    XPathFactory xpathFactory = XPathFactory.newInstance();
+    XPath xpath = xpathFactory.newXPath();
+    XPathExpression allergiesSection = xpath.compile("/ClinicalDocument/component/structuredBody"
+            + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.6.1\"]");
+    sectionExpressions.put("Allergies and Intolerances Section", allergiesSection);
+    XPathExpression medicationSection = xpath.compile("/ClinicalDocument/component/structuredBody"
+            + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.1.1\"]");
+    sectionExpressions.put("Medications Section", medicationSection);
+    XPathExpression problemSection = xpath.compile("/ClinicalDocument/component/structuredBody"
+            + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.5.1\"]");
+    sectionExpressions.put("Problem Section", problemSection);
+    XPathExpression resultsSection = xpath.compile("/ClinicalDocument/component/structuredBody"
+            + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.3.1\" "
+            + "and @extension=\"2015-08-01\"]");
+    sectionExpressions.put("Results Section", resultsSection);
+    XPathExpression socialHistorySection = xpath.compile("/ClinicalDocument/component"
+            + "/structuredBody/component/section"
+            + "/templateId[@root=\"2.16.840.1.113883.10.20.22.2.17\" "
+            + "and @extension=\"2015-08-01\"]");
+    sectionExpressions.put("Social History Section", socialHistorySection);
+    XPathExpression vitalSignsSection = xpath.compile("/ClinicalDocument/component/structuredBody"
+            + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.4.1\"]");
+    sectionExpressions.put("Vital Signs Section", vitalSignsSection);
   }
 
   @Test
@@ -55,20 +93,22 @@ public class CCDAExporterTest {
       Config.set("exporter.ccda.export", "true");
       String ccdaXml = CCDAExporter.export(person, System.currentTimeMillis());
       InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
-      try {
-        CDAUtil.load(inputStream, new BasicValidationHandler() {
-          public void handleError(Diagnostic diagnostic) {
-            System.out.println("ERROR: " + diagnostic.getMessage());
-            validationErrors.add(diagnostic.getMessage());
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(inputStream);
+      sectionExpressions.forEach((section, expression) -> {
+        try {
+          NodeList nodeList = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+          if (nodeList.getLength() == 0) {
+            validationErrors.add("Unable to find the " + section);
           }
-        });
-      } catch (Exception e) {
-        e.printStackTrace();
-        validationErrors.add(e.getMessage());
-      }
-      if (! validationErrors.isEmpty()) {
-        FailedExportHelper.dumpInfo("CCDA", ccdaXml, validationErrors, person);
-      }
+          if (nodeList.getLength() > 1) {
+            validationErrors.add("More than one " + section);
+          }
+        } catch (XPathExpressionException xpe) {
+          validationErrors.add("Issue trying to find the " + section + "\n" + xpe.getMessage());
+        }
+      });
       return validationErrors;
     });
 
@@ -93,17 +133,22 @@ public class CCDAExporterTest {
       toExport.attributes.remove(Person.PREFERREDYPROVIDER + "wellness");
       String ccdaXml = CCDAExporter.export(toExport, System.currentTimeMillis());
       InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
-      try {
-        CDAUtil.load(inputStream, new BasicValidationHandler() {
-          public void handleError(Diagnostic diagnostic) {
-            System.out.println("ERROR: " + diagnostic.getMessage());
-            validationErrors.add(diagnostic.getMessage());
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(inputStream);
+      sectionExpressions.forEach((section, expression) -> {
+        try {
+          NodeList nodeList = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+          if (nodeList.getLength() == 0) {
+            validationErrors.add("Unable to find the " + section);
           }
-        });
-      } catch (Exception e) {
-        e.printStackTrace();
-        validationErrors.add(e.getMessage());
-      }
+          if (nodeList.getLength() > 1) {
+            validationErrors.add("More than one " + section);
+          }
+        } catch (XPathExpressionException xpe) {
+          validationErrors.add("Issue trying to find the " + section + "\n" + xpe.getMessage());
+        }
+      });
       assertEquals(0, validationErrors.size());
     } else {
       System.out.println("There were no people generated that have wellness providers... odd.");
@@ -122,16 +167,22 @@ public class CCDAExporterTest {
       validationErrors.clear();
       String content = new String(Files.readAllBytes(failure.toPath()));
       InputStream inputStream = IOUtils.toInputStream(content, "UTF-8");
-      try {
-        CDAUtil.load(inputStream, new BasicValidationHandler() {
-          public void handleError(Diagnostic diagnostic) {
-            System.out.println("ERROR: " + diagnostic.getMessage());
-            validationErrors.add(diagnostic.getMessage());
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(inputStream);
+      sectionExpressions.forEach((section, expression) -> {
+        try {
+          NodeList nodeList = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+          if (nodeList.getLength() == 0) {
+            validationErrors.add("Unable to find the " + section);
           }
-        });
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+          if (nodeList.getLength() > 1) {
+            validationErrors.add("More than one " + section);
+          }
+        } catch (XPathExpressionException xpe) {
+          validationErrors.add("Issue trying to find the " + section + "\n" + xpe.getMessage());
+        }
+      });
       if (validationErrors.isEmpty()) {
         System.out.println("  No validation errors.");
       } else {
