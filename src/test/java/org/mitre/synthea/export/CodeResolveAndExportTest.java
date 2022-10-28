@@ -3,7 +3,6 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mitre.synthea.TestHelper.LOINC_OID;
 import static org.mitre.synthea.TestHelper.LOINC_URI;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
@@ -28,14 +27,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
@@ -59,9 +52,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class CodeResolveAndExportTest {
@@ -78,7 +68,6 @@ public class CodeResolveAndExportTest {
   private Path stu3OutputPath;
   private Path r4OutputPath;
   private Path dstu2OutputPath;
-  private Path ccdaOutputPath;
 
   @Rule
   public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
@@ -138,8 +127,6 @@ public class CodeResolveAndExportTest {
     r4OutputPath = r4OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
     File dstu2OutputDirectory = Exporter.getOutputFolder("fhir_dstu2", person);
     dstu2OutputPath = dstu2OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
-    File ccdaOutputDirectory = Exporter.getOutputFolder("ccda", person);
-    ccdaOutputPath = ccdaOutputDirectory.toPath().resolve(Exporter.filename(person, "", "xml"));
   }
 
   @Test
@@ -173,7 +160,6 @@ public class CodeResolveAndExportTest {
     verifyEncounterCodeStu3();
     verifyEncounterCodeR4();
     verifyEncounterCodeDstu2();
-    verifyEncounterCodeCcda();
   }
 
   private void verifyEncounterCodeStu3() throws IOException {
@@ -346,74 +332,6 @@ public class CodeResolveAndExportTest {
     inputStream.close();
   }
 
-  private void verifyEncounterCodeCcda()
-      throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-    InputStream inputStream = new FileInputStream(ccdaOutputPath.toFile().getAbsolutePath());
-
-    // Find the encounter reason code.
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    Document doc = builder.parse(inputStream);
-    XPathFactory xpathFactory = XPathFactory.newInstance();
-    XPath xpath = xpathFactory.newXPath();
-    XPathExpression expr = xpath.compile("/ClinicalDocument/component/structuredBody"
-        + "/component/section/entry/encounter/code");
-
-    NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    Node coding = nodeList.item(0);
-    String system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    String code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    String display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-
-    // Check the encounter reason code.
-    assertEquals("2.16.840.1.113883.6.96", system);
-    assertEquals(EXPECTED_REASON_CODE, code);
-    assertEquals(EXPECTED_REASON_DISPLAY, display);
-
-    // Find the observation type code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
-        + "/entry/organizer/component/observation/code");
-
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    coding = nodeList.item(0);
-    system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-
-    // Check the observation type code.
-    assertEquals(LOINC_OID, system);
-    assertEquals(OBSERVATION_CODE, code);
-    assertEquals(OBSERVATION_DISPLAY, display);
-
-    // Check that there are no translations for the observation type code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
-        + "/entry/organizer/component/observation/code/translation");
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(0, nodeList.getLength());
-
-    // Find the observation value code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
-        + "/entry/organizer/component/observation/value");
-
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    coding = nodeList.item(0);
-    String type = coding.getAttributes().getNamedItem("xsi:type").getNodeValue();
-    system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-    assertEquals(0, coding.getChildNodes().getLength());
-
-    // Check the observation value code.
-    assertEquals("CD", type);
-    assertEquals(LOINC_OID, system);
-    assertEquals(EXPECTED_VALUE_CODE, code);
-    assertEquals(EXPECTED_VALUE_DISPLAY, display);
-    inputStream.close();
-  }
-
   /**
    * Clean up after each test.
    */
@@ -424,7 +342,7 @@ public class CodeResolveAndExportTest {
     }
 
     List<Path> pathsToDelete =
-        Arrays.asList(stu3OutputPath, r4OutputPath, dstu2OutputPath, ccdaOutputPath);
+        Arrays.asList(stu3OutputPath, r4OutputPath, dstu2OutputPath);
     for (Path outputPath : pathsToDelete) {
       File outputFile = outputPath.toFile();
       boolean delete = outputFile.delete();

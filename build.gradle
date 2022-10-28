@@ -105,8 +105,6 @@ dependencies {
   testImplementation('junit:junit:4.13.2') {
     force = true
   }
-  testImplementation fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
-  testImplementation fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
   testImplementation 'org.mockito:mockito-core:4.7.0'
   testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
   testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'

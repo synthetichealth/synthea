@@ -103,7 +103,7 @@
       <#else>
         <#include "medications_no_current.ftl" parse=false>
       </#if>
-      <#if ehr_reports?has_content>
+      <#if ehr_results?has_content>
         <#include "results.ftl">
       <#else>
         <#include "results_no_current.ftl" parse=false>
@@ -121,7 +121,7 @@
 	    <#if ehr_encounters?has_content>
         <#include "encounters.ftl">
       </#if>
-      <#if ehr_observations?has_content>
+      <#if ehr_vital_signs?has_content>
         <#include "vital_signs.ftl">
       <#else>
         <#include "vital_signs_no_current.ftl" parse=false>
@@ -132,11 +132,6 @@
       <#if ehr_careplans?has_content>
         <#include "care_goals.ftl">
       </#if>
-      <#if ehr_imaging_studies?has_content>
-        <#include "diagnostic_imaging_reports.ftl">
-      <#else>
-        <#include "diagnostic_imaging_reports_no_current.ftl" parse=false>
-      </#if>
       <#if ehr_social_history?has_content || ehr_smoking_history?has_content>
         <#include "social_history.ftl">
       <#else>
@@ -144,6 +139,9 @@
       </#if>
       <#if ehr_medical_equipment?has_content>
         <#include "medical_equipment.ftl">
+      </#if>
+      <#if ehr_functional_statuses?has_content>
+        <#include "functional_status.ftl">
       </#if>
     </structuredBody>
   </component>

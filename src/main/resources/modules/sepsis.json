@@ -273,7 +273,7 @@
     },
     "Capillary_Refill": {
       "type": "Observation",
-      "category": "vital-signs",
+      "category": "exam",
       "unit": "",
       "codes": [
         {
