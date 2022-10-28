@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.export.rif;
 
 /**
  * A collection of enums and related that describe the structure of RIF files. Note that order

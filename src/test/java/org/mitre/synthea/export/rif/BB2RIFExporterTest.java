@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.export.rif;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,14 +32,11 @@ import org.junit.rules.TemporaryFolder;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.export.BB2RIFExporter.CodeMapper;
-import org.mitre.synthea.export.BB2RIFExporter.HICN;
-import org.mitre.synthea.export.BB2RIFExporter.MBI;
-import org.mitre.synthea.export.BB2RIFExporter.StaticFieldConfig;
-import org.mitre.synthea.export.BB2RIFStructure.BENEFICIARY;
-import org.mitre.synthea.export.BB2RIFStructure.CARRIER;
-import org.mitre.synthea.export.BB2RIFStructure.DME;
-import org.mitre.synthea.export.BB2RIFStructure.INPATIENT;
+import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.rif.BB2RIFStructure.BENEFICIARY;
+import org.mitre.synthea.export.rif.BB2RIFStructure.CARRIER;
+import org.mitre.synthea.export.rif.BB2RIFStructure.DME;
+import org.mitre.synthea.export.rif.BB2RIFStructure.INPATIENT;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
@@ -50,7 +47,7 @@ import org.mitre.synthea.world.concepts.Claim;
 
 public class BB2RIFExporterTest {
 
-  public class MockMapper extends BB2RIFExporter.CodeMapper {
+  public class MockMapper extends CodeMapper {
     public MockMapper() {
       super("MOCK_MAPPING_FILE_THAT_DOES_NOT_EXIST.JSON");
     }
@@ -393,12 +390,12 @@ public class BB2RIFExporterTest {
     rand.attributes.put(INCOME_LEVEL, "1.5");
     LocalDate start = LocalDate.of(2020, Month.MARCH, 15);
     LocalDate end = LocalDate.of(2021, Month.JUNE, 15);
-    BB2RIFExporter.PartDContractHistory history
-            = new BB2RIFExporter.PartDContractHistory(
+    PartDContractHistory history
+            = new PartDContractHistory(
                     rand, java.time.Instant.now().toEpochMilli(), 10);
-    BB2RIFExporter.PartDContractHistory.ContractPeriod period
+    PartDContractHistory.ContractPeriod period
             = history.new ContractPeriod(start, end, null,
-                    (BB2RIFExporter.PlanBenefitPackageID)null);
+                    (PlanBenefitPackageID)null);
     assertNull(period.getContractID());
 
     assertFalse(period.coversYear(2019));

@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
@@ -351,7 +352,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  static void overwriteFile(Path file, String contents) {
+  public static void overwriteFile(Path file, String contents) {
     try {
       Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE,
               StandardOpenOption.TRUNCATE_EXISTING);
@@ -365,7 +366,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  static void appendToFile(Path file, String contents) {
+  public static void appendToFile(Path file, String contents) {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
