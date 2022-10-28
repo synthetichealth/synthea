@@ -82,6 +82,16 @@
                         "display": "Closed fracture of hip"
                       }
                     ]
+                  },
+                  {
+                    "condition_type": "Active Condition",
+                    "codes": [
+                      {
+                        "system": "SNOMED-CT",
+                        "code": "64859006",
+                        "display": "Osteoporosis (disorder)"
+                      }
+                    ]
                   }
                 ]
               },

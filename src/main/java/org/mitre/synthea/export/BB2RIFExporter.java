@@ -151,6 +151,7 @@ public class BB2RIFExporter {
   CodeMapper hhaRevCntrMapper;
   private Map<String, RandomCollection<String>> externalCodes;
   private Map<Integer, Double> pdeOutOfPocketThresholds;
+  private Map<String, String> missingDmeCodes;
 
   private CMSStateCodeMapper locationMapper;
   private StaticFieldConfig staticFieldConfig;
@@ -224,6 +225,7 @@ public class BB2RIFExporter {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    missingDmeCodes = new HashMap<String, String>();
   }
 
   private Map<String, RandomCollection<String>> loadExternalCodes() {
@@ -414,6 +416,18 @@ public class BB2RIFExporter {
     FileOutputStream f = new FileOutputStream(new File(outputDir, "end_state.properties"));
     endState.store(f, "BFD Properties End State");
     f.close();
+  }
+
+  /**
+   * Display DME codes that were not mappable during export.
+   * These missing codes might be accidental, they may be intentional.
+   */
+  public void displayMissingDmeCodes() {
+    String description;
+    for (String code : missingDmeCodes.keySet()) {
+      description = missingDmeCodes.get(code);
+      System.err.println(" *** Possibly Missing DME Code: " + code + " | " + description);
+    }
   }
 
   /**
@@ -2535,9 +2549,8 @@ public class BB2RIFExporter {
             fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "");
           }
           if (!dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
-            System.err.println(" *** Possibly Missing DME Code: "
-                + lineItem.entry.codes.get(0).code
-                + " " + lineItem.entry.codes.get(0).display);
+            missingDmeCodes.put(lineItem.entry.codes.get(0).code,
+                lineItem.entry.codes.get(0).display);
             continue;
           }
           fieldValues.put(DME.CLM_FROM_DT, bb2DateFromTimestamp(lineItem.entry.start));

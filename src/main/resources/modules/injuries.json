@@ -468,7 +468,7 @@
           "display": "Chronic paralysis due to lesion of spinal cord"
         }
       ],
-      "direct_transition": "Spinal_Surgery"
+      "direct_transition": "Wheelchair for Spine"
     },
     "No_Spinal_Cord_Damage": {
       "type": "ConditionOnset",
@@ -555,7 +555,7 @@
         "cord damage and survived, his/her chronic paralysis will persist for life."
       ],
       "referenced_by_attribute": "spinal_injury",
-      "direct_transition": "End_Spinal_Injury_Followup"
+      "direct_transition": "End Wheelchair for Spine"
     },
     "End_Spinal_Injury_Followup": {
       "type": "EncounterEnd",
@@ -1280,7 +1280,16 @@
           ]
         }
       ],
-      "direct_transition": "Crutches"
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair for Ankle",
+          "distribution": 0.88
+        },
+        {
+          "transition": "Crutches",
+          "distribution": 0.12
+        }
+      ]
     },
     "Broken_Rib": {
       "type": "ConditionOnset",
@@ -1372,7 +1381,20 @@
           ]
         }
       ],
-      "direct_transition": "Broken_Bone_Surgery"
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair for Hip",
+          "distribution": 0.88
+        },
+        {
+          "transition": "Crutches_2",
+          "distribution": 0.06
+        },
+        {
+          "transition": "Walker",
+          "distribution": 0.06
+        }
+      ]
     },
     "Broken_Bone_Immobilization": {
       "type": "Procedure",
@@ -1652,7 +1674,7 @@
           "display": "Encounter for 'check-up'"
         }
       ],
-      "direct_transition": "End Crutches"
+      "direct_transition": "End DME"
     },
     "End_Broken_Bone_Injury": {
       "type": "ConditionEnd",
@@ -2769,18 +2791,8 @@
         "code": 363753007,
         "display": "Crutches (physical object)"
       },
-      "direct_transition": "Broken_Bone_Immobilization"
-    },
-    "End Crutches": {
-      "type": "DeviceEnd",
-      "direct_transition": "End_Broken_Bone_Injury",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 363753007,
-          "display": "Crutches (physical object)"
-        }
-      ]
+      "direct_transition": "Broken_Bone_Immobilization",
+      "assign_to_attribute": "injury_dme"
     },
     "SNF_0": {
       "type": "CallSubmodule",
@@ -2811,6 +2823,77 @@
       "type": "CallSubmodule",
       "submodule": "snf/skilled_nursing_facility",
       "direct_transition": "Burn_Recovery_Period"
+    },
+    "Crutches_2": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 363753007,
+        "display": "Crutches (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Surgery",
+      "assign_to_attribute": "injury_dme"
+    },
+    "Walker": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705406009,
+        "display": "Walker (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Surgery",
+      "assign_to_attribute": "injury_dme"
+    },
+    "End DME": {
+      "type": "DeviceEnd",
+      "codes": [],
+      "referenced_by_attribute": "injury_dme",
+      "conditional_transition": [
+        {
+          "transition": "End_DME",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Wheelchair for Hip"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Wheelchair for Ankle"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Broken_Bone_Injury"
+        }
+      ]
+    },
+    "Wheelchair for Ankle": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+    "Wheelchair for Hip": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+    "Wheelchair for Spine": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Spinal_Surgery"
+    },
+    "End Wheelchair for Spine": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Spinal_Injury_Followup"
+    },
+    "End_DME": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Broken_Bone_Injury"
     }
   },
   "gmf_version": 1
