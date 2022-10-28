@@ -1121,7 +1121,7 @@
           "distribution": 0.35
         },
         {
-          "transition": "End_COPD_Followup_Enc1",
+          "transition": "Wheelchair Check",
           "distribution": 0.52
         }
       ]
@@ -1133,7 +1133,7 @@
         "code": 464173000,
         "display": "Portable oxygen concentrator (physical object)"
       },
-      "direct_transition": "End_COPD_Followup_Enc1"
+      "direct_transition": "Wheelchair Check"
     },
     "Portable_Gaseous_Oxygen": {
       "type": "Device",
@@ -1142,7 +1142,7 @@
         "code": 261323006,
         "display": "Portable oxygen cylinder (physical object)"
       },
-      "direct_transition": "End_COPD_Followup_Enc1"
+      "direct_transition": "Wheelchair Check"
     },
     "Oxygen Systems": {
       "type": "Simple",
@@ -1174,8 +1174,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 336621006,
-          "display": "Oxygen concentrator (physical object)"
+          "code": 261323006,
+          "display": "Portable oxygen cylinder (physical object)"
         }
       ]
     },
@@ -1200,6 +1200,24 @@
           "display": "Home nebulizer (physical object)"
         }
       ]
+    },
+    "Wheelchair Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair",
+          "distribution": 0.02
+        },
+        {
+          "transition": "End_COPD_Followup_Enc1",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "End_COPD_Followup_Enc1"
     }
   },
   "gmf_version": 1

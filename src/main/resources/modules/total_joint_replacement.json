@@ -160,7 +160,16 @@
         "quantity": 1,
         "unit": "months"
       },
-      "direct_transition": "End_Post_Op_CarePlan"
+      "distributed_transition": [
+        {
+          "transition": "DME End",
+          "distribution": 0.99
+        },
+        {
+          "transition": "End_Post_Op_CarePlan",
+          "distribution": 0.01
+        }
+      ]
     },
     "End_Post_Op_CarePlan": {
       "type": "CarePlanEnd",
@@ -324,6 +333,16 @@
       "attribute": "home_health",
       "direct_transition": "Delay_For_Recovery",
       "value": true
+    },
+    "DME End": {
+      "type": "DeviceEnd",
+      "direct_transition": "End Wheelchair",
+      "referenced_by_attribute": "osteoarthritis_dme"
+    },
+    "End Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Post_Op_CarePlan"
     }
   },
   "gmf_version": 1
