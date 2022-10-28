@@ -3287,7 +3287,7 @@ public class BB2RIFExporter {
 
         // Add a total charge etry
         setSNFClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
-        fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine));
+        fieldValues.put(SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.remove(SNF.HCPCS_CD);
         fieldValues.remove(SNF.AT_PHYSN_NPI);
         fieldValues.remove(SNF.RNDRNG_PHYSN_NPI);
