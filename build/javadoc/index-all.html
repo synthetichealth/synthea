@@ -157,7 +157,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Set the current provider to be the supplied provider.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html#addEncounter(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">addEncounter(HealthRecord.Encounter)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Add the supplied encounter to the list managed by this instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html#addEncounter(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">addEncounter(HealthRecord.Encounter)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a></dt>
 <dd>
 <div class="block">Extend the current period to encapsulate the time bounds and costs of the supplied encounter.</div>
@@ -1178,7 +1180,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">ConsolidatedServicePeriods</span></a> - Class in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
 <dd>
-<div class="block">Utility class to group encounters separated by less than a configurable amount of time.</div>
+<div class="block">Utility class to group encounters by provider that are separated by less than a configurable
+ amount of time.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html#%3Cinit%3E(long)">ConsolidatedServicePeriods(long)</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods</a></dt>
 <dd>&nbsp;</dd>
@@ -2517,11 +2520,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
  of pocket.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getCoinsurancePaid()">getCoinsurancePaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
-<dd>
-<div class="block">Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
- of pocket.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Concepts.html#getConceptInventory(boolean)">getConceptInventory(boolean)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Concepts.html" title="class in org.mitre.synthea.helpers">Concepts</a></dt>
 <dd>
 <div class="block">Get the list of all concepts in Synthea, as a list of CSV strings.</div>
@@ -2579,8 +2577,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getCopayPaid()">getCopayPaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getCopayPaid()">getCopayPaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#getCost()">getCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>
 <div class="block">Returns the base cost of the entry.</div>
@@ -2595,10 +2591,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getCoveredCost()">getCoveredCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getCoveredCost()">getCoveredCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
-<dd>
-<div class="block">Returns the total cost that the Payer covered for this claim.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html#getCoveredExpenses()">getCoveredExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord.PlanRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCurrentEncounter(org.mitre.synthea.engine.Module)">getCurrentEncounter(Module)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -2636,8 +2628,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html#getDeductible()">getDeductible()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getDeductiblePaid()">getDeductiblePaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getDeductiblePaid()">getDeductiblePaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19Vaccine.html#getDisplay()">getDisplay()</a></span> - Method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19Vaccine.html" title="class in org.mitre.synthea.modules.covid">C19Vaccine</a></dt>
 <dd>&nbsp;</dd>
@@ -2983,10 +2973,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getPatientCost()">getPatientCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getPatientCost()">getPatientCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
-<dd>
-<div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4PatientHome.html#getPatientHome()">getPatientHome()</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export">FhirR4PatientHome</a></dt>
 <dd>
 <div class="block">Provides the one and only patient home Location.</div>
@@ -3065,6 +3051,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns the number of procedures this payer did not cover for their customers.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html#getProvider()">getProvider()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getProvider(org.mitre.synthea.world.concepts.HealthRecord.EncounterType,long)">getProvider(HealthRecord.EncounterType, long)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
 <div class="block">Get the preferred provider for the specified encounter type.</div>
@@ -3247,6 +3235,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/IoMapper.html#getTo()">getTo()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalAdjustment()">getTotalAdjustment()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getTotalClaimCost()">getTotalClaimCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the
@@ -3256,12 +3246,25 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalCoinsurancePaid()">getTotalCoinsurancePaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>
+<div class="block">Returns the amount of coinsurance paid by the patient, either via secondary insurance or out
+ of pocket.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalCopayPaid()">getTotalCopayPaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html#getTotalCost()">getTotalCost()</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html#getTotalCoverage()">getTotalCoverage()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></dt>
 <dd>
 <div class="block">Returns the total healthcare coverage for this person.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalCoveredCost()">getTotalCoveredCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>
+<div class="block">Returns the total cost that the Payer covered for this claim.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalDeductiblePaid()">getTotalDeductiblePaid()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html#getTotalExpenses()">getTotalExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></dt>
 <dd>
 <div class="block">Returns the total Healthcare expenses associated with this coverage record.</div>
@@ -3269,6 +3272,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html#getTotalHealthcareExpenses()">getTotalHealthcareExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></dt>
 <dd>
 <div class="block">Returns the total healthcare expenses for this person.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalPaidBySecondaryPayer()">getTotalPaidBySecondaryPayer()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#getTotalPatientCost()">getTotalPatientCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>
+<div class="block">Returns the total cost to the patient, including copay, coinsurance, and deductible.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html#getTotalPremiumExpenses()">getTotalPremiumExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord</a></dt>
 <dd>
@@ -5913,6 +5922,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#reports">reports</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#reset()">reset()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
+<dd>
+<div class="block">Reset all claim costs to zero.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/HealthRecordEditors.html#resetEditors()">resetEditors()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/HealthRecordEditors.html" title="class in org.mitre.synthea.engine">HealthRecordEditors</a></dt>
 <dd>
 <div class="block">Remove all registered editors.</div>

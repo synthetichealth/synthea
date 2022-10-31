@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -193,21 +193,26 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStart()">getStart</a></span>()</code></th>
+<td class="colFirst"><code><a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProvider()">getProvider</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStop()">getStop</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStart()">getStart</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStop()">getStop</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalCost()">getTotalCost</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isContiguous(org.mitre.synthea.world.concepts.HealthRecord.Encounter,long)">isContiguous</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter,
             long&nbsp;maxSeparationTime)</code></th>
@@ -326,10 +331,19 @@ extends java.lang.Object</pre>
 <a id="getTotalCost()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getTotalCost</h4>
 <pre class="methodSignature">public&nbsp;<a href="../world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a>&nbsp;getTotalCost()</pre>
+</li>
+</ul>
+<a id="getProvider()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getProvider</h4>
+<pre class="methodSignature">public&nbsp;<a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;getProvider()</pre>
 </li>
 </ul>
 </li>

@@ -133,7 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">ConsolidatedServicePeriods</span>
 extends java.lang.Object</pre>
-<div class="block">Utility class to group encounters separated by less than a configurable amount of time.</div>
+<div class="block">Utility class to group encounters by provider that are separated by less than a configurable
+ amount of time.</div>
 </li>
 </ul>
 </div>
@@ -201,7 +202,9 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addEncounter(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">addEncounter</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Add the supplied encounter to the list managed by this instance.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a>&gt;</code></td>
@@ -260,6 +263,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>addEncounter</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;addEncounter&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
+<div class="block">Add the supplied encounter to the list managed by this instance.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>encounter</code> - the encounter to add</dd>
+</dl>
 </li>
 </ul>
 <a id="getPeriods()">
@@ -269,10 +277,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getPeriods</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers">ConsolidatedServicePeriods.ConsolidatedServicePeriod</a>&gt;&nbsp;getPeriods()</pre>
-<div class="block">Create a list of consolidated service periods from the encounters previously added.</div>
+<div class="block">Create a list of consolidated service periods from the encounters previously added. Each
+ member of the list is a consolidated service period for a particular provider.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the list</dd>
+<dd>the list, sorted by period start time</dd>
 </dl>
 </li>
 </ul>
