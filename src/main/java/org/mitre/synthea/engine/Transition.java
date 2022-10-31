@@ -14,8 +14,10 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.TelemedicineConfig;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Transition represents all the transition types within the generic module
@@ -110,9 +112,10 @@ public abstract class Transition implements Serializable {
   }
 
   /**
-   * Subclass of DistributedTransition with a focus on telemedicine. Transitions may be made to
-   * three states, "ambulatory", "emergency" and "emergency". These are transformed into a
-   * DistributedTransition with weights controlled by properties in the configuration file.
+   * A transition that is based on the type of care that will follow. Transitions may be made to
+   * three states, "ambulatory", "emergency" and "emergency". The probability that a person will
+   * follow a particular transition path is based on the time in the simulation (telemedicine is
+   * more likely during and after the COVID-19 pandemic) and the type of insurance the person has.
    */
   public static class TypeOfCareTransition extends Transition {
     private String ambulatory;
@@ -120,6 +123,12 @@ public abstract class Transition implements Serializable {
     private String emergency;
     private TelemedicineConfig config;
 
+    /**
+     * Creates a new telemedicine config essentially from the JSON in GMF. This also reads in the
+     * telemedicine_config.json files which contains the different distributions to be used for
+     * transitions.
+     * @param options The states to transition to
+     */
     public TypeOfCareTransition(TypeOfCareTransitionOptions options) {
       this.ambulatory = options.ambulatory;
       this.emergency = options.emergency;
@@ -130,7 +139,13 @@ public abstract class Transition implements Serializable {
     @Override
     public String follow(Person person, long time) {
       String selectedTransition;
-      String insuranceName = person.coverage.getPayerAtTime(time).getName();
+      InsurancePlan current = person.coverage.getPlanAtTime(time);
+      String insuranceName;
+      if (current != null) {
+        insuranceName = current.getPayer().getName();
+      } else {
+        insuranceName = PayerManager.NO_INSURANCE;
+      }
       if (time < config.getTelemedicineStartTime()) {
         if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
           EnumeratedDistribution<String> preHigh = config.getPreTelemedHighEmergency();
@@ -168,8 +183,8 @@ public abstract class Transition implements Serializable {
         case TelemedicineConfig.TELEMEDICINE:
           return this.telemedicine;
         default:
-          throw new IllegalStateException("Selected transition is not ambulatory, emergency or" +
-                  "telemedicine.");
+          throw new IllegalStateException("Selected transition is not ambulatory, emergency or"
+                  + "telemedicine.");
       }
     }
   }

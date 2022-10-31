@@ -68,8 +68,7 @@ public class ExportBreakerTest {
                   + "/structuredBody"
                   + "/component/section/templateId[@root=\"2.16.840.1.113883.10.20.22.2.6.1\"]");
           NodeList nodeList = (NodeList) allergiesSection.evaluate(doc, XPathConstants.NODESET);
-          if (nodeList.getLength() != 1)
-          {
+          if (nodeList.getLength() != 1) {
             throw new IllegalStateException("Document should have an allergies section");
           }
         } catch (Exception e) {
