@@ -1,9 +1,6 @@
 package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
-import org.apache.commons.math3.util.Pair;
-import org.mitre.synthea.helpers.Utilities;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,11 +8,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.distribution.EnumeratedDistribution;
+import org.apache.commons.math3.util.Pair;
+import org.mitre.synthea.helpers.Utilities;
+
+/**
+ * Configuration that drives TypeOfCare transitions in Synthea. The concept is that an individual
+ * will seek a particular type of care (telemedicine vs. something in person) based on the time
+ * in the simulation and their insurance. Some insurance types, or lack thereof will have higher
+ * utilization of the emergency department.
+ */
 public class TelemedicineConfig {
   public static final String AMBULATORY = "ambulatory";
   public static final String EMERGENCY = "emergency";
   public static final String TELEMEDICINE = "telemedicine";
 
+  // The time in the simulation that transitions to telemedicine should start
   private long telemedicineStartTime;
   private List<String> highEmergencyUseInsuranceNames;
 
@@ -24,11 +32,19 @@ public class TelemedicineConfig {
   private EnumeratedDistribution<String> telemedHighEmergency;
   private EnumeratedDistribution<String> telemedTypicalEmergency;
 
+  /**
+   * A class to hold the transition probabilities of a given scenario. A scenario could be a person
+   * with a high ED utilization insurance plan and in the telemedicine era.
+   */
   public static class TelemedicineProbabilities {
     public double ambulatory;
     public double emergency;
     public double telemedicine;
 
+    /**
+     * Create a new object based on the Map that is pulled out of the config JSON.
+     * @param json A fragment of the config file
+     */
     public TelemedicineProbabilities(Map<String, Double> json) {
       ambulatory = json.get(AMBULATORY);
       emergency = json.get(EMERGENCY);
@@ -37,6 +53,11 @@ public class TelemedicineConfig {
       }
     }
 
+    /**
+     * Turn the configuration information into an actual EnumeratedDistribution which can be used
+     * to select transitions.
+     * @return A fully populated EnumeratedDistribution
+     */
     public EnumeratedDistribution<String> toEnumeratedDistribution() {
       List<Pair<String, Double>> pmf = new ArrayList<>();
       pmf.add(new Pair(AMBULATORY, ambulatory));
@@ -72,6 +93,10 @@ public class TelemedicineConfig {
     return telemedTypicalEmergency;
   }
 
+  /**
+   * Create an instance of TelemedicineConfig by reading it in from the JSON file in resources.
+   * @return A fully populated TelemedicineConfig object
+   */
   public static TelemedicineConfig fromJSON() {
     TelemedicineConfig config = new TelemedicineConfig();
 

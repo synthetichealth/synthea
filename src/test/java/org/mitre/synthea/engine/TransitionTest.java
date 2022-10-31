@@ -1,7 +1,6 @@
 package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,21 +9,21 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.CoverageRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 
 public class TransitionTest {
 
   private Person person;
 
+  /**
+   * Set up the test by creating a person with a coverage record.
+   */
   @Before
   public void setup() {
     person = new Person(19L); // seed chosen specifically for testDistributedTransition()
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.coverage = new CoverageRecord(person);
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(TestHelper.timestamp(2021, 1,1,0,0,0), Payer.noInsurance);
   }
 
   @Test
