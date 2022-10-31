@@ -1,0 +1,725 @@
+{
+    "name": "Maintenance Inhaler",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE MAINTENANCE INHALER",
+        "======================================================================",
+        "",
+        "This submodule prescribes a medication based on population data.",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'maintenance_inhaler'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    RxNav: https://mor.nlm.nih.gov/RxNav/",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    FDA: https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "",
+        "Made with (</>) by the CodeRx Medication Diversification Tool (MDT)",
+        "",
+        "MDT settings for this submodule:",
+        "{",
+        "    \"module\": {",
+        "        \"name\": null,",
+        "        \"assign_to_attribute\": null,",
+        "        \"reason\": \"asthma_condition\",",
+        "        \"as_needed\": false,",
+        "        \"chronic\": true,",
+        "        \"refills\": 0",
+        "    },",
+        "    \"rxclass\": {",
+        "        \"include\": [",
+        "            {",
+        "                \"class_id\": \"R01AD\",",
+        "                \"relationship\": \"ATC\"",
+        "            }",
+        "        ],",
+        "        \"exclude\": null",
+        "    },",
+        "    \"rxcui\": {",
+        "        \"include\": null,",
+        "        \"exclude\": null",
+        "    },",
+        "    \"ingredient_tty_filter\": \"IN\",",
+        "    \"dose_form_filter\": [",
+        "        \"Metered Dose Inhaler\",",
+        "        \"Dry Powder Inhaler\",",
+        "        \"Inhalation Suspension\"",
+        "    ],",
+        "    \"meps\": {",
+        "        \"age_ranges\": [",
+        "            \"0-5\",",
+        "            \"6-103\"",
+        "        ],",
+        "        \"demographic_distribution_flags\": {",
+        "            \"age\": true,",
+        "            \"gender\": false,",
+        "            \"state\": false",
+        "        }",
+        "    },",
+        "    \"state_prefix\": \"Prescribe_\",",
+        "    \"ingredient_distribution_suffix\": \"_ingredient_distribution\",",
+        "    \"product_distribution_suffix\": \"_product_distribution\",",
+        "    \"default_age_ranges\": [",
+        "        \"0-3\",",
+        "        \"4-7\",",
+        "        \"8-11\",",
+        "        \"12-17\",",
+        "        \"18-25\",",
+        "        \"26-35\",",
+        "        \"36-45\",",
+        "        \"46-65\",",
+        "        \"65-103\"",
+        "    ]",
+        "}"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "maintenance_inhaler",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 6.3% ] Beclomethasone",
+                "2. [ 27.8% ] Budesonide",
+                "3. [ 54.1% ] Fluticasone",
+                "4. [ 11.8% ] Mometasone"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Beclomethasone",
+                    "default_probability": "1",
+                    "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Budesonide",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Fluticasone",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Mometasone",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Beclomethasone": {
+            "name": "Prescribe_Beclomethasone",
+            "remarks": [
+                "======================================================================",
+                " BECLOMETHASONE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 44.7% ] Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_04_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
+                "2. [ 55.3% ] Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_08_Mg_Actuat_Metered_Dose_Inhaler_Qvar"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_04_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
+                    "default_probability": "1",
+                    "lookup_table_name": "maintenance_inhaler_beclomethasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_08_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_beclomethasone_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Budesonide": {
+            "name": "Prescribe_Budesonide",
+            "remarks": [
+                "======================================================================",
+                " BUDESONIDE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 19.5% ] 120_Actuat_Budesonide_0_18_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+                "2. [ 8.9% ] 60_Actuat_Budesonide_0_09_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+                "3. [ 9.7% ] Budesonide_0_125_Mg_Ml_Inhalation_Suspension",
+                "4. [ 10.1% ] Budesonide_0_125_Mg_Ml_Inhalation_Suspension_Pulmicort",
+                "5. [ 49.5% ] Budesonide_0_25_Mg_Ml_Inhalation_Suspension",
+                "6. [ 2.4% ] Budesonide_0_5_Mg_Ml_Inhalation_Suspension"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_120_Actuat_Budesonide_0_18_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+                    "default_probability": "1",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_60_Actuat_Budesonide_0_09_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension_Pulmicort",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Budesonide_0_25_Mg_Ml_Inhalation_Suspension",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Budesonide_0_5_Mg_Ml_Inhalation_Suspension",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Fluticasone": {
+            "name": "Prescribe_Fluticasone",
+            "remarks": [
+                "======================================================================",
+                " FLUTICASONE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 32.3% ] 120_Actuat_Fluticasone_Propionate_0_044_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                "2. [ 40.7% ] 120_Actuat_Fluticasone_Propionate_0_11_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                "3. [ 12.3% ] 120_Actuat_Fluticasone_Propionate_0_22_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                "4. [ 2.7% ] 30_Actuat_Fluticasone_Furoate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+                "5. [ 2.5% ] 30_Actuat_Fluticasone_Furoate_0_2_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+                "6. [ 3.4% ] 60_Actuat_Fluticasone_Propionate_0_05_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+                "7. [ 5.5% ] 60_Actuat_Fluticasone_Propionate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+                "8. [ 0.5% ] 60_Actuat_Fluticasone_Propionate_0_25_Mg_Actuat_Dry_Powder_Inhaler_Flovent"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_044_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                    "default_probability": "1",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_11_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_22_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_30_Actuat_Fluticasone_Furoate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_30_Actuat_Fluticasone_Furoate_0_2_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_05_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_25_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Mometasone": {
+            "name": "Prescribe_Mometasone",
+            "remarks": [
+                "======================================================================",
+                " MOMETASONE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 31.8% ] 120_Actuat_Mometasone_Furoate_0_1_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+                "2. [ 3.4% ] 120_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+                "3. [ 27.9% ] 120_Actuat_Mometasone_Furoate_0_2_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+                "4. [ 3.1% ] 14_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+                "5. [ 33.8% ] 60_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_1_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+                    "default_probability": "1",
+                    "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_2_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_14_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_60_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+                    "default_probability": "0",
+                    "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_120_Actuat_Budesonide_0_18_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort": {
+            "remarks": [
+                "======================================================================",
+                " BEGIN MEDICATION ORDER STATES                                        ",
+                "======================================================================"
+            ],
+            "name": "Prescribe_120_Actuat_Budesonide_0_18_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966524",
+                    "display": "120 ACTUAT budesonide 0.18 MG/ACTUAT Dry Powder Inhaler [Pulmicort]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Fluticasone_Propionate_0_044_Mg_Actuat_Metered_Dose_Inhaler_Flovent": {
+            "name": "Prescribe_120_Actuat_Fluticasone_Propionate_0_044_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "895996",
+                    "display": "120 ACTUAT fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Fluticasone_Propionate_0_11_Mg_Actuat_Metered_Dose_Inhaler_Flovent": {
+            "name": "Prescribe_120_Actuat_Fluticasone_Propionate_0_11_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896001",
+                    "display": "120 ACTUAT fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Fluticasone_Propionate_0_22_Mg_Actuat_Metered_Dose_Inhaler_Flovent": {
+            "name": "Prescribe_120_Actuat_Fluticasone_Propionate_0_22_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896006",
+                    "display": "120 ACTUAT fluticasone propionate 0.22 MG/ACTUAT Metered Dose Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Mometasone_Furoate_0_1_Mg_Actuat_Metered_Dose_Inhaler_Asmanex": {
+            "name": "Prescribe_120_Actuat_Mometasone_Furoate_0_1_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1536144",
+                    "display": "120 ACTUAT mometasone furoate 0.1 MG/ACTUAT Metered Dose Inhaler [Asmanex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Mometasone_Furoate_0_2_Mg_Actuat_Metered_Dose_Inhaler_Asmanex": {
+            "name": "Prescribe_120_Actuat_Mometasone_Furoate_0_2_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1536148",
+                    "display": "120 ACTUAT mometasone furoate 0.2 MG/ACTUAT Metered Dose Inhaler [Asmanex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_120_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex": {
+            "name": "Prescribe_120_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "746804",
+                    "display": "120 ACTUAT mometasone furoate 0.22 MG/ACTUAT Dry Powder Inhaler [Asmanex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_14_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex": {
+            "name": "Prescribe_14_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "746811",
+                    "display": "14 ACTUAT mometasone furoate 0.22 MG/ACTUAT Dry Powder Inhaler [Asmanex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_30_Actuat_Fluticasone_Furoate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Arnuity": {
+            "name": "Prescribe_30_Actuat_Fluticasone_Furoate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1547660",
+                    "display": "30 ACTUAT fluticasone furoate 0.1 MG/ACTUAT Dry Powder Inhaler [Arnuity]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_30_Actuat_Fluticasone_Furoate_0_2_Mg_Actuat_Dry_Powder_Inhaler_Arnuity": {
+            "name": "Prescribe_30_Actuat_Fluticasone_Furoate_0_2_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1547672",
+                    "display": "30 ACTUAT fluticasone furoate 0.2 MG/ACTUAT Dry Powder Inhaler [Arnuity]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_60_Actuat_Budesonide_0_09_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort": {
+            "name": "Prescribe_60_Actuat_Budesonide_0_09_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "966529",
+                    "display": "60 ACTUAT budesonide 0.09 MG/ACTUAT Dry Powder Inhaler [Pulmicort]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_60_Actuat_Fluticasone_Propionate_0_05_Mg_Actuat_Dry_Powder_Inhaler_Flovent": {
+            "name": "Prescribe_60_Actuat_Fluticasone_Propionate_0_05_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896019",
+                    "display": "60 ACTUAT fluticasone propionate 0.05 MG/ACTUAT Dry Powder Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_60_Actuat_Fluticasone_Propionate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Flovent": {
+            "name": "Prescribe_60_Actuat_Fluticasone_Propionate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896023",
+                    "display": "60 ACTUAT fluticasone propionate 0.1 MG/ACTUAT Dry Powder Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_60_Actuat_Fluticasone_Propionate_0_25_Mg_Actuat_Dry_Powder_Inhaler_Flovent": {
+            "name": "Prescribe_60_Actuat_Fluticasone_Propionate_0_25_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896027",
+                    "display": "60 ACTUAT fluticasone propionate 0.25 MG/ACTUAT Dry Powder Inhaler [Flovent]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_60_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex": {
+            "name": "Prescribe_60_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "746815",
+                    "display": "60 ACTUAT mometasone furoate 0.22 MG/ACTUAT Dry Powder Inhaler [Asmanex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_04_Mg_Actuat_Metered_Dose_Inhaler_Qvar": {
+            "name": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_04_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1998774",
+                    "display": "Breath-Actuated 120 ACTUAT beclomethasone dipropionate 0.04 MG/ACTUAT Metered Dose Inhaler [Qvar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_08_Mg_Actuat_Metered_Dose_Inhaler_Qvar": {
+            "name": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_08_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1998772",
+                    "display": "Breath-Actuated 120 ACTUAT beclomethasone dipropionate 0.08 MG/ACTUAT Metered Dose Inhaler [Qvar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension": {
+            "name": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349094",
+                    "display": "budesonide 0.125 MG/ML Inhalation Suspension"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension_Pulmicort": {
+            "name": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension_Pulmicort",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "616830",
+                    "display": "budesonide 0.125 MG/ML Inhalation Suspension [Pulmicort]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Budesonide_0_25_Mg_Ml_Inhalation_Suspension": {
+            "name": "Prescribe_Budesonide_0_25_Mg_Ml_Inhalation_Suspension",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "351109",
+                    "display": "budesonide 0.25 MG/ML Inhalation Suspension"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Budesonide_0_5_Mg_Ml_Inhalation_Suspension": {
+            "name": "Prescribe_Budesonide_0_5_Mg_Ml_Inhalation_Suspension",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "maintenance_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "252559",
+                    "display": "budesonide 0.5 MG/ML Inhalation Suspension"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        }
+    }
+}
