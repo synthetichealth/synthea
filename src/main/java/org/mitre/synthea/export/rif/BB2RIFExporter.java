@@ -114,6 +114,7 @@ public class BB2RIFExporter {
   final CodeMapper hhaRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
   final Map<Integer, Double> pdeOutOfPocketThresholds;
+  private Map<String, String> missingDmeCodes;
 
   final CMSStateCodeMapper locationMapper;
   final StaticFieldConfig staticFieldConfig;
@@ -164,6 +165,7 @@ public class BB2RIFExporter {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    missingDmeCodes = new HashMap<String, String>();
   }
 
   private static Map<String, RandomCollection<String>> loadExternalCodes() {
@@ -338,12 +340,26 @@ public class BB2RIFExporter {
     endState.setProperty("exporter.bfd.pde_id_start", ExporterBase.nextPdeId.toString());
     endState.setProperty("exporter.bfd.mbi_start", ExporterBase.nextMbi.toString());
     endState.setProperty("exporter.bfd.hicn_start", ExporterBase.nextHicn.toString());
-    endState.setProperty("exporter.bfd.fi_doc_cntl_num_start", ExporterBase.nextFiDocCntlNum.toString());
-    endState.setProperty("exporter.bfd.carr_clm_cntl_num_start", ExporterBase.nextCarrClmCntlNum.toString());
+    endState.setProperty("exporter.bfd.fi_doc_cntl_num_start",
+            ExporterBase.nextFiDocCntlNum.toString());
+    endState.setProperty("exporter.bfd.carr_clm_cntl_num_start",
+            ExporterBase.nextCarrClmCntlNum.toString());
     File outputDir = Exporter.getOutputFolder("bfd", null);
     FileOutputStream f = new FileOutputStream(new File(outputDir, "end_state.properties"));
     endState.store(f, "BFD Properties End State");
     f.close();
+  }
+
+  /**
+   * Display DME codes that were not mappable during export.
+   * These missing codes might be accidental, they may be intentional.
+   */
+  public void displayMissingDmeCodes() {
+    String description;
+    for (String code : missingDmeCodes.keySet()) {
+      description = missingDmeCodes.get(code);
+      System.err.println(" *** Possibly Missing DME Code: " + code + " | " + description);
+    }
   }
 
   /**
@@ -667,7 +683,8 @@ public class BB2RIFExporter {
             OUTPATIENT[] pxField = BB2RIFStructure.outpatientPxFields[i];
             fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
-            fieldValues.put(pxField[2], ExporterBase.bb2DateFromTimestamp(mappableProcedures.get(i).start));
+            fieldValues.put(pxField[2],
+                    ExporterBase.bb2DateFromTimestamp(mappableProcedures.get(i).start));
           }
         } else {
           noProcedures = true;
@@ -713,7 +730,8 @@ public class BB2RIFExporter {
           }
 
           fieldValues.put(OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(OUTPATIENT.REV_CNTR_DT, ExporterBase.bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(OUTPATIENT.REV_CNTR_DT,
+                  ExporterBase.bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(OUTPATIENT.HCPCS_CD, hcpcsCode);
           fieldValues.put(OUTPATIENT.REV_CNTR_RATE_AMT,
               String.format("%.2f", (lineItem.cost)));
@@ -731,7 +749,8 @@ public class BB2RIFExporter {
           // If claimLine still equals 1, then no line items were successfully added.
           // Add a single top-level entry.
           fieldValues.put(OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(OUTPATIENT.REV_CNTR_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
+          fieldValues.put(OUTPATIENT.REV_CNTR_DT,
+                  ExporterBase.bb2DateFromTimestamp(encounter.start));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(OUTPATIENT.HCPCS_CD, "99241");
           rifWriters.writeValues(OUTPATIENT.class, fieldValues);
@@ -780,7 +799,8 @@ public class BB2RIFExporter {
       fieldValues.put(INPATIENT.CLM_FROM_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(INPATIENT.CLM_ADMSN_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(INPATIENT.CLM_THRU_DT, ExporterBase.bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(INPATIENT.NCH_BENE_DSCHRG_DT, ExporterBase.bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(INPATIENT.NCH_BENE_DSCHRG_DT,
+              ExporterBase.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(INPATIENT.NCH_WKLY_PROC_DT,
               ExporterBase.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(INPATIENT.PRVDR_NUM, encounter.provider.cmsProviderNum);
@@ -924,7 +944,8 @@ public class BB2RIFExporter {
             INPATIENT[] pxField = BB2RIFStructure.inpatientPxFields[i];
             fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
             fieldValues.put(pxField[1], "0"); // 0=ICD10
-            fieldValues.put(pxField[2], ExporterBase.bb2DateFromTimestamp(mappableProcedures.get(i).start));
+            fieldValues.put(pxField[2],
+                    ExporterBase.bb2DateFromTimestamp(mappableProcedures.get(i).start));
           }
         } else {
           noProcedures = true;
@@ -1048,9 +1069,11 @@ public class BB2RIFExporter {
       fieldValues.put(CARRIER.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(CARRIER.CARR_CLM_CNTL_NUM, "" + carrClmId);
       fieldValues.put(CARRIER.CLM_FROM_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(CARRIER.LINE_1ST_EXPNS_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(CARRIER.LINE_1ST_EXPNS_DT,
+              ExporterBase.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(CARRIER.CLM_THRU_DT, ExporterBase.bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(CARRIER.LINE_LAST_EXPNS_DT, ExporterBase.bb2DateFromTimestamp(encounter.stop));
+      fieldValues.put(CARRIER.LINE_LAST_EXPNS_DT,
+              ExporterBase.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(CARRIER.NCH_WKLY_PROC_DT,
               ExporterBase.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(CARRIER.CARR_NUM,
@@ -1082,7 +1105,8 @@ public class BB2RIFExporter {
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
       fieldValues.put(CARRIER.TAX_NUM,
-              BeneficiaryExporter.bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+              BeneficiaryExporter.bb2TaxId(
+                      (String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
       fieldValues.put(CARRIER.LINE_SRVC_CNT, "" + encounter.claim.items.size());
       fieldValues.put(CARRIER.CARR_LINE_PRCNG_LCLTY_CD,
               getCarrier(encounter.provider.state, CARRIER.CARR_LINE_PRCNG_LCLTY_CD));
@@ -1130,7 +1154,8 @@ public class BB2RIFExporter {
 
       synchronized (rifWriters.getOrCreateWriter(CARRIER.class)) {
         int lineNum = 1;
-        CLIA cliaLab = ExporterBase.cliaLabNumbers[person.randInt(ExporterBase.cliaLabNumbers.length)];
+        CLIA cliaLab = ExporterBase.cliaLabNumbers[person.randInt(
+                ExporterBase.cliaLabNumbers.length)];
         List<ClaimEntry> allItems = new ArrayList<>();
         allItems.add(encounter.claim.mainEntry);
         allItems.addAll(encounter.claim.items);
@@ -1496,7 +1521,8 @@ public class BB2RIFExporter {
       fieldValues.put(DME.PRVDR_STATE_CD,
               locationMapper.getStateCode(encounter.provider.state));
       fieldValues.put(DME.TAX_NUM,
-              BeneficiaryExporter.bb2TaxId((String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+              BeneficiaryExporter.bb2TaxId(
+                      (String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
       fieldValues.put(DME.DMERC_LINE_PRCNG_STATE_CD,
               locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
       fieldValues.put(DME.LINE_1ST_EXPNS_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
@@ -1568,9 +1594,8 @@ public class BB2RIFExporter {
             fieldValues.put(DME.DMERC_LINE_MTUS_CNT, "");
           }
           if (!dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
-            System.err.println(" *** Possibly Missing DME Code: "
-                + lineItem.entry.codes.get(0).code
-                + " " + lineItem.entry.codes.get(0).display);
+            missingDmeCodes.put(lineItem.entry.codes.get(0).code,
+                 lineItem.entry.codes.get(0).display);
             continue;
           }
           fieldValues.put(DME.CLM_FROM_DT, ExporterBase.bb2DateFromTimestamp(lineItem.entry.start));
@@ -1661,7 +1686,8 @@ public class BB2RIFExporter {
       fieldValues.put(HHA.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(HHA.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(HHA.CLM_FROM_DT, ExporterBase.bb2DateFromTimestamp(servicePeriod.getStart()));
-      fieldValues.put(HHA.CLM_ADMSN_DT, ExporterBase.bb2DateFromTimestamp(servicePeriod.getStart()));
+      fieldValues.put(HHA.CLM_ADMSN_DT,
+              ExporterBase.bb2DateFromTimestamp(servicePeriod.getStart()));
       fieldValues.put(HHA.CLM_THRU_DT, ExporterBase.bb2DateFromTimestamp(servicePeriod.getStop()));
       fieldValues.put(HHA.NCH_WKLY_PROC_DT,
           ExporterBase.bb2DateFromTimestamp(ExportHelper.nextFriday(servicePeriod.getStop())));
@@ -1797,7 +1823,8 @@ public class BB2RIFExporter {
         setHHAClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
         fieldValues.put(HHA.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.put(HHA.REV_CNTR, HHA_TOTAL_CHARGE_REV_CNTR);
-        fieldValues.put(HHA.REV_CNTR_DT, ExporterBase.bb2DateFromTimestamp(servicePeriod.getStop()));
+        fieldValues.put(HHA.REV_CNTR_DT,
+                ExporterBase.bb2DateFromTimestamp(servicePeriod.getStop()));
         fieldValues.remove(HHA.HCPCS_CD);
         fieldValues.remove(HHA.AT_PHYSN_NPI);
         fieldValues.remove(HHA.RNDRNG_PHYSN_NPI);
@@ -1878,7 +1905,8 @@ public class BB2RIFExporter {
       fieldValues.put(HOSPICE.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(HOSPICE.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
       fieldValues.put(HOSPICE.CLM_FROM_DT, ExporterBase.bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(HOSPICE.CLM_HOSPC_START_DT_ID, ExporterBase.bb2DateFromTimestamp(encounter.start));
+      fieldValues.put(HOSPICE.CLM_HOSPC_START_DT_ID,
+              ExporterBase.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(HOSPICE.CLM_THRU_DT, ExporterBase.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(HOSPICE.NCH_WKLY_PROC_DT,
               ExporterBase.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
@@ -2001,7 +2029,8 @@ public class BB2RIFExporter {
           }
 
           fieldValues.put(HOSPICE.CLM_LINE_NUM, Integer.toString(claimLine++));
-          fieldValues.put(HOSPICE.REV_CNTR_DT, ExporterBase.bb2DateFromTimestamp(lineItem.entry.start));
+          fieldValues.put(HOSPICE.REV_CNTR_DT,
+                  ExporterBase.bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(HOSPICE.HCPCS_CD, hcpcsCode);
           fieldValues.put(HOSPICE.REV_CNTR_RATE_AMT,
               String.format("%.2f", lineItem.cost

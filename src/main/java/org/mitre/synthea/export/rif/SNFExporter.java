@@ -307,7 +307,7 @@ public class SNFExporter extends ExporterBase {
 
         // Add a total charge etry
         setSNFClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
-        fieldValues.put(BB2RIFStructure.SNF.CLM_LINE_NUM, Integer.toString(claimLine));
+        fieldValues.put(BB2RIFStructure.SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.remove(BB2RIFStructure.SNF.HCPCS_CD);
         fieldValues.remove(BB2RIFStructure.SNF.AT_PHYSN_NPI);
         fieldValues.remove(BB2RIFStructure.SNF.RNDRNG_PHYSN_NPI);

@@ -39,6 +39,11 @@ public class ExporterBase {
   static final String BB2_MBI = "BB2_MBI";
   static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
 
+  /**
+   * Remove dashes from a non-null SSN, turn null SSN into empty string.
+   * @param ssn the SSN
+   * @return formatted SSN or empty string
+   */
   public static String bb2TaxId(String ssn) {
     if (ssn != null) {
       return ssn.replaceAll("-", "");
