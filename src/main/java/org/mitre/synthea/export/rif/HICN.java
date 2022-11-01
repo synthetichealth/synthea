@@ -8,7 +8,7 @@ package org.mitre.synthea.export.rif;
  * @see <a href="https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md">
  * https://github.com/CMSgov/beneficiary-fhir-data/blob/master/apps/bfd-model/bfd-model-rif-samples/dev/design-sample-data-sets.md</a>
  */
-class HICN extends FixedLengthIdentifier {
+public class HICN extends FixedLengthIdentifier {
 
   private static final char[] START = {'T'};
   private static final char[] END = {'A'};

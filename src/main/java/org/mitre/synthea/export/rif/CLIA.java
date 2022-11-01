@@ -6,7 +6,7 @@ package org.mitre.synthea.export.rif;
  * @see <a href="https://www.cms.gov/apps/clia/clia_start.asp">
  * https://www.cms.gov/apps/clia/clia_start.asp</a>
  */
-class CLIA extends FixedLengthIdentifier {
+public class CLIA extends FixedLengthIdentifier {
 
   private static final char[][] CLIA_FORMAT = {NUMERIC, NUMERIC, ALPHA, NUMERIC, NUMERIC, NUMERIC,
     NUMERIC, NUMERIC, NUMERIC, NUMERIC};

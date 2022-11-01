@@ -22,7 +22,7 @@ class PartDContractHistory extends ContractHistory<PartDContractID> {
     super(person, stopTime, yearsOfHistory, 20, 1);
     // 1% chance of being enrolled in employer PDP if person's income is above threshold
     // TBD determine real % of employer PDP enrollment
-    employeePDP = BB2RIFExporter.getPartDCostSharingCode(person).equals("09")
+    employeePDP = PDEExporter.getPartDCostSharingCode(person).equals("09")
             && person.randInt(100) == 1;
   }
 

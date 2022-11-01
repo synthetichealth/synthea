@@ -15,7 +15,9 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 /**
  * Exporter for RIF SNF File.
  */
-public class SNFExporter extends ExporterBase {
+public class SNFExporter extends RIFExporter {
+
+  private static final long SNF_PDPM_CUTOVER = parseSimpleDate("20191001");
 
   /**
    * Construct an exporter for Skilled Nursing Facility claims.
@@ -41,26 +43,26 @@ public class SNFExporter extends ExporterBase {
     boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      if (encounter.stop < startTime || encounter.stop < exporter.claimCutoff) {
+      if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
-      if (!ExporterBase.getClaimTypes(encounter).contains(ClaimType.SNF)) {
+      if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.SNF)) {
         continue;
       }
 
       previousEmergency = encounter.type.equals(HealthRecord.EncounterType.EMERGENCY.toString());
       previousUrgent = encounter.type.equals(HealthRecord.EncounterType.URGENTCARE.toString());
 
-      long claimId = ExporterBase.nextClaimId.getAndDecrement();
-      long claimGroupId = ExporterBase.nextClaimGroupId.getAndDecrement();
-      long fiDocId = ExporterBase.nextFiDocCntlNum.getAndDecrement();
+      long claimId = RIFExporter.nextClaimId.getAndDecrement();
+      long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
+      long fiDocId = RIFExporter.nextFiDocCntlNum.getAndDecrement();
 
       fieldValues.clear();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.SNF.class, person);
 
       // The REQUIRED Fields
-      fieldValues.put(BB2RIFStructure.SNF.BENE_ID, (String) person.attributes.get(
-              ExporterBase.BB2_BENE_ID));
+      fieldValues.put(BB2RIFStructure.SNF.BENE_ID,
+              (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
       fieldValues.put(BB2RIFStructure.SNF.CLM_ID, "" + claimId);
       fieldValues.put(BB2RIFStructure.SNF.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(BB2RIFStructure.SNF.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
@@ -157,7 +159,7 @@ public class SNFExporter extends ExporterBase {
 
       // Use the active condition diagnoses to enter mapped values
       // into the diagnoses codes.
-      List<String> mappedDiagnosisCodes = exporter.getDiagnosesCodes(person, encounter.stop);
+      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
       boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
       if (!noDiagnoses) {
         int smallest = Math.min(mappedDiagnosisCodes.size(),
@@ -223,7 +225,7 @@ public class SNFExporter extends ExporterBase {
       final String PPS_MED_ADMIN_CODE = "AAA00";
       final String PDPM_MED_ADMIN_CODE = "KAGD1";
       final String PHARMACY_REV_CNTR = "0250";
-      final boolean isPDPM = encounter.start > exporter.snfPDPMCutover;
+      final boolean isPDPM = encounter.start > SNF_PDPM_CUTOVER;
       final String SNF_MED_ADMIN_CODE = isPDPM ? PDPM_MED_ADMIN_CODE : PPS_MED_ADMIN_CODE;
       final CodeMapper codeMapper = isPDPM ? exporter.snfPDPMMapper : exporter.snfPPSMapper;
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();

@@ -8,7 +8,7 @@ package org.mitre.synthea.export.rif;
  * @see <a href="https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf">
  * https://www.cms.gov/Medicare/New-Medicare-Card/Understanding-the-MBI-with-Format.pdf</a>
  */
-class MBI extends FixedLengthIdentifier {
+public class MBI extends FixedLengthIdentifier {
 
   private static final char[] FIXED = {'S'};
   private static final char[][] MBI_FORMAT = {NON_ZERO_NUMERIC, FIXED, ALPHA_NUMERIC, NUMERIC,

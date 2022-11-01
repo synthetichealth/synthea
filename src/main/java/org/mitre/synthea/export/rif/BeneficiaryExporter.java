@@ -1,20 +1,18 @@
 package org.mitre.synthea.export.rif;
 
-import static org.mitre.synthea.export.rif.BB2RIFExporter.getPartDCostSharingCode;
-import static org.mitre.synthea.export.rif.BB2RIFExporter.isBlind;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
  * Export beneficiary and beneficiary history files.
  */
-public class BeneficiaryExporter extends ExporterBase {
+public class BeneficiaryExporter extends RIFExporter {
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -43,13 +41,13 @@ public class BeneficiaryExporter extends ExporterBase {
    * @return the beneficiary ID
    * @throws IOException if something goes wrong
    */
-  public String exportBeneficiary(Person person) throws IOException {
-    String beneIdStr = Long.toString(ExporterBase.nextBeneId.getAndDecrement());
-    person.attributes.put(ExporterBase.BB2_BENE_ID, beneIdStr);
-    String hicId = ExporterBase.nextHicn.getAndUpdate((v) -> v.next()).toString();
-    person.attributes.put(ExporterBase.BB2_HIC_ID, hicId);
-    String mbiStr = ExporterBase.nextMbi.getAndUpdate((v) -> v.next()).toString();
-    person.attributes.put(ExporterBase.BB2_MBI, mbiStr);
+  public String export(Person person) throws IOException {
+    String beneIdStr = Long.toString(RIFExporter.nextBeneId.getAndDecrement());
+    person.attributes.put(RIFExporter.BB2_BENE_ID, beneIdStr);
+    String hicId = RIFExporter.nextHicn.getAndUpdate((v) -> v.next()).toString();
+    person.attributes.put(RIFExporter.BB2_HIC_ID, hicId);
+    String mbiStr = RIFExporter.nextMbi.getAndUpdate((v) -> v.next()).toString();
+    person.attributes.put(RIFExporter.BB2_MBI, mbiStr);
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
     int endYear = Utilities.getYear(stopTime);
     int endMonth = Utilities.getMonth(stopTime);
@@ -69,7 +67,7 @@ public class BeneficiaryExporter extends ExporterBase {
     PartDContractHistory partDContracts = new PartDContractHistory(person,
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     // following is also used in exportPrescription
-    person.attributes.put(ExporterBase.BB2_PARTD_CONTRACTS, partDContracts);
+    person.attributes.put(RIFExporter.BB2_PARTD_CONTRACTS, partDContracts);
 
     boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
@@ -129,7 +127,7 @@ public class BeneficiaryExporter extends ExporterBase {
       }
       long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_BIRTH_DT,
-              ExporterBase.bb2DateFromTimestamp(birthdate));
+              RIFExporter.bb2DateFromTimestamp(birthdate));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.AGE,
               String.valueOf(ageAtEndOfYear(birthdate, year)));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTA_TRMNTN_CD, "0");
@@ -139,13 +137,13 @@ public class BeneficiaryExporter extends ExporterBase {
         // record for 2005 and patient died in 2007 we don't include the death date.
         if (Utilities.getYear(deathDate) <= year) {
           fieldValues.put(BB2RIFStructure.BENEFICIARY.DEATH_DT,
-                  ExporterBase.bb2DateFromTimestamp(deathDate));
+                  RIFExporter.bb2DateFromTimestamp(deathDate));
           fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
           fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
         }
       }
       boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
-      boolean esrdThisYear = exporter.hasESRD(person, year);
+      boolean esrdThisYear = hasESRD(person, year);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
       // "0" = old age, "2" = ESRD
       if (medicareAgeThisYear) {
@@ -179,7 +177,7 @@ public class BeneficiaryExporter extends ExporterBase {
       }
 
       // TODO: make claim copay match the designated cost sharing code
-      String partDCostSharingCode = getPartDCostSharingCode(person);
+      String partDCostSharingCode = PDEExporter.getPartDCostSharingCode(person);
       int rdsMonthCount = 0;
       for (PartDContractHistory.ContractPeriod period:
               partDContracts.getContractPeriods(year)) {
@@ -215,9 +213,9 @@ public class BeneficiaryExporter extends ExporterBase {
       }
       fieldValues.put(BB2RIFStructure.BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
 
-      String dualEligibleStatusCode = exporter.getDualEligibilityCode(person, year);
+      String dualEligibleStatusCode = getDualEligibilityCode(person, year);
       String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
-              exporter.isBlind(person));
+              isBlind(person));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
       String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
@@ -240,23 +238,23 @@ public class BeneficiaryExporter extends ExporterBase {
    * @param person the person to export
    * @throws IOException if something goes wrong
    */
-  public void exportBeneficiaryHistory(Person person) throws IOException {
+  public void exportHistory(Person person) throws IOException {
     HashMap<BB2RIFStructure.BENEFICIARY_HISTORY, String> fieldValues = new HashMap<>();
 
     exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY_HISTORY.class,
             person);
 
-    String beneIdStr = (String)person.attributes.get(ExporterBase.BB2_BENE_ID);
+    String beneIdStr = (String)person.attributes.get(RIFExporter.BB2_BENE_ID);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ID, beneIdStr);
-    String hicId = (String)person.attributes.get(ExporterBase.BB2_HIC_ID);
+    String hicId = (String)person.attributes.get(RIFExporter.BB2_HIC_ID);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_CRNT_HIC_NUM, hicId);
-    String mbiStr = (String)person.attributes.get(ExporterBase.BB2_MBI);
+    String mbiStr = (String)person.attributes.get(RIFExporter.BB2_MBI);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.MBI_NUM, mbiStr);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_SEX_IDENT_CD,
             getBB2SexCode((String)person.attributes.get(Person.GENDER)));
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_BIRTH_DT,
-            ExporterBase.bb2DateFromTimestamp(birthdate));
+            RIFExporter.bb2DateFromTimestamp(birthdate));
     String zipCode = (String)person.attributes.get(Person.ZIP);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_COUNTY_CD,
             exporter.locationMapper.zipToCountyCode(zipCode));
@@ -288,7 +286,7 @@ public class BeneficiaryExporter extends ExporterBase {
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
     int year = Utilities.getYear(stopTime);
     boolean medicareAge = ageAtEndOfYear(birthdate, year) >= 65;
-    boolean esrd = exporter.hasESRD(person, year);
+    boolean esrd = hasESRD(person, year);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ESRD_IND, esrd ? "Y" : "0");
     // "0" = old age, "2" = ESRD
     if (medicareAge) {
@@ -387,4 +385,87 @@ public class BeneficiaryExporter extends ExporterBase {
     return year - Utilities.getYear(birthdate);
   }
 
+  // Income level < 0.3
+  private static final RandomCollection<String> incomeBandOneDualCodes = new RandomCollection<>();
+  // 0.3 <= Income level < 0.6
+  private static final RandomCollection<String> incomeBandTwoDualCodes = new RandomCollection<>();
+  // 0.6 <= Income level < 1.0
+  private static final RandomCollection<String> incomeBandThreeDualCodes = new RandomCollection<>();
+
+  static {
+    // Specified Low-Income Medicare Beneficiary (SLMB)-only
+    incomeBandOneDualCodes.add(1.3, "03");
+    // SLMB and full Medicaid coverage, including prescription drugs
+    incomeBandOneDualCodes.add(0.5, "04");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandOneDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandOneDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandOneDualCodes.add(0.1, "");
+
+    // QMB and full Medicaid coverage, including prescription drugs
+    incomeBandTwoDualCodes.add(8.2, "02");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandTwoDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandTwoDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandTwoDualCodes.add(0.1, "");
+
+    // Qualified Medicare Beneficiary (QMB)-only
+    incomeBandThreeDualCodes.add(2.2, "01");
+    // Qualifying individuals (QI)
+    incomeBandThreeDualCodes.add(0.8, "06");
+    // Other dual eligible (not QMB, SLMB, QWDI, or QI) with full Medicaid coverage, including
+    // prescription Drugs
+    incomeBandThreeDualCodes.add(2.9, "08");
+    // Other dual eligible, but without Medicaid coverage
+    incomeBandThreeDualCodes.add(0.007, "09");
+    // Unknown
+    incomeBandThreeDualCodes.add(0.05, "99");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.04, "AA");
+    // Not in code book but present in database
+    incomeBandThreeDualCodes.add(0.1, "");
+  }
+
+  String getDualEligibilityCode(Person person, int year) {
+    // TBD add support for the following additional code (%-age in brackets is observed
+    // frequency in CMS data):
+    // 00 (15.6%) - Not enrolled in Medicare for the month
+    String partDCostSharingCode = PDEExporter.getPartDCostSharingCode(person);
+    if (partDCostSharingCode.equals("03")) {
+      return incomeBandThreeDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("02")) {
+      return incomeBandTwoDualCodes.next(person);
+    } else if (partDCostSharingCode.equals("01")) {
+      return incomeBandOneDualCodes.next(person);
+    } else if (hasESRD(person, year) || isBlind(person)) {
+      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+    } else {
+      return "NA"; // (68.3%) Non-Medicaid
+    }
+  }
+
+  /**
+   * Determines whether the person has end stage renal disease at the end of the supplied year.
+   * @param person the person
+   * @param year the year
+   * @return true if has ESRD, false otherwise
+   */
+  private boolean hasESRD(Person person, int year) {
+    long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
+    List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
+    return mappedDiagnosisCodes.contains("N18.6");
+  }
+
+  private static boolean isBlind(Person person) {
+    return person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true);
+  }
 }
