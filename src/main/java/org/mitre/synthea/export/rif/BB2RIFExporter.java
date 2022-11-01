@@ -126,7 +126,7 @@ public class BB2RIFExporter {
         }
         data.get(primary).add(count, external);
       }
-    } catch (IOException | NumberFormatException e) {
+    } catch (Exception e) {
       if (Config.getAsBoolean("exporter.bfd.require_code_maps", true)) {
         throw new MissingResourceException(
             "Unable to read external code file 'external_codes.csv'",
