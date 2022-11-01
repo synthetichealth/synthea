@@ -96,7 +96,7 @@ public class QualityOfLifeModule extends Module {
   /**
    * Calculate the HALYs for this person, at the given time. HALYs include QALY
    * and DALY.
-   * 
+   *
    * @param person Person to calculate
    * @param stop   current timestamp
    * @return array of [daly (cumulative), qaly (cumulative), current disability
@@ -267,7 +267,7 @@ public class QualityOfLifeModule extends Module {
      * Get the weight of this disability weight based on the percentage of covered care.
      * Uses a triangular distribution where perecentageOfCoveredCare = 1.0 means all care
      * was covered and 0 means no care was covered.
-     * 
+     *
      * @param percentageOfCoveredCare the percentage of this person's care that was covered.
      * @return
      */
@@ -277,7 +277,7 @@ public class QualityOfLifeModule extends Module {
 
     /**
      * Returns a value based on a triangular distribution with high, medium, and low points.
-     * 
+     *
      * @param position the position along the triangular distribution to return.
      * @return
      */

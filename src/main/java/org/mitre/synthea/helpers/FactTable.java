@@ -27,7 +27,7 @@ public class FactTable {
   private Map<Integer,String> facts;
   /** Synchronization lock. */
   private static final Object LOCK = new Object();
-  
+
   /**
    * Create a FactTable with an ID that starts at 1
    * and increments with each new key/fact.
@@ -47,7 +47,7 @@ public class FactTable {
       this.id = new AtomicInteger(id);
     }
   }
-  
+
   /**
    * Set the column headers of the fact table.
    * @param header Column headers of the fact table.
@@ -55,7 +55,7 @@ public class FactTable {
   public void setHeader(String header) {
     this.header = header;
   }
-  
+
   /**
    * Get the ID for a fact by a key.
    * @param key The key for a fact. For example, 'M' or 'F'.
@@ -95,7 +95,7 @@ public class FactTable {
    * and returns the ID. If the key already exists,
    * the appropriate ID is returned without modifying
    * the table.
-   * 
+   *
    * @param key The key for a fact. For example, 'M' or 'F'.
    * @param fact The fact. For example, 'Male' or 'Female'.
    * @return The ID for the fact. For example, 1 or 2.
@@ -112,7 +112,7 @@ public class FactTable {
       return next;
     }
   }
-  
+
   /**
    * Write the contents of the FactTable to a file.
    * @param writer The open Writer to use to record the FactTable.

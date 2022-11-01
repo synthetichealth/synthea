@@ -49,7 +49,7 @@ public class DeathModule {
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.
-   * 
+   *
    * @return Collection of all codes and concepts this module uses
    */
   public static Collection<Code> getAllCodes() {

@@ -468,7 +468,7 @@
           "display": "Chronic paralysis due to lesion of spinal cord"
         }
       ],
-      "direct_transition": "Spinal_Surgery"
+      "direct_transition": "Wheelchair for Spine"
     },
     "No_Spinal_Cord_Damage": {
       "type": "ConditionOnset",
@@ -524,7 +524,7 @@
     },
     "End_Spinal_Injury_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Spinal_Treatment_Period"
+      "direct_transition": "SNF_0"
     },
     "Spinal_Treatment_Period": {
       "type": "Delay",
@@ -555,7 +555,7 @@
         "cord damage and survived, his/her chronic paralysis will persist for life."
       ],
       "referenced_by_attribute": "spinal_injury",
-      "direct_transition": "End_Spinal_Injury_Followup"
+      "direct_transition": "End Wheelchair for Spine"
     },
     "End_Spinal_Injury_Followup": {
       "type": "EncounterEnd",
@@ -694,7 +694,7 @@
     },
     "End_Gunshot_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Gunshot_Wound_Healing_Period"
+      "direct_transition": "SNF"
     },
     "Gunshot_Wound_Healing_Period": {
       "type": "Delay",
@@ -709,6 +709,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Gunshot_Wound",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -878,6 +879,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "concussion_injury",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -968,7 +970,7 @@
     },
     "End_Whiplash_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Whiplash_Recovery_Period"
+      "direct_transition": "SNF_1"
     },
     "Whiplash_Recovery_Period": {
       "type": "Delay",
@@ -1278,7 +1280,16 @@
           ]
         }
       ],
-      "direct_transition": "Broken_Bone_Immobilization"
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair for Ankle",
+          "distribution": 0.88
+        },
+        {
+          "transition": "Crutches",
+          "distribution": 0.12
+        }
+      ]
     },
     "Broken_Rib": {
       "type": "ConditionOnset",
@@ -1370,7 +1381,20 @@
           ]
         }
       ],
-      "direct_transition": "Broken_Bone_Surgery"
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair for Hip",
+          "distribution": 0.88
+        },
+        {
+          "transition": "Crutches_2",
+          "distribution": 0.06
+        },
+        {
+          "transition": "Walker",
+          "distribution": 0.06
+        }
+      ]
     },
     "Broken_Bone_Immobilization": {
       "type": "Procedure",
@@ -1615,7 +1639,20 @@
     },
     "End_Broken_Bone_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Broken_Bone_Recovery_Period"
+      "conditional_transition": [
+        {
+          "transition": "SNF_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "osteoporosis",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Broken_Bone_Recovery_Period"
+        }
+      ]
     },
     "Broken_Bone_Recovery_Period": {
       "type": "Delay",
@@ -1637,7 +1674,7 @@
           "display": "Encounter for 'check-up'"
         }
       ],
-      "direct_transition": "End_Broken_Bone_Injury"
+      "direct_transition": "End DME"
     },
     "End_Broken_Bone_Injury": {
       "type": "ConditionEnd",
@@ -1884,7 +1921,7 @@
     },
     "End_Burn_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Burn_Recovery_Period"
+      "direct_transition": "SNF_4"
     },
     "Burn_Recovery_Period": {
       "type": "Delay",
@@ -2193,8 +2230,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2322,8 +2359,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2460,7 +2497,7 @@
     },
     "End_Knee_Injury_Encounter_II": {
       "type": "EncounterEnd",
-      "direct_transition": "Knee_Injury_Recovery_Period"
+      "direct_transition": "SNF_3"
     },
     "Knee_Injury_Recovery_Period": {
       "type": "Delay",
@@ -2522,8 +2559,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 773513001,
+          "display": "Physiotherapy care plan (record artifact)"
         }
       ],
       "activities": [
@@ -2746,6 +2783,117 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Crutches": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 363753007,
+        "display": "Crutches (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Immobilization",
+      "assign_to_attribute": "injury_dme"
+    },
+    "SNF_0": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Spinal_Treatment_Period"
+    },
+    "SNF": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Gunshot_Wound_Healing_Period"
+    },
+    "SNF_1": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Whiplash_Recovery_Period"
+    },
+    "SNF_2": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Broken_Bone_Recovery_Period"
+    },
+    "SNF_3": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Knee_Injury_Recovery_Period"
+    },
+    "SNF_4": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Burn_Recovery_Period"
+    },
+    "Crutches_2": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 363753007,
+        "display": "Crutches (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Surgery",
+      "assign_to_attribute": "injury_dme"
+    },
+    "Walker": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705406009,
+        "display": "Walker (physical object)"
+      },
+      "direct_transition": "Broken_Bone_Surgery",
+      "assign_to_attribute": "injury_dme"
+    },
+    "End DME": {
+      "type": "DeviceEnd",
+      "codes": [],
+      "referenced_by_attribute": "injury_dme",
+      "conditional_transition": [
+        {
+          "transition": "End_DME",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Wheelchair for Hip"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Wheelchair for Ankle"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "End_Broken_Bone_Injury"
+        }
+      ]
+    },
+    "Wheelchair for Ankle": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+    "Wheelchair for Hip": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Broken_Bone_Surgery"
+    },
+    "Wheelchair for Spine": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Spinal_Surgery"
+    },
+    "End Wheelchair for Spine": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Spinal_Injury_Followup"
+    },
+    "End_DME": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Broken_Bone_Injury"
     }
   },
   "gmf_version": 1

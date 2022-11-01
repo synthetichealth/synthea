@@ -166,6 +166,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "uti",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -283,8 +284,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "869761000000107",
-          "display": "Urinary tract infection care"
+          "code": "773593000",
+          "display": "Urology care plan (record artifact)"
         }
       ],
       "activities": [
@@ -331,6 +332,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "uti",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",

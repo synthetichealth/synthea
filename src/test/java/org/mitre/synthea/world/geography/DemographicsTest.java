@@ -6,17 +6,17 @@ import com.google.common.collect.Table;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Random;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 
 public class DemographicsTest {
   public static String demographicsFile;
   public static Demographics philly;
-  public static Random random;
+  public static DefaultRandomNumberGenerator random;
 
   /**
    * Set up the demographics to use for testing.
@@ -28,7 +28,7 @@ public class DemographicsTest {
     Config.set("generate.demographics.default_file", "geography/test_demographics.csv");
     Table pa = Demographics.load("Pennsylvania");
     philly = (Demographics) pa.get("Pennsylvania", "27237");
-    random = new Random();
+    random = new DefaultRandomNumberGenerator(0);
   }
 
   @AfterClass

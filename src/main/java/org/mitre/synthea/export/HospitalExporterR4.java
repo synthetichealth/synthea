@@ -1,17 +1,11 @@
 package org.mitre.synthea.export;
 
-import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+
 import com.google.common.collect.Table;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hl7.fhir.r4.model.Bundle;
@@ -20,7 +14,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Organization;
-
+import org.hl7.fhir.r4.model.ResourceType;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Provider;
@@ -51,22 +45,29 @@ public abstract class HospitalExporterR4 {
           addHospitalExtensions(h, (Organization) entry.getResource());
         }
       }
+      // add in the patient's home location
+      FhirR4.addPatientHomeLocation(bundle);
 
-      String bundleJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
+      File outputFolder = Exporter.getOutputFolder("fhir", null);
+      IParser parser = FhirR4.getContext().newJsonParser();
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (ndjson) {
+        Path orgFilePath = outputFolder.toPath().resolve("Organization." + stop + ".ndjson");
+        Path locFilePath = outputFolder.toPath().resolve("Location." + stop + ".ndjson");
+        for (BundleEntryComponent entry : bundle.getEntry()) {
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          if (entry.getResource().getResourceType() == ResourceType.Organization) {
+            Exporter.appendToFile(orgFilePath, entryJson);
+          } else {
+            Exporter.appendToFile(locFilePath, entryJson);
+          }
+        }
+      } else {
+        parser = parser.setPrettyPrint(true);
+        Path outFilePath = outputFolder.toPath().resolve("hospitalInformation" + stop + ".json");
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Exporter.overwriteFile(outFilePath, bundleJson);
       }
     }
   }

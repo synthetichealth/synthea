@@ -1,0 +1,14 @@
+﻿condition_name,attribute,codes
+Burn Injury,burn_injury,403192003
+Bronchitis Infection,Bronchitis_Infection,185086009
+Pulmonary emphysema (disorder),copd_variant,87433001
+Cystic Fibrosis,Cystic_Fibrosis,190905008
+Chronic congestive heart failure (disorder),chf,88805009
+Gastrointenstinal Hemorage,,83628005|307296008|25349007|68162000
+Chronic Kidney Disease,,431855005|431856006|433144002|431857002
+Atopic dermatitis,dermatitis,24079001
+Idiopathic atrophic hypothyroidism,hypothyroidism,83664006
+Breast Cancer,,254837009
+Colorectal Cancer,colorectal_cancer,93761005|109838007|363406005|94260004
+Lung Cancer Condition,Lung Cancer Condition,424132000|425048006|422968005|423121009|67811000119102|67821000119109|67831000119107|67841000119103
+Prostate Cancer,prostate_cancer,126906006

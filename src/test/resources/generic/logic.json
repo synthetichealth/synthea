@@ -202,6 +202,14 @@
         "display": "Diabetes mellitus"
     }]
   },
+  "penicillinAllergyTest" : {
+    "condition_type" : "Active Allergy",
+    "codes": [{
+      "system": "RxNorm",
+      "code": "7984",
+      "display": "Penicillin V"
+    }]
+  },
   "alzheimersConditionTest" : {
     "condition_type" : "Active Condition",
     "referenced_by_attribute" : "Alzheimer's Variant"

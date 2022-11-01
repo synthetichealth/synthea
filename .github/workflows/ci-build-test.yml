@@ -3,14 +3,14 @@ on: [push, pull_request]
 jobs:
   check_java_latest:
     runs-on: ubuntu-latest
-    name: Java 15
+    name: Java 17
     
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 17
 
       - name: Gradle cache
         uses: actions/cache@v2
@@ -18,20 +18,20 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk15-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk17-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk15
+            ${{ runner.os }}-gradle-jdk17
             
       - name: Compile with Gradle
         run: ./gradlew assemble
   
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: always()
+        if: env.SLACK_WEBHOOK_URL
         with:
           status: custom
-          job_name: Java 15
-          author_name: Java 15 Build
+          job_name: Java 17
+          author_name: Java 17 Build
           fields: workflow,commit,repo,author,took
           # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
           custom_payload: |
@@ -45,16 +45,16 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   
-  check_java8:
+  check_java11:
     runs-on: ubuntu-latest
-    name: Java 8
+    name: Java 11
     
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
 
       - name: Gradle cache
         uses: actions/cache@v2
@@ -62,9 +62,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk8
+            ${{ runner.os }}-gradle-jdk11
             
       - name: Compile with Gradle
         run: ./gradlew assemble
@@ -77,11 +77,11 @@ jobs:
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: always()
+        if: env.SLACK_WEBHOOK_URL
         with:
           status: custom
-          job_name: Java 8
-          author_name: Java 8 Build/Test
+          job_name: Java 11
+          author_name: Java 11 Build/Test
           fields: workflow,commit,repo,author,took
           # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
           custom_payload: |

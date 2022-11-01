@@ -1280,6 +1280,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1381,6 +1382,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1554,7 +1556,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -1567,7 +1570,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -1580,7 +1584,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -2093,7 +2098,28 @@
         "high": 5,
         "unit": "years"
       },
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+      "distributed_transition": [
+        {
+          "transition": "Will Use Hospice",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Will Use Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "value_attribute": "breast_cancer_condition"
     }
   },
   "gmf_version": 1

@@ -3,7 +3,6 @@ package org.mitre.synthea.export;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mitre.synthea.TestHelper.LOINC_OID;
 import static org.mitre.synthea.TestHelper.LOINC_URI;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
 import static org.mitre.synthea.TestHelper.getTxRecordingSource;
@@ -24,17 +23,12 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
@@ -49,17 +43,15 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.modules.HealthInsuranceModule;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
-import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class CodeResolveAndExportTest {
@@ -76,7 +68,6 @@ public class CodeResolveAndExportTest {
   private Path stu3OutputPath;
   private Path r4OutputPath;
   private Path dstu2OutputPath;
-  private Path ccdaOutputPath;
 
   @Rule
   public WireMockRule mockTerminologyService = new WireMockRule(wiremockOptions()
@@ -98,7 +89,6 @@ public class CodeResolveAndExportTest {
     Config.set("exporter.fhir_stu3.export", "true");
     Config.set("exporter.fhir_dstu2.export", "true");
     Config.set("generate.terminology_service_url", mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
@@ -115,18 +105,21 @@ public class CodeResolveAndExportTest {
     person.attributes.put(Person.ETHNICITY, "other");
     person.attributes.put(Person.SEXUAL_ORIENTATION, "bisexual");
     person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle");
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.EDUCATION, "Middle");
 
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(person, location.randomCityName(person));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
 
-    Payer.clear();
+    PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);
     stu3OutputPath = stu3OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
@@ -134,18 +127,24 @@ public class CodeResolveAndExportTest {
     r4OutputPath = r4OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
     File dstu2OutputDirectory = Exporter.getOutputFolder("fhir_dstu2", person);
     dstu2OutputPath = dstu2OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
-    File ccdaOutputDirectory = Exporter.getOutputFolder("ccda", person);
-    ccdaOutputPath = ccdaOutputDirectory.toPath().resolve(Exporter.filename(person, "", "xml"));
   }
 
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+    // Must process health insurance from birth to encounter time to prevent null pointers.
+    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
+    while (c.getTimeInMillis() <= time) {
+      healthInsuranceModule.process(person, c.getTimeInMillis());
+      c.add(Calendar.YEAR, 1);
+    }
     Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";
     encounter.reason = new Code(SNOMED_URI, reasonCode, reasonDisplay);
-    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<418307001";
+    encounter.reason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C418307001";
     encounter.codes.add(encounter.reason);
 
     String observationDisplay = OBSERVATION_DISPLAY;
@@ -161,7 +160,6 @@ public class CodeResolveAndExportTest {
     verifyEncounterCodeStu3();
     verifyEncounterCodeR4();
     verifyEncounterCodeDstu2();
-    verifyEncounterCodeCcda();
   }
 
   private void verifyEncounterCodeStu3() throws IOException {
@@ -230,7 +228,7 @@ public class CodeResolveAndExportTest {
         .findFirst();
     assertTrue(maybeEncounterEntry.isPresent());
 
-    org.hl7.fhir.r4.model.Encounter encounterResource = 
+    org.hl7.fhir.r4.model.Encounter encounterResource =
         (org.hl7.fhir.r4.model.Encounter) maybeEncounterEntry.get().getResource();
     assertEquals(encounterResource.getReasonCode().size(), 1);
     org.hl7.fhir.r4.model.CodeableConcept encounterReason = encounterResource.getReasonCode()
@@ -243,7 +241,7 @@ public class CodeResolveAndExportTest {
     assertEquals(EXPECTED_REASON_CODE, reasonCoding.getCode());
     assertEquals(EXPECTED_REASON_DISPLAY, reasonCoding.getDisplay());
 
-    Optional<org.hl7.fhir.r4.model.Bundle.BundleEntryComponent> maybeObservationEntry = 
+    Optional<org.hl7.fhir.r4.model.Bundle.BundleEntryComponent> maybeObservationEntry =
         bundle.getEntry().stream()
         .filter(entry -> entry.getResource().getResourceType().equals(
             org.hl7.fhir.r4.model.ResourceType.Observation))
@@ -264,7 +262,7 @@ public class CodeResolveAndExportTest {
     assertEquals(OBSERVATION_DISPLAY, observationTypeCoding.getDisplay());
 
     // Find observation value code.
-    org.hl7.fhir.r4.model.CodeableConcept observationValue = 
+    org.hl7.fhir.r4.model.CodeableConcept observationValue =
         observationResource.getValueCodeableConcept();
     assertNotNull(observationValue);
     assertEquals(observationValue.getCoding().size(), 1);
@@ -279,7 +277,7 @@ public class CodeResolveAndExportTest {
 
   private void verifyEncounterCodeDstu2() throws IOException {
     InputStream inputStream = new FileInputStream(dstu2OutputPath.toFile().getAbsolutePath());
-    ca.uhn.fhir.model.dstu2.resource.Bundle bundle = 
+    ca.uhn.fhir.model.dstu2.resource.Bundle bundle =
         (ca.uhn.fhir.model.dstu2.resource.Bundle) FhirDstu2.getContext().newJsonParser()
             .parseResource(inputStream);
 
@@ -290,7 +288,7 @@ public class CodeResolveAndExportTest {
         .findFirst();
     assertTrue(maybeEncounterEntry.isPresent());
 
-    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource = 
+    ca.uhn.fhir.model.dstu2.resource.Encounter encounterResource =
         (ca.uhn.fhir.model.dstu2.resource.Encounter) maybeEncounterEntry.get().getResource();
     assertEquals(encounterResource.getReason().size(), 1);
     CodeableConceptDt encounterReason = encounterResource.getReason().get(0);
@@ -334,74 +332,6 @@ public class CodeResolveAndExportTest {
     inputStream.close();
   }
 
-  private void verifyEncounterCodeCcda()
-      throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-    InputStream inputStream = new FileInputStream(ccdaOutputPath.toFile().getAbsolutePath());
-
-    // Find the encounter reason code.
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = factory.newDocumentBuilder();
-    Document doc = builder.parse(inputStream);
-    XPathFactory xpathFactory = XPathFactory.newInstance();
-    XPath xpath = xpathFactory.newXPath();
-    XPathExpression expr = xpath.compile("/ClinicalDocument/component/structuredBody"
-        + "/component/section/entry/encounter/code");
-
-    NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    Node coding = nodeList.item(0);
-    String system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    String code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    String display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-
-    // Check the encounter reason code.
-    assertEquals("2.16.840.1.113883.6.96", system);
-    assertEquals(EXPECTED_REASON_CODE, code);
-    assertEquals(EXPECTED_REASON_DISPLAY, display);
-
-    // Find the observation type code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section" 
-        + "/entry/organizer/component/observation/code");
-
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    coding = nodeList.item(0);
-    system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-
-    // Check the observation type code.
-    assertEquals(LOINC_OID, system);
-    assertEquals(OBSERVATION_CODE, code);
-    assertEquals(OBSERVATION_DISPLAY, display);
-
-    // Check that there are no translations for the observation type code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
-        + "/entry/organizer/component/observation/code/translation");
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(0, nodeList.getLength());
-
-    // Find the observation value code.
-    expr = xpath.compile("/ClinicalDocument/component/structuredBody/component/section"
-        + "/entry/organizer/component/observation/value");
-
-    nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    assertEquals(1, nodeList.getLength());
-    coding = nodeList.item(0);
-    String type = coding.getAttributes().getNamedItem("xsi:type").getNodeValue();
-    system = coding.getAttributes().getNamedItem("codeSystem").getNodeValue();
-    code = coding.getAttributes().getNamedItem("code").getNodeValue();
-    display = coding.getAttributes().getNamedItem("displayName").getNodeValue();
-    assertEquals(0, coding.getChildNodes().getLength());
-
-    // Check the observation value code.
-    assertEquals("CD", type);
-    assertEquals(LOINC_OID, system);
-    assertEquals(EXPECTED_VALUE_CODE, code);
-    assertEquals(EXPECTED_VALUE_DISPLAY, display);
-    inputStream.close();
-  }
-
   /**
    * Clean up after each test.
    */
@@ -410,9 +340,9 @@ public class CodeResolveAndExportTest {
     if (isHttpRecordingEnabled()) {
       WireMock.stopRecording();
     }
-    
+
     List<Path> pathsToDelete =
-        Arrays.asList(stu3OutputPath, r4OutputPath, dstu2OutputPath, ccdaOutputPath);
+        Arrays.asList(stu3OutputPath, r4OutputPath, dstu2OutputPath);
     for (Path outputPath : pathsToDelete) {
       File outputFile = outputPath.toFile();
       boolean delete = outputFile.delete();

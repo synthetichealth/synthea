@@ -22,9 +22,10 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -36,7 +37,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
-import org.springframework.web.client.RestTemplate;
 
 public class ValueSetCodeResolverTest {
 
@@ -50,7 +50,7 @@ public class ValueSetCodeResolverTest {
 
   /**
    * Prepare for each test.
-   * 
+   *
    * @throws Exception
    *           on failure
    */
@@ -60,21 +60,23 @@ public class ValueSetCodeResolverTest {
       WireMock.startRecording(getTxRecordingSource());
     }
     RandomCodeGenerator.setBaseUrl(mockTerminologyService.baseUrl() + "/fhir");
-    RandomCodeGenerator.restTemplate = new RestTemplate();
 
     person = new Person(12345L);
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2014-09-25").getTime();
+    person.attributes.put(Person.BIRTHDATE, time);
 
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(person, location.randomCityName(person));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
 
-    Payer.clear();
+    PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     encounter = person.encounterStart(time, EncounterType.WELLNESS);
     String reasonCode = "275926002";
@@ -116,7 +118,7 @@ public class ValueSetCodeResolverTest {
     Code procedureType = new Code(SNOMED_URI, "236172004",
         "Nephroscopic lithotripsy of ureteric calculus");
     Code procedureReason = new Code(SNOMED_URI, "95570007", "Renal calculus");
-    procedureReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + procedureReason.code;
+    procedureReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + procedureReason.code;
     Procedure procedure = person.record.procedure(time, procedureType.display);
     procedure.reasons.add(procedureReason);
 
@@ -138,9 +140,9 @@ public class ValueSetCodeResolverTest {
   public void resolveMedicationCodes() {
     Code medicationCode = new Code(SNOMED_URI, "372756006", "Warfarin");
     Code reasonCode = new Code(SNOMED_URI, "128053003", "Deep venuous thrombosis");
-    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + reasonCode.code;
+    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + reasonCode.code;
     Code stopReason = new Code(SNOMED_URI, "401207004", "Medicine side effects present");
-    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<309298003";
+    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C309298003";
     Medication medication = person.record.medicationStart(time, medicationCode.display, false);
     medication.codes.add(medicationCode);
     medication.reasons.add(reasonCode);
@@ -170,9 +172,9 @@ public class ValueSetCodeResolverTest {
   public void resolveCodesInCarePlan() {
     Code carePlanCode = new Code(SNOMED_URI, "734163000", "Care plan");
     Code reasonCode = new Code(SNOMED_URI, "90935002", "Haemophilia");
-    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl/<64779008";
+    reasonCode.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C64779008";
     Code stopReason = new Code(SNOMED_URI, "301857004", "Finding of body region");
-    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl/<" + stopReason.code;
+    stopReason.valueSet = SNOMED_URI + "?fhir_vs=ecl%2F%3C" + stopReason.code;
     CarePlan carePlan = person.record.careplanStart(time, carePlanCode.display);
     carePlan.reasons.add(reasonCode);
     person.record.careplanEnd(time, carePlanCode.display, stopReason);
@@ -213,8 +215,9 @@ public class ValueSetCodeResolverTest {
     ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
     Person resolvedPerson = valueSetCodeResolver.resolve();
 
-    assertEquals(2, resolvedPerson.record.encounters.size());
-    Encounter resolvedEncounter = resolvedPerson.record.encounters.get(1);
+    // assertEquals(2, resolvedPerson.record.encounters.size());
+    Encounter resolvedEncounter = resolvedPerson.record.encounters.get(
+            resolvedPerson.record.encounters.size() - 1);
     assertEquals(1, resolvedEncounter.imagingStudies.size());
     ImagingStudy resolvedImagingStudy = resolvedEncounter.imagingStudies.get(0);
 
@@ -275,7 +278,7 @@ public class ValueSetCodeResolverTest {
     State mri = module.getState("Knee_MRI");
     assertTrue(mri.process(person, time));
 
-    Encounter imagingEncounter = person.record.encounters.get(1);
+    Encounter imagingEncounter = person.record.encounters.get(person.record.encounters.size() - 1);
     imagingEncounter.imagingStudies.get(0).series.get(0).instances.set(0, null);
     ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
     valueSetCodeResolver.resolve();

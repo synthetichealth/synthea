@@ -18,7 +18,7 @@ public class PhysiologyGeneratorConfig {
   private List<IoMapper> inputs;
   private List<IoMapper> outputs;
   private Map<String, Object> personAttributeDefaults;
-  
+
   /**
    * Validates that all inputs are appropriate and within bounds.
    */
@@ -100,5 +100,5 @@ public class PhysiologyGeneratorConfig {
   public void setPersonAttributeDefaults(Map<String, Object> personAttributeDefaults) {
     this.personAttributeDefaults = personAttributeDefaults;
   }
-  
+
 }

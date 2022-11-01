@@ -227,7 +227,9 @@
           "display": "Alendronic acid 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "End_Diagnosis_Encounter"
+      "direct_transition": "End_Diagnosis_Encounter",
+      "chronic": true,
+      "reason": "Diagnose_Osteoporosis"
     },
     "Terminal": {
       "type": "Terminal"

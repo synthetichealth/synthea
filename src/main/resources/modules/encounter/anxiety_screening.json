@@ -1,0 +1,214 @@
+{
+  "name": "anxiety_screening",
+  "remarks": [
+    "Basic anxiety screening pathway."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Eligibility"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Low Anxiety Score": {
+      "type": "SetAttribute",
+      "attribute": "anxiety_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 4,
+          "low": 0
+        }
+      },
+      "direct_transition": "Close Severe Diagnosis"
+    },
+    "Low Anxiety": {
+      "type": "Simple",
+      "direct_transition": "Low Anxiety Score"
+    },
+    "Has Anxiety": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Mild Anxiety Score",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Moderate Anxiety Score",
+          "distribution": 0.28
+        },
+        {
+          "transition": "Severe Anxiety Score",
+          "distribution": 0.12
+        }
+      ]
+    },
+    "GAD-7": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69737-5",
+          "display": "Generalized anxiety disorder 7 item (GAD-7)"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "70274-6",
+              "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+            }
+          ],
+          "attribute": "anxiety_screening_score"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Mild Anxiety Score": {
+      "type": "SetAttribute",
+      "attribute": "anxiety_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 9,
+          "low": 5
+        }
+      },
+      "direct_transition": "Close Severe Diagnosis"
+    },
+    "Moderate Anxiety Score": {
+      "type": "SetAttribute",
+      "attribute": "anxiety_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 14,
+          "low": 10
+        }
+      },
+      "direct_transition": "Close Severe Diagnosis"
+    },
+    "Severe Anxiety Score": {
+      "type": "SetAttribute",
+      "attribute": "anxiety_screening_score",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 21,
+          "low": 15
+        }
+      },
+      "direct_transition": "Severe Anxiety Diagnosis"
+    },
+    "Determine Anxiety Level": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Has Anxiety",
+              "distribution": 0.234
+            },
+            {
+              "transition": "Low Anxiety",
+              "distribution": 0.766
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Has Anxiety",
+              "distribution": 0.143
+            },
+            {
+              "transition": "Low Anxiety",
+              "distribution": 0.857
+            }
+          ]
+        }
+      ]
+    },
+    "Conduct Anxiety Screening": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "710841007",
+          "display": "Assessment of anxiety (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Determine Anxiety Level"
+    },
+    "Severe Anxiety Diagnosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "80583007",
+          "display": "Severe anxiety (panic) (finding"
+        }
+      ],
+      "direct_transition": "GAD-7"
+    },
+    "Close Severe Diagnosis": {
+      "type": "ConditionEnd",
+      "direct_transition": "GAD-7",
+      "condition_onset": "Severe Anxiety Diagnosis"
+    },
+    "Check Eligibility": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ptsd",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 12,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Conduct Anxiety Screening"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

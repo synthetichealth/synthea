@@ -233,20 +233,9 @@
       "direct_transition": "Prescribe_Maintenance_Inhaler"
     },
     "Prescribe_Maintenance_Inhaler": {
-      "type": "MedicationOrder",
-      "reason": "asthma_condition",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "895994",
-          "display": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
-        }
-      ],
-      "prescription": {
-        "as_needed": true
-      },
-      "direct_transition": "Prescribe_Emergency_Inhaler",
-      "chronic": true
+      "type": "CallSubmodule",
+      "submodule": "medications/maintenance_inhaler",
+      "direct_transition": "Prescribe_Emergency_Inhaler"
     },
     "Prescribe_Emergency_Inhaler": {
       "type": "MedicationOrder",
@@ -531,7 +520,7 @@
     },
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",
-      "medication_order": "Prescribe_Maintenance_Inhaler",
+      "referenced_by_attribute": "maintenance_inhaler",
       "direct_transition": "Emergency_Medication_End"
     },
     "Emergency_Medication_End": {

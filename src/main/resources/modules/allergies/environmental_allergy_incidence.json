@@ -1,0 +1,537 @@
+{
+  "name": "Environmental Allergy Incidence",
+  "remarks": [
+    "This submodule onsets various allergies and is intended to be called ",
+    "by the main allergies module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_Tree_Pollen_Allergy"
+    },
+    "Chance_of_Tree_Pollen_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " TREE POLLEN ALLERGY                                                  ",
+        "======================================================================",
+        "At present, up to 20% of children are diagnosed with a tree pollen allergy. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4098757/",
+        "In this model most of those children are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Tree_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Grass_Pollen_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.03,
+              "transition": "Tree_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.97,
+              "transition": "Chance_of_Grass_Pollen_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Tree_Pollen_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "782576004",
+          "display": "Tree pollen (substance)"
+        }
+      ],
+      "direct_transition": "Chance_of_Grass_Pollen_Allergy"
+    },
+    "Chance_of_Grass_Pollen_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " GRASS POLLEN ALLERGY                                                 ",
+        "======================================================================",
+        "At present, up to 20% of children are diagnosed with a grass pollen allergy. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4098757/",
+        "In this model most of those children are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Grass_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Pet_Dander_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.03,
+              "transition": "Grass_Pollen_Allergy"
+            },
+            {
+              "distribution": 0.97,
+              "transition": "Chance_of_Pet_Dander_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Grass_Pollen_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "256277009",
+          "display": "Grass pollen (substance)"
+        }
+      ],
+      "direct_transition": "Chance_of_Pet_Dander_Allergy"
+    },
+    "Chance_of_Pet_Dander_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PET DANDER ALLERGY                                                   ",
+        "======================================================================",
+        "At present, up to 30% of people are diagnosed with a pet dander allergy. ",
+        "Source: http://allergicliving.com/2010/07/02/pet-allergies-a-gander-at-dander/",
+        "In this model most of these people are also atopic, aligning with the ",
+        "prevalence of allergic rhinitis and asthma."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Pet_Dander_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Pet_Dander_Allergy"
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Chance_of_Dust_Mite_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Pet_Dander_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "264287008",
+          "display": "Animal dander (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.23},
+            {"level":  "none", "value":  0.77}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.2},
+            {"level":  "none", "value":  0.8}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.36},
+            {"level":  "none", "value":  0.64}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.53},
+            {"level":  "none", "value":  0.47}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.8},
+            {"level":  "none", "value":  0.19999999999999996}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Dust_Mite_Allergy"
+    },
+    "Chance_of_Dust_Mite_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " DUST MITE ALLERGY                                                    ",
+        "======================================================================",
+        "About 85% of all atopic patients have mite allergies. ",
+        "Source: https://www.ncbi.nlm.nih.gov/pubmed/12190652"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Dust_Mite_Allergy"
+            },
+            {
+              "distribution": 0.15,
+              "transition": "Chance_of_Mold_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Dust_Mite_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Chance_of_Mold_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Dust_Mite_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "260147004",
+          "display": "House dust mite (organism)"
+        }
+      ],
+      "direct_transition": "Chance_of_Mold_Allergy"
+    },
+    "Chance_of_Mold_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " MOLD ALLERGY                                                         ",
+        "======================================================================",
+        "Sensitization to mold is very common, but symptoms are usually mild.",
+        "Source: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1240910/"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Mold_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.15,
+              "transition": "Mold_Allergy"
+            },
+            {
+              "distribution": 0.85,
+              "transition": "Chance_of_Bee_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Mold_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "remarks": [
+        "Back to the American English spelling of mold."
+      ],
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "84489001",
+          "display": "Mold (organism)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "21626009", "display":  "Allergic skin rash"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.292},
+            {"level":  "none", "value":  0.70}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "76067001", "display":  "Sneezing"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.139},
+            {"level":  "none", "value":  0.86}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267101005", "display":  "Nose running"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.183},
+            {"level":  "none", "value":  0.81}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "56018004", "display":  "Wheezing"},
+          "possible_severities": [
+            {"level":  "mild", "value":  0.075},
+            {"level":  "none", "value":  0.92}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Bee_Allergy"
+    },
+    "Chance_of_Bee_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " BEE STING ALLERGY                                                    ",
+        "======================================================================",
+        "Estimates range from 1-7%. Source: ",
+        "http://www.worldallergy.org/professional/allergic_diseases_center/insect_allergy/"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Bee_Allergy"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Chance_of_Latex_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.01,
+              "transition": "Bee_Allergy"
+            },
+            {
+              "distribution": 0.99,
+              "transition": "Chance_of_Latex_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Bee_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "288328004",
+          "display": "Bee venom (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.03},
+            {"level":  "none", "value":  0.96}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.264},
+            {"level":  "none", "value":  0.73}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Latex_Allergy"
+    },
+    "Chance_of_Latex_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " LATEX ALLERGY                                                        ",
+        "======================================================================",
+        "Estimates range from 4-9%. Prevalence is especially high in healthcare ",
+        "workers and those who had frequent surgeries during childhood.",
+        "https://www.ncbi.nlm.nih.gov/pubmed/27010091"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.33,
+              "transition": "Latex_Allergy"
+            },
+            {
+              "distribution": 0.67,
+              "transition": "Environmental_Allergy_Incidence_Terminal"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Latex_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Environmental_Allergy_Incidence_Terminal"
+            }
+          ]
+        }
+      ]
+    },
+    "Latex_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "environment",
+      "target_encounter": "Allergist_Initial_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "111088007",
+          "display": "Latex (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.17},
+            {"level":  "none", "value":  0.83}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.1},
+            {"level":  "none", "value":  0.9}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.8},
+            {"level":  "none", "value":  0.19999999999999996}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.13},
+            {"level":  "none", "value":  0.87}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.06},
+            {"level":  "none", "value":  0.94}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.16},
+            {"level":  "none", "value":  0.84}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.11},
+            {"level":  "none", "value":  0.89}
+          ]
+        }
+      ],
+      "direct_transition": "Environmental_Allergy_Incidence_Terminal"
+    },
+    "Environmental_Allergy_Incidence_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -3,6 +3,9 @@ package org.mitre.synthea.world.concepts;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,21 +14,20 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 public class LossOfCareHealthRecordTest {
 
-  private Payer testPrivatePayer;
-
-  private long time;
-  private double defaultEncounterCost = Double
-      .parseDouble(Config.get("generate.costs.default_encounter_cost"));
-  private double testPrivatePayerCopay;
+  private InsurancePlan testPrivatePlan;
+  private final double defaultEncounterCost
+          = Config.getAsDouble("generate.costs.default_encounter_cost");
 
   /**
    * Setup for HealthRecord Tests.
@@ -33,26 +35,22 @@ public class LossOfCareHealthRecordTest {
   @Before
   public void setup() throws Exception {
     // Clear any Payers that may have already been statically loaded.
-    Payer.clear();
+    PayerManager.clear();
     TestHelper.loadTestProperties();
     String testState = Config.get("test_state.default", "Massachusetts");
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
-    Payer.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
-    testPrivatePayer = Payer.getPrivatePayers().get(0);
-
-    // Parse out testPrivatePayer's Copay.
-    Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
-    person.attributes.put(Person.INCOME, 1);
-    Encounter encounter = person.encounterStart(time, EncounterType.WELLNESS);
-    testPrivatePayerCopay = testPrivatePayer.determineCopay(encounter);
-
-    time = Utilities.convertCalendarYearsToTime(1900);
+    Set<Payer> privatePayers = PayerManager.getPrivatePayers();
+    Payer testPrivatePayer = privatePayers.stream().filter(payer ->
+        payer.getName().equals("Test Private Payer 1")).iterator().next();
+    testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
   }
 
   @AfterClass
@@ -63,9 +61,10 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfIncomeWithNoInsurance() {
-
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
-    person.setPayerAtTime(time, Payer.noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of encounter
@@ -91,64 +90,90 @@ public class LossOfCareHealthRecordTest {
   }
 
   @Test
-  public void personRunsOutOfIncomeDueToCopay() {
-
+  public void personRunsOutOfIncomeDueToCopayOrCoinsurance() {
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
-    person.setPayerAtTime(time, testPrivatePayer);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.01);
+    person.attributes.put(Person.GENDER, "M");
+    person.attributes.put(Person.INCOME, 1);
+    person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
+    person.setProvider(EncounterType.INPATIENT, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
-    // Set person's income to be $1 lower than the cost of 2 copays.
-    person.attributes.put(Person.INCOME, (int) (testPrivatePayerCopay * 2) - 1);
+    // Determine income
+
+    double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
+    BigDecimal patientCoinsurance = testPrivatePlan.getPatientCoinsurance();
+    Encounter dummyInpatientEncounter = person.encounterStart(time, EncounterType.INPATIENT);
+    BigDecimal planCopay = testPrivatePlan.determineCopay(dummyInpatientEncounter);
+    BigDecimal income = BigDecimal.valueOf(encounterCost).multiply(patientCoinsurance)
+        .multiply(BigDecimal.valueOf(2));
+    if (testPrivatePlan.isCopayBased()) {
+      income = planCopay.multiply(BigDecimal.valueOf(2));
+    }
+    income = income.subtract(BigDecimal.ONE);
+
+    // Set person's income to be $1 lower than the cost of 2 visits.
+    person.attributes.put(Person.INCOME, income.intValue());
 
     // First encounter is covered and copay is affordable.
-    Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter coveredEncounter1 = person.encounterStart(time, EncounterType.INPATIENT);
     coveredEncounter1.codes.add(code);
     coveredEncounter1.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person has enough income for one more copay.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounter1));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounter1));
 
     // Second encounter is covered and copay is affordable.
-    Encounter coveredEncounter2 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter coveredEncounter2 = person.encounterStart(time, EncounterType.INPATIENT);
     coveredEncounter2.codes.add(code);
     coveredEncounter2.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person is in debt $1. They should switch to no insurance not recieve any further care.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounter2));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounter2));
 
     // Third encounter is uncovered and unaffordable.
-    Encounter uncoveredEncounter3 = person.encounterStart(time, EncounterType.WELLNESS);
+    Encounter uncoveredEncounter3 = person.encounterStart(time, EncounterType.INPATIENT);
     uncoveredEncounter3.codes.add(code);
     uncoveredEncounter3.provider = new Provider();
-    person.record.encounterEnd(time, EncounterType.WELLNESS);
+    person.record.encounterEnd(time, EncounterType.INPATIENT);
     // Person should have this record in the uncoveredHealthRecord.
     assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounter3));
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounter3));
     // Person should now have no insurance.
-    assertTrue(person.getPayerAtTime(time).equals(Payer.noInsurance));
+    assertTrue(person.coverage.getPlanAtTime(time)
+        .equals(PayerManager.getNoInsurancePlan()));
   }
 
   @Test
   public void personRunsOutOfIncomeDueToMonthlyPremium() {
-
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
-    person.setPayerAtTime(time, testPrivatePayer);
+    person.attributes.put(Person.GENDER, "F");
+    person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of 8 monthly premiums.
-    person.attributes.put(Person.INCOME, (int) (testPrivatePayer.payMonthlyPremium() * 8) - 1);
+    person.attributes.put(Person.INCOME, testPrivatePlan.getMonthlyPremium()
+            .multiply(BigDecimal.valueOf(8))
+            .subtract(BigDecimal.ONE).intValue());
 
     // Pay monthly premium 8 times.
-    long oneMonth = Utilities.convertTime("months", 1);
+    long oneMonth = Utilities.convertTime("years", 1) / 12;
+    long currTime = time;
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     for (int i = 0; i < 8; i++) {
-      healthInsuranceModule.process(person, time + (oneMonth * i));
+      currTime += oneMonth;
+      healthInsuranceModule.process(person, currTime);
     }
     // Person should now have no insurance.
-    assertTrue(person.getPayerAtTime(time).equals(Payer.noInsurance));
+    assertTrue("Person should have no insurance but has "
+        + person.coverage.getPlanAtTime(currTime).getPayer().getName()
+        + ".", person.coverage.getPlanAtTime(currTime)
+        .equals(PayerManager.getNoInsurancePlan()));
 
     // Encounter is uncovered and unaffordable.
     Encounter uncoveredEncounter3
@@ -163,22 +188,21 @@ public class LossOfCareHealthRecordTest {
 
   @Test
   public void personRunsOutOfCurrentYearIncomeThenNextYearBegins() {
-
+    long time = Utilities.convertCalendarYearsToTime(1900);
     Person person = new Person(0L);
-    person.setPayerAtTime(time, Payer.noInsurance);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.coverage.setPlanToNoInsurance(time);
     person.setProvider(EncounterType.WELLNESS, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of an encounter.
     person.attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
-    // Set person's birthdate
-    person.attributes.put(Person.BIRTHDATE, time);
 
     // First encounter of current year is uncovered but affordable.
     Encounter coveredEncounterYearOne = person.encounterStart(time, EncounterType.WELLNESS);
     coveredEncounterYearOne.codes.add(code);
     coveredEncounterYearOne.provider = new Provider();
     person.record.encounterEnd(time, EncounterType.WELLNESS);
-    // Person is in debt $1. They should not recieve any more care.
+    // Person is in debt $1. They should not receive any more care.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounterYearOne));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounterYearOne));
 
@@ -193,14 +217,14 @@ public class LossOfCareHealthRecordTest {
 
     // Next year begins. Person should enough income to cover one encounter for the year.
     long oneYear = Utilities.convertTime("years", 1) + 1;
-    person.setPayerAtTime(time + oneYear, Payer.noInsurance);
+    person.coverage.setPlanToNoInsurance(time + oneYear);
     // First encounter of next year is uncovered but affordable.
     Encounter coveredEncounterYearTwo
         = person.encounterStart(time + oneYear, EncounterType.WELLNESS);
     coveredEncounterYearTwo.codes.add(code);
     coveredEncounterYearTwo.provider = new Provider();
     person.record.encounterEnd(time + oneYear, EncounterType.WELLNESS);
-    // Person is in debt $1. They should not recieve any more care.
+    // Person is in debt $1. They should not receive any more care.
     assertTrue(person.defaultRecord.encounters.contains(coveredEncounterYearTwo));
     assertFalse(person.lossOfCareRecord.encounters.contains(coveredEncounterYearTwo));
 
@@ -213,6 +237,5 @@ public class LossOfCareHealthRecordTest {
     // Person should have this encounter in the uncoveredHealthRecord.
     assertFalse(person.defaultRecord.encounters.contains(uncoveredEncounterYearTwo));
     assertTrue(person.lossOfCareRecord.encounters.contains(uncoveredEncounterYearTwo));
-
   }
-} 
+}

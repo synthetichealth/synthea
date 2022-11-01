@@ -357,7 +357,8 @@
       "direct_transition": "Meconium_Ileus_Resolved",
       "remarks": [
         "http://www.seattlechildrens.org/medical-conditions/digestive-gastrointestinal-conditions/meconium-ileus/"
-      ]
+      ],
+      "reason": "Meconium Ileus"
     },
     "Male_Infertility": {
       "type": "ConditionOnset",
@@ -365,8 +366,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 427089005,
-          "display": "Male Infertility"
+          "code": 707418001,
+          "display": "Male infertility due to cystic fibrosis (disorder)"
         }
       ],
       "direct_transition": "chronic_cough"
@@ -489,7 +490,8 @@
         "https://www.cff.org/Life-With-CF/Daily-Life/Fitness-and-Nutrition/Nutrition/Taking-Care-of-Your-Digestive-System/Enzymes/",
         "",
         "\"Between 85 and 90% of CF patients have pancreatic insufficiency."
-      ]
+      ],
+      "chronic": true
     },
     "Life_With_Cystic_Fibrosis": {
       "type": "Delay",
@@ -694,7 +696,8 @@
       "reason": "Cystic_Fibrosis",
       "remarks": [
         "https://www.cff.org/About-Us/Media-Center/Press-Releases/The-Cystic-Fibrosis-Foundation-Applauds-FDA-Approval-of-Kalydeco/"
-      ]
+      ],
+      "chronic": true
     },
     "Prescribe_Mucus_Thinner": {
       "type": "MedicationOrder",
@@ -715,7 +718,8 @@
           "transition": "CF_CarePlan",
           "distribution": 0.1
         }
-      ]
+      ],
+      "chronic": true
     },
     "Salty_Skin": {
       "type": "Symptom",
@@ -826,7 +830,8 @@
       ],
       "remarks": [
         "Chest X-rays should be done at least every other year, as shown in the link at \"Quarterly Checkup\""
-      ]
+      ],
+      "reason": "Cystic_Fibrosis"
     },
     "Oropharyngeal_Culture": {
       "type": "Procedure",
@@ -883,7 +888,8 @@
             }
           ]
         }
-      ]
+      ],
+      "reason": "Cystic_Fibrosis"
     },
     "Develop_Diabetes": {
       "type": "ConditionOnset",
@@ -1058,7 +1064,8 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "EndCheckup"
+      "direct_transition": "EndCheckup",
+      "reason": "Cystic_Fibrosis"
     },
     "Pulmonary_Function_Test": {
       "type": "Procedure",
@@ -1074,7 +1081,8 @@
         "high": 15,
         "unit": "minutes"
       },
-      "direct_transition": "Take_Blood_Sample"
+      "direct_transition": "Take_Blood_Sample",
+      "reason": "Cystic_Fibrosis"
     },
     "startDiseaseChain": {
       "type": "Simple",
@@ -1218,7 +1226,8 @@
       "reason": "Develop_Infection_1",
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pubmed/2941289"
-      ]
+      ],
+      "administration": true
     },
     "Prescribe_Vancomycin": {
       "type": "MedicationOrder",
@@ -1233,7 +1242,8 @@
       "remarks": [
         "https://www.mayoclinic.org/diseases-conditions/staph-infections/diagnosis-treatment/drc-20356227"
       ],
-      "reason": "Develop_Infection_2"
+      "reason": "Develop_Infection_2",
+      "administration": true
     },
     "patient_dies": {
       "type": "Simple",
@@ -1459,7 +1469,8 @@
         {
           "transition": "Release_From_Hospital"
         }
-      ]
+      ],
+      "reason": "CF_Complication"
     },
     "Antibiotic_Therapy": {
       "type": "Procedure",
@@ -1475,7 +1486,8 @@
         "high": 90,
         "unit": "minutes"
       },
-      "direct_transition": "Intravenous_Infusion"
+      "direct_transition": "Intravenous_Infusion",
+      "reason": "CF_Complication"
     },
     "death": {
       "type": "Death",
@@ -1563,7 +1575,8 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "Oxygen_Therapy"
+      "direct_transition": "Oxygen_Therapy",
+      "reason": "CF_Complication"
     },
     "wheezing": {
       "type": "Symptom",
@@ -1616,7 +1629,8 @@
         {
           "transition": "Release_From_Hospital"
         }
-      ]
+      ],
+      "reason": "CF_Complication"
     },
     "Release_From_Hospital": {
       "type": "EncounterEnd",
@@ -1712,7 +1726,8 @@
           "display": "Awaiting transplantation of lung (situation)"
         }
       ],
-      "direct_transition": "Lung_Transplant"
+      "direct_transition": "Lung_Transplant",
+      "reason": "Cystic_Fibrosis"
     },
     "Lung_Transplant_End": {
       "type": "EncounterEnd",

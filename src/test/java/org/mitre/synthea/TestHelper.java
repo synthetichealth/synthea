@@ -1,18 +1,27 @@
 package org.mitre.synthea;
 
-import ca.uhn.fhir.context.FhirContext;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Person;
 
 public abstract class TestHelper {
 
@@ -20,9 +29,8 @@ public abstract class TestHelper {
   public static final String LOINC_URI = "http://loinc.org";
   public static final String SNOMED_OID = "2.16.840.1.113883.6.96";
   public static final String LOINC_OID = "2.16.840.1.113883.6.1";
-  private static FhirContext dstu2FhirContext;
-  private static FhirContext stu3FhirContext;
-  private static FhirContext r4FhirContext;
+
+  private static byte[] serializedPatients;
 
   /**
    * Returns a test fixture Module by filename.
@@ -45,15 +53,15 @@ public abstract class TestHelper {
     File file = new File(uri);
     Config.load(file);
   }
-  
+
   public static WireMockConfiguration wiremockOptions() {
     return WireMockConfiguration.options().port(5566);
   }
-  
+
   /**
-   * Check whether the <code>synthea.test.httpRecording</code> property is set to enable HTTP 
+   * Check whether the <code>synthea.test.httpRecording</code> property is set to enable HTTP
    * recording, for tests with HTTP mocking.
-   * 
+   *
    * @return true if HTTP recording is enabled
    */
   public static boolean isHttpRecordingEnabled() {
@@ -63,7 +71,7 @@ public abstract class TestHelper {
 
   /**
    * Return the configured URL for recording terminology HTTP responses.
-   * 
+   *
    * @return the configured terminology service URL
    */
   public static String getTxRecordingSource() {
@@ -76,7 +84,7 @@ public abstract class TestHelper {
 
   /**
    * Returns a WireMock response builder representing a response from a FHIR server.
-   * 
+   *
    * @return a ResponseDefinitionBuilder object
    */
   public static ResponseDefinitionBuilder fhirResponse() {
@@ -91,26 +99,32 @@ public abstract class TestHelper {
     Config.set("exporter.use_uuid_filenames", "false");
     Config.set("exporter.fhir.use_shr_extensions", "false");
     Config.set("exporter.subfolders_by_id_substring", "false");
-    Config.set("exporter.ccda.export", "false");
-    Config.set("exporter.fhir_stu3.export", "false");
-    Config.set("exporter.fhir_dstu2.export", "false");
-    Config.set("exporter.fhir.export", "false");
-    Config.set("exporter.fhir.transaction_bundle", "false");
-    Config.set("exporter.text.export", "false");
-    Config.set("exporter.text.per_encounter_export", "false");
-    Config.set("exporter.csv.export", "false");
     Config.set("exporter.split_records", "false");
     Config.set("exporter.split_records.duplicate_data", "false");
-    Config.set("exporter.symptoms.csv.export", "false");
-    Config.set("exporter.symptoms.text.export", "false");
-    Config.set("exporter.cpcds.export", "false");
-    Config.set("exporter.cdw.export", "false");
+    Config.set("exporter.metadata.export", "false");
+    Config.set("exporter.ccda.export", "false");
+    Config.set("exporter.fhir.export", "false");
+    Config.set("exporter.fhir_stu3.export", "false");
+    Config.set("exporter.fhir_dstu2.export", "false");
+    Config.set("exporter.fhir.transaction_bundle", "false");
+    Config.set("exporter.fhir.bulk_data", "false");
+    Config.set("exporter.groups.fhir.export", "false");
+    Config.set("exporter.hospital.fhir.export", "false");
     Config.set("exporter.hospital.fhir_stu3.export", "false");
     Config.set("exporter.hospital.fhir_dstu2.export", "false");
-    Config.set("exporter.hospital.fhir.export", "false");
+    Config.set("exporter.practitioner.fhir.export", "false");
     Config.set("exporter.practitioner.fhir_stu3.export", "false");
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
-    Config.set("exporter.practitioner.fhir.export", "false");
+    Config.set("exporter.json.export", "false");
+    Config.set("exporter.csv.export", "false");
+    Config.set("exporter.cpcds.export", "false");
+    Config.set("exporter.bfd.export", "false");
+    Config.set("exporter.cdw.export", "false");
+    Config.set("exporter.text.export", "false");
+    Config.set("exporter.text.per_encounter_export", "false");
+    Config.set("exporter.clinical_note.export", "false");
+    Config.set("exporter.symptoms.csv.export", "false");
+    Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cost_access_outcomes_report", "false");
     Config.set("generate.terminology_service_url", "");
   }
@@ -122,5 +136,45 @@ public abstract class TestHelper {
 
   public static long years(long numYears) {
     return Utilities.convertTime("years", numYears);
+  }
+
+  /**
+   * This method generates 10 people and then serializes them out into memory as byte arrays. For
+   * tests that need a generated patient, they can call this method to grab a fresh copy of a person
+   * which is rehydrated from the byte array to ensure an unmodified copy of the original. This
+   * eliminates regeneration of people in the test suite for many of the exporters.
+   * @return the people array
+   * @throws IOException when there is a problem rehydrating a person
+   * @throws ClassNotFoundException when there is a problem rehydrating a person
+   */
+  public static synchronized Person[] getGeneratedPeople() throws IOException,
+      ClassNotFoundException {
+    if (serializedPatients == null) {
+      // Ensure Physiology state is enabled
+      boolean physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
+      State.ENABLE_PHYSIOLOGY_STATE = true;
+
+      int numberOfPeople = 10;
+      Generator generator = new Generator(numberOfPeople);
+      generator.options.overflow = false;
+      exportOff();
+      Person[] people = new Person[10];
+      for (int i = 0; i < numberOfPeople; i++) {
+        people[i] = generator.generatePerson(i);
+      }
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(people);
+      oos.close();
+      serializedPatients = baos.toByteArray();
+
+      // Reset state after exporter test.
+      State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
+    }
+    ByteArrayInputStream bais = new ByteArrayInputStream(serializedPatients);
+    ObjectInputStream ois = new ObjectInputStream(bais);
+    Person[] rehydrated = (Person[]) ois.readObject();
+    ois.close();
+    return rehydrated;
   }
 }

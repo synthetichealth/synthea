@@ -54,8 +54,8 @@ public class ValidationResources {
     ValidationSupportChain chain = new ValidationSupportChain(
             new ValidationSupportR4(ctx),
             new DefaultProfileValidationSupport(ctx),
-            new InMemoryTerminologyServerValidationSupport(ctx),
-            new CommonCodeSystemsTerminologyService(ctx)
+            new CommonCodeSystemsTerminologyService(ctx),
+            new InMemoryTerminologyServerValidationSupport(ctx)
     );
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);

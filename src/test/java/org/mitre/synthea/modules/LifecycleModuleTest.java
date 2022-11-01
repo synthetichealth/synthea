@@ -13,7 +13,7 @@ import org.mitre.synthea.world.concepts.VitalSign;
 
 public class LifecycleModuleTest {
   public static boolean deathByNaturalCauses;
-  
+
   @BeforeClass
   public static void before() {
     deathByNaturalCauses = LifecycleModule.ENABLE_DEATH_BY_NATURAL_CAUSES;
@@ -89,20 +89,20 @@ public class LifecycleModuleTest {
     boolean enablePhysiology = LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS;
     LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = true;
     Person person = new Person(0L);
-    
+
     // Need to set some attributes for birth to work properly
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.RACE, "white");
     person.attributes.put(Person.ETHNICITY, "english");
-    
+
     LifecycleModule.birth(person, 0);
-    
+
     // Person should have some PhysiologyValueGenerators
     Assert.assertEquals(person.vitalSigns.get(VitalSign.SYSTOLIC_BLOOD_PRESSURE).getClass(),
         PhysiologyValueGenerator.class);
     Assert.assertEquals(person.vitalSigns.get(VitalSign.DIASTOLIC_BLOOD_PRESSURE).getClass(),
         PhysiologyValueGenerator.class);
-    
+
     LifecycleModule.ENABLE_PHYSIOLOGY_GENERATORS = enablePhysiology;
   }
 }

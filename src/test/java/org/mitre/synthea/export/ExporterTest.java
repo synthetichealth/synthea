@@ -10,9 +10,10 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.DeathModule;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -27,9 +28,9 @@ public class ExporterTest {
   private int yearsToKeep;
   private Person patient;
   private HealthRecord record;
-  
+
   private static final HealthRecord.Code DUMMY_CODE = new HealthRecord.Code("", "", "");
-  
+
   /**
    * Setup test data.
    * @throws Exception on configuration loading error.
@@ -40,27 +41,28 @@ public class ExporterTest {
     endTime = time = System.currentTimeMillis();
     yearsToKeep = 5;
     patient = new Person(12345L);
-    patient.attributes.put(Person.BIRTHDATE, time - years(30));
+    int age = 30;
+    patient.attributes.put(Person.BIRTHDATE, time - years(age));
     // Give person an income to prevent null pointer.
     patient.attributes.put(Person.INCOME, 100000);
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(patient, location.randomCityName(patient));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
     record = patient.record;
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    for (int i = 0; i < patient.payerHistory.length; i++) {
-      patient.setPayerAtAge(i, Payer.noInsurance);
-    }
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
+    patient.coverage.setPlanToNoInsurance((long) patient.attributes.get(Person.BIRTHDATE));
+    patient.coverage.setPlanToNoInsurance(time);
   }
 
   @Test
   public void testExportFilterSimpleCutoff() {
     record.encounterStart(time - years(8), EncounterType.WELLNESS);
     record.observation(time - years(8), "height", 64);
-    
+
     record.encounterStart(time - years(4), EncounterType.WELLNESS);
     record.observation(time - years(4), "weight", 128);
 
@@ -191,10 +193,10 @@ public class ExporterTest {
 
   @Test
   public void testExportFilterShouldKeepCauseOfDeath() {
-    HealthRecord.Code causeOfDeath = 
+    HealthRecord.Code causeOfDeath =
         new HealthRecord.Code("SNOMED-CT", "Todo-lookup-code", "Rabies");
     patient.recordDeath(time - years(20), causeOfDeath);
-    
+
     DeathModule.process(patient, time - years(20));
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
 
@@ -236,23 +238,23 @@ public class ExporterTest {
     assertEquals(1, filtered.record.encounters.get(0).conditions.size());
     assertEquals("diabetes", filtered.record.encounters.get(0).conditions.get(0).type);
   }
-  
+
   @Test
   public void testExportFilterShouldFilterClaimItems() {
     record.encounterStart(time - years(10), EncounterType.EMERGENCY);
     record.conditionStart(time - years(10), "something_permanent");
     record.procedure(time - years(10), "xray");
-    
+
     assertEquals(1, record.encounters.size());
     assertEquals(2, record.encounters.get(0).claim.items.size()); // 1 condition, 1 procedure
-    
+
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
     // filter removes the procedure but keeps the open condition
     assertEquals(1, filtered.record.encounters.size());
     assertEquals(1, filtered.record.encounters.get(0).conditions.size());
     assertEquals("something_permanent", filtered.record.encounters.get(0).conditions.get(0).type);
     assertEquals(1, record.encounters.get(0).claim.items.size());
-    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).type);
+    assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
   }
 
 }

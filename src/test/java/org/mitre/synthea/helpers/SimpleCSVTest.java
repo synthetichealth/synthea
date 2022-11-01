@@ -9,8 +9,9 @@ import java.util.List;
 import org.junit.Test;
 
 public class SimpleCSVTest {
-  
+
   private static final String TEST_CSV = "ID,NAME,AGE\n0,Alice,30\n1,Bob,25\n2,Charles,50\n";
+  private static final String TEST_CSV_SEP = "ID|NAME|AGE\n0|Alice|30\n1|Bob|25\n2|Charles|50\n";
 
   @Test public void testSimpleCSV() throws IOException {
     // Parse
@@ -27,5 +28,20 @@ public class SimpleCSVTest {
     // Valid
     assertTrue(SimpleCSV.isValid(csv));
   }
-  
+
+  @Test public void testSimpleCSVWithAltSep() throws IOException {
+    // Parse
+    List<LinkedHashMap<String,String>> data = SimpleCSV.parse(TEST_CSV_SEP, '|');
+    assertTrue(data.size() == 3);
+    assertTrue(data.get(0).containsKey("ID"));
+    assertTrue(data.get(0).containsKey("NAME"));
+    assertTrue(data.get(0).containsKey("AGE"));
+
+    // Unparse
+    String csv = SimpleCSV.unparse(data, '|');
+    assertTrue(csv.equals(TEST_CSV_SEP));
+
+    // Valid
+    assertTrue(SimpleCSV.isValid(csv, '|'));
+  }
 }

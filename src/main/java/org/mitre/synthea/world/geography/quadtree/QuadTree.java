@@ -66,7 +66,7 @@ public class QuadTree {
    * @return True if the item should be within the QuadTree, otherwise false.
    */
   public boolean hasBoundsAround(QuadTreeElement item, double error) {
-    return ((xcoord + radius) >= (item.getX() - error)) 
+    return ((xcoord + radius) >= (item.getX() - error))
         && ((xcoord - radius) <= (item.getX() + error))
         && ((ycoord + radius) >= (item.getY() - error))
         && ((ycoord - radius) <= (item.getY() + error));

@@ -41,7 +41,7 @@ public class ModuleTest {
   public void getModules() {
     List<Module> allModules = Module.getModules();
     List<Module> someModules = Module.getModules(path -> path.contains("ti"));
-    
+
     assertTrue(contains(allModules, someModules));
     assertFalse(contains(someModules, allModules));
     assertTrue(allModules.size() > someModules.size());
@@ -82,7 +82,7 @@ public class ModuleTest {
   public void getModulesInPredictableOrder() {
     List<Module> modulesA = Module.getModules();
     List<Module> modulesB = Module.getModules();
-    
+
     // verify with list
     assertEquals(modulesA.size(), modulesB.size());
     for (int i = 0; i < modulesA.size(); i++) {
@@ -149,7 +149,7 @@ public class ModuleTest {
         }
       }
     }
-    
+
     List<Module> modulesB = Module.getModules();
     while (!modulesB.isEmpty()) {
       Iterator<Module> iter = modulesB.iterator();
@@ -174,7 +174,7 @@ public class ModuleTest {
     assertNotNull(module);
     assertEquals("COPD Module", module.name);
   }
-  
+
   @Test
   public void addLocalModules() {
     Module.addModules(new File("src/test/resources/module"));
@@ -218,13 +218,13 @@ public class ModuleTest {
           "resources", "busted_distribution", "module_with_bad_distribution.json"))
           .stream()
           .collect(Collectors.joining("\n"));
-      JsonParser parser = new JsonParser();
-      JsonObject object = parser.parse(jsonString).getAsJsonObject();
+      JsonObject object = JsonParser.parseString(jsonString).getAsJsonObject();
       new Module(object, false);
       // Should never get here
       fail("Didn't throw exception when loading module with version from the future");
     } catch (IllegalStateException ise) {
-      assertTrue(ise.getMessage().startsWith("State 2_Second_Delay contains an invalid distribution"));
+      assertTrue(
+          ise.getMessage().startsWith("State 2_Second_Delay contains an invalid distribution"));
     }
   }
 
@@ -235,7 +235,7 @@ public class ModuleTest {
   }
 
   /**
-   * Injects a fault into the lazy load of the specified module. A FaultyModuleScope object is 
+   * Injects a fault into the lazy load of the specified module. A FaultyModuleScope object is
    * returned for convenience with try-with-resources to ensure the module is put back the way it
    * was before we broke it.
    * @param path The module to inject a fault into. It does not need to presently exist.
@@ -248,9 +248,9 @@ public class ModuleTest {
     Field modulesField = Whitebox.getField(Module.class, "modules");
     modulesField.setAccessible(true);
     @SuppressWarnings("unchecked")
-    Map<String, Module.ModuleSupplier> modules = 
+    Map<String, Module.ModuleSupplier> modules =
             (Map<String, Module.ModuleSupplier>)modulesField.get(null);
-    
+
     // Store the old supplier and inject our "broken" one.
     Module.ModuleSupplier originalSupplier = modules.get(path);
     Callable<Module> faultyCallable = () -> {
@@ -258,7 +258,7 @@ public class ModuleTest {
     };
     Module.ModuleSupplier faultySupplier = new Module.ModuleSupplier(false, path, faultyCallable);
     modules.put(path, faultySupplier);
-    
+
     // A runnable that safely puts everything back the way it was.
     AtomicBoolean runOnce = new AtomicBoolean();
     return () -> {
@@ -271,14 +271,14 @@ public class ModuleTest {
       }
     };
   }
-  
+
   private static Predicate<Module> filterOnModuleName(String partialName) {
     return module -> {
       String name = module.name;
       return name != null && name.contains(partialName);
     };
   }
-  
+
   public interface FaultyModuleScope extends AutoCloseable {
     @Override
     void close();

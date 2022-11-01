@@ -8,9 +8,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.geography.Location;
 
@@ -19,7 +20,7 @@ public class EncounterModuleTest {
   private static Location location;
   private static Person person;
   private static EncounterModule module;
-  
+
   /**
    * Setup the Encounter Module Tests.
    * @throws Exception on configuration loading error
@@ -34,11 +35,13 @@ public class EncounterModuleTest {
     String testState = Config.get("test_state.default", "Massachusetts");
     location = new Location(testState, null);
     location.assignPoint(person, location.randomCityName(person));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    person.setPayerAtTime(System.currentTimeMillis(), Payer.noInsurance);
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(System.currentTimeMillis());
   }
 
   @Test
@@ -51,11 +54,11 @@ public class EncounterModuleTest {
     assertNotNull("Encounter must have clinician", encounter.clinician);
     assertNotNull("Encounter must have provider organization", encounter.provider);
   }
-  
+
   @Test
   public void testEmergencySymptomEncounterHasClinician() {
     person.setSymptom(
-        "Test", "Test", "Test", System.currentTimeMillis(), 
+        "Test", "Test", "Test", System.currentTimeMillis(),
         EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD + 1, false
     );
     module.process(person, System.currentTimeMillis());
@@ -70,7 +73,7 @@ public class EncounterModuleTest {
   @Test
   public void testUrgentcareSymptomEncounterHasClinician() {
     person.setSymptom(
-        "Test", "Test", "Test", System.currentTimeMillis(), 
+        "Test", "Test", "Test", System.currentTimeMillis(),
         EncounterModule.URGENT_CARE_SYMPTOM_THRESHOLD + 1, false
     );
     module.process(person, System.currentTimeMillis());
@@ -85,7 +88,7 @@ public class EncounterModuleTest {
   @Test
   public void testPrimarySymptomEncounterHasClinician() {
     person.setSymptom(
-        "Test", "Test", "Test", System.currentTimeMillis(), 
+        "Test", "Test", "Test", System.currentTimeMillis(),
         EncounterModule.PCP_SYMPTOM_THRESHOLD + 1, false
     );
     module.process(person, System.currentTimeMillis());
@@ -96,11 +99,11 @@ public class EncounterModuleTest {
     assertNotNull("Encounter must have clinician", encounter.clinician);
     assertNotNull("Encounter must have provider organization", encounter.provider);
   }
-  
+
   @Test
   public void testDontStartNewEncounterIfExisting() {
     person.setSymptom(
-        "Test", "Test", "Test", System.currentTimeMillis(), 
+        "Test", "Test", "Test", System.currentTimeMillis(),
         EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD + 1, false
     );
     module.process(person, System.currentTimeMillis());
@@ -108,7 +111,7 @@ public class EncounterModuleTest {
     assertFalse(person.record.encounters.isEmpty());
     int numberOfEncounters = person.record.encounters.size();
     person.setSymptom(
-        "Test", "Test", "Test", System.currentTimeMillis(), 
+        "Test", "Test", "Test", System.currentTimeMillis(),
         EncounterModule.EMERGENCY_SYMPTOM_THRESHOLD + 1, false
     );
     module.process(person, System.currentTimeMillis());

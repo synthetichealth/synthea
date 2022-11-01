@@ -36,7 +36,8 @@
         "Injection site pain",
         "Because fulvestrant blocks estrogen, in theory it could cause weakened bones (osteoporosis) if taken for a long time. Fulvestrant is currently approved only for use in post-menopausal women. It is sometimes used “off-label” in pre-menopausal women, often combined with a luteinizing-hormone releasing hormone (LHRH) agonist to turn off the ovaries (see the section on Ovarian Ablation below)."
       ],
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Aromatase Inhibitors (AI)": {
       "type": "SetAttribute",
@@ -116,7 +117,8 @@
           "unit": "years"
         }
       },
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Anastrozole": {
       "type": "MedicationOrder",
@@ -141,7 +143,8 @@
           "unit": "years"
         }
       },
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Exemestane": {
       "type": "MedicationOrder",
@@ -166,7 +169,8 @@
           "unit": "years"
         }
       },
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "ER-Treatments": {
       "type": "Simple",
@@ -261,7 +265,8 @@
       ],
       "direct_transition": "HER2_medication_end",
       "assign_to_attribute": "HER2_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Lapatinib": {
       "type": "MedicationOrder",
@@ -274,7 +279,8 @@
       ],
       "direct_transition": "HER2_medication_end",
       "assign_to_attribute": "HER2_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Neratinib": {
       "type": "MedicationOrder",
@@ -287,7 +293,8 @@
       ],
       "direct_transition": "HER2_medication_end",
       "assign_to_attribute": "HER2_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Trastuzumab_her2": {
       "type": "MedicationOrder",
@@ -300,7 +307,8 @@
       ],
       "direct_transition": "HER2_medication_end",
       "assign_to_attribute": "HER2_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "CDK4/6 Inhibitors": {
       "type": "Simple",
@@ -349,7 +357,8 @@
       ],
       "direct_transition": "ER_PR_medication_end",
       "assign_to_attribute": "ER_PR_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Palbociclib": {
       "type": "MedicationOrder",
@@ -362,7 +371,8 @@
       ],
       "direct_transition": "ER_PR_medication_end",
       "assign_to_attribute": "ER_PR_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Ribociclib": {
       "type": "MedicationOrder",
@@ -375,7 +385,8 @@
       ],
       "direct_transition": "ER_PR_medication_end",
       "assign_to_attribute": "ER_PR_medication",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "ER-encounter": {
       "type": "Encounter",
@@ -476,7 +487,8 @@
           "unit": "years"
         }
       },
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Estrogen Blocking Receptors": {
       "type": "SetAttribute",

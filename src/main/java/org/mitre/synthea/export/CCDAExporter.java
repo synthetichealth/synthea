@@ -6,10 +6,17 @@ import freemarker.template.TemplateException;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 
 /**
@@ -18,23 +25,23 @@ import org.mitre.synthea.world.concepts.RaceAndEthnicity;
 public class CCDAExporter {
 
   private static final Configuration TEMPLATES = templateConfiguration();
-  
+
   /**
    * This is a dummy class and object for FreeMarker templates that create IDs.
    */
   private static class UUIDGenerator implements Serializable {
     private RandomNumberGenerator rand;
-    
+
     public UUIDGenerator(RandomNumberGenerator rand) {
       this.rand = rand;
     }
-    
+
     @Override
     public String toString() {
       return rand.randUUID().toString();
     }
   }
-  
+
   private static Configuration templateConfiguration() {
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
     configuration.setDefaultEncoding("UTF-8");
@@ -87,27 +94,68 @@ public class CCDAExporter {
     // of the Person, so we add a few attributes just for the purposes of export.
     person.attributes.put("UUID", new UUIDGenerator(person));
     person.attributes.put("ehr_encounters", person.record.encounters);
-    person.attributes.put("ehr_observations", superEncounter.observations);
-    person.attributes.put("ehr_reports", superEncounter.reports);
     person.attributes.put("ehr_conditions", superEncounter.conditions);
     person.attributes.put("ehr_allergies", superEncounter.allergies);
     person.attributes.put("ehr_procedures", superEncounter.procedures);
     person.attributes.put("ehr_immunizations", superEncounter.immunizations);
     person.attributes.put("ehr_medications", superEncounter.medications);
     person.attributes.put("ehr_careplans", superEncounter.careplans);
-    person.attributes.put("ehr_imaging_studies", superEncounter.imagingStudies);
+
+    List<Observation> vitalSigns = superEncounter.observations
+            .stream()
+            .filter(vs -> vs.category != null && vs.category.equals("vital-signs"))
+            .filter(vs -> vs.value != null)
+            .collect(Collectors.toList());
+
+    person.attributes.put("ehr_vital_signs", vitalSigns);
+
+    List<Observation> surveyResults = superEncounter.observations
+            .stream()
+            .filter(vs -> vs.category != null && vs.category.equals("survey"))
+            .filter(vs -> vs.value != null && vs.value instanceof Double)
+            .collect(Collectors.toList());
+
+    // sadly, the correct plural of status is statuses and not stati
+    person.attributes.put("ehr_functional_statuses", surveyResults);
+
+    person.attributes.put("ehr_results", superEncounter.reports);
+
+    Observation smokingHistory = person.record.getLatestObservation("72166-2");
+
+    if (smokingHistory != null) {
+      person.attributes.put("ehr_smoking_history", smokingHistory);
+    }
     person.attributes.put("time", time);
     person.attributes.put("race_lookup", RaceAndEthnicity.LOOK_UP_CDC_RACE);
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
     person.attributes.put("ethnicity_display_lookup",
         RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
 
+    if (person.attributes.get(Person.PREFERREDYPROVIDER + "wellness") == null) {
+      // This person does not have a preferred provider. This happens for veterans at age 20 due to
+      // the provider reset and they don't have a provider until their next wellness visit. There
+      // may be other cases. This ensures the preferred provider is there for the CCDA template
+      Encounter encounter = person.record.lastWellnessEncounter();
+      if (encounter == null) {
+        // If there are absolutely no wellness encounters, then use the last encounter.
+        encounter = person.record.encounters.get(person.record.encounters.size() - 1);
+      }
+      if (encounter != null) {
+        person.attributes.put(Person.PREFERREDYPROVIDER + "wellness", encounter.provider);
+      } else {
+        throw new IllegalStateException(String.format("Unable to export to CCDA because "
+            + "person %s %s has no preferred provider.",
+            person.attributes.get(Person.FIRST_NAME),
+            person.attributes.get(Person.LAST_NAME)));
+      }
+    }
+
     StringWriter writer = new StringWriter();
     try {
       Template template = TEMPLATES.getTemplate("ccda.ftl");
       template.process(person.attributes, writer);
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     return writer.toString();
   }

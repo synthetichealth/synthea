@@ -33,7 +33,7 @@ public class LookupTableTransitionTest {
   private static ActiveCondition extremeLookuptablitis;
   // Modules (including lookuptablitis_test module)
   private static Map<String, Module.ModuleSupplier> modules;
- 
+
   /**
    * Initalizes the lookuptablitis module and conditions.
    */
@@ -75,7 +75,7 @@ public class LookupTableTransitionTest {
   @AfterClass
   public static void reset() throws Exception {
     // Set the lookuptable CSV location to the standard directory.
-    Config.set("generic.lookuptables", "modules/lookup_tables");
+    Config.set("generate.lookup_tables", "modules/lookup_tables/");
     // Remove the lookuptable_test.json module
     modules.remove("lookuptable_test");
     modules.remove("lookuptable_timerangetest");
@@ -235,7 +235,7 @@ public class LookupTableTransitionTest {
 
     Assert.assertNotEquals(silver, gold);
     Assert.assertNotEquals(gold, silver);
- 
+
     Set<LookupTableKey> set = new HashSet<LookupTableKey>();
     set.add(gold);
     Assert.assertFalse(set.contains(silver));

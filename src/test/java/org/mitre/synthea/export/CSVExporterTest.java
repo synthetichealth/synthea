@@ -17,7 +17,7 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.geography.Location;
 
 public class CSVExporterTest {
@@ -26,10 +26,10 @@ public class CSVExporterTest {
    */
   @ClassRule
   public static TemporaryFolder tempFolder = new TemporaryFolder();
-  
+
   private static File exportDir;
 
-  private static final int NUMBER_OF_FILES = 16;
+  private static final int NUMBER_OF_FILES = 19;
 
   /**
    * Global setup for export tests.
@@ -45,18 +45,20 @@ public class CSVExporterTest {
 
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
+
+    PayerManager.clear();
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
   }
-  
+
   @Test
   public void testDeferredCSVExport() throws Exception {
     Config.set("exporter.csv.included_files", "");
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
-    
-    Payer.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -88,7 +90,7 @@ public class CSVExporterTest {
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
-      assertTrue(SimpleCSV.isValid(csvData));
+      assertTrue("CSV Validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
       count++;
     }
@@ -96,17 +98,12 @@ public class CSVExporterTest {
     assertEquals("Expected " + NUMBER_OF_FILES
         + " CSV files in the output directory, found " + count, NUMBER_OF_FILES, count);
   }
-  
+
   @Test
   public void testCSVExportIncludes() throws Exception {
     Config.set("exporter.csv.included_files", "patients.csv,medications.csv,procedures.csv");
     Config.set("exporter.csv.excluded_files", "");
     CSVExporter.getInstance().init();
-
-    Payer.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -130,7 +127,7 @@ public class CSVExporterTest {
     boolean foundPatients = false;
     boolean foundMedications = false;
     boolean foundProcedures = false;
-    
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
       if (!csvFile.getName().endsWith(".csv")) {
@@ -150,7 +147,7 @@ public class CSVExporterTest {
         default:
           // do nothing
       }
-      
+
       String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
@@ -166,17 +163,13 @@ public class CSVExporterTest {
     assertTrue("medications.csv file missing but should have been included", foundMedications);
     assertTrue("procedures.csv file missing but should have been included", foundProcedures);
   }
-  
-  @Test
-  public void testCSVExportExcludes() throws Exception {  
-    Config.set("exporter.csv.included_files", "");
-    Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers");
-    CSVExporter.getInstance().init();
 
-    Payer.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Payer.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+  @Test
+  public void testCSVExportExcludes() throws Exception {
+    Config.set("exporter.csv.included_files", "");
+    Config.set("exporter.csv.excluded_files", "patients.csv, medications, payers, providers,"
+        + "patient_expenses.csv");
+    CSVExporter.getInstance().init();
 
     int numberOfPeople = 10;
     ExporterRuntimeOptions exportOpts = new ExporterRuntimeOptions();
@@ -201,7 +194,8 @@ public class CSVExporterTest {
     boolean foundMedications = false;
     boolean foundPayers = false;
     boolean foundProviders = false;
-    
+    boolean foundExpenses = false;
+
     int count = 0;
     for (File csvFile : expectedExportFolder.listFiles()) {
       if (!csvFile.getName().endsWith(".csv")) {
@@ -221,28 +215,33 @@ public class CSVExporterTest {
         case "providers.csv":
           foundProviders = true;
           break;
+        case "patient_expenses.csv":
+          foundExpenses = true;
+          break;
         default:
           // do nothing
       }
-      
+
       String csvData = new String(Files.readAllBytes(csvFile.toPath()));
 
       // the CSV exporter doesn't use the SimpleCSV class to write the data,
       // so we can use it here for a level of validation
       SimpleCSV.parse(csvData);
-      assertTrue(SimpleCSV.isValid(csvData));
+      assertTrue("CSV validation: " + csvFile.getName(), SimpleCSV.isValid(csvData));
 
       count++;
     }
 
-    int expected = NUMBER_OF_FILES - 4;
-    assertEquals("Expected " + expected + " CSV files in the output directory, found " + count,
-        expected, count);
+    int expected = NUMBER_OF_FILES - 5;
     assertTrue("patients.csv is present but should have been excluded", !foundPatients);
     assertTrue("medications.csv is present but should have been excluded", !foundMedications);
     assertTrue("payers.csv is present but should have been excluded", !foundPayers);
     assertTrue("providers.csv is present but should have been excluded", !foundProviders);
+    assertTrue("patient_expoenses.csv is present but should have been excluded", !foundExpenses);
+    assertEquals("Expected " + expected + " CSV files in the output directory, found " + count,
+        expected, count);
+
   }
-  
-  
+
+
 }

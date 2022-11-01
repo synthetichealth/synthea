@@ -91,6 +91,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "osteoarthritis",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -123,7 +124,7 @@
           "display": "Heat therapy"
         }
       ],
-      "direct_transition": "OA_Pain_Medication"
+      "direct_transition": "Assign DME"
     },
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
@@ -427,6 +428,62 @@
         "low": 5,
         "high": 10
       }
+    },
+    "Assign DME": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "OA_Of_The_Hip"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "OA_Of_The_Knee"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Wheelchair",
+              "distribution": 0.54
+            },
+            {
+              "transition": "Walker",
+              "distribution": 0.46
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "OA_Pain_Medication"
+        }
+      ],
+      "remarks": [
+        "Based on sample from CMS claims."
+      ]
+    },
+    "Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "Finish DME"
+    },
+    "Walker": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705406009,
+        "display": "Walker (physical object)"
+      },
+      "assign_to_attribute": "osteoarthritis_dme",
+      "direct_transition": "Finish DME"
+    },
+    "Finish DME": {
+      "type": "Simple",
+      "direct_transition": "OA_Pain_Medication"
     }
   },
   "gmf_version": 1

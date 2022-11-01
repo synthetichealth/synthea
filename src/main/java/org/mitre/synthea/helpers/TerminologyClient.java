@@ -13,8 +13,8 @@ import org.hl7.fhir.r4.model.ValueSet;
 public interface TerminologyClient extends IRestfulClient {
 
   @Operation(type = ValueSet.class, name = "$expand")
-  ValueSet expand(@OperationParam(name = "url") UriType url, 
-      @OperationParam(name = "count") IntegerType count, 
+  ValueSet expand(@OperationParam(name = "url") UriType url,
+      @OperationParam(name = "count") IntegerType count,
       @OperationParam(name = "offset") IntegerType offset);
 
 }

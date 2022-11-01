@@ -8,9 +8,10 @@
     <!--Vital Signs section template-->
     <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital signs"/>
     <title>Vital Signs</title>
-    <@narrative.narrative entries=ehr_observations section="observations"/>
+    <@narrative.narrative entries=ehr_vital_signs section="observations"/>
     <entry typeCode="DRIV">
       <organizer classCode="CLUSTER" moodCode="EVN">
+        <templateId root="2.16.840.1.113883.10.20.22.4.26"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.26" extension="2015-08-01"/>
         <!-- Vital signs organizer template -->
         <id root="${UUID?api.toString()}"/>
@@ -19,10 +20,11 @@
         </code>
         <statusCode code="completed"/>
         <effectiveTime value="${time?number_to_date?string["yyyyMMddHHmmss"]}"/>
-        <#list ehr_observations as entry>
+        <#list ehr_vital_signs as entry>
         <#if entry.value??>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>
@@ -47,6 +49,7 @@
         <#list entry.observations as obs>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>
@@ -62,7 +65,7 @@
             <#elseif obs.value?is_boolean>
             <value xsi:type="BL" value="${obs.value?c}" />
             <#elseif obs.value?is_hash && obs.value.system?? && obs.value.code?? && obs.value.display??>
-            <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=obs.value.system/>" code="${obs.value.code}" displayName="${entry.value.display}" />
+            <value xsi:type="CD" codeSystem="<@lookup.oid_for_code_system system=obs.value.system/>" code="${obs.value.code}" displayName="${obs.value.display}" />
             <#elseif obs.value?is_string>
             <value xsi:type="ST">${(obs.value)!""}</value>
             </#if>
@@ -75,6 +78,7 @@
         <#else>
         <component>
           <observation classCode="OBS" moodCode="EVN">
+            <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
             <id root="${UUID?api.toString()}"/>

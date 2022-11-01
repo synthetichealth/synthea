@@ -7,8 +7,10 @@ import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -16,6 +18,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 public class DeathModuleTest {
@@ -44,8 +47,10 @@ public class DeathModuleTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    Payer.loadNoInsurance();
-    person.setPayerAtTime(time, Payer.noInsurance);
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
   }
 
   @Test
@@ -54,7 +59,7 @@ public class DeathModuleTest {
      * death_certificate: { description: 'U.S. standard certificate of death - 2003 revision', code:
      * '69409-1' }, cause_of_death: { description: 'Cause of Death [US Standard Certificate of
      * Death]', code: '69453-9', value_type: 'condition' },
-     * 
+     *
      * death_certification: {description: 'Death Certification', codes: {'SNOMED-CT' =>
      * ['308646001']}, class: 'ambulatory'}
      */

@@ -374,7 +374,9 @@
           "display": "1 ML DOCEtaxel 20 MG/ML Injection"
         }
       ],
-      "direct_transition": "Chemotherapy_Hormone Order2"
+      "direct_transition": "Chemotherapy_Hormone Order2",
+      "reason": "Prostate_Cancer",
+      "administration": true
     },
     "Prostatectomy": {
       "type": "Procedure",
@@ -489,7 +491,7 @@
       "direct_transition": "Prostate_Cancer_Therapy"
     },
     "end_chemo_med": {
-      "type": "MedicationEnd",
+      "type": "Simple",
       "direct_transition": "end_cancer_therapy encounter"
     },
     "Chemotherapy_Hormone Order2": {
@@ -512,7 +514,9 @@
         {
           "transition": "Prostatectomy"
         }
-      ]
+      ],
+      "reason": "Prostate_Cancer",
+      "administration": true
     },
     "Prostate_Cancer_Therapy": {
       "type": "Encounter",
@@ -695,8 +699,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {

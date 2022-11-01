@@ -5,33 +5,35 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Records;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Rasterizer;
+import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.TimeZone;
 
+import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Utilities;
-
 
 public class Graphviz {
   private static final String NEWLINE = "\\l";
@@ -42,7 +44,7 @@ public class Graphviz {
    *     the default modules will be loaded using the ClassLoader.
    * @throws URISyntaxException on failure to load modules.
    */
-  public static void main(String[] args) throws URISyntaxException {
+  public static void main(String[] args) throws URISyntaxException, IOException {
     File folder = Exporter.getOutputFolder("graphviz", null);
 
     Path inputPath = null;
@@ -50,8 +52,7 @@ public class Graphviz {
       File file = new File(args[0]);
       inputPath = file.toPath();
     } else {
-      URL modulesFolder = ClassLoader.getSystemClassLoader().getResource("modules");
-      inputPath = Paths.get(modulesFolder.toURI());
+      inputPath = Module.getModulesPath();
     }
 
     System.out.println("Rendering graphs to `" + folder.getAbsolutePath() + "`...");
@@ -68,9 +69,9 @@ public class Graphviz {
       Utilities.walkAllModules(inputPath, t -> {
         try {
           JsonObject module = loadFile(t, inputPath);
-          String relativePath = relativePath(t, inputPath);
+          String relativePath = Module.relativePath(t, inputPath);
           generateJsonModuleGraph(module, outputFolder, relativePath);
-        } catch (IOException e) {
+        } catch (IOException | GraphvizException e) {
           e.printStackTrace();
         }
       });
@@ -81,22 +82,16 @@ public class Graphviz {
 
   private static JsonObject loadFile(Path path, Path modulesFolder) throws IOException {
     System.out.format("Loading %s\n", path.toString());
-    FileReader fileReader = new FileReader(path.toString());
-    JsonReader reader = new JsonReader(fileReader);
+    String moduleRelativePath = modulesFolder.getParent().relativize(path).toString();
+    JsonReader reader = new JsonReader(new StringReader(
+             Utilities.readResource(moduleRelativePath)));
     JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-    fileReader.close();
     reader.close();
     return object;
   }
 
-  private static String relativePath(Path filePath, Path modulesFolder) {
-    String folderString = Matcher.quoteReplacement(modulesFolder.toString() + File.separator);
-    return filePath.toString().replaceFirst(folderString, "").replaceFirst(".json", "")
-        .replace("\\", "/");
-  }
-
   private static void generateJsonModuleGraph(JsonObject module, File outputFolder,
-      String relativePath) throws IOException {
+      String relativePath) throws IOException, GraphvizException {
     // TODO -- a lot of this uses immutable objects. refactor to use mutable ones
     Graph g = Factory.graph().directed();
 
@@ -114,7 +109,7 @@ public class Graphviz {
       String type = state.get("type").getAsString();
 
       if (type.equals("Initial") || type.equals("Terminal")) {
-        node = node.with(Color.BLACK.fill()).with(Style.ROUNDED.and(Style.FILLED))
+        node = node.with(Color.BLACK.fill()).with(Style.combine(Style.ROUNDED, Style.FILLED))
             .with(Color.WHITE.font());
       }
 
@@ -260,13 +255,28 @@ public class Graphviz {
           Link link = Factory.to(target).with(Label.of(label));
           links.add(link);
         });
+      } else if (state.has("lookup_table_transition")) {
+        JsonArray distributions = state.get("lookup_table_transition").getAsJsonArray();
+        distributions.forEach(d -> {
+          JsonObject option = d.getAsJsonObject();
+          String destination = option.get("transition").getAsString();
+          double pct = option.get("default_probability").getAsDouble() * 100.0;
+          String label = "See Table (def: " + pct + "%)";
+          Node target = nodeMap.get(destination);
+          if (target == null) {
+            throw new RuntimeException(
+                relativePath + " " + name + " transitioning to unknown state: " + destination);
+          }
+          Link link = Factory.to(target).with(Label.of(label));
+          links.add(link);
+        });
       }
       g = g.with(node.link(links.toArray(new Link[0])));
     }
 
     File outputFile = outputFolder.toPath().resolve(relativePath + ".png").toFile();
     outputFile.mkdirs();
-    guru.nidi.graphviz.engine.Graphviz.fromGraph(g).rasterizer(Rasterizer.BATIK)
+    guru.nidi.graphviz.engine.Graphviz.fromGraph(g)
         .render(Format.PNG).toFile(outputFile);
   }
 
@@ -407,7 +417,7 @@ public class Graphviz {
       case "Device":
         JsonObject c = state.get("code").getAsJsonObject();
         details.append(toCodeString(c, true));
-        
+
         if (state.has("manufacturer")) {
           details.append("Manufacturer: ")
             .append(state.get("manufacturer").getAsString())
@@ -543,7 +553,7 @@ public class Graphviz {
    * Helper function to turn a a Json "code" type object into a consistent string.
    * Format: "SYSTEM[CODE]: DISPLAY"
    * Example: "SNOMED-CT[44054006]: Diabetes"
-   * 
+   *
    * @param coding JSON coding object
    * @param includeNewLine whether or not to include a newline at the end
    * @return String to display the code
@@ -565,7 +575,7 @@ public class Graphviz {
 
     return sb.toString();
   }
-  
+
   private static String logicDetails(JsonObject logic) {
     String conditionType = logic.get("condition_type").getAsString();
 
@@ -623,8 +633,23 @@ public class Graphviz {
       case "Race":
         return "race is " + logic.get("race").getAsString() + NEWLINE;
       case "Date":
-        return "Year is \\" + logic.get("operator").getAsString() + " "
-            + logic.get("year").getAsString() + NEWLINE;
+        if (logic.has("year")) {
+          return "Year is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("year").getAsString() + NEWLINE;
+        } else if (logic.has("month")) {
+          return "Month is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("month").getAsString() + NEWLINE;
+        } else if (logic.has("date")) {
+          JsonObject date = logic.get("date").getAsJsonObject();
+          ZonedDateTime testDate = ZonedDateTime.of(date.get("year").getAsInt(),
+              date.get("month").getAsInt() - 1, date.get("day").getAsInt(),
+              date.get("hour").getAsInt(), date.get("minute").getAsInt(),
+              date.get("second").getAsInt(), date.get("millisecond").getAsInt(),
+              ZoneId.of("UTC"));
+          return "Date is \\" + logic.get("operator").getAsString() + " "
+              + testDate.format(DateTimeFormatter.ISO_DATE_TIME) + NEWLINE;
+        }
+        return "Date is \\" + logic.get("operator").getAsString() + " X";
       case "Symptom":
         return "Symptom: " + logic.get("symptom").getAsString() + " \\"
             + logic.get("operator").getAsString() + " " + logic.get("value").getAsString()

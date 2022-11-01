@@ -51,7 +51,7 @@
   },
   "vietnamese": {
     "code": "vi",
-    "system": "http://id.loc.gov/vocabulary/iso639-1",
+    "system": "urn:ietf:bcp:47",
     "display": "Vietnamese"
   },
   "greek": {
@@ -61,12 +61,12 @@
   },
   "arabic": {
     "code": "ar",
-    "system": "http://id.loc.gov/vocabulary/iso639-1",
+    "system": "urn:ietf:bcp:47",
     "display": "Arabic"
   },
   "cambodian": {
     "code": "km",
-    "system": "http://id.loc.gov/vocabulary/iso639-1",
+    "system": "urn:ietf:bcp:47",
     "display": "Khmer (aka Cambodian)"
   },
   "german": {
@@ -79,14 +79,19 @@
     "system": "urn:ietf:bcp:47",
     "display": "Polish"
   },
+  "hawaiian": {
+    "code": "haw",
+    "system": "urn:ietf:bcp:47",
+    "display": "Hawaiian"
+  },
   "hindi": {
     "code": "hi",
-    "system": "http://id.loc.gov/vocabulary/iso639-1",
+    "system": "urn:ietf:bcp:47",
     "display": "Hindi"
   },
   "undetermined": {
     "code": "und",
-    "system": "http://id.loc.gov/vocabulary/iso639-1",
+    "system": "urn:ietf:bcp:47",
     "display": "Undetermined"
   }
 }

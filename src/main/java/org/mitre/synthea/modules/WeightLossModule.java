@@ -41,6 +41,7 @@ public final class WeightLossModule extends Module {
       = "weight_loss_bmi_percentile_change";
   public static final String LONG_TERM_WEIGHT_LOSS = "long_term_weight_loss";
   public static final String WEIGHT_LOSS_ADHERENCE = "weight_loss_adherence";
+  public static final String TRIGGER_WEIGHT_LOSS = "trigger_weight_loss";
 
   public static final int managementStartAge = (int) BiometricsConfig.get("min_age", 5);
   public static final double startWeightManagementProb =
@@ -179,6 +180,7 @@ public final class WeightLossModule extends Module {
     person.attributes.remove(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE);
     person.attributes.remove(PRE_MANAGEMENT_WEIGHT);
     person.attributes.remove(LONG_TERM_WEIGHT_LOSS);
+    person.attributes.remove(TRIGGER_WEIGHT_LOSS);
     person.attributes.put(ACTIVE_WEIGHT_MANAGEMENT, false);
   }
 
@@ -277,10 +279,16 @@ public final class WeightLossModule extends Module {
     double targetWeight = BMI.weightForHeightAndBMI(height, bmiForPercentileAtTwenty);
     int ageTwenty = 20;
     int lossAndRegressionTotalYears = 7;
-    double weightAtTwenty = BMI.weightForHeightAndBMI(height, pgt.tail().bmi);
     int regressionEndAge = (startAgeInMonths / 12) + lossAndRegressionTotalYears;
-    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty)
-        / (regressionEndAge - ageTwenty);
+    int denominator = regressionEndAge - ageTwenty;
+    // This can happen when regression ends at age 20
+    if (denominator == 0) {
+      denominator = 1;
+    }
+
+    double percentageElapsed = (person.ageInDecimalYears(time) - ageTwenty) / denominator;
+
+    double weightAtTwenty = BMI.weightForHeightAndBMI(height, pgt.tail().bmi);
     return weightAtTwenty + (percentageElapsed * (targetWeight - weightAtTwenty));
   }
 
@@ -360,6 +368,11 @@ public final class WeightLossModule extends Module {
     person.attributes.put(PRE_MANAGEMENT_WEIGHT, startWeight);
     person.attributes.put(WEIGHT_MANAGEMENT_START, time);
     boolean stickToPlan = person.rand() <= adherence;
+    boolean triggerWeightLoss = false;
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null) {
+      triggerWeightLoss = (boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS);
+      stickToPlan = triggerWeightLoss;
+    }
     person.attributes.put(WEIGHT_LOSS_ADHERENCE, stickToPlan);
     if (stickToPlan) {
       if (person.ageInYears(time) >= 20) {
@@ -370,6 +383,10 @@ public final class WeightLossModule extends Module {
         person.attributes.put(WEIGHT_LOSS_BMI_PERCENTILE_CHANGE, bmiPercentileChange);
       }
       boolean longTermSuccess = person.rand() <= maintenance;
+      if (triggerWeightLoss) {
+        longTermSuccess = true;
+        person.attributes.put(TRIGGER_WEIGHT_LOSS, false);
+      }
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, longTermSuccess);
     } else {
       person.attributes.put(LONG_TERM_WEIGHT_LOSS, false);
@@ -382,6 +399,15 @@ public final class WeightLossModule extends Module {
    * weight management. This does not mean that they will adhere to the management plan.
    */
   public boolean willStartWeightManagement(Person person, long time) {
+    Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
+    if (kgToGain != null && ((double) kgToGain) > 0.0) {
+      // If the person should be gaining weight, they should not start weight loss.
+      return false;
+    }
+    if (person.attributes.get(TRIGGER_WEIGHT_LOSS) != null
+        && ((boolean) person.attributes.get(TRIGGER_WEIGHT_LOSS))) {
+      return true;
+    }
     if (meetsWeightManagementThresholds(person, time)) {
       return person.rand() <= startWeightManagementProb;
     }

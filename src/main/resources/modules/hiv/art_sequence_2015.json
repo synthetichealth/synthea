@@ -1,0 +1,629 @@
+{
+  "name": "art_sequence_2015",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "CKD",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 4
+          }
+        },
+        {
+          "transition": "No CKD"
+        }
+      ]
+    },
+    "3TC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349491,
+          "display": "lamivudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "TDF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349251,
+          "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "distributed_transition": [
+        {
+          "transition": "3TC",
+          "distribution": 0.5
+        },
+        {
+          "transition": "FTC",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Drug 2": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2021,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "DTG",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2017,
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "DTG",
+              "distribution": 0.5
+            },
+            {
+              "transition": "RAL",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "DTG",
+              "distribution": 0.34
+            },
+            {
+              "transition": "RAL",
+              "distribution": 0.33
+            },
+            {
+              "transition": "DRV",
+              "distribution": 0.33
+            }
+          ]
+        }
+      ]
+    },
+    "FTC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 403875,
+          "display": "emtricitabine 200 MG Oral Capsule"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "FTC+TDF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 476556,
+          "display": "emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "CKD": {
+      "type": "Simple",
+      "direct_transition": "TDF"
+    },
+    "No CKD": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "date": {
+                  "year": 2019,
+                  "month": 4,
+                  "day": 8,
+                  "hour": 0,
+                  "minute": 0,
+                  "second": 0,
+                  "millisecond": 0
+                },
+                "value": 0
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hiv_rapid_start",
+                    "operator": "!=",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hiv_viral_load",
+                    "operator": "<",
+                    "value": 500000
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "DTG+3TC",
+              "distribution": 0.1
+            },
+            {
+              "transition": "3TC+TDF",
+              "distribution": 0.1
+            },
+            {
+              "transition": "FTC+TDF",
+              "distribution": 0.1
+            },
+            {
+              "transition": "FTC+TAF",
+              "distribution": 0.1
+            },
+            {
+              "transition": "BIC+TAF+FTC",
+              "distribution": 0.6
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "date": {
+              "year": 2018,
+              "month": 2,
+              "day": 7,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "millisecond": 0
+            },
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "BIC+TAF+FTC",
+              "distribution": 0.7
+            },
+            {
+              "transition": "FTC+TAF",
+              "distribution": 0.1
+            },
+            {
+              "transition": "FTC+TDF",
+              "distribution": 0.1
+            },
+            {
+              "transition": "3TC+TDF",
+              "distribution": 0.1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": "<=",
+                "year": 2018,
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 2016,
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "EVG+cobi+TDF+FTC",
+              "distribution": 0.2
+            },
+            {
+              "transition": "3TC+TDF",
+              "distribution": 0.2
+            },
+            {
+              "transition": "FTC+TDF",
+              "distribution": 0.2
+            },
+            {
+              "transition": "FTC+TAF",
+              "distribution": 0.2
+            },
+            {
+              "transition": "EVG+cobi+FTC+TAF",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "EVG+cobi+TDF+FTC",
+              "distribution": 0.34
+            },
+            {
+              "transition": "3TC+TDF",
+              "distribution": 0.33
+            },
+            {
+              "transition": "FTC+TDF",
+              "distribution": 0.33
+            }
+          ]
+        }
+      ]
+    },
+    "EVG+cobi+TDF+FTC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1306292,
+          "display": "cobicistat 150 MG / elvitegravir 150 MG / emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Terminal"
+    },
+    "RAL": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 744842,
+          "display": "raltegravir 400 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "DTG": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1433873,
+          "display": "dolutegravir 50 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "r": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 317150,
+          "display": "ritonavir 100 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "DRV": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1359269,
+          "display": "darunavir 800 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "r",
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      }
+    },
+    "3TC+TDF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2003249,
+          "display": "lamivudine 300 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "FTC+TAF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1747691,
+          "display": "emtricitabine 200 MG / tenofovir alafenamide 25 MG Oral Table"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Drug 2"
+    },
+    "BIC+TAF+FTC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1999667,
+          "display": "bictegravir 50 MG / emtricitabine 200 MG / tenofovir alafenamide 25 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Terminal"
+    },
+    "EVG+cobi+FTC+TAF": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1721613,
+          "display": "cobicistat 150 MG / elvitegravir 150 MG / emtricitabine 200 MG / tenofovir alafenamide 10 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Terminal"
+    },
+    "DTG+3TC": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2122519,
+          "display": "dolutegravir 50 MG / lamivudine 300 MG Oral Tablet"
+        }
+      ],
+      "reason": "hiv_diagnosis",
+      "assign_to_attribute": "ART_LateINSTI",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 12
+      },
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

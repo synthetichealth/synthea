@@ -1,0 +1,847 @@
+{
+  "name": "Allergy Incidence",
+  "remarks": [
+    "This submodule onsets various allergies and is intended to be called ",
+    "by the main allergies module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_Peanut_Allergy"
+    },
+    "Chance_of_Peanut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " PEANUT ALLERGY                                                       ",
+        "======================================================================",
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Peanut_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_TreeNut_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Peanut_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "762952008",
+          "display": "Peanut (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.21},
+            {"level":  "none", "value":  0.79}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.58},
+            {"level":  "none", "value":  0.42000000000000004}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.4},
+            {"level":  "none", "value":  0.6}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.67},
+            {"level":  "none", "value":  0.32999999999999996}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.18},
+            {"level":  "none", "value":  0.8200000000000001}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.32},
+            {"level":  "none", "value":  0.6799999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.27},
+            {"level":  "none", "value":  0.73}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "62315008", "display":  "Diarrhea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.13},
+            {"level":  "none", "value":  0.87}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "56018004", "display":  "Wheezing (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.37},
+            {"level":  "none", "value":  0.63}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_TreeNut_Allergy"
+    },
+    "Chance_of_TreeNut_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " NUT ALLERGY                                                          ",
+        "======================================================================",
+        "Allergy to peanuts and tree nuts in the general population is, respectively, 0.6 percent and 0.4 percent, ",
+        "with the rate in children under age 18 (0.8 percent and 0.2 percent) slightly different from adults (0.6 percent and 0.5 percent respectively). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "TreeNut_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Fish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "TreeNut_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "442571000124108",
+          "display": "Tree nut (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.4},
+            {"level":  "none", "value":  0.6}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.91},
+            {"level":  "none", "value":  0.08999999999999997}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.48},
+            {"level":  "none", "value":  0.52}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.98},
+            {"level":  "none", "value":  0.020000000000000018}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.74},
+            {"level":  "none", "value":  0.26}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.98},
+            {"level":  "none", "value":  0.020000000000000018}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.24},
+            {"level":  "none", "value":  0.76}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.33},
+            {"level":  "none", "value":  0.6699999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.9},
+            {"level":  "none", "value":  0.09999999999999998}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Fish_Allergy"
+    },
+    "Chance_of_Fish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " FISH ALLERGY                                                         ",
+        "======================================================================",
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.004,
+              "transition": "Fish_Allergy"
+            },
+            {
+              "distribution": 0.996,
+              "transition": "Chance_of_Shellfish_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Fish_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "735971005",
+          "display": "Fish (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.67},
+            {"level":  "none", "value":  0.32999999999999996}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.83},
+            {"level":  "none", "value":  0.17000000000000004}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.33},
+            {"level":  "none", "value":  0.6699999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.5},
+            {"level":  "none", "value":  0.5}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Shellfish_Allergy"
+    },
+    "Chance_of_Shellfish_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SHELLFISH ALLERGY                                                    ",
+        "======================================================================",
+        "The prevalence of seafood allergy in the general population is 0.4 percent to fish, 2.0 percent to shellfish and 0.2 percent to both.",
+        "Seafood allergy is less common in children (0.6 percent) than adults (2.8 percent). "
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Shellfish_Allergy"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "Chance_of_Wheat_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Shellfish_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "735029006",
+          "display": "Shellfish (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.58},
+            {"level":  "none", "value":  0.42000000000000004}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.55},
+            {"level":  "none", "value":  0.44999999999999996}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.27},
+            {"level":  "none", "value":  0.73}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.58},
+            {"level":  "none", "value":  0.42000000000000004}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.35},
+            {"level":  "none", "value":  0.65}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.82},
+            {"level":  "none", "value":  0.18000000000000005}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.04},
+            {"level":  "none", "value":  0.96}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.57},
+            {"level":  "none", "value":  0.43000000000000005}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "62315008", "display":  "Diarrhea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.5},
+            {"level":  "none", "value":  0.5}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "422587007", "display":  "Nausea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.3},
+            {"level":  "none", "value":  0.7}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Wheat_Allergy"
+    },
+    "Chance_of_Wheat_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " WHEAT ALLERGY                                                        ",
+        "======================================================================",
+        "Wheat allergy is different than celiac disease. There are few studies on prevalence of wheat allergy.",
+        "A recent study 0.4% of US adults reported an allergy to wheat diagnosed via a doctor [6]. The prevalence ",
+        "of wheat allergy is highest amongst children in the US, ranging from 0.4% to 1.0% of the population.",
+        "http://www.drschaer-institute.com/us/wheat-allergy/epidemiology-1043.html",
+        "Wheat allergy is typically outgrown by adulthood — about 65 percent of children with a wheat allergy ",
+        "will outgrow it by the time they are 12. Based on prevalences we assume that adult onset of ",
+        "the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Wheat_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Eggs_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Wheat_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "412071004",
+          "display": "Wheat (substance)"
+        }
+      ],
+      "reaction": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.21},
+            {"level":  "none", "value":  0.79}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.25},
+            {"level":  "none", "value":  0.75}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.9},
+            {"level":  "none", "value":  0.09999999999999998}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "62315008", "display":  "Diarrhea (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.21},
+            {"level":  "none", "value":  0.79}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Eggs_Allergy"
+    },
+    "Chance_of_Eggs_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " EGG ALLERGY                                                          ",
+        "======================================================================",
+        "Experts estimate that as many as 2 percent of children are allergic to eggs. ",
+        "Fortunately, studies show that about 70 percent of children with an egg allergy ",
+        "will outgrow the condition by age 16.",
+        "http://acaai.org/allergies/types/food-allergies/types-food-allergy/egg-allergy",
+        "Based on prevalences we assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Chance_of_Soy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.006,
+              "transition": "Eggs_Allergy"
+            },
+            {
+              "distribution": 0.994,
+              "transition": "Chance_of_Soy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Eggs_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "102263004",
+          "display": "Eggs (edible) (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value":  0.09},
+            {"level":  "none", "value":  0.91}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.05},
+            {"level":  "none", "value":  0.95}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.12},
+            {"level":  "none", "value":  0.88}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.46},
+            {"level":  "none", "value":  0.54}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value":  0.05},
+            {"level":  "none", "value":  0.95}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Soy_Allergy"
+    },
+    "Chance_of_Soy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " SOY ALLERGY                                                          ",
+        "======================================================================",
+        "Soy allergies are uncommon but closely related to peanut and milk allergies. ",
+        "http://www.soyconnection.com/newsletters/soy-connection/health-nutrition/articles/Estimating-Prevalence-Of-Soy-Protein-Allergy"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Soy_Allergy"
+            },
+            {
+              "distribution": 0.9,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.002,
+              "transition": "Soy_Allergy"
+            },
+            {
+              "distribution": 0.998,
+              "transition": "Chance_of_Dairy_Allergy"
+            }
+          ]
+        }
+      ]
+    },
+    "Soy_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "256355007",
+          "display": "Soya bean (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.07},
+            {"level":  "none", "value":  0.9299999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.5},
+            {"level":  "none", "value":  0.5}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "62315008", "display":  "Diarrhea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.5},
+            {"level":  "none", "value":  0.5}
+          ]
+        }
+      ],
+      "direct_transition": "Chance_of_Dairy_Allergy"
+    },
+    "Chance_of_Dairy_Allergy": {
+      "type": "Simple",
+      "remarks": [
+        "======================================================================",
+        " DAIRY ALLERGY                                                        ",
+        "======================================================================",
+        "The prevalence of dairy/milk allergy in the general population is 1-2% for young ",
+        "children and 0.2-0.4% in the general population. About 80 percent of children are ",
+        "likely to outgrow their milk allergy before they are 16. Based on prevalence we ",
+        "assume that adult onset of the allergy is rare enough to ignore."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "atopic",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.75,
+              "transition": "Food_Allergy_Incidence_Terminal"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.0015,
+              "transition": "Dairy_Allergy"
+            },
+            {
+              "distribution": 0.9985,
+              "transition": "Food_Allergy_Incidence_Terminal"
+            }
+          ]
+        }
+      ]
+    },
+    "Dairy_Allergy": {
+      "type": "AllergyOnset",
+      "allergy_type": "allergy",
+      "category": "food",
+      "target_encounter": "Allergist_Initial_Visit",
+      "assign_to_attribute": "food_allergy",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "3718001",
+          "display": "Cow's milk (substance)"
+        }
+      ],
+      "reactions": [
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.07},
+            {"level":  "none", "value":  0.9299999999999999}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.62},
+            {"level":  "none", "value":  0.38}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "possible_severities": [
+            {"level":  "severe", "value": 0.09},
+            {"level":  "none", "value":  0.91}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.04},
+            {"level":  "none", "value":  0.96}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "300359004", "display":  "Finding of vomiting (finding)"},
+          "possible_severities": [
+            {"level":  "moderate", "value": 0.2},
+            {"level":  "none", "value":  0.8}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "62315008", "display":  "Diarrhea (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.3},
+            {"level":  "none", "value":  0.7}
+          ]
+        },
+        {
+          "reaction": {"system":  "SNOMED-CT", "code": "56018004", "display":  "Wheezing (finding)"},
+          "possible_severities": [
+            {"level":  "mild", "value": 0.1},
+            {"level":  "none", "value":  0.9}
+          ]
+        }
+      ],
+      "direct_transition": "Food_Allergy_Incidence_Terminal"
+    },
+    "Food_Allergy_Incidence_Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

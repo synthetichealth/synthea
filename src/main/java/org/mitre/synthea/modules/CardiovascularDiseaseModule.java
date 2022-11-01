@@ -16,14 +16,13 @@ import org.mitre.synthea.modules.risk_calculators.ASCVD;
 import org.mitre.synthea.modules.risk_calculators.Framingham;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
-
-import org.mitre.synthea.world.concepts.VitalSign;
 
 public final class CardiovascularDiseaseModule extends Module {
   public CardiovascularDiseaseModule() {
@@ -191,9 +190,6 @@ public final class CardiovascularDiseaseModule extends Module {
   ////////////////////
   // MIGRATED RULES //
   ////////////////////
-  private static int bound(int value, int min, int max) {
-    return Math.min(Math.max(value, min), max);
-  }
 
   private static final long tenYearsInMS = TimeUnit.DAYS.toMillis(3650);
   private static final long oneMonthInMS = TimeUnit.DAYS.toMillis(30); // roughly
@@ -377,7 +373,6 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-
   /**
    * Depending on gender, age, smoking status, and various comorbidities (e.g. diabetes,
    * coronary heart disease, atrial fibrillation), this function calculates the risk
@@ -428,7 +423,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("coronary_heart_disease", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time, true);
+        giveMedication(med, person, time, true);
       }
     } else {
       for (String med : meds) {
@@ -450,7 +445,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
     if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
       for (String med : meds) {
-        prescribeMedication(med, person, time, true);
+        giveMedication(med, person, time, true);
       }
 
       // catheter ablation is a more extreme measure than electrical cardioversion and is usually
@@ -486,9 +481,27 @@ public final class CardiovascularDiseaseModule extends Module {
     }
   }
 
-  private static void prescribeMedication(String med, Person person, long time, boolean chronic) {
-    Medication entry = person.record.medicationStart(time, med, chronic);
-    entry.codes.add(LOOKUP.get(med));
+  /**
+   * Add a prescription.
+   * @param med The medication key, corresponding to a value in the LOOKUP table.
+   * @param person The patient.
+   * @param time The time the medication was given or prescribed.
+   * @param rx If true, prescribe as a chronic medication.
+   *     If false, administer the drug immediately.
+   */
+  private static void giveMedication(String med, Person person, long time, boolean rx) {
+    Medication entry;
+    if (rx) {
+      entry = person.record.medicationStart(time, med, rx);
+    } else {
+      entry = person.record.medicationAdministration(time, med);
+    }
+    HealthRecord.Code medicationCode = LOOKUP.get(med);
+    if (! entry.containsCode(medicationCode.code, medicationCode.system)) {
+      entry.codes.add(medicationCode);
+    }
+    entry.claim.assignCosts();
+
     // increment number of prescriptions prescribed
     Encounter encounter = (Encounter) person.attributes.get(CVD_ENCOUNTER);
     if (encounter != null) {
@@ -511,7 +524,9 @@ public final class CardiovascularDiseaseModule extends Module {
           && !person.record.present.containsKey(diagnosis)) {
         Code code = LOOKUP.get(diagnosis);
         Entry conditionEntry = person.record.conditionStart(time, code.display);
-        conditionEntry.codes.add(code);
+        if (! conditionEntry.containsCode(code.code, code.system)) {
+          conditionEntry.codes.add(code);
+        }
       }
     }
 
@@ -554,7 +569,7 @@ public final class CardiovascularDiseaseModule extends Module {
     condition.codes.add(LOOKUP.get(diagnosis));
 
     for (String med : filter_meds_by_year(EMERGENCY_MEDS.get(diagnosis), time)) {
-      prescribeMedication(med, person, time, false);
+      giveMedication(med, person, time, false);
       person.record.medicationEnd(time + TimeUnit.MINUTES.toMillis(15), med,
           LOOKUP.get("stop_drug"));
     }
@@ -594,7 +609,7 @@ public final class CardiovascularDiseaseModule extends Module {
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.
-   * 
+   *
    * @return Collection of all codes and concepts this module uses
    */
   public static Collection<Code> getAllCodes() {

@@ -2,14 +2,21 @@ package org.mitre.synthea.helpers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.gson.JsonPrimitive;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.commons.lang3.Range;
 import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
+
 
 public class UtilitiesTest {
 
@@ -37,7 +44,7 @@ public class UtilitiesTest {
     int earlierYear = Utilities.getYear(earlierTime);
     assertEquals(gap, (year - earlierYear));
   }
-  
+
   @Test
   public void testFractionalDurations() {
     assertEquals(500, Utilities.convertTime("seconds", 0.5));
@@ -174,10 +181,10 @@ public class UtilitiesTest {
       assertTrue(message, d.equals(Utilities.primitive(p)));
     }
   }
-  
+
   @Test
   public void testStrToObject() {
-    
+
     assertEquals(true, Utilities.strToObject(Boolean.class, "true"));
     assertEquals(true, Utilities.strToObject(Boolean.TYPE, "true"));
     assertEquals((byte) 2, Utilities.strToObject(Byte.class, "2"));
@@ -220,5 +227,27 @@ public class UtilitiesTest {
     // Trying to parse a non-primitive class type results in an
     // IllegalArgumentException
     Utilities.strToObject(Date.class, "oops");
+  }
+
+  @Test
+  public void parseDateRange() {
+    String testRange = "2020-09-05-2021-08-03";
+    long start = LocalDateTime.of(2020, 9, 5, 0, 0)
+        .toInstant(ZoneOffset.UTC).toEpochMilli();
+    long end = LocalDateTime.of(2021, 8, 4, 0, 0)
+        .toInstant(ZoneOffset.UTC).toEpochMilli() - 1;
+    Range<Long> result = Utilities.parseDateRange(testRange);
+    assertEquals(start, (long) result.getMinimum());
+    assertEquals(end, (long) result.getMaximum());
+    testRange = "1599264000000-1628035199999";
+    result = Utilities.parseDateRange(testRange);
+    assertEquals(start, (long) result.getMinimum());
+    assertEquals(end, (long) result.getMaximum());
+    try {
+      Utilities.parseDateRange("silliness");
+      fail("Should not reach here, exception should be thrown.");
+    } catch (IllegalArgumentException iae) {
+      assertNotNull(iae);
+    }
   }
 }

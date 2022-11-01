@@ -1,0 +1,976 @@
+{
+  "name": "hiv_care",
+  "remarks": [
+    "Placeholder.",
+    "",
+    "This module supplements the automatic built-in immunization module with additional boosters for at-risk populations.",
+    "",
+    "You can review and examine the built-in immunization schedule here:",
+    "https://github.com/synthetichealth/synthea/blob/master/src/main/resources/immunization_schedule.json",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait"
+    },
+    "Wait": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "hiv_diagnosis",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Check Treatment"
+    },
+    "Baseline Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Set Baseline",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_30_day_linkage",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Record Over Thirty Day Linkage"
+        }
+      ]
+    },
+    "Check Treatment": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Continuous_ART",
+          "default_probability": 0.645,
+          "lookup_table_name": "hiv_care.csv"
+        },
+        {
+          "transition": "Non_Continuous_ART",
+          "default_probability": 0.355,
+          "lookup_table_name": "hiv_care.csv"
+        }
+      ]
+    },
+    "Set Baseline": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_baseline",
+      "direct_transition": "End Baseline Encounter"
+    },
+    "End Baseline Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Rapid Start Check"
+    },
+    "Non_Continuous_ART": {
+      "type": "SetAttribute",
+      "attribute": "hiv_continuous_art",
+      "value": false,
+      "direct_transition": "Linkage Check"
+    },
+    "Continuous_ART": {
+      "type": "SetAttribute",
+      "attribute": "hiv_continuous_art",
+      "direct_transition": "Linkage Check",
+      "value": true
+    },
+    "Short Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 4,
+          "low": 3
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Monitoring Encounter"
+    },
+    "Long Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 6,
+          "low": 4
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Monitoring Encounter"
+    },
+    "Treatment Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Exam"
+    },
+    "CD4_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_cd4",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_rapid_start",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "End Treatment Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Medication_Submodule"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Medication_Submodule",
+              "distribution": 0.8
+            },
+            {
+              "transition": "End Treatment Encounter",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "HIV_Viral_Load_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_viral_load",
+      "direct_transition": "CBC"
+    },
+    "Medication_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence",
+      "direct_transition": "End Treatment Encounter"
+    },
+    "End Treatment Encounter": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Short Delay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Long Delay"
+        }
+      ]
+    },
+    "Linkage Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 13,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 24,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Within 30 Days",
+              "distribution": 0.78
+            },
+            {
+              "transition": "Long Encounter Delay",
+              "distribution": 0.22
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 25,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 34,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Within 30 Days",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Long Encounter Delay",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 35,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [
+            {
+              "transition": "Within 30 Days",
+              "distribution": 0.83
+            },
+            {
+              "transition": "Long Encounter Delay",
+              "distribution": 0.17
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Long Encounter Delay"
+        }
+      ]
+    },
+    "Long Encounter Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 90,
+          "low": 32
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Baseline Encounter"
+    },
+    "Short Encounter Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 0
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Baseline Encounter"
+    },
+    "Medium Encounter Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 0
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Baseline Encounter"
+    },
+    "Rapid Start": {
+      "type": "SetAttribute",
+      "attribute": "hiv_rapid_start",
+      "direct_transition": "Short Encounter Delay",
+      "value": true
+    },
+    "Within 30 Days": {
+      "type": "SetAttribute",
+      "attribute": "hiv_30_day_linkage",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 2016,
+                "value": 0
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_continuous_art",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Rapid Start",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Medium Encounter Delay",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Medium Encounter Delay"
+        }
+      ],
+      "value": true
+    },
+    "Rapid Start Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Delay Until Telephone",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_rapid_start",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Treatment"
+        }
+      ]
+    },
+    "Delay Until Telephone": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 24
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Telephone Encounter"
+    },
+    "Telephone Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Wait for Treatment"
+    },
+    "Wait for Treatment": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 56,
+          "low": 8
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Treatment Encounter"
+    },
+    "Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 67879005,
+          "display": "History and physical examination, limited (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "conditional_transition": [
+        {
+          "transition": "HIV_Viral_Load_Submodule",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1996,
+            "value": 0
+          }
+        },
+        {
+          "transition": "CBC"
+        }
+      ]
+    },
+    "CBC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 9564003,
+          "display": "Complete blood count with white cell differential, automated (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "CD4_Submodule",
+      "reason": "hiv_diagnosis"
+    },
+    "Monitoring Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "hiv_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Monitoring Exam"
+    },
+    "Monitoring Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 67879005,
+          "display": "History and physical examination, limited (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring_HIV_Viral_Load",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1996,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Monitoring CD4 Check"
+        }
+      ]
+    },
+    "Monitoring_HIV_Viral_Load": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_viral_load",
+      "direct_transition": "Monitoring CD4 Check"
+    },
+    "Monitoring_CD4_Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_cd4",
+      "direct_transition": "Monitoring Medication"
+    },
+    "Monitoring CBC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 9564003,
+          "display": "Complete blood count with white cell differential, automated (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "reason": "hiv_diagnosis",
+      "direct_transition": "Monitoring_CD4_Submodule"
+    },
+    "Monitoring Medication": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/hiv_oi_prophylaxis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hiv_continuous_art",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "ART Sequence"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ART Sequence",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Vaccine Check",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "Monitoring Encounter End": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Long Delay",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hiv_continuous_art",
+                    "operator": "is nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hiv_continuous_art",
+                    "operator": "==",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "hiv_continuous_art",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Not",
+                        "condition": {
+                          "condition_type": "PriorState",
+                          "name": "Wait",
+                          "within": {
+                            "quantity": 2,
+                            "unit": "years"
+                          }
+                        }
+                      },
+                      {
+                        "condition_type": "And",
+                        "conditions": [
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "hiv_viral_suppression",
+                            "operator": "==",
+                            "value": true
+                          },
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "hiv_cd4",
+                            "operator": ">",
+                            "value": 300
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Short Delay"
+        }
+      ]
+    },
+    "Monitoring CD4 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring Medication",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "hiv_continuous_art",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Not",
+                    "condition": {
+                      "condition_type": "PriorState",
+                      "name": "Wait",
+                      "within": {
+                        "quantity": 2,
+                        "unit": "years"
+                      }
+                    }
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "hiv_viral_suppression",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "And",
+                        "conditions": [
+                          {
+                            "condition_type": "PriorState",
+                            "name": "Monitoring_CD4_Submodule",
+                            "within": {
+                              "quantity": 12,
+                              "unit": "months"
+                            }
+                          },
+                          {
+                            "condition_type": "Attribute",
+                            "attribute": "hiv_cd4",
+                            "operator": ">",
+                            "value": 300
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Monitoring CBC"
+        }
+      ]
+    },
+    "Record Over Thirty Day Linkage": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 373786007,
+          "display": "Reasons for treatment delay (finding)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Set Baseline",
+      "reason": "hiv_diagnosis"
+    },
+    "Tdap Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "MenACWY Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer Tdap",
+            "within": {
+              "quantity": 10,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer Tdap"
+        }
+      ]
+    },
+    "Administer Tdap": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 115,
+          "display": "tetanus toxoid, reduced diphtheria toxoid, and acellular pertussis vaccine, adsorbed"
+        }
+      ],
+      "direct_transition": "MenACWY Check"
+    },
+    "MenACWY Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "PCV13 Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer MenACWY",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer MenACWY"
+        }
+      ]
+    },
+    "Administer MenACWY": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 114,
+          "display": "meningococcal polysaccharide (groups A, C, Y and W-135) diphtheria toxoid conjugate vaccine (MCV4P)"
+        }
+      ],
+      "direct_transition": "PCV13 Check"
+    },
+    "Administer PPSV23": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 33,
+          "display": "pneumococcal polysaccharide vaccine, 23 valent"
+        }
+      ],
+      "direct_transition": "Zoster Check"
+    },
+    "Zoster Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring Encounter End",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer Zoster"
+          }
+        },
+        {
+          "transition": "Administer Zoster",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": ">=",
+                "quantity": 18,
+                "unit": "years",
+                "value": 0
+              },
+              {
+                "condition_type": "Date",
+                "operator": ">=",
+                "year": 2017,
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Monitoring Encounter End"
+        }
+      ]
+    },
+    "Administer Zoster": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 187,
+          "display": "zoster vaccine recombinant"
+        }
+      ],
+      "direct_transition": "Monitoring Encounter End"
+    },
+    "Under 65": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PCV13",
+            "within": {
+              "quantity": 8,
+              "unit": "weeks"
+            }
+          }
+        },
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PPSV23",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer PPSV23"
+        }
+      ]
+    },
+    "65 and Up": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Zoster Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PPSV23",
+            "within": {
+              "quantity": 5,
+              "unit": "years"
+            }
+          }
+        },
+        {
+          "transition": "Administer PPSV23"
+        }
+      ]
+    },
+    "PCV13 Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Age Check",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Administer PCV13"
+          }
+        },
+        {
+          "transition": "Administer PCV13"
+        }
+      ]
+    },
+    "Age Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "65 and Up",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 65,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Under 65"
+        }
+      ]
+    },
+    "Administer PCV13": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": 133,
+          "display": "pneumococcal conjugate vaccine, 13 valent"
+        }
+      ],
+      "direct_transition": "Age Check"
+    },
+    "Vaccine Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Monitoring Encounter End",
+          "condition": {
+            "condition_type": "Date",
+            "operator": "<",
+            "year": 2010,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Tdap Check"
+        }
+      ]
+    },
+    "ART Sequence": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence",
+      "direct_transition": "Vaccine Check"
+    }
+  },
+  "gmf_version": 2
+}

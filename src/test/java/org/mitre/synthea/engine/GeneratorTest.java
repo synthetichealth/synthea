@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -25,8 +24,10 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.Exporter.SupportedFhirVersion;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.geography.Location;
@@ -53,9 +54,9 @@ public class GeneratorTest {
   public void before() throws Exception {
     Config.set("generate.only_dead_patients", "false");
     Provider.clear();
-    Payer.clear();
+    PayerManager.clear();
   }
-  
+
   @Test
   public void testGeneratorCreatesPeople() throws Exception {
     int numberOfPeople = 1;
@@ -90,14 +91,15 @@ public class GeneratorTest {
     generator.run();
     assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
   }
-  
+
   @Test
   public void testGenerateOnlyDeadPatients() throws Exception {
     Config.set("generate.only_dead_patients", "true");
     int numberOfPeople = 2;
     Generator generator = new Generator(numberOfPeople);
     generator.options.ageSpecified = true;
-    generator.options.minAge = 50; // specify a high age to increase exposure to modules that cause death
+    generator.options.minAge = 50; // specify a high age to increase exposure
+    //                                to modules that cause death
     generator.run();
     assertEquals(0, generator.stats.get("alive").longValue());
     assertEquals(numberOfPeople, generator.stats.get("dead").longValue());
@@ -133,13 +135,19 @@ public class GeneratorTest {
       assertEquals(Generator.DEFAULT_STATE, p.attributes.get(Person.STATE));
     }
   }
-  
+
   @Test
   public void testGeneratePeopleByLocation() throws Exception {
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
     String testTownDefault = Config.get("test_town.default", "Bedford");
     String testStateAlt = Config.get("test_state.alternative", "California");
     String testTownAlt = Config.get("test_town.alternative", "South Gate");
+    Config.set("generate.payers.insurance_companies.default_file",
+        "generic/payers/test_payers.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "generic/payers/test_plans.csv");
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testStateAlt, testTownAlt));
 
     int numberOfPeople = 2;
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
@@ -156,6 +164,9 @@ public class GeneratorTest {
       assertTrue(zipCodes.contains(p.attributes.get(Person.ZIP)));
     }
 
+    PayerManager.clear();
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+
     opts = new Generator.GeneratorOptions();
     opts.population = numberOfPeople;
     opts.state = testStateDefault;
@@ -170,7 +181,7 @@ public class GeneratorTest {
       assertTrue(zipCodes.contains(p.attributes.get(Person.ZIP)));
     }
   }
-  
+
   @Test
   public void testDemographicsRetry() throws Exception {
     // confirm that the demographic choices will persist if the first generated patients die
@@ -183,19 +194,19 @@ public class GeneratorTest {
     generator.internalStore = new LinkedList<>();
     for (int i = 0; i < numberOfPeople; i++) {
       Person person = generator.generatePerson(i);
-      
+
       // the person returned will be last in the internalStore
       int personIndex = generator.internalStore.size() - 1;
-      
+
       for (int j = personIndex - 1; j >= 0; j--) { //
         Person compare = generator.internalStore.get(j);
-        
+
         // basic demographics should always be exactly the same
         assertEquals(person.attributes.get(Person.CITY), compare.attributes.get(Person.CITY));
         assertEquals(person.attributes.get(Person.RACE), compare.attributes.get(Person.RACE));
-        
+
         long expectedBirthdate;
-        
+
         if (personIndex < 10) {
           // less than 10 attempts were made, so all of them should match exactly
           expectedBirthdate = (long)person.attributes.get(Person.BIRTHDATE);
@@ -210,14 +221,14 @@ public class GeneratorTest {
           // in this case, ensure the first 10 match index 0 (which the loop will take care of)
           expectedBirthdate = (long)generator.internalStore.get(0).attributes.get(Person.BIRTHDATE);
         }
-        
+
         assertEquals(expectedBirthdate, (long)compare.attributes.get(Person.BIRTHDATE));
       }
-      
+
       generator.internalStore.clear();
     }
   }
-  
+
   @Test
   public void testGenerateRecordQueue() throws Exception {
     int numberOfPeople = 10;
@@ -248,7 +259,7 @@ public class GeneratorTest {
 
     if (count < numberOfPeople) {
       // Generator thread terminated but we have not gotten enough records yet. Check queue.
-      if (!ero.isRecordQueueEmpty()) {      
+      if (!ero.isRecordQueueEmpty()) {
         ero.getNextRecord();
         ++count;
       }
@@ -258,7 +269,7 @@ public class GeneratorTest {
 
     generateThread.interrupt();
   }
-  
+
   @Test
   public void testUpdateAfterCreation() throws Exception {
     // Get 100 people
@@ -271,19 +282,19 @@ public class GeneratorTest {
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      RandomNumberGenerator random = new DefaultRandomNumberGenerator(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(random);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       generator.recordPerson(people[i], i);
     }
-    
+
     // Update them for 10 years in the future
     generator.stop = generator.stop + Utilities.convertTime("years", 10);
     for (Person p: people) {
       generator.updatePerson(p);
     }
   }
-  
+
   /**
    * Serialize an array of people, then deserialize and return them. Note that when serializing
    * more than one person it is much more efficient to serialize them within a collection since
@@ -301,13 +312,13 @@ public class GeneratorTest {
     oos.writeObject(original);
     oos.close();
     fos.close();
-    
+
     // Deserialize
     FileInputStream fis = new FileInputStream(tf);
     ObjectInputStream ois = new ObjectInputStream(fis);
     Person[] rehydrated = (Person[]) ois.readObject();
     ois.close();
-    
+
     return rehydrated;
   }
 
@@ -321,32 +332,32 @@ public class GeneratorTest {
       System.out.println("Set config physiology.generators.enabled=false to enable this test");
       return;
     }
-    
-    // Get 100 people
+
+    // Get 10 people
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = 1;
     opts.minAge = 50;
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
-    final int NUM_RECS = 100;
+    final int NUM_RECS = 10;
     Person[] people = new Person[NUM_RECS];
     for (int i = 0; i < NUM_RECS; i++) {
       long personSeed = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
-      Random randomForDemographics = new Random(personSeed);
-      Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+      RandomNumberGenerator random = new DefaultRandomNumberGenerator(personSeed);
+      Map<String, Object> demoAttributes = generator.randomDemographics(random);
       people[i] = generator.createPerson(personSeed, demoAttributes);
       //generator.recordPerson(people[i], i);
     }
-    
+
     people = serializeAndDeserialize(people);
-    
+
     // Update them for 10 years in the future
     generator.stop = generator.stop + Utilities.convertTime("years", 10);
     for (Person p: people) {
       generator.updatePerson(p);
     }
   }
-  
+
   @Test
   public void testKeepPatientsModule() throws Exception {
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
@@ -356,7 +367,7 @@ public class GeneratorTest {
     opts.ageSpecified = true;
     opts.keepPatientsModulePath = new File("src/test/resources/keep_patients_module/keep.json");
     // keep module checks that patients have attribute diabetes == true
-    
+
     Generator generator = new Generator(opts);
     for (int i = 0; i < opts.population; i++) {
       Person p = generator.generatePerson(i);

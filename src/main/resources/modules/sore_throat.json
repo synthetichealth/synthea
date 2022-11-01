@@ -432,16 +432,16 @@
       "type": "Simple",
       "conditional_transition": [
         {
+          "transition": "Adult_Allergy_Check",
           "condition": {
             "condition_type": "Age",
-            "operator": "<",
+            "operator": ">",
             "quantity": 18,
             "unit": "years"
-          },
-          "transition": "Prescribe_Antibiotics_Child"
+          }
         },
         {
-          "transition": "Prescribe_Antibiotics_Adult"
+          "transition": "Pediatric_Allergy_Check"
         }
       ]
     },
@@ -619,7 +619,73 @@
       "type": "MedicationEnd",
       "referenced_by_attribute": "Sore Throat Antibiotic",
       "direct_transition": "Potential_Infection"
+    },
+    "Pediatric_Allergy_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Prescribe_Alternate_Pediatric",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Prescribe_Antibiotics_Child"
+        }
+      ]
+    },
+    "Adult_Allergy_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Prescribe_Alternate_Adult",
+          "condition": {
+            "condition_type": "Active Allergy",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "7984",
+                "display": "Penicillin V"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Prescribe_Antibiotics_Adult"
+        }
+      ]
+    },
+    "Prescribe_Alternate_Adult": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 212446,
+          "display": "Azithromycin 250mg"
+        }
+      ],
+      "assign_to_attribute": "Sore Throat Antibiotic",
+      "direct_transition": "End_Encounter"
+    },
+    "Prescribe_Alternate_Pediatric": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284215,
+          "display": "Clindamycin 300mg"
+        }
+      ],
+      "direct_transition": "End_Encounter",
+      "assign_to_attribute": "Sore Throat Antibiotic"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }

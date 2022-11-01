@@ -13,7 +13,9 @@
     "The National Health Interview Survey reports the prevalence of emphysema",
     "at 18 cases per 1000 persons and chronic bronchitis at 34 cases per 1000 persons",
     "The term COPD was first used in the 1960s https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2706597/ ",
-    "the terms bronchitis and emphysema have been around longer"
+    "the terms bronchitis and emphysema have been around longer",
+    "Oxygen Concentrators: \"States also varied significantly in the number of oxygen concentrators prescribed, ranging from 0.51% to 8.20% of the local Medicare population.\" -- doi:10.1001/jamanetworkopen.2021.29967",
+    "DME based on analysis of 898K oxygen-related claim lines."
   ],
   "states": {
     "Initial": {
@@ -450,7 +452,7 @@
             },
             {
               "distribution": 0.0424,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -478,7 +480,7 @@
             },
             {
               "distribution": 0.06,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -502,7 +504,7 @@
             },
             {
               "distribution": 0.08,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -550,7 +552,7 @@
             },
             {
               "distribution": 0.01,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -574,7 +576,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         },
@@ -598,7 +600,7 @@
             },
             {
               "distribution": 0.02,
-              "transition": "Death"
+              "transition": "Hospice Check"
             }
           ]
         }
@@ -785,25 +787,12 @@
               }
             ]
           },
-          "transition": "End_COPD_Followup_Enc1"
+          "transition": "Check Oxygen"
         },
         {
-          "transition": "Prescribe_Medication"
+          "transition": "Prescribe_Corticosteroid"
         }
       ]
-    },
-    "Prescribe_Medication": {
-      "type": "MedicationOrder",
-      "reason": "copd_variant",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "896209",
-          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
-        }
-      ],
-      "direct_transition": "End_COPD_Followup_Enc1",
-      "chronic": true
     },
     "Consider_Surgery": {
       "type": "Simple",
@@ -972,7 +961,12 @@
     "Death": {
       "type": "Death",
       "referenced_by_attribute": "copd_variant",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 10,
+        "high": 30,
+        "unit": "days"
+      }
     },
     "Terminal": {
       "type": "Terminal"
@@ -1005,6 +999,225 @@
     "End_COPD_Followup_Enc1": {
       "type": "EncounterEnd",
       "direct_transition": "Consider_Surgery"
+    },
+    "Hospice Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Hospice",
+          "distribution": 0.4
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.6
+        }
+      ]
+    },
+    "Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_attribute": "copd_variant",
+      "direct_transition": "Death"
+    },
+    "Check Oxygen": {
+      "type": "Simple",
+      "remarks": [
+        "Ardestani ME, Abbaszadeh M. The association between forced expiratory volume in one second (FEV1) and pulse oximetric measurements of arterial oxygen saturation (SpO2) in the patients with COPD: A preliminary study. J Res Med Sci. 2014;19(3):257-261.",
+        "The study may demonstrate that oxygen saturation measured by pulse oximetry appears to be independent of the degree of airways obstruction as quantified by the FEV1; although further evidence needs to be assessed these preliminary findings."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Oxygen Systems"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Oxygen Systems",
+              "distribution": 0.08
+            },
+            {
+              "transition": "End_COPD_Followup_Enc1",
+              "distribution": 0.9199999999999999
+            }
+          ]
+        }
+      ]
+    },
+    "Prescribe_Corticosteroid": {
+      "type": "MedicationOrder",
+      "reason": "copd_variant",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "896209",
+          "display": "60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler"
+        }
+      ],
+      "direct_transition": "Prescribe_Bronchodilator",
+      "chronic": true
+    },
+    "Prescribe_Bronchodilator": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 245314,
+          "display": "albuterol 5 MG/ML Inhalation Solution"
+        }
+      ],
+      "direct_transition": "End Previous Nebulizer",
+      "reason": "copd_variant",
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 90,
+          "unit": "days"
+        },
+        "as_needed": true
+      }
+    },
+    "Nebulizer": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 170615005,
+        "display": "Home nebulizer (physical object)"
+      },
+      "direct_transition": "Check Oxygen"
+    },
+    "Oxygen System": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 336621006,
+        "display": "Oxygen concentrator (physical object)"
+      },
+      "distributed_transition": [
+        {
+          "transition": "End_Portable_Oxygen_System",
+          "distribution": 0.13
+        },
+        {
+          "transition": "End_Previous_Gaseous_Oxygen",
+          "distribution": 0.35
+        },
+        {
+          "transition": "Wheelchair Check",
+          "distribution": 0.52
+        }
+      ]
+    },
+    "Portable_Oxygen_System": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 464173000,
+        "display": "Portable oxygen concentrator (physical object)"
+      },
+      "direct_transition": "Wheelchair Check"
+    },
+    "Portable_Gaseous_Oxygen": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 261323006,
+        "display": "Portable oxygen cylinder (physical object)"
+      },
+      "direct_transition": "Wheelchair Check"
+    },
+    "Oxygen Systems": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "End_Previous_Gaseous_Oxygen",
+          "distribution": 0.073
+        },
+        {
+          "transition": "End Previous Oxygen System",
+          "distribution": 0.927
+        }
+      ]
+    },
+    "End Previous Oxygen System": {
+      "type": "DeviceEnd",
+      "direct_transition": "Oxygen System",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 336621006,
+          "display": "Oxygen concentrator (physical object)"
+        }
+      ]
+    },
+    "End_Previous_Gaseous_Oxygen": {
+      "type": "DeviceEnd",
+      "direct_transition": "Portable_Gaseous_Oxygen",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 261323006,
+          "display": "Portable oxygen cylinder (physical object)"
+        }
+      ]
+    },
+    "End_Portable_Oxygen_System": {
+      "type": "DeviceEnd",
+      "direct_transition": "Portable_Oxygen_System",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 464173000,
+          "display": "Portable oxygen concentrator (physical object)"
+        }
+      ]
+    },
+    "End Previous Nebulizer": {
+      "type": "DeviceEnd",
+      "direct_transition": "Nebulizer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 170615005,
+          "display": "Home nebulizer (physical object)"
+        }
+      ]
+    },
+    "Wheelchair Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair",
+          "distribution": 0.02
+        },
+        {
+          "transition": "End_COPD_Followup_Enc1",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair",
+      "direct_transition": "End_COPD_Followup_Enc1"
     }
   },
   "gmf_version": 1

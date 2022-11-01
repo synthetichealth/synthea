@@ -27,7 +27,7 @@ public abstract class Transition implements Serializable {
 
   /**
    * Get the name of the next state.
-   * 
+   *
    * @param person : person being processed
    * @param time   : time of this transition
    * @return name : name of the next state
@@ -170,15 +170,12 @@ public abstract class Transition implements Serializable {
       // Hashmap for the new lookup table.
       HashMap<LookupTableKey, List<DistributedTransitionOption>> newTable
           = new HashMap<LookupTableKey, List<DistributedTransitionOption>>();
-      
+
       // Load in this transitions's CSV file.
       String fileName = Config.get("generate.lookup_tables") + lookupTableName;
       List<? extends Map<String, String>> lookupTable = null;
       try {
-        String csv = Utilities.readResource(fileName);
-        if (csv.startsWith("\uFEFF")) {
-          csv = csv.substring(1); // Removes BOM.
-        }
+        String csv = Utilities.readResourceAndStripBOM(fileName);
         lookupTable = SimpleCSV.parse(csv);
       } catch (IOException e) {
         e.printStackTrace();
@@ -221,17 +218,7 @@ public abstract class Transition implements Serializable {
           Integer timeIndex = this.attributes.indexOf("time");
           // Remove and parse the age range.
           String value = rowAttributes.remove(timeIndex.intValue());
-          if (!value.contains("-")
-              || value.substring(0, value.indexOf("-")).length() < 1
-              || value.substring(value.indexOf("-") + 1).length() < 1) {
-            throw new RuntimeException(
-                "LOOKUP TABLE '" + fileName
-                    + "' ERROR: Time Range must be in the form: 'timeLow-timeHigh'. Found '"
-                    + value + "'");
-          }
-          timeRange = Range.between(
-              Long.parseLong(value.substring(0, value.indexOf("-"))),
-              Long.parseLong(value.substring(value.indexOf("-") + 1)));
+          timeRange = Utilities.parseDateRange(value);
         }
         // Attributes key to inert into lookup table.
         LookupTableKey attributesLookupKey =
@@ -255,7 +242,7 @@ public abstract class Transition implements Serializable {
 
       ArrayList<DistributedTransitionOption> transitionProbabilities
           = new ArrayList<DistributedTransitionOption>();
-      
+
       for (String transitionName : transitionStates) {
         if (currentRow.containsKey(transitionName)
             && transitions.stream().anyMatch(t -> t.transition.equals(transitionName))) {
@@ -356,7 +343,7 @@ public abstract class Transition implements Serializable {
      * Overides the equals method. If there is no age in this tranistion, then it just
      * returns the default List.equals(). If there is an age range, then the age
      * must fit in the range for this to return true.
-     * 
+     *
      * @param obj the object to check that this equals.
      */
     @Override

@@ -15,6 +15,7 @@ public class Distribution implements Serializable {
   }
 
   public Kind kind;
+  public Boolean round;
   public HashMap<String, Double> parameters;
 
   /**
@@ -23,13 +24,16 @@ public class Distribution implements Serializable {
    * @return The value
    */
   public double generate(Person person) {
+    double value;
     switch (this.kind) {
       case EXACT:
-        return this.parameters.get("value");
+        value = this.parameters.get("value");
+        break;
       case UNIFORM:
-        return person.rand(this.parameters.get("low"), this.parameters.get("high"));
+        value = person.rand(this.parameters.get("low"), this.parameters.get("high"));
+        break;
       case GAUSSIAN:
-        double value = (this.parameters.get("standardDeviation") * person.randGaussian())
+        value = (this.parameters.get("standardDeviation") * person.randGaussian())
             + this.parameters.get("mean");
         if (this.parameters.containsKey("min")) {
           double min = this.parameters.get("min");
@@ -43,10 +47,14 @@ public class Distribution implements Serializable {
             value = max;
           }
         }
-        return value;
+        break;
       default:
-        return -1;
+        value = -1;
     }
+    if (round != null && round.booleanValue()) {
+      value = Math.round(value);
+    }
+    return value;
   }
 
   /**

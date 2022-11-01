@@ -1,0 +1,73 @@
+{
+  "name": "wheelchair",
+  "remarks": [
+    "Assigns a manual or power wheelchair and optional accessory according to probabilities calculated from ~500K wheelchair claim lines."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "End Previous Wheelchair"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "New Wheelchair": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 228869008,
+        "display": "Manual wheelchair (physical object)"
+      },
+      "direct_transition": "Accessory Check",
+      "assign_to_attribute": "wheelchair"
+    },
+    "End Previous Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "distributed_transition": [
+        {
+          "transition": "New Wheelchair",
+          "distribution": 0.86
+        },
+        {
+          "transition": "New Power Wheelchair",
+          "distribution": 0.14
+        }
+      ]
+    },
+    "New Power Wheelchair": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705427004,
+        "display": "Power-assisted wheelchair (physical object)"
+      },
+      "direct_transition": "Accessory Check",
+      "assign_to_attribute": "wheelchair"
+    },
+    "Accessory Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Wheelchair Accessory",
+          "distribution": 0.73
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.27
+        }
+      ]
+    },
+    "Wheelchair Accessory": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705417005,
+        "display": "Wheelchair accessory (physical object)"
+      },
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "wheelchair_accessory"
+    }
+  },
+  "gmf_version": 2
+}

@@ -1,0 +1,422 @@
+{
+  "name": "amputations",
+  "remarks": [],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay_Before_Amputation"
+    },
+    "Delay_Before_Amputation": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Amputation"
+    },
+    "Amputation": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "reason": "Diagnose_Neuropathy",
+      "remarks": [
+        "lower limb amputation occurs in 0.65% of the diabetic population",
+        " with upper limb amputation occurring in an ever fewer 0.034%",
+        "http://www.amputee-coalition.org/resources/massachusetts/",
+        "== lower limb =~ 20x more likely than upper limb"
+      ],
+      "distributed_transition": [
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Left_Foot"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Left_Leg"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Right_Foot"
+        },
+        {
+          "distribution": 0.2375,
+          "transition": "Potential_Amputation_of_Right_Leg"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Left_Hand"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Left_Arm"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Right_Hand"
+        },
+        {
+          "distribution": 0.0125,
+          "transition": "Potential_Amputation_of_Right_Arm"
+        }
+      ]
+    },
+    "Potential_Amputation_of_Left_Foot": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Foot"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Leg"
+              }
+            ]
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Left_Foot"
+        }
+      ]
+    },
+    "Amputation_of_Left_Foot": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "180030006",
+          "display": "Amputation of left foot"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Foot_Amputation"
+    },
+    "Potential_Amputation_of_Right_Foot": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Foot"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Leg"
+              }
+            ]
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Right_Foot"
+        }
+      ]
+    },
+    "Amputation_of_Right_Foot": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "180030006",
+          "display": "Amputation of right foot"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Foot_Amputation"
+    },
+    "Potential_Amputation_of_Left_Leg": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Left_Leg"
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Left_Leg"
+        }
+      ]
+    },
+    "Amputation_of_Left_Leg": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "79733001",
+          "display": "Amputation of left leg"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Lower_Limb_Amputation"
+    },
+    "Potential_Amputation_of_Right_Leg": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Right_Leg"
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Right_Leg"
+        }
+      ]
+    },
+    "Amputation_of_Right_Leg": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "79733001",
+          "display": "Amputation of right leg"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Lower_Limb_Amputation"
+    },
+    "History_of_Lower_Limb_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "161622006",
+          "display": "History of lower limb amputation (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "History_of_Foot_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "429280009",
+          "display": "History of amputation of foot (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "Potential_Amputation_of_Left_Hand": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Hand"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Left_Arm"
+              }
+            ]
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Left_Hand"
+        }
+      ]
+    },
+    "Amputation_of_Left_Hand": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46028000",
+          "display": "Amputation of left hand"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Hand_Amputation"
+    },
+    "Potential_Amputation_of_Right_Hand": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Hand"
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "Amputation_of_Right_Arm"
+              }
+            ]
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Right_Hand"
+        }
+      ]
+    },
+    "Amputation_of_Right_Hand": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46028000",
+          "display": "Amputation of right hand"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Hand_Amputation"
+    },
+    "Potential_Amputation_of_Right_Arm": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Right_Arm"
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Right_Arm"
+        }
+      ]
+    },
+    "Amputation_of_Right_Arm": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "13995008",
+          "display": "Amputation of right arm"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Upper_Limb_Amputation"
+    },
+    "Potential_Amputation_of_Left_Arm": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Amputation_of_Left_Arm"
+          },
+          "transition": "End_Amputation_Encounter"
+        },
+        {
+          "transition": "Amputation_of_Left_Arm"
+        }
+      ]
+    },
+    "Amputation_of_Left_Arm": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "13995008",
+          "display": "Amputation of left arm"
+        }
+      ],
+      "duration": {
+        "low": 1,
+        "high": 4,
+        "unit": "hours"
+      },
+      "reason": "Diagnose_Neuropathy",
+      "direct_transition": "History_of_Upper_Limb_Amputation"
+    },
+    "History_of_Upper_Limb_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "161621004",
+          "display": "History of upper limb amputation (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "History_of_Hand_Amputation": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "698423002",
+          "display": "History of disarticulation at wrist (situation)"
+        }
+      ],
+      "direct_transition": "Recovery_After_Amputation"
+    },
+    "Recovery_After_Amputation": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "End_Amputation_Encounter"
+    },
+    "End_Amputation_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

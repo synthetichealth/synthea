@@ -172,6 +172,7 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "hyperlipidemia",
+      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -366,8 +367,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {
@@ -619,8 +620,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {

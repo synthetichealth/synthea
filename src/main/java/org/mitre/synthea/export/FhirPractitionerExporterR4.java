@@ -1,16 +1,12 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.parser.IParser;
+
 import com.google.common.collect.Table;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,6 +15,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Practitioner;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Clinician;
@@ -26,7 +23,7 @@ import org.mitre.synthea.world.agents.Provider;
 
 public abstract class FhirPractitionerExporterR4 {
 
-  private static final String EXTENSION_URI = 
+  private static final String EXTENSION_URI =
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
   private static final String PROC_EXTENSION_URI =
       "http://synthetichealth.github.io/synthea/utilization-procedures-extension";
@@ -71,21 +68,27 @@ public abstract class FhirPractitionerExporterR4 {
         }
       }
 
-      String bundleJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
+      File outputFolder = Exporter.getOutputFolder("fhir", null);
+      IParser parser = FhirR4.getContext().newJsonParser();
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (ndjson) {
+        Path pracFilePath = outputFolder.toPath().resolve("Practitioner." + stop + ".ndjson");
+        Path roleFilePath = outputFolder.toPath().resolve("PractitionerRole." + stop + ".ndjson");
+        for (BundleEntryComponent entry : bundle.getEntry()) {
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          if (entry.getResource().getResourceType() == ResourceType.Practitioner) {
+            Exporter.appendToFile(pracFilePath, entryJson);
+          } else {
+            Exporter.appendToFile(roleFilePath, entryJson);
+          }
+        }
+      } else {
+        parser = parser.setPrettyPrint(true);
+        Path outFilePath =
+            outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Exporter.overwriteFile(outFilePath, bundleJson);
       }
     }
   }

@@ -24,19 +24,19 @@ public class IoMapper implements Serializable {
   private String fromExp;
   private double variance;
   private VitalSign vitalSign;
-  
+
   // ExpressionProcessor instances are not thread safe, so we need
   // to have a separate processor for each thread
   private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
   private PreGenerator preGenerator;
-  
+
   private ExpressionProcessor getThreadExpProcessor() {
     if (threadExpProcessor == null) {
       threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
     }
     return threadExpProcessor.get();
   }
-  
+
   private void setThreadExpProcessor(ExpressionProcessor exp) {
     if (threadExpProcessor == null) {
       threadExpProcessor = new ThreadLocal<ExpressionProcessor>();
@@ -45,7 +45,7 @@ public class IoMapper implements Serializable {
   }
 
   public IoMapper() {}
-  
+
   /**
    * Copy constructor.
    * @param other other IoMapper instance
@@ -58,12 +58,12 @@ public class IoMapper implements Serializable {
     fromExp = other.fromExp;
     setThreadExpProcessor(other.getThreadExpProcessor());
   }
-  
+
   public enum IoType {
-    @SerializedName("Attribute") ATTRIBUTE, 
+    @SerializedName("Attribute") ATTRIBUTE,
     @SerializedName("Vital Sign") VITAL_SIGN
   }
-  
+
   public IoType getType() {
     return type;
   }
@@ -119,7 +119,7 @@ public class IoMapper implements Serializable {
   public void setPreGenerator(PreGenerator preGenerator) {
     this.preGenerator = preGenerator;
   }
-  
+
   /**
    * Retrieves the VitalSign corresponding to this IoMapper's "to" field.
    * @return target VitalSign Enum
@@ -131,7 +131,7 @@ public class IoMapper implements Serializable {
     }
     return vitalSign;
   }
-  
+
   /**
    * Initializes the expression processor if needed with all inputs
    * set as the default type (Decimal).
@@ -152,9 +152,9 @@ public class IoMapper implements Serializable {
     } catch (CqlSemanticException e) {
       throw new RuntimeException(e);
     }
-    
+
   }
-  
+
   /**
    * Populates model input parameters from the given person object.
    * @param person Person instance to get parameter values from
@@ -163,19 +163,19 @@ public class IoMapper implements Serializable {
    */
   public double toModelInputs(Person person, long time, Map<String,Double> modelInputs) {
     double resultValue;
-    
+
     ExpressionProcessor expProcessor = getThreadExpProcessor();
-    
+
     // Evaluate the expression if one is provided
     if (expProcessor != null) {
       Map<String,Object> expParams = new HashMap<String,Object>();
-      
+
       // Add all patient parameters to the expression parameter map
       for (String param : expProcessor.getParamNames()) {
         expParams.put(param, ExpressionProcessor
             .getPersonValue(param, person, time, expProcessor.getExpression()));
       }
-      
+
       // All physiology inputs should evaluate to numeric parameters
       BigDecimal result = expProcessor.evaluateNumeric(expParams);
       resultValue = result.doubleValue();
@@ -190,11 +190,11 @@ public class IoMapper implements Serializable {
         throw new IllegalArgumentException("Non-numeric attribute: \"" + from + "\"");
       }
     }
-    
+
     modelInputs.put(to, resultValue);
     return resultValue;
   }
-  
+
   /**
    * Retrieves the numeric result for this IoMapper from simulation output.
    * @param results simulation results
@@ -203,11 +203,11 @@ public class IoMapper implements Serializable {
    */
   public Object getOutputResult(MultiTable results, double leadTime) {
     ExpressionProcessor expProcessor = getThreadExpProcessor();
-    
+
     if (expProcessor != null) {
       // Evaluate the expression and return the result
       return expProcessor.evaluateFromSimResults(results, leadTime).doubleValue();
-      
+
     } else if (fromList != null) {
       // Get the column for the requested list
       Column col = results.getColumn(fromList);
@@ -215,13 +215,13 @@ public class IoMapper implements Serializable {
         throw new IllegalArgumentException("Invalid model parameter \"" + fromList
             + "\" cannot be mapped to patient value \"" + to + "\"");
       }
-      
+
       // Make it a TimeSeriesData object, which is just an ArrayList with sample
       // frequency information
       TimeSeriesData seriesData = new TimeSeriesData(results.getRowCount(),
           results.getTimePoint(1) - results.getTimePoint(0));
       col.iterator().forEachRemaining(seriesData::addValue);
-      
+
       // Return the sampled values
       return seriesData;
     } else {

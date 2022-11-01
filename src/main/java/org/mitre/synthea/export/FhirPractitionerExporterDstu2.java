@@ -6,18 +6,13 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
 import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
 import ca.uhn.fhir.model.primitive.IntegerDt;
+import ca.uhn.fhir.parser.IParser;
 
 import com.google.common.collect.Table;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,7 +22,7 @@ import org.mitre.synthea.world.agents.Provider;
 
 public abstract class FhirPractitionerExporterDstu2 {
 
-  private static final String EXTENSION_URI = 
+  private static final String EXTENSION_URI =
       "http://synthetichealth.github.io/synthea/utilization-encounters-extension";
 
   /**
@@ -65,21 +60,22 @@ public abstract class FhirPractitionerExporterDstu2 {
         }
       }
 
-      String bundleJson = FhirDstu2.getContext().newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
+      File outputFolder = Exporter.getOutputFolder("fhir_dstu2", null);
+      IParser parser = FhirDstu2.getContext().newJsonParser();
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir_dstu2");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("practitionerInformation" + stop + ".json");
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (ndjson) {
+        Path outFilePath = outputFolder.toPath().resolve("Practitioner." + stop + ".ndjson");
+        for (Bundle.Entry entry : bundle.getEntry()) {
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          Exporter.appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        parser = parser.setPrettyPrint(true);
+        Path outFilePath =
+            outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Exporter.overwriteFile(outFilePath, bundleJson);
       }
     }
   }

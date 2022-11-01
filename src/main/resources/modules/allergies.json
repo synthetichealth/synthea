@@ -24,16 +24,34 @@
         "quantity": 1,
         "unit": "weeks"
       },
-      "direct_transition": "Allergy_Incidence_Submodule"
+      "direct_transition": "Food_Allergy_Incidence_Submodule"
     },
-    "Allergy_Incidence_Submodule": {
+    "Food_Allergy_Incidence_Submodule": {
       "type": "CallSubmodule",
       "remarks": [
-        "This submodule onsets the various food and environmental allergies that ",
+        "This submodule onsets the various food allergies that ",
         "a person can get, with different incidences for atopic and non-atopic ",
         "patients."
       ],
-      "submodule": "allergies/allergy_incidence",
+      "submodule": "allergies/food_allergy_incidence",
+      "direct_transition": "Drug_Allergy_Incidence_Submodule"
+    },
+    "Drug_Allergy_Incidence_Submodule": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule onsets the various drug allergies that a person can get."
+      ],
+      "submodule": "allergies/drug_allergy_incidence",
+      "direct_transition": "Environmental_Allergy_Incidence_Submodule"
+    },
+    "Environmental_Allergy_Incidence_Submodule": {
+      "type": "CallSubmodule",
+      "remarks": [
+        "This submodule onsets the various environmental allergies that ",
+        "a person can get, with different incidences for atopic and non-atopic ",
+        "patients."
+      ],
+      "submodule": "allergies/environmental_allergy_incidence",
       "direct_transition": "Allergist_Guard"
     },
     "Allergist_Guard": {

@@ -6,18 +6,12 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
 import ca.uhn.fhir.model.dstu2.resource.Organization;
 import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
 import ca.uhn.fhir.model.primitive.IntegerDt;
+import ca.uhn.fhir.parser.IParser;
 
 import com.google.common.collect.Table;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.helpers.Config;
@@ -32,7 +26,7 @@ public abstract class HospitalExporterDstu2 {
    */
   public static void export(long stop) {
     if (Config.getAsBoolean("exporter.hospital.fhir_dstu2.export")) {
-      
+
       Bundle bundle = new Bundle();
       if (Config.getAsBoolean("exporter.fhir.transaction_bundle")) {
         bundle.setType(BundleTypeEnum.BATCH);
@@ -50,21 +44,21 @@ public abstract class HospitalExporterDstu2 {
         }
       }
 
-      String bundleJson = FhirDstu2.getContext().newJsonParser().setPrettyPrint(true)
-          .encodeResourceToString(bundle);
+      boolean ndjson = Config.getAsBoolean("exporter.fhir.bulk_data", false);
+      File outputFolder = Exporter.getOutputFolder("fhir_dstu2", null);
+      IParser parser = FhirDstu2.getContext().newJsonParser();
 
-      // get output folder
-      List<String> folders = new ArrayList<>();
-      folders.add("fhir_dstu2");
-      String baseDirectory = Config.get("exporter.baseDirectory");
-      File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();
-      f.mkdirs();
-      Path outFilePath = f.toPath().resolve("hospitalInformation" + stop + ".json");
-
-      try {
-        Files.write(outFilePath, Collections.singleton(bundleJson), StandardOpenOption.CREATE_NEW);
-      } catch (IOException e) {
-        e.printStackTrace();
+      if (ndjson) {
+        Path outFilePath = outputFolder.toPath().resolve("Organization." + stop + ".ndjson");
+        for (Bundle.Entry entry : bundle.getEntry()) {
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          Exporter.appendToFile(outFilePath, entryJson);
+        }
+      } else {
+        parser = parser.setPrettyPrint(true);
+        Path outFilePath = outputFolder.toPath().resolve("hospitalInformation" + stop + ".json");
+        String bundleJson = parser.encodeResourceToString(bundle);
+        Exporter.overwriteFile(outFilePath, bundleJson);
       }
     }
   }

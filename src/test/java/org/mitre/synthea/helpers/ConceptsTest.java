@@ -29,7 +29,7 @@ public class ConceptsTest {
   public void setup() {
     concepts = new TreeMap<Code,Set<String>>();;
   }
-  
+
   @Test
   public void testConcepts() throws Exception {
     List<String> concepts = Concepts.getConceptInventory(false);
@@ -54,10 +54,10 @@ public class ConceptsTest {
   public void testInventoryModule() throws FileNotFoundException {
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path modulePath = modulesFolder.resolve("example_module.json");
-    
+
     JsonReader reader = new JsonReader(new FileReader(modulePath.toString()));
     JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
-    
+
     // example_module has 4 codes:
     List<Code> codes = new ArrayList<Code>();
     codes.add(new Code("SNOMED-CT","123","Examplitis"));
@@ -77,30 +77,30 @@ public class ConceptsTest {
   public void testInventoryState() throws FileNotFoundException {
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path modulePath = modulesFolder.resolve("condition_onset.json");
-    
+
     JsonReader reader = new JsonReader(new FileReader(modulePath.toString()));
     JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
     JsonObject state = module.getAsJsonObject("states").getAsJsonObject("Appendicitis");
-    
+
     Concepts.inventoryState(concepts, state, module.get("name").getAsString());
-    
+
     assertEquals(1, concepts.keySet().size());
     Code code = new Code("SNOMED-CT", "47693006", "Rupture of appendix");
     assertTrue(concepts.containsKey(code));
   }
-  
+
   @Test
   public void testInventoryCodes() {
     List<Code> codes = new ArrayList<Code>();
-    
+
     codes.add(new Code("SNOMED-CT","230690007","Stroke"));
     codes.add(new Code("SNOMED-CT","22298006","Myocardial Infarction"));
     codes.add(new Code("RxNorm","834061","Penicillin V Potassium 250 MG Oral Tablet"));
     codes.add(new Code("RxNorm","834061","Penicillin V Potassium 250 MG Oral Tablet"));
     // note duplicate code here!! ex, same code in multiple modules
-    
+
     Concepts.inventoryCodes(concepts, codes, ConceptsTest.class.getSimpleName());
-    
+
     assertEquals(3, concepts.keySet().size());
     for (Code code : codes) {
       assertTrue(concepts.containsKey(code));

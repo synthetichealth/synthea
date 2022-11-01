@@ -1,0 +1,36 @@
+{
+  "name": "Gaussian Delay",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "1 Mean Delay"
+    },
+    "1 Mean Delay": {
+      "type": "Delay",
+      "unit": "seconds",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 1,
+          "standardDeviation": 15
+        }
+      },
+      "direct_transition": "10 Mean Delay"
+    },
+    "10 Mean Delay": {
+      "type": "Delay",
+      "unit": "seconds",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 10,
+          "standardDeviation": 3
+        }
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

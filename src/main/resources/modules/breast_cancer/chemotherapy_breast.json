@@ -19,7 +19,8 @@
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -45,7 +46,8 @@
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Taxanes": {
       "type": "Simple",
@@ -62,7 +64,8 @@
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Doxorubicin": {
       "type": "MedicationOrder",
@@ -80,7 +83,8 @@
         "https://www.cancer.org/cancer/breast-cancer/treatment/chemotherapy-for-breast-cancer.html"
       ],
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -93,7 +97,8 @@
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -106,7 +111,8 @@
       ],
       "direct_transition": "Adjuvant Chemotherapy Procedure",
       "assign_to_attribute": "chemoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Adjuvant Chemotherapy Procedure": {
       "type": "Procedure",

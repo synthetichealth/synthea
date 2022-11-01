@@ -8,8 +8,9 @@ import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class HealthInsuranceModule extends Module {
 
@@ -17,22 +18,17 @@ public class HealthInsuranceModule extends Module {
   public static long mandateTime
       = Utilities.convertCalendarYearsToTime(Integer.parseInt(Config
       .get("generate.insurance.mandate.year", "2006")));
-  public static double mandateOccupation = Double
-      .parseDouble(Config.get("generate.insurance.mandate.occupation", "0.2"));
-  public static double medicaidLevel = 1.33 * Double
-      .parseDouble(Config.get("generate.demographics.socioeconomic.income.poverty", "11000"));
-  public static String MEDICARE =
-      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-  public static String MEDICAID =
-      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-  public static String DUAL_ELIGIBLE =
-      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+  public static double mandateOccupation =
+      Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
+  public static double povertyLevel =
+          Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 12880);
 
   /**
    * HealthInsuranceModule constructor.
    */
   public HealthInsuranceModule() {}
 
+  @Override
   public Module clone() {
     return this;
   }
@@ -40,7 +36,7 @@ public class HealthInsuranceModule extends Module {
   /**
    * Process this HealthInsuranceModule with the given Person at the specified
    * time within the simulation.
-   * 
+   *
    * @param person the person being simulated
    * @param time   the date within the simulated world
    * @return completed : whether or not this Module completed.
@@ -50,24 +46,19 @@ public class HealthInsuranceModule extends Module {
     if (!person.alive(time)) {
       return true;
     }
-    
+
     // If the payerHistory at the current age is null, they must get insurance for the new year.
-    // Note: This means the person will check to change insurance yearly, just after their
-    // birthday.
-    if (person.getPayerAtTime(time) == null) {
-      // Update their last payer with person's QOLS for that year.
-      if (person.getPreviousPayerAtTime(time) != null) {
-        person.getPreviousPayerAtTime(time).addQols(
-            person.getQolsForYear(Utilities.getYear(time) - 1));
+    // Note: This means the person will check to change insurance yearly, within one timestep
+    // after their birthday.
+    InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
+    if (planAtTime == null) {
+      // Update their last plan's payer with person's QOLS for that year.
+      Payer lastPayer = person.coverage.getLastPayer();
+      if (lastPayer != null) {
+        lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       }
-      // Determine the insurance for this person at this time.
-      Payer newPayer = determineInsurance(person, time);
-      // Set this new payer at the current time for the person.
-      person.setPayerAtTime(time, newPayer);
-      // Reset the person's yearly deductible.
-      person.resetDeductible(time);
-      // Update the new Payer's customer statistics.
-      newPayer.incrementCustomers(person);
+      // Update the insurance for this person at this time.
+      this.updateInsurance(person, time);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
@@ -84,30 +75,23 @@ public class HealthInsuranceModule extends Module {
    * @param time   the current time to consider
    * @return the insurance that this person gets
    */
-  private Payer determineInsurance(Person person, long time) {
-    // Government payers
-    Payer medicare = Payer.getGovernmentPayer(MEDICARE);
-    Payer medicaid = Payer.getGovernmentPayer(MEDICAID);
-    Payer dualPayer = Payer.getGovernmentPayer(DUAL_ELIGIBLE);
-
-    // If Medicare/Medicaid will accept this person, then it takes priority.
-    if (medicare != null && medicaid != null
-        && medicare.accepts(person, time)
-        && medicaid.accepts(person, time)) {
-      return dualPayer;
-    } else if (medicare != null && medicare.accepts(person, time)) {
-      return medicare;
-    } else if (medicaid != null && medicaid.accepts(person, time)) {
-      return medicaid;
-    } else if (person.getPreviousPayerAtTime(time) != null
-        && IPayerFinder.meetsBasicRequirements(
-        person.getPreviousPayerAtTime(time), person, null, time)) {
-      // People will keep their previous year's insurance if they can.
-      return person.getPreviousPayerAtTime(time);
-    } else {
-      // Randomly choose one of the remaining private payers.
-      // Returns no_insurance if a person cannot afford any of them.
-      return Payer.findPayer(person, null, time);
+  private void updateInsurance(Person person, long time) {
+    InsurancePlan newPlan = PayerManager.findPlan(person, null, time);
+    InsurancePlan secondaryPlan = PayerManager.getNoInsurancePlan();
+    // If the payer is Medicare, they may buy supplemental insurance.
+    if (newPlan.mayPurchaseSupplement() && (person.rand() <= 0.9)) {
+      // 9 out of 10 Medicare patients have supplemental insurance.
+      // https://www.kff.org/medicare/issue-brief/a-snapshot-of-sources-of-coverage-among-medicare-beneficiaries-in-2018/
+      // Buy supplemental insurance if it is affordable.
+      secondaryPlan = PayerManager.findMedicareSupplement(person, null, time);
+    }
+    // Set the person's new plan(s).
+    person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
+    // Update the new Payer's customer statistics.
+    String personId = (String) person.attributes.get(Person.ID);
+    newPlan.incrementCustomers(personId);
+    if (!secondaryPlan.isNoInsurance()) {
+      secondaryPlan.incrementCustomers(personId);
     }
   }
 
@@ -120,7 +104,7 @@ public class HealthInsuranceModule extends Module {
   public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = HealthInsuranceModule.class.getSimpleName();
     Attributes.inventory(attributes, m, "pregnant", true, false, "Boolean");
-    Attributes.inventory(attributes, m, "blindness", true, false, "Boolean");
+    Attributes.inventory(attributes, m, Person.BLINDNESS, true, false, "Boolean");
     Attributes.inventory(attributes, m, "end_stage_renal_disease", true, false, "Boolean");
     Attributes.inventory(attributes, m, Person.GENDER, true, false, "F");
     Attributes.inventory(attributes, m, Person.OCCUPATION_LEVEL, true, false, "Low");

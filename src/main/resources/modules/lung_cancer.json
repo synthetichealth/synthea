@@ -423,7 +423,7 @@
           "distribution": 0.77
         },
         {
-          "transition": "Schedule Follow Up III",
+          "transition": "Check For Hospice",
           "distribution": 0.23
         }
       ],
@@ -1136,8 +1136,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {
@@ -1368,8 +1368,8 @@
             }
           ],
           "range": {
-            "low": 60,
-            "high": 80
+            "low": 6,
+            "high": 8
           }
         },
         {
@@ -1501,7 +1501,7 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 16335031000119103,
+        "code": "16335031000119103",
         "display": "High resolution computed tomography of chest without contrast (procedure)"
       },
       "series": [
@@ -1536,7 +1536,7 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 16335031000119103,
+        "code": "16335031000119103",
         "display": "High resolution computed tomography of chest without contrast (procedure)"
       },
       "series": [
@@ -2540,7 +2540,7 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "Schedule Follow Up III"
+      "direct_transition": "Check For Hospice"
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -2554,9 +2554,34 @@
           }
         },
         {
-          "transition": "Schedule Follow Up III"
+          "transition": "Check For Hospice"
         }
       ]
+    },
+    "Check For Hospice": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Will Use Hospice",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Schedule Follow Up III",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Will Use Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Hospice Reason",
+      "value": true
+    },
+    "Hospice Reason": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "direct_transition": "Schedule Follow Up III",
+      "value_attribute": "Lung Cancer"
     }
   },
   "gmf_version": 1
