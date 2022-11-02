@@ -118,8 +118,8 @@ public class TransitionTest {
 
     // Numbers are off of actual probabilities, but I didn't want to mess with the seed and
     // upset the distributed transition test.
-    assertEquals(60, counts.get("Terminal1").intValue());
+    assertEquals(76, counts.get("Terminal1").intValue());
     assertEquals(8, counts.get("Terminal2").intValue());
-    assertEquals(32, counts.get("Terminal3").intValue());
+    assertEquals(16, counts.get("Terminal3").intValue());
   }
 }
