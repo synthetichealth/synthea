@@ -666,70 +666,75 @@ public class CSVExporter {
     // BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String encounterID = rand.randUUID().toString();
-    // ID
-    s.append(encounterID).append(',');
-    // START
-    s.append(iso8601Timestamp(encounter.start)).append(',');
-    // STOP
-    if (encounter.stop != 0L) {
-      s.append(iso8601Timestamp(encounter.stop)).append(',');
-    } else {
-      s.append(',');
-    }
-    // PATIENT
-    s.append(personID).append(',');
-    // ORGANIZATION
-    if (encounter.provider != null) {
-      s.append(encounter.provider.getResourceID()).append(',');
-    } else {
-      s.append(',');
-    }
-    // PROVIDER
-    if (encounter.clinician != null) {
-      s.append(encounter.clinician.getResourceID()).append(',');
-    } else {
-      s.append(',');
-    }
-    // PAYER
-    if (encounter.claim.planRecord.getPlan().getPayer() != null) {
-      s.append(encounter.claim.planRecord.getPlan().getPayer().getResourceID()).append(',');
-    } else {
-      s.append(',');
-    }
-    // ENCOUNTERCLASS
-    if (encounter.type != null) {
-      s.append(encounter.type.toLowerCase()).append(',');
-    } else {
-      s.append(',');
-    }
-    // CODE
-    Code coding = null;
+    boolean onlyDeathRecords = Config.getAsBoolean("exporter.csv.only_death_encounters", true);
 
-    coding = encounter.codes.get(0);
-    // CODE
-    s.append(coding.code).append(',');
-    // DESCRIPTION
-    s.append(clean(coding.display)).append(',');
+    if(!onlyDeathRecords || clean(encounter.codes.get(0).display).equals("Death Certification")) {
+      String encounterID = rand.randUUID().toString();
+      // ID
+      s.append(encounterID).append(',');
+      // START
+      s.append(iso8601Timestamp(encounter.start)).append(',');
+      // STOP
+      if (encounter.stop != 0L) {
+        s.append(iso8601Timestamp(encounter.stop)).append(',');
+      } else {
+        s.append(',');
+      }
+      // PATIENT
+      s.append(personID).append(',');
+      // ORGANIZATION
+      if (encounter.provider != null) {
+        s.append(encounter.provider.getResourceID()).append(',');
+      } else {
+        s.append(',');
+      }
+      // PROVIDER
+      if (encounter.clinician != null) {
+        s.append(encounter.clinician.getResourceID()).append(',');
+      } else {
+        s.append(',');
+      }
+      // PAYER
+      if (encounter.claim.planRecord.getPlan().getPayer() != null) {
+        s.append(encounter.claim.planRecord.getPlan().getPayer().getResourceID()).append(',');
+      } else {
+        s.append(',');
+      }
+      // ENCOUNTERCLASS
+      if (encounter.type != null) {
+        s.append(encounter.type.toLowerCase()).append(',');
+      } else {
+        s.append(',');
+      }
+      // CODE
+      Code coding = null;
 
-    // BASE_ENCOUNTER_COST
-    s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
-    // TOTAL_COST
-    s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
-    // PAYER_COVERAGE
-    s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
-    // REASONCODE & REASONDESCRIPTION
-    if (encounter.reason == null) {
-      s.append(",");
-    } else {
-      s.append(encounter.reason.code).append(',');
-      s.append(clean(encounter.reason.display));
+      coding = encounter.codes.get(0);
+      // CODE
+      s.append(coding.code).append(',');
+      // DESCRIPTION
+      s.append(clean(coding.display)).append(',');
+
+      // BASE_ENCOUNTER_COST
+      s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
+      // TOTAL_COST
+      s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
+      // PAYER_COVERAGE
+      s.append(String.format(Locale.US, "%.2f", encounter.claim.getCoveredCost())).append(',');
+      // REASONCODE & REASONDESCRIPTION
+      if (encounter.reason == null) {
+        s.append(",");
+      } else {
+        s.append(encounter.reason.code).append(',');
+        s.append(clean(encounter.reason.display));
+      }
+
+      s.append(NEWLINE);
+      write(s.toString(), encounters);
+      return encounterID;
     }
 
-    s.append(NEWLINE);
-    write(s.toString(), encounters);
-
-    return encounterID;
+    return rand.randUUID().toString();
   }
 
   /**
