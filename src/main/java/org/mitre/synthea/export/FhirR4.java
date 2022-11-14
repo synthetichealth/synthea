@@ -421,7 +421,7 @@ public class FhirR4 {
       }
     }
 
-    if (USE_US_CORE_IG) {
+    if (USE_US_CORE_IG && shouldExport("Provenance")) {
       // Add Provenance to the Bundle
       provenance(bundle, person, stopTime);
     }
