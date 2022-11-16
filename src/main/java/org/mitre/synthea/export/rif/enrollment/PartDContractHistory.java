@@ -1,5 +1,6 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.enrollment;
 
+import org.mitre.synthea.export.rif.identifiers.PartDContractID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
@@ -7,9 +8,34 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Utility class to manage a beneficiary's part D contract history.
  */
-class PartDContractHistory extends ContractHistory<PartDContractID> {
+public class PartDContractHistory extends ContractHistory<PartDContractID> {
 
   private static final PartDContractID[] partDContractIDs = initContractIDs();
+
+  /**
+   * Get the part D cost sharing code based on the person's income level.
+   * @param person the person
+   * @return part D cost sharing code
+   */
+  public static String getPartDCostSharingCode(Person person) {
+    double incomeLevel = Double.parseDouble(person.attributes.get(Person.INCOME_LEVEL).toString());
+    if (incomeLevel >= 1.0) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; no premium or cost sharing subsidy
+      return "09";
+    } else if (incomeLevel >= 0.6) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+      // premium subsidy and high copayment
+      return "03";
+    } else if (incomeLevel >= 0.3) {
+      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+      // premium subsidy and low copayment
+      return "02";
+    }
+    // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
+    // premium subsidy and no copayment
+    return "01";
+  }
+
   private boolean employeePDP;
 
   /**
@@ -22,7 +48,7 @@ class PartDContractHistory extends ContractHistory<PartDContractID> {
     super(person, stopTime, yearsOfHistory, 20, 1);
     // 1% chance of being enrolled in employer PDP if person's income is above threshold
     // TBD determine real % of employer PDP enrollment
-    employeePDP = PDEExporter.getPartDCostSharingCode(person).equals("09")
+    employeePDP = getPartDCostSharingCode(person).equals("09")
             && person.randInt(100) == 1;
   }
 

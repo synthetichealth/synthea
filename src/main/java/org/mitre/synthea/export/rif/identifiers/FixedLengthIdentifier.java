@@ -1,9 +1,11 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.identifiers;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base class for fixed length, alphanumeric identifiers.
  */
-class FixedLengthIdentifier {
+public abstract class FixedLengthIdentifier {
 
   static final char[] NUMERIC = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
   static final char[] NON_ZERO_NUMERIC = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -13,9 +15,15 @@ class FixedLengthIdentifier {
     'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'};
   static final char[] ALPHA_NUMERIC = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'C',
     'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'};
+
   private final char[][] format;
   long value;
 
+  /**
+   * Construct a fixed length identifier with the supplied value in the specified format.
+   * @param value the underlying numeric value of the identifier
+   * @param format the format of the identifier
+   */
   public FixedLengthIdentifier(long value, char[][] format) {
     this.format = format;
     if (value < 0 || value > maxValue(format)) {
@@ -23,6 +31,13 @@ class FixedLengthIdentifier {
               0, maxValue(format)));
     }
     this.value = value;
+  }
+
+  public abstract <T extends FixedLengthIdentifier> T next();
+
+  public static String getAndUpdateId(AtomicReference<? extends FixedLengthIdentifier> idRef) {
+    FixedLengthIdentifier id = idRef.getAndUpdate(v -> v.next());
+    return id.toString();
   }
 
   protected static long parse(String str, char[][] format) {

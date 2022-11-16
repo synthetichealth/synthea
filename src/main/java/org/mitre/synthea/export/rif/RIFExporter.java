@@ -11,6 +11,10 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.mitre.synthea.export.rif.identifiers.CLIA;
+import org.mitre.synthea.export.rif.identifiers.HICN;
+import org.mitre.synthea.export.rif.identifiers.MBI;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -22,18 +26,8 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public abstract class RIFExporter {
 
   protected static final String BB2_PARTD_CONTRACTS = "BB2_PARTD_CONTRACTS";
-  protected static final AtomicLong nextCarrClmCntlNum = new AtomicLong(Config.getAsLong(
-          "exporter.bfd.carr_clm_cntl_num_start", -1));
-  protected static final AtomicLong nextPdeId = new AtomicLong(Config.getAsLong(
-          "exporter.bfd.pde_id_start", -1));
-  protected static final AtomicReference<HICN> nextHicn = new AtomicReference<>(
-          HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   protected static final AtomicLong nextFiDocCntlNum = new AtomicLong(
           Config.getAsLong("exporter.bfd.fi_doc_cntl_num_start", -1));
-  protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
-          MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
-  protected static final AtomicLong nextBeneId = new AtomicLong(
-          Config.getAsLong("exporter.bfd.bene_id_start", -1));
   protected static final AtomicLong nextClaimId = new AtomicLong(
           Config.getAsLong("exporter.bfd.clm_id_start", -1));
   protected static final AtomicLong nextClaimGroupId = new AtomicLong(
@@ -45,13 +39,9 @@ public abstract class RIFExporter {
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
 
-  protected final long startTime;
-  protected final long stopTime;
   protected final BB2RIFExporter exporter;
 
-  protected RIFExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    this.startTime = startTime;
-    this.stopTime = stopTime;
+  protected RIFExporter(BB2RIFExporter exporter) {
     this.exporter = exporter;
   }
 
@@ -244,24 +234,5 @@ public abstract class RIFExporter {
       placeOfServiceCode = "11"; // office
     }
     return placeOfServiceCode;
-  }
-
-  static String getPartDCostSharingCode(Person person) {
-    double incomeLevel = Double.parseDouble(person.attributes.get(Person.INCOME_LEVEL).toString());
-    if (incomeLevel >= 1.0) {
-      // Beneficiary enrolled in Parts A and/or B, and Part D; no premium or cost sharing subsidy
-      return "09";
-    } else if (incomeLevel >= 0.6) {
-      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
-      // premium subsidy and high copayment
-      return "03";
-    } else if (incomeLevel >= 0.3) {
-      // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
-      // premium subsidy and low copayment
-      return "02";
-    }
-    // Beneficiary enrolled in Parts A and/or B, and Part D; deemed eligible for LIS with 100%
-    // premium subsidy and no copayment
-    return "01";
   }
 }

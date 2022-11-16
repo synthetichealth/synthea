@@ -1,6 +1,8 @@
 package org.mitre.synthea.export.rif;
 
 import com.google.gson.JsonObject;
+
+import org.mitre.synthea.export.rif.identifiers.PartDContractID;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
@@ -37,7 +39,7 @@ class PrescriptionFill implements Comparable<PrescriptionFill> {
     initDaysAndQuantity(end);
   }
 
-  boolean refillsRemaining() {
+  public boolean refillsRemaining() {
     return refills - fillNo + 1 > 0;
   }
 
@@ -60,7 +62,6 @@ class PrescriptionFill implements Comparable<PrescriptionFill> {
       } else {
         amountPerDay = perPeriod;
       }
-      //amountPerDay = (double) ((double) (perPeriod * periodTime) / (1000.0 * 60 * 60 * 24));
       if (amountPerDay == 0) {
         amountPerDay = 1;
       }

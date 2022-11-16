@@ -8,6 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.mitre.synthea.export.rif.enrollment.PartDContractHistory;
+import org.mitre.synthea.export.rif.identifiers.PartDContractID;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -20,6 +25,8 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public class PDEExporter extends RIFExporter {
 
   private static final Map<Integer, Double> pdeOutOfPocketThresholds = getThresholds();
+  public static final AtomicLong nextPdeId = new AtomicLong(Config.getAsLong(
+          "exporter.bfd.pde_id_start", -1));
 
   private static Map<Integer, Double> getThresholds() {
     Map<Integer, Double> pdeOutOfPocketThresholds = new HashMap<>();
@@ -38,21 +45,21 @@ public class PDEExporter extends RIFExporter {
 
   /**
    * Construct an exporter for PDE claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public PDEExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public PDEExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export PDE claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  long export(Person person) throws IOException {
+  long export(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
     PartDContractHistory partDContracts =
             (PartDContractHistory) person.attributes.get(RIFExporter.BB2_PARTD_CONTRACTS);
@@ -102,7 +109,7 @@ public class PDEExporter extends RIFExporter {
     String catastrophicCode = "";
     for (PrescriptionFill fill: prescriptionFills) {
 
-      long pdeId = RIFExporter.nextPdeId.getAndDecrement();
+      long pdeId = nextPdeId.getAndDecrement();
       long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
 
       fieldValues.clear();
@@ -165,6 +172,8 @@ public class PDEExporter extends RIFExporter {
       // - CVRD_D_PLAN_PD_AMT : what Part D paid
       // - NCVRD_PLAN_PD_AMT  : part of total not covered by Part D whatsoever
       // OTHR_TROOP_AMT and LICS_AMT are always 0, set in field value spreadsheet
+      // TODO: make claim copay match the designated cost sharing code, see
+      // PartDContractHistory.getPartDCostSharingCode
       fieldValues.put(BB2RIFStructure.PDE.PTNT_PAY_AMT,
           String.format("%.2f", fill.medication.claim.getTotalPatientCost()));
       fieldValues.put(BB2RIFStructure.PDE.PLRO_AMT,

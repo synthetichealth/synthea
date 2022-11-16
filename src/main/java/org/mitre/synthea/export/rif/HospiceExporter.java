@@ -18,21 +18,21 @@ public class HospiceExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Hospice claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public HospiceExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public HospiceExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export Hospice visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  long export(Person person) throws IOException {
+  long export(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
     HashMap<BB2RIFStructure.HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {

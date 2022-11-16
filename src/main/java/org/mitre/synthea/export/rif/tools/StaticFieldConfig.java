@@ -1,4 +1,4 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.tools;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.mitre.synthea.export.rif.BB2RIFStructure;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -46,7 +47,11 @@ public class StaticFieldConfig {
     return configMap.get(field).get(tableEnum.getSimpleName());
   }
 
-  Set<String> validateTSV() {
+  /**
+   * Validate the TSV file.
+   * @return a list of issues found in the TSV
+   */
+  public Set<String> validateTSV() {
     LinkedHashSet tsvIssues = new LinkedHashSet<>();
     for (Class tableEnum : BB2RIFStructure.RIF_FILES) {
       String columnName = tableEnum.getSimpleName();

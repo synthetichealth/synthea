@@ -3,7 +3,18 @@ package org.mitre.synthea.export.rif;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.commons.lang3.StringUtils;
+
+import org.mitre.synthea.export.rif.enrollment.PartCContractHistory;
+import org.mitre.synthea.export.rif.enrollment.PartDContractHistory;
+import org.mitre.synthea.export.rif.identifiers.FixedLengthIdentifier;
+import org.mitre.synthea.export.rif.identifiers.HICN;
+import org.mitre.synthea.export.rif.identifiers.MBI;
+import org.mitre.synthea.export.rif.identifiers.PartCContractID;
+import org.mitre.synthea.export.rif.identifiers.PartDContractID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
@@ -13,6 +24,13 @@ import org.mitre.synthea.world.agents.Person;
  * Export beneficiary and beneficiary history files.
  */
 public class BeneficiaryExporter extends RIFExporter {
+
+  public static final AtomicLong nextBeneId = new AtomicLong(
+          Config.getAsLong("exporter.bfd.bene_id_start", -1));
+  public static final AtomicReference<HICN> nextHicn = new AtomicReference<>(
+          HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
+  protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
+          MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -27,26 +45,26 @@ public class BeneficiaryExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Beneficiary and BeneficiaryHostory file.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public BeneficiaryExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public BeneficiaryExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export a beneficiary details for single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return the beneficiary ID
    * @throws IOException if something goes wrong
    */
-  public String export(Person person) throws IOException {
-    String beneIdStr = Long.toString(RIFExporter.nextBeneId.getAndDecrement());
+  public String export(Person person, long startTime, long stopTime) throws IOException {
+    String beneIdStr = Long.toString(nextBeneId.getAndDecrement());
     person.attributes.put(RIFExporter.BB2_BENE_ID, beneIdStr);
-    String hicId = RIFExporter.nextHicn.getAndUpdate((v) -> v.next()).toString();
+    String hicId = FixedLengthIdentifier.getAndUpdateId(nextHicn);
     person.attributes.put(RIFExporter.BB2_HIC_ID, hicId);
-    String mbiStr = RIFExporter.nextMbi.getAndUpdate((v) -> v.next()).toString();
+    String mbiStr = FixedLengthIdentifier.getAndUpdateId(nextMbi);
     person.attributes.put(RIFExporter.BB2_MBI, mbiStr);
     int yearsOfHistory = Config.getAsInteger("exporter.years_of_history");
     int endYear = Utilities.getYear(stopTime);
@@ -176,8 +194,7 @@ public class BeneficiaryExporter extends RIFExporter {
         }
       }
 
-      // TODO: make claim copay match the designated cost sharing code
-      String partDCostSharingCode = PDEExporter.getPartDCostSharingCode(person);
+      String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
       int rdsMonthCount = 0;
       for (PartDContractHistory.ContractPeriod period:
               partDContracts.getContractPeriods(year)) {
@@ -236,9 +253,11 @@ public class BeneficiaryExporter extends RIFExporter {
    * Export a beneficiary history for single person. Assumes exportBeneficiary
    * was called first to set up various ID on person
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @throws IOException if something goes wrong
    */
-  public void exportHistory(Person person) throws IOException {
+  public void exportHistory(Person person, long startTime, long stopTime) throws IOException {
     HashMap<BB2RIFStructure.BENEFICIARY_HISTORY, String> fieldValues = new HashMap<>();
 
     exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY_HISTORY.class,
@@ -438,7 +457,7 @@ public class BeneficiaryExporter extends RIFExporter {
     // TBD add support for the following additional code (%-age in brackets is observed
     // frequency in CMS data):
     // 00 (15.6%) - Not enrolled in Medicare for the month
-    String partDCostSharingCode = PDEExporter.getPartDCostSharingCode(person);
+    String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
     if (partDCostSharingCode.equals("03")) {
       return incomeBandThreeDualCodes.next(person);
     } else if (partDCostSharingCode.equals("02")) {

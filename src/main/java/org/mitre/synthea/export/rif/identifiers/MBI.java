@@ -1,4 +1,4 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.identifiers;
 
 /**
  * Utility class for working with CMS MBIs.
@@ -14,17 +14,18 @@ public class MBI extends FixedLengthIdentifier {
   private static final char[][] MBI_FORMAT = {NON_ZERO_NUMERIC, FIXED, ALPHA_NUMERIC, NUMERIC,
     NON_NUMERIC_LIKE_ALPHA, ALPHA_NUMERIC, NUMERIC, NON_NUMERIC_LIKE_ALPHA, NON_NUMERIC_LIKE_ALPHA,
     NUMERIC, NUMERIC};
-  static final long MIN_MBI = 0;
-  static final long MAX_MBI = maxValue(MBI_FORMAT);
+  public static final long MIN_MBI = 0;
+  public static final long MAX_MBI = maxValue(MBI_FORMAT);
 
   public MBI(long value) {
     super(value, MBI_FORMAT);
   }
 
-  static MBI parse(String str) {
+  public static MBI parse(String str) {
     return new MBI(parse(str, MBI_FORMAT));
   }
 
+  @Override
   public MBI next() {
     return new MBI(value + 1);
   }

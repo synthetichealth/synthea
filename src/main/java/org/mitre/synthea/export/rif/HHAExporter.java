@@ -21,21 +21,21 @@ public class HHAExporter extends RIFExporter {
 
   /**
    * Construct an exporter for HHA claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public HHAExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public HHAExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export HHA visits for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  long export(Person person) throws IOException {
+  long export(Person person, long startTime, long stopTime) throws IOException {
     HashMap<BB2RIFStructure.HHA, String> fieldValues = new HashMap<>();
     long claimCount = 0;
 

@@ -21,21 +21,21 @@ public class SNFExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Skilled Nursing Facility claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public SNFExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public SNFExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export Skilled Nursing Facility claims for the supplied single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  public long export(Person person)
+  public long export(Person person, long startTime, long stopTime)
           throws IOException {
     long claimCount = 0;
     HashMap<BB2RIFStructure.SNF, String> fieldValues = new HashMap<>();

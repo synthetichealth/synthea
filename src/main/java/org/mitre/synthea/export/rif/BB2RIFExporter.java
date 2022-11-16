@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.export.rif.BB2RIFStructure.EXPORT_SUMMARY;
 import org.mitre.synthea.export.rif.BB2RIFStructure.NPI;
+import org.mitre.synthea.export.rif.tools.StaticFieldConfig;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -80,6 +81,16 @@ public class BB2RIFExporter {
   final Map<String, RandomCollection<String>> externalCodes;
   final Map<String, String> missingDmeCodes;
   final CMSStateCodeMapper locationMapper;
+  final BeneficiaryExporter beneExp;
+  final InpatientExporter inpatientExp;
+  final OutpatientExporter outpatientExp;
+  final CarrierExporter carrierExp;
+  final PDEExporter pdeExp;
+  final DMEExporter dmeExp;
+  final HHAExporter hhaExp;
+  final HospiceExporter hospiceExp;
+  final SNFExporter snfExp;
+
 
   /**
    * Create the output folder and files. Write headers to each file.
@@ -110,6 +121,15 @@ public class BB2RIFExporter {
       throw new RuntimeException(e);
     }
     missingDmeCodes = new HashMap<String, String>();
+    beneExp = new BeneficiaryExporter(this);
+    inpatientExp = new InpatientExporter(this);
+    outpatientExp = new OutpatientExporter(this);
+    carrierExp = new CarrierExporter(this);
+    pdeExp = new PDEExporter(this);
+    dmeExp = new DMEExporter(this);
+    hhaExp = new HHAExporter(this);
+    hospiceExp = new HospiceExporter(this);
+    snfExp = new SNFExporter(this);
   }
 
   private static Map<String, RandomCollection<String>> loadExternalCodes() {
@@ -277,16 +297,16 @@ public class BB2RIFExporter {
    */
   public void exportEndState() throws IOException {
     Properties endState = new Properties();
-    endState.setProperty("exporter.bfd.bene_id_start", RIFExporter.nextBeneId.toString());
+    endState.setProperty("exporter.bfd.bene_id_start", BeneficiaryExporter.nextBeneId.toString());
     endState.setProperty("exporter.bfd.clm_id_start", RIFExporter.nextClaimId.toString());
     endState.setProperty("exporter.bfd.clm_grp_id_start", RIFExporter.nextClaimGroupId.toString());
-    endState.setProperty("exporter.bfd.pde_id_start", RIFExporter.nextPdeId.toString());
-    endState.setProperty("exporter.bfd.mbi_start", RIFExporter.nextMbi.toString());
-    endState.setProperty("exporter.bfd.hicn_start", RIFExporter.nextHicn.toString());
+    endState.setProperty("exporter.bfd.pde_id_start", PDEExporter.nextPdeId.toString());
+    endState.setProperty("exporter.bfd.mbi_start", BeneficiaryExporter.nextMbi.toString());
+    endState.setProperty("exporter.bfd.hicn_start", BeneficiaryExporter.nextHicn.toString());
     endState.setProperty("exporter.bfd.fi_doc_cntl_num_start",
             RIFExporter.nextFiDocCntlNum.toString());
     endState.setProperty("exporter.bfd.carr_clm_cntl_num_start",
-            RIFExporter.nextCarrClmCntlNum.toString());
+            CarrierExporter.nextCarrClmCntlNum.toString());
     File outputDir = Exporter.getOutputFolder("bfd", null);
     FileOutputStream f = new FileOutputStream(new File(outputDir, "end_state.properties"));
     endState.store(f, "BFD Properties End State");
@@ -315,25 +335,24 @@ public class BB2RIFExporter {
   public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
     long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
-    BeneficiaryExporter beneExp = new BeneficiaryExporter(startTime, stopTime, this);
-    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneExp.export(person));
-    beneExp.exportHistory(person);
+    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneExp.export(person, startTime, stopTime));
+    beneExp.exportHistory(person, startTime, stopTime);
     exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
-            Long.toString(new InpatientExporter(startTime, stopTime, this).export(person)));
+            Long.toString(inpatientExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.OUTPATIENT_CLAIMS,
-            Long.toString(new OutpatientExporter(startTime, stopTime, this).export(person)));
+            Long.toString(outpatientExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.CARRIER_CLAIMS,
-            Long.toString(new CarrierExporter(startTime, stopTime, this).export(person)));
+            Long.toString(carrierExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.PDE_CLAIMS,
-            Long.toString(new PDEExporter(startTime, stopTime, this).export(person)));
+            Long.toString(pdeExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.DME_CLAIMS,
-            Long.toString(new DMEExporter(startTime, stopTime, this).export(person)));
+            Long.toString(dmeExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.HHA_CLAIMS,
-            Long.toString(new HHAExporter(startTime, stopTime, this).export(person)));
+            Long.toString(hhaExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.HOSPICE_CLAIMS,
-            Long.toString(new HospiceExporter(startTime, stopTime, this).export(person)));
+            Long.toString(hospiceExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.SNF_CLAIMS,
-            Long.toString(new SNFExporter(startTime, stopTime, this).export(person)));
+            Long.toString(snfExp.export(person, startTime, stopTime)));
     rifWriters.getOrCreateWriter(EXPORT_SUMMARY.class, -1, "csv", ",").writeValues(exportCounts);
   }
 

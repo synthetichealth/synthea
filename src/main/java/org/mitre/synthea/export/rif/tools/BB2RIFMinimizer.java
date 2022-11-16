@@ -1,4 +1,4 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.tools;
 
 import java.io.File;
 import java.io.FileNotFoundException;

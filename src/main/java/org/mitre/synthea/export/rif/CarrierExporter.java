@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.mitre.synthea.export.ExportHelper;
+import org.mitre.synthea.export.rif.identifiers.CLIA;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -22,6 +26,8 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public class CarrierExporter extends RIFExporter {
 
   private static final List<LinkedHashMap<String, String>> carrierLookup = getCarriers();
+  public static final AtomicLong nextCarrClmCntlNum = new AtomicLong(Config.getAsLong(
+          "exporter.bfd.carr_clm_cntl_num_start", -1));
 
   private static List<LinkedHashMap<String, String>> getCarriers() {
     String csv;
@@ -44,21 +50,21 @@ public class CarrierExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Carrier claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public CarrierExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public CarrierExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export carrier claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return number of claims exported
    * @throws IOException if something goes wrong
    */
-  long export(Person person) throws IOException {
+  long export(Person person, long startTime, long stopTime) throws IOException {
     HashMap<BB2RIFStructure.CARRIER, String> fieldValues = new HashMap<>();
 
     long claimCount = 0;
@@ -74,7 +80,7 @@ public class CarrierExporter extends RIFExporter {
 
       long claimId = RIFExporter.nextClaimId.getAndDecrement();
       long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
-      long carrClmId = RIFExporter.nextCarrClmCntlNum.getAndDecrement();
+      long carrClmId = nextCarrClmCntlNum.getAndDecrement();
 
       for (HealthRecord.Observation observation : encounter.observations) {
         if (observation.containsCode("718-7", "http://loinc.org")) {

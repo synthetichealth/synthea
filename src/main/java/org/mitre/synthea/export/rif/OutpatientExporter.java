@@ -17,21 +17,21 @@ public class OutpatientExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Outpatient claims.
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
    * @param exporter the exporter instance that will be used to access code mappers
    */
-  public OutpatientExporter(long startTime, long stopTime, BB2RIFExporter exporter) {
-    super(startTime, stopTime, exporter);
+  public OutpatientExporter(BB2RIFExporter exporter) {
+    super(exporter);
   }
 
   /**
    * Export outpatient claims details for a single person.
    * @param person the person to export
+   * @param startTime earliest claim date to export
+   * @param stopTime end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
-  long export(Person person) throws IOException {
+  long export(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
     HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues = new HashMap<>();
 

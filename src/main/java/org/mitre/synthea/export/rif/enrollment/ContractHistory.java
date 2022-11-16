@@ -1,4 +1,4 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.enrollment;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -6,6 +6,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.mitre.synthea.export.rif.identifiers.FixedLengthIdentifier;
+import org.mitre.synthea.export.rif.identifiers.PlanBenefitPackageID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
@@ -14,7 +17,7 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Utility class to manage a beneficiary's contract history.
  */
-abstract class ContractHistory<T extends FixedLengthIdentifier> {
+public abstract class ContractHistory<T extends FixedLengthIdentifier> {
 
   private List<ContractPeriod> contractPeriods;
   private static final PlanBenefitPackageID[] planBenefitPackageIDs = initPlanBenefitPackageIDs();

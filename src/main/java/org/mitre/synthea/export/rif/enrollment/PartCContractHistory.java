@@ -1,5 +1,6 @@
-package org.mitre.synthea.export.rif;
+package org.mitre.synthea.export.rif.enrollment;
 
+import org.mitre.synthea.export.rif.identifiers.PartCContractID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
@@ -7,7 +8,7 @@ import org.mitre.synthea.world.agents.Person;
 /**
  * Utility class to manage a beneficiary's part C contract history.
  */
-class PartCContractHistory extends ContractHistory<PartCContractID> {
+public class PartCContractHistory extends ContractHistory<PartCContractID> {
 
   private static final PartCContractID[] partCContractIDs = initContractIDs();
 

@@ -10,9 +10,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 /**
  * Utility class for consolidating multiple claim lines of the same type for the same clinician.
  */
-class ConsolidatedClaimLines extends Claim.ClaimCost {
+public class ConsolidatedClaimLines extends Claim.ClaimCost {
 
-  static class ConsolidatedClaimLine extends Claim.ClaimCost {
+  public static class ConsolidatedClaimLine extends Claim.ClaimCost {
 
     private int count;
     private final String code;
@@ -20,6 +20,13 @@ class ConsolidatedClaimLines extends Claim.ClaimCost {
     private final Clinician clinician;
     private final long start;
 
+    /**
+     * Construct a new consolidated claim line.
+     * @param initial initial costs
+     * @param code claim code
+     * @param revCntr revenue center code
+     * @param encounter the encounter which is used to extract the clinician and start time
+     */
     public ConsolidatedClaimLine(Claim.ClaimCost initial, String code, String revCntr,
             Encounter encounter) {
       super(initial);
@@ -64,6 +71,14 @@ class ConsolidatedClaimLines extends Claim.ClaimCost {
     uniqueLineItems = new TreeMap<>();
   } // use a sorted map to ensure we always emit claim lines in the same order
 
+  /**
+   * Add a claim to the set of consolidated claim lines. Creates a new claim line if the
+   * clinician, hcpcsCode or revCntr are different for any existing consolidated claim lines.
+   * @param hcpcsCode HCPCS code
+   * @param revCntr revenue center
+   * @param cost claim costs
+   * @param encounter the encounter which is used to obtain the clinician
+   */
   public void addClaimLine(String hcpcsCode, String revCntr, Claim.ClaimCost cost,
           Encounter encounter) {
     if (hcpcsCode == null) {
