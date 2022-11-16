@@ -1891,15 +1891,16 @@ public class FhirR4 {
 
     if (!procedure.reasons.isEmpty()) {
       Code reason = procedure.reasons.get(0); // Only one element in list
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
-          Condition condition = (Condition) entry.getResource();
-          Coding coding = condition.getCode().getCoding().get(0); // Only one element in list
-          if (reason.code.equals(coding.getCode())) {
-            procedureResource.addReasonReference().setReference(entry.getFullUrl())
-                .setDisplay(reason.display);
-          }
-        }
+
+      BundleEntryComponent reasonCondition = findConditionResourceByCode(bundle, reason.code);
+      if (reasonCondition != null) {
+        procedureResource.addReasonReference()
+          .setReference(reasonCondition.getFullUrl())
+          .setDisplay(reason.display);
+      } else {
+        // we didn't find a matching Condition,
+        // fallback to just reason code
+        procedureResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
       }
     }
 
@@ -2207,16 +2208,16 @@ public class FhirR4 {
     if (!medication.reasons.isEmpty()) {
       // Only one element in list
       Code reason = medication.reasons.get(0);
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
-          Condition condition = (Condition) entry.getResource();
-          // Only one element in list
-          Coding coding = condition.getCode().getCoding().get(0);
-          if (reason.code.equals(coding.getCode())) {
-            medicationResource.addReasonReference()
-                .setReference(entry.getFullUrl());
-          }
-        }
+
+      BundleEntryComponent reasonCondition = findConditionResourceByCode(bundle, reason.code);
+      if (reasonCondition != null) {
+        medicationResource.addReasonReference()
+          .setReference(reasonCondition.getFullUrl())
+          .setDisplay(reason.display);
+      } else {
+        // we didn't find a matching Condition,
+        // fallback to just reason code
+        medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
       }
     }
 
@@ -2355,15 +2356,16 @@ public class FhirR4 {
     if (!medication.reasons.isEmpty()) {
       // Only one element in list
       Code reason = medication.reasons.get(0);
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
-          Condition condition = (Condition) entry.getResource();
-          // Only one element in list
-          Coding coding = condition.getCode().getCoding().get(0);
-          if (reason.code.equals(coding.getCode())) {
-            medicationResource.addReasonReference().setReference(entry.getFullUrl());
-          }
-        }
+
+      BundleEntryComponent reasonCondition = findConditionResourceByCode(bundle, reason.code);
+      if (reasonCondition != null) {
+        medicationResource.addReasonReference()
+          .setReference(reasonCondition.getFullUrl())
+          .setDisplay(reason.display);
+      } else {
+        // we didn't find a matching Condition,
+        // fallback to just reason code
+        medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
       }
     }
 
@@ -2567,6 +2569,19 @@ public class FhirR4 {
       goalStatus.getCodingFirstRep().setCode("in-progress");
     }
 
+    BundleEntryComponent reasonCondition = null;
+    Code reason = null;
+    if (!carePlan.reasons.isEmpty()) {
+      // Only one element in list
+      reason = carePlan.reasons.get(0);
+      narrative += "<br/>Care plan is meant to treat " + reason.display + ".";
+
+      reasonCondition = findConditionResourceByCode(bundle, reason.code);
+      if (reasonCondition != null) {
+        careplanResource.addAddresses().setReference(reasonCondition.getFullUrl());
+      }
+    }
+
     if (!carePlan.activities.isEmpty()) {
       narrative += "<br/>Activities: <ul>";
       String locationUrl = findLocationUrl(provider, bundle);
@@ -2583,6 +2598,13 @@ public class FhirR4 {
             .setDisplay(provider.name));
 
         activityDetailComponent.setCode(mapCodeToCodeableConcept(activity, SNOMED_URI));
+
+        if (reasonCondition != null) {
+          activityDetailComponent.addReasonReference().setReference(reasonCondition.getFullUrl());
+        } else if (reason != null) {
+          activityDetailComponent.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
+        }
+
         activityComponent.setDetail(activityDetailComponent);
 
         careplanResource.addActivity(activityComponent);
@@ -2590,21 +2612,6 @@ public class FhirR4 {
       narrative += "</ul>";
     }
 
-    if (!carePlan.reasons.isEmpty()) {
-      // Only one element in list
-      Code reason = carePlan.reasons.get(0);
-      narrative += "<br/>Care plan is meant to treat " + reason.display + ".";
-      for (BundleEntryComponent entry : bundle.getEntry()) {
-        if (entry.getResource().fhirType().equals("Condition")) {
-          Condition condition = (Condition) entry.getResource();
-          // Only one element in list
-          Coding coding = condition.getCode().getCoding().get(0);
-          if (reason.code.equals(coding.getCode())) {
-            careplanResource.addAddresses().setReference(entry.getFullUrl());
-          }
-        }
-      }
-    }
 
     for (JsonObject goal : carePlan.goals) {
       BundleEntryComponent goalEntry =
@@ -2692,16 +2699,9 @@ public class FhirR4 {
                   .get(0)
                   .getAsString();
 
-          for (BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource().fhirType().equals("Condition")) {
-              Condition condition = (Condition) entry.getResource();
-              // Only one element in list
-              Coding coding = condition.getCode().getCoding().get(0);
-              if (reasonCode.equals(coding.getCode())) {
-                goalResource.addAddresses()
-                    .setReference(entry.getFullUrl());
-              }
-            }
+          BundleEntryComponent reasonCondition = findConditionResourceByCode(bundle, reasonCode);
+          if (reasonCondition != null) {
+            goalResource.addAddresses().setReference(reasonCondition.getFullUrl());
           }
         }
       }
@@ -3302,6 +3302,26 @@ public class FhirR4 {
     }
 
     return entry;
+  }
+
+  /**
+   * Find a Condition resource whose primary code matches the provided code.
+   * The BundleEntryComponent will be returned to allow for references.
+   * @param bundle Bundle to find a resource in
+   * @param code Code to find
+   * @return entry for the matching Condition, or null if none is found
+   */
+  private static BundleEntryComponent findConditionResourceByCode(Bundle bundle, String code) {
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      if (entry.getResource().fhirType().equals("Condition")) {
+        Condition condition = (Condition) entry.getResource();
+        Coding coding = condition.getCode().getCoding().get(0); // Only one element in list
+        if (code.equals(coding.getCode())) {
+          return entry;
+        }
+      }
+    }
+    return null;
   }
 
   /**
