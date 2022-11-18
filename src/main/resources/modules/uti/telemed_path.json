@@ -1,0 +1,288 @@
+{
+  "name": "UTI Telemed Submodule",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "distributed_transition": [
+        {
+          "transition": "UTI_Diagnosis_Encounter",
+          "distribution": 0.7
+        },
+        {
+          "transition": "UTI_Diagnosis_Encounter_Audio_Only",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "UTI_Diagnosis_Encounter_Audio_Only": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "telemedicine_possibility": "always",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185317003,
+          "display": "Telephone encounter (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Telemed_Procedure",
+      "name": "UTI_Diagnosis_Encounter_Audio_Only"
+    },
+    "UTI_Diagnosis_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "telemedicine_possibility": "always",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 453131000124105,
+          "display": "Videotelephony encounter (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Telemed_Procedure",
+      "name": "UTI_Diagnosis_Encounter"
+    },
+    "Telemed_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 448337001,
+          "display": "Telemedicine consultation with patient (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI_HPI_Submodule",
+      "name": "Telemed_Procedure"
+    },
+    "UTI_HPI_Submodule": {
+      "type": "Simple",
+      "name": "UTI_HPI_Submodule",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "GU_Pregnancy_Check_Submodule",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Risk_Check",
+              "distribution": 0.3
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Risk_Check"
+        }
+      ]
+    },
+    "GU_Pregnancy_Check_Submodule": {
+      "type": "Simple",
+      "direct_transition": "Risk_Check",
+      "name": "GU_Pregnancy_Check_Submodule"
+    },
+    "Risk_Check": {
+      "type": "Simple",
+      "name": "Risk_Check",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "uti",
+            "operator": "==",
+            "value": "Pyelonephritis"
+          },
+          "distributions": [],
+          "transition": "Evaluation"
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Referral_to_Ambulatory",
+              "distribution": 0.9
+            },
+            {
+              "transition": "Evaluation",
+              "distribution": 0.1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnancy",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "GU_Pregnancy_Check",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Referral_to_Ambulatory",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Evaluation",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Evaluation"
+        }
+      ]
+    },
+    "Referral_to_Ambulatory": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183444007,
+          "display": "Referral for further care (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_UTI_Diagnosis",
+      "name": "Referral_to_Ambulatory",
+      "assign_to_attribute": "UTI_Care_Referral"
+    },
+    "Evaluation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386053000,
+          "display": "Evaluation procedure (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "name": "Evaluation",
+      "distributed_transition": [
+        {
+          "transition": "Referral_to_Labs",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Antibiotics",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Referral_to_Labs": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 266753000,
+          "display": "Referral for laboratory tests (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_UTI_Diagnosis",
+      "name": "Referral_to_Labs",
+      "assign_to_attribute": "UTI_Labs"
+    },
+    "End_UTI_Diagnosis": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "name": "End_UTI_Diagnosis"
+    },
+    "UTI_Abx_Submodule": {
+      "type": "Simple",
+      "name": "UTI_Abx_Submodule",
+      "distributed_transition": [
+        {
+          "transition": "End_UTI_Diagnosis",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Referral_to_Labs",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "Antibiotics": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 281789004,
+          "display": "Antibiotic therapy (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI_Abx_Submodule",
+      "name": "Antibiotics",
+      "assign_to_attribute": "UTI_Tx"
+    }
+  },
+  "gmf_version": 2
+}
