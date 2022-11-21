@@ -50,7 +50,7 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 48	CARR_LINE_RX_NUM	N/A	N/A	N/A	N/A		N/A	N/A	N/A	N/A	N/A	TRUE	
 49	CARR_NUM	N/A	N/A	N/A	N/A	Coded	N/A	Coded	N/A	N/A	N/A	FALSE	
 50	CARR_PRFRNG_PIN_NUM	N/A	N/A	N/A	N/A	Coded	N/A	N/A	N/A	N/A	N/A	FALSE	
-51	CLAIM_QUERY_CODE	N/A	N/A	"3 (1=Interim, 3=Final, 5=Debit)"	"3 (1=Interim, 3=Final, 5=Debit)"	N/A	N/A	N/A	N/A	N/A	"3 (1=Interim, 3=Final, 5=Debit)"	FALSE	
+51	CLAIM_QUERY_CODE	N/A	N/A	"3 (1=Interim, 3=Final, 5=Debit)"	"3 (1=Interim, 3=Final, 5=Debit)"	N/A	N/A	N/A	"3 (1=Interim, 3=Final, 5=Debit)"	"3 (1=Interim, 3=Final, 5=Debit)"	"3 (1=Interim, 3=Final, 5=Debit)"	FALSE	
 52	CLM_ADMSN_DT	N/A	N/A	Coded	N/A	N/A	N/A	N/A	Coded	N/A	Coded	TRUE	
 53	CLM_CLNCL_TRIL_NUM	N/A	N/A	N/A	N/A		N/A		N/A	N/A	N/A	TRUE	SKIP
 54	CLM_DISP_CD	N/A	N/A	N/A	N/A	1	N/A	1	N/A	N/A	N/A	FALSE	

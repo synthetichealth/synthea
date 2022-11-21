@@ -129,6 +129,7 @@ public class CarrierExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(BB2RIFStructure.CARRIER.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_BLG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.RFR_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_SPCLTY,
