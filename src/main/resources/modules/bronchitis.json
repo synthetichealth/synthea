@@ -36,15 +36,14 @@
               ]
             },
             {
-              "distribution": 0.010,
+              "distribution": 0.50,
               "transition": "RSV_Infection",
               "remarks": [
-                "6% of children get RSV each year.",
-                "6% / year == ~ .5% per month?"
+                "More than 50% of all infants are infected with RSV during the first yr of life"
               ]
             },
             {
-              "distribution": 0.985,
+              "distribution": 0.495,
               "transition": "Potential_Infection"
             }
           ]
@@ -328,6 +327,21 @@
           "system": "SNOMED-CT",
           "code": "40617009",
           "display": "Artificial respiration (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "243141005",
+          "display": "Mechanicallly assisted spontaneous ventilation (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "82433009",
+          "display": "Continuous negative pressure ventilation (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "47545007",
+          "display": "Continuous positive pressure ventilation (procedure)"
         }
       ],
       "duration": {
@@ -381,14 +395,8 @@
               {
                 "condition_type": "Age",
                 "operator": ">=",
-                "quantity": 18,
+                "quantity": 2,
                 "unit": "years"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "smoker",
-                "operator": "==",
-                "value": true
               }
             ]
           },
