@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -358,36 +358,50 @@ implements java.io.Serializable, <a href="../geography/quadtree/QuadTreeElement.
 </td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProcedureCount()">getProcedureCount</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get the number of procedures performed by this Clinician.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResourceID()">getResourceID</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the Clinician's UUID.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getX()">getX</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the x-coordinate of this element.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getY()">getY</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the y-coordinate of this element.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasService(java.lang.String)">hasService</a></span>&#8203;(java.lang.String&nbsp;service)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incrementEncounters()">incrementEncounters</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Increment the number of encounters performed by this Clinician.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incrementProcedures()">incrementProcedures</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Increment the number of procedures performed by this Clinician.</div>
 </td>
 </tr>
 </table>
@@ -838,6 +852,34 @@ implements java.io.Serializable, <a href="../geography/quadtree/QuadTreeElement.
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The number of encounters.</dd>
+</dl>
+</li>
+</ul>
+<a id="incrementProcedures()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>incrementProcedures</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;incrementProcedures()</pre>
+<div class="block">Increment the number of procedures performed by this Clinician.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The incremented number of procedures.</dd>
+</dl>
+</li>
+</ul>
+<a id="getProcedureCount()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getProcedureCount</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getProcedureCount()</pre>
+<div class="block">Get the number of procedures performed by this Clinician.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The number of procedures.</dd>
 </dl>
 </li>
 </ul>
