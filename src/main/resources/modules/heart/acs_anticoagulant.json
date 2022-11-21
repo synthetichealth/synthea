@@ -74,7 +74,7 @@
         {
           "system": "RxNorm",
           "code": 1361048,
-          "display": "heparin sodium, porcine 100 UNT/ML Injectable Solution​"
+          "display": "heparin sodium, porcine 100 UNT/ML Injectable Solution"
         }
       ],
       "direct_transition": "Terminal",
@@ -86,7 +86,7 @@
         {
           "system": "RxNorm",
           "code": 854255,
-          "display": "enoxaparin sodium 100 MG/ML Injectable Solution​"
+          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
         }
       ],
       "direct_transition": "Terminal",
@@ -97,8 +97,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1997015​",
-          "display": "bivalirudin 50 ML; 5 MG/ML Injection​"
+          "code": "1997015",
+          "display": "bivalirudin 50 ML; 5 MG/ML Injection"
         }
       ],
       "direct_transition": "Terminal",
@@ -109,8 +109,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "861356​",
-          "display": "0.8 ML fondaparinux sodium 12.5 MG/ML Prefilled Syringe​"
+          "code": "861356",
+          "display": "0.8 ML fondaparinux sodium 12.5 MG/ML Prefilled Syringe"
         }
       ],
       "direct_transition": "Terminal",

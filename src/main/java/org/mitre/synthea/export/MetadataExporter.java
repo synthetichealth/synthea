@@ -24,7 +24,7 @@ import org.mitre.synthea.world.agents.Provider;
 public class MetadataExporter {
 
   /**
-   * Export metadata about the current run of Synthea. 
+   * Export metadata about the current run of Synthea.
    * Metadata includes various pieces of information about how the population was generated,
    * such as version, config settings, and runtime args.
    * @param generator Generator that was used to generate the population

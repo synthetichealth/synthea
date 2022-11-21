@@ -39,8 +39,8 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
-import org.mitre.synthea.modules.risk_calculators.ASCVD;
-import org.mitre.synthea.modules.risk_calculators.Framingham;
+import org.mitre.synthea.modules.calculators.ASCVD;
+import org.mitre.synthea.modules.calculators.Framingham;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
 import org.mitre.synthea.world.agents.Person;
 

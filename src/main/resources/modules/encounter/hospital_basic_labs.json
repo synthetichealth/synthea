@@ -1033,7 +1033,7 @@
     "PT/INR": {
       "type": "Observation",
       "category": "laboratory",
-      "unit": "(INR)",
+      "unit": "{INR}",
       "codes": [
         {
           "system": "LOINC",

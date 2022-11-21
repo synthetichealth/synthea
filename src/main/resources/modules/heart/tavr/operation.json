@@ -48,7 +48,7 @@
     "Transfemoral": {
       "type": "SetAttribute",
       "attribute": "tavr_transfemoral",
-      "direct_transition": "TAVR Procedure",
+      "direct_transition": "Transfemoral TAVR",
       "value": true
     },
     "TAVR Alt Access": {
@@ -60,12 +60,7 @@
     "Alt Access Submodule": {
       "type": "CallSubmodule",
       "submodule": "heart/tavr/alt_access",
-      "direct_transition": "TAVR Procedure"
-    },
-    "TAVR Procedure": {
-      "type": "CallSubmodule",
-      "submodule": "PerformTAVR",
-      "direct_transition": "Dressing"
+      "direct_transition": "TAVR"
     },
     "OR Labs and Meds": {
       "type": "CallSubmodule",
@@ -73,8 +68,22 @@
       "direct_transition": "Anesthesia"
     },
     "Anesthesia": {
-      "type": "CallSubmodule",
-      "submodule": "PerformAnesthesia",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410011004,
+          "display": "Administration of anesthesia AND/OR sedation (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 49.38047619,
+          "standardDeviation": 21.57047619
+        }
+      },
+      "unit": "minutes",
       "direct_transition": "Incision",
       "remarks": [
         "This is intentionally NOT the anesthesia submodule"
@@ -118,6 +127,46 @@
         }
       ],
       "direct_transition": "Finish Surgery"
+    },
+    "Transfemoral TAVR": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 725351001,
+          "display": "Transcatheter aortic valve replacement (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 62.41333671,
+          "standardDeviation": 28.01488844
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dressing",
+      "reason": "cardiac_surgery_reason"
+    },
+    "TAVR": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 725351001,
+          "display": "Transcatheter aortic valve replacement (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 72.60833671,
+          "standardDeviation": 28.01488844
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Dressing"
     }
   },
   "gmf_version": 2

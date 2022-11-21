@@ -1,15 +1,16 @@
-package org.mitre.synthea.modules.risk_calculators;
+package org.mitre.synthea.modules.calculators;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class ASCVD {
-  
+
   public static final long TEN_YEARS_IN_MS = TimeUnit.DAYS.toMillis(3650);
 
   /**
@@ -18,24 +19,23 @@ public class ASCVD {
    * "N/A" becomes 0
    */
   private static final double[][] ASCVD_COEFFICIENTS = {
-                          // sex:  ------women-----   ----men----
-                          // race: ---w---  --aa--  ---w--  --aa--
-/* Ln Age (y) */                 { -29.799, 17.114,  12.344, 2.469 },
-/* (Ln Age)^2 */                 { 4.884,   0,       0,      0 },
-/* Ln Total Chol */              { 13.540,  0.940,   11.853, 0.302 },
-/* Ln Age x Ln Total Chol */     { -3.114,  0,       -2.664, 0 },
-/* Ln HDL-C */                   { -13.578, -18.920, -7.990, -0.307 },
-/* Ln Age x Ln HDL-C */          { 3.149,   4.475,   1.769,  0 },
-/* Ln Treated SysBP */           { 2.019,   29.291,  1.797,  1.916 },
-/* Ln Age x Ln Treated SysBP */  { 0,       -6.432,  0,      0 },
-/* Ln Untreated SysBP */         { 1.957,   27.820,  1.764,  1.809 },
-/* Ln Age x Ln Untreat SysBP */  { 0,       -6.087,  0,      0 },
-/* Current Smoker (1=Y, 0=N) */  { 7.574,   0.691,   7.837,  0.549 },
-/* Ln Age x Current Smoker */    { -1.665,  0,       -1.795, 0 },
-/* Diabetes (1=Y, 0=N) */        { 0.661,   0.874,   0.658,  0.645 },
-
-/* Mean (Coefficient x Value) */ { -29.18,  86.61,   61.18,  19.54 },
-/* Baseline Survival */          { 0.9665,  0.9533,  0.9144, 0.8954 }
+    //                           sex:  ------women-----   ----men----
+    //                           race: ---w---  --aa--  ---w--  --aa--
+    /* Ln Age (y) */                 { -29.799, 17.114,  12.344, 2.469 },
+    /* (Ln Age)^2 */                 { 4.884,   0,       0,      0 },
+    /* Ln Total Chol */              { 13.540,  0.940,   11.853, 0.302 },
+    /* Ln Age x Ln Total Chol */     { -3.114,  0,       -2.664, 0 },
+    /* Ln HDL-C */                   { -13.578, -18.920, -7.990, -0.307 },
+    /* Ln Age x Ln HDL-C */          { 3.149,   4.475,   1.769,  0 },
+    /* Ln Treated SysBP */           { 2.019,   29.291,  1.797,  1.916 },
+    /* Ln Age x Ln Treated SysBP */  { 0,       -6.432,  0,      0 },
+    /* Ln Untreated SysBP */         { 1.957,   27.820,  1.764,  1.809 },
+    /* Ln Age x Ln Untreat SysBP */  { 0,       -6.087,  0,      0 },
+    /* Current Smoker (1=Y, 0=N) */  { 7.574,   0.691,   7.837,  0.549 },
+    /* Ln Age x Current Smoker */    { -1.665,  0,       -1.795, 0 },
+    /* Diabetes (1=Y, 0=N) */        { 0.661,   0.874,   0.658,  0.645 },
+    /* Mean (Coefficient x Value) */ { -29.18,  86.61,   61.18,  19.54 },
+    /* Baseline Survival */          { 0.9665,  0.9533,  0.9144, 0.8954 }
   };
 
 
@@ -91,10 +91,12 @@ public class ASCVD {
     };
 
     int raceSexIndex = 0; // index in ASCVD_COEFFICIENTS above
-    if (gender.equals("M"))
+    if (gender.equals("M")) {
       raceSexIndex += 2;
-    if (race.equals("black"))
+    }
+    if (race.equals("black")) {
       raceSexIndex += 1;
+    }
 
     double raceSexMean = ASCVD_COEFFICIENTS[13][raceSexIndex];
     double baselineSurvival = ASCVD_COEFFICIENTS[14][raceSexIndex];
@@ -109,10 +111,10 @@ public class ASCVD {
     if (perTimestep) {
       ascvdRisk = Utilities.convertRiskToTimestep(ascvdRisk, TEN_YEARS_IN_MS);
     }
-    
+
     return ascvdRisk;
   }
-  
+
   /**
    * Populate the given attribute map with the list of attributes that this
    * module reads/writes with example values when appropriate.
@@ -120,6 +122,11 @@ public class ASCVD {
    * @param attributes Attribute map to populate.
    */
   public static void inventoryAttributes(Map<String,Inventory> attributes) {
-    
+    String m = ASCVD.class.getSimpleName();
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "M");
+    Attributes.inventory(attributes, m, Person.RACE, true, false, "black");
+    Attributes.inventory(attributes, m, Person.SMOKER, true, false, "false");
+    Attributes.inventory(attributes, m, "diabetes", true, false, "false");
+    Attributes.inventory(attributes, m, "hypertension", true, false, "false");
   }
 }

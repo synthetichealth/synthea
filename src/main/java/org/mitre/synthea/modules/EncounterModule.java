@@ -118,7 +118,6 @@ public final class EncounterModule extends Module {
 
     if (startedEncounter) {
       person.setCurrentEncounter(this, encounter);
-      CardiovascularDiseaseModule.performEncounter(person, time, encounter);
       Immunizations.performEncounter(person, time);
     }
 

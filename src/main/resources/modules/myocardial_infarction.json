@@ -2,7 +2,7 @@
   "name": "Myocardial Infarction",
   "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
-    "A blank module"
+    "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
   ],
   "states": {
     "Initial": {

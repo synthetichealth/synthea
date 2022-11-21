@@ -1,6 +1,9 @@
 {
   "name": "Stable Ischemic Heart Disease",
   "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
+  ],
   "states": {
     "Initial": {
       "type": "Initial",

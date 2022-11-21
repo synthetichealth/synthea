@@ -340,8 +340,22 @@
       "medication_order": "Sufentanil"
     },
     "Anesthesia Submodule": {
-      "type": "CallSubmodule",
-      "submodule": "PerformAnesthesia",
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410770002,
+          "display": "Administration of anesthesia for procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 61.7256546,
+          "standardDeviation": 14.82022284
+        }
+      },
+      "unit": "minutes",
       "direct_transition": "Antiemetic"
     }
   },

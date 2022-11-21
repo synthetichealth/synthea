@@ -23,7 +23,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Emergency_CABG",
+          "transition": "Off_Pump_CABG_Emergency",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -43,19 +43,9 @@
           }
         },
         {
-          "transition": "CABG"
+          "transition": "Off_Pump_CABG"
         }
       ]
-    },
-    "CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices"
-    },
-    "Emergency_CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop_Devices"
     },
     "History_of_CABG": {
       "type": "ConditionOnset",
@@ -247,7 +237,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "On Pump Emergency CABG",
+          "transition": "On_Pump_Emergency_CABG",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -272,14 +262,24 @@
       ]
     },
     "On Pump CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop Devices"
-    },
-    "On Pump Emergency CABG": {
-      "type": "CallSubmodule",
-      "submodule": "PerformCABG",
-      "direct_transition": "Intraop Devices"
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 225.5941604,
+          "standardDeviation": 44.75276942
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Intraop Devices",
+      "reason": "cardiac_surgery_reason"
     },
     "Surgery Documentation": {
       "type": "Procedure",
@@ -321,6 +321,76 @@
       "type": "CallSubmodule",
       "submodule": "heart/cabg/details",
       "direct_transition": "Emergency_Check"
+    },
+    "On_Pump_Emergency_CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 225.5941604,
+          "standardDeviation": 44.75276942
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop Devices"
+    },
+    "Off_Pump_CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 418824004,
+          "display": "Off-pump coronary artery bypass (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 207.7606126,
+          "standardDeviation": 42.15508108
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop_Devices"
+    },
+    "Off_Pump_CABG_Emergency": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 207.7606126,
+          "standardDeviation": 42.15508108
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop_Devices"
     }
   },
   "gmf_version": 2

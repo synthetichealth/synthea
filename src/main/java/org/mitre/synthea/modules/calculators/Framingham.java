@@ -1,12 +1,13 @@
-package org.mitre.synthea.modules.risk_calculators;
+package org.mitre.synthea.modules.calculators;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.helpers.Attributes.Inventory;
+import org.mitre.synthea.helpers.Attributes;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
@@ -17,7 +18,7 @@ public class Framingham {
   private static int bound(int value, int min, int max) {
     return Math.min(Math.max(value, min), max);
   }
-  
+
   // estimate cardiovascular risk of developing coronary heart disease (CHD)
   // http://www.nhlbi.nih.gov/health-pro/guidelines/current/cholesterol-guidelines/quick-desk-reference-html/10-year-risk-framingham-table
 
@@ -74,32 +75,30 @@ public class Framingham {
 
   private static final Map<Integer, Double> risk_chd_m;
   private static final Map<Integer, Double> risk_chd_f;
-  
-  
-  
+
   // 10 year risk of CVD, based on 2008 Framingham update
   // https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.107.699579
   // male = 0, female = 1
-  
-  // Indices in the array correspond to these age ranges: 
+
+  // Indices in the array correspond to these age ranges:
   // 30-34, 35-39, 40-44, 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75+
-  private static final int[][] age_cvd_points = { 
-      { 0, 2, 5, 6, 8, 10, 11, 12, 14, 15 }, 
+  private static final int[][] age_cvd_points = {
+      { 0, 2, 5, 6, 8, 10, 11, 12, 14, 15 },
       { 0, 2, 4, 5, 7,  8,  9, 10, 11, 12 }
   };
-  
+
   // indices correspond to these ranges:
   // <35, 35-39, 40-44, 45-49, 50-54, 55-59, 60+
   // note that 2 of the entries in the source table are a range of 10
   private static int[] hdl_cvd_points = { 2, 1, 1, 0, -1, -1, -2 };
-  
+
   // indices correspond to these cholesterol ranges:
   // <160, 160-199, 200-239, 240-279, 280+
   private static int[][] totalChol_cvd_points = {
       { 0, 1, 2, 3, 4 },
       { 0, 1, 3, 4, 5 }
   };
-  
+
   // indices in the array correspond to these SBP ranges:
   // <120, 120-130, 130-140, 140-150, 150-160, 160+
   private static final int[][][] sbp_cvd_points = {
@@ -112,13 +111,13 @@ public class Framingham {
         { -1, 2, 3, 5, 6, 7 } // treated
       }
   };
-  
+
   private static final int[] cvd_smoker_points = { 4, 3 };
   private static final int[] cvd_diabetes_points = { 3, 4 };
-  
+
   private static final Map<Integer, Double> risk_cvd_m;
   private static final Map<Integer, Double> risk_cvd_f;
-  
+
   static {
     // framingham point scores gives a 10-year risk
     risk_chd_m = new HashMap<>();
@@ -161,9 +160,9 @@ public class Framingham {
     risk_chd_f.put(23, 0.22);
     risk_chd_f.put(24, 0.27);
     risk_chd_f.put(25, 0.3); // '25' represents all scores >24
-    
+
     // -------
-    
+
     // see Table 8 in https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.107.699579
     risk_cvd_m = new HashMap<>();
     risk_cvd_m.put(-3, 0.01); // '-3' represents all scores <-2
@@ -215,12 +214,11 @@ public class Framingham {
     risk_cvd_f.put(19, 0.248);
     risk_cvd_f.put(20, 0.285);
     risk_cvd_f.put(21, 0.30); // '21' represents all scores >20
-    
   }
-  
 
   /**
-   * Calculates a patient's risk of coronary heart disease, based on the 1998 Framingham study group.
+   * Calculates a patient's risk of coronary heart disease,
+   * based on the 1998 Framingham study group.
    * This includes events such as Angina Pectoris, Unstable Angina, MI, and CHD Death.
    * @param person The patient
    * @param time Time to calculate risk as of
@@ -292,17 +290,17 @@ public class Framingham {
       framinghamPoints = bound(framinghamPoints, 8, 25);
       framinghamRisk = risk_chd_f.get(framinghamPoints);
     }
-    
+
     if (perTimestep) {
       framinghamRisk = Utilities.convertRiskToTimestep(framinghamRisk, TEN_YEARS_IN_MS);
     }
-    
+
     return framinghamRisk;
   }
-  
-  
+
   /**
-   * Calculates a patient's risk of cardiovascular disease, based on the 2008 Framingham study group.
+   * Calculates a patient's risk of cardiovascular disease,
+   * based on the 2008 Framingham study group.
    * This includes "Hard ASCVD" events: MI, CHD Death, Stroke, and Stroke Death.
    * @param person The patient
    * @param time Time to calculate risk as of
@@ -311,11 +309,11 @@ public class Framingham {
    */
   public static double cvd10Year(Person person, long time, boolean perTimestep) {
     int age = person.ageInYears(time);
-    
+
     if (age < 30) {
       return -1;
     }
-    
+
     String gender = (String) person.attributes.get(Person.GENDER);
     Double sysBP = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
     Double chol = person.getVitalSign(VitalSign.TOTAL_CHOLESTEROL, time);
@@ -325,39 +323,38 @@ public class Framingham {
 
     boolean bpTreated = (boolean)
         person.attributes.getOrDefault("blood_pressure_controlled", false);
-    
+
     Double hdl = person.getVitalSign(VitalSign.HDL, time);
-    
+
     int genderIndex = (person.attributes.get(Person.GENDER).equals("M")) ? 0 : 1;
-    
+
     int framinghamPoints = 0;
-    
+
     // age
     int ageIndex = bound((age - 30) / 5, 0, 9);
     framinghamPoints += age_cvd_points[genderIndex][ageIndex];
-    
+
     // hdl
     int hdlIndex = bound((hdl.intValue() - 35) / 5 + 1, 0, 6);
     framinghamPoints += hdl_cvd_points[hdlIndex];
-    
+
     // total cholesterol
     int cholIndex = bound(((chol.intValue() - 160) / 40) + 1, 0, 4);
     framinghamPoints += totalChol_cvd_points[genderIndex][cholIndex];
-    
+
     // sbp
     int bpTreatedIndex = bpTreated ? 1 : 0; // true = 1, false = 0
     int bpIndex = bound(((sysBP.intValue() - 120) / 10) + 1, 0, 5);
     framinghamPoints += sbp_cvd_points[genderIndex][bpTreatedIndex][bpIndex];
-    
-    
+
     if ((boolean) person.attributes.getOrDefault(Person.SMOKER, false)) {
       framinghamPoints += cvd_smoker_points[genderIndex];
     }
-    
+
     if ((boolean) person.attributes.getOrDefault("diabetes", false)) {
       framinghamPoints += cvd_diabetes_points[genderIndex];
     }
-    
+
     double framinghamRisk;
     // restrict lower and upper bound of framingham score
     if (gender.equals("M")) {
@@ -367,15 +364,14 @@ public class Framingham {
       framinghamPoints = bound(framinghamPoints, -2, 21);
       framinghamRisk = risk_cvd_f.get(framinghamPoints);
     }
-    
+
     if (perTimestep) {
       framinghamRisk = Utilities.convertRiskToTimestep(framinghamRisk, TEN_YEARS_IN_MS);
     }
-    
+
     return framinghamRisk;
-    
   }
-  
+
   // Framingham score system for calculating atrial fibrillation (significant factor for stroke
   // risk)
   private static final int[][] age_af = {
@@ -388,7 +384,11 @@ public class Framingham {
   private static final double[] risk_af_table = { 0.01, // 0 or less
       0.02, 0.02, 0.03, 0.04, 0.06, 0.08, 0.12, 0.16, 0.22, 0.3 // 10 or greater
   };
-  
+
+  /**
+   * Calculate 10 year risk of atrial fibrillation.
+   * @return risk
+   */
   public static double atrialFibrillation10Year(Person person, long time, boolean perTimestep) {
     int age = person.ageInYears(time);
     if (age < 45 || person.attributes.containsKey("atrial_fibrillation")
@@ -416,14 +416,14 @@ public class Framingham {
     afScore = bound(afScore, 0, 10);
 
     double afRisk = risk_af_table[afScore]; // 10-yr risk
-    
+
     if (perTimestep) {
       afRisk = Utilities.convertRiskToTimestep(afRisk, TEN_YEARS_IN_MS);
     }
-    
+
     return afRisk;
   }
-  
+
   // https://www.heart.org/idc/groups/heart-public/@wcm/@sop/@smd/documents/downloadable/ucm_449858.pdf
   // Prevalence of stroke by age and sex (Male, Female)
   private static final double[] stroke_rate_20_39 = { 0.002, 0.007 };
@@ -438,7 +438,7 @@ public class Framingham {
           0.78, 0.84 } };
 
   // the index for each range corresponds to the number of points
-  private static final int[][] age_stroke = { 
+  private static final int[][] age_stroke = {
       { 54, 57, 60, 63, 66, 69, 73, 76, 79, 82, 85 }, // male
       { 54, 57, 60, 63, 65, 68, 71, 74, 77, 79, 82 } // female
   };
@@ -472,7 +472,10 @@ public class Framingham {
   private static final double[] chd_stroke_points = { 4, 2 };
   private static final double[] atrial_fibrillation_stroke_points = { 4, 6 };
 
-  
+  /**
+   * Calculate 10 year stroke risk.
+   * @return risk
+   */
   public static double stroke10Year(Person person, long time, boolean perTimestep) {
     Double bloodPressure = person.getVitalSign(VitalSign.SYSTOLIC_BLOOD_PRESSURE, time);
     if (bloodPressure == null) {
@@ -487,7 +490,7 @@ public class Framingham {
 
     int age = person.ageInYears(time);
     double strokeRisk;
-    
+
     if (age < 20) {
       // no risk set
       return -1;
@@ -507,7 +510,7 @@ public class Framingham {
       strokePoints += getIndexForValueInRangelist(age, age_stroke[genderIndex]);
 
       int bp = bloodPressure.intValue();
-      
+
       if ((Boolean) person.attributes.getOrDefault("blood_pressure_controlled", false)) {
         strokePoints += getIndexForValueInRangelist(bp, treated_sys_bp_stroke[genderIndex]);
       } else {
@@ -522,7 +525,7 @@ public class Framingham {
         strokePoints += chd_stroke_points[genderIndex];
       }
 
-      if ((Boolean) person.attributes.getOrDefault("atrial_fibrillation", false)) {
+      if (person.attributes.containsKey("atrial_fibrillation")) {
         strokePoints += atrial_fibrillation_stroke_points[genderIndex];
       }
 
@@ -538,10 +541,10 @@ public class Framingham {
     if (perTimestep) {
       strokeRisk = Utilities.convertRiskToTimestep(strokeRisk, TEN_YEARS_IN_MS);
     }
-   
+
     return strokeRisk;
   }
-  
+
   /**
    * Populate the given attribute map with the list of attributes that this
    * module reads/writes with example values when appropriate.
@@ -549,6 +552,14 @@ public class Framingham {
    * @param attributes Attribute map to populate.
    */
   public static void inventoryAttributes(Map<String,Inventory> attributes) {
-    
+    String m = Framingham.class.getSimpleName();
+    // Read-only
+    Attributes.inventory(attributes, m, "atrial_fibrillation", true, false, "ConditionOnset");
+    Attributes.inventory(attributes, m, "blood_pressure_controlled", true, false, "true");
+    Attributes.inventory(attributes, m, "coronary_heart_disease", true, false, "true");
+    Attributes.inventory(attributes, m, "diabetes", true, false, "true");
+    Attributes.inventory(attributes, m, "left_ventricular_hypertrophy", true, false, "false");
+    Attributes.inventory(attributes, m, Person.GENDER, true, false, "M");
+    Attributes.inventory(attributes, m, Person.SMOKER, true, false, "true");
   }
 }
