@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -303,12 +304,12 @@ public class SNFExporter extends RIFExporter {
           }
 
           fieldValues.put(BB2RIFStructure.SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
-          setSNFClaimLineCosts(fieldValues, lineItem, Integer.max(1, revCntrCount));
+          setClaimLineCosts(fieldValues, lineItem, Integer.max(1, revCntrCount));
           exporter.rifWriters.writeValues(BB2RIFStructure.SNF.class, fieldValues);
         }
 
-        // Add a total charge etry
-        setSNFClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
+        // Add a total charge entry
+        setClaimLineCosts(fieldValues, consolidatedClaimLines, 1);
         fieldValues.put(BB2RIFStructure.SNF.CLM_LINE_NUM, Integer.toString(claimLine++));
         fieldValues.remove(BB2RIFStructure.SNF.HCPCS_CD);
         fieldValues.remove(BB2RIFStructure.SNF.AT_PHYSN_NPI);
@@ -327,7 +328,7 @@ public class SNFExporter extends RIFExporter {
     return claimCount;
   }
 
-  private static void setSNFClaimLineCosts(HashMap<BB2RIFStructure.SNF, String> fieldValues,
+  private static void setClaimLineCosts(Map<BB2RIFStructure.SNF, String> fieldValues,
           Claim.ClaimCost lineItem, int count) {
     fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_RATE_AMT,
             String.format("%.2f", lineItem.cost
@@ -354,6 +355,4 @@ public class SNFExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
     }
   }
-
-
 }
