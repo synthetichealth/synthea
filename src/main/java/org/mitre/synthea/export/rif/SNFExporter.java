@@ -19,6 +19,10 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public class SNFExporter extends RIFExporter {
 
   private static final long SNF_PDPM_CUTOVER = parseSimpleDate("20191001");
+  private static final String PPS_MED_ADMIN_CODE = "AAA00";
+  private static final String PDPM_MED_ADMIN_CODE = "KAGD1";
+  private static final String PHARMACY_REV_CNTR = "0250";
+  private static final String PPS_REV_CNTR = "0022";
 
   /**
    * Construct an exporter for Skilled Nursing Facility claims.
@@ -39,9 +43,6 @@ public class SNFExporter extends RIFExporter {
   public long export(Person person, long startTime, long stopTime)
           throws IOException {
     long claimCount = 0;
-    HashMap<BB2RIFStructure.SNF, String> fieldValues = new HashMap<>();
-    boolean previousEmergency;
-    boolean previousUrgent;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
@@ -51,129 +52,15 @@ public class SNFExporter extends RIFExporter {
         continue;
       }
 
-      previousEmergency = encounter.type.equals(HealthRecord.EncounterType.EMERGENCY.toString());
-      previousUrgent = encounter.type.equals(HealthRecord.EncounterType.URGENTCARE.toString());
-
-      long claimId = RIFExporter.nextClaimId.getAndDecrement();
-      long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
-      long fiDocId = RIFExporter.nextFiDocCntlNum.getAndDecrement();
-
-      fieldValues.clear();
+      HashMap<BB2RIFStructure.SNF, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.SNF.class, person);
+      setClaimLevelValues(fieldValues, person, encounter);
 
-      // The REQUIRED Fields
-      fieldValues.put(BB2RIFStructure.SNF.BENE_ID,
-              (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
-      fieldValues.put(BB2RIFStructure.SNF.CLM_ID, "" + claimId);
-      fieldValues.put(BB2RIFStructure.SNF.CLM_GRP_ID, "" + claimGroupId);
-      fieldValues.put(BB2RIFStructure.SNF.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
-      fieldValues.put(BB2RIFStructure.SNF.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(BB2RIFStructure.SNF.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
-      fieldValues.put(BB2RIFStructure.SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
-      fieldValues.put(BB2RIFStructure.SNF.NCH_WKLY_PROC_DT,
-          bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(BB2RIFStructure.SNF.PRVDR_NUM, encounter.provider.cmsProviderNum);
-      fieldValues.put(BB2RIFStructure.SNF.ORG_NPI_NUM, encounter.provider.npi);
+      int diagnosisCount = mapDiagnoses(fieldValues, person, encounter);
+      int procedureCount = mapProcedures(fieldValues, person, encounter);
 
-      fieldValues.put(BB2RIFStructure.SNF.CLM_PMT_AMT,
-          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
-          .getGovernmentPayerPlan()) {
-        fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
-      } else {
-        fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
-            String.format("%.2f", encounter.claim.getTotalCoveredCost()));
-      }
-      fieldValues.put(BB2RIFStructure.SNF.PRVDR_STATE_CD,
-          exporter.locationMapper.getStateCode(encounter.provider.state));
-      fieldValues.put(BB2RIFStructure.SNF.CLM_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (previousEmergency) {
-        fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "1");
-      } else if (previousUrgent) {
-        fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "2");
-      } else {
-        fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "3");
-      }
-      fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_IP_DDCTBL_AMT,
-          String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
-      fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
-          String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
-      fieldValues.put(BB2RIFStructure.SNF.NCH_IP_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalPatientCost()));
-      fieldValues.put(BB2RIFStructure.SNF.NCH_IP_TOT_DDCTN_AMT,
-          String.format("%.2f", encounter.claim.getTotalDeductiblePaid().add(
-                  encounter.claim.getTotalCoinsurancePaid())));
-      int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
-      if (days <= 0) {
-        days = 1;
-      }
-      fieldValues.put(BB2RIFStructure.SNF.CLM_UTLZTN_DAY_CNT, "" + days);
-      int coinDays = days -  21; // first 21 days no coinsurance
-      if (coinDays < 0) {
-        coinDays = 0;
-      }
-      fieldValues.put(BB2RIFStructure.SNF.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
-      fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_TOT_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_NCVRD_CHRG_AMT,
-          String.format("%.2f", encounter.claim.getTotalPatientCost()));
-
-      // OPTIONAL CODES
-      if (encounter.reason != null) {
-        // If the encounter has a recorded reason, enter the mapped
-        // values into the principle diagnoses code.
-        if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
-          fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, icdCode);
-          fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, icdCode);
-          if (exporter.drgCodeMapper.canMap(icdCode)) {
-            fieldValues.put(BB2RIFStructure.SNF.CLM_DRG_CD,
-                    exporter.drgCodeMapper.map(icdCode, person));
-          }
-        }
-      }
-
-      // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
-      // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
-      String dischargeStatus;
-      String patientStatus;
-      String dischargeDate = null;
-      if (encounter.ended) {
-        dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
-        patientStatus = "A"; // discharged
-        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
-      } else {
-        dischargeStatus = "30"; // the patient is still here
-        patientStatus = "C"; // still a patient
-      }
-      if (!person.alive(encounter.stop)) {
-        dischargeStatus = "20"; // the patient died before the encounter ended
-        patientStatus = "B"; // died
-        dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
-      }
-      fieldValues.put(BB2RIFStructure.SNF.PTNT_DSCHRG_STUS_CD, dischargeStatus);
-      fieldValues.put(BB2RIFStructure.SNF.NCH_PTNT_STATUS_IND_CD, patientStatus);
-      if (dischargeDate != null) {
-        fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_DSCHRG_DT, dischargeDate);
-      }
-
-      // Use the active condition diagnoses to enter mapped values
-      // into the diagnoses codes.
-      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-      boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
-      if (!noDiagnoses) {
-        int smallest = Math.min(mappedDiagnosisCodes.size(),
-                BB2RIFStructure.snfDxFields.length);
-        for (int i = 0; i < smallest; i++) {
-          BB2RIFStructure.SNF[] dxField = BB2RIFStructure.snfDxFields[i];
-          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-          fieldValues.put(dxField[1], "0"); // 0=ICD10
-        }
-        if (!fieldValues.containsKey(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-          fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
-        }
+      if (diagnosisCount + procedureCount == 0) {
+        continue; // skip this encounter
       }
 
       // Check for external code...
@@ -184,81 +71,7 @@ public class SNFExporter extends RIFExporter {
           BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, BB2RIFStructure.SNF.FST_DGNS_E_CD,
           BB2RIFStructure.SNF.FST_DGNS_E_VRSN_CD);
 
-      // Use the procedures in this encounter to enter mapped values
-      boolean noProcedures = false;
-      if (!encounter.procedures.isEmpty()) {
-        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
-        List<String> mappedProcedureCodes = new ArrayList<>();
-        for (HealthRecord.Procedure procedure : encounter.procedures) {
-          for (HealthRecord.Code code : procedure.codes) {
-            if (exporter.conditionCodeMapper.canMap(code.code)) {
-              mappableProcedures.add(procedure);
-              mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code.code, person, true));
-              break; // take the first mappable code for each procedure
-            }
-          }
-        }
-        if (!mappableProcedures.isEmpty()) {
-          int smallest = Math.min(mappableProcedures.size(),
-                  BB2RIFStructure.snfPxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            BB2RIFStructure.SNF[] pxField = BB2RIFStructure.snfPxFields[i];
-            fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
-            fieldValues.put(pxField[1], "0"); // 0=ICD10
-            fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
-          }
-        } else {
-          noProcedures = true;
-        }
-      }
-
-      if (noDiagnoses && noProcedures) {
-        continue; // skip this encounter
-      }
-
-      /**
-       * PPS and PDPM codes are documented in the "Long-Term Care Facility Resident Assessment
-       * Instrument 3.0 User’s Manual", see
-       * https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/NursingHomeQualityInits/MDS30RAIManual
-       * For PPS and PDPM, the HCPCS code is used to describe patient characteristics that drive
-       * the level of care required, the revenue center captures the type of care provided.
-       **/
-      final String PPS_MED_ADMIN_CODE = "AAA00";
-      final String PDPM_MED_ADMIN_CODE = "KAGD1";
-      final String PHARMACY_REV_CNTR = "0250";
-      final boolean isPDPM = encounter.start > SNF_PDPM_CUTOVER;
-      final String SNF_MED_ADMIN_CODE = isPDPM ? PDPM_MED_ADMIN_CODE : PPS_MED_ADMIN_CODE;
-      final CodeMapper codeMapper = isPDPM ? exporter.snfPDPMMapper : exporter.snfPPSMapper;
-      ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
-      for (Claim.ClaimEntry lineItem : encounter.claim.items) {
-        if (lineItem.entry instanceof HealthRecord.Procedure) {
-          String snfCode = null;
-          String revCntr = null;
-          for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (exporter.snfRevCntrMapper.canMap(code.code)) {
-              revCntr = exporter.snfRevCntrMapper.map(code.code, person, true);
-            }
-            if (codeMapper.canMap(code.code)) {
-              if (person.rand() < 0.15) { // Only 15% of SNF claim have a HCPCS code
-                snfCode = codeMapper.map(code.code, person, true);
-                consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
-              }
-              break; // take the first mappable code for each procedure
-            }
-          }
-          if (snfCode == null) {
-            // Add an entry for an empty code (either unmappable or 85% blank)
-            consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
-          }
-        } else if (lineItem.entry instanceof HealthRecord.Medication) {
-          HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
-          if (med.administration) {
-            // Administration of medication
-            consolidatedClaimLines.addClaimLine(SNF_MED_ADMIN_CODE, PHARMACY_REV_CNTR, lineItem,
-                    encounter);
-          }
-        }
-      }
+      ConsolidatedClaimLines consolidatedClaimLines = getConsolidateClaimLines(person, encounter);
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.SNF.class)) {
         int claimLine = 1;
@@ -295,7 +108,7 @@ public class SNFExporter extends RIFExporter {
             default:
               // Override mapped REV_CNTR when a PPS code is present and not a medication
               // SNF claim paid under PPS submitted as type of bill (TOB) 21X
-              fieldValues.put(BB2RIFStructure.SNF.REV_CNTR, "0022");
+              fieldValues.put(BB2RIFStructure.SNF.REV_CNTR, PPS_REV_CNTR);
               fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_UNIT_CNT,
                       Integer.toString(revCntrCount));
               fieldValues.remove(BB2RIFStructure.SNF.REV_CNTR_NDC_QTY);
@@ -354,5 +167,207 @@ public class SNFExporter extends RIFExporter {
       // Not subject to coinsurance
       fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_DDCTBL_COINSRNC_CD, "2");
     }
+  }
+
+  private void setClaimLevelValues(Map<BB2RIFStructure.SNF, String> fieldValues,
+          Person person, HealthRecord.Encounter encounter) {
+    // The REQUIRED Fields
+    fieldValues.put(BB2RIFStructure.SNF.BENE_ID,
+            (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
+    long claimId = RIFExporter.nextClaimId.getAndDecrement();
+    fieldValues.put(BB2RIFStructure.SNF.CLM_ID, "" + claimId);
+    long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
+    fieldValues.put(BB2RIFStructure.SNF.CLM_GRP_ID, "" + claimGroupId);
+    long fiDocId = RIFExporter.nextFiDocCntlNum.getAndDecrement();
+    fieldValues.put(BB2RIFStructure.SNF.FI_DOC_CLM_CNTL_NUM, "" + fiDocId);
+    fieldValues.put(BB2RIFStructure.SNF.CLM_FROM_DT, bb2DateFromTimestamp(encounter.start));
+    fieldValues.put(BB2RIFStructure.SNF.CLM_ADMSN_DT, bb2DateFromTimestamp(encounter.start));
+    fieldValues.put(BB2RIFStructure.SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
+    fieldValues.put(BB2RIFStructure.SNF.NCH_WKLY_PROC_DT,
+        bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+    fieldValues.put(BB2RIFStructure.SNF.PRVDR_NUM, encounter.provider.cmsProviderNum);
+    fieldValues.put(BB2RIFStructure.SNF.ORG_NPI_NUM, encounter.provider.npi);
+
+    fieldValues.put(BB2RIFStructure.SNF.CLM_PMT_AMT,
+        String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+    if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
+        .getGovernmentPayerPlan()) {
+      fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+    } else {
+      fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+    }
+    fieldValues.put(BB2RIFStructure.SNF.PRVDR_STATE_CD,
+        exporter.locationMapper.getStateCode(encounter.provider.state));
+    fieldValues.put(BB2RIFStructure.SNF.CLM_TOT_CHRG_AMT,
+        String.format("%.2f", encounter.claim.getTotalClaimCost()));
+    boolean isEmergency = encounter.type.equals(HealthRecord.EncounterType.EMERGENCY.toString());
+    boolean isUrgent = encounter.type.equals(HealthRecord.EncounterType.URGENTCARE.toString());
+    if (isEmergency) {
+      fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "1");
+    } else if (isUrgent) {
+      fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "2");
+    } else {
+      fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "3");
+    }
+    fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_IP_DDCTBL_AMT,
+        String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
+    fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
+        String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
+    fieldValues.put(BB2RIFStructure.SNF.NCH_IP_NCVRD_CHRG_AMT,
+        String.format("%.2f", encounter.claim.getTotalPatientCost()));
+    fieldValues.put(BB2RIFStructure.SNF.NCH_IP_TOT_DDCTN_AMT,
+        String.format("%.2f", encounter.claim.getTotalDeductiblePaid().add(
+                encounter.claim.getTotalCoinsurancePaid())));
+    int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
+    if (days <= 0) {
+      days = 1;
+    }
+    fieldValues.put(BB2RIFStructure.SNF.CLM_UTLZTN_DAY_CNT, "" + days);
+    int coinDays = days -  21; // first 21 days no coinsurance
+    if (coinDays < 0) {
+      coinDays = 0;
+    }
+    fieldValues.put(BB2RIFStructure.SNF.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
+    fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_TOT_CHRG_AMT,
+        String.format("%.2f", encounter.claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_NCVRD_CHRG_AMT,
+        String.format("%.2f", encounter.claim.getTotalPatientCost()));
+
+    // OPTIONAL CODES
+    if (encounter.reason != null) {
+      // If the encounter has a recorded reason, enter the mapped
+      // values into the principle diagnoses code.
+      if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
+        String icdCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+        fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, icdCode);
+        fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, icdCode);
+        if (exporter.drgCodeMapper.canMap(icdCode)) {
+          fieldValues.put(BB2RIFStructure.SNF.CLM_DRG_CD,
+                  exporter.drgCodeMapper.map(icdCode, person));
+        }
+      }
+    }
+
+    // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
+    // NCH_PTNT_STUS_IND_CD: A = Discharged, B = Died, C = Still a patient
+    String dischargeStatus;
+    String patientStatus;
+    String dischargeDate = null;
+    if (encounter.ended) {
+      dischargeStatus = "1"; // TODO 2=transfer if the next encounter is also inpatient
+      patientStatus = "A"; // discharged
+      dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+    } else {
+      dischargeStatus = "30"; // the patient is still here
+      patientStatus = "C"; // still a patient
+    }
+    if (!person.alive(encounter.stop)) {
+      dischargeStatus = "20"; // the patient died before the encounter ended
+      patientStatus = "B"; // died
+      dischargeDate = bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop));
+    }
+    fieldValues.put(BB2RIFStructure.SNF.PTNT_DSCHRG_STUS_CD, dischargeStatus);
+    fieldValues.put(BB2RIFStructure.SNF.NCH_PTNT_STATUS_IND_CD, patientStatus);
+    if (dischargeDate != null) {
+      fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_DSCHRG_DT, dischargeDate);
+    }
+  }
+
+  private int mapDiagnoses(Map<BB2RIFStructure.SNF, String> fieldValues, Person person,
+          HealthRecord.Encounter encounter) {
+    // Use the active condition diagnoses to enter mapped values
+    // into the diagnoses codes.
+    List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+    int smallest = Math.min(mappedDiagnosisCodes.size(),
+            BB2RIFStructure.snfDxFields.length);
+    if (!mappedDiagnosisCodes.isEmpty()) {
+      for (int i = 0; i < smallest; i++) {
+        BB2RIFStructure.SNF[] dxField = BB2RIFStructure.snfDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+        fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
+      }
+    }
+
+    return smallest;
+  }
+
+  private int mapProcedures(Map<BB2RIFStructure.SNF, String> fieldValues, Person person,
+          HealthRecord.Encounter encounter) {
+    // Use the procedures in this encounter to enter mapped values
+    int procedureCount = 0;
+    if (!encounter.procedures.isEmpty()) {
+      List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
+      List<String> mappedProcedureCodes = new ArrayList<>();
+      for (HealthRecord.Procedure procedure : encounter.procedures) {
+        for (HealthRecord.Code code : procedure.codes) {
+          if (exporter.conditionCodeMapper.canMap(code.code)) {
+            mappableProcedures.add(procedure);
+            mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code.code, person, true));
+            break; // take the first mappable code for each procedure
+          }
+        }
+      }
+      if (!mappableProcedures.isEmpty()) {
+        procedureCount = Math.min(mappableProcedures.size(),
+                BB2RIFStructure.snfPxFields.length);
+        for (int i = 0; i < procedureCount; i++) {
+          BB2RIFStructure.SNF[] pxField = BB2RIFStructure.snfPxFields[i];
+          fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
+          fieldValues.put(pxField[1], "0"); // 0=ICD10
+          fieldValues.put(pxField[2], bb2DateFromTimestamp(mappableProcedures.get(i).start));
+        }
+      }
+    }
+    return procedureCount;
+  }
+
+  private ConsolidatedClaimLines getConsolidateClaimLines(Person person,
+          HealthRecord.Encounter encounter) {
+    /**
+     * PPS and PDPM codes are documented in the "Long-Term Care Facility Resident Assessment
+     * Instrument 3.0 User’s Manual", see
+     * https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/NursingHomeQualityInits/MDS30RAIManual
+     * For PPS and PDPM, the HCPCS code is used to describe patient characteristics that drive
+     * the level of care required, the revenue center captures the type of care provided.
+     **/
+    final boolean isPDPM = encounter.start > SNF_PDPM_CUTOVER;
+    final String SNF_MED_ADMIN_CODE = isPDPM ? PDPM_MED_ADMIN_CODE : PPS_MED_ADMIN_CODE;
+    final CodeMapper codeMapper = isPDPM ? exporter.snfPDPMMapper : exporter.snfPPSMapper;
+    ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
+    for (Claim.ClaimEntry lineItem : encounter.claim.items) {
+      if (lineItem.entry instanceof HealthRecord.Procedure) {
+        String snfCode = null;
+        String revCntr = null;
+        for (HealthRecord.Code code : lineItem.entry.codes) {
+          if (exporter.snfRevCntrMapper.canMap(code.code)) {
+            revCntr = exporter.snfRevCntrMapper.map(code.code, person, true);
+          }
+          if (codeMapper.canMap(code.code)) {
+            if (person.rand() < 0.15) { // Only 15% of SNF claim have a HCPCS code
+              snfCode = codeMapper.map(code.code, person, true);
+              consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
+            }
+            break; // take the first mappable code for each procedure
+          }
+        }
+        if (snfCode == null) {
+          // Add an entry for an empty code (either unmappable or 85% blank)
+          consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
+        }
+      } else if (lineItem.entry instanceof HealthRecord.Medication) {
+        HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
+        if (med.administration) {
+          // Administration of medication
+          consolidatedClaimLines.addClaimLine(SNF_MED_ADMIN_CODE, PHARMACY_REV_CNTR, lineItem,
+                  encounter);
+        }
+      }
+    }
+    return consolidatedClaimLines;
   }
 }

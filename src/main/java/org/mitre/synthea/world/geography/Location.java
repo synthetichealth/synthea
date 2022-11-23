@@ -162,7 +162,7 @@ public class Location implements Serializable {
         Map<String, Double> determinants = socialDeterminantsOfHealth.get(county);
         for (String determinant : determinants.keySet()) {
           Double probability = determinants.get(determinant);
-          Double sum = averages.getOrDefault(determinant, new Double(0));
+          Double sum = averages.getOrDefault(determinant, 0.0);
           averages.put(determinant, probability + sum);
         }
       }

@@ -35,7 +35,6 @@ public class HospiceExporter extends RIFExporter {
    */
   long export(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
-    HashMap<BB2RIFStructure.HOSPICE, String> fieldValues = new HashMap<>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
@@ -55,7 +54,7 @@ public class HospiceExporter extends RIFExporter {
         days = 1;
       }
 
-      fieldValues.clear();
+      HashMap<BB2RIFStructure.HOSPICE, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.HOSPICE.class, person);
       setClaimLevelValues(fieldValues, mappedDiagnosisCodes, days, person, encounter);
 
@@ -252,10 +251,5 @@ public class HospiceExporter extends RIFExporter {
         BB2RIFStructure.HOSPICE.FST_DGNS_E_VRSN_CD);
 
     fieldValues.put(BB2RIFStructure.HOSPICE.CLM_UTLZTN_DAY_CNT, "" + days);
-    fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_UNIT_CNT, "" + days);
-    fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_RATE_AMT,
-        String.format("%.2f", encounter.claim.getTotalClaimCost()
-                .divide(BigDecimal.valueOf(days), RoundingMode.HALF_EVEN)
-                .setScale(2, RoundingMode.HALF_EVEN)));
   }
 }
