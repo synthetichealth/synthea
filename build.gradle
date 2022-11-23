@@ -3,6 +3,18 @@
  * can be found at https://docs.gradle.org/6.5/userguide/java_plugin.html
  */
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+  }
+}
+apply plugin: "com.github.johnrengelman.shadow"
+
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
@@ -14,7 +26,6 @@ apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -171,26 +182,29 @@ task rifMinimize(type: JavaExec) {
   mainClass = "org.mitre.synthea.export.BB2RIFMinimizer"
 }
 
-task uberJar(type: Jar) {
-    def versionFile = new File("$projectDir/src/main/resources/version.txt")
-    def versionText = "N/A"
-    if (versionFile.exists()) {
-      versionText = versionFile.text.trim()
-    }
-    manifest {
-        attributes(
-            'Main-Class'     : 'App',
-            'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-            'Build-Version'  : versionText,
-            'Created-By'     : "Gradle ${gradle.gradleVersion}",
-            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
-        )
-    }
-    archiveBaseName = 'synthea-with-dependencies'
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-    duplicatesStrategy = 'warn'
+shadowJar {
+  def versionFile = new File("$projectDir/src/main/resources/version.txt")
+  def versionText = "N/A"
+  if (versionFile.exists()) {
+    versionText = versionFile.text.trim()
+  }
+  transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)
+  archiveBaseName.set('synthea-with-dependencies')
+  archiveClassifier.set('')
+  archiveVersion.set('')
+  manifest {
+    attributes(
+      'Main-Class'     : 'App',
+      'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+      'Build-Version'  : versionText,
+      'Created-By'     : "Gradle ${gradle.gradleVersion}",
+      'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+      'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+    )
+  }
+}
+
+task uberJar() {
 }
 
 task concepts(type: JavaExec) {
@@ -264,6 +278,7 @@ task versionTxt() {
 
 compileJava.dependsOn versionTxt
 uberJar.dependsOn versionTxt
+uberJar.dependsOn shadowJar
 
 task cleanOutput {
   doLast {
