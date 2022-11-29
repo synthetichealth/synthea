@@ -229,8 +229,8 @@ public class CoverageRecord implements Serializable {
    * Pay monthly premiums to the payers at this time.
    * @param time  The time to pay the premiums.
    */
-  public void payMonthlyPremiumsAtTime(long time) {
-    this.getPlanRecordAtTime(time).payMonthlyPremiums();
+  public void payMonthlyPremiumsAtTime(long time, double employerLevel) {
+    this.getPlanRecordAtTime(time).payMonthlyPremiums(employerLevel);
   }
 
   public void updateLastPayerQols(double qolsForYear) {

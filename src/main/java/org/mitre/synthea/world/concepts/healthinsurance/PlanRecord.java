@@ -44,11 +44,11 @@ public class PlanRecord implements Serializable {
    * Pay monthly premiums associated with this plan.
    * @return  Cost of the premiums.
    */
-  public BigDecimal payMonthlyPremiums() {
-    BigDecimal premiumPrice = (this.plan.payMonthlyPremium())
-        .add(this.secondaryPlan.payMonthlyPremium());
-    this.insuranceCosts = this.insuranceCosts.add(premiumPrice);
-    return premiumPrice;
+  public BigDecimal payMonthlyPremiums(double employerLevel) {
+    BigDecimal premiumPaid = (this.plan.payMonthlyPremium(employerLevel))
+        .add(this.secondaryPlan.payMonthlyPremium(employerLevel));
+    this.insuranceCosts = this.insuranceCosts.add(premiumPaid);
+    return premiumPaid;
   }
 
   public void updateStopTime(long updatedStopTime) {

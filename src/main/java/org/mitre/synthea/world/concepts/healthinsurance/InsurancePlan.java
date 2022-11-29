@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -115,10 +116,14 @@ public class InsurancePlan implements Serializable {
    *
    * @return the monthly premium amount.
    */
-  public BigDecimal payMonthlyPremium() {
-    BigDecimal premiumPaid = this.getMonthlyPremium();
-    this.payer.addRevenue(premiumPaid);
-    return premiumPaid;
+  public BigDecimal payMonthlyPremium(double employerLevel) {
+    BigDecimal premiumPrice = this.getMonthlyPremium();
+    this.payer.addRevenue(premiumPrice);
+    if (employerLevel > 0.2) {
+      double employerCoverage = Config.getAsDouble("generate.insurance.employer_coverage");
+      premiumPrice = premiumPrice.multiply(new BigDecimal(employerCoverage));
+    }
+    return premiumPrice;
   }
 
   public Payer getPayer() {
