@@ -1,8 +1,10 @@
 ﻿Name,Poverty Multiplier,Income Threshold,Age Threshold,Qualifying Codes,Qualifying Attributes,Poverty Multiplier File,Spenddown File,Acceptance Likelihood,Sub-Eligibilities,Logical Operator
 StandardSocialSecurityDisability,,,,payers/eligibility_input_files/ssd_eligibility.csv,,,,0.5,,and
 StandardMedicare,,,65,,end_stage_renal_disease = true,,,,StandardSocialSecurityDisability,or
+StandardMedicareReal,,,,,,,,0.8,StandardMedicare,and
 StandardMedicaid,,,,,blindness = true,payers/eligibility_input_files/medicaid_income_eligibilities.csv,payers/eligibility_input_files/medicaid_mnil_eligibilities.csv,,,or
-StandardDualEligible,,,,,,,,,StandardMedicaid|StandardMedicare,and
+StandardMedicaidReal,,,,,,,,0.8,StandardMedicaid,and
+StandardDualEligible,,,,,,,,0.79,StandardMedicaidReal|StandardMedicareReal,and
 MedicaidPoverty2.0,2.0,,,,,,,,StandardMedicaid,or
 MedicareAge50,,,50,,,,,,StandardMedicare,or
 MedicareForAll*,,,0,,,,,,,

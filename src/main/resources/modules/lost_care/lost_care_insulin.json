@@ -1,0 +1,76 @@
+{
+  "name": "Lost Care - Insulin",
+  "remarks": [
+    "A module that defines the clinical pathway should a person miss necesary Insulin implanatation."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_Insulin_Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_For_Missed_Insulin_Care": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Mortality_Check",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": "106892",
+                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Check"
+        }
+      ]
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Yearly_Mortality_Check",
+          "distribution": 0.32999999999999996
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.67
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_INSULIN"
+        }
+      ]
+    },
+    "Yearly_Mortality_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_Insulin_Care"
+    }
+  },
+  "gmf_version": 2
+}

@@ -1,0 +1,76 @@
+{
+  "name": "Lost Care - Pacemaker",
+  "remarks": [
+    "A module that defines the clinical pathway should a person miss necesary pacemaker implanatation."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_Pacemaker_Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_For_Missed_Pacemaker_Care": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Mortality_Check",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "706004007",
+                "display": "Implantable cardiac pacemaker (physical object)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Check"
+        }
+      ]
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Yearly_Mortality_Check",
+          "distribution": 0.32999999999999996
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.67
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_PACEMAKER"
+        }
+      ]
+    },
+    "Yearly_Mortality_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_Pacemaker_Care"
+    }
+  },
+  "gmf_version": 2
+}
