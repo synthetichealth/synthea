@@ -238,20 +238,9 @@
       "direct_transition": "Prescribe_Emergency_Inhaler"
     },
     "Prescribe_Emergency_Inhaler": {
-      "type": "MedicationOrder",
-      "reason": "asthma_condition",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2123111",
-          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
-        }
-      ],
-      "prescription": {
-        "as_needed": true
-      },
-      "direct_transition": "Asthma_CarePlan_Selector",
-      "chronic": true
+      "type": "CallSubmodule",
+      "submodule": "medications/emergency_inhaler",
+      "direct_transition": "Asthma_CarePlan_Selector"
     },
     "Asthma_CarePlan_Selector": {
       "type": "Simple",
@@ -525,7 +514,7 @@
     },
     "Emergency_Medication_End": {
       "type": "MedicationEnd",
-      "medication_order": "Prescribe_Emergency_Inhaler",
+      "referenced_by_attribute": "emergency_inhaler",
       "direct_transition": "Childhood_Asthma_Subsides"
     },
     "Childhood_Asthma_Subsides": {
