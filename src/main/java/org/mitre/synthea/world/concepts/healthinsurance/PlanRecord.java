@@ -46,9 +46,9 @@ public class PlanRecord implements Serializable {
    * Pay monthly premiums associated with this plan.
    * @return  Cost of the premiums.
    */
-  public BigDecimal payMonthlyPremiums(double employerLevel) {
-    BigDecimal premiumPaid = (this.plan.payMonthlyPremium(employerLevel))
-        .add(this.secondaryPlan.payMonthlyPremium(employerLevel));
+  public BigDecimal payMonthlyPremiums(double employerLevel, int income) {
+    BigDecimal premiumPaid = (this.plan.payMonthlyPremium(employerLevel, income))
+        .add(this.secondaryPlan.payMonthlyPremium(employerLevel, income));
     this.insuranceExpenses = this.insuranceExpenses.add(premiumPaid);
     return premiumPaid;
   }

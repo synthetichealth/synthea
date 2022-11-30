@@ -146,12 +146,12 @@ public class Payer implements Serializable {
    * @param monthlyPremium  The monthly premium.
    */
   public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
-      double defaultCopay, double monthlyPremium, boolean medicareSupplement,
+      double defaultCopay, String premium, boolean medicareSupplement,
       int yearStart, int yearEnd, int priority, String eligibilityName) {
     InsurancePlan newPlan = new InsurancePlan(
         this, servicesCovered, BigDecimal.valueOf(deductible),
         BigDecimal.valueOf(defaultCoinsurance), BigDecimal.valueOf(defaultCopay),
-        BigDecimal.valueOf(monthlyPremium), medicareSupplement, yearStart, yearEnd,
+        premium, medicareSupplement, yearStart, yearEnd,
         priority, eligibilityName);
     this.plans.add(newPlan);
   }

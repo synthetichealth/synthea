@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Set;
 
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -47,7 +46,7 @@ public class PlanFinderBestRates implements IPlanFinder {
     for (InsurancePlan plan : plans) {
       if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
         // First, calculate the annual premium.
-        BigDecimal expectedRate = plan.getMonthlyPremium().multiply(BigDecimal.valueOf(12))
+        BigDecimal expectedRate = plan.getMonthlyPremium((int) person.attributes.get(Person.INCOME)).multiply(BigDecimal.valueOf(12))
             .setScale(2, RoundingMode.HALF_EVEN);
         // Second, calculate expected copays based on last years visits.
         expectedRate = expectedRate.add(

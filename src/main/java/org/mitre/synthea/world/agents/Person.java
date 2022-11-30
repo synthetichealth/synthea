@@ -774,7 +774,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     double incomePercentage
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
-    BigDecimal yearlyCost = plan.getYearlyCost();
+    BigDecimal yearlyCost = plan.getYearlyCost((int) this.attributes.get(Person.INCOME));
     return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) == 1;
   }
 
@@ -816,7 +816,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      this.coverage.payMonthlyPremiumsAtTime(time, (double) this.attributes.get(Person.OCCUPATION_LEVEL));
+      this.coverage.payMonthlyPremiumsAtTime(time, (double) this.attributes.get(Person.OCCUPATION_LEVEL), (int) this.attributes.get(Person.INCOME));
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

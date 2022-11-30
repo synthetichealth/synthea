@@ -6,7 +6,6 @@ import java.math.RoundingMode;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
-import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -23,11 +22,13 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
  */
 public class InsurancePlan implements Serializable {
 
+  private static final String PCT_INCOME = "%Income";
+
   private final Payer payer;
   private final BigDecimal deductible;
   private final BigDecimal defaultCopay;
   private final BigDecimal defaultCoinsurance;
-  private final BigDecimal monthlyPremium;
+  private final String premium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
   private final String insuranceStatus;
@@ -48,13 +49,13 @@ public class InsurancePlan implements Serializable {
    * @param eligibilityName The eligibility algorithm to use.
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
-      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, BigDecimal monthlyPremium,
+      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, String premium,
       boolean medicareSupplement, int activeYearStart, int activeYearEnd, int priorityLevel, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
     this.defaultCopay = defaultCopay;
-    this.monthlyPremium = monthlyPremium;
+    this.premium = premium;
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
     this.priority = priorityLevel;
@@ -96,8 +97,11 @@ public class InsurancePlan implements Serializable {
     return copay;
   }
 
-  public BigDecimal getMonthlyPremium() {
-    return this.monthlyPremium;
+  public BigDecimal getMonthlyPremium(int income) {
+    if(this.premium.contains(PCT_INCOME)) {
+      return new BigDecimal(((Double.parseDouble(this.premium.replace(PCT_INCOME, ""))/100) * income)/12);
+    }
+    return new BigDecimal(this.premium);
   }
 
   public BigDecimal getDeductible() {
@@ -118,8 +122,8 @@ public class InsurancePlan implements Serializable {
    *
    * @return the monthly premium amount.
    */
-  public BigDecimal payMonthlyPremium(double employerLevel) {
-    BigDecimal premiumPrice = this.getMonthlyPremium();
+  public BigDecimal payMonthlyPremium(double employerLevel, int income) {
+    BigDecimal premiumPrice = this.getMonthlyPremium(income);
     this.payer.addRevenue(premiumPrice);
     // if (employerLevel > 0.2) {
     //   double employerCoverage = Config.getAsDouble("generate.insurance.employer_coverage");
@@ -228,8 +232,8 @@ public class InsurancePlan implements Serializable {
    * Returns the yearly cost of this plan.
    * @return the yearly cost.
    */
-  public BigDecimal getYearlyCost() {
-    BigDecimal yearlyPremiumTotal = this.getMonthlyPremium()
+  public BigDecimal getYearlyCost(int income) {
+    BigDecimal yearlyPremiumTotal = this.getMonthlyPremium(income)
             .multiply(BigDecimal.valueOf(12))
             .setScale(2, RoundingMode.HALF_EVEN);
     return yearlyPremiumTotal;
