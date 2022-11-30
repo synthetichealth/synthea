@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.export.rif.tools;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.mitre.synthea.export.BB2RIFStructure.EXPORT_SUMMARY;
+import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.rif.BB2RIFStructure.EXPORT_SUMMARY;
 import org.mitre.synthea.helpers.SimpleCSV;
 
 /**

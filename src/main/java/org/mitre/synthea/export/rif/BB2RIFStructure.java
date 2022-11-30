@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.export.rif;
 
 /**
  * A collection of enums and related that describe the structure of RIF files. Note that order
@@ -6,7 +6,7 @@ package org.mitre.synthea.export;
  */
 public class BB2RIFStructure {
 
-  static final Class<?>[] RIF_FILES = {
+  public static final Class<?>[] RIF_FILES = {
     BENEFICIARY.class,
     BENEFICIARY_HISTORY.class,
     CARRIER.class,
@@ -20,7 +20,7 @@ public class BB2RIFStructure {
   };
 
   @SuppressWarnings("checkstyle:typename")
-  enum EXPORT_SUMMARY {
+  public enum EXPORT_SUMMARY {
     BENE_ID,
     CARRIER_CLAIMS,
     DME_CLAIMS,
@@ -32,7 +32,7 @@ public class BB2RIFStructure {
     SNF_CLAIMS
   }
 
-  enum BENEFICIARY {
+  public enum BENEFICIARY {
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -240,7 +240,7 @@ public class BB2RIFStructure {
     BENE_LINK_KEY
   }
 
-  static final BENEFICIARY[] beneficiaryMedicareStatusFields = {
+  public static final BENEFICIARY[] beneficiaryMedicareStatusFields = {
     BENEFICIARY.MDCR_STUS_JAN_CD,
     BENEFICIARY.MDCR_STUS_FEB_CD,
     BENEFICIARY.MDCR_STUS_MAR_CD,
@@ -255,7 +255,7 @@ public class BB2RIFStructure {
     BENEFICIARY.MDCR_STUS_DEC_CD
   };
 
-  static final BENEFICIARY[] beneficiaryMedicareEntitlementFields = {
+  public static final BENEFICIARY[] beneficiaryMedicareEntitlementFields = {
     BENEFICIARY.MDCR_ENTLMT_BUYIN_1_IND,
     BENEFICIARY.MDCR_ENTLMT_BUYIN_2_IND,
     BENEFICIARY.MDCR_ENTLMT_BUYIN_3_IND,
@@ -270,7 +270,7 @@ public class BB2RIFStructure {
     BENEFICIARY.MDCR_ENTLMT_BUYIN_12_IND
   };
 
-  static final BENEFICIARY[] beneficiaryPartCContractFields = {
+  public static final BENEFICIARY[] beneficiaryPartCContractFields = {
     BENEFICIARY.PTC_CNTRCT_JAN_ID,
     BENEFICIARY.PTC_CNTRCT_FEB_ID,
     BENEFICIARY.PTC_CNTRCT_MAR_ID,
@@ -285,7 +285,7 @@ public class BB2RIFStructure {
     BENEFICIARY.PTC_CNTRCT_DEC_ID
   };
 
-  static final BENEFICIARY[] beneficiaryPartCPBPFields = {
+  public static final BENEFICIARY[] beneficiaryPartCPBPFields = {
     BENEFICIARY.PTC_PBP_JAN_ID,
     BENEFICIARY.PTC_PBP_FEB_ID,
     BENEFICIARY.PTC_PBP_MAR_ID,
@@ -300,7 +300,7 @@ public class BB2RIFStructure {
     BENEFICIARY.PTC_PBP_DEC_ID
   };
 
-  static final BENEFICIARY[] beneficiaryPartDContractFields = {
+  public static final BENEFICIARY[] beneficiaryPartDContractFields = {
     BENEFICIARY.PTD_CNTRCT_JAN_ID,
     BENEFICIARY.PTD_CNTRCT_FEB_ID,
     BENEFICIARY.PTD_CNTRCT_MAR_ID,
@@ -315,7 +315,7 @@ public class BB2RIFStructure {
     BENEFICIARY.PTD_CNTRCT_DEC_ID
   };
 
-  static final BENEFICIARY[] beneficiaryPartDPBPFields = {
+  public static final BENEFICIARY[] beneficiaryPartDPBPFields = {
     BENEFICIARY.PTD_PBP_JAN_ID,
     BENEFICIARY.PTD_PBP_FEB_ID,
     BENEFICIARY.PTD_PBP_MAR_ID,
@@ -330,7 +330,7 @@ public class BB2RIFStructure {
     BENEFICIARY.PTD_PBP_DEC_ID
   };
 
-  static final BENEFICIARY[] beneficiaryPartDSegmentFields = {
+  public static final BENEFICIARY[] beneficiaryPartDSegmentFields = {
     BENEFICIARY.PTD_SGMT_JAN_ID,
     BENEFICIARY.PTD_SGMT_FEB_ID,
     BENEFICIARY.PTD_SGMT_MAR_ID,
@@ -345,7 +345,7 @@ public class BB2RIFStructure {
     BENEFICIARY.PTD_SGMT_DEC_ID
   };
 
-  static final BENEFICIARY[] beneficiaryPartDCostSharingFields = {
+  public static final BENEFICIARY[] beneficiaryPartDCostSharingFields = {
     BENEFICIARY.CST_SHR_GRP_JAN_CD,
     BENEFICIARY.CST_SHR_GRP_FEB_CD,
     BENEFICIARY.CST_SHR_GRP_MAR_CD,
@@ -360,7 +360,7 @@ public class BB2RIFStructure {
     BENEFICIARY.CST_SHR_GRP_DEC_CD
   };
 
-  static final BENEFICIARY[] benficiaryPartDRetireeDrugSubsidyFields = {
+  public static final BENEFICIARY[] benficiaryPartDRetireeDrugSubsidyFields = {
     BENEFICIARY.RDS_JAN_IND,
     BENEFICIARY.RDS_FEB_IND,
     BENEFICIARY.RDS_MAR_IND,
@@ -375,7 +375,7 @@ public class BB2RIFStructure {
     BENEFICIARY.RDS_DEC_IND
   };
 
-  static final BENEFICIARY[] beneficiaryDualEligibleStatusFields = {
+  public static final BENEFICIARY[] beneficiaryDualEligibleStatusFields = {
     BENEFICIARY.META_DUAL_ELGBL_STUS_JAN_CD,
     BENEFICIARY.META_DUAL_ELGBL_STUS_FEB_CD,
     BENEFICIARY.META_DUAL_ELGBL_STUS_MAR_CD,
@@ -390,7 +390,7 @@ public class BB2RIFStructure {
     BENEFICIARY.META_DUAL_ELGBL_STUS_DEC_CD
   };
 
-  static final BENEFICIARY[] beneficiaryFipsStateCntyFields = {
+  public static final BENEFICIARY[] beneficiaryFipsStateCntyFields = {
     BENEFICIARY.FIPS_STATE_CNTY_JAN_CD,
     BENEFICIARY.FIPS_STATE_CNTY_FEB_CD,
     BENEFICIARY.FIPS_STATE_CNTY_MAR_CD,
@@ -406,7 +406,7 @@ public class BB2RIFStructure {
   };
 
   @SuppressWarnings("checkstyle:typename")
-  enum BENEFICIARY_HISTORY {
+  public enum BENEFICIARY_HISTORY {
     DML_IND,
     BENE_ID,
     STATE_CODE,
@@ -430,7 +430,7 @@ public class BB2RIFStructure {
     EFCTV_END_DT
   }
 
-  enum OUTPATIENT {
+  public enum OUTPATIENT {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -667,7 +667,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_NPI
   }
 
-  enum INPATIENT {
+  public enum INPATIENT {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -945,7 +945,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_NPI
   }
 
-  static final INPATIENT[][] inpatientDxFields = {
+  public static final INPATIENT[][] inpatientDxFields = {
     { INPATIENT.ICD_DGNS_CD1, INPATIENT.ICD_DGNS_VRSN_CD1,
       INPATIENT.CLM_POA_IND_SW1 },
     { INPATIENT.ICD_DGNS_CD2, INPATIENT.ICD_DGNS_VRSN_CD2,
@@ -998,7 +998,7 @@ public class BB2RIFStructure {
       INPATIENT.CLM_POA_IND_SW25 }
   };
 
-  static final INPATIENT[][] inpatientPxFields = {
+  public static final INPATIENT[][] inpatientPxFields = {
     { INPATIENT.ICD_PRCDR_CD1, INPATIENT.ICD_PRCDR_VRSN_CD1,
       INPATIENT.PRCDR_DT1 },
     { INPATIENT.ICD_PRCDR_CD2, INPATIENT.ICD_PRCDR_VRSN_CD2,
@@ -1051,7 +1051,7 @@ public class BB2RIFStructure {
       INPATIENT.PRCDR_DT25 }
   };
 
-  static final OUTPATIENT[][] outpatientDxFields = {
+  public static final OUTPATIENT[][] outpatientDxFields = {
     { OUTPATIENT.ICD_DGNS_CD1, OUTPATIENT.ICD_DGNS_VRSN_CD1 },
     { OUTPATIENT.ICD_DGNS_CD2, OUTPATIENT.ICD_DGNS_VRSN_CD2 },
     { OUTPATIENT.ICD_DGNS_CD3, OUTPATIENT.ICD_DGNS_VRSN_CD3 },
@@ -1079,7 +1079,7 @@ public class BB2RIFStructure {
     { OUTPATIENT.ICD_DGNS_CD25, OUTPATIENT.ICD_DGNS_VRSN_CD25 }
   };
 
-  static final OUTPATIENT[][] outpatientPxFields = {
+  public static final OUTPATIENT[][] outpatientPxFields = {
     { OUTPATIENT.ICD_PRCDR_CD1, OUTPATIENT.ICD_PRCDR_VRSN_CD1,
       OUTPATIENT.PRCDR_DT1 },
     { OUTPATIENT.ICD_PRCDR_CD2, OUTPATIENT.ICD_PRCDR_VRSN_CD2,
@@ -1132,7 +1132,7 @@ public class BB2RIFStructure {
       OUTPATIENT.PRCDR_DT25 }
   };
 
-  enum CARRIER {
+  public enum CARRIER {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1234,7 +1234,7 @@ public class BB2RIFStructure {
     CARR_LINE_ANSTHSA_UNIT_CNT
   }
 
-  static final CARRIER[][] carrierDxFields = {
+  public static final CARRIER[][] carrierDxFields = {
     { CARRIER.ICD_DGNS_CD1, CARRIER.ICD_DGNS_VRSN_CD1 },
     { CARRIER.ICD_DGNS_CD2, CARRIER.ICD_DGNS_VRSN_CD2 },
     { CARRIER.ICD_DGNS_CD3, CARRIER.ICD_DGNS_VRSN_CD3 },
@@ -1249,7 +1249,7 @@ public class BB2RIFStructure {
     { CARRIER.ICD_DGNS_CD12, CARRIER.ICD_DGNS_VRSN_CD12 }
   };
 
-  enum PDE {
+  public enum PDE {
     DML_IND,
     PDE_ID,
     CLM_GRP_ID,
@@ -1293,7 +1293,7 @@ public class BB2RIFStructure {
     SUBMSN_CLR_CD
   }
 
-  enum DME {
+  public enum DME {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1391,7 +1391,7 @@ public class BB2RIFStructure {
     LINE_NDC_CD
   }
 
-  static final DME[][] dmeDxFields = {
+  public static final DME[][] dmeDxFields = {
     { DME.ICD_DGNS_CD1, DME.ICD_DGNS_VRSN_CD1 },
     { DME.ICD_DGNS_CD2, DME.ICD_DGNS_VRSN_CD2 },
     { DME.ICD_DGNS_CD3, DME.ICD_DGNS_VRSN_CD3 },
@@ -1406,7 +1406,7 @@ public class BB2RIFStructure {
     { DME.ICD_DGNS_CD12, DME.ICD_DGNS_VRSN_CD12 }
   };
 
-  enum NPI {
+  public enum NPI {
     NPI,
     ENTITY_TYPE_CODE,
     REPLACEMENT_NPI,
@@ -1420,7 +1420,7 @@ public class BB2RIFStructure {
     CREDENTIALS
   }
 
-  enum HHA {
+  public enum HHA {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1554,7 +1554,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_NPI
   }
 
-  static final HHA[][] homeDxFields = {
+  public static final HHA[][] homeDxFields = {
     { HHA.ICD_DGNS_CD1, HHA.ICD_DGNS_VRSN_CD1 },
     { HHA.ICD_DGNS_CD2, HHA.ICD_DGNS_VRSN_CD2 },
     { HHA.ICD_DGNS_CD3, HHA.ICD_DGNS_VRSN_CD3 },
@@ -1582,7 +1582,7 @@ public class BB2RIFStructure {
     { HHA.ICD_DGNS_CD25, HHA.ICD_DGNS_VRSN_CD25 }
   };
 
-  enum HOSPICE {
+  public enum HOSPICE {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1714,7 +1714,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_NPI
   }
 
-  static final HOSPICE[][] hospiceDxFields = {
+  public static final HOSPICE[][] hospiceDxFields = {
     { HOSPICE.ICD_DGNS_CD1, HOSPICE.ICD_DGNS_VRSN_CD1 },
     { HOSPICE.ICD_DGNS_CD2, HOSPICE.ICD_DGNS_VRSN_CD2 },
     { HOSPICE.ICD_DGNS_CD3, HOSPICE.ICD_DGNS_VRSN_CD3 },
@@ -1742,7 +1742,7 @@ public class BB2RIFStructure {
     { HOSPICE.ICD_DGNS_CD25, HOSPICE.ICD_DGNS_VRSN_CD25 }
   };
 
-  enum SNF {
+  public enum SNF {
     DML_IND,
     BENE_ID,
     CLM_ID,
@@ -1975,7 +1975,7 @@ public class BB2RIFStructure {
     RNDRNG_PHYSN_NPI
   }
 
-  static final SNF[][] snfDxFields = {
+  public static final SNF[][] snfDxFields = {
     { SNF.ICD_DGNS_CD1, SNF.ICD_DGNS_VRSN_CD1 },
     { SNF.ICD_DGNS_CD2, SNF.ICD_DGNS_VRSN_CD2 },
     { SNF.ICD_DGNS_CD3, SNF.ICD_DGNS_VRSN_CD3 },
@@ -2003,7 +2003,7 @@ public class BB2RIFStructure {
     { SNF.ICD_DGNS_CD25, SNF.ICD_DGNS_VRSN_CD25 }
   };
 
-  static final SNF[][] snfPxFields = {
+  public static final SNF[][] snfPxFields = {
     { SNF.ICD_PRCDR_CD1, SNF.ICD_PRCDR_VRSN_CD1,  SNF.PRCDR_DT1 },
     { SNF.ICD_PRCDR_CD2, SNF.ICD_PRCDR_VRSN_CD2, SNF.PRCDR_DT2 },
     { SNF.ICD_PRCDR_CD3, SNF.ICD_PRCDR_VRSN_CD3, SNF.PRCDR_DT3 },

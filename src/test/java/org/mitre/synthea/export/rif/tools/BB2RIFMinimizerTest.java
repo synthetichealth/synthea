@@ -1,4 +1,4 @@
-package org.mitre.synthea.export;
+package org.mitre.synthea.export.rif.tools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

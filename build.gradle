@@ -180,7 +180,7 @@ task rifMinimize(type: JavaExec) {
   group 'Application'
   description 'Filter exported RIF files to produce minimal set that covers all claim types'
   classpath sourceSets.main.runtimeClasspath
-  mainClass = "org.mitre.synthea.export.BB2RIFMinimizer"
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFMinimizer"
 }
 
 shadowJar {
