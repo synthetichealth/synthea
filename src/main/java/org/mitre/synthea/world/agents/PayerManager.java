@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.IPayerAdjustment;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentFixed;
 import org.mitre.synthea.world.agents.behaviors.payeradjustment.PayerAdjustmentNone;
@@ -73,6 +74,7 @@ public class PayerManager {
   private static final Set<Payer> privatePayers = new HashSet<Payer>();
   /* Map of all Government Payers imported. */
   private static final Map<String, Payer> governmentPayers = new HashMap<String, Payer>();
+  private static final CharSequence FPL_PREMIUM = "%FPL";
 
   /* No Insurance Payer. */
   public static Payer noInsurance;
@@ -232,14 +234,8 @@ public class PayerManager {
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
-    String priorityString = line.remove(PRIORITY_LEVEL).trim();
-    int priority = Integer.MAX_VALUE;
-    // A blank priority is minimum priority, so give it the maximum value.
-    if (!StringUtils.isBlank(priorityString)) {
-      priority = Integer.parseInt(priorityString);
-    }
 
-    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, priority);
+    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
 
     // Add remaining columns we didn't map to first-class fields.
     for (Map.Entry<String, String> e : line.entrySet()) {
@@ -269,7 +265,16 @@ public class PayerManager {
     double deductible = Double.parseDouble(line.remove(DEDUCTIBLE).trim());
     double defaultCoinsurance = Double.parseDouble(line.remove(COINSURANCE).trim());
     double defaultCopay = Double.parseDouble(line.remove(COPAY).trim());
-    double monthlyPremium = Double.parseDouble(line.remove(MONTHLY_PREMIUM).trim());
+    String premiumStr = line.remove(MONTHLY_PREMIUM).trim();
+    double monthlyPremium = 0.0;
+    if(premiumStr.contains(FPL_PREMIUM)) {
+      // This premium is based on a percentage of the FPL, to be paid yearly.
+      double yearlyPremium = Double.parseDouble(premiumStr.replace(FPL_PREMIUM, "")) * HealthInsuranceModule.povertyLevel;
+      monthlyPremium =  yearlyPremium / 12.0d;
+    } else {
+      // This is a constant premium cost not subsidized by the ACA.
+      monthlyPremium = Double.parseDouble(premiumStr);
+    }
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
     int yearStart = Integer.parseInt(line.remove(START_YEAR).trim());
     String yearEndStr = line.remove(END_YEAR).trim();
@@ -277,10 +282,16 @@ public class PayerManager {
     if (!StringUtils.isBlank(yearEndStr)) {
       yearEnd = Integer.parseInt(yearEndStr);
     }
+    // A blank priority is minimum priority, so give it the maximum value.
+    String priorityString = line.remove(PRIORITY_LEVEL).trim();
+    int priority = Integer.MAX_VALUE;
+    if (!StringUtils.isBlank(priorityString)) {
+      priority = Integer.parseInt(priorityString);
+    }
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremium, medicareSupplement, yearStart, yearEnd, eligibilityName);
+        defaultCopay, monthlyPremium, medicareSupplement, yearStart, yearEnd, priority, eligibilityName);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -316,9 +327,9 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
-        statesCovered, NO_INSURANCE, Integer.MAX_VALUE);
+        statesCovered, NO_INSURANCE);
     PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, 0,
-        Utilities.getYear(System.currentTimeMillis()) + 1, PlanEligibilityFinder.GENERIC);
+        Utilities.getYear(System.currentTimeMillis()) + 1, Integer.MAX_VALUE, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 

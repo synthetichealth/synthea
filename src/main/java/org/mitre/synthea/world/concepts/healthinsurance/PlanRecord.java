@@ -20,10 +20,12 @@ public class PlanRecord implements Serializable {
   private InsurancePlan secondaryPlan;
   public String ownership;
   public String ownerName;
-  private BigDecimal healthcareExpenses = Claim.ZERO_CENTS;
   private BigDecimal coveredExpenses = Claim.ZERO_CENTS;
-  private BigDecimal insuranceCosts = Claim.ZERO_CENTS;
   public BigDecimal remainingDeductible = Claim.ZERO_CENTS;
+  // Any healthcare expenses not covered by insurance and paid, out of pocket, by the patient.
+  private BigDecimal outOfPocketExpenses = Claim.ZERO_CENTS;
+  // The expenses associated with having an insurance plan: Premiums.
+  private BigDecimal insuranceExpenses = Claim.ZERO_CENTS;
 
   /**
    * Create a new Plan with the given Payer.
@@ -47,7 +49,7 @@ public class PlanRecord implements Serializable {
   public BigDecimal payMonthlyPremiums(double employerLevel) {
     BigDecimal premiumPaid = (this.plan.payMonthlyPremium(employerLevel))
         .add(this.secondaryPlan.payMonthlyPremium(employerLevel));
-    this.insuranceCosts = this.insuranceCosts.add(premiumPaid);
+    this.insuranceExpenses = this.insuranceExpenses.add(premiumPaid);
     return premiumPaid;
   }
 
@@ -65,8 +67,8 @@ public class PlanRecord implements Serializable {
     return sb.toString();
   }
 
-  public void incrementPatientExpenses(BigDecimal expenses) {
-    this.healthcareExpenses = this.healthcareExpenses.add(expenses);
+  public void incrementOutOfPocketExpenses(BigDecimal expenses) {
+    this.outOfPocketExpenses = this.outOfPocketExpenses.add(expenses);
     this.plan.addUncoveredCost(expenses);
   }
 
@@ -80,16 +82,16 @@ public class PlanRecord implements Serializable {
     this.secondaryPlan.addCoveredCost(coverage);
   }
 
-  public BigDecimal getHealthcareExpenses() {
-    return this.healthcareExpenses;
+  public BigDecimal getOutOfPocketExpenses() {
+    return this.outOfPocketExpenses;
   }
 
   public BigDecimal getCoveredExpenses() {
     return this.coveredExpenses;
   }
 
-  public BigDecimal getInsuranceCosts() {
-    return this.insuranceCosts;
+  public BigDecimal getInsuranceExpenses() {
+    return this.insuranceExpenses;
   }
 
   public boolean isDedctiblePlan() {

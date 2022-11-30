@@ -635,7 +635,7 @@ public class CSVExporter {
     // LAT,LON
     s.append(',').append(person.getY()).append(',').append(person.getX()).append(',');
     // HEALTHCARE_EXPENSES
-    s.append(person.coverage.getTotalHealthcareExpenses()).append(',');
+    s.append(person.coverage.getTotalOutOfPocketExpenses()).append(',');
     // HEALTHCARE_COVERAGE
     s.append(person.coverage.getTotalCoverage()).append(',');
     // INCOME
@@ -1355,10 +1355,10 @@ public class CSVExporter {
     // PAYER_ID
     s.append(planRecord.getPlan().getPayer().getResourceID()).append(',');
     // HEALTHCARE_EXPENSES
-    double healthcareExpenses = planRecord.getHealthcareExpenses().doubleValue();
+    double healthcareExpenses = planRecord.getOutOfPocketExpenses().doubleValue();
     s.append(healthcareExpenses).append(',');
     // INSURANCE_COSTS
-    double insuranceCosts = planRecord.getInsuranceCosts().doubleValue();
+    double insuranceCosts = planRecord.getInsuranceExpenses().doubleValue();
     s.append(insuranceCosts).append(',');
     // COVERED_COSTS
     double coveredExpenses = planRecord.getCoveredExpenses().doubleValue();

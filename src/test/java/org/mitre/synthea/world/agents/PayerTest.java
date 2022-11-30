@@ -354,7 +354,7 @@ public class PayerTest {
     // They should have not have Medicaid in this first year.
     assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
     // The MA yearly spenddown amount is $6264. They need to incur $19499 in healthcare expenses.
-    person.coverage.getPlanRecordAtTime(time).incrementPatientExpenses(BigDecimal.valueOf(19699));
+    person.coverage.getPlanRecordAtTime(time).incrementOutOfPocketExpenses(BigDecimal.valueOf(19699));
     // Now process their insurance and they should switch to Medicaid.
     Calendar c = Calendar.getInstance();
     c.setTimeInMillis(time);
@@ -714,8 +714,8 @@ public class PayerTest {
     assertTrue(PayerManager.noInsurance.getAmountCovered().equals(Claim.ZERO_CENTS));
     // The No Insurance's uncovered costs should equal the total cost.
     assertTrue(fakeEncounter.getCost().equals(PayerManager.noInsurance.getAmountUncovered()));
-    // The person's expenses shoudl equal the total cost.
-    assertTrue(fakeEncounter.getCost().equals(person.coverage.getTotalExpenses()));
+    // The person's out of pocket expenses shoudl equal the total cost.
+    assertTrue(fakeEncounter.getCost().equals(person.coverage.getTotalOutOfPocketExpenses()));
   }
 
   @Test
@@ -767,7 +767,7 @@ public class PayerTest {
     BigDecimal expenses = encounter.claim.totals.patientOutOfPocket
         .add(encounter.claim.totals.deductiblePaidByPatient)
         .add(encounter.claim.totals.copayPaidByPatient);
-    assertEquals(person.coverage.getTotalHealthcareExpenses(), expenses);
+    assertEquals(person.coverage.getTotalOutOfPocketExpenses(), expenses);
     assertEquals(encounter.claim.totals.copayPaidByPatient, expenses);
   }
 
@@ -792,8 +792,7 @@ public class PayerTest {
     // Person's coverage should equal $0.0.
     assertTrue(person.coverage.getTotalCoverage().equals(Claim.ZERO_CENTS));
     // Person's expenses should equal the total cost of the encounter.
-    assertEquals(person.coverage.getTotalExpenses(), encounter.getCost());
-    assertEquals(person.coverage.getTotalHealthcareExpenses(), encounter.getCost());
+    assertEquals(person.coverage.getTotalOutOfPocketExpenses(), encounter.getCost());
   }
 
   @Test

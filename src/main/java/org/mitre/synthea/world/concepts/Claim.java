@@ -262,7 +262,7 @@ public class Claim implements Serializable {
 
     BigDecimal patientExpenses = totals.copayPaidByPatient.add(totals.deductiblePaidByPatient)
         .add(totals.patientOutOfPocket);
-    planRecord.incrementPatientExpenses(patientExpenses);
+    planRecord.incrementOutOfPocketExpenses(patientExpenses);
     BigDecimal payerCoverage = totals.coinsurancePaidByPayer.add(totals.paidByPayer);
     planRecord.incrementPrimaryCoverage(payerCoverage);
     planRecord.incrementSecondaryCoverage(totals.paidBySecondaryPayer);

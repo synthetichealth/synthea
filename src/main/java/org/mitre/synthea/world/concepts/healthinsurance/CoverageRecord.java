@@ -96,7 +96,6 @@ public class CoverageRecord implements Serializable {
         return planRecord;
       }
     }
-    System.out.println(this.planHistory);
     throw new RuntimeException("Person does not have insurance at time " + time + ".");
   }
 
@@ -156,10 +155,10 @@ public class CoverageRecord implements Serializable {
    * Does not include premium costs.
    * @return The healthcare expenses.
    */
-  public BigDecimal getTotalHealthcareExpenses() {
+  public BigDecimal getTotalOutOfPocketExpenses() {
     BigDecimal total = BigDecimal.ZERO;
     for (PlanRecord planRecord : planHistory) {
-      total = total.add(planRecord.getHealthcareExpenses());
+      total = total.add(planRecord.getOutOfPocketExpenses());
     }
     return total;
   }
@@ -172,20 +171,7 @@ public class CoverageRecord implements Serializable {
   public BigDecimal getTotalPremiumExpenses() {
     BigDecimal total = Claim.ZERO_CENTS;
     for (PlanRecord planRecord : planHistory) {
-      total = total.add(planRecord.getInsuranceCosts());
-    }
-    return total;
-  }
-
-  /**
-   * Returns the total Healthcare expenses associated with this coverage record.
-   * Does not include premium costs.
-   * @return  The total healthcare expenses.
-   */
-  public BigDecimal getTotalExpenses() {
-    BigDecimal total = Claim.ZERO_CENTS;
-    for (PlanRecord planRecord : planHistory) {
-      total = total.add(planRecord.getHealthcareExpenses());
+      total = total.add(planRecord.getInsuranceExpenses());
     }
     return total;
   }
@@ -219,8 +205,8 @@ public class CoverageRecord implements Serializable {
     PlanRecord currentPlanRecord = this.getPlanRecordAtTime(time);
 
     BigDecimal currentYearlyExpenses = BigDecimal.ZERO;
-    currentYearlyExpenses = currentYearlyExpenses.add(currentPlanRecord.getHealthcareExpenses());
-    currentYearlyExpenses = currentYearlyExpenses.add(currentPlanRecord.getInsuranceCosts());
+    currentYearlyExpenses = currentYearlyExpenses.add(currentPlanRecord.getOutOfPocketExpenses());
+    currentYearlyExpenses = currentYearlyExpenses.add(currentPlanRecord.getInsuranceExpenses());
 
     return (BigDecimal.valueOf(income).subtract(currentYearlyExpenses)).intValue();
   }
