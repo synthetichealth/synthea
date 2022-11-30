@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -208,13 +208,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#appendToFile(java.nio.file.Path,java.lang.String)">appendToFile</a></span>&#8203;(java.nio.file.Path&nbsp;file,
+            java.lang.String&nbsp;contents)</code></th>
+<td class="colLast">
+<div class="block">Append contents to the end of a file.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#export(org.mitre.synthea.world.agents.Person,long)">export</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
       long&nbsp;stopTime)</code></th>
 <td class="colLast">
 <div class="block">Export a single patient, into all the formats supported.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#export(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">export</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
       long&nbsp;stopTime,
@@ -223,7 +231,7 @@ extends java.lang.Object</pre>
 <div class="block">Export a single patient, into all the formats supported.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filename(org.mitre.synthea.world.agents.Person,java.lang.String,java.lang.String)">filename</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
         java.lang.String&nbsp;tag,
@@ -232,7 +240,7 @@ extends java.lang.Object</pre>
 <div class="block">Get the filename to used to export the patient record.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filterForExport(org.mitre.synthea.world.agents.Person,int,long)">filterForExport</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;original,
                int&nbsp;yearsToKeep,
@@ -242,7 +250,7 @@ extends java.lang.Object</pre>
  but also include relevant history from before that.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.io.File</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOutputFolder(java.lang.String,org.mitre.synthea.world.agents.Person)">getOutputFolder</a></span>&#8203;(java.lang.String&nbsp;folderName,
                <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
@@ -250,14 +258,22 @@ extends java.lang.Object</pre>
 <div class="block">Get the folder where the patient record should be stored.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#overwriteFile(java.nio.file.Path,java.lang.String)">overwriteFile</a></span>&#8203;(java.nio.file.Path&nbsp;file,
+             java.lang.String&nbsp;contents)</code></th>
+<td class="colLast">
+<div class="block">Overwrite a file with the given contents.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runPostCompletionExports(org.mitre.synthea.engine.Generator)">runPostCompletionExports</a></span>&#8203;(<a href="../engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a>&nbsp;generator)</code></th>
 <td class="colLast">
 <div class="block">Run any exporters that require the full dataset to be generated prior to exporting.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runPostCompletionExports(org.mitre.synthea.engine.Generator,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">runPostCompletionExports</a></span>&#8203;(<a href="../engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a>&nbsp;generator,
                         <a href="Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a>&nbsp;options)</code></th>
@@ -341,6 +357,38 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - Patient to export</dd>
 <dd><code>stopTime</code> - Time at which the simulation stopped</dd>
+</dl>
+</li>
+</ul>
+<a id="overwriteFile(java.nio.file.Path,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>overwriteFile</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;overwriteFile&#8203;(java.nio.file.Path&nbsp;file,
+                                 java.lang.String&nbsp;contents)</pre>
+<div class="block">Overwrite a file with the given contents. If the file doesn't exist it will be created.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>file</code> - Path to the new file.</dd>
+<dd><code>contents</code> - The contents of the file.</dd>
+</dl>
+</li>
+</ul>
+<a id="appendToFile(java.nio.file.Path,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>appendToFile</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;appendToFile&#8203;(java.nio.file.Path&nbsp;file,
+                                java.lang.String&nbsp;contents)</pre>
+<div class="block">Append contents to the end of a file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>file</code> - Path to the new file.</dd>
+<dd><code>contents</code> - The contents of the file.</dd>
 </dl>
 </li>
 </ul>

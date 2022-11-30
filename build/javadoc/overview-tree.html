@@ -99,6 +99,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="org/mitre/synthea/editors/package-tree.html">org.mitre.synthea.editors</a>, </li>
 <li><a href="org/mitre/synthea/engine/package-tree.html">org.mitre.synthea.engine</a>, </li>
 <li><a href="org/mitre/synthea/export/package-tree.html">org.mitre.synthea.export</a>, </li>
+<li><a href="org/mitre/synthea/export/rif/package-tree.html">org.mitre.synthea.export.rif</a>, </li>
+<li><a href="org/mitre/synthea/export/rif/enrollment/package-tree.html">org.mitre.synthea.export.rif.enrollment</a>, </li>
+<li><a href="org/mitre/synthea/export/rif/identifiers/package-tree.html">org.mitre.synthea.export.rif.identifiers</a>, </li>
+<li><a href="org/mitre/synthea/export/rif/tools/package-tree.html">org.mitre.synthea.export.rif.tools</a>, </li>
 <li><a href="org/mitre/synthea/helpers/package-tree.html">org.mitre.synthea.helpers</a>, </li>
 <li><a href="org/mitre/synthea/helpers/physiology/package-tree.html">org.mitre.synthea.helpers.physiology</a>, </li>
 <li><a href="org/mitre/synthea/identity/package-tree.html">org.mitre.synthea.identity</a>, </li>
@@ -126,10 +130,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.modules.calculators.<a href="org/mitre/synthea/modules/calculators/ASCVD.html" title="class in org.mitre.synthea.modules.calculators"><span class="typeNameLink">ASCVD</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Attributes.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">Attributes</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Attributes.Inventory.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">Attributes.Inventory</span></a></li>
-<li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFExporter</span></a></li>
-<li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFExporter.StaticFieldConfig.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFExporter.StaticFieldConfig</span></a></li>
-<li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFMinimizer.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFMinimizer</span></a></li>
-<li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/BB2RIFStructure.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">BB2RIFStructure</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.tools.<a href="org/mitre/synthea/export/rif/tools/BB2RIFMinimizer.html" title="class in org.mitre.synthea.export.rif.tools"><span class="typeNameLink">BB2RIFMinimizer</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/BiometricsConfig.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">BiometricsConfig</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/BirthStatistics.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">BirthStatistics</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/BMI.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">BMI</span></a></li>
@@ -152,6 +155,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Claim.ClaimCost</span></a>
 <ul>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Claim.ClaimEntry</span></a> (implements java.io.Serializable)</li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">ConsolidatedClaimLines</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">ConsolidatedClaimLines.ConsolidatedClaimLine</span></a></li>
 </ul>
 </li>
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/ClinicalNoteExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">ClinicalNoteExporter</span></a></li>
@@ -176,6 +181,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Config.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">Config</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">ConsolidatedServicePeriods</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ConsolidatedServicePeriods.ConsolidatedServicePeriod.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">ConsolidatedServicePeriods.ConsolidatedServicePeriod</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/ContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment"><span class="typeNameLink">ContractHistory</span></a>&lt;T&gt;
+<ul>
+<li class="circle">org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/PartCContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment"><span class="typeNameLink">PartCContractHistory</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/PartDContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment"><span class="typeNameLink">PartDContractHistory</span></a></li>
+</ul>
+</li>
+<li class="circle">org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/ContractHistory.ContractPeriod.html" title="class in org.mitre.synthea.export.rif.enrollment"><span class="typeNameLink">ContractHistory.ContractPeriod</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Costs</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts"><span class="typeNameLink">Costs.CostData</span></a></li>
 <li class="circle">org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance"><span class="typeNameLink">CoverageRecord</span></a> (implements java.io.Serializable)</li>
@@ -217,6 +229,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4</span></a></li>
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4PatientHome.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirR4PatientHome</span></a></li>
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirStu3.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirStu3</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/FixedLengthIdentifier.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">FixedLengthIdentifier</span></a>
+<ul>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/CLIA.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">CLIA</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">HICN</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">MBI</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PartCContractID.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">PartCContractID</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PartDContractID.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">PartDContractID</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PlanBenefitPackageID.html" title="class in org.mitre.synthea.export.rif.identifiers"><span class="typeNameLink">PlanBenefitPackageID</span></a></li>
+</ul>
+</li>
 <li class="circle">org.mitre.synthea.modules.calculators.<a href="org/mitre/synthea/modules/calculators/Framingham.html" title="class in org.mitre.synthea.modules.calculators"><span class="typeNameLink">Framingham</span></a></li>
 <li class="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Generator</span></a></li>
 <li class="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">Generator.GeneratorOptions</span></a></li>
@@ -349,6 +371,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCollection.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">RandomCollection</span></a>&lt;E&gt; (implements java.io.Serializable)</li>
 <li class="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities</span></a> (implements java.io.Serializable)</li>
 <li class="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">ReactionProbabilities.SeverityProbability</span></a> (implements java.io.Serializable)</li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">RIFExporter</span></a>
+<ul>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BeneficiaryExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">BeneficiaryExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CarrierExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">CarrierExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/DMEExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">DMEExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/HHAExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">HHAExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/HospiceExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">HospiceExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/InpatientExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">InpatientExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/OutpatientExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">OutpatientExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/PDEExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">PDEExporter</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/SNFExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">SNFExporter</span></a></li>
+</ul>
+</li>
 <li class="circle">org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Seed</span></a> (implements org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity">IdentityRecord</a>)</li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleCSV.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">SimpleCSV</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/SimpleYML.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">SimpleYML</span></a></li>
@@ -396,6 +431,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Vaccine.html" title="class in org.mitre.synthea.engine"><span class="typeNameLink">State.Vaccine</span></a></li>
 </ul>
 </li>
+<li class="circle">org.mitre.synthea.export.rif.tools.<a href="org/mitre/synthea/export/rif/tools/StaticFieldConfig.html" title="class in org.mitre.synthea.export.rif.tools"><span class="typeNameLink">StaticFieldConfig</span></a></li>
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/SymptomCSVExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">SymptomCSVExporter</span></a></li>
 <li class="circle">org.mitre.synthea.export.<a href="org/mitre/synthea/export/SymptomTextExporter.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">SymptomTextExporter</span></a></li>
 <li class="circle">org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">Telemedicine</span></a></li>
@@ -474,6 +510,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li class="circle">java.lang.Enum&lt;E&gt; (implements java.lang.Comparable&lt;T&gt;, java.io.Serializable)
 <ul>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.BENEFICIARY</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY_HISTORY.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.BENEFICIARY_HISTORY</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.CARRIER.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.CARRIER</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.DME.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.DME</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.EXPORT_SUMMARY</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.HHA.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.HHA</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.HOSPICE.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.HOSPICE</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.INPATIENT.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.INPATIENT</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.NPI.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.NPI</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.OUTPATIENT.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.OUTPATIENT</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.PDE.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.PDE</span></a></li>
+<li class="circle">org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.SNF.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">BB2RIFStructure.SNF</span></a></li>
 <li class="circle">org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/BloodPressureValueGenerator.SysDias.html" title="enum in org.mitre.synthea.modules"><span class="typeNameLink">BloodPressureValueGenerator.SysDias</span></a></li>
 <li class="circle">org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19ImmunizationModule.VaccinationStatus.html" title="enum in org.mitre.synthea.modules.covid"><span class="typeNameLink">C19ImmunizationModule.VaccinationStatus</span></a></li>
 <li class="circle">org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19Vaccine.EUASet.html" title="enum in org.mitre.synthea.modules.covid"><span class="typeNameLink">C19Vaccine.EUASet</span></a></li>
