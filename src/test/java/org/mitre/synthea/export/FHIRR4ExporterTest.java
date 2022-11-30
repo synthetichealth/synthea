@@ -305,21 +305,19 @@ public class FHIRR4ExporterTest {
     Config.set("exporter.fhir.excluded_resources", "");
     FhirR4.reloadIncludeExclude();
 
-    assertTrue(FhirR4.shouldExport("MedicationRequest"));
-    assertTrue(FhirR4.shouldExport("Procedure"));
-    assertTrue(FhirR4.shouldExport("Condition"));
-    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.MedicationRequest.class));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Procedure.class));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Condition.class));
 
     // a few items included, all others excluded
     Config.set("exporter.fhir.included_resources", "MedicationRequest, Procedure");
     Config.set("exporter.fhir.excluded_resources", "");
     FhirR4.reloadIncludeExclude();
 
-    assertTrue(FhirR4.shouldExport("MedicationRequest"));
-    assertTrue(FhirR4.shouldExport("Procedure"));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.MedicationRequest.class));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Procedure.class));
 
-    assertFalse(FhirR4.shouldExport("Condition"));
-    assertFalse(FhirR4.shouldExport("NotEvenARealResourceType"));
+    assertFalse(FhirR4.shouldExport(org.hl7.fhir.r4.model.Condition.class));
 
 
     // a few items excluded, all others included
@@ -327,11 +325,10 @@ public class FHIRR4ExporterTest {
     Config.set("exporter.fhir.excluded_resources", "MedicationRequest,Procedure");
     FhirR4.reloadIncludeExclude();
 
-    assertFalse(FhirR4.shouldExport("MedicationRequest"));
-    assertFalse(FhirR4.shouldExport("Procedure"));
+    assertFalse(FhirR4.shouldExport(org.hl7.fhir.r4.model.MedicationRequest.class));
+    assertFalse(FhirR4.shouldExport(org.hl7.fhir.r4.model.Procedure.class));
 
-    assertTrue(FhirR4.shouldExport("Condition"));
-    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Condition.class));
 
 
     // both set in config == both disabled == allow everything
@@ -339,10 +336,9 @@ public class FHIRR4ExporterTest {
     Config.set("exporter.fhir.excluded_resources", "MedicationRequest ,Procedure");
     FhirR4.reloadIncludeExclude();
 
-    assertTrue(FhirR4.shouldExport("MedicationRequest"));
-    assertTrue(FhirR4.shouldExport("Procedure"));
-    assertTrue(FhirR4.shouldExport("Condition"));
-    assertTrue(FhirR4.shouldExport("NotEvenARealResourceType"));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.MedicationRequest.class));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Procedure.class));
+    assertTrue(FhirR4.shouldExport(org.hl7.fhir.r4.model.Condition.class));
   }
 
   @Test
@@ -400,7 +396,7 @@ public class FHIRR4ExporterTest {
   @Test
   public void testFHIRExportExcludes() throws Exception {
     Config.set("exporter.fhir.included_resources", "");
-    Config.set("exporter.fhir.excluded_resources", "MedicationRequest,Procedure,Observaton");
+    Config.set("exporter.fhir.excluded_resources", "MedicationRequest,Procedure,Observation");
     FhirR4.reloadIncludeExclude();
 
     Person p = new Person(0L);
