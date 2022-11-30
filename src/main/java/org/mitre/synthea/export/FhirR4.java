@@ -90,6 +90,7 @@ import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
+import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Media.MediaStatus;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
 import org.hl7.fhir.r4.model.MedicationAdministration;
@@ -194,8 +195,8 @@ public class FhirR4 {
   private static final Table<String, String, String> US_CORE_MAPPING =
       loadMapping("us_core_mapping.csv");
 
-  private static final HashSet<String> includedResources = new HashSet<>();
-  private static final HashSet<String> excludedResources = new HashSet<>();
+  private static final HashSet<Class<? extends Resource>> includedResources = new HashSet<>();
+  private static final HashSet<Class<? extends Resource>> excludedResources = new HashSet<>();
 
   static {
     reloadIncludeExclude();
@@ -207,8 +208,8 @@ public class FhirR4 {
     String includedResourcesStr = Config.get("exporter.fhir.included_resources", "").trim();
     String excludedResourcesStr = Config.get("exporter.fhir.excluded_resources", "").trim();
 
-    List<String> includedResourcesList = Collections.emptyList();
-    List<String> excludedResourcesList = Collections.emptyList();
+    List<Class<? extends Resource>> includedResourcesList = Collections.emptyList();
+    List<Class<? extends Resource>> excludedResourcesList = Collections.emptyList();
 
     if (!includedResourcesStr.isEmpty() && !excludedResourcesStr.isEmpty()) {
       System.err.println(
@@ -223,7 +224,7 @@ public class FhirR4 {
     excludedResources.addAll(excludedResourcesList);
   }
 
-  static boolean shouldExport(String resourceType) {
+  static boolean shouldExport(Class<? extends Resource> resourceType) {
     return (includedResources.isEmpty() || includedResources.contains(resourceType))
             && !excludedResources.contains(resourceType);
   }
@@ -234,14 +235,21 @@ public class FhirR4 {
    * @param propString String directly from Config, ex "Patient,Condition , Procedure"
    * @return normalized list of filenames as strings
    */
-  private static List<String> propStringToList(String propString) {
-    List<String> files = Arrays.asList(propString.split(","));
-    // normalize filenames by trimming
-    files = files.stream().map(f ->  f.trim()).collect(Collectors.toList());
+  private static List<Class<? extends Resource>> propStringToList(String propString) {
+    List<String> resourceTypes = Arrays.asList(propString.split(","));
 
-    // TODO: convert these into FHIR resource enums
+    // normalize filenames by trimming, convert to resource class
+    @SuppressWarnings("unchecked")
+    List<Class<? extends Resource>> resourceClasses = resourceTypes.stream().map(f ->  {
+      try {
+        return (Class<? extends Resource>)Class.forName("org.hl7.fhir.r4.model." + f.trim());
+      } catch (ClassNotFoundException | ClassCastException e) {
+        throw new RuntimeException("Type " + f
+          + " listed in the FHIR include/exclude list is not a valid FHIR resource type", e);
+      }
+    }).collect(Collectors.toList());
 
-    return files;
+    return resourceClasses;
   }
 
   @SuppressWarnings("rawtypes")
@@ -320,20 +328,20 @@ public class FhirR4 {
     for (Encounter encounter : person.record.encounters) {
       BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
 
-      if (shouldExport("Condition")) {
+      if (shouldExport(Condition.class)) {
         for (HealthRecord.Entry condition : encounter.conditions) {
           condition(person, personEntry, bundle, encounterEntry, condition);
         }
       }
 
-      if (shouldExport("AllergyIntolerance")) {
+      if (shouldExport(AllergyIntolerance.class)) {
         for (HealthRecord.Allergy allergy : encounter.allergies) {
           allergy(person, personEntry, bundle, encounterEntry, allergy);
         }
       }
 
-      final boolean shouldExportMedia = shouldExport("Media");
-      final boolean shouldExportObservation = shouldExport("Observation");
+      final boolean shouldExportMedia = shouldExport(Media.class);
+      final boolean shouldExportObservation = shouldExport(org.hl7.fhir.r4.model.Observation.class);
 
       for (Observation observation : encounter.observations) {
         // If the Observation contains an attachment, use a Media resource, since
@@ -347,44 +355,44 @@ public class FhirR4 {
         }
       }
 
-      if (shouldExport("Procedure")) {
+      if (shouldExport(org.hl7.fhir.r4.model.Procedure.class)) {
         for (Procedure procedure : encounter.procedures) {
           procedure(person, personEntry, bundle, encounterEntry, procedure);
         }
       }
 
-      if (shouldExport("Device")) {
+      if (shouldExport(Device.class)) {
         for (HealthRecord.Device device : encounter.devices) {
           device(person, personEntry, bundle, device);
         }
       }
 
-      if (shouldExport("SupplyDelivery")) {
+      if (shouldExport(SupplyDelivery.class)) {
         for (HealthRecord.Supply supply : encounter.supplies) {
           supplyDelivery(person, personEntry, bundle, supply, encounter);
         }
       }
 
-      if (shouldExport("MedicationRequest")) {
+      if (shouldExport(MedicationRequest.class)) {
         for (Medication medication : encounter.medications) {
           medicationRequest(person, personEntry, bundle, encounterEntry, encounter, medication);
         }
       }
 
-      if (shouldExport("Immunization")) {
+      if (shouldExport(Immunization.class)) {
         for (HealthRecord.Entry immunization : encounter.immunizations) {
           immunization(person, personEntry, bundle, encounterEntry, immunization);
         }
       }
 
-      if (shouldExport("DiagnosticReport")) {
+      if (shouldExport(DiagnosticReport.class)) {
         for (Report report : encounter.reports) {
           report(person, personEntry, bundle, encounterEntry, report);
         }
       }
 
-      if (shouldExport("CarePlan")) {
-        final boolean shouldExportCareTeam = shouldExport("CareTeam");
+      if (shouldExport(org.hl7.fhir.r4.model.CarePlan.class)) {
+        final boolean shouldExportCareTeam = shouldExport(CareTeam.class);
         for (CarePlan careplan : encounter.careplans) {
           BundleEntryComponent careTeamEntry = null;
 
@@ -396,32 +404,32 @@ public class FhirR4 {
         }
       }
 
-      if (shouldExport("ImagingStudy")) {
+      if (shouldExport(org.hl7.fhir.r4.model.ImagingStudy.class)) {
         for (ImagingStudy imagingStudy : encounter.imagingStudies) {
           imagingStudy(person, personEntry, bundle, encounterEntry, imagingStudy);
         }
       }
 
-      if (USE_US_CORE_IG && shouldExport("DiagnosticReport")) {
+      if (USE_US_CORE_IG && shouldExport(DiagnosticReport.class)) {
         String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
         boolean lastNote =
             (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
         clinicalNote(person, personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);
       }
 
-      if (shouldExport("Claim")) {
+      if (shouldExport(org.hl7.fhir.r4.model.Claim.class)) {
         // one claim per encounter
         BundleEntryComponent encounterClaim =
             encounterClaim(person, personEntry, bundle, encounterEntry, encounter);
 
-        if (shouldExport("ExplanationOfBenefit")) {
+        if (shouldExport(ExplanationOfBenefit.class)) {
           explanationOfBenefit(personEntry, bundle, encounterEntry, person,
               encounterClaim, encounter, encounter.claim);
         }
       }
     }
 
-    if (USE_US_CORE_IG && shouldExport("Provenance")) {
+    if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
       // Add Provenance to the Bundle
       provenance(bundle, person, stopTime);
     }
@@ -2160,7 +2168,8 @@ public class FhirR4 {
     CodeableConcept medicationCodeableConcept = mapCodeToCodeableConcept(code, system);
     medicationResource.setMedication(medicationCodeableConcept);
 
-    if (USE_US_CORE_IG && medication.administration && shouldExport("Medication")) {
+    if (USE_US_CORE_IG && medication.administration
+        && shouldExport(org.hl7.fhir.r4.model.Medication.class)) {
       // Occasionally, rather than use medication codes, we want to use a Medication
       // Resource. We only want to do this when we use US Core, to make sure we
       // sometimes produce a resource for the us-core-medication profile, and the
@@ -2282,14 +2291,14 @@ public class FhirR4 {
 
     BundleEntryComponent medicationEntry = newEntry(person, bundle, medicationResource);
 
-    if (shouldExport("Claim")) {
+    if (shouldExport(org.hl7.fhir.r4.model.Claim.class)) {
       // create new claim for medication
       medicationClaim(person, personEntry, bundle, encounterEntry, encounter,
           medication.claim, medicationEntry, medicationCodeableConcept);
     }
 
     // Create new administration for medication, if needed
-    if (medication.administration && shouldExport("MedicationAdministration")) {
+    if (medication.administration && shouldExport(MedicationAdministration.class)) {
       medicationAdministration(person, personEntry, bundle, encounterEntry, medication,
               medicationResource);
     }
@@ -2416,7 +2425,7 @@ public class FhirR4 {
     reportResource.setEffective(convertFhirDateTime(report.start, true));
     reportResource.setIssued(new Date(report.start));
 
-    if (shouldExport("Observation")) {
+    if (shouldExport(org.hl7.fhir.r4.model.Observation.class)) {
       // if observations are not exported, we can't reference them
       for (Observation observation : report.observations) {
         Reference reference = new Reference(observation.fullUrl);
@@ -2475,7 +2484,7 @@ public class FhirR4 {
         .setData(clinicalNoteText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     newEntry(rand, bundle, reportResource);
 
-    if (shouldExport("DocumentReference")) {
+    if (shouldExport(DocumentReference.class)) {
       // Add a DocumentReference
       DocumentReference documentReference = new DocumentReference();
       if (USE_US_CORE_IG) {
