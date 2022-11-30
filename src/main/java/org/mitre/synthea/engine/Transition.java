@@ -574,17 +574,6 @@ public abstract class Transition implements Serializable {
   public static final class ComplexTransitionOption extends TransitionOption {
     private Logic condition;
     private List<DistributedTransitionOption> distributions;
-
-    /**
-     * Create a new ComplexTransitionOption.
-     * @param condition to check to see if the option should be taken
-     * @param distributions transitions to take if condition is met
-     */
-    public ComplexTransitionOption(Logic condition,
-                                   List<DistributedTransitionOption> distributions) {
-      this.condition = condition;
-      this.distributions = distributions;
-    }
   }
 
   /**
