@@ -32,14 +32,14 @@ public class CustomFHIRPathResourceGeneratorR4Test {
     System.out.println(patientJson);
   }
 
-  private Patient createPatient(Map<String, String> fhirPathMapping) {
+  private Patient createPatient(Map<String, Object> fhirPathMapping) {
     CustomFHIRPathResourceGeneratorR4<Patient> fhirPathGenerator =
         new CustomFHIRPathResourceGeneratorR4<>(CTX);
     fhirPathGenerator.setMapping(fhirPathMapping);
     return fhirPathGenerator.generateResource(Patient.class);
   }
 
-  private void updatePatient(Patient p, Map<String, String> fhirPathMapping) {
+  private void updatePatient(Patient p, Map<String, Object> fhirPathMapping) {
     CustomFHIRPathResourceGeneratorR4<Patient> fhirPathGenerator =
         new CustomFHIRPathResourceGeneratorR4<>(CTX);
     fhirPathGenerator.setResource(p);
@@ -49,7 +49,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
 
   @Test
   public void testSimpleField() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
     fhirPathMapping.put("Patient.deceasedBoolean", "false");
     Patient patient = createPatient(fhirPathMapping);
 
@@ -58,7 +58,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
 
   @Test
   public void testArray1() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
 
     fhirPathMapping.put("Patient.name.given[0]", "Billy");
     fhirPathMapping.put("Patient.name.given[1]", "Bob");
@@ -76,7 +76,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
   @Ignore
   @Test
   public void testArray2() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
 
     fhirPathMapping.put("Patient.name[0].given", "Billy");
     fhirPathMapping.put("Patient.name[1].given", "Bob");
@@ -97,7 +97,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
 
   @Test
   public void testArray3() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
 
     fhirPathMapping.put("Patient.name.where(use='official').given", "Billy");
     fhirPathMapping.put("Patient.name.where(use='usual').given", "Bob");
@@ -127,7 +127,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
 
   @Test
   public void testExtension() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
     fhirPathMapping.put(
         "Patient.extension.where(url='http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName').valueString",
         "Donita707 Langosh790");
@@ -164,7 +164,7 @@ public class CustomFHIRPathResourceGeneratorR4Test {
 
   @Test
   public void testExtensionOnPrimitive() {
-    Map<String, String> fhirPathMapping = new HashMap<>();
+    Map<String, Object> fhirPathMapping = new HashMap<>();
 
     // fhirPathMapping.put("Patient.birthDate", "2021-12-15");
     fhirPathMapping.put(

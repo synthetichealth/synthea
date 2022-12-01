@@ -15,6 +15,7 @@ import org.hl7.fhir.r4.model.ExpressionNode;
 import org.hl7.fhir.r4.model.ExpressionNode.Kind;
 import org.hl7.fhir.r4.model.Resource;
 
+import ca.uhn.fhir.context.BaseRuntimeChildDatatypeDefinition;
 import ca.uhn.fhir.context.BaseRuntimeChildDefinition;
 import ca.uhn.fhir.context.BaseRuntimeElementDefinition;
 import ca.uhn.fhir.context.FhirContext;
@@ -48,10 +49,10 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
 
   private FhirContext ctx;
   private FHIRPathEngine engine;
-  private Map<String, String> pathMapping;
+  private Map<String, Object> pathMapping;
   private T resource = null;
 
-  private String valueToSet = null;
+  private Object valueToSet = null;
   private Stack<GenerationTier> nodeStack = null;
 
   /**
@@ -86,7 +87,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
 
   public CustomFHIRPathResourceGeneratorR4(FhirContext fhirCtx) {
     this.ctx = fhirCtx;
-    this.pathMapping = new HashMap<String, String>();
+    this.pathMapping = new HashMap<String, Object>();
     this.engine = new FHIRPathEngine(new HapiWorkerContext(ctx, ctx.getValidationSupport()));
   }
 
@@ -96,7 +97,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * @param mapping Map&lt;String, String&gt; a mapping of FHIRPath to value Strings that will be used to
    *        create a Resource.
    */
-  public void setMapping(Map<String, String> mapping) {
+  public void setMapping(Map<String, Object> mapping) {
     this.pathMapping = mapping;
   }
 
@@ -278,7 +279,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
       } else {
         primitive =
             primitiveTarget.newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
-        primitive.setValueAsString(this.valueToSet);
+        primitive.setValueAsString(String.valueOf(this.valueToSet));
         nextTier.childDefinition.getMutator().addValue(nodeElement, primitive);
       }
 
@@ -311,16 +312,30 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
     // iterate through all parent nodes
     for (IBase nodeElement : this.nodeStack.peek().nodes) {
       List<IBase> containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
-      if (containedNodes.size() > 0) {
-        // check if sister nodes are already available
-        nextTier.nodes.addAll(containedNodes);
-      } else {
-        // if not nodes are available, create a new node
-        ICompositeType compositeNode =
-            compositeTarget.newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
-        nextTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
-        nextTier.nodes.add(compositeNode);
+      
+      if (nextTier.childDefinition instanceof BaseRuntimeChildDatatypeDefinition 
+          && ((BaseRuntimeChildDatatypeDefinition) nextTier.childDefinition).getDatatype().isInstance(this.valueToSet)) {
+        
+        // this enables us to work with objects that are not trivially strings, ex CodeableConcepts
+        
+        // TODO: are there any other implications to this?
+        nextTier.childDefinition.getMutator().setValue(nodeElement, (IBase)this.valueToSet); 
+        
+      } else {        
+        if (containedNodes.size() > 0) {
+          // check if sister nodes are already available
+          nextTier.nodes.addAll(containedNodes);
+        } else {
+          // if not nodes are available, create a new node
+          ICompositeType compositeNode =
+              compositeTarget.newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
+          nextTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
+          nextTier.nodes.add(compositeNode);
+        }
+        
       }
+      
+
     }
     // push the created nextTier to the nodeStack
     this.nodeStack.push(nextTier);

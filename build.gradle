@@ -72,6 +72,10 @@ dependencies {
   // JavaScript engine included for graphviz. It gets used
   // if someone does not have graphviz installed in their environment
   implementation 'org.graalvm.js:js:22.2.0'
+  implementation 'org.graalvm.js:js:22.2.0'
+  implementation 'org.graalvm.js:js-scriptengine:22.2.0'
+  implementation 'org.graalvm.sdk:graal-sdk:22.2.0'
+
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'

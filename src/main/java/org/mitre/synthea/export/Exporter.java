@@ -19,11 +19,17 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.export.flexporter.Actions;
+import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
@@ -241,9 +247,12 @@ public abstract class Exporter {
       org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
 
       if (options.flexporterMappings != null) {
+        
+        FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
+        
         for (Mapping mapping : options.flexporterMappings) {
           // flexport on the bundle here
-          Actions.applyMapping(bundle, mapping, person);
+          Actions.applyMapping(bundle, mapping, person, fjContext);
         }
       }
 

@@ -154,7 +154,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testSetValues");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     assertEquals("1987-06-05", p.getBirthDateElement().getValueAsString());
   }
@@ -173,7 +173,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testSetValues_getField");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     assertEquals("2022-02-22", i.getRecordedElement().getValueAsString());
   }
@@ -191,7 +191,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testSetValues_overwrite");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     Type effective = o.getEffective();
 
@@ -215,7 +215,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testSetValues_transform");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     // NOTE: this expected value may change if we ever add randomness to the date -> dateTime
     // transform
@@ -233,7 +233,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testSetValues_object");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
     
     System.out.println(b);
   }
@@ -245,7 +245,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testKeepResources");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     Set<String> expectedResourceTypes =
         new HashSet<>(Arrays.asList("Patient", "Encounter", "Condition"));
@@ -268,7 +268,7 @@ public class ActionsTest {
     assertEquals(1, countProvenance);
     Map<String, Object> action = getActionByName("testDeleteResources");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     countProvenance = b.getEntry().stream()
         .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
@@ -288,7 +288,7 @@ public class ActionsTest {
 
     Map<String, Object> action = getActionByName("testCreateResources_createSingle");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     List<Resource> serviceRequests = b.getEntry().stream()
         .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest)
@@ -308,6 +308,105 @@ public class ActionsTest {
   }
 
   @Test
+  public void testExec() throws Exception {    
+    Map<String, Object> action = getActionByName("testExecuteScript");
+    
+    Patient p = new Patient();
+    p.addName().addGiven("Cristina").setFamily("Crimson");
+    DateType date = new DateType();
+    date.fromStringValue("1999-09-29");
+    p.setBirthDateElement(date);
+
+    Bundle b = new Bundle();
+    b.addEntry().setResource(p);
+    
+    Bundle updatedBundle = Actions.applyAction(b, action, null, new FlexporterJavascriptContext());
+    
+    /*
+          function apply(bundle) {
+            bundle['entry'][0]['resource']['meta'] = {profile: ['http://example.com/dummy-profile']}
+          }
+          
+          function apply2(resource, bundle) {
+           if (resource.resourceType == 'Patient') {
+             resource.birthDate = '2022-02-22';
+           }
+         }
+          
+     */
+    
+    Patient outPatient = (Patient) updatedBundle.getEntryFirstRep().getResource();
+    
+    assertEquals("http://example.com/dummy-profile", outPatient.getMeta().getProfile().get(0).getValueAsString());
+    
+    assertEquals("2022-02-22", outPatient.getBirthDateElement().getValueAsString());
+  }
+  
+  @Test
+  public void testTiming() throws Exception {
+    int NUM_TESTS = 10;
+    Bundle[] testBundles = new Bundle[NUM_TESTS];
+    
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
+    }
+    
+    Map<String, Object> action = getActionByName("testCreateResources_createBasedOn");
+    long start = System.currentTimeMillis();
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      Actions.applyAction(testBundles[i], action, null, null);
+    }
+    long elapsed = System.currentTimeMillis() - start;
+    
+    System.out.println("Completed " + NUM_TESTS + " pre-warmup Pure Java runs in " + elapsed + " ms.");
+    
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
+    }
+    
+    
+    start = System.currentTimeMillis();
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      Actions.applyAction(testBundles[i], action, null, null);
+    }
+    elapsed = System.currentTimeMillis() - start;
+   
+    System.out.println("Completed " + NUM_TESTS + " Pure Java runs in " + elapsed + " ms.");
+
+    
+    action = getActionByName("testCreateResources_createBasedOn_JS");
+    
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
+    }
+    
+    FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
+    fjContext.loadFunction("function getField(resourceString, fhirPath) {\n"
+        + "  const resource = JSON.parse(resourceString);\n"
+        + "  const value = evaluate(resource, fhirPath);\n"
+        + "\n"
+        + "  if (!Array.isArray(value) || !value.length) {\n"
+        + "    // array does not exist, is not an array, or is empty\n"
+        + "    // ⇒ do not attempt to process array\n"
+        + "    return null;\n"
+        + "  }\n"
+        + "\n"
+        + "  return value[0];\n"
+        + "}");
+    
+    
+    start = System.currentTimeMillis();
+    for (int i = 0 ; i < NUM_TESTS ; i++) {
+      Actions.applyAction(testBundles[i], action, null, fjContext);
+    }
+    elapsed = System.currentTimeMillis() - start;
+   
+    System.out.println("Completed " + NUM_TESTS + " blended JavaScript runs in " + elapsed + " ms.");
+    
+  }
+  
+  
+  @Test
   public void testCreateResources_createBasedOn() throws Exception {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
 
@@ -324,7 +423,7 @@ public class ActionsTest {
     
     Map<String, Object> action = getActionByName("testCreateResources_createBasedOn");
 
-    Actions.applyAction(b, action, null);
+    Actions.applyAction(b, action, null, null);
 
     // there should now be one ServiceRequest per Procedure
 
@@ -349,6 +448,7 @@ public class ActionsTest {
       assertEquals("plan", sr.getIntent().toCode());
       assertEquals(patientId, sr.getSubject().getReference());
       assertEquals(proc.getEncounter().getReference(), sr.getEncounter().getReference());
+      assertTrue(proc.getCode().equalsDeep(sr.getCode()));
     }
     
     // we removed each SR as we checked it, to ensure there are none left
@@ -369,7 +469,7 @@ public class ActionsTest {
     p.attributes.put(Person.NAME, firstName + " " + lastName);
     Map<String, Object> action = getActionByName("testCreateResources_getAttribute");
 
-    Actions.applyAction(b, action, p);
+    Actions.applyAction(b, action, p, null);
 
     Patient patient = (Patient) b.getEntryFirstRep().getResource();
     HumanName name = patient.getNameFirstRep();

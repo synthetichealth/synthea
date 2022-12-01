@@ -18,6 +18,7 @@ import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.mitre.synthea.export.flexporter.Actions;
 import org.mitre.synthea.export.flexporter.FhirPathUtils;
+import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 
@@ -211,7 +212,7 @@ public class RunFlexporter {
 
 
   public static Bundle convertFhir(Bundle bundle, Mapping mapping) {
-    Actions.applyMapping(bundle, mapping, null);
+    Actions.applyMapping(bundle, mapping, null, new FlexporterJavascriptContext());
 
     return bundle;
   }

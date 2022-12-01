@@ -105,6 +105,30 @@ actions:
            value: $getField([Procedure.encounter.reference])
          - location: ServiceRequest.subject.reference
            value: $findRef([Patient])
+         - location: ServiceRequest.code
+           value: $getField([Procedure.code])      # <-- STILL WIP
+
+
+         # this works if the VS is loaded but otherwise tries to make a network lookup
+         # so disable for now
+         # - location: ServiceRequest.code.coding
+         #   value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
+       # TODO: is "writeback" the best term here?
+       writeback:
+         - location: Procedure.basedOn.reference
+           value: $setRef([ServiceRequest])
+
+ - name: testCreateResources_createBasedOn_JS
+   create_resource_js: 
+     - resourceType: ServiceRequest
+       based_on: Procedure
+       fields:
+         - location: ServiceRequest.intent
+           value: plan
+         - location: ServiceRequest.encounter.reference
+           value: $getField([Procedure.encounter.reference])
+         - location: ServiceRequest.subject.reference
+           value: $findRef([Patient])
          # - location: ServiceRequest.code.coding
          #   value: $getField([Procedure.code.coding])      # <-- STILL WIP
 
@@ -128,7 +152,22 @@ actions:
          - location: Patient.name.family
            value: $getAttribute([last_name])
 
-
+ - name: testExecuteScript
+   execute_script:
+     - apply_to: bundle
+       function_name: apply
+       function: |
+          function apply(bundle) {
+            bundle['entry'][0]['resource']['meta'] = {profile: ['http://example.com/dummy-profile']}
+          }
+     - apply_to: resource
+       function_name: apply2
+       function: |
+         function apply2(resource, bundle) {
+           if (resource.resourceType == 'Patient') {
+             resource.birthDate = '2022-02-22';
+           }
+         }
 
 # TODO: on keep/delete, check for references to removed items!!
  - name: testKeepResources
