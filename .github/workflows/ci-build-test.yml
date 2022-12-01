@@ -27,7 +27,7 @@ jobs:
   
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: env.SLACK_WEBHOOK_URL
+        if: always() && env.SLACK_WEBHOOK_URL
         with:
           status: custom
           job_name: Java 17
@@ -77,7 +77,7 @@ jobs:
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: env.SLACK_WEBHOOK_URL
+        if: always() && env.SLACK_WEBHOOK_URL
         with:
           status: custom
           job_name: Java 11
