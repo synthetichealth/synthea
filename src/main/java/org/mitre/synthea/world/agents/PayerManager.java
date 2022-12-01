@@ -51,6 +51,7 @@ public class PayerManager {
   private static final String COINSURANCE = "Default Coinsurance";
   private static final String COPAY = "Default Copay";
   private static final String MONTHLY_PREMIUM = "Monthly Premium";
+  private static final String MAX_OOP = "Max Out of Pocket";
   private static final String MEDICARE_SUPPLEMENT = "Medicare Supplement";
   private static final String START_YEAR = "Start Year";
   private static final String END_YEAR = "End Year";
@@ -271,6 +272,7 @@ public class PayerManager {
     if (!StringUtils.isBlank(yearEndStr)) {
       yearEnd = Integer.parseInt(yearEndStr);
     }
+    int maxOutOfPocket = Integer.parseInt(line.remove(MAX_OOP).trim());
     // A blank priority is minimum priority, so give it the maximum value.
     String priorityString = line.remove(PRIORITY_LEVEL).trim();
     int priority = Integer.MAX_VALUE;
@@ -280,7 +282,7 @@ public class PayerManager {
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremiumStr, medicareSupplement, yearStart, yearEnd, priority, eligibilityName);
+        defaultCopay, monthlyPremiumStr, maxOutOfPocket, medicareSupplement, yearStart, yearEnd, priority, eligibilityName);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -317,9 +319,9 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", false, 0,
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", Integer.MAX_VALUE, false, 0,
         Utilities.getYear(System.currentTimeMillis()) + 1, Integer.MAX_VALUE, PlanEligibilityFinder.GENERIC);
-    PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
+    PayerManager.noInsurance.setPayerAdjustment(buildPayerAdjustment());
   }
 
   /**

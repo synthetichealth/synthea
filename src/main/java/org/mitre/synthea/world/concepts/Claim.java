@@ -142,6 +142,13 @@ public class Claim implements Serializable {
       }
 
       plan.incrementCoveredEntries(this.entry);
+
+      if(planRecord.getOutOfPocketExpenses().compareTo(plan.getMaxOop()) == 1) {
+        // The person has already paid their maximum Out of Pocket costs.
+        this.paidByPayer = remainingBalance;
+        remainingBalance = remainingBalance.subtract(this.paidByPayer);
+      }
+
       // Apply copay to Encounters and Medication claims only
       if ((this.entry instanceof HealthRecord.Encounter)
           || (this.entry instanceof HealthRecord.Medication)) {

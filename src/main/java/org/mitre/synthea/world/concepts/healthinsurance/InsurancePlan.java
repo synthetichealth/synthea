@@ -299,4 +299,8 @@ public class InsurancePlan implements Serializable {
     return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
   }
 
+  public BigDecimal getMaxOop() {
+    return this.maxOutOfPocket;
+  }
+
 }
