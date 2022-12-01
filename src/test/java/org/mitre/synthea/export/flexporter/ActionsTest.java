@@ -234,10 +234,10 @@ public class ActionsTest {
     Map<String, Object> action = getActionByName("testSetValues_object");
 
     Actions.applyAction(b, action, null, null);
-    
+
     System.out.println(b);
   }
-  
+
   @Test
   public void testKeepResources() throws Exception {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
@@ -308,9 +308,9 @@ public class ActionsTest {
   }
 
   @Test
-  public void testExec() throws Exception {    
+  public void testExec() throws Exception {
     Map<String, Object> action = getActionByName("testExecuteScript");
-    
+
     Patient p = new Patient();
     p.addName().addGiven("Cristina").setFamily("Crimson");
     DateType date = new DateType();
@@ -319,93 +319,29 @@ public class ActionsTest {
 
     Bundle b = new Bundle();
     b.addEntry().setResource(p);
-    
+
     Bundle updatedBundle = Actions.applyAction(b, action, null, new FlexporterJavascriptContext());
-    
+
     /*
           function apply(bundle) {
             bundle['entry'][0]['resource']['meta'] = {profile: ['http://example.com/dummy-profile']}
           }
-          
+
           function apply2(resource, bundle) {
            if (resource.resourceType == 'Patient') {
              resource.birthDate = '2022-02-22';
            }
          }
-          
+
      */
-    
+
     Patient outPatient = (Patient) updatedBundle.getEntryFirstRep().getResource();
-    
+
     assertEquals("http://example.com/dummy-profile", outPatient.getMeta().getProfile().get(0).getValueAsString());
-    
+
     assertEquals("2022-02-22", outPatient.getBirthDateElement().getValueAsString());
   }
-  
-  @Test
-  public void testTiming() throws Exception {
-    int NUM_TESTS = 10;
-    Bundle[] testBundles = new Bundle[NUM_TESTS];
-    
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
-    }
-    
-    Map<String, Object> action = getActionByName("testCreateResources_createBasedOn");
-    long start = System.currentTimeMillis();
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      Actions.applyAction(testBundles[i], action, null, null);
-    }
-    long elapsed = System.currentTimeMillis() - start;
-    
-    System.out.println("Completed " + NUM_TESTS + " pre-warmup Pure Java runs in " + elapsed + " ms.");
-    
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
-    }
-    
-    
-    start = System.currentTimeMillis();
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      Actions.applyAction(testBundles[i], action, null, null);
-    }
-    elapsed = System.currentTimeMillis() - start;
-   
-    System.out.println("Completed " + NUM_TESTS + " Pure Java runs in " + elapsed + " ms.");
 
-    
-    action = getActionByName("testCreateResources_createBasedOn_JS");
-    
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      testBundles[i] = loadFixtureBundle("sample_complete_patient.json");  
-    }
-    
-    FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
-    fjContext.loadFunction("function getField(resourceString, fhirPath) {\n"
-        + "  const resource = JSON.parse(resourceString);\n"
-        + "  const value = evaluate(resource, fhirPath);\n"
-        + "\n"
-        + "  if (!Array.isArray(value) || !value.length) {\n"
-        + "    // array does not exist, is not an array, or is empty\n"
-        + "    // ⇒ do not attempt to process array\n"
-        + "    return null;\n"
-        + "  }\n"
-        + "\n"
-        + "  return value[0];\n"
-        + "}");
-    
-    
-    start = System.currentTimeMillis();
-    for (int i = 0 ; i < NUM_TESTS ; i++) {
-      Actions.applyAction(testBundles[i], action, null, fjContext);
-    }
-    elapsed = System.currentTimeMillis() - start;
-   
-    System.out.println("Completed " + NUM_TESTS + " blended JavaScript runs in " + elapsed + " ms.");
-    
-  }
-  
-  
   @Test
   public void testCreateResources_createBasedOn() throws Exception {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
@@ -415,19 +351,19 @@ public class ActionsTest {
         .count();
     assertEquals(0, countSR);
 
-    
+
     List<Procedure> procedures = b.getEntry().stream()
         .filter(bec -> bec.getResource().getResourceType() == ResourceType.Procedure)
         .map(bec -> (Procedure) bec.getResource())
         .collect(Collectors.toList());
-    
+
     Map<String, Object> action = getActionByName("testCreateResources_createBasedOn");
 
     Actions.applyAction(b, action, null, null);
 
     // there should now be one ServiceRequest per Procedure
 
-    // get a map of id --> servicerequest, for easy lookups 
+    // get a map of id --> servicerequest, for easy lookups
     Map<String, ServiceRequest> serviceRequests = b.getEntry().stream()
         .filter(bec -> bec.getResource().getResourceType() == ResourceType.ServiceRequest)
         .map(bec -> (ServiceRequest) bec.getResource())
@@ -436,13 +372,13 @@ public class ActionsTest {
     assertEquals(procedures.size(), serviceRequests.size());
 
     String patientId = b.getEntryFirstRep().getResource().getId();
-    
+
     // iterate over the procedures so we can find the servicerequest for each
     for (Procedure proc : procedures) {
-      
+
       // "ServiceRequest/".length == 15
       String basedOn = proc.getBasedOnFirstRep().getReference().substring(15);
-      
+
       ServiceRequest sr = serviceRequests.remove(basedOn);
       assertNotNull(sr);
       assertEquals("plan", sr.getIntent().toCode());
@@ -450,10 +386,10 @@ public class ActionsTest {
       assertEquals(proc.getEncounter().getReference(), sr.getEncounter().getReference());
       assertTrue(proc.getCode().equalsDeep(sr.getCode()));
     }
-    
+
     // we removed each SR as we checked it, to ensure there are none left
     assertEquals(0, serviceRequests.size());
-    
+
   }
 
   @Test

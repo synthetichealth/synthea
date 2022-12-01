@@ -57,7 +57,7 @@ public class RandomCodeGeneratorTest {
     try {
       RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
     } catch (RuntimeException e) {
-      Assert.assertEquals("ValueSet does not contain expansion", e.getMessage());
+      Assert.assertEquals("ValueSet does not contain compose or expansion", e.getMessage());
       return;
     }
     Assert.fail("Should have thrown a no expansion exception");
