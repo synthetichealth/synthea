@@ -1,19 +1,19 @@
-Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Medicare Supplement,Eligibility Policy,Start Year,End Year,Priority Level,Notes
-10000,10001,Standard Medicare Plan,*,233,0.8,0,170.10,false,StandardMedicareAcceptance,0,,2,https://www.medicare.gov/your-medicare-costs/medicare-costs-at-a-glance
-20000,20001,Standard Medicaid Plan,*,100,0,50,10,false,StandardMedicaidAcceptance,0,,2,
-30000,30001,Standard Dual Eligible Plan,*,0,0,35,10,false,StandardDualEligible,0,,1,
-40000,40001,Private Bronze Plan,*,6094,0.6,0,342,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184 https://quotewizard.com/health-insurance/how-much-does-health-insurance-cost 
-40000,40001,Private Silver Plan,*,4500,0.7,0,459,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
-40000,40001,Private Gold Plan,*,1458,0.8,0,503,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
-40000,40001,ACA 150 Bronze Plan,*,6094,0.6,0,0,false,ACASubsidy150,0,,3,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-40000,40001,ACA 150 Silver Plan,*,4500,0.7,0,0,false,ACASubsidy150,0,,3,
-40000,40001,ACA 150 Gold Plan,*,1458,0.8,0,0,false,ACASubsidy150,0,,3,
-40000,40001,ACA 200 Bronze Plan,*,6094,0.6,0,2%Income,false,ACASubsidy200,0,,4,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-40000,40001,ACA 200 Silver Plan,*,4500,0.7,0,3%Income,false,ACASubsidy200,0,,4,
-40000,40001,ACA 200 Gold Plan,*,1458,0.8,0,4%Income,false,ACASubsidy200,0,,4,
-40000,40001,ACA 300 Bronze Plan,*,6094,0.6,0,4%Income,false,ACASubsidy300,0,,5,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-40000,40001,ACA 300 Silver Plan,*,4500,0.7,0,5%Income,false,ACASubsidy300,0,,5,
-40000,40001,ACA 300 Gold Plan,*,1458,0.8,0,6%Income,false,ACASubsidy300,0,,5,
-40000,40001,ACA 400 Bronze Plan,*,6094,0.6,0,6%Income,false,ACASubsidy400,0,,6,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-40000,40001,ACA 400 Silver Plan,*,4500,0.7,0,7%Income,false,ACASubsidy400,0,,6,
-40000,40001,ACA 400 Gold Plan,*,1458,0.8,0,8.5%Income,false,ACASubsidy400,0,,6,
+Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Max Out of Pocket,Medicare Supplement,Eligibility Policy,Start Year,End Year,Priority Level,Notes
+10000,10001,Standard Medicare Plan,*,233,0.8,0,170.10,8700,false,StandardMedicare,0,,2,https://www.medicare.gov/your-medicare-costs/medicare-costs-at-a-glance
+20000,20001,Standard Medicaid Plan,*,100,0,50,10,8700,false,StandardMedicaid,0,,2,
+30000,30001,Standard Dual Eligible Plan,*,0,0,35,10,8700,false,StandardDualEligible,0,,1,
+40000,40001,Private Bronze Plan,*,6094,0.6,0,342,8700,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184 https://quotewizard.com/health-insurance/how-much-does-health-insurance-cost 
+40000,40001,Private Silver Plan,*,4500,0.7,0,459,8700,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+40000,40001,Private Gold Plan,*,1458,0.8,0,503,8700,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
+40000,40001,ACA 150 Bronze Plan,*,6094,0.6,0,0,8700,false,ACASubsidy150,0,,3,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
+40000,40001,ACA 150 Silver Plan,*,4500,0.7,0,0,8700,false,ACASubsidy150,0,,3,
+40000,40001,ACA 150 Gold Plan,*,1458,0.8,0,0,8700,false,ACASubsidy150,0,,3,
+40000,40001,ACA 200 Bronze Plan,*,6094,0.6,0,2%Income,8700,false,ACASubsidy200,0,,4,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
+40000,40001,ACA 200 Silver Plan,*,4500,0.7,0,3%Income,8700,false,ACASubsidy200,0,,4,
+40000,40001,ACA 200 Gold Plan,*,1458,0.8,0,4%Income,8700,false,ACASubsidy200,0,,4,
+40000,40001,ACA 300 Bronze Plan,*,6094,0.6,0,4%Income,8700,false,ACASubsidy300,0,,5,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
+40000,40001,ACA 300 Silver Plan,*,4500,0.7,0,5%Income,8700,false,ACASubsidy300,0,,5,
+40000,40001,ACA 300 Gold Plan,*,1458,0.8,0,6%Income,8700,false,ACASubsidy300,0,,5,
+40000,40001,ACA 400 Bronze Plan,*,6094,0.6,0,6%Income,8700,false,ACASubsidy400,0,,6,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
+40000,40001,ACA 400 Silver Plan,*,4500,0.7,0,7%Income,8700,false,ACASubsidy400,0,,6,
+40000,40001,ACA 400 Gold Plan,*,1458,0.8,0,8.5%Income,8700,false,ACASubsidy400,0,,6,

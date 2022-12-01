@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -33,6 +34,7 @@ public class InsurancePlan implements Serializable {
   private final boolean medicareSupplement;
   private final String insuranceStatus;
   private final int priority;
+  private final BigDecimal maxOutOfPocket;
   // Plan Eligibility.
   private final IPlanEligibility planEligibility;
   // Start/end date of plan availablity.
@@ -49,13 +51,14 @@ public class InsurancePlan implements Serializable {
    * @param eligibilityName The eligibility algorithm to use.
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
-      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, String premium,
+      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, String premium, int maxOutOfPocket,
       boolean medicareSupplement, int activeYearStart, int activeYearEnd, int priorityLevel, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
     this.defaultCopay = defaultCopay;
     this.premium = premium;
+    this.maxOutOfPocket = new BigDecimal(maxOutOfPocket);
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
     this.priority = priorityLevel;
@@ -125,11 +128,10 @@ public class InsurancePlan implements Serializable {
   public BigDecimal payMonthlyPremium(double employerLevel, int income) {
     BigDecimal premiumPrice = this.getMonthlyPremium(income);
     this.payer.addRevenue(premiumPrice);
-    // if (employerLevel > 0.2) {
-    //   double employerCoverage = Config.getAsDouble("generate.insurance.employer_coverage");
-    //   premiumPrice = premiumPrice.multiply(new BigDecimal(employerCoverage));
-    //   System.out.println(premiumPrice);
-    // }
+    if (employerLevel > Config.getAsDouble("generate.insurance.mandate.occupation")) {
+      double employerCoverage = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
+      premiumPrice = premiumPrice.multiply(new BigDecimal(employerCoverage));
+    }
     return premiumPrice;
   }
 
