@@ -72,16 +72,16 @@ public class EntityManagerTest {
     Config.set("exporter.fhir.export", "true");
     Config.set("exporter.json.export", "true");
     Generator.DEFAULT_STATE = "North Carolina";
-    String baseDirectory = tempFolder.newFolder().toString();
-    Config.set("exporter.baseDirectory", baseDirectory);
+    Path baseDirectory = tempFolder.newFolder().toPath();
+    Config.set("exporter.baseDirectory", baseDirectory.toString());
     PayerManager.clear();
     Generator generator = new Generator(0);
     generator.options.overflow = false;
     URL url = Resources.getResource("identity/test_records.json");
     generator.options.fixedRecordPath = new File(url.toURI());
     generator.run();
-    String jsonExportFolder = baseDirectory + "/json";
-    Optional<Path> jsonExport = Files.list(FileSystems.getDefault().getPath(jsonExportFolder))
+    Path jsonExportFolder = baseDirectory.resolve("json");
+    Optional<Path> jsonExport = Files.list(jsonExportFolder)
         .filter(path -> path.toString().endsWith(".json")).findFirst();
     if (jsonExport.isPresent()) {
       Path jsonExportPath = jsonExport.get();
