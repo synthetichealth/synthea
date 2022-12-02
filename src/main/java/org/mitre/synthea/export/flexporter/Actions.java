@@ -206,8 +206,6 @@ public abstract class Actions {
           valueDef = getValue(sourceBundle, valueString, sourceResource, person, fjContext);
         } // else - assume it's a raw value
         
-      } else if (valueDef instanceof Map<?,?>) {
-        // TODO
       }
 
       // TODO: consider a "skip-resource-if-null" kind of thing
@@ -235,14 +233,10 @@ public abstract class Actions {
         fhirPathMapping.put(location, valueString);
         
       } else if (valueDef instanceof Map<?,?>) {
-        // TODO: objects should be nestable to >1 level
-        Map<String,String> valueMap = (Map<String, String>) valueDef;
-        for(Map.Entry<String,String> entry : valueMap.entrySet()) {
-          String key = entry.getKey();
-          String value = entry.getValue();
-          
-          fhirPathMapping.put(location + "." + key, value);
-        }
+        Map<String,Object> valueMap = (Map<String, Object>) valueDef;
+        
+        populateFhirPathMapping(fhirPathMapping, location, valueMap);
+        
       } else if (valueDef instanceof Base) {
         // we plucked a full FHIR object from somewhere
         fhirPathMapping.put(location, valueDef);
@@ -254,6 +248,23 @@ public abstract class Actions {
     }
 
     return fhirPathMapping;
+  }
+  
+  private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath, Map<String,Object> valueMap) {
+    for(Map.Entry<String,Object> entry : valueMap.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+      
+      String path = basePath + "." + key;
+      
+      if (value instanceof String) {
+        fhirPathMapping.put(path, value);
+      } else if (value instanceof Map<?,?>) {
+        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
+      } else if (value != null) {
+        System.err.println("Unexpected class found in populateFhirPathMapping -- " + value.getClass());
+      }
+    }
   }
 
   public static void keepResources(Bundle bundle, List<String> list) {

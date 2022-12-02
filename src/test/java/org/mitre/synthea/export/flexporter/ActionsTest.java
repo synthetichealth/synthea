@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +23,7 @@ import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.HumanName;
@@ -235,7 +235,25 @@ public class ActionsTest {
 
     Actions.applyAction(b, action, null, null);
 
-    System.out.println(b);
+    /*
+
+ - name: testSetValues_object
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.maritalStatus.coding
+           value:
+               system: http://snomedct.io
+               code: "36629006"
+               display: "Legally married (finding)"
+
+     */
+
+    Coding c = p.getMaritalStatus().getCodingFirstRep();
+
+    assertEquals("http://snomedct.io", c.getSystem());
+    assertEquals("36629006", c.getCode());
+    assertEquals("Legally married (finding)", c.getDisplay());
   }
 
   @Test

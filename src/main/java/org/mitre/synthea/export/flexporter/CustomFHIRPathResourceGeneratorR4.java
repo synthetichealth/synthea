@@ -141,6 +141,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    */
   public T generateResource(String resourceType) {
     try {
+      @SuppressWarnings("unchecked") 
       Class<T> resourceClass =
           (Class<T>) Class.forName("org.hl7.fhir.r4.model." + resourceType);
       
