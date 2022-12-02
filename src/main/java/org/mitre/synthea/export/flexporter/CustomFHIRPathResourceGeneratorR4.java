@@ -1,20 +1,5 @@
 package org.mitre.synthea.export.flexporter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
-import org.hl7.fhir.r4.utils.FHIRPathEngine;
-import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.ICompositeType;
-import org.hl7.fhir.instance.model.api.IPrimitiveType;
-import org.hl7.fhir.r4.hapi.ctx.HapiWorkerContext;
-import org.hl7.fhir.r4.model.ExpressionNode;
-import org.hl7.fhir.r4.model.ExpressionNode.Kind;
-import org.hl7.fhir.r4.model.Resource;
-
 import ca.uhn.fhir.context.BaseRuntimeChildDatatypeDefinition;
 import ca.uhn.fhir.context.BaseRuntimeChildDefinition;
 import ca.uhn.fhir.context.BaseRuntimeElementDefinition;
@@ -22,6 +7,22 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.RuntimeCompositeDatatypeDefinition;
 import ca.uhn.fhir.context.RuntimePrimitiveDatatypeDefinition;
 import ca.uhn.fhir.context.RuntimeResourceBlockDefinition;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.instance.model.api.ICompositeType;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r4.hapi.ctx.HapiWorkerContext;
+import org.hl7.fhir.r4.model.ExpressionNode;
+import org.hl7.fhir.r4.model.ExpressionNode.Kind;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.utils.FHIRPathEngine;
+
 
 /**
  * This class can be used to generate resources using FHIRPath expressions.
@@ -111,7 +112,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   }
 
   /**
-   * Sets the resource to apply FHIRPath changes to. 
+   * Sets the resource to apply FHIRPath changes to.
    * If not set, calling generateResource will instantiate a new resource.
    */
   public void setResource(T resource) {
@@ -141,16 +142,16 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    */
   public T generateResource(String resourceType) {
     try {
-      @SuppressWarnings("unchecked") 
+      @SuppressWarnings("unchecked")
       Class<T> resourceClass =
           (Class<T>) Class.forName("org.hl7.fhir.r4.model." + resourceType);
-      
+
       return generateResource(resourceClass);
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * The generation method that yields a new instance of class `resourceClass` with every value set
    * in the FHIRPath mapping.
@@ -313,16 +314,16 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
     // iterate through all parent nodes
     for (IBase nodeElement : this.nodeStack.peek().nodes) {
       List<IBase> containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
-      
-      if (nextTier.childDefinition instanceof BaseRuntimeChildDatatypeDefinition 
+
+      if (nextTier.childDefinition instanceof BaseRuntimeChildDatatypeDefinition
           && ((BaseRuntimeChildDatatypeDefinition) nextTier.childDefinition).getDatatype().isInstance(this.valueToSet)) {
-        
+
         // this enables us to work with objects that are not trivially strings, ex CodeableConcepts
-        
+
         // TODO: are there any other implications to this?
-        nextTier.childDefinition.getMutator().setValue(nodeElement, (IBase)this.valueToSet); 
-        
-      } else {        
+        nextTier.childDefinition.getMutator().setValue(nodeElement, (IBase)this.valueToSet);
+
+      } else {
         if (containedNodes.size() > 0) {
           // check if sister nodes are already available
           nextTier.nodes.addAll(containedNodes);
@@ -333,9 +334,9 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
           nextTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
           nextTier.nodes.add(compositeNode);
         }
-        
+
       }
-      
+
 
     }
     // push the created nextTier to the nodeStack

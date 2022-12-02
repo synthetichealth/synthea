@@ -62,7 +62,7 @@ public abstract class RandomCodeGenerator {
     }
     return code;
   }
-  
+
   public static Map<String, String> getCodeAsMap(String valueSetUri, long seed) {
     if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
@@ -74,32 +74,32 @@ public abstract class RandomCodeGenerator {
     }
     return null;
   }
-  
+
   // TODO: this does not belong here, but this class is where the code cache is
   public static boolean codeInValueSet(Code code, String valueSetUri) {
     if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
-      
+
       // TODO: there has to be a better way to do this
       Map<String,String> codeAsMap = new HashMap<>();
       codeAsMap.put("system", code.system);
       codeAsMap.put("code", code.code);
       codeAsMap.put("display", code.display);
-      
+
       List<Object> cachedCodeList = codeListCache.get(valueSetUri);
-      
+
       // this will only return true if everything is exactly identical
       // ie, it will not match if display is different
       if (cachedCodeList.contains(codeAsMap)) {
         return true;
       }
-      
+
       // iterate through all the codes to see if it contains the system/code combo
       // TODO: pick better data structures that support this
-      
+
       for (Object cachedCodeObj : cachedCodeList) {
         Map<String,String> cachedCode = (Map<String,String>)cachedCodeObj;
-        
+
         if (cachedCode.get("system").equals(code.system) && cachedCode.get("code").equals(code.code)) {
           return true;
         }
@@ -108,7 +108,7 @@ public abstract class RandomCodeGenerator {
     // TODO??
     return false;
   }
-  
+
   @SuppressWarnings("unchecked")
   private static synchronized void expandValueSet(String valueSetUri) {
     if (!codeListCache.containsKey(valueSetUri)) {
@@ -133,17 +133,17 @@ public abstract class RandomCodeGenerator {
       } catch (IOException e) {
         throw new RuntimeException("Issue when expanding the value set", e);
       }
-      
+
       loadValueSet(valueSetUri, valueSet);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public static void loadValueSet(String valueSetUri, Map<String, Object> valueSet) {
     if (valueSetUri == null) {
       valueSetUri = (String)valueSet.get("url");
     }
-    
+
     if (valueSetUri != null && !codeListCache.containsKey(valueSetUri)) {
       Map<String, Object> expansion = (Map<String, Object>) valueSet.get("expansion");
       if (expansion != null) {
@@ -152,20 +152,20 @@ public abstract class RandomCodeGenerator {
 
       } else {
         Map<String, Object> compose  = (Map<String, Object>) valueSet.get("compose");
-        
+
         if (compose == null) {
           throw new RuntimeException("ValueSet does not contain compose or expansion");
         }
-        
+
         // TODO: why is this List<Object> instead of something more specific?
         // we know the contents are Map<String,String>
         List<Object> codes = new ArrayList<>();
-        
+
         List<Map<String, Object>> includeList = (List<Map<String, Object>>) compose.get("include");
-        
+
         for (Map<String, Object> include : includeList) {
           String system = (String)include.get("system");
-          
+
           List<Map<String, Object>> conceptList = (List<Map<String, Object>>) include.get("concept");
 
           for (Map<String, Object> concept : conceptList) {
@@ -173,20 +173,20 @@ public abstract class RandomCodeGenerator {
             codeAsMap.put("system", system);
             codeAsMap.put("code", (String)concept.get("code"));
             codeAsMap.put("display", (String)concept.get("display"));
-            
+
             codes.add(codeAsMap);
           }
-          
-          
+
+
         }
-        
+
         if (codes.isEmpty()) {
           throw new RuntimeException("ValueSet does not contain any codes defined within compose");
         }
-        
+
         codeListCache.put(valueSetUri, codes);
 
- 
+
       }
       System.out.println("Loaded " + valueSetUri);
     }

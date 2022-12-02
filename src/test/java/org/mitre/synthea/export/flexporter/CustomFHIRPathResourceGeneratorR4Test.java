@@ -24,8 +24,9 @@ import org.junit.Test;
 public class CustomFHIRPathResourceGeneratorR4Test {
 
   // share a context because these are slow to create
-  private static final FhirContext CTX = FhirContext.forR4();
+  private static final FhirContext CTX = FhirPathUtils.FHIR_CTX;
 
+  @SuppressWarnings("unused")
   private static void logPatientJson(Patient p) {
     String patientJson = CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(p);
 

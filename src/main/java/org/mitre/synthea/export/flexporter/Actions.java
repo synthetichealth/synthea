@@ -1,5 +1,7 @@
 package org.mitre.synthea.export.flexporter;
 
+import ca.uhn.fhir.parser.IParser;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,15 +23,12 @@ import org.hl7.fhir.r4.model.Resource;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
-import ca.uhn.fhir.parser.IParser;
-
-
 // For now
 @SuppressWarnings("unchecked")
 public abstract class Actions {
 
   public static Bundle applyMapping(Bundle bundle, Mapping mapping, Person person, FlexporterJavascriptContext fjContext) {
-    
+
     for (Map<String, Object> action : mapping.actions) {
       bundle = applyAction(bundle, action, person, fjContext);
     }
@@ -40,9 +39,9 @@ public abstract class Actions {
   public static Bundle applyAction(Bundle bundle, Map<String, Object> action, Person person, FlexporterJavascriptContext fjContext) {
     // TODO: this could be handled better but for now just key off a specific field in the action
 
-    Bundle returnBundle = bundle; 
+    Bundle returnBundle = bundle;
     // most actions modify the bundle in-place, but some might return a whole new one
-    
+
     if (action.containsKey("profiles")) {
       applyProfiles(bundle, (List<Map<String, String>>) action.get("profiles"));
     } else if (action.containsKey("set_values")) {
@@ -58,7 +57,7 @@ public abstract class Actions {
     } else if (action.containsKey("execute_script")) {
       returnBundle = executeScript((List<Map<String,String>>)action.get("execute_script"), bundle, fjContext);
     }
-    
+
     return returnBundle;
   }
 
@@ -201,11 +200,11 @@ public abstract class Actions {
         // do nothing, leave it null
       } else if (valueDef instanceof String) {
         String valueString = (String)valueDef;
-        
+
         if (valueString.startsWith("$")) {
           valueDef = getValue(sourceBundle, valueString, sourceResource, person, fjContext);
         } // else - assume it's a raw value
-        
+
       }
 
       // TODO: consider a "skip-resource-if-null" kind of thing
@@ -216,7 +215,7 @@ public abstract class Actions {
       if (valueDef instanceof Base && ((Base) valueDef).isPrimitive()) {
         valueDef = ((Base)valueDef).primitiveValue();
       }
-      
+
       if (transform != null) {
         // TODO: valuetransforms should support objects
         valueDef = ValueTransforms.apply((String)valueDef, transform);
@@ -226,21 +225,21 @@ public abstract class Actions {
       // do we want to allow copying an entire object somehow?
 
 
-      
+
       if (valueDef instanceof String) {
         String valueString = (String)valueDef;
-        
+
         fhirPathMapping.put(location, valueString);
-        
+
       } else if (valueDef instanceof Map<?,?>) {
         Map<String,Object> valueMap = (Map<String, Object>) valueDef;
-        
+
         populateFhirPathMapping(fhirPathMapping, location, valueMap);
-        
+
       } else if (valueDef instanceof Base) {
         // we plucked a full FHIR object from somewhere
         fhirPathMapping.put(location, valueDef);
-     
+
       } else {
         // unexpected type here - is it even possible to get anything else?
         System.err.println("Unhandled type in createFhirPathMapping: " + valueDef.getClass());
@@ -249,14 +248,14 @@ public abstract class Actions {
 
     return fhirPathMapping;
   }
-  
+
   private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath, Map<String,Object> valueMap) {
     for(Map.Entry<String,Object> entry : valueMap.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
-      
+
       String path = basePath + "." + key;
-      
+
       if (value instanceof String) {
         fhirPathMapping.put(path, value);
       } else if (value instanceof Map<?,?>) {
@@ -318,15 +317,15 @@ public abstract class Actions {
     IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
 
     String bundleJson = parser.encodeResourceToString(bundle);
-    
+
     fjContext.loadBundle(bundleJson);
 
     for (Map<String, String> scriptDef : fields) {
-      
+
       String function = scriptDef.get("function");
       String functionName = scriptDef.get("function_name");
       String applyTo = scriptDef.get("apply_to");
-          
+
       fjContext.loadFunction(function);
 
       if (applyTo.equalsIgnoreCase("bundle")) {
@@ -334,18 +333,18 @@ public abstract class Actions {
       } else if (applyTo.equalsIgnoreCase("resource") || applyTo.equalsIgnoreCase("resources")) {
         fjContext.applyFunctionToResources(functionName);
       } else {
-        throw new IllegalArgumentException("Unknown option for execute_script.apply_to: '" + applyTo 
+        throw new IllegalArgumentException("Unknown option for execute_script.apply_to: '" + applyTo
             + "'. Valid options are 'bundle' and 'resources'");
       }
     }
 
     String outBundleJson = fjContext.getBundle();
-    
+
     Bundle newBundle = parser.parseResource(Bundle.class, outBundleJson);
 
     return newBundle;
   }
-  
+
 
   private static Object getValue(Bundle bundle, String valueDef, Resource currentResource,
       Person person, FlexporterJavascriptContext fjContext) {
@@ -399,8 +398,9 @@ public abstract class Actions {
     // from some testing, ids in HAPI also seem to be a little flaky
     String id = resource.getId();
 
-    if (id.startsWith("urn:uuid:"))
+    if (id.startsWith("urn:uuid:")) {
       return id;
+    }
 
     return resource.getResourceType().toString() + "/" + id;
   }
@@ -411,8 +411,9 @@ public abstract class Actions {
 
     List<Base> fieldValues = FhirPathUtils.evaluateResource(currentResource, args[0]);
 
-    if (fieldValues.isEmpty())
+    if (fieldValues.isEmpty()) {
       return null;
+    }
 
     return fieldValues.get(0);
   }
@@ -426,8 +427,9 @@ public abstract class Actions {
 
     List<Base> matchingResources = FhirPathUtils.evaluateBundle(bundle, flagValues[0], true);
 
-    if (matchingResources.isEmpty())
+    if (matchingResources.isEmpty()) {
       return null;
+    }
 
     return createReference((Resource) matchingResources.get(0));
   }
@@ -437,15 +439,16 @@ public abstract class Actions {
     // args[1] = how to disambiguate if there are multiple? TODO
     List<Base> fieldValues = FhirPathUtils.evaluateBundle(bundle, args[0], false);
 
-    if (fieldValues.isEmpty())
+    if (fieldValues.isEmpty()) {
       return null;
+    }
 
     return fieldValues.get(0).primitiveValue();
   }
-  
+
   private static Map<String,String> randomCode(String valueSetUrl) {
-    
-    Map<String,String> codeAsMap = RandomCodeGenerator.getCodeAsMap(valueSetUrl, (int)(Math.random() * Integer.MAX_VALUE));    
+    Map<String,String> codeAsMap =
+      RandomCodeGenerator.getCodeAsMap(valueSetUrl, (int)(Math.random() * Integer.MAX_VALUE));
     return codeAsMap;
   }
 }
