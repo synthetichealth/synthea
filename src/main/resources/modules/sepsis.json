@@ -135,8 +135,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "59032-3",
-          "display": "Lactate [Mass/volume] in Blood"
+          "code": "32693-4",
+          "display": "Lactate [Moles/volume] in Blood"
         }
       ],
       "conditional_transition": [
@@ -147,8 +147,8 @@
             "codes": [
               {
                 "system": "LOINC",
-                "code": "59032-3",
-                "display": "Lactate [Mass/volume] in Blood"
+                "code": "32693-4",
+                "display": "Lactate [Moles/volume] in Blood"
               }
             ],
             "operator": ">=",
@@ -438,8 +438,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "59032-3",
-          "display": "Lactate [Mass/volume] in Blood"
+          "code": "32693-4",
+          "display": "Lactate [Moles/volume] in Blood"
         }
       ],
       "direct_transition": "Fluid_Resuscitation",
