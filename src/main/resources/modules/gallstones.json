@@ -1023,12 +1023,12 @@
       "observations": [
         {
           "category": "laboratory",
-          "unit": "K/uL",
+          "unit": "10*3/uL",
           "codes": [
             {
               "system": "LOINC",
               "code": "26464-8",
-              "display": "White Blood Cell (Elevated)"
+              "display": "Leukocytes [#/volume] in Blood"
             }
           ],
           "range": {
@@ -1043,7 +1043,7 @@
             {
               "system": "LOINC",
               "code": "26453-1",
-              "display": "Red Blood Cell"
+              "display": "Erythrocytes [#/volume] in Blood"
             }
           ],
           "range": {
