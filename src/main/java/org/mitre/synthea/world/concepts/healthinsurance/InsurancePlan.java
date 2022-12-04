@@ -32,6 +32,7 @@ public class InsurancePlan implements Serializable {
   private final String premium;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
+  private final boolean isPrivateNonACA;
   private final String insuranceStatus;
   private final int priority;
   private final BigDecimal maxOutOfPocket;
@@ -52,7 +53,7 @@ public class InsurancePlan implements Serializable {
    */
   public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
       BigDecimal defaultCoinsurance, BigDecimal defaultCopay, String premium, int maxOutOfPocket,
-      boolean medicareSupplement, int activeYearStart, int activeYearEnd, int priorityLevel, String eligibilityName) {
+      boolean medicareSupplement, boolean isPrivateNonACA, int activeYearStart, int activeYearEnd, int priorityLevel, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -61,6 +62,7 @@ public class InsurancePlan implements Serializable {
     this.maxOutOfPocket = new BigDecimal(maxOutOfPocket);
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
+    this.isPrivateNonACA = isPrivateNonACA;
     this.priority = priorityLevel;
     if (activeYearStart >= activeYearEnd) {
       throw new RuntimeException("Plan start year cannot be after its end year."
@@ -128,9 +130,11 @@ public class InsurancePlan implements Serializable {
   public BigDecimal payMonthlyPremium(double employerLevel, int income) {
     BigDecimal premiumPrice = this.getMonthlyPremium(income);
     this.payer.addRevenue(premiumPrice);
-    if (employerLevel > Config.getAsDouble("generate.insurance.mandate.occupation")) {
-      double employerCoverage = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
-      premiumPrice = premiumPrice.multiply(new BigDecimal(employerCoverage));
+    if (employerLevel > Config.getAsDouble("generate.insurance.mandate.occupation")
+        && this.isPrivateNonACA) {
+        // If this is a private plan and is not an ACA plan, then employer may provide coverage.
+      double employeeContribution = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
+      premiumPrice = premiumPrice.multiply(new BigDecimal(employeeContribution));
     }
     return premiumPrice;
   }

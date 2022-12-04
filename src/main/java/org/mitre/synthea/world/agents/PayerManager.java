@@ -266,6 +266,7 @@ public class PayerManager {
     double defaultCopay = Double.parseDouble(line.remove(COPAY).trim());
     String monthlyPremiumStr = line.remove(MONTHLY_PREMIUM).trim();
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
+    boolean isPrivateNonACA = planName.contains("Private") && !planName.contains("ACA");
     int yearStart = Integer.parseInt(line.remove(START_YEAR).trim());
     String yearEndStr = line.remove(END_YEAR).trim();
     int yearEnd = Utilities.getYear(System.currentTimeMillis()) + 1;
@@ -282,7 +283,7 @@ public class PayerManager {
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremiumStr, maxOutOfPocket, medicareSupplement, yearStart, yearEnd, priority, eligibilityName);
+        defaultCopay, monthlyPremiumStr, maxOutOfPocket, medicareSupplement, isPrivateNonACA, yearStart, yearEnd, priority, eligibilityName);
   }
 
   private static Payer getPayerById(String payerId) {
@@ -319,7 +320,7 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", Integer.MAX_VALUE, false, 0,
+    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", Integer.MAX_VALUE, false, false, 0,
         Utilities.getYear(System.currentTimeMillis()) + 1, Integer.MAX_VALUE, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(buildPayerAdjustment());
   }
