@@ -257,7 +257,7 @@ public class PayerManager {
       return;
     }
 
-    String planId = line.remove(PLAN_ID).trim();
+    int planId = Integer.parseInt(line.remove(PLAN_ID).trim());
     String planName = line.remove(NAME).trim();
     Set<String> servicesCovered
         = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
@@ -282,7 +282,7 @@ public class PayerManager {
     }
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
-    payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
+    payer.createPlan(planId, servicesCovered, deductible, defaultCoinsurance,
         defaultCopay, monthlyPremiumStr, maxOutOfPocket, medicareSupplement, isPrivateNonACA, yearStart, yearEnd, priority, eligibilityName);
   }
 
@@ -320,7 +320,7 @@ public class PayerManager {
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
         statesCovered, NO_INSURANCE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", Integer.MAX_VALUE, false, false, 0,
+    PayerManager.noInsurance.createPlan(000000, new HashSet<String>(), 0.0, 0.0, 0.0, "0.0", Integer.MAX_VALUE, false, false, 0,
         Utilities.getYear(System.currentTimeMillis()) + 1, Integer.MAX_VALUE, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.setPayerAdjustment(buildPayerAdjustment());
   }

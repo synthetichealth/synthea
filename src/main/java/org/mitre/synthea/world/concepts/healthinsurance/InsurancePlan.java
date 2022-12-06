@@ -26,6 +26,7 @@ public class InsurancePlan implements Serializable {
   private static final String PCT_INCOME = "%Income";
 
   private final Payer payer;
+  private final int id;
   private final BigDecimal deductible;
   private final BigDecimal defaultCopay;
   private final BigDecimal defaultCoinsurance;
@@ -51,10 +52,11 @@ public class InsurancePlan implements Serializable {
    * @param monthlyPremium  The monthly premium.
    * @param eligibilityName The eligibility algorithm to use.
    */
-  public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
+  public InsurancePlan(Payer payer, int id, Set<String> servicesCovered, BigDecimal deductible,
       BigDecimal defaultCoinsurance, BigDecimal defaultCopay, String premium, int maxOutOfPocket,
       boolean medicareSupplement, boolean isPrivateNonACA, int activeYearStart, int activeYearEnd, int priorityLevel, String eligibilityName) {
     this.payer = payer;
+    this.id = id;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
     this.defaultCopay = defaultCopay;
@@ -305,6 +307,10 @@ public class InsurancePlan implements Serializable {
 
   public BigDecimal getMaxOop() {
     return this.maxOutOfPocket;
+  }
+
+  public Object getId() {
+    return this.id;
   }
 
 }

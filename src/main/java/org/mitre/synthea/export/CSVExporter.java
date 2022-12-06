@@ -343,7 +343,7 @@ public class CSVExporter {
         + "UNIQUE_CUSTOMERS,QOLS_AVG,MEMBER_MONTHS");
     payers.write(NEWLINE);
     payerTransitions.write("PATIENT,MEMBERID,START_DATE,END_DATE,PAYER,SECONDARY_PAYER,"
-        + "PLAN_OWNERSHIP,OWNER_NAME");
+        + "PLAN_OWNERSHIP,OWNER_NAME,PLAN_ID");
     payerTransitions.write(NEWLINE);
     claims.write("Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,"
         + "DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,"
@@ -1340,6 +1340,9 @@ public class CSVExporter {
     if (planRecord.ownerName != null) {
       s.append(planRecord.ownerName);
     }
+    // PLAN_ID
+    s.append(planRecord.getPlan().getId());
+
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }
