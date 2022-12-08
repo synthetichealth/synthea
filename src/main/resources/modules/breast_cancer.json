@@ -1303,7 +1303,7 @@
     "Treatment Successful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "direct_transition": "End the Initial Encounter",
       "value": "yes"
     },
     "Regular Mammogram Visit": {
@@ -2104,7 +2104,7 @@
           "distribution": 0.3
         },
         {
-          "transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+          "transition": "End the Initial Encounter",
           "distribution": 0.7
         }
       ]
@@ -2118,8 +2118,12 @@
     "Hospice Reason": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "direct_transition": "End the Initial Encounter",
       "value_attribute": "breast_cancer_condition"
+    },
+    "End the Initial Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
     }
   },
   "gmf_version": 1

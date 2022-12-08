@@ -44,58 +44,29 @@
       ]
     },
     "Determine_LOS": {
-      "type": "Simple",
-      "distributed_transition": [
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 18.7
+        }
+      },
+      "conditional_transition": [
         {
-          "distribution": 0.364,
-          "transition": "SNF_1-15_Days"
+          "transition": "Max Length of Stay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "snf_days",
+            "operator": ">",
+            "value": 100
+          }
         },
         {
-          "distribution": 0.34,
-          "transition": "SNF_16-30_Days"
-        },
-        {
-          "distribution": 0.29,
-          "transition": "SNF_31-99_Days"
-        },
-        {
-          "distribution": 0.006,
-          "transition": "SNF_100_Days"
+          "transition": "History_Physical_Exam"
         }
       ]
-    },
-    "SNF_1-15_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 15,
-        "low": 1
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_16-30_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 30,
-        "low": 16
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_31-99_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 99,
-        "low": 31
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_100_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "value": 100,
-      "direct_transition": "History_Physical_Exam"
     },
     "History_Physical_Exam": {
       "type": "Procedure",
@@ -340,6 +311,12 @@
       "type": "DeviceEnd",
       "referenced_by_attribute": "snf_wheelchair",
       "direct_transition": "End Encounter"
+    },
+    "Max Length of Stay": {
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "value": 100,
+      "direct_transition": "History_Physical_Exam"
     }
   },
   "gmf_version": 1

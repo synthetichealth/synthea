@@ -25,74 +25,29 @@
       "reason": "hospice_reason"
     },
     "Determine_LOS": {
-      "type": "Simple",
-      "distributed_transition": [
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 22.7
+        }
+      },
+      "conditional_transition": [
         {
-          "distribution": 0.26,
-          "transition": "LOS_1-7_Days"
+          "transition": "Max Length of Stay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_days",
+            "operator": ">",
+            "value": 240
+          }
         },
         {
-          "distribution": 0.35,
-          "transition": "LOS_8-60_Days"
-        },
-        {
-          "distribution": 0.07,
-          "transition": "LOS_61-90_Days"
-        },
-        {
-          "distribution": 0.11,
-          "transition": "LOS_91-180_Days"
-        },
-        {
-          "distribution": 0.21,
-          "transition": "LOS_181-240_Days"
+          "transition": "Certification_Procedure"
         }
       ]
-    },
-    "LOS_1-7_Days": {
-      "type": "SetAttribute",
-      "attribute": "hospice_days",
-      "direct_transition": "Certification_Procedure",
-      "range": {
-        "high": 7,
-        "low": 1
-      }
-    },
-    "LOS_8-60_Days": {
-      "type": "SetAttribute",
-      "attribute": "hospice_days",
-      "direct_transition": "Certification_Procedure",
-      "range": {
-        "high": 60,
-        "low": 8
-      }
-    },
-    "LOS_61-90_Days": {
-      "type": "SetAttribute",
-      "attribute": "hospice_days",
-      "direct_transition": "Certification_Procedure",
-      "range": {
-        "high": 90,
-        "low": 61
-      }
-    },
-    "LOS_91-180_Days": {
-      "type": "SetAttribute",
-      "attribute": "hospice_days",
-      "direct_transition": "Certification_Procedure",
-      "range": {
-        "high": 180,
-        "low": 91
-      }
-    },
-    "LOS_181-240_Days": {
-      "type": "SetAttribute",
-      "attribute": "hospice_days",
-      "direct_transition": "Certification_Procedure",
-      "range": {
-        "high": 240,
-        "low": 181
-      }
     },
     "Certification_Procedure": {
       "type": "Procedure",
@@ -355,6 +310,12 @@
       "type": "DeviceEnd",
       "device": "Commode",
       "direct_transition": "Alive Check"
+    },
+    "Max Length of Stay": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "value": 240
     }
   },
   "gmf_version": 1

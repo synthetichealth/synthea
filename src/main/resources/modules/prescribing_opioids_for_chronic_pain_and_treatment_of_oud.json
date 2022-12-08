@@ -1342,7 +1342,7 @@
           "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
         }
       ],
-      "direct_transition": "Addiction",
+      "direct_transition": "End follow up with positive test",
       "observations": [
         {
           "category": "survey",
@@ -1554,7 +1554,7 @@
           "display": "Drugs of abuse 5 panel - Urine by Screen method"
         }
       ],
-      "direct_transition": "Addiction",
+      "direct_transition": "End initial encounter with positive result",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 10828004,
@@ -3197,6 +3197,15 @@
       ],
       "reason": "Condition_OUD_2",
       "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+    },
+    "End follow up with positive test": {
+      "type": "EncounterEnd",
+      "direct_transition": "Addiction"
+    },
+    "End initial encounter with positive result": {
+      "type": "EncounterEnd",
+      "direct_transition": "Addiction"
     }
-  }
+  },
+  "gmf_version": 2
 }
