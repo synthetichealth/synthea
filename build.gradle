@@ -114,8 +114,10 @@ dependencies {
   implementation 'org.jfree:jfreechart:1.5.3'
 
   // Use JUnit test framework
-  testImplementation('junit:junit:4.13.2') {
-    force = true
+  testImplementation('junit:junit') {
+    version {
+      strictly '4.13.2'
+    }
   }
   testImplementation 'org.mockito:mockito-core:4.7.0'
   testImplementation 'org.powermock:powermock-module-junit4:2.0.9'

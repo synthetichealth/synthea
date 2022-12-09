@@ -69,7 +69,7 @@ public class ConsolidatedClaimLines extends Claim.ClaimCost {
   public ConsolidatedClaimLines() {
     // use a sorted map to ensure we always emit claim lines in the same order
     uniqueLineItems = new TreeMap<>();
-  } // use a sorted map to ensure we always emit claim lines in the same order
+  }
 
   /**
    * Add a claim to the set of consolidated claim lines. Creates a new claim line if the
