@@ -1,3 +1,9 @@
+import ca.uhn.fhir.parser.DataFormatException;
+import ca.uhn.fhir.parser.IParser;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,12 +27,6 @@ import org.mitre.synthea.export.flexporter.FhirPathUtils;
 import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ca.uhn.fhir.parser.DataFormatException;
-import ca.uhn.fhir.parser.IParser;
 
 
 public class RunFlexporter {
@@ -95,11 +95,18 @@ public class RunFlexporter {
     convertFhir(mappingFile, igDirectory, sourceFile);
   }
 
+
+  public static Bundle convertFhir(Bundle bundle, Mapping mapping) {
+    Actions.applyMapping(bundle, mapping, null, new FlexporterJavascriptContext());
+
+    return bundle;
+  }
+
   public static void convertFhir(File mappingFile, File igDirectory, File sourceFhir)
       throws IOException {
 
     Mapping mapping = Mapping.parseMapping(mappingFile);
-    
+
     if (igDirectory != null) {
       loadIG(igDirectory);
     }
@@ -134,8 +141,10 @@ public class RunFlexporter {
 
       new File("./output/flexporter/").mkdirs();
 
+      String outFileName = "" + System.currentTimeMillis() + "_" + sourceFhir.getName();
+
       File outFile =
-          new File("./output/flexporter/" + System.currentTimeMillis() + "_" + sourceFhir.getName());
+          new File("./output/flexporter/" + outFileName);
 
       Files.write(outFile.toPath(), bundleJson.getBytes(), StandardOpenOption.CREATE_NEW);
 
@@ -144,77 +153,42 @@ public class RunFlexporter {
   }
 
   static void loadIG(File igDirectory) throws IOException {
-      File[] artifacts = igDirectory.listFiles();
+    File[] artifacts = igDirectory.listFiles();
 
-      for (File artifact : artifacts) {
-          if (artifact.isFile() && FilenameUtils.getExtension(artifact.toString()).equals("json")) {
-            
-            IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
+    for (File artifact : artifacts) {
+      if (artifact.isFile() && FilenameUtils.getExtension(artifact.toString()).equals("json")) {
 
-            String fhirJson = new String(Files.readAllBytes(artifact.toPath()));
-            IBaseResource resource = null;
-            
-            try {
-              resource = parser.parseResource(fhirJson);
-            } catch (DataFormatException dfe) {
-              // why does an IG contain bad data?
-              System.err.println("Warning: Unable to parse IG artifact " + artifact.getAbsolutePath());
-              dfe.printStackTrace();
-            }
-            
-//            System.out.println(resource);
-            
-            if (resource instanceof ValueSet) {
-              // TODO: fix RandomCodeGenerator to work with HAPI objects
-              // because this is silly
-              
-              ObjectMapper objectMapper = new ObjectMapper();
+        IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
 
-              Map<String, Object> valueSet = objectMapper.readValue(fhirJson,
-                  new TypeReference<Map<String, Object>>() {
-                  });
-              try {
-                RandomCodeGenerator.loadValueSet(null, valueSet);
-              } catch (Exception e) {
-                System.err.println("WARNING: Unable to load ValueSet " + artifact.getAbsolutePath());
-                e.printStackTrace();
-              }
+        String fhirJson = new String(Files.readAllBytes(artifact.toPath()));
+        IBaseResource resource = null;
 
-            }
-            
-//              JsonObject jsonObj = (JsonObject) JsonParser.parseReader(new FileReader(artifact));
-//              String resourceType = jsonObj.get("resourceType").getAsString();
-//
-//              if(RESOURCES_IN_SCOPE_MAP.contains(resourceType)) {
-//                  Resource resource = new Gson().fromJson(jsonObj, Resource.class);
-//
-//                  if(resource.getResourceType() == ResourceType.StructureDefinition) {
-//                      String type = jsonObj.get("type").getAsString();
-//
-//                      if(type.equals("Extension")) {
-//                          igArtifacts.addExtension(resource.url, resource);
-//                      }
-//                      else {
-//                          igArtifacts.addProfile(resource);
-//                      }
-//                  }
-//                  else if(resource.resourceType.equals("ValueSet")) {
-//                      for(ValueSet valueSet : resource.compose.getList()) {
-//                          valueSet.setCodes();
-//                      }
-//                      igArtifacts.addValueSet(resource.url, resource);
-//                  }
-//              }
+        try {
+          resource = parser.parseResource(fhirJson);
+        } catch (DataFormatException dfe) {
+          // why does an IG contain bad data?
+          System.err.println("Warning: Unable to parse IG artifact " + artifact.getAbsolutePath());
+          dfe.printStackTrace();
+        }
+
+        if (resource instanceof ValueSet) {
+          // TODO: fix RandomCodeGenerator to work with HAPI objects
+          // because this is silly
+
+          ObjectMapper objectMapper = new ObjectMapper();
+
+          Map<String, Object> valueSet = objectMapper.readValue(fhirJson,
+              new TypeReference<Map<String, Object>>() {
+              });
+          try {
+            RandomCodeGenerator.loadValueSet(null, valueSet);
+          } catch (Exception e) {
+            System.err.println("WARNING: Unable to load ValueSet " + artifact.getAbsolutePath());
+            e.printStackTrace();
           }
+        }
       }
-
-  }
-
-
-  public static Bundle convertFhir(Bundle bundle, Mapping mapping) {
-    Actions.applyMapping(bundle, mapping, null, new FlexporterJavascriptContext());
-
-    return bundle;
+    }
   }
 
   private static boolean isDirEmpty(final Path directory) throws IOException {

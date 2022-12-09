@@ -90,7 +90,7 @@ public abstract class Exporter {
       terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
-      flexporterMappings=init.flexporterMappings;
+      flexporterMappings = init.flexporterMappings;
     }
 
     /**
@@ -128,12 +128,12 @@ public abstract class Exporter {
     public boolean isRecordQueueEmpty() {
       return recordQueue == null || recordQueue.size() == 0;
     }
-    
+
     public void addFlexporterMapping(Mapping mapping) {
       if (this.flexporterMappings == null) {
         this.flexporterMappings = new LinkedList<>();
       }
-      
+
       this.flexporterMappings.add(mapping);
     }
   }
@@ -247,9 +247,9 @@ public abstract class Exporter {
       org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
 
       if (options.flexporterMappings != null) {
-        
+
         FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
-        
+
         for (Mapping mapping : options.flexporterMappings) {
           // flexport on the bundle here
           Actions.applyMapping(bundle, mapping, person, fjContext);

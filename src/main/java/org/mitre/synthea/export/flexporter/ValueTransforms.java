@@ -67,8 +67,10 @@ public abstract class ValueTransforms {
   }
 
   public static String toTime(String src) {
-    if (src == null)
+    if (src == null) {
       return null;
+    }
+
     ZonedDateTime dateTime = parse(src);
 
     return DateTimeFormatter.ISO_LOCAL_TIME.format(dateTime);
@@ -79,7 +81,7 @@ public abstract class ValueTransforms {
   private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
 
   private static final ZoneId UTC = ZoneId.of("UTC");
-  
+
   private static ZonedDateTime parse(String src) {
     // assume src is one of the four formats already
 

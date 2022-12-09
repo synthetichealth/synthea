@@ -36,7 +36,8 @@ import org.hl7.fhir.r4.utils.FHIRPathEngine;
  *  -- add support for BackboneElements
  *  -- swapped constructors, pass in a FhirContext to avoid recreating it for each resource
  *  -- add support for extensions on primitives
- *  -- more advanced java generics (some functions now take in Class&lt;? extends T&gt; instead of just T
+ *  -- more advanced java generics
+ *      (some functions now take in Class&lt;? extends T&gt; instead of just T)
  *  -- reformatted per Synthea style guidelines
  *
  *  Original:
@@ -95,7 +96,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   /**
    * Setter for the FHIRPath mapping Map instance.
    *
-   * @param mapping Map&lt;String, String&gt; a mapping of FHIRPath to value Strings that will be used to
+   * @param mapping Map&lt;String, Object&gt; a mapping of FHIRPath to objects that will be used to
    *        create a Resource.
    */
   public void setMapping(Map<String, Object> mapping) {
@@ -123,7 +124,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * Prepares the internal state prior to generating a FHIR Resource. Called once upon generation at
    * the start.
    *
-   * @param resourceClass Class<T> The class of the Resource that shall be created (an empty
+   * @param resourceClass Class&lt;T&gt; The class of the Resource that shall be created (an empty
    *        Resource will be created in this method).
    */
   @SuppressWarnings("unchecked")
@@ -134,8 +135,8 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   }
 
   /**
-   * The generation method that yields a new instance of the given resourceTypue with every value set
-   * in the FHIRPath mapping.
+   * The generation method that yields a new instance of the given resourceType
+   * with every value set in the FHIRPath mapping.
    *
    * @param resourceType String The class name of the Resource that shall be created.
    * @return T a new FHIR Resource instance of the given resource type.
@@ -179,9 +180,10 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
           case Function:
             this.handleFunctionNode(pathNode);
             break;
-          case Constant:
-          case Group:
-          case Unary:
+          // case Constant:
+          // case Group:
+          // case Unary:
+          default:
             // TODO: unimplmemented, what to do?
             break;
         }
@@ -228,14 +230,15 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
         handleResourceBlock(fhirPath);
         break;
 
-      case ID_DATATYPE:
-      case RESOURCE:
-      case CONTAINED_RESOURCE_LIST:
-      case CONTAINED_RESOURCES:
-      case EXTENSION_DECLARED:
-      case PRIMITIVE_XHTML:
-      case PRIMITIVE_XHTML_HL7ORG:
-      case UNDECL_EXT:
+      // case ID_DATATYPE:
+      // case RESOURCE:
+      // case CONTAINED_RESOURCE_LIST:
+      // case CONTAINED_RESOURCES:
+      // case EXTENSION_DECLARED:
+      // case PRIMITIVE_XHTML:
+      // case PRIMITIVE_XHTML_HL7ORG:
+      // case UNDECL_EXT:
+      default:
         // TODO: not implemented. What to do?
     }
   }
@@ -316,9 +319,10 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
       List<IBase> containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
 
       if (nextTier.childDefinition instanceof BaseRuntimeChildDatatypeDefinition
-          && ((BaseRuntimeChildDatatypeDefinition) nextTier.childDefinition).getDatatype().isInstance(this.valueToSet)) {
+          && ((BaseRuntimeChildDatatypeDefinition) nextTier.childDefinition).getDatatype()
+              .isInstance(this.valueToSet)) {
 
-        // this enables us to work with objects that are not trivially strings, ex CodeableConcepts
+        // this lets us work with objects that are not trivially strings, e.g. CodeableConcepts
 
         // TODO: are there any other implications to this?
         nextTier.childDefinition.getMutator().setValue(nodeElement, (IBase)this.valueToSet);
@@ -329,16 +333,14 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
           nextTier.nodes.addAll(containedNodes);
         } else {
           // if not nodes are available, create a new node
-          ICompositeType compositeNode =
-              compositeTarget.newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
+          ICompositeType compositeNode = compositeTarget
+              .newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
           nextTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
           nextTier.nodes.add(compositeNode);
         }
-
       }
-
-
     }
+
     // push the created nextTier to the nodeStack
     this.nodeStack.push(nextTier);
   }
@@ -386,79 +388,80 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
     switch (fhirPath.getFunction()) {
       case Where:
         this.handleWhereFunctionNode(fhirPath);
-      case Aggregate:
-      case Alias:
-      case AliasAs:
-      case All:
-      case AllFalse:
-      case AllTrue:
-      case AnyFalse:
-      case AnyTrue:
-      case As:
-      case Check:
-      case Children:
-      case Combine:
-      case ConformsTo:
-      case Contains:
-      case ConvertsToBoolean:
-      case ConvertsToDateTime:
-      case ConvertsToDecimal:
-      case ConvertsToInteger:
-      case ConvertsToQuantity:
-      case ConvertsToString:
-      case ConvertsToTime:
-      case Count:
-      case Custom:
-      case Descendants:
-      case Distinct:
-      case Empty:
-      case EndsWith:
-      case Exclude:
-      case Exists:
-      case Extension:
-      case First:
-      case HasValue:
-      case HtmlChecks:
-      case Iif:
-      case IndexOf:
-      case Intersect:
-      case Is:
-      case IsDistinct:
-      case Item:
-      case Last:
-      case Length:
-      case Lower:
-      case Matches:
-      case MemberOf:
-      case Not:
-      case Now:
-      case OfType:
-      case Repeat:
-      case Replace:
-      case ReplaceMatches:
-      case Resolve:
-      case Select:
-      case Single:
-      case Skip:
-      case StartsWith:
-      case SubsetOf:
-      case Substring:
-      case SupersetOf:
-      case Tail:
-      case Take:
-      case ToBoolean:
-      case ToChars:
-      case ToDateTime:
-      case ToDecimal:
-      case ToInteger:
-      case ToQuantity:
-      case ToString:
-      case ToTime:
-      case Today:
-      case Trace:
-      case Type:
-      case Union:
-      case Upper:
+        break;
+      // case Aggregate:
+      // case Alias:
+      // case AliasAs:
+      // case All:
+      // case AllFalse:
+      // case AllTrue:
+      // case AnyFalse:
+      // case AnyTrue:
+      // case As:
+      // case Check:
+      // case Children:
+      // case Combine:
+      // case ConformsTo:
+      // case Contains:
+      // case ConvertsToBoolean:
+      // case ConvertsToDateTime:
+      // case ConvertsToDecimal:
+      // case ConvertsToInteger:
+      // case ConvertsToQuantity:
+      // case ConvertsToString:
+      // case ConvertsToTime:
+      // case Count:
+      // case Custom:
+      // case Descendants:
+      // case Distinct:
+      // case Empty:
+      // case EndsWith:
+      // case Exclude:
+      // case Exists:
+      // case Extension:
+      // case First:
+      // case HasValue:
+      // case HtmlChecks:
+      // case Iif:
+      // case IndexOf:
+      // case Intersect:
+      // case Is:
+      // case IsDistinct:
+      // case Item:
+      // case Last:
+      // case Length:
+      // case Lower:
+      // case Matches:
+      // case MemberOf:
+      // case Not:
+      // case Now:
+      // case OfType:
+      // case Repeat:
+      // case Replace:
+      // case ReplaceMatches:
+      // case Resolve:
+      // case Select:
+      // case Single:
+      // case Skip:
+      // case StartsWith:
+      // case SubsetOf:
+      // case Substring:
+      // case SupersetOf:
+      // case Tail:
+      // case Take:
+      // case ToBoolean:
+      // case ToChars:
+      // case ToDateTime:
+      // case ToDecimal:
+      // case ToInteger:
+      // case ToQuantity:
+      // case ToString:
+      // case ToTime:
+      // case Today:
+      // case Trace:
+      // case Type:
+      // case Union:
+      // case Upper:
       default:
         // TODO: unimplemented, what to do?
     }
@@ -483,16 +486,16 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
         case PRIMITIVE_DATATYPE:
           this.handleWhereFunctionParam(param);
           break;
-        case COMPOSITE_DATATYPE:
-        case CONTAINED_RESOURCES:
-        case CONTAINED_RESOURCE_LIST:
-        case EXTENSION_DECLARED:
-        case ID_DATATYPE:
-        case PRIMITIVE_XHTML:
-        case PRIMITIVE_XHTML_HL7ORG:
-        case RESOURCE:
-        case RESOURCE_BLOCK:
-        case UNDECL_EXT:
+        // case COMPOSITE_DATATYPE:
+        // case CONTAINED_RESOURCES:
+        // case CONTAINED_RESOURCE_LIST:
+        // case EXTENSION_DECLARED:
+        // case ID_DATATYPE:
+        // case PRIMITIVE_XHTML:
+        // case PRIMITIVE_XHTML_HL7ORG:
+        // case RESOURCE:
+        // case RESOURCE_BLOCK:
+        // case UNDECL_EXT:
         default:
           // TODO: unimplemented. What to do?
       }
@@ -556,6 +559,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
             case Times:
             case Union:
             case Xor:
+            default:
               // TODO: unimplemented, what to do?
           }
         }
@@ -620,6 +624,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
         case Times:
         case Union:
         case Xor:
+        default:
           // TODO: need to implement above first
       }
     }
@@ -632,7 +637,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * Creates a list all FHIRPaths from the mapping ordered by paths with where equals, where
    * unequals and the rest.
    *
-   * @return List<String> a List of FHIRPaths ordered by the type.
+   * @return List&lt;String&gt; a List of FHIRPaths ordered by the type.
    */
   private List<String> sortedPaths() {
     List<String> whereEquals = new ArrayList<String>();
@@ -650,6 +655,9 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
         case WITHOUT_WHERE:
           withoutWhere.add(fhirPath);
           break;
+        default:
+          // not sure why checkstyle makes this necessary...
+          // the 3 above are the only options in the enum
       }
     }
 
@@ -700,6 +708,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
               case Times:
               case Union:
               case Xor:
+              default:
                 // TODO: need to implement above first
             }
           }

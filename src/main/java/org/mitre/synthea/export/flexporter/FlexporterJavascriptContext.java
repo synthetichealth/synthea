@@ -13,22 +13,22 @@ public class FlexporterJavascriptContext {
   private Value workingBundleAsJSObject;
 
   public FlexporterJavascriptContext() {
-      jsContext = Context.create("js");
-      // TODO: if we want to add custom libraries like fhirpath or fhir-mapper, do it here
-//      try {
-//
-//          for (String filename : Arrays.asList("fhirpath.js", "fhir-mapper.js") ) {
-//            String fileText = Files.readString(Path.of());
-//            loadFunction(fileText);
-//
-//
-//            loadFile(filename);
-//          }
-//          System.out.println("All functions available from Java (as loaded into Bindings) "
-//                  + jsContext.getBindings("js").getMemberKeys());
-//      } catch (Exception e) {
-//          e.printStackTrace();
-//      }
+    jsContext = Context.create("js");
+    // TODO: if we want to add custom libraries like fhirpath or fhir-mapper, do it here
+    // try {
+
+    //   for (String filename : Arrays.asList("fhirpath.js", "fhir-mapper.js") ) {
+    //     String fileText = Files.readString(Path.of());
+    //     loadFunction(fileText);
+
+
+    //     loadFile(filename);
+    //   }
+    //   System.out.println("All functions available from Java (as loaded into Bindings) "
+    //              + jsContext.getBindings("js").getMemberKeys());
+    // } catch (Exception e) {
+    //      e.printStackTrace();
+    // }
   }
 
   public void loadFile(String filename) throws IOException {
@@ -60,8 +60,9 @@ public class FlexporterJavascriptContext {
   }
 
   public void applyFunctionToBundle(String fnName) {
-    // assumption is the fn has already been loaded by loadFunction
-    // good news -- based on testing, if the bundle is modified in-place in the JS context then our variable "sees" those updates
+    // assumption is the fn has already been loaded by loadFunction.
+    // good news -- based on testing, if the bundle is modified in-place
+    //   in the JS context then our variable "sees" those updates.
     // (the variable maintains a reference to the object within the JS VM)
 
     Value applyFn = jsContext.getBindings("js").getMember(fnName);

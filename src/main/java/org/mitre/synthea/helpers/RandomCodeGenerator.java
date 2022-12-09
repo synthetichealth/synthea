@@ -100,7 +100,8 @@ public abstract class RandomCodeGenerator {
       for (Object cachedCodeObj : cachedCodeList) {
         Map<String,String> cachedCode = (Map<String,String>)cachedCodeObj;
 
-        if (cachedCode.get("system").equals(code.system) && cachedCode.get("code").equals(code.code)) {
+        if (cachedCode.get("system").equals(code.system)
+            && cachedCode.get("code").equals(code.code)) {
           return true;
         }
       }
@@ -166,7 +167,8 @@ public abstract class RandomCodeGenerator {
         for (Map<String, Object> include : includeList) {
           String system = (String)include.get("system");
 
-          List<Map<String, Object>> conceptList = (List<Map<String, Object>>) include.get("concept");
+          List<Map<String, Object>> conceptList =
+              (List<Map<String, Object>>) include.get("concept");
 
           for (Map<String, Object> concept : conceptList) {
             Map<String,String> codeAsMap = new HashMap<>();

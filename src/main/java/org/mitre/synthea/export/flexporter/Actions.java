@@ -27,7 +27,8 @@ import org.mitre.synthea.world.agents.Person;
 @SuppressWarnings("unchecked")
 public abstract class Actions {
 
-  public static Bundle applyMapping(Bundle bundle, Mapping mapping, Person person, FlexporterJavascriptContext fjContext) {
+  public static Bundle applyMapping(Bundle bundle, Mapping mapping, Person person,
+      FlexporterJavascriptContext fjContext) {
 
     for (Map<String, Object> action : mapping.actions) {
       bundle = applyAction(bundle, action, person, fjContext);
@@ -36,7 +37,8 @@ public abstract class Actions {
     return bundle;
   }
 
-  public static Bundle applyAction(Bundle bundle, Map<String, Object> action, Person person, FlexporterJavascriptContext fjContext) {
+  public static Bundle applyAction(Bundle bundle, Map<String, Object> action, Person person,
+      FlexporterJavascriptContext fjContext) {
     // TODO: this could be handled better but for now just key off a specific field in the action
 
     Bundle returnBundle = bundle;
@@ -44,18 +46,28 @@ public abstract class Actions {
 
     if (action.containsKey("profiles")) {
       applyProfiles(bundle, (List<Map<String, String>>) action.get("profiles"));
+
     } else if (action.containsKey("set_values")) {
       setValues(bundle, (List<Map<String, Object>>) action.get("set_values"), person, fjContext);
+
     } else if (action.containsKey("keep_resources")) {
       keepResources(bundle, (List<String>) action.get("keep_resources"));
+
     } else if (action.containsKey("delete_resources")) {
       deleteResources(bundle, (List<String>) action.get("delete_resources"));
+
     } else if (action.containsKey("create_resource")) {
-      createResource(bundle, (List<Map<String, Object>>) action.get("create_resource"), person, null);
+      createResource(bundle, (List<Map<String, Object>>) action.get("create_resource"), person,
+          null);
+
     } else if (action.containsKey("create_resource_js")) {
-      createResource(bundle, (List<Map<String, Object>>) action.get("create_resource_js"), person, fjContext);
+      createResource(bundle, (List<Map<String, Object>>) action.get("create_resource_js"), person,
+          fjContext);
+
     } else if (action.containsKey("execute_script")) {
-      returnBundle = executeScript((List<Map<String,String>>)action.get("execute_script"), bundle, fjContext);
+      returnBundle = executeScript((List<Map<String, String>>) action.get("execute_script"), bundle,
+          fjContext);
+
     }
 
     return returnBundle;
@@ -90,7 +102,8 @@ public abstract class Actions {
     }
   }
 
-  public static void setValues(Bundle bundle, List<Map<String, Object>> items, Person person, FlexporterJavascriptContext fjContext) {
+  public static void setValues(Bundle bundle, List<Map<String, Object>> items, Person person,
+      FlexporterJavascriptContext fjContext) {
     for (Map<String, Object> entry : items) {
       String applicability = (String) entry.get("applicability");
       List<Map<String, Object>> fields = (List<Map<String, Object>>) entry.get("fields");
@@ -188,7 +201,9 @@ public abstract class Actions {
 
 
   private static Map<String, Object> createFhirPathMapping(List<Map<String, Object>> fields,
-      Bundle sourceBundle, Resource sourceResource, Person person, FlexporterJavascriptContext fjContext) {
+      Bundle sourceBundle, Resource sourceResource, Person person,
+      FlexporterJavascriptContext fjContext) {
+
     Map<String, Object> fhirPathMapping = new HashMap<>();
 
     for (Map<String, Object> field : fields) {
@@ -249,8 +264,9 @@ public abstract class Actions {
     return fhirPathMapping;
   }
 
-  private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath, Map<String,Object> valueMap) {
-    for(Map.Entry<String,Object> entry : valueMap.entrySet()) {
+  private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath,
+      Map<String, Object> valueMap) {
+    for (Map.Entry<String,Object> entry : valueMap.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
 
@@ -261,7 +277,8 @@ public abstract class Actions {
       } else if (value instanceof Map<?,?>) {
         populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
       } else if (value != null) {
-        System.err.println("Unexpected class found in populateFhirPathMapping -- " + value.getClass());
+        System.err
+            .println("Unexpected class found in populateFhirPathMapping -- " + value.getClass());
       }
     }
   }
@@ -313,7 +330,8 @@ public abstract class Actions {
     // TODO: additional passes for deleted resource IDs
   }
 
-  private static Bundle executeScript(List<Map<String, String>> fields, Bundle bundle, FlexporterJavascriptContext fjContext) {
+  private static Bundle executeScript(List<Map<String, String>> fields, Bundle bundle,
+      FlexporterJavascriptContext fjContext) {
     IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
 
     String bundleJson = parser.encodeResourceToString(bundle);
@@ -405,7 +423,8 @@ public abstract class Actions {
     return resource.getResourceType().toString() + "/" + id;
   }
 
-  private static Object getField(Resource currentResource, FlexporterJavascriptContext fjContext, String... args) {
+  private static Object getField(Resource currentResource, FlexporterJavascriptContext fjContext,
+      String... args) {
     // args[0] = FHIRPath, from this resource
     // args[1] = how to disambiguate if there are multiple? TODO
 
@@ -446,9 +465,9 @@ public abstract class Actions {
     return fieldValues.get(0).primitiveValue();
   }
 
-  private static Map<String,String> randomCode(String valueSetUrl) {
-    Map<String,String> codeAsMap =
-      RandomCodeGenerator.getCodeAsMap(valueSetUrl, (int)(Math.random() * Integer.MAX_VALUE));
+  private static Map<String, String> randomCode(String valueSetUrl) {
+    Map<String, String> codeAsMap = RandomCodeGenerator.getCodeAsMap(valueSetUrl,
+        (int) (Math.random() * Integer.MAX_VALUE));
     return codeAsMap;
   }
 }

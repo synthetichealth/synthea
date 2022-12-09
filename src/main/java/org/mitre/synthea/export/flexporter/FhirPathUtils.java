@@ -1,5 +1,7 @@
 package org.mitre.synthea.export.flexporter;
 
+import ca.uhn.fhir.context.FhirContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,13 +9,12 @@ import org.hl7.fhir.r4.hapi.fluentpath.FhirPathR4;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
 
-import ca.uhn.fhir.context.FhirContext;
 
 public abstract class FhirPathUtils {
   public static final FhirContext FHIR_CTX = FhirContext.forR4();
@@ -31,7 +32,7 @@ public abstract class FhirPathUtils {
       // NOTE: this doesn't check returnResources -- would that be useful here?
       return evaluateResource(bundle, fhirpath);
     } else {
-      // the fhirpath doesn't start with "Bundle" 
+      // the fhirpath doesn't start with "Bundle"
       //  so we'll apply it to each resource within the bundle
       List<Base> results = new ArrayList<>();
 
