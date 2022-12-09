@@ -78,6 +78,7 @@ public class BB2RIFExporter {
   final CodeMapper snfPDPMMapper;
   final CodeMapper snfRevCntrMapper;
   final CodeMapper hhaRevCntrMapper;
+  final CodeMapper hospiceRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
   final Map<String, String> missingDmeCodes;
   final CMSStateCodeMapper locationMapper;
@@ -106,6 +107,7 @@ public class BB2RIFExporter {
     snfPDPMMapper = new CodeMapper("export/snf_pdpm_code_map.json");
     snfRevCntrMapper = new CodeMapper("export/snf_rev_cntr_code_map.json");
     hhaRevCntrMapper = new CodeMapper("export/hha_rev_cntr_code_map.json");
+    hospiceRevCntrMapper = new CodeMapper("export/hospice_rev_cntr_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     externalCodes = loadExternalCodes();
     try {

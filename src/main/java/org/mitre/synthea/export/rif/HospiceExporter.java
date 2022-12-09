@@ -58,9 +58,12 @@ public class HospiceExporter extends RIFExporter {
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.HOSPICE.class, person);
       setClaimLevelValues(fieldValues, mappedDiagnosisCodes, days, person, encounter);
 
-      String initialRandomRevCenter = fieldValues.get(BB2RIFStructure.HOSPICE.REV_CNTR);
+      // Initial random revenue center from field code CSV
+      String revCenter = fieldValues.get(BB2RIFStructure.HOSPICE.REV_CNTR);
+
       final String PHARMACY_REV_CENTER = "0250";
-      final String MED_ADMIN_CODE = "T1502";
+      final String MED_ADMIN_CODE = "A4216";
+      final String HOSPICE_GENERAL_REV_CNTR = "0550"; //	Skilled nursing - general classification
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (Claim.ClaimEntry lineItem : encounter.claim.items) {
         if (lineItem.entry instanceof HealthRecord.Procedure) {
@@ -68,10 +71,16 @@ public class HospiceExporter extends RIFExporter {
           for (HealthRecord.Code code : lineItem.entry.codes) {
             if (exporter.hcpcsCodeMapper.canMap(code.code)) {
               hcpcsCode = exporter.hcpcsCodeMapper.map(code.code, person, true);
+              if (exporter.hospiceRevCntrMapper.canMap(hcpcsCode)) {
+                revCenter = exporter.hospiceRevCntrMapper.map(hcpcsCode, person, true);
+              }
               break; // take the first mappable code for each procedure
             }
           }
-          consolidatedClaimLines.addClaimLine(hcpcsCode, initialRandomRevCenter, lineItem,
+          if (hcpcsCode == null) {
+            revCenter = HOSPICE_GENERAL_REV_CNTR;
+          }
+          consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem,
                   encounter);
         } else if (lineItem.entry instanceof HealthRecord.Medication) {
           HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
