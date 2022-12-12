@@ -69,7 +69,7 @@ public abstract class RandomCodeGenerator {
    *          the URI of the ValueSet
    * @param seed
    *          a random seed to ensure reproducibility of this result
-   * @return the randomly selected code as a Map of String -> String
+   * @return the randomly selected code as a Map of Strings
    */
   @SuppressWarnings("unchecked")
   public static Map<String, String> getCodeAsMap(String valueSetUri, long seed) {
