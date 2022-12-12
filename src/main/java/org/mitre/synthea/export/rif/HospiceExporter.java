@@ -63,7 +63,7 @@ public class HospiceExporter extends RIFExporter {
 
       final String PHARMACY_REV_CENTER = "0250";
       final String MED_ADMIN_CODE = "A4216";
-      final String HOSPICE_GENERAL_REV_CNTR = "0550"; //	Skilled nursing - general classification
+      final String HOSPICE_GENERAL_REV_CNTR = "0550"; // Skilled nursing - general classification
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (Claim.ClaimEntry lineItem : encounter.claim.items) {
         if (lineItem.entry instanceof HealthRecord.Procedure) {
