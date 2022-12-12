@@ -10,6 +10,7 @@ import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.Test;
+import org.mitre.synthea.export.FhirR4;
 
 public class FlexporterJavaScriptContextTest {
 
@@ -37,8 +38,7 @@ public class FlexporterJavaScriptContextTest {
     Bundle b = new Bundle();
     b.addEntry().setResource(p);
 
-
-    IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
+    IParser parser = FhirR4.getContext().newJsonParser();
 
     String bundleJson = parser.encodeResourceToString(b);
     context.loadBundle(bundleJson);

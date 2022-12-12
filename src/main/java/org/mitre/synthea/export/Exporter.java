@@ -20,10 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -129,6 +125,11 @@ public abstract class Exporter {
       return recordQueue == null || recordQueue.size() == 0;
     }
 
+    /**
+     * Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.
+     * Multiple mappings may be added and will be processed in order.
+     * @param mapping Flexporter mapping to add to list
+     */
     public void addFlexporterMapping(Mapping mapping) {
       if (this.flexporterMappings == null) {
         this.flexporterMappings = new LinkedList<>();
@@ -247,12 +248,11 @@ public abstract class Exporter {
       org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
 
       if (options.flexporterMappings != null) {
-
         FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
 
         for (Mapping mapping : options.flexporterMappings) {
           // flexport on the bundle here
-          Actions.applyMapping(bundle, mapping, person, fjContext);
+          bundle = Actions.applyMapping(bundle, mapping, person, fjContext);
         }
       }
 

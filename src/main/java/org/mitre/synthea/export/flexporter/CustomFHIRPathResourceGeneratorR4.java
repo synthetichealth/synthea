@@ -22,15 +22,16 @@ import org.hl7.fhir.r4.model.ExpressionNode;
 import org.hl7.fhir.r4.model.ExpressionNode.Kind;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.utils.FHIRPathEngine;
+import org.mitre.synthea.export.FhirR4;
 
 
 /**
  * This class can be used to generate resources using FHIRPath expressions.
  *
- * Note that this is an experimental feature and the API is expected to change. Ideally this will be
- * made version independent and moved out of the validation module in a future release.
+ * <p>Note that this is an experimental feature and the API is expected to change.
+ * Ideally this will be  made version independent in a future release.
  *
- * Modified for the Flexporter:
+ * <p>Modified for the Flexporter:
  *  -- allow adding to an existing resource
  *  -- add class lookup by resourceType
  *  -- add support for BackboneElements
@@ -40,7 +41,7 @@ import org.hl7.fhir.r4.utils.FHIRPathEngine;
  *      (some functions now take in Class&lt;? extends T&gt; instead of just T)
  *  -- reformatted per Synthea style guidelines
  *
- *  Original:
+ *  <p>Original:
  * https://github.com/hapifhir/hapi-fhir/blob/master/hapi-fhir-validation/src/main/java/org/hl7/fhir/common/hapi/validation/validator/FHIRPathResourceGeneratorR4.java
  *
  *
@@ -80,15 +81,11 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   }
 
   /**
-   * Constructor without parameters, needs a call to `setMapping` later on in order to generate any
+   * Default constructor, needs a call to `setMapping` later on in order to generate any
    * Resources.
    */
   public CustomFHIRPathResourceGeneratorR4() {
-    this(FhirContext.forR4());
-  }
-
-  public CustomFHIRPathResourceGeneratorR4(FhirContext fhirCtx) {
-    this.ctx = fhirCtx;
+    this.ctx = FhirR4.getContext();
     this.pathMapping = new HashMap<String, Object>();
     this.engine = new FHIRPathEngine(new HapiWorkerContext(ctx, ctx.getValidationSupport()));
   }
@@ -262,8 +259,6 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
     // create a nodeDefinition for the next tier
     nextTier.nodeDefinition = nextTier.childDefinition.getChildByName(nextTier.fhirPathName);
 
-
-
     // Get the primitive type definition from the childDeftinion
     RuntimePrimitiveDatatypeDefinition primitiveTarget =
         (RuntimePrimitiveDatatypeDefinition) nextTier.childDefinition
@@ -287,7 +282,6 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
         primitive.setValueAsString(String.valueOf(this.valueToSet));
         nextTier.childDefinition.getMutator().addValue(nodeElement, primitive);
       }
-
 
       nextTier.nodes.add(primitive);
     }

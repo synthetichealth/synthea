@@ -19,30 +19,29 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mitre.synthea.export.FhirR4;
 
 
 public class CustomFHIRPathResourceGeneratorR4Test {
 
-  // share a context because these are slow to create
-  private static final FhirContext CTX = FhirPathUtils.FHIR_CTX;
-
   @SuppressWarnings("unused")
   private static void logPatientJson(Patient p) {
-    String patientJson = CTX.newJsonParser().setPrettyPrint(true).encodeResourceToString(p);
+    String patientJson = FhirR4.getContext().newJsonParser().setPrettyPrint(true)
+        .encodeResourceToString(p);
 
     System.out.println(patientJson);
   }
 
   private Patient createPatient(Map<String, Object> fhirPathMapping) {
     CustomFHIRPathResourceGeneratorR4<Patient> fhirPathGenerator =
-        new CustomFHIRPathResourceGeneratorR4<>(CTX);
+        new CustomFHIRPathResourceGeneratorR4<>();
     fhirPathGenerator.setMapping(fhirPathMapping);
     return fhirPathGenerator.generateResource(Patient.class);
   }
 
   private void updatePatient(Patient p, Map<String, Object> fhirPathMapping) {
     CustomFHIRPathResourceGeneratorR4<Patient> fhirPathGenerator =
-        new CustomFHIRPathResourceGeneratorR4<>(CTX);
+        new CustomFHIRPathResourceGeneratorR4<>();
     fhirPathGenerator.setResource(p);
     fhirPathGenerator.setMapping(fhirPathMapping);
     fhirPathGenerator.generateResource(Patient.class);

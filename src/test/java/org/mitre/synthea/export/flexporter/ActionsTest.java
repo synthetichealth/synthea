@@ -39,6 +39,7 @@ import org.hl7.fhir.r4.model.Type;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.agents.Person;
 
 public class ActionsTest {
@@ -52,6 +53,9 @@ public class ActionsTest {
 
   private static Mapping testMapping;
 
+  /**
+   * Class setup - load the mapping file containing all tests.
+   */
   @BeforeClass
   public static void setupClass() throws FileNotFoundException {
     ClassLoader classLoader = ActionsTest.class.getClassLoader();
@@ -70,15 +74,13 @@ public class ActionsTest {
   }
 
   private static Bundle loadFixtureBundle(String filename) throws IOException {
-    IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser().setPrettyPrint(true);
+    IParser parser = FhirR4.getContext().newJsonParser();
     ClassLoader classLoader = ActionsTest.class.getClassLoader();
     File file = new File(classLoader.getResource("flexporter/" + filename).getFile());
 
     String fhirJson = new String(Files.readAllBytes(file.toPath()));
     return parser.parseResource(Bundle.class, fhirJson);
   }
-
-
 
   @Test
   public void testApplyProfiles() {
@@ -100,7 +102,6 @@ public class ActionsTest {
     assertEquals("http://example.com/Patient", p.getMeta().getProfile().get(0).getValueAsString());
   }
 
-
   @Test
   public void testApplyProfilesNoMatch() {
     Patient p = new Patient();
@@ -117,7 +118,6 @@ public class ActionsTest {
     assertTrue(p.getMeta() == null || p.getMeta().getProfile() == null
         || p.getMeta().getProfile().size() == 0);
   }
-
 
   @Test
   public void testApplyProfilesComplexFhirPath() {

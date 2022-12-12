@@ -1,7 +1,5 @@
 package org.mitre.synthea.export.flexporter;
 
-import ca.uhn.fhir.context.FhirContext;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,21 +8,41 @@ import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.StringType;
+import org.mitre.synthea.export.FhirR4;
 
 
 public abstract class FhirPathUtils {
-  public static final FhirContext FHIR_CTX = FhirContext.forR4();
 
-  private static final FhirPathR4 FHIRPATH = new FhirPathR4(FHIR_CTX);
+  private static final FhirPathR4 FHIRPATH = new FhirPathR4(FhirR4.getContext());
 
+  /**
+   * Execute the given FHIRPath against the given resource and return the results.
+   *
+   * @param resource FHIR resource to execute FHIRPath against
+   * @param fhirpath FHIRPath string
+   * @return Raw values from FHIRPath engine evaluating the string
+   */
   public static List<Base> evaluateResource(Resource resource, String fhirpath) {
     return FHIRPATH.evaluate(resource, fhirpath, Base.class);
   }
 
+  /**
+   * Execute the given FHIRPath against the given Bundle and return the results. There are a few
+   * different possibilities in how this works.
+   * - If the FHIRPath string starts with "Bundle" then this will execute the FHIRPath once
+   * against the Bundle as a whole, otherwise it will be executed against each resource.
+   * - If "returnResources" is true, then resources from the Bundle
+   * that return a truthy value will be returned, otherwise the raw value from the FHIRpath engine
+   * will be returned.
+   *
+   * @param bundle FHIR bundle to evaluate FHIRpath against
+   * @param fhirpath FHIRPath string
+   * @param returnResources If true, return resources from bundle matching FHIRPath; if false,
+   *     return raw values from FHIRPath engine
+   * @return Differs based on input - see above
+   */
   public static List<Base> evaluateBundle(Bundle bundle, String fhirpath, boolean returnResources) {
     if (fhirpath.startsWith("Bundle")) {
       // run it on the entire bundle
@@ -60,6 +78,10 @@ public abstract class FhirPathUtils {
     return isTruthy(evaluateBundle(bundle, fhirpath, false));
   }
 
+  /**
+   * Helper function to convert FHIRPath evaluation primitives into a boolean.
+   * Nulls, empty strings, and boolean false all mean "false" here. Everything else means "true".
+   */
   static boolean isTruthy(Base result) {
     if (result == null) {
       return false;
@@ -74,6 +96,11 @@ public abstract class FhirPathUtils {
     return true;
   }
 
+  /**
+   * Helper function to convert FHIRPath evaluation results into a boolean.
+   * FHIRPath.evaluate returns a List<Base> which is matching pieces of resources.
+   * This will return false if the list is empty, or if everything in the list is falsy.
+   */
   static boolean isTruthy(List<Base> result) {
     if (result == null || result.isEmpty()) {
       return false;

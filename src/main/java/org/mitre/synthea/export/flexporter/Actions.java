@@ -20,6 +20,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Resource;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
@@ -27,6 +28,16 @@ import org.mitre.synthea.world.agents.Person;
 @SuppressWarnings("unchecked")
 public abstract class Actions {
 
+  /**
+   * Apply the given Mapping to the provided Bundle.
+   * @param bundle FHIR bundle
+   * @param mapping Flexporter mapping
+   * @param person Synthea Person object that was used to create the Bundle.
+   *     This will be null if running the flexporter standalone from the run_flexporter task.
+   * @param fjContext Flexporter Javascript Context associated with this run
+   * @return the Bundle after all transformations have been applied.
+   *      Important: in many cases it will be the same Bundle object as passed in, but not always!
+   */
   public static Bundle applyMapping(Bundle bundle, Mapping mapping, Person person,
       FlexporterJavascriptContext fjContext) {
 
@@ -37,6 +48,16 @@ public abstract class Actions {
     return bundle;
   }
 
+  /**
+   * Apply the given single Action to the provided Bundle.
+   * @param bundle FHIR bundle
+   * @param action Flexporter action
+   * @param person Synthea Person object that was used to create the Bundle.
+   *     This will be null if running the flexporter standalone from the run_flexporter task.
+   * @param fjContext Flexporter Javascript Context associated with this run
+   * @return the Bundle after the transformation has been applied.
+   *      Important: in many cases it will be the same Bundle object as passed in, but not always!
+   */
   public static Bundle applyAction(Bundle bundle, Map<String, Object> action, Person person,
       FlexporterJavascriptContext fjContext) {
     // TODO: this could be handled better but for now just key off a specific field in the action
@@ -60,20 +81,24 @@ public abstract class Actions {
       createResource(bundle, (List<Map<String, Object>>) action.get("create_resource"), person,
           null);
 
-    } else if (action.containsKey("create_resource_js")) {
-      createResource(bundle, (List<Map<String, Object>>) action.get("create_resource_js"), person,
-          fjContext);
-
     } else if (action.containsKey("execute_script")) {
       returnBundle = executeScript((List<Map<String, String>>) action.get("execute_script"), bundle,
           fjContext);
-
     }
 
     return returnBundle;
   }
 
 
+  /**
+   * Apply a profile to resources matching certain rules. Note this only adds the profile URL to
+   * resource.meta.profile, it does not apply any other transformations or checking.
+   * Resources to apply the profile to are selected by FHIRPath. (Or simply resource type)
+   *
+   * @param bundle Bundle to apply profiles to
+   * @param items List of rule definitions for applying profiles. Each item should have a "profile"
+   *     for the URL and "applicability" for the FHIRPath to select resources.
+   */
   public static void applyProfiles(Bundle bundle, List<Map<String, String>> items) {
     // TODO: might it be faster to loop over all the resources
     // and check applicability for each item only once?
@@ -91,7 +116,14 @@ public abstract class Actions {
     }
   }
 
-  private static void applyProfile(Resource resource, String profileURL) {
+  /**
+   * Helper function to add a single profile URL to a resource,
+   * and set the Meta if not already set.
+   *
+   * @param resource FHIR resource
+   * @param profileURL Profile URL to add, if not already present
+   */
+  public static void applyProfile(Resource resource, String profileURL) {
     Meta meta = resource.getMeta();
     if (meta == null) {
       meta = new Meta();
@@ -102,6 +134,16 @@ public abstract class Actions {
     }
   }
 
+  /**
+   * Set values on existing resources within the Bundle, based on rules.
+   *
+   * @param bundle Bundle to apply rules to
+   * @param items List of rules. Rules include "applicability" to select which resources to apply
+   *     values to, and "fields" which are "location" and "value" pairs defining which field to set
+   *     and what value to put there.
+   * @param person Synthea person object to fetch values from (e.g, attributes). May be null
+   * @param fjContext Javascript context for this run
+   */
   public static void setValues(Bundle bundle, List<Map<String, Object>> items, Person person,
       FlexporterJavascriptContext fjContext) {
     for (Map<String, Object> entry : items) {
@@ -116,7 +158,7 @@ public abstract class Actions {
               createFhirPathMapping(fields, bundle, (Resource) match, person, fjContext);
 
           CustomFHIRPathResourceGeneratorR4<Resource> fhirPathgenerator =
-              new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
+              new CustomFHIRPathResourceGeneratorR4<>();
           fhirPathgenerator.setMapping(fhirPathMapping);
           fhirPathgenerator.setResource((Resource) match);
 
@@ -126,7 +168,18 @@ public abstract class Actions {
     }
   }
 
-
+  /**
+   * Create new resources to add to the Bundle, either a single resource or a resource based on
+   * other instances of existing resources. Fields on the resource as well as the "based on"
+   * resource will be set based on rules.
+   *
+   * @param bundle Bundle to add resources to
+   * @param resourcesToCreate List of rules. Rules include a "resourceType", optionally a "based_on"
+   *     FHIRPath to select resources to base the new one off of, and "fields" which are "location"
+   *     and "value" pairs defining which field to set and what value.
+   * @param person Synthea person object to fetch values from (e.g, attributes). May be null
+   * @param fjContext Javascript context for this run
+   */
   public static void createResource(Bundle bundle, List<Map<String, Object>> resourcesToCreate,
       Person person, FlexporterJavascriptContext fjContext) {
     // TODO: this is fundamentally similar to setValues, so extract common logic
@@ -159,7 +212,7 @@ public abstract class Actions {
             createFhirPathMapping(fields, bundle, (Resource) basedOnItem, person, fjContext);
 
         CustomFHIRPathResourceGeneratorR4<Resource> fhirPathgenerator =
-            new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
+            new CustomFHIRPathResourceGeneratorR4<>();
         fhirPathgenerator.setMapping(fhirPathMapping);
 
         Resource createdResource = fhirPathgenerator.generateResource(resourceType);
@@ -189,7 +242,7 @@ public abstract class Actions {
               createFhirPathMapping(writeback, bundle, createdResource, person, fjContext);
 
           CustomFHIRPathResourceGeneratorR4<Resource> writebackGenerator =
-              new CustomFHIRPathResourceGeneratorR4<>(FhirPathUtils.FHIR_CTX);
+              new CustomFHIRPathResourceGeneratorR4<>();
           writebackGenerator.setMapping(writebackMapping);
           writebackGenerator.setResource((Resource) basedOnItem);
 
@@ -240,7 +293,6 @@ public abstract class Actions {
       // do we want to allow copying an entire object somehow?
 
 
-
       if (valueDef instanceof String) {
         String valueString = (String)valueDef;
 
@@ -283,6 +335,12 @@ public abstract class Actions {
     }
   }
 
+  /**
+   * Filter the Bundle by only keeping selected resources.
+   *
+   * @param bundle FHIR Bundle to filter
+   * @param list List of resource types to retain, all other types not listed will be removed
+   */
   public static void keepResources(Bundle bundle, List<String> list) {
     // TODO: make this FHIRPath instead of just straight resource types
 
@@ -306,7 +364,12 @@ public abstract class Actions {
     // TODO: additional passes for deleted resource IDs
   }
 
-
+  /**
+   * Filter the Bundle by removing selected resources.
+   *
+   * @param bundle FHIR Bundle to filter
+   * @param list List of resource types to delete, all other types not listed will be kept
+   */
   public static void deleteResources(Bundle bundle, List<String> list) {
     // TODO: make this FHIRPath instead of just straight resource types
 
@@ -330,15 +393,26 @@ public abstract class Actions {
     // TODO: additional passes for deleted resource IDs
   }
 
-  private static Bundle executeScript(List<Map<String, String>> fields, Bundle bundle,
+  /**
+   * Execute scripts against the given Bundle.
+   *
+   * @param scripts Script definitions, containing a definition of one or more JS functions, the
+   *     name of the function to invoke, and whether it applies to the bundle as a whole, or to the
+   *     individual resources.
+   * @param bundle FHIR bundle to apply scripts against
+   * @param fjContext Javascript context for this run
+   * @return The new Bundle. IMPORTANT - using the JS context will always result in a new bundle,
+   *     not modify the existing one in-place.
+   */
+  public static Bundle executeScript(List<Map<String, String>> scripts, Bundle bundle,
       FlexporterJavascriptContext fjContext) {
-    IParser parser = FhirPathUtils.FHIR_CTX.newJsonParser();
+    IParser parser = FhirR4.getContext().newJsonParser();
 
     String bundleJson = parser.encodeResourceToString(bundle);
 
     fjContext.loadBundle(bundleJson);
 
-    for (Map<String, String> scriptDef : fields) {
+    for (Map<String, String> scriptDef : scripts) {
 
       String function = scriptDef.get("function");
       String functionName = scriptDef.get("function_name");

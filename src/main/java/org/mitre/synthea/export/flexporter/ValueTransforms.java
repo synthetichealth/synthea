@@ -1,13 +1,19 @@
 package org.mitre.synthea.export.flexporter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public abstract class ValueTransforms {
 
+  /**
+   * Apply the selected Value Transform on the given value.
+   *
+   * @param originalValue Source value
+   * @param transformName Name of the transform to apply
+   * @return transformed value
+   */
   public static String apply(String originalValue, String transformName) {
     if (transformName == null) {
       return originalValue;
@@ -39,7 +45,11 @@ public abstract class ValueTransforms {
     return newValue;
   }
 
-
+  /**
+   * Convert the given date/time string into an Instant.
+   * @param src Source date/time string
+   * @return Input date/time reformatted as an Instant
+   */
   public static String toInstant(String src) {
     if (src == null) {
       return null;
@@ -50,12 +60,22 @@ public abstract class ValueTransforms {
     return dateTime.toInstant().toString();
   }
 
+  /**
+   * Convert the given date/time string into a DateTime.
+   * @param src Source date/time string
+   * @return Input date/time reformatted as a DateTime
+   */
   public static String toDateTime(String src) {
     ZonedDateTime dateTime = parse(src);
 
     return dateTime.toInstant().toString();
   }
 
+  /**
+   * Convert the given date/time string into a Date.
+   * @param src Source date/time string
+   * @return Input date/time reformatted as a Date
+   */
   public static String toDate(String src) {
     if (src == null) {
       return null;
@@ -66,6 +86,11 @@ public abstract class ValueTransforms {
     return DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime);
   }
 
+  /**
+   * Convert the given date/time string into a Time.
+   * @param src Source date/time string
+   * @return Input date/time reformatted as a Time
+   */
   public static String toTime(String src) {
     if (src == null) {
       return null;

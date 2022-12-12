@@ -51,7 +51,6 @@ public abstract class RandomCodeGenerator {
    *          a random seed to ensure reproducibility of this result
    * @return the randomly selected Code
    */
-  @SuppressWarnings("unchecked")
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
       Map<String, String> codeMap = getCodeAsMap(valueSetUri, seed);
@@ -63,6 +62,16 @@ public abstract class RandomCodeGenerator {
     return code;
   }
 
+  /**
+   * Gets a random code from the expansion of a ValueSet, represented as a Map.
+   *
+   * @param valueSetUri
+   *          the URI of the ValueSet
+   * @param seed
+   *          a random seed to ensure reproducibility of this result
+   * @return the randomly selected code as a Map of String -> String
+   */
+  @SuppressWarnings("unchecked")
   public static Map<String, String> getCodeAsMap(String valueSetUri, long seed) {
     if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
@@ -75,6 +84,14 @@ public abstract class RandomCodeGenerator {
     return null;
   }
 
+  /**
+   * Check whether the given code is in the given ValueSet.
+   *
+   * @param code Code to check
+   * @param valueSetUri URI of the ValueSet to check the code for
+   * @return true if the code is in the given valueset
+   */
+  @SuppressWarnings("unchecked")
   // TODO: this does not belong here, but this class is where the code cache is
   public static boolean codeInValueSet(Code code, String valueSetUri) {
     if (urlValidator.isValid(valueSetUri)) {
@@ -110,7 +127,7 @@ public abstract class RandomCodeGenerator {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
+
   private static synchronized void expandValueSet(String valueSetUri) {
     if (!codeListCache.containsKey(valueSetUri)) {
       Request request = new Request.Builder()
@@ -139,6 +156,11 @@ public abstract class RandomCodeGenerator {
     }
   }
 
+  /**
+   * Load the given value set into our cache.
+   * @param valueSetUri URI to reference this value set
+   * @param valueSet Parsed JSON representation of FHIR valueset
+   */
   @SuppressWarnings("unchecked")
   public static void loadValueSet(String valueSetUri, Map<String, Object> valueSet) {
     if (valueSetUri == null) {

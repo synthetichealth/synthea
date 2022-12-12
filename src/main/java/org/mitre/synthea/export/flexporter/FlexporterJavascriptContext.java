@@ -12,6 +12,9 @@ public class FlexporterJavascriptContext {
 
   private Value workingBundleAsJSObject;
 
+  /**
+   * Default constructor for a Javascript Context.
+   */
   public FlexporterJavascriptContext() {
     jsContext = Context.create("js");
     // TODO: if we want to add custom libraries like fhirpath or fhir-mapper, do it here
@@ -31,16 +34,32 @@ public class FlexporterJavascriptContext {
     // }
   }
 
+  /**
+   * Load the JS file referenced by the given file path into the JS context.
+   * Globals registered in the given file will be accessible to other loaded functions.
+   * @param filename Path to a JS file
+   * @throws IOException if the file doesn't exist, can't be read, or can't be parsed as JS
+   */
   public void loadFile(String filename) throws IOException {
     URL url = FlexporterJavascriptContext.class.getClassLoader().getResource("./lib/" + filename);
 
     jsContext.eval(Source.newBuilder("js", url).build());
   }
 
+  /**
+   * Load a JS function from string.
+   * @param functionDef JavaScript code
+   */
   public void loadFunction(String functionDef) {
     jsContext.eval("js", functionDef);
   }
 
+  /**
+   * Load a Bundle as the JS context's working bundle.
+   * All executed functions will use the bundle as an argument.
+   *
+   * @param bundleAsString Bundle as JSON string
+   */
   public void loadBundle(String bundleAsString) {
     // workingBundleAsJSObject = JSON.parse(bundleAsString)
 
@@ -49,6 +68,9 @@ public class FlexporterJavascriptContext {
     workingBundleAsJSObject = parseFn.execute(bundleAsString);
   }
 
+  /**
+   * Get the current working Bundle as a JSON string.
+   */
   public String getBundle() {
     // return JSON.stringify(workingBundleAsJSObject)
 
@@ -59,6 +81,13 @@ public class FlexporterJavascriptContext {
     return bundleString;
   }
 
+  /**
+   * Applies a function to the working Bundle.
+   * Invoked as `fnName(bundle)`
+   * The function must have already been loaded by loadFile or loadFunction.
+   *
+   * @param fnName Function name to invoke
+   */
   public void applyFunctionToBundle(String fnName) {
     // assumption is the fn has already been loaded by loadFunction.
     // good news -- based on testing, if the bundle is modified in-place
@@ -69,6 +98,14 @@ public class FlexporterJavascriptContext {
     applyFn.execute(workingBundleAsJSObject);
   }
 
+  /**
+   * Applies a function to each resource within the Bundle.
+   * Invoked as `fnName(resource, bundle)`.
+   * (i.e., the bundle itself is also passed to the function as context)
+   * The function must have already been loaded by loadFile or loadFunction.
+   *
+   * @param fnName Function name to invoke
+   */
   public void applyFunctionToResources(String fnName) {
     // assumption is the fn has already been loaded by loadFunction
 
@@ -85,26 +122,5 @@ public class FlexporterJavascriptContext {
       // (eg, so we can create references to other resources)
       applyFn.execute(resource, workingBundleAsJSObject);
     }
-  }
-
-  public String exec(String fnName, String... args) {
-    Value applyFn = jsContext.getBindings("js").getMember(fnName);
-    Value processedJson = applyFn.execute((Object[])args);
-
-
-    Value applyFn2 = jsContext.getBindings("js").getMember("getField2");
-
-    Value result2 = applyFn2.execute(processedJson);
-
-    return result2.asString();
-  }
-
-  public String applyTransforms(String fhirJson) {
-    Value applyFn = jsContext.getBindings("js").getMember("apply");
-    Value processedJson = applyFn.execute(fhirJson);
-
-    String result = processedJson.asString();
-
-    return result;
   }
 }

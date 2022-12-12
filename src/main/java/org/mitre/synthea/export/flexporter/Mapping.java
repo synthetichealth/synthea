@@ -19,6 +19,12 @@ public class Mapping {
    */
   public List<Map<String, Object>> actions;
 
+  /**
+   * Read the provided file into a Mapping.
+   * @param mappingFile Source file to read content from
+   * @return Mapping object
+   * @throws FileNotFoundException if the file doesn't exist
+   */
   public static Mapping parseMapping(File mappingFile) throws FileNotFoundException {
     InputStream selectorInputSteam = new FileInputStream(mappingFile);
     Yaml yaml = new Yaml(new org.yaml.snakeyaml.constructor.Constructor(Mapping.class));
