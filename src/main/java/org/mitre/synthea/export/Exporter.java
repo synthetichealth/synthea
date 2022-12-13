@@ -132,7 +132,7 @@ public abstract class Exporter {
      */
     public void addFlexporterMapping(Mapping mapping) {
       if (this.flexporterMappings == null) {
-        this.flexporterMappings = new LinkedList<>();
+        this.flexporterMappings = new ArrayList<>();
       }
 
       this.flexporterMappings.add(mapping);

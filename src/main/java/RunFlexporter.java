@@ -7,12 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
@@ -46,7 +47,7 @@ public class RunFlexporter {
    * @param args Command line args as described above
    */
   public static void main(String[] args) throws Exception {
-    Queue<String> argsQ = new LinkedList<String>(Arrays.asList(args));
+    Queue<String> argsQ = new ArrayDeque<String>(Arrays.asList(args));
 
     File igDirectory = null;
     File sourceFile = null;
@@ -160,7 +161,8 @@ public class RunFlexporter {
       File outFile =
           new File("./output/flexporter/" + outFileName);
 
-      Files.write(outFile.toPath(), bundleJson.getBytes(), StandardOpenOption.CREATE_NEW);
+      Files.write(outFile.toPath(), bundleJson.getBytes(Charset.defaultCharset()),
+          StandardOpenOption.CREATE_NEW);
 
       System.out.println("Wrote " + outFile);
     }

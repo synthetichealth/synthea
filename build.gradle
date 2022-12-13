@@ -79,7 +79,7 @@ dependencies {
   // CSV Stuff
   implementation 'org.apache.commons:commons-csv:1.9.0'
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
-  implementation 'org.yaml:snakeyaml:1.32'
+  implementation 'org.yaml:snakeyaml:1.33'
   implementation 'org.apache.commons:commons-math3:3.6.1'
   implementation 'org.apache.commons:commons-text:1.9'
   implementation 'commons-validator:commons-validator:1.7'

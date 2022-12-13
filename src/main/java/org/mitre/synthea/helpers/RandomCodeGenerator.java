@@ -54,6 +54,9 @@ public abstract class RandomCodeGenerator {
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
       Map<String, String> codeMap = getCodeAsMap(valueSetUri, seed);
+      if (codeMap == null) {
+        return code;
+      }
       validateCode(codeMap);
       Code newCode = new Code(codeMap.get("system"), codeMap.get("code"), codeMap.get("display"));
       selectedCodes.add(newCode);
