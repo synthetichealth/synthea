@@ -1722,7 +1722,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 16602611000119108,
+          "code": "16602611000119108",
           "display": "Awaiting transplantation of lung (situation)"
         }
       ],
