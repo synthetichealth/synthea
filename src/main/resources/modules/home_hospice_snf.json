@@ -665,19 +665,6 @@
           }
         },
         {
-          "transition": "Heart Disease",
-          "condition": {
-            "condition_type": "Active Condition",
-            "codes": [
-              {
-                "system": "SNOMED-CT",
-                "code": 53741008,
-                "display": "Coronary Heart Disease"
-              }
-            ]
-          }
-        },
-        {
           "transition": "CF",
           "condition": {
             "condition_type": "Attribute",
@@ -739,7 +726,7 @@
     "Alzheimers": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "direct_transition": "COPD",
+      "direct_transition": "Initiate Hospice",
       "value_attribute": "Type of Alzheimer's"
     },
     "COPD": {
@@ -753,16 +740,6 @@
       "attribute": "hospice_reason",
       "value_attribute": "chf",
       "direct_transition": "Initiate Hospice"
-    },
-    "Heart Disease": {
-      "type": "SetAttribute",
-      "attribute": "hospice_reason",
-      "direct_transition": "Initiate Hospice",
-      "value_code": {
-        "system": "SNOMED",
-        "code": "53741008",
-        "display": "Coronary Heart Disease"
-      }
     },
     "CKD": {
       "type": "SetAttribute",

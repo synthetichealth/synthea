@@ -21,8 +21,21 @@
           "display": "Admission to hospice (procedure)"
         }
       ],
-      "direct_transition": "Determine_LOS",
-      "reason": "hospice_reason"
+      "reason": "hospice_reason",
+      "conditional_transition": [
+        {
+          "transition": "Stay Until Death",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<",
+            "value": 30
+          }
+        },
+        {
+          "transition": "Determine_LOS"
+        }
+      ]
     },
     "Determine_LOS": {
       "type": "SetAttribute",
@@ -137,7 +150,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "hospice_days",
-            "operator": "<",
+            "operator": "<=",
             "value": 0
           }
         },
@@ -316,6 +329,12 @@
       "attribute": "hospice_days",
       "direct_transition": "Certification_Procedure",
       "value": 240
+    },
+    "Stay Until Death": {
+      "type": "SetAttribute",
+      "attribute": "hospice_days",
+      "direct_transition": "Certification_Procedure",
+      "value_attribute": "days_until_death"
     }
   },
   "gmf_version": 1

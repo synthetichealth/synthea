@@ -50,8 +50,8 @@ public class Distribution implements Serializable {
         break;
       case EXPONENTIAL:
         double average = this.parameters.get("mean");
-        double lambda = (1 / average);
-        value = 1 + Math.log(1 - person.rand()) / (-1 * lambda);
+        double lambda = (1.0d / average);
+        value = 1.0d + Math.log(1.0d - person.rand()) / (-1.0d * lambda);
         break;
       default:
         value = -1;

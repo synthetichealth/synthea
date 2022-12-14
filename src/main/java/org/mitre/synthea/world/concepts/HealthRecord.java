@@ -604,6 +604,7 @@ public class HealthRecord implements Serializable {
     public Provider provider;
     public Clinician clinician;
     public boolean ended;
+    public long endedTime;
     // Track if we renewed meds at this encounter. Used in State.java encounter state.
     public boolean chronicMedsRenewed;
     public String clinicalNote;
@@ -618,8 +619,10 @@ public class HealthRecord implements Serializable {
       if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
         // Emergency encounters should take at least an hour.
         this.stop = this.start + TimeUnit.MINUTES.toMillis(60);
-      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
-        // Inpatient encounters should last at least a day (1440 minutes).
+      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())
+          || type.equalsIgnoreCase(EncounterType.HOSPICE.toString())
+          || type.equalsIgnoreCase(EncounterType.SNF.toString())) {
+        // These longer encounters should last at least a day (1440 minutes).
         this.stop = this.start + TimeUnit.MINUTES.toMillis(1440);
       } else {
         // Other encounters will default to 15 minutes.
@@ -698,6 +701,53 @@ public class HealthRecord implements Serializable {
         } else {
           return record.encounters.get(index - 1);
         }
+      }
+    }
+
+    /**
+     * End the encounter.
+     * @param time The time of the simulation.
+     */
+    public void end(long time) {
+      if (!this.ended) {
+        long endTime = this.stop;
+        // we need to find the latest time of all enclosed entries...
+        // ignoring entries that can extended beyond the end date of an encounter:
+        // - conditions, allergies, medications, careplans, devices
+        // starting with observations...
+        long max;
+        if (observations.size() > 0) {
+          max = observations.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        // reports...
+        if (reports.size() > 0) {
+          max = reports.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        // procedures...
+        if (procedures.size() > 0) {
+          max = procedures.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        // immunizations...
+        if (immunizations.size() > 0) {
+          max = immunizations.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        // imaging studies...
+        if (imagingStudies.size() > 0) {
+          max = imagingStudies.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        // supplies...
+        if (supplies.size() > 0) {
+          max = supplies.stream().map((e) -> e.stop).max(Long::compare).get();
+          endTime = Long.max(endTime, max);
+        }
+        this.stop = Long.max(endTime, time);
+        this.ended = true;
+        this.endedTime = time;
       }
     }
   }
@@ -1175,12 +1225,8 @@ public class HealthRecord implements Serializable {
       Encounter encounter = encounters.get(i);
       EncounterType encounterType = EncounterType.fromString(encounter.type);
       if (encounterType == type && !encounter.ended) {
-        encounter.ended = true;
-        // Only override the stop time if it is longer than the default.
-        if (time > encounter.stop) {
-          encounter.stop = time;
-        }
-        // Update Costs/Claim infomation.
+        encounter.end(time);
+        // Update Costs/Claim information.
         encounter.determineCost();
         encounter.claim.assignCosts();
         return;
