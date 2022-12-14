@@ -97,23 +97,34 @@ public abstract class RIFExporter {
     boolean isPrimary = Provider.ProviderType.PRIMARY == encounter.provider.type;
     boolean isVirtualOutpatient = isVirtual
             && (Provider.ProviderType.HOSPITAL == encounter.provider.type);
+    boolean isVirtualHome = isVirtual
+            && (Provider.ProviderType.HOME_HEALTH == encounter.provider.type);
+    boolean isVirtualHospice = isVirtual
+            && (Provider.ProviderType.HOSPICE == encounter.provider.type);
+    boolean isVirtualNursing = isVirtual
+            && (Provider.ProviderType.NURSING == encounter.provider.type);
     if (!isVAorIHS(encounter)) {
       if (isSNF) {
         types.add(ClaimType.SNF);
-      } else if (isHome) {
+      } else if (isHome || isVirtualHome) {
         types.add(ClaimType.HHA);
-      } else if (isHospice) {
+      } else if (isHospice || isVirtualHospice) {
         types.add(ClaimType.HOSPICE);
       } else if (isInpatient || isEmergency) {
         types.add(ClaimType.INPATIENT);
-      } else if (isPrimary || isWellness || isUrgent) {
+      } else if (isPrimary || isWellness || isUrgent || isVirtualNursing) {
+        // TODO decide what to do about virtual nursing claims - should virtual be a separate
+        // property instead of an encounter type?
         types.add(ClaimType.CARRIER);
       } else if (isAmbulatory || isOutpatient || isVirtualOutpatient) {
+        // TODO outpatient is overrepresented (25% vs 6%) in Synthea claims, carrier is
+        // underrepresented (13% vs 31%) - should we move ambulatory and/or virtual claims to the
+        // carrier file?
         types.add(ClaimType.OUTPATIENT);
       }
       if (types.isEmpty()) {
         System.out.printf("BFD RIF unhandled encounter type (" + encounter.type
-                + ") and provider type (" + encounter.provider.type.toString() + ")");
+                + ") and provider type (" + encounter.provider.type.toString() + ")\n");
       }
     }
     return types;
