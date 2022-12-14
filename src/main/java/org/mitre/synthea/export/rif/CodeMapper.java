@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -18,41 +19,58 @@ import org.mitre.synthea.helpers.Utilities;
  */
 class CodeMapper {
 
-  private static boolean requireCodeMaps = Config.getAsBoolean("exporter.bfd.require_code_maps",
-          true);
-  private HashMap<String, List<Map<String, String>>> map;
+  private final boolean requireCodeMaps; // initialize in ctor to simplify unit testing
+  private static final String WEIGHT_KEY = "weight";
+  private HashMap<String, RandomCollection<Map<String, String>>> map;
   private boolean mapImported = false;
 
   /**
    * Create a new CodeMapper for the supplied JSON string.
-   * @param jsonMap a stringified JSON mapping writer. Expects the following format:
+   * @param jsonMapResource resource path to a JSON mapping file. Expects the following format:
    * <pre>
    * {
    *   "synthea_code": [ # each synthea code will be mapped to one of the codes in this array
    *     {
    *       "code": "BFD_code",
    *       "description": "Description of code", # optional
+   *       "weight": "floating point value", # weighting used when selecting a code randomly
    *       "other field": "value of other field" # optional additional fields
    *     }
    *   ]
    * }
    * </pre>
    */
-  public CodeMapper(String jsonMap) {
+  public CodeMapper(String jsonMapResource) {
+    requireCodeMaps = Config.getAsBoolean("exporter.bfd.require_code_maps", true);
     try {
-      String json = Utilities.readResource(jsonMap);
+      // deserialize the JSON code map
+      String jsonStr = Utilities.readResource(jsonMapResource);
       Gson g = new Gson();
       Type type = new TypeToken<HashMap<String, List<Map<String, String>>>>() {
       }.getType();
-      map = g.fromJson(json, type);
+      HashMap<String, List<Map<String, String>>> jsonMap = g.fromJson(jsonStr, type);
+
+      // use the deserialized JSON code map to populate the weighted code map
+      map = new HashMap<String, RandomCollection<Map<String, String>>>();
+      jsonMap.forEach((syntheaCode, bfdCodeList) -> {
+        RandomCollection<Map<String, String>> collection = new RandomCollection<>();
+        bfdCodeList.forEach((codeEntry) -> {
+          Double weight = 1.0;
+          if (codeEntry.containsKey(WEIGHT_KEY)) {
+            weight = Double.parseDouble(codeEntry.get(WEIGHT_KEY));
+          }
+          collection.add(weight, codeEntry);
+        });
+        map.put(syntheaCode, collection);
+      });
       mapImported = true;
     } catch (JsonSyntaxException | IOException | IllegalArgumentException e) {
       if (requireCodeMaps) {
-        throw new MissingResourceException("Unable to read code map file: " + jsonMap,
-                "CodeMapper", jsonMap);
+        throw new MissingResourceException("Unable to read code map file: " + jsonMapResource,
+                "CodeMapper", jsonMapResource);
       } else {
         // For testing, the mapping writer is not present.
-        System.out.println("BB2Exporter is running without " + jsonMap);
+        System.out.println("BB2Exporter is running without " + jsonMapResource);
       }
     }
   }
@@ -124,9 +142,8 @@ class CodeMapper {
     if (!canMap(codeToMap)) {
       return null;
     }
-    List<Map<String, String>> options = map.get(codeToMap);
-    int choice = rand.randInt(options.size());
-    String code = options.get(choice).get(bfdCodeType);
+    RandomCollection<Map<String, String>> options = map.get(codeToMap);
+    String code = options.next(rand).get(bfdCodeType);
     if (stripDots) {
       return code.replaceAll("\\.", "");
     } else {

@@ -1,10 +1,7 @@
 package org.mitre.synthea.export.rif;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mitre.synthea.world.agents.Person.INCOME_LEVEL;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +11,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -33,14 +26,10 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
-import org.mitre.synthea.export.rif.enrollment.PartDContractHistory;
-import org.mitre.synthea.export.rif.identifiers.PlanBenefitPackageID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 
 public class BB2RIFExporterTest {
@@ -314,21 +303,5 @@ public class BB2RIFExporterTest {
       PDETotals event = new PDETotals(row);
       assertTrue("PDE dollar amounts do not add up correctly.", event.isValid());
     });
-  }
-
-  @Test
-  public void testCodeMapper() {
-    // these tests depend on the presence of the code map file and will not be run in CI
-    try {
-      Utilities.readResource("condition_code_map.json");
-    } catch (IOException | IllegalArgumentException e) {
-      return;
-    }
-    RandomNumberGenerator random = new DefaultRandomNumberGenerator(0);
-    CodeMapper mapper = new CodeMapper("condition_code_map.json");
-    assertTrue(mapper.canMap("10509002"));
-    assertEquals("J20.9", mapper.map("10509002", random));
-    assertEquals("J209", mapper.map("10509002", random, true));
-    assertFalse(mapper.canMap("not a code"));
   }
 }
