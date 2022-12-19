@@ -1,5 +1,5 @@
 {
-  "name": "UTI Telemed Submodule",
+  "name": "UTI_Telemed",
   "remarks": [
     "A blank module"
   ],
@@ -72,39 +72,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_HPI_Submodule",
+      "direct_transition": "UTI_HPI",
       "name": "Telemed_Procedure"
-    },
-    "UTI_HPI_Submodule": {
-      "type": "Simple",
-      "name": "UTI_HPI_Submodule",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "transition": "GU_Pregnancy_Check_Submodule",
-              "distribution": 0.7
-            },
-            {
-              "transition": "Risk_Check",
-              "distribution": 0.3
-            }
-          ]
-        },
-        {
-          "distributions": [],
-          "transition": "Risk_Check"
-        }
-      ]
-    },
-    "GU_Pregnancy_Check_Submodule": {
-      "type": "Simple",
-      "direct_transition": "Risk_Check",
-      "name": "GU_Pregnancy_Check_Submodule"
     },
     "Risk_Check": {
       "type": "Simple",
@@ -247,20 +216,6 @@
       "direct_transition": "Terminal",
       "name": "End_UTI_Diagnosis"
     },
-    "UTI_Abx_Submodule": {
-      "type": "Simple",
-      "name": "UTI_Abx_Submodule",
-      "distributed_transition": [
-        {
-          "transition": "End_UTI_Diagnosis",
-          "distribution": 0.95
-        },
-        {
-          "transition": "Referral_to_Labs",
-          "distribution": 0.05
-        }
-      ]
-    },
     "Antibiotics": {
       "type": "Procedure",
       "codes": [
@@ -279,9 +234,57 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_Abx_Submodule",
+      "direct_transition": "UTI_Abx",
       "name": "Antibiotics",
       "assign_to_attribute": "UTI_Tx"
+    },
+    "UTI_HPI": {
+      "type": "CallSubmodule",
+      "submodule": "UTI_HPI",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "GU_Pregnancy_Check",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Risk_Check",
+              "distribution": 0.3
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Risk_Check"
+        }
+      ],
+      "name": "UTI_HPI"
+    },
+    "GU_Pregnancy_Check": {
+      "type": "CallSubmodule",
+      "submodule": "GU_Pregnancy_Check",
+      "direct_transition": "Risk_Check",
+      "name": "GU_Pregnancy_Check"
+    },
+    "UTI_Abx": {
+      "type": "CallSubmodule",
+      "submodule": "UTI_Abx",
+      "distributed_transition": [
+        {
+          "transition": "End_UTI_Diagnosis",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Referral_to_Labs",
+          "distribution": 0.05
+        }
+      ],
+      "name": "UTI_Abx"
     }
   },
   "gmf_version": 2
