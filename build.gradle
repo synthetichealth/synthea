@@ -185,6 +185,13 @@ task rifMinimize(type: JavaExec) {
   mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFMinimizer"
 }
 
+task rif2CCW(type: JavaExec) {
+  group 'Application'
+  description 'Convert exported RIF files from BB2 format to CCW format'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIF2CCW"
+}
+
 shadowJar {
   def versionFile = new File("$projectDir/src/main/resources/version.txt")
   def versionText = "N/A"
