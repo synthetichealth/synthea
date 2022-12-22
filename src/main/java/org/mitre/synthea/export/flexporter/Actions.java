@@ -288,23 +288,15 @@ public abstract class Actions {
         valueDef = ValueTransforms.apply((String)valueDef, transform);
       }
 
-      // TODO: the $getField option allows copying a single primitive value
-      // do we want to allow copying an entire object somehow?
-
-
-      if (valueDef instanceof String) {
-        String valueString = (String)valueDef;
-
-        fhirPathMapping.put(location, valueString);
+      if (valueDef instanceof String || valueDef instanceof Base) {
+        // String may be a raw value from the mapping, or a primitive from FHIR
+        // Base means we plucked a full FHIR object from somewhere
+        fhirPathMapping.put(location, valueDef);
 
       } else if (valueDef instanceof Map<?,?>) {
         Map<String,Object> valueMap = (Map<String, Object>) valueDef;
 
         populateFhirPathMapping(fhirPathMapping, location, valueMap);
-
-      } else if (valueDef instanceof Base) {
-        // we plucked a full FHIR object from somewhere
-        fhirPathMapping.put(location, valueDef);
 
       } else {
         // unexpected type here - is it even possible to get anything else?
@@ -456,7 +448,7 @@ public abstract class Actions {
     } else if (flag.equals("findRef")) {
       return findReference(bundle, flagValues);
     } else if (flag.equals("findValue")) {
-      return findValues(bundle, flagValues);
+      return findValue(bundle, flagValues);
     } else if (flag.equals("getAttribute")) {
       return getAttribute(person, flagValues);
     } else if (flag.equals("randomCode")) {
@@ -526,7 +518,7 @@ public abstract class Actions {
     return createReference((Resource) matchingResources.get(0));
   }
 
-  private static String findValues(Bundle bundle, String... args) {
+  private static Base findValue(Bundle bundle, String... args) {
     // args[0] = FHIRPath, from this resource
     // args[1] = how to disambiguate if there are multiple? TODO
     List<Base> fieldValues = FhirPathUtils.evaluateBundle(bundle, args[0], false);
@@ -535,7 +527,7 @@ public abstract class Actions {
       return null;
     }
 
-    return fieldValues.get(0).primitiveValue();
+    return fieldValues.get(0);
   }
 
   private static Map<String, String> randomCode(String valueSetUrl) {
