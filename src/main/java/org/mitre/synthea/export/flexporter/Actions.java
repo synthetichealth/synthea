@@ -272,7 +272,6 @@ public abstract class Actions {
         if (valueString.startsWith("$")) {
           valueDef = getValue(sourceBundle, valueString, sourceResource, person, fjContext);
         } // else - assume it's a raw value
-
       }
 
       // TODO: consider a "skip-resource-if-null" kind of thing

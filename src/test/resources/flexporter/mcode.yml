@@ -4,7 +4,7 @@ name: mCODE Flexporter Test
 
 # applicability determines whether this mapping applies to a given file.
 # for now the assumption is 1 file = 1 synthea patient bundle.
-applicability: true
+applicability: Condition.code.coding.where($this.code = '254837009')
 # for real mCODE: 
 #   In FHIR terms, these are patients who have a Condition where 
 #     Condition.code is a member of the value set [PrimaryOrUncertainBehaviorCancerDisorderVS] 
@@ -28,9 +28,6 @@ actions:
    profiles:
    - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-cancer-patient
      applicability: Patient
-
-   - profile: http://example.com/bloodpressure
-     applicability: Observation.code.coding.where($this.code = '85354-9')
 
    - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-tnm-clinical-stage-group
      applicability: Observation.code.coding.where($this.code = '21908-9')
@@ -57,4 +54,12 @@ actions:
            value: $findRef([Observation.code.coding.where($this.code = '21906-3')])
          - location: Observation.hasMember.where(display='Metastases Category').reference
            value: $findRef([Observation.code.coding.where($this.code = '21907-1')])
+
+
+ - name: Set Primary Cancer Focus
+   set_values:
+     - applicability: Observation.code.coding.where($this.code = '21905-5')  # Primary Tumor Category
+       fields:
+         - location: Observation.focus.reference
+           value: $findRef([Condition.code.coding.where($this.code = '254837009')])
 

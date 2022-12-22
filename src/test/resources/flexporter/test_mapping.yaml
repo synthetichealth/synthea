@@ -106,7 +106,7 @@ actions:
          - location: ServiceRequest.subject.reference
            value: $findRef([Patient])
          - location: ServiceRequest.code
-           value: $getField([Procedure.code])      # <-- STILL WIP
+           value: $getField([Procedure.code])
 
 
          # this works if the VS is loaded but otherwise tries to make a network lookup

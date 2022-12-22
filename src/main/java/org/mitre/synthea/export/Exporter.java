@@ -25,6 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.export.flexporter.Actions;
+import org.mitre.synthea.export.flexporter.FhirPathUtils;
 import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
@@ -248,11 +249,17 @@ public abstract class Exporter {
       org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
 
       if (options.flexporterMappings != null) {
-        FlexporterJavascriptContext fjContext = new FlexporterJavascriptContext();
+        FlexporterJavascriptContext fjContext = null;
 
         for (Mapping mapping : options.flexporterMappings) {
-          // flexport on the bundle here
-          bundle = Actions.applyMapping(bundle, mapping, person, fjContext);
+          if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability)) {
+            if (fjContext == null) {
+              // only set this the first time it is actually used
+              // TODO: figure out how to silence the truffle warnings
+              fjContext = new FlexporterJavascriptContext();
+            }
+            bundle = Actions.applyMapping(bundle, mapping, person, fjContext);
+          }
         }
       }
 
