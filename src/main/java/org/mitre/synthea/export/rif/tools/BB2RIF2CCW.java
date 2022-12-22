@@ -2,9 +2,12 @@ package org.mitre.synthea.export.rif.tools;
 
 import static org.mitre.synthea.export.rif.BB2RIFStructure.RIF_FILES;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.SequenceWriter;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,23 +37,7 @@ public class BB2RIF2CCW {
         Map<String, String> nameMap = readMapFile(filePrefix);
         for (File file: getSourceFiles(filePrefix, inputDir)) {
           System.out.println("Converting " + file.toString());
-          // TODO: convert to streaming approach instead of loading entire file in to memory?
-          // This approach works for 10k beneficiaries
-          String csvData = new String(Files.readAllBytes(file.toPath()));
-          List<LinkedHashMap<String, String>> csv = SimpleCSV.parse(csvData, '|');
-          String[] keys = new String[csv.get(0).size()];
-          csv.get(0).keySet().toArray(keys); // keySet is live so make copy once
-          for (LinkedHashMap<String, String> row: csv) {
-            for (String bb2FieldName: keys) {
-              String fieldValue = row.remove(bb2FieldName);
-              String ccwFieldName = nameMap.get(bb2FieldName);
-              if (ccwFieldName != null && ccwFieldName.length() > 0) {
-                row.put(ccwFieldName, fieldValue);
-              }
-            }
-          }
-          csvData = SimpleCSV.unparse(csv, '|');
-          Files.write(outputDir.toPath().resolve(file.getName()), csvData.getBytes());
+          convertFile(file, outputDir, nameMap);
         }
       } catch (IOException | IllegalArgumentException ex) {
         System.out.println("Warning, skipping " + filePrefix + ": " + ex.getMessage());
@@ -58,13 +45,54 @@ public class BB2RIF2CCW {
     }
   }
 
+  private static void convertFile(File file, File outputDir, Map<String, String> nameMap) {
+    try {
+      CsvMapper mapper = new CsvMapper();
+      CsvSchema schema = CsvSchema.emptySchema().withHeader().withColumnSeparator('|');
+      MappingIterator<LinkedHashMap<String, String>> sourceRows = mapper
+              .readerFor(LinkedHashMap.class).with(schema).readValues(file);
+      boolean firstOutputRow = true;
+      SequenceWriter writer = null;
+      File outputFile = outputDir.toPath().resolve(file.getName()).toFile();
+      while (sourceRows.hasNextValue()) {
+        LinkedHashMap<String, String> outputRow = transformRow(sourceRows.next(), nameMap);
+        if (firstOutputRow) {
+          CsvSchema.Builder schemaBuilder = CsvSchema.builder();
+          schemaBuilder.setUseHeader(true).setColumnSeparator('|').disableQuoteChar();
+          schemaBuilder.addColumns(outputRow.keySet(), CsvSchema.ColumnType.STRING);
+          writer = mapper.writer(schemaBuilder.build()).writeValues(outputFile);
+          firstOutputRow = false;
+        }
+        writer.write(outputRow);
+      }
+      if (writer != null) {
+        writer.close();
+      }
+      sourceRows.close();
+    } catch (IOException ex) {
+      System.out.println("Error, skipping " + file.getName() + ": " + ex.getMessage());;
+    }
+  }
+
+  private static LinkedHashMap<String, String> transformRow(LinkedHashMap<String, String> row,
+          Map<String, String> nameMap) {
+    LinkedHashMap<String, String> transformedRow = new LinkedHashMap<>();
+    row.keySet().forEach(bb2FieldName -> {
+      String ccwFieldName = nameMap.get(bb2FieldName);
+      if (ccwFieldName != null && ccwFieldName.length() > 0) {
+        transformedRow.put(ccwFieldName, row.get(bb2FieldName));
+      }
+    });
+    return transformedRow;
+  }
+
   private static Map<String, String> readMapFile(String filePrefix) throws IOException {
     String csvStr = Utilities.readResource("export/" + filePrefix + "_bb2_ccw.csv");
     List<LinkedHashMap<String,String>> csv = SimpleCSV.parse(csvStr);
     HashMap<String, String> map = new HashMap<>();
-    for (LinkedHashMap<String,String> entry: csv) {
+    csv.forEach(entry -> {
       map.put(entry.get("BB2"), entry.get("CCW"));
-    }
+    });
     return map;
   }
 
