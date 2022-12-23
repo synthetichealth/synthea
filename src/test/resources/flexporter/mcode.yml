@@ -4,13 +4,32 @@ name: mCODE Flexporter Test
 
 # applicability determines whether this mapping applies to a given file.
 # for now the assumption is 1 file = 1 synthea patient bundle.
-applicability: Condition.code.coding.where($this.code = '254837009')
+applicability: Condition.code.coding.where($this.code in %primaryCancerConditionCodes)
 # for real mCODE: 
 #   In FHIR terms, these are patients who have a Condition where 
 #     Condition.code is a member of the value set [PrimaryOrUncertainBehaviorCancerDisorderVS] 
 #     and 
 #     Condition.verificationStatus is confirmed.
 # -- https://build.fhir.org/ig/HL7/fhir-mCODE-ig/conformance-patients.html
+
+variables:
+  primaryCancerConditionCodes:
+    - '188151006' # Malignant neoplasm of central part of female breast (disorder)
+    - '254837009' # Malignant neoplasm of breast (disorder) (B)
+    - '93761005' # Primary malignant neoplasm of colon (C)
+    - '109838007' # Overlapping malignant neoplasm of colon (C)
+    - '363406005' # Malignant tumor of colon (C)
+    - '94260004' # Secondary malignant neoplasm of colon (C) -- note this is a "secondary" code but is intended to be a primary cancer
+    - '254637007' # Non-small cell lung cancer (disorder) (L)
+    - '254632001' # Small cell carcinoma of lung (disorder) (L)
+    - '424132000' # Non-small cell carcinoma of lung, TNM stage 1 (disorder) (L)
+    - '425048006' # Non-small cell carcinoma of lung, TNM stage 2 (disorder) (L)
+    - '422968005' # Non-small cell carcinoma of lung, TNM stage 3 (disorder) (L)
+    - '423121009' # Non-small cell carcinoma of lung, TNM stage 4 (disorder) (L)
+    - '67811000119102' # Primary small cell malignant neoplasm of lung, TNM stage 1 (disorder) (L)
+    - '67821000119109' # Primary small cell malignant neoplasm of lung, TNM stage 2 (disorder) (L)
+    - '67831000119107' # Primary small cell malignant neoplasm of lung, TNM stage 3 (disorder) (L)
+    - '67841000119103' # Primary small cell malignant neoplasm of lung, TNM stage 4 (disorder) (L)
 
 
 # reminder - the fhir_mapper for Synthea->mCODE 1.0 is here:

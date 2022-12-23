@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.BooleanType;
@@ -99,5 +100,25 @@ public class FhirPathUtilsTest {
         "Bundle.entry.resource.ofType(Patient).first().name.given = 'Jerametrius'"));
     assertFalse(
         FhirPathUtils.appliesToBundle(b, "Bundle.entry.resource.ofType(Patient).name.suffix"));
+  }
+
+  @Test
+  public void testVariables() {
+    Patient p1 = new Patient();
+    p1.addName().addGiven("Jeff").setFamily("Goldblum");
+    Bundle b1 = new Bundle();
+    b1.addEntry().setResource(p1);
+
+    Patient p2 = new Patient();
+    p2.addName().addGiven("Jamie Lee").setFamily("Curtis");
+    Bundle b2 = new Bundle();
+    b2.addEntry().setResource(p2);
+
+    String fhirpath = "Patient.name.family in %jurassicNames";
+
+    Map<String,Object> variables = Map.of("jurassicNames", List.of("Neill", "Dern", "Goldblum"));
+
+    assertTrue(FhirPathUtils.appliesToBundle(b1, fhirpath, variables));
+    assertFalse(FhirPathUtils.appliesToBundle(b2, fhirpath, variables));
   }
 }

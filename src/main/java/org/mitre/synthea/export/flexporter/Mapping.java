@@ -13,6 +13,8 @@ public class Mapping {
   public String name;
   public String applicability;
 
+  public Map<String, Object> variables;
+
   /**
    * Each action is a Map&lt;String,?&gt;. Nested fields within the YAML become ArrayLists and
    * LinkedHashMaps.

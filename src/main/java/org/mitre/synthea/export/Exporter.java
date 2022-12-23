@@ -252,7 +252,7 @@ public abstract class Exporter {
         FlexporterJavascriptContext fjContext = null;
 
         for (Mapping mapping : options.flexporterMappings) {
-          if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability)) {
+          if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability, mapping.variables)) {
             if (fjContext == null) {
               // only set this the first time it is actually used
               // TODO: figure out how to silence the truffle warnings

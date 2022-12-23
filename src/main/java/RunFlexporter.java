@@ -114,7 +114,7 @@ public class RunFlexporter {
 
 
   private static Bundle convertFhir(Bundle bundle, Mapping mapping) {
-    if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability)) {
+    if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability, mapping.variables)) {
       bundle = Actions.applyMapping(bundle, mapping, null, new FlexporterJavascriptContext());
     }
 
