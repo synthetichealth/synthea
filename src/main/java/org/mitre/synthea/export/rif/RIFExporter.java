@@ -183,29 +183,27 @@ public abstract class RIFExporter {
   }
 
   /**
-   * Returns the latest diagnosis time stamp for a particular condition.
+   * Returns the earliest diagnosis time stamp for a particular condition.
    * @param person patient with the diagnoses
    * @param code the condition code
    * @return the diagnosis time stamp or Long.MAX_VALUE if not diagnosed
    */
-  protected long getLatestDiagnosis(Person person, String code) {
+  protected long getEarliestDiagnosis(Person person, String code) {
     List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       for (HealthRecord.Entry dx : encounter.conditions) {
         if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
           String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0).code, person, true);
-          // Temporarily add the mapped code... we'll remove it later.
-          HealthRecord.Code mappedCode = new HealthRecord.Code("ICD10", mapped,
-                  dx.codes.get(0).display);
-          dx.codes.add(mappedCode);
-          diagnoses.add(dx);
+          if (mapped.equals(code)) {
+            diagnoses.add(dx);
+          }
         }
       }
     }
     if (!diagnoses.isEmpty()) {
       // Sort them by date and then return the oldest
       diagnoses.sort(ENTRY_SORTER);
-      return diagnoses.get(0).start;
+      return diagnoses.get(diagnoses.size() - 1).start;
     }
     return Long.MAX_VALUE;
   }

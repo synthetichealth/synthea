@@ -31,6 +31,7 @@ public class BeneficiaryExporter extends RIFExporter {
           HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
+  private static final String ESRD_CODE = "N18.6";
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -89,7 +90,7 @@ public class BeneficiaryExporter extends RIFExporter {
 
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     long dateOf65thBrithday = Utilities.getAnniversary(birthdate, 65);
-    long dateOfESRD = getLatestDiagnosis(person, "N18.6");
+    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
     long coverageStartDate = Long.min(dateOf65thBrithday, dateOfESRD);
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
 
@@ -513,7 +514,7 @@ public class BeneficiaryExporter extends RIFExporter {
   private boolean hasESRD(Person person, int year) {
     long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
-    return mappedDiagnosisCodes.contains("N18.6");
+    return mappedDiagnosisCodes.contains(ESRD_CODE);
   }
 
   private static boolean isBlind(Person person) {
