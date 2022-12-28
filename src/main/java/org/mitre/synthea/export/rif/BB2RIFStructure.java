@@ -237,7 +237,13 @@ public class BB2RIFStructure {
     STATE_CNTY_ZIP_CD,
     EFCTV_BGN_DT,
     EFCTV_END_DT,
-    BENE_LINK_KEY
+    BENE_LINK_KEY,
+    PTA_CVRG_STRT_DT,
+    PTA_CVRG_END_DT,
+    PTB_CVRG_STRT_DT,
+    PTB_CVRG_END_DT,
+    PTD_CVRG_STRT_DT,
+    PTD_CVRG_END_DT
   }
 
   public static final BENEFICIARY[] beneficiaryMedicareStatusFields = {

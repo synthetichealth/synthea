@@ -87,9 +87,21 @@ public class BeneficiaryExporter extends RIFExporter {
     // following is also used in exportPrescription
     person.attributes.put(RIFExporter.BB2_PARTD_CONTRACTS, partDContracts);
 
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    long dateOf65thBrithday = Utilities.getAnniversary(birthdate, 65);
+    long dateOfESRD = getLatestDiagnosis(person, "N18.6");
+    long coverageStartDate = Long.min(dateOf65thBrithday, dateOfESRD);
+    person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
+
     boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
     for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
+      long startOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year);
+      long endOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year + 1) - 1;
+      if (!hasPartABCoverage(person, endOfYearTimeStamp)) {
+        continue;
+      }
+
       HashMap<BB2RIFStructure.BENEFICIARY, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY.class, person);
       if (!firstYearOutput) {
@@ -99,6 +111,16 @@ public class BeneficiaryExporter extends RIFExporter {
       }
 
       fieldValues.put(BB2RIFStructure.BENEFICIARY.RFRNC_YR, String.valueOf(year));
+      String coverageStartStr = bb2DateFromTimestamp(coverageStartDate);
+      fieldValues.put(BB2RIFStructure.BENEFICIARY.COVSTART, coverageStartStr);
+      fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_STRT_DT, coverageStartStr);
+      fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_STRT_DT, coverageStartStr);
+      fieldValues.put(BB2RIFStructure.BENEFICIARY.COVSTART, coverageStartStr);
+      if (deathDate != -1 && deathDate >= startOfYearTimeStamp && deathDate <= endOfYearTimeStamp) {
+        String coverageEndStr = bb2DateFromTimestamp(deathDate);
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_STRT_DT, coverageEndStr);
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_STRT_DT, coverageEndStr);
+      }
       int monthCount = year == endYear ? endMonth : 12;
       String monthCountStr = String.valueOf(monthCount);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.A_MO_CNT, monthCountStr);
@@ -143,7 +165,6 @@ public class BeneficiaryExporter extends RIFExporter {
         middleName = middleName.substring(0, 1);
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDL_NAME, middleName);
       }
-      long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_BIRTH_DT,
               RIFExporter.bb2DateFromTimestamp(birthdate));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.AGE,
@@ -196,12 +217,16 @@ public class BeneficiaryExporter extends RIFExporter {
 
       String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
       int rdsMonthCount = 0;
+      long partDCoverageStart = Long.MAX_VALUE;
+      long partDCoverageEnd = Long.MIN_VALUE;
       for (PartDContractHistory.ContractPeriod period:
               partDContracts.getContractPeriods(year)) {
         PartDContractID partDContractID = period.getContractID();
         String partDDrugSubsidyIndicator =
                 partDContracts.getEmployeePDPIndicator(partDContractID);
         if (partDContractID != null) {
+          partDCoverageStart = Long.min(partDCoverageStart, period.getStart());
+          partDCoverageEnd = Long.max(partDCoverageEnd, period.getEnd());
           String partDContractIDStr = partDContractID.toString();
           String partDPBPIDStr = period.getPlanBenefitPackageID().toString();
           List<Integer> coveredMonths = period.getCoveredMonths(year);
@@ -229,6 +254,14 @@ public class BeneficiaryExporter extends RIFExporter {
         }
       }
       fieldValues.put(BB2RIFStructure.BENEFICIARY.RDS_MO_CNT, Integer.toString(rdsMonthCount));
+      if (partDCoverageStart != Long.MAX_VALUE) {
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTD_CVRG_STRT_DT,
+                bb2DateFromTimestamp(Long.max(partDCoverageStart, startOfYearTimeStamp)));
+      }
+      if (partDCoverageEnd != Long.MIN_VALUE) {
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTD_CVRG_END_DT,
+                bb2DateFromTimestamp(Long.min(partDCoverageEnd, endOfYearTimeStamp)));
+      }
 
       String dualEligibleStatusCode = getDualEligibilityCode(person, year);
       String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,

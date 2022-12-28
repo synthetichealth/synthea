@@ -74,6 +74,9 @@ public class CarrierExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.CARRIER)) {
         continue;
       }

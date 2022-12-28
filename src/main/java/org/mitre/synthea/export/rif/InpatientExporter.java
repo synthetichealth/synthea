@@ -42,6 +42,9 @@ public class InpatientExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.INPATIENT)) {
         previousEmergency = false;
         continue;
