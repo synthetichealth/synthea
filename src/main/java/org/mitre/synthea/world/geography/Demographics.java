@@ -385,7 +385,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   public static Table<String, String, Demographics> load(String state)
       throws IOException {
     String filename = Config.get("generate.demographics.default_file");
-    String csv = Utilities.readResource(filename);
+    String csv = Utilities.readResource(filename, true, true);
 
     List<? extends Map<String,String>> demographicsCsv = SimpleCSV.parse(csv);
 

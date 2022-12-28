@@ -39,7 +39,7 @@ public class IncomeSpenddownEligibility implements IPlanEligibility {
     String resource = null;
     Iterator<? extends Map<String, String>> csv = null;
     try {
-      resource = Utilities.readResource(fileName);
+      resource = Utilities.readResource(fileName, true, true);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       throw new RuntimeException("There was an issue reading the file '"

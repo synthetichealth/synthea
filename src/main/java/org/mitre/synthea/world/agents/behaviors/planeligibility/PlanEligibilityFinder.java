@@ -53,7 +53,7 @@ public class PlanEligibilityFinder {
     String resource = null;
     Iterator<? extends Map<String, String>> csv = null;
     try {
-      resource = Utilities.readResourceAndStripBOM(fileName);
+      resource = Utilities.readResource(fileName, true, true);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();

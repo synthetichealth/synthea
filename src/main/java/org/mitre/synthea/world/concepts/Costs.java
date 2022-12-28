@@ -175,7 +175,7 @@ public class Costs {
    */
   private static Map<String, CostData> parseCsvToMap(String filename) {
     try {
-      String rawData = Utilities.readResource(filename);
+      String rawData = Utilities.readResourceAndStripBOM(filename);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, CostData> costMap = new HashMap<>();
@@ -208,7 +208,7 @@ public class Costs {
 
   private static Map<String, Double> parseAdjustmentFactors(String resource) {
     try {
-      String rawData = Utilities.readResource(resource);
+      String rawData = Utilities.readResourceAndStripBOM(resource);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, Double> costMap = new HashMap<>();
@@ -232,7 +232,7 @@ public class Costs {
 
   private static Map<String, Double> parseEncounterAdjustmentFactors(String resource) {
     try {
-      String rawData = Utilities.readResource(resource);
+      String rawData = Utilities.readResourceAndStripBOM(resource);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, Double> costMap = new HashMap<>();

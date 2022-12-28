@@ -84,7 +84,7 @@ public class Graphviz {
     System.out.format("Loading %s\n", path.toString());
     String moduleRelativePath = modulesFolder.getParent().relativize(path).toString();
     JsonReader reader = new JsonReader(new StringReader(
-             Utilities.readResource(moduleRelativePath)));
+             Utilities.readResourceOrPath(moduleRelativePath)));
     JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
     reader.close();
     return object;

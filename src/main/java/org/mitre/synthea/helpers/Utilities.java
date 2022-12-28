@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -411,8 +414,55 @@ public class Utilities {
    * @throws IOException if any error occurs reading the file
    */
   public static final String readResource(String filename) throws IOException {
-    URL url = Resources.getResource(filename);
-    return Resources.toString(url, Charsets.UTF_8);
+    return readResource(filename, false, false);
+  }
+
+  /**
+   * Read the entire contents of a file into a String.
+   * @param filename Path to the file.
+   * @param stripBOM Whether or not to check for and strip a BOM
+   *     -- see {@link #readResourceAndStripBOM(String)} for more info
+   * @param allowFreePath If false, the file must be within src/main/resources.
+   *     If true, the file may be anywhere on the filesystem.
+   * @return The entire text contents of the file.
+   * @throws IOException if any error occurs reading the file
+   */
+  public static final String readResource(String filename, boolean stripBOM, boolean allowFreePath)
+      throws IOException {
+    String contents;
+
+    try {
+      URL url = Resources.getResource(filename);
+      contents = Resources.toString(url, Charsets.UTF_8);
+    } catch (IllegalArgumentException e) {
+      // Resources throws an IllegalArgumentException instead of FileNotFoundException
+      // when the resource is not found - this may be a full path
+      if (!allowFreePath) {
+        throw e;
+      }
+      try {
+        Path path = new File(filename).toPath();
+        contents = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+      } catch (FileNotFoundException fnfe) {
+        throw new IllegalArgumentException("Unable to locate or read " + filename);
+      }
+    }
+
+    if (stripBOM && contents.startsWith("\uFEFF")) {
+      contents = contents.substring(1); // Removes BOM.
+    }
+    return contents;
+  }
+
+  /**
+   * Read the entire contents of a file into a String.
+   * The file may be relative to src/main/resources or anywhere on the filesystem.
+   * @param filename Path to the files.
+   * @return The entire text contents of the file.
+   * @throws IOException if any error occurs reading the file
+   */
+  public static final String readResourceOrPath(String filename) throws IOException {
+    return readResource(filename, false, true);
   }
 
   /**
@@ -425,11 +475,7 @@ public class Utilities {
    * @throws IOException if any error occurs reading the file
    */
   public static final String readResourceAndStripBOM(String filename) throws IOException {
-    String contents = readResource(filename);
-    if (contents.startsWith("\uFEFF")) {
-      contents = contents.substring(1); // Removes BOM.
-    }
-    return contents;
+    return readResource(filename, true, false);
   }
 
   /**
