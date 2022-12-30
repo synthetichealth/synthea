@@ -116,12 +116,6 @@ public class BeneficiaryExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.BENEFICIARY.COVSTART, coverageStartStr);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_STRT_DT, coverageStartStr);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_STRT_DT, coverageStartStr);
-      fieldValues.put(BB2RIFStructure.BENEFICIARY.COVSTART, coverageStartStr);
-      if (deathDate != -1 && deathDate >= startOfYearTimeStamp && deathDate <= endOfYearTimeStamp) {
-        String coverageEndStr = bb2DateFromTimestamp(deathDate);
-        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_STRT_DT, coverageEndStr);
-        fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_STRT_DT, coverageEndStr);
-      }
       int monthCount = year == endYear ? endMonth : 12;
       String monthCountStr = String.valueOf(monthCount);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.A_MO_CNT, monthCountStr);
@@ -176,10 +170,12 @@ public class BeneficiaryExporter extends RIFExporter {
         // only add death date for years when it was (presumably) known. E.g. If we are outputting
         // record for 2005 and patient died in 2007 we don't include the death date.
         if (Utilities.getYear(deathDate) <= year) {
-          fieldValues.put(BB2RIFStructure.BENEFICIARY.DEATH_DT,
-                  RIFExporter.bb2DateFromTimestamp(deathDate));
+          String deathDateStr = bb2DateFromTimestamp(deathDate);
+          fieldValues.put(BB2RIFStructure.BENEFICIARY.DEATH_DT, deathDateStr);
           fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTA_TRMNTN_CD, "1");
           fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTB_TRMNTN_CD, "1");
+          fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_END_DT, deathDateStr);
+          fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_END_DT, deathDateStr);
         }
       }
       boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
