@@ -1308,7 +1308,7 @@
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
