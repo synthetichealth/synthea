@@ -438,7 +438,7 @@
           "display": "Stage group.clinical Cancer"
         }
       ],
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End the Initial Encounter",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 258228008,
@@ -539,7 +539,7 @@
         "code": 258224005,
         "display": "Stage 3 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage I": {
       "type": "Observation",
@@ -557,7 +557,7 @@
         "code": 258215001,
         "display": "Stage 1 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "IIIB": {
       "type": "Observation",
@@ -843,7 +843,7 @@
         "code": 258219007,
         "display": "Stage 2 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage II Treatment": {
       "type": "Simple",
@@ -1303,7 +1303,7 @@
     "Treatment Successful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "End the Initial Encounter",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
       "value": "yes"
     },
     "Regular Mammogram Visit": {
@@ -2104,7 +2104,7 @@
           "distribution": 0.3
         },
         {
-          "transition": "End the Initial Encounter",
+          "transition": "Sit-Down with Oncologist to Discuss Treatment Options",
           "distribution": 0.7
         }
       ]
@@ -2118,12 +2118,12 @@
     "Hospice Reason": {
       "type": "SetAttribute",
       "attribute": "hospice_reason",
-      "direct_transition": "End the Initial Encounter",
+      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
       "value_attribute": "breast_cancer_condition"
     },
     "End the Initial Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+      "direct_transition": "Delay for Analysis of Possible Treatments"
     }
   },
   "gmf_version": 1
