@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -319,18 +321,24 @@ public class BB2RIFExporter {
    */
   public void exportMissingCodes() throws IOException {
     if (Config.getAsBoolean("exporter.bfd.export_missing_codes", true)) {
+      List<Map<String, String>> allMissingCodes = new LinkedList<>();
+      allMissingCodes.addAll(conditionCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(medicationCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(drgCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(dmeCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(hcpcsCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(betosCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(snfPPSMapper.getMissingCodes());
+      allMissingCodes.addAll(snfPDPMMapper.getMissingCodes());
+      allMissingCodes.addAll(snfRevCntrMapper.getMissingCodes());
+      allMissingCodes.addAll(hhaRevCntrMapper.getMissingCodes());
+      allMissingCodes.addAll(hospiceRevCntrMapper.getMissingCodes());
+
       File outputDir = Exporter.getOutputFolder("bfd", null);
-      conditionCodeMapper.exportMissingCodesToCSV(outputDir);
-      medicationCodeMapper.exportMissingCodesToCSV(outputDir);
-      drgCodeMapper.exportMissingCodesToCSV(outputDir);
-      dmeCodeMapper.exportMissingCodesToCSV(outputDir);
-      hcpcsCodeMapper.exportMissingCodesToCSV(outputDir);
-      betosCodeMapper.exportMissingCodesToCSV(outputDir);
-      snfPPSMapper.exportMissingCodesToCSV(outputDir);
-      snfPDPMMapper.exportMissingCodesToCSV(outputDir);
-      snfRevCntrMapper.exportMissingCodesToCSV(outputDir);
-      hhaRevCntrMapper.exportMissingCodesToCSV(outputDir);
-      hospiceRevCntrMapper.exportMissingCodesToCSV(outputDir);
+      if (!allMissingCodes.isEmpty()) {
+        Files.write(outputDir.toPath().resolve("missing_codes.csv"),
+                SimpleCSV.unparse(allMissingCodes).getBytes());
+      }
     }
   }
 

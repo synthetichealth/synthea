@@ -34,7 +34,7 @@ class CodeMapper {
   private HashMap<String, RandomCollection<Map<String, String>>> map;
   private boolean mapImported = false;
   private ConcurrentHashMap<Code, LongAdder> missingCodes;
-  private String mapperName;
+  private String mapName;
 
   /**
    * Create a new CodeMapper for the supplied JSON string.
@@ -55,7 +55,7 @@ class CodeMapper {
   public CodeMapper(String jsonMapResource) {
     requireCodeMaps = Config.getAsBoolean("exporter.bfd.require_code_maps", true);
     missingCodes = new ConcurrentHashMap<>();
-    mapperName = FilenameUtils.getBaseName(jsonMapResource);
+    mapName = FilenameUtils.getBaseName(jsonMapResource);
     try {
       // deserialize the JSON code map
       String jsonStr = Utilities.readResource(jsonMapResource);
@@ -253,14 +253,14 @@ class CodeMapper {
   }
 
   /**
-   * Get the missing code as a list of maps, where each map includes the code, a description, and
-   * the count of times it was requested. Only used by exportMissingCodesToCSV and unit tests.
-   * @return missing code list
+   * Get the missing code as a list of maps, where each map includes the mapper name, a missing
+   * code, a description, and the count of times the code was requested.
    */
-  List<? extends Map<String, String>> getMissingCodes() {
+  public List<? extends Map<String, String>> getMissingCodes() {
     List<Map<String, String>> missingCodeList = new ArrayList<>(missingCodes.size());
     missingCodes.forEach((code, count) -> {
       Map<String, String> row = new LinkedHashMap<>();
+      row.put("map", mapName);
       row.put("code", code.code);
       row.put("description", code.display);
       row.put("count", count.toString());
@@ -271,18 +271,5 @@ class CodeMapper {
       return (int)(Long.parseLong(o2.get("count")) - Long.parseLong(o1.get("count")));
     });
     return missingCodeList;
-  }
-
-  /**
-   * Export a CSV that includes a list of all codes that couldn't be mapped and a count of the
-   * number of time that code was requested.
-   * @param outputDir the directory to write the missing codes CSV to
-   * @throws IOException if something goes wrong
-   */
-  public void exportMissingCodesToCSV(File outputDir) throws IOException {
-    if (!missingCodes.isEmpty()) {
-      Files.write(outputDir.toPath().resolve(mapperName + "_missing_codes.csv"),
-              SimpleCSV.unparse(getMissingCodes()).getBytes());
-    }
   }
 }
