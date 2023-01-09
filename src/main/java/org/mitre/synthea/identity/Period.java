@@ -1,8 +1,8 @@
 package org.mitre.synthea.identity;
 
-import static org.mitre.synthea.helpers.Utilities.localDateToTimestamp;
-
 import java.time.LocalDate;
+
+import org.mitre.synthea.helpers.Utilities;
 
 /**
  * A simple representation of a time period with a start and end date. End date may be null for
@@ -28,9 +28,7 @@ public class Period {
    * @return true if it is a part of this period inclusive of start and end
    */
   public boolean contains(long timestamp) {
-    return (localDateToTimestamp(this.start) <= timestamp)
-        && ((this.end == null)
-        || (localDateToTimestamp(this.end) >= timestamp));
+    return contains(Utilities.timestampToLocalDate(timestamp));
   }
 
   public LocalDate getStart() {

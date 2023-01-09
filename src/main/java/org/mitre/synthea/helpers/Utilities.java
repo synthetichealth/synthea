@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -124,8 +124,21 @@ public class Utilities {
     return calendar.get(Calendar.MONTH) + 1;
   }
 
+  /**
+   * Convert the given LocalDate into a Unix timestamp.
+   * The LocalDate is assumed to be interpreted in the UTC time zone,
+   * and a timestamp is created of the start of the day (00:00:00, or 12:00 midnight).
+   */
   public static long localDateToTimestamp(LocalDate date) {
-    return date.atStartOfDay().toInstant(OffsetDateTime.now().getOffset()).toEpochMilli();
+    return date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+  }
+
+  /**
+   * Convert the given Unix timestamp into a LocalDate.
+   * The timestamp is assumed to be interpreted in the UTC time zone.
+   */
+  public static LocalDate timestampToLocalDate(long timestamp) {
+    return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC).toLocalDate();
   }
 
   /**

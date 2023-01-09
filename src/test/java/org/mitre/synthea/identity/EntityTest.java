@@ -53,7 +53,8 @@ public class EntityTest {
         .atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
     seed = testEntity.seedAt(duringOpenEnd);
     assertEquals("1416", seed.getSeedId());
-    long startOfFirstSeed = -813960000000L;
+    long startOfFirstSeed = -813960000000L; // Fri Mar 17 1944 04:00:00 GMT+0000
+    // Note this timestamp is 1944-03-17 in EDT (GMT-4) but 1944-03-16 in EST (GMT-5)
     seed = testEntity.seedAt(startOfFirstSeed);
     assertEquals("5678", seed.getSeedId());
   }
