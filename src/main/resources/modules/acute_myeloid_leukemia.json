@@ -3,94 +3,38 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "distributed_transition": [
+      "complex_transition": [
         {
-          "transition": "Delay_1",
-          "distribution": 0.098
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Cancerous",
+              "distribution": 0.002
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.998
+            }
+          ]
         },
         {
-          "transition": "Delay_2",
-          "distribution": 0.1264
-        },
-        {
-          "transition": "Delay_3",
-          "distribution": 0.1094
-        },
-        {
-          "transition": "Delay_4",
-          "distribution": 0.0645
-        },
-        {
-          "transition": "Delay_5",
-          "distribution": 0.0533
-        },
-        {
-          "transition": "Delay_6",
-          "distribution": 0.0345
-        },
-        {
-          "transition": "Delay_7",
-          "distribution": 0.0362
-        },
-        {
-          "transition": "Delay_8",
-          "distribution": 0.0318
-        },
-        {
-          "transition": "Delay_9",
-          "distribution": 0.0354
-        },
-        {
-          "transition": "Delay_10",
-          "distribution": 0.0346
-        },
-        {
-          "transition": "Delay_11",
-          "distribution": 0.0289
-        },
-        {
-          "transition": "Delay_12",
-          "distribution": 0.0312
-        },
-        {
-          "transition": "Delay_13",
-          "distribution": 0.033
-        },
-        {
-          "transition": "Delay_14",
-          "distribution": 0.03
-        },
-        {
-          "transition": "Delay_15",
-          "distribution": 0.0343
-        },
-        {
-          "transition": "Delay_16",
-          "distribution": 0.0289
-        },
-        {
-          "transition": "Delay_17",
-          "distribution": 0.0323
-        },
-        {
-          "transition": "Delay_18",
-          "distribution": 0.0323
-        },
-        {
-          "transition": "Delay_19",
-          "distribution": 0.0346
-        },
-        {
-          "transition": "Delay_20",
-          "distribution": 0.0315
-        },
-        {
-          "transition": "Delay_21",
-          "distribution": 0.0173
-        },
-        {
-          "transition": "Delay_0",
-          "distribution": 0.04159999999999997
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "transition": "Cancerous",
+              "distribution": 0.003
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.997
+            }
+          ]
         }
       ]
     },
@@ -199,7 +143,15 @@
       ]
     },
     "Check_Bacteremia": {
-      "type": "Simple",
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 90,
+          "standardDeviation": 30
+        }
+      },
+      "unit": "minutes",
       "complex_transition": [
         {
           "condition": {
@@ -369,8 +321,8 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
+        "low": 60,
+        "high": 120,
         "unit": "minutes"
       },
       "reason": "Acute_Myeloid_Leukemia_AML",
@@ -387,7 +339,7 @@
       ],
       "duration": {
         "low": 30,
-        "high": 30,
+        "high": 120,
         "unit": "minutes"
       },
       "complex_transition": [
@@ -439,7 +391,7 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Chemotherapy"
+      "direct_transition": "Wait for Treatment"
     },
     "Death_Event": {
       "type": "Procedure",
@@ -452,14 +404,22 @@
       ],
       "duration": {
         "low": 30,
-        "high": 30,
+        "high": 60,
         "unit": "minutes"
       },
       "direct_transition": "Death",
       "reason": "Acute_Myeloid_Leukemia_AML"
     },
     "Determine_Levofloxacin_Prophylaxis": {
-      "type": "Simple",
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 90,
+          "standardDeviation": 30
+        }
+      },
+      "unit": "minutes",
       "lookup_table_transition": [
         {
           "transition": "Levofloxacin",
@@ -492,11 +452,11 @@
         }
       ],
       "duration": {
-        "low": 30,
-        "high": 30,
+        "low": 60,
+        "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "End_Levofloxacin",
+      "direct_transition": "Wait for Discharge",
       "reason": "Acute_Myeloid_Leukemia_AML"
     },
     "Delay_1": {
@@ -784,6 +744,123 @@
       "type": "ConditionEnd",
       "direct_transition": "End_Non-Febrile_Neutropenia",
       "condition_onset": "Acute_Myeloid_Leukemia_AML"
+    },
+    "Cancerous": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Delay_1",
+          "distribution": 0.098
+        },
+        {
+          "transition": "Delay_2",
+          "distribution": 0.1264
+        },
+        {
+          "transition": "Delay_3",
+          "distribution": 0.1094
+        },
+        {
+          "transition": "Delay_4",
+          "distribution": 0.0645
+        },
+        {
+          "transition": "Delay_5",
+          "distribution": 0.0533
+        },
+        {
+          "transition": "Delay_6",
+          "distribution": 0.0345
+        },
+        {
+          "transition": "Delay_7",
+          "distribution": 0.0362
+        },
+        {
+          "transition": "Delay_8",
+          "distribution": 0.0318
+        },
+        {
+          "transition": "Delay_9",
+          "distribution": 0.0354
+        },
+        {
+          "transition": "Delay_10",
+          "distribution": 0.0346
+        },
+        {
+          "transition": "Delay_11",
+          "distribution": 0.0289
+        },
+        {
+          "transition": "Delay_12",
+          "distribution": 0.0312
+        },
+        {
+          "transition": "Delay_13",
+          "distribution": 0.033
+        },
+        {
+          "transition": "Delay_14",
+          "distribution": 0.03
+        },
+        {
+          "transition": "Delay_15",
+          "distribution": 0.0343
+        },
+        {
+          "transition": "Delay_16",
+          "distribution": 0.0289
+        },
+        {
+          "transition": "Delay_17",
+          "distribution": 0.0323
+        },
+        {
+          "transition": "Delay_18",
+          "distribution": 0.0323
+        },
+        {
+          "transition": "Delay_19",
+          "distribution": 0.0346
+        },
+        {
+          "transition": "Delay_20",
+          "distribution": 0.0315
+        },
+        {
+          "transition": "Delay_21",
+          "distribution": 0.0173
+        },
+        {
+          "transition": "Delay_0",
+          "distribution": 0.04159999999999997
+        }
+      ]
+    },
+    "Wait for Treatment": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 180,
+          "standardDeviation": 60
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Chemotherapy"
+    },
+    "Wait for Discharge": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 180,
+          "standardDeviation": 60
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Levofloxacin"
     }
   },
   "remarks": [
@@ -796,6 +873,7 @@
     "",
     "Reference: McCormick M, Friehling E, Kalpatthi R, Siripong N, Smith K. Cost‐effectiveness of levofloxacin prophylaxis against bacterial infection in pediatric patients with acute myeloid leukemia. Pediatric Blood & Cancer. 2020 Oct;67(10):e28469",
     "",
+    "Update January 2023 -- inserted delays and changed population who get AML from everyone to 0.2% of the females and 0.3% of males, according to the American Cancer Society, Cancer Facts & Figures, 2022. https://www.cancer.org/content/dam/cancer-org/research/cancer-facts-and-statistics/annual-cancer-facts-and-figures/2022/2022-cancer-facts-and-figures.pdf",
     ""
   ],
   "gmf_version": 2
