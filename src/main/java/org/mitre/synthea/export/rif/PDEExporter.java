@@ -75,13 +75,13 @@ public class PDEExporter extends RIFExporter {
       }
 
       for (HealthRecord.Medication medication : encounter.medications) {
-        if (!exporter.medicationCodeMapper.canMap(medication.codes.get(0).code)) {
+        if (!exporter.medicationCodeMapper.canMap(medication.codes.get(0))) {
           continue; // skip codes that can't be mapped to NDC
         }
         long supplyDaysMax = 90; // TBD - 30, 60, 90 day refil schedules?
         long supplyInterval = supplyDaysMax * 24 * 60 * 60 * 1000;
         long finishTime = medication.stop == 0L ? stopTime : Long.min(medication.stop, stopTime);
-        String medicationCode = exporter.medicationCodeMapper.map(medication.codes.get(0).code,
+        String medicationCode = exporter.medicationCodeMapper.map(medication.codes.get(0),
                 person);
         long time = medication.start;
         int fillNo = 1;

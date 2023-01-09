@@ -4,12 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class CodeMapperTest {
   private static RandomNumberGenerator random;
@@ -57,5 +60,23 @@ public class CodeMapperTest {
   public void testDoesntThrowsExceptionWhenSuppressed() {
     Config.set("exporter.bfd.require_code_maps", "false");
     CodeMapper mapper = new CodeMapper("export/missing_code_map.json");
+  }
+
+  @Test
+  public void testMissingCodeCount() {
+    Config.set("exporter.bfd.require_code_maps", "true");
+    CodeMapper mapper = new CodeMapper("export/weighted_code_map.json");
+    assertTrue(mapper.canMap("10509002"));
+    assertFalse(mapper.canMap("abc"));
+    assertEquals(null, mapper.map("abc", random));
+    assertFalse(mapper.canMap(new Code(null, "def", "def desc")));
+    List<? extends Map<String, String>> missingCodes = mapper.getMissingCodes();
+    assertEquals(2, missingCodes.size());
+    assertEquals("abc", missingCodes.get(0).get("code"));
+    assertEquals(null, missingCodes.get(0).get("description"));
+    assertEquals("2", missingCodes.get(0).get("count"));
+    assertEquals("def", missingCodes.get(1).get("code"));
+    assertEquals("def desc", missingCodes.get(1).get("description"));
+    assertEquals("1", missingCodes.get(1).get("count"));
   }
 }

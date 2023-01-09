@@ -95,8 +95,8 @@ public class DMEExporter extends RIFExporter {
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
-        if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-          String icdCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+        if (exporter.conditionCodeMapper.canMap(encounter.reason)) {
+          String icdCode = exporter.conditionCodeMapper.map(encounter.reason, person, true);
           fieldValues.put(BB2RIFStructure.DME.PRNCPAL_DGNS_CD, icdCode);
           fieldValues.put(BB2RIFStructure.DME.LINE_ICD_DGNS_CD, icdCode);
         }
@@ -156,16 +156,14 @@ public class DMEExporter extends RIFExporter {
           } else {
             fieldValues.put(BB2RIFStructure.DME.DMERC_LINE_MTUS_CNT, "");
           }
-          if (!exporter.dmeCodeMapper.canMap(lineItem.entry.codes.get(0).code)) {
-            exporter.missingDmeCodes.put(lineItem.entry.codes.get(0).code,
-                 lineItem.entry.codes.get(0).display);
+          if (!exporter.dmeCodeMapper.canMap(lineItem.entry.codes.get(0))) {
             continue;
           }
           fieldValues.put(BB2RIFStructure.DME.CLM_FROM_DT,
                   RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(BB2RIFStructure.DME.CLM_THRU_DT,
                   RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
-          String hcpcsCode = exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0).code, person);
+          String hcpcsCode = exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0), person);
           fieldValues.put(BB2RIFStructure.DME.HCPCS_CD, hcpcsCode);
           if (exporter.betosCodeMapper.canMap(hcpcsCode)) {
             fieldValues.put(BB2RIFStructure.DME.BETOS_CD,
@@ -174,7 +172,7 @@ public class DMEExporter extends RIFExporter {
             fieldValues.put(BB2RIFStructure.DME.BETOS_CD, "");
           }
           fieldValues.put(BB2RIFStructure.DME.LINE_CMS_TYPE_SRVC_CD,
-                  exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0).code,
+                  exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0),
                           BB2RIFStructure.DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
                           person));
           fieldValues.put(BB2RIFStructure.DME.LINE_BENE_PTB_DDCTBL_AMT,

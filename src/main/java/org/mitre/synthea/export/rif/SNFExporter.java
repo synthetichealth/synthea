@@ -238,8 +238,8 @@ public class SNFExporter extends RIFExporter {
     if (encounter.reason != null) {
       // If the encounter has a recorded reason, enter the mapped
       // values into the principle diagnoses code.
-      if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-        String icdCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+      if (exporter.conditionCodeMapper.canMap(encounter.reason)) {
+        String icdCode = exporter.conditionCodeMapper.map(encounter.reason, person, true);
         fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, icdCode);
         fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, icdCode);
         if (exporter.drgCodeMapper.canMap(icdCode)) {
@@ -305,9 +305,9 @@ public class SNFExporter extends RIFExporter {
       List<String> mappedProcedureCodes = new ArrayList<>();
       for (HealthRecord.Procedure procedure : encounter.procedures) {
         for (HealthRecord.Code code : procedure.codes) {
-          if (exporter.conditionCodeMapper.canMap(code.code)) {
+          if (exporter.conditionCodeMapper.canMap(code)) {
             mappableProcedures.add(procedure);
-            mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code.code, person, true));
+            mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code, person, true));
             break; // take the first mappable code for each procedure
           }
         }
@@ -344,12 +344,12 @@ public class SNFExporter extends RIFExporter {
         String snfCode = null;
         String revCntr = null;
         for (HealthRecord.Code code : lineItem.entry.codes) {
-          if (exporter.snfRevCntrMapper.canMap(code.code)) {
-            revCntr = exporter.snfRevCntrMapper.map(code.code, person, true);
+          if (exporter.snfRevCntrMapper.canMap(code)) {
+            revCntr = exporter.snfRevCntrMapper.map(code, person, true);
           }
-          if (codeMapper.canMap(code.code)) {
+          if (codeMapper.canMap(code)) {
             if (person.rand() < 0.15) { // Only 15% of SNF claim have a HCPCS code
-              snfCode = codeMapper.map(code.code, person, true);
+              snfCode = codeMapper.map(code, person, true);
               consolidatedClaimLines.addClaimLine(snfCode, revCntr, lineItem, encounter);
             }
             break; // take the first mappable code for each procedure

@@ -476,7 +476,7 @@ public abstract class Exporter {
         exporter.exportNPIs();
         exporter.exportManifest();
         exporter.exportEndState();
-        exporter.displayMissingDmeCodes();
+        exporter.exportMissingCodes();
       } catch (IOException e) {
         e.printStackTrace();
       }

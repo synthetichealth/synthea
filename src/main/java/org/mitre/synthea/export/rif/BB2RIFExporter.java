@@ -80,7 +80,6 @@ public class BB2RIFExporter {
   final CodeMapper hhaRevCntrMapper;
   final CodeMapper hospiceRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
-  final Map<String, String> missingDmeCodes;
   final CMSStateCodeMapper locationMapper;
   final BeneficiaryExporter beneExp;
   final InpatientExporter inpatientExp;
@@ -122,7 +121,6 @@ public class BB2RIFExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
-    missingDmeCodes = new HashMap<String, String>();
     beneExp = new BeneficiaryExporter(this);
     inpatientExp = new InpatientExporter(this);
     outpatientExp = new OutpatientExporter(this);
@@ -316,14 +314,23 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Display DME codes that were not mappable during export.
+   * Export codes that were not mappable during export.
    * These missing codes might be accidental, they may be intentional.
    */
-  public void displayMissingDmeCodes() {
-    String description;
-    for (String code : missingDmeCodes.keySet()) {
-      description = missingDmeCodes.get(code);
-      System.err.println(" *** Possibly Missing DME Code: " + code + " | " + description);
+  public void exportMissingCodes() throws IOException {
+    if (Config.getAsBoolean("exporter.bfd.export_missing_codes", true)) {
+      File outputDir = Exporter.getOutputFolder("bfd", null);
+      conditionCodeMapper.exportMissingCodesToCSV(outputDir);
+      medicationCodeMapper.exportMissingCodesToCSV(outputDir);
+      drgCodeMapper.exportMissingCodesToCSV(outputDir);
+      dmeCodeMapper.exportMissingCodesToCSV(outputDir);
+      hcpcsCodeMapper.exportMissingCodesToCSV(outputDir);
+      betosCodeMapper.exportMissingCodesToCSV(outputDir);
+      snfPPSMapper.exportMissingCodesToCSV(outputDir);
+      snfPDPMMapper.exportMissingCodesToCSV(outputDir);
+      snfRevCntrMapper.exportMissingCodesToCSV(outputDir);
+      hhaRevCntrMapper.exportMissingCodesToCSV(outputDir);
+      hospiceRevCntrMapper.exportMissingCodesToCSV(outputDir);
     }
   }
 

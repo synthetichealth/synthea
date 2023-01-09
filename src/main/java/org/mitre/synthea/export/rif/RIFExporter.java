@@ -173,8 +173,8 @@ public abstract class RIFExporter {
       if (encounter.start <= time) {
         for (HealthRecord.Entry dx : encounter.conditions) {
           if (dx.start <= time && (dx.stop == 0L || dx.stop > time)) {
-            if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
-              String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0).code, person, true);
+            if (exporter.conditionCodeMapper.canMap(dx.codes.get(0))) {
+              String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0), person, true);
               // Temporarily add the mapped code... we'll remove it later.
               HealthRecord.Code mappedCode = new HealthRecord.Code("ICD10", mapped,
                       dx.codes.get(0).display);
