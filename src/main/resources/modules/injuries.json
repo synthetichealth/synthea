@@ -495,15 +495,6 @@
       ],
       "direct_transition": "Spinal_Injury_CarePlan"
     },
-    "Delay_After_Spinal_Surgery": {
-      "type": "Delay",
-      "range": {
-        "low": 1,
-        "high": 3,
-        "unit": "days"
-      },
-      "direct_transition": "Spinal_Injury_Treatment_Encounter"
-    },
     "Spinal_Injury_Treatment_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -2488,7 +2479,7 @@
     "Knee_Injury_Prescribe_Opioid": {
       "type": "CallSubmodule",
       "submodule": "medications/moderate_opioid_pain_reliever",
-      "direct_transition": "End_Knee_Injury_Encounter_II"
+      "direct_transition": "Postoperative Care"
     },
     "Knee_Injury_Prescribe_Non_Opioid": {
       "type": "CallSubmodule",
@@ -2636,7 +2627,7 @@
     "Shoulder_Surgery_Prescribe_Non_Opioid": {
       "type": "CallSubmodule",
       "submodule": "medications/otc_pain_reliever",
-      "direct_transition": "End_Shoulder_Surgery_Encounter"
+      "direct_transition": "Postoperative_Care"
     },
     "End_Shoulder_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -2894,6 +2885,55 @@
       "type": "CallSubmodule",
       "submodule": "dme/wheelchair_end",
       "direct_transition": "End_Broken_Bone_Injury"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 2
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Knee_Injury_Encounter_II",
+      "reason": "knee_injury"
+    },
+    "Postoperative_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 2
+        }
+      },
+      "unit": "days",
+      "reason": "Torn_Rotator_Cuff",
+      "direct_transition": "End_Shoulder_Surgery_Encounter"
+    },
+    "Delay_After_Spinal_Surgery": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 2
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Spinal_Injury_Treatment_Encounter"
     }
   },
   "gmf_version": 1
