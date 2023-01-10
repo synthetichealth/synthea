@@ -158,7 +158,7 @@
     },
     "Start New Cycle": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "Breast Cancer",
       "codes": [
         {
