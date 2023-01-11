@@ -277,4 +277,17 @@ public class InsurancePlan implements Serializable {
     return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
   }
 
+  @Override
+  public String toString() {
+    // an ugly toString, but the goal is just to have a consistent "thing" to sort by
+    return "InsurancePlan [payer=" + payer.getName()
+        + ", deductible=" + deductible
+        + ", defaultCopay=" + defaultCopay
+        + ", defaultCoinsurance=" + defaultCoinsurance
+        + ", monthlyPremium=" + monthlyPremium
+        + ", medicareSupplement=" + medicareSupplement
+        + ", insuranceStatus=" + insuranceStatus
+        + ", planEligibility=" + planEligibility
+        + ", activeTimeRange=" + activeTimeRange + "]";
+  }
 }

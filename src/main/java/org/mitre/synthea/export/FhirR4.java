@@ -1670,7 +1670,9 @@ public class FhirR4 {
     allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
     if (allergy.reactions != null) {
-      allergy.reactions.keySet().stream().forEach(manifestation -> {
+      List<Code> sortedReactions = new ArrayList<>(allergy.reactions.keySet());
+      sortedReactions.sort((a,b) -> a.code.compareTo(b.code));
+      sortedReactions.forEach(manifestation -> {
         AllergyIntolerance.AllergyIntoleranceReactionComponent reactionComponent =
             new AllergyIntolerance.AllergyIntoleranceReactionComponent();
         reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
