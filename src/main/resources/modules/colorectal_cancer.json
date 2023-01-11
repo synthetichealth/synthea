@@ -2,17 +2,12 @@
   "name": "Colorectal Cancer",
   "remarks": [
     "Colorectal cancer typically starts as benign polyps on the lining of the colon ",
-    "or rectum that slowly become cancerous over a period of 10-15 years. Annually ",
-    "136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S.",
-    "The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
+    "or rectum that slowly become cancerous over a period of 10-15 years. Annually 136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S. The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
     "source: http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-key-statistics",
     "Some things not modeled in this module: ",
     "1. Colorectal cancer in children. Although possible it's highly unlikely. ",
-    "2. Diabetes, obesity, and poor diet as risk factors. I could not find any ",
-    "   conclusive statistics or reports linking these to an increased incidence ",
-    "   of colorectal cancer. ",
-    "3. The progression of cancer from one stage to another. Whatever stage the patient ",
-    "   is initially diagnosed at they remain at."
+    "2. Diabetes, obesity, and poor diet as risk factors. I could not find any conclusive statistics or reports linking these to an increased incidence of colorectal cancer. ",
+    "3. The progression of cancer from one stage to another. Whatever stage the patient is initially diagnosed at they remain at."
   ],
   "states": {
     "Initial": {
@@ -1210,7 +1205,15 @@
           "display": "Partial resection of colon"
         }
       ],
-      "direct_transition": "Pain_Vital_3"
+      "direct_transition": "Pain_Vital_3",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low": 30,
+          "high": 60
+        }
+      },
+      "unit": "minutes"
     },
     "Partial_Colectomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1234,7 +1237,7 @@
           "display": "Administration of intravenous fluids"
         }
       ],
-      "direct_transition": "End_Partial_Colectomy_Encounter"
+      "direct_transition": "Postoperative Care"
     },
     "End_Partial_Colectomy_Encounter": {
       "type": "EncounterEnd",
@@ -1335,7 +1338,15 @@
           "display": "Construction of diverting colostomy"
         }
       ],
-      "direct_transition": "Pain_Vital_2"
+      "direct_transition": "Pain_Vital_2",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low": 30,
+          "high": 60
+        }
+      },
+      "unit": "minutes"
     },
     "Diverting_Colostomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1359,7 +1370,7 @@
           "display": "Administration of intravenous fluids"
         }
       ],
-      "direct_transition": "End_Diverting_Colostomy_Encounter"
+      "direct_transition": "Postoperative_Care"
     },
     "End_Diverting_Colostomy_Encounter": {
       "type": "EncounterEnd",
@@ -2105,6 +2116,44 @@
       "attribute": "hospice_reason",
       "direct_transition": "Wait_For_Oncologist_Encounter",
       "value_attribute": "colorectal_cancer"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 5
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer"
+    },
+    "Postoperative_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "unit": "days",
+      "reason": "colorectal_cancer",
+      "direct_transition": "End_Diverting_Colostomy_Encounter"
     }
   },
   "gmf_version": 1

@@ -1800,7 +1800,7 @@
           "display": "Methotrexate injection into tubal pregnancy"
         }
       ],
-      "direct_transition": "End_Miscarriage_Encounter"
+      "direct_transition": "Length of Stay"
     },
     "Ectopic_Pregnancy_Surgery_Procedure": {
       "type": "Procedure",
@@ -1812,7 +1812,7 @@
           "display": "Excision of fallopian tube and surgical removal of ectopic pregnancy"
         }
       ],
-      "direct_transition": "End_Miscarriage_Encounter"
+      "direct_transition": "Length of Stay"
     },
     "Late_Fetal_Chromosomal_Anomaly": {
       "type": "ConditionOnset",
@@ -2312,6 +2312,25 @@
       "attribute": "anemia_pregnancy",
       "value": 0,
       "direct_transition": "Unset_Pregnant_Attribute"
+    },
+    "Length of Stay": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 2.5
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Miscarriage_Encounter",
+      "reason": "Ectopic_Pregnancy"
     }
   },
   "gmf_version": 1
