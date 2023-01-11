@@ -684,7 +684,6 @@
     },
     "Pneumonia": {
       "type": "ConditionOnset",
-      "target_encounter": "PneumoniaEncounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -695,20 +694,22 @@
       "remarks": [
         "Pneumonia is one of the most common causes of death among Alzheimer’s patients"
       ],
-      "direct_transition": "PneumoniaEncounter"
+      "direct_transition": "PneumoniaEncounter",
+      "assign_to_attribute": "hospice_reason",
+      "target_encounter": "PneumoniaEncounter"
     },
     "PneumoniaEncounter": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
-      "reason": "Type of Alzheimer's",
+      "encounter_class": "emergency",
+      "reason": "Pneumonia",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305336008,
-          "display": "Admission to hospice (procedure)"
+          "code": 4525004,
+          "display": "Emergency department patient visit (procedure)"
         }
       ],
-      "direct_transition": "PneumoniaDeath"
+      "direct_transition": "Emergency Time"
     },
     "PneumoniaDeath": {
       "type": "Death",
@@ -718,7 +719,7 @@
         "unit": "days"
       },
       "condition_onset": "Pneumonia",
-      "direct_transition": "Terminal"
+      "direct_transition": "Admit to Hospice"
     },
     "Death": {
       "type": "Death",
@@ -737,6 +738,32 @@
       "attribute": "hospice_reason",
       "direct_transition": "NoImpairment",
       "value_attribute": "Type of Alzheimer's"
+    },
+    "Admit to Hospice": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "Emergency Time": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "End Emergency Visit"
+    },
+    "End Emergency Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "PneumoniaDeath",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": 50,
+        "display": "Discharged/transferred to Hospice - home"
+      }
     }
   },
   "gmf_version": 1

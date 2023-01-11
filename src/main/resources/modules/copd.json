@@ -921,7 +921,7 @@
         "high": 7,
         "unit": "hours"
       },
-      "direct_transition": "End_Surgery_Encounter"
+      "direct_transition": "Postoperative_Observation"
     },
     "Lung_Volume_Reduction": {
       "type": "Procedure",
@@ -933,7 +933,7 @@
           "display": "Lung volume reduction surgery (procedure)"
         }
       ],
-      "direct_transition": "End_Surgery_Encounter"
+      "direct_transition": "Postoperative_Care"
     },
     "End_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -1218,6 +1218,45 @@
       "type": "CallSubmodule",
       "submodule": "dme/wheelchair",
       "direct_transition": "End_COPD_Followup_Enc1"
+    },
+    "Postoperative_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 10
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Surgery_Encounter",
+      "reason": "copd_variant"
+    },
+    "Postoperative_Observation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225415001,
+          "display": "Close observation (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 36,
+          "low": 24
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Postoperative_Care",
+      "reason": "colorectal_cancer"
     }
   },
   "gmf_version": 1

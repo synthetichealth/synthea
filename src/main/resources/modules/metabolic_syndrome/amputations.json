@@ -221,7 +221,8 @@
           "display": "History of lower limb amputation (situation)"
         }
       ],
-      "direct_transition": "Recovery_After_Amputation"
+      "direct_transition": "Recovery_After_Amputation",
+      "assign_to_attribute": "last_amputation"
     },
     "History_of_Foot_Amputation": {
       "type": "ConditionOnset",
@@ -232,7 +233,8 @@
           "display": "History of amputation of foot (situation)"
         }
       ],
-      "direct_transition": "Recovery_After_Amputation"
+      "direct_transition": "Recovery_After_Amputation",
+      "assign_to_attribute": "last_amputation"
     },
     "Potential_Amputation_of_Left_Hand": {
       "type": "Simple",
@@ -389,7 +391,8 @@
           "display": "History of upper limb amputation (situation)"
         }
       ],
-      "direct_transition": "Recovery_After_Amputation"
+      "direct_transition": "Recovery_After_Amputation",
+      "assign_to_attribute": "last_amputation"
     },
     "History_of_Hand_Amputation": {
       "type": "ConditionOnset",
@@ -400,16 +403,27 @@
           "display": "History of disarticulation at wrist (situation)"
         }
       ],
-      "direct_transition": "Recovery_After_Amputation"
+      "direct_transition": "Recovery_After_Amputation",
+      "assign_to_attribute": "last_amputation"
     },
     "Recovery_After_Amputation": {
-      "type": "Delay",
-      "range": {
-        "low": 3,
-        "high": 6,
-        "unit": "weeks"
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386510005,
+          "display": "Amputation care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 30
+        }
       },
-      "direct_transition": "End_Amputation_Encounter"
+      "unit": "days",
+      "direct_transition": "End_Amputation_Encounter",
+      "reason": "last_amputation"
     },
     "End_Amputation_Encounter": {
       "type": "EncounterEnd",
@@ -418,5 +432,6 @@
     "Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2
 }

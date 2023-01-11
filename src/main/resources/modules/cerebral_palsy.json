@@ -955,7 +955,7 @@
     },
     "Surgical_Encounter1": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1541,5 +1541,6 @@
     "Reference: AACPDM Clinical Care Pathway for Sialorrhea in Cerebral Palsy  (September 2017, AACPDM Care Pathways, for review 2020) https://www.aacpdm.org/publications/care-pathways/sialorrhea",
     "",
     ""
-  ]
+  ],
+  "gmf_version": 2
 }
