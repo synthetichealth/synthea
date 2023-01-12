@@ -2604,13 +2604,12 @@
     "Set SCLC LOS": {
       "type": "SetAttribute",
       "attribute": "lung_cancer_los",
-      "direct_transition": "Begin SCLC Day",
+      "direct_transition": "Minimum of 3 days",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "EXPONENTIAL",
         "round": true,
         "parameters": {
-          "mean": 5,
-          "standardDeviation": 1
+          "mean": 3
         }
       }
     },
@@ -2642,14 +2641,13 @@
       "type": "SetAttribute",
       "attribute": "lung_cancer_los",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "EXPONENTIAL",
         "round": true,
         "parameters": {
-          "mean": 5,
-          "standardDeviation": 1
+          "mean": 3
         }
       },
-      "direct_transition": "Begin_NSCLC_Day"
+      "direct_transition": "Minimum_of_3_days"
     },
     "Delay_2": {
       "type": "Delay",
@@ -2680,6 +2678,20 @@
       "attribute": "lung_cancer_los",
       "action": "decrement",
       "direct_transition": "Hearing Test"
+    },
+    "Minimum of 3 days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "direct_transition": "Begin SCLC Day",
+      "amount": 2
+    },
+    "Minimum_of_3_days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_NSCLC_Day"
     }
   },
   "gmf_version": 1

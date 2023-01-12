@@ -739,8 +739,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
-          "display": "Postoperative care"
+          "code": 736372004,
+          "display": "Discharge care plan (record artifact)"
         }
       ],
       "direct_transition": "Prescribe_Opioids",
