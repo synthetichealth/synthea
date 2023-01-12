@@ -965,14 +965,13 @@
       "type": "SetAttribute",
       "attribute": "lung_cancer_los",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "EXPONENTIAL",
         "round": true,
         "parameters": {
-          "mean": 5,
-          "standardDeviation": 1
+          "mean": 3
         }
       },
-      "direct_transition": "Begin_SCLC_Day"
+      "direct_transition": "Minimum_of_3_days"
     },
     "Begin_SCLC_Day": {
       "type": "Counter",
@@ -1008,14 +1007,13 @@
       "type": "SetAttribute",
       "attribute": "lung_cancer_los",
       "distribution": {
-        "kind": "GAUSSIAN",
+        "kind": "EXPONENTIAL",
         "round": true,
         "parameters": {
-          "mean": 5,
-          "standardDeviation": 1
+          "mean": 3
         }
       },
-      "direct_transition": "Begin_NSCLC_Day"
+      "direct_transition": "Minimum_of_3_days_2"
     },
     "Begin_NSCLC_Day": {
       "type": "Counter",
@@ -1046,6 +1044,20 @@
           "transition": "End_NSCLC_Treatment_Encounter"
         }
       ]
+    },
+    "Minimum_of_3_days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_SCLC_Day"
+    },
+    "Minimum_of_3_days_2": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_NSCLC_Day"
     }
   },
   "gmf_version": 1
