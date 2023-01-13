@@ -221,7 +221,7 @@ public class BB2RIFExporter {
     output.mkdirs();
     StringWriter manifest = new StringWriter();
     manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-    manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
+    manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v10\"");
     manifest.write(String.format(" timestamp=\"%s\" ",
              java.time.Instant.now()
                      .atZone(ZoneOffset.UTC)
