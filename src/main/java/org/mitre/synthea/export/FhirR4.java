@@ -1675,18 +1675,20 @@ public class FhirR4 {
             new AllergyIntolerance.AllergyIntoleranceReactionComponent();
         reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
         HealthRecord.ReactionSeverity severity = allergy.reactions.get(manifestation);
-        switch (severity) {
-          case MILD:
-            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MILD);
-            break;
-          case MODERATE:
-            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MODERATE);
-            break;
-          case SEVERE:
-            reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.SEVERE);
-            break;
-          default:
-            // do nothing
+        if (severity != null) {
+          switch (severity) {
+            case MILD:
+              reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MILD);
+              break;
+            case MODERATE:
+              reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.MODERATE);
+              break;
+            case SEVERE:
+              reactionComponent.setSeverity(AllergyIntolerance.AllergyIntoleranceSeverity.SEVERE);
+              break;
+            default:
+              // do nothing
+          }
         }
         allergyResource.addReaction(reactionComponent);
       });

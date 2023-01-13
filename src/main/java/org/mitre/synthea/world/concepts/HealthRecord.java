@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -46,6 +47,36 @@ public class HealthRecord implements Serializable {
    * HealthRecord.Code represents a system, code, and display value.
    */
   public static class Code implements Comparable<Code>, Serializable {
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 67 * hash + Objects.hashCode(this.system);
+      hash = 67 * hash + Objects.hashCode(this.code);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final Code other = (Code) obj;
+      if (!Objects.equals(this.code, other.code)) {
+        return false;
+      }
+      if (!Objects.equals(this.system, other.system)) {
+        return false;
+      }
+      return true;
+    }
+
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
     /** The code itself. */
@@ -81,10 +112,6 @@ public class HealthRecord implements Serializable {
       this.system = definition.get("system").getAsString();
       this.code = definition.get("code").getAsString();
       this.display = definition.get("display").getAsString();
-    }
-
-    public boolean equals(Code other) {
-      return this.system.equals(other.system) && this.code.equals(other.code);
     }
 
     public String toString() {

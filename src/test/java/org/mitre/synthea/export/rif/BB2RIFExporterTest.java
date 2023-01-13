@@ -31,6 +31,7 @@ import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class BB2RIFExporterTest {
 
@@ -39,10 +40,12 @@ public class BB2RIFExporterTest {
       super("MOCK_MAPPING_FILE_THAT_DOES_NOT_EXIST.JSON");
     }
 
-    public boolean canMap(String codeToMap) {
+    @Override
+    public boolean canMap(Code codeToMap) {
       return true;
     }
 
+    @Override
     public boolean hasMap() {
       return true;
     }
@@ -55,7 +58,8 @@ public class BB2RIFExporterTest {
      * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
      * @return the BFD code or null if the code can't be mapped
      */
-    public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand,
+    @Override
+    public String map(Code codeToMap, String bfdCodeType, RandomNumberGenerator rand,
         boolean stripDots) {
       if (bfdCodeType.equalsIgnoreCase("code")) {
         return "XXXX";
