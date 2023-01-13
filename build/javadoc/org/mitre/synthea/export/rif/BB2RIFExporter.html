@@ -185,13 +185,6 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#displayMissingDmeCodes()">displayMissingDmeCodes</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Display DME codes that were not mappable during export.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#export(org.mitre.synthea.world.agents.Person,long,int)">export</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
       long&nbsp;stopTime,
       int&nbsp;yearsOfHistory)</code></th>
@@ -199,19 +192,26 @@ extends java.lang.Object</pre>
 <div class="block">Export a single person.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exportEndState()">exportEndState</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Export the current values of IDs so subsequent runs can use them as a starting point.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exportManifest()">exportManifest</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Export a manifest file that lists all of the other BFD files (except the NPI file
  which is special).</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exportMissingCodes()">exportMissingCodes</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Export codes that were not mappable during export.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
@@ -298,15 +298,20 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="displayMissingDmeCodes()">
+<a id="exportMissingCodes()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>displayMissingDmeCodes</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;displayMissingDmeCodes()</pre>
-<div class="block">Display DME codes that were not mappable during export.
+<h4>exportMissingCodes</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;exportMissingCodes()
+                        throws java.io.IOException</pre>
+<div class="block">Export codes that were not mappable during export.
  These missing codes might be accidental, they may be intentional.</div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
+</dl>
 </li>
 </ul>
 <a id="export(org.mitre.synthea.world.agents.Person,long,int)">
