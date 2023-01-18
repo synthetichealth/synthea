@@ -449,7 +449,7 @@ public class Provider implements QuadTreeElement, Serializable {
       return;
     }
 
-    String resource = Utilities.readResourceOrPath(filename);
+    String resource = Utilities.readResource(filename, true, true);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
 
     while (csv.hasNext()) {

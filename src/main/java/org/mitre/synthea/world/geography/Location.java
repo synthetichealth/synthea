@@ -405,7 +405,7 @@ public class Location implements Serializable {
     String filename = null;
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
-      String csv = Utilities.readResourceOrPath(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
 
       for (Map<String,String> line : ziplist) {
@@ -466,7 +466,7 @@ public class Location implements Serializable {
     String filename = null;
     try {
       filename = Config.get("generate.geography.timezones.default_file");
-      String csv = Utilities.readResourceOrPath(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> tzlist = SimpleCSV.parse(csv);
 
       for (Map<String,String> line : tzlist) {

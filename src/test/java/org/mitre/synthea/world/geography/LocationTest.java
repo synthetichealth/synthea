@@ -102,11 +102,11 @@ public class LocationTest {
   @Test
   public void testAllDemographicsHaveLocations() throws Exception {
     String demoFileContents =
-        Utilities.readResourceOrPath(Config.get("generate.demographics.default_file"));
+        Utilities.readResource(Config.get("generate.demographics.default_file"), true, true);
     List<LinkedHashMap<String, String>> demographics = SimpleCSV.parse(demoFileContents);
 
     String zipFileContents =
-        Utilities.readResourceOrPath(Config.get("generate.geography.zipcodes.default_file"));
+        Utilities.readResource(Config.get("generate.geography.zipcodes.default_file"), true, true);
     List<LinkedHashMap<String, String>> zips = SimpleCSV.parse(zipFileContents);
 
     // parse all the locations from the zip codes and put them in a a set.
