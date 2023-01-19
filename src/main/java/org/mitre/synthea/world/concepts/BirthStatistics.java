@@ -57,7 +57,7 @@ public class BirthStatistics {
     String filename = Config.get("generate.birthweights.default_file");
     List<? extends Map<String,String>> csv = null;
     try {
-      String resource = Utilities.readResource(filename);
+      String resource = Utilities.readResource(filename, true, true);
       csv = SimpleCSV.parse(resource);
     } catch (Exception e) {
       System.err.println("Failed to load default birth weight file!");
