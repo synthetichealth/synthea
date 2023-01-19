@@ -192,6 +192,19 @@ task rif2CCW(type: JavaExec) {
   mainClass = "org.mitre.synthea.export.rif.tools.BB2RIF2CCW"
 }
 
+if (project.hasProperty("args")) {
+    ext.cmdLineArgs = project.getProperty("args")
+} else {
+    ext.cmdLineArgs = ""
+}
+task rifBeneSplit(type: JavaExec) {
+  group 'Application'
+  description 'Split original 3  RIF file bene export into one file per year'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFBeneSplitter"
+  args cmdLineArgs.split()
+}
+
 shadowJar {
   def versionFile = new File("$projectDir/src/main/resources/version.txt")
   def versionText = "N/A"
