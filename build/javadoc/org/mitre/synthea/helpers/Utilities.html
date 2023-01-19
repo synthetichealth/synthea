@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -359,12 +359,28 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResource(java.lang.String,boolean,boolean)">readResource</a></span>&#8203;(java.lang.String&nbsp;filename,
+            boolean&nbsp;stripBOM,
+            boolean&nbsp;allowFreePath)</code></th>
+<td class="colLast">
+<div class="block">Read the entire contents of a file into a String.</div>
+</td>
+</tr>
+<tr id="i21" class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResourceAndStripBOM(java.lang.String)">readResourceAndStripBOM</a></span>&#8203;(java.lang.String&nbsp;filename)</code></th>
 <td class="colLast">
 <div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResourceOrPath(java.lang.String)">readResourceOrPath</a></span>&#8203;(java.lang.String&nbsp;filename)</code></th>
+<td class="colLast">
+<div class="block">Read the entire contents of a file into a String.</div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#strToObject(java.lang.Class,java.lang.String)">strToObject</a></span>&#8203;(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code></th>
@@ -372,7 +388,7 @@ extends java.lang.Object</pre>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#walkAllModules(java.nio.file.Path,java.util.function.Consumer)">walkAllModules</a></span>&#8203;(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code></th>
@@ -381,7 +397,7 @@ extends java.lang.Object</pre>
  function for every module underneath.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#walkAllModules(java.util.function.BiConsumer)">walkAllModules</a></span>&#8203;(java.util.function.BiConsumer&lt;java.nio.file.Path,&#8203;java.nio.file.Path&gt;&nbsp;action)</code></th>
 <td class="colLast">
@@ -692,6 +708,51 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>filename</code> - Path to the file, relative to src/main/resources.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The entire text contents of the file.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if any error occurs reading the file</dd>
+</dl>
+</li>
+</ul>
+<a id="readResource(java.lang.String,boolean,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readResource</h4>
+<pre class="methodSignature">public static final&nbsp;java.lang.String&nbsp;readResource&#8203;(java.lang.String&nbsp;filename,
+                                                  boolean&nbsp;stripBOM,
+                                                  boolean&nbsp;allowFreePath)
+                                           throws java.io.IOException</pre>
+<div class="block">Read the entire contents of a file into a String.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filename</code> - Path to the file.</dd>
+<dd><code>stripBOM</code> - Whether or not to check for and strip a BOM
+     -- see <a href="#readResourceAndStripBOM(java.lang.String)"><code>readResourceAndStripBOM(String)</code></a> for more info</dd>
+<dd><code>allowFreePath</code> - If false, the file must be within src/main/resources.
+     If true, the file may be anywhere on the filesystem.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The entire text contents of the file.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if any error occurs reading the file</dd>
+</dl>
+</li>
+</ul>
+<a id="readResourceOrPath(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readResourceOrPath</h4>
+<pre class="methodSignature">public static final&nbsp;java.lang.String&nbsp;readResourceOrPath&#8203;(java.lang.String&nbsp;filename)
+                                                 throws java.io.IOException</pre>
+<div class="block">Read the entire contents of a file into a String.
+ The file may be relative to src/main/resources or anywhere on the filesystem.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filename</code> - Path to the files.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The entire text contents of the file.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
