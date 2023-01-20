@@ -52,7 +52,7 @@ public abstract class FhirPractitionerExporterR4 {
             ArrayList<Clinician> docs = clinicians.get(specialty);
             for (Clinician doc : docs) {
               if (doc.getEncounterCount() > 0) {
-                BundleEntryComponent entry = FhirR4.practitioner(rand, bundle, doc);
+                BundleEntryComponent entry = FhirR4.practitioner(bundle, doc);
                 Practitioner practitioner = (Practitioner) entry.getResource();
                 practitioner.addExtension()
                   .setUrl(EXTENSION_URI)

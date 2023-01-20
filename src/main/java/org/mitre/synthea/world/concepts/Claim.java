@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.world.agents.PayerManager;
@@ -217,6 +218,7 @@ public class Claim implements Serializable {
   public ClaimEntry mainEntry;
   public List<ClaimEntry> items;
   public ClaimEntry totals;
+  public final UUID uuid;
 
   /**
    * Constructor of a Claim for an Entry.
@@ -249,6 +251,7 @@ public class Claim implements Serializable {
     }
     this.items = new ArrayList<ClaimEntry>();
     this.totals = new ClaimEntry(entry);
+    this.uuid = this.person.randUUID();
   }
 
   /**
