@@ -15,7 +15,7 @@
     },
     "UTI_ED_Bundle": {
       "type": "CallSubmodule",
-      "submodule": "UTI_ ED_Bundle",
+      "submodule": "UTI_ED_Bundle",
       "name": "UTI_ED_Bundle",
       "complex_transition": [
         {
