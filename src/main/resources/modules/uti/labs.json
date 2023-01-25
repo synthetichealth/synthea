@@ -591,164 +591,60 @@
       ]
     },
     "E Coli": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "E Coli",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Escherichia coli"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Escherichia coli"
     },
     "Klebsiella": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Klebsiella",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Klebsiella pneumoniae"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Klebsiella pneumoniae"
     },
     "Enterococcus": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Enterococcus",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Enterococcus faecalis"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Enterococcus faecalis"
     },
     "Proteus": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Proteus",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Proteus mirabilis"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Proteus mirabilis"
     },
     "Pseudomonas": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Pseudomonas",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Pseudomonas aeruginosa"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Pseudomonas aeruginosa"
     },
     "Klebsiella oxytoca": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Klebsiella oxytoca",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Klebsiella oxytoca"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Klebsiella oxytoca"
     },
     "Citrobacter": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Citrobacter",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Citrobacter freundii complex"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Citrobacter freundii complex"
     },
     "Staphylococcus": {
-      "type": "Observation",
-      "category": "laboratory",
-      "unit": "",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "630-4",
-          "display": "Bacteria identified in Urine by Culture",
-          "value_set": ""
-        }
-      ],
-      "direct_transition": "Terminal",
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
       "name": "Staphylococcus",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": "1234",
-        "display": "Greater than 100,000 colony forming units per mL Staphylococcus aureus"
-      }
+      "value": "Greater than 100,000 colony forming units per mL Staphylococcus aureus"
     },
     "No Growth": {
       "type": "Observation",
@@ -769,6 +665,22 @@
         "code": 264868006,
         "display": "No growth (qualifier value)"
       }
+    },
+    "Observe Bacteria": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "630-4",
+          "display": "Bacteria identified in Urine by Culture",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Observe Bacteria",
+      "attribute": "UTI_Bacteria"
     }
   },
   "gmf_version": 2
