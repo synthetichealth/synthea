@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,7 +67,7 @@ public class Module implements Cloneable, Serializable {
   private static final Map<String, ModuleSupplier> modules = loadModules();
 
   private static Map<String, ModuleSupplier> loadModules() {
-    Map<String, ModuleSupplier> retVal = new ConcurrentHashMap<>();
+    Map<String, ModuleSupplier> retVal = new TreeMap<>();
     int submoduleCount = 0;
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));

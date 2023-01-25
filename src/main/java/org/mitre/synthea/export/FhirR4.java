@@ -2494,8 +2494,11 @@ public class FhirR4 {
         .setContentType("text/plain; charset=utf-8")
         .setData(clinicalNoteText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
+    // the note text might be exactly identical for multiple encounters,
+    // so to ensure the UUID is unique use the encounter ID as the key
+    // IMPORTANT: if this function is called more than once per encounter, change here and below!
     String reportUUID = ExportHelper.buildUUID(person, 0,
-        "DiagnosticReport for note " + clinicalNoteText);
+        "DiagnosticReport for note on encounter " + encounter.getId());
     newEntry(bundle, reportResource, reportUUID);
 
     if (shouldExport(DocumentReference.class)) {
@@ -2533,7 +2536,7 @@ public class FhirR4 {
           .setPeriod(encounter.getPeriod()));
 
       String documentUUID = ExportHelper.buildUUID(person, 0,
-          "DocumentReference for note " + clinicalNoteText);
+          "DocumentReference for note on encounter " + encounter.getId());
 
       newEntry(bundle, documentReference, documentUUID);
     }
