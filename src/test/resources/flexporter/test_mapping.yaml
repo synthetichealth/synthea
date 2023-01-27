@@ -108,38 +108,16 @@ actions:
          - location: ServiceRequest.code
            value: $getField([Procedure.code])
 
-
          # this works if the VS is loaded but otherwise tries to make a network lookup
          # so disable for now
          # - location: ServiceRequest.code.coding
          #   value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
+
        # TODO: is "writeback" the best term here?
        writeback:
          - location: Procedure.basedOn.reference
            value: $setRef([ServiceRequest])
 
- - name: testCreateResources_createBasedOn_JS
-   create_resource_js: 
-     - resourceType: ServiceRequest
-       based_on: Procedure
-       fields:
-         - location: ServiceRequest.intent
-           value: plan
-         - location: ServiceRequest.encounter.reference
-           value: $getField([Procedure.encounter.reference])
-         - location: ServiceRequest.subject.reference
-           value: $findRef([Patient])
-         # - location: ServiceRequest.code.coding
-         #   value: $getField([Procedure.code.coding])      # <-- STILL WIP
-
-         # this works if the VS is loaded but otherwise tries to make a network lookup
-         # so disable for now
-         # - location: ServiceRequest.code.coding
-         #   value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
-       # TODO: is "writeback" the best term here?
-       writeback:
-         - location: Procedure.basedOn.reference
-           value: $setRef([ServiceRequest])
 
  - name: testCreateResources_getAttribute
    create_resource: 
@@ -169,7 +147,10 @@ actions:
            }
          }
 
-# TODO: on keep/delete, check for references to removed items!!
+ - name: testDateFilter
+   min_date: !!str "2000-01-01T00:00:00"
+   max_date: !!str "2000-12-31T23:59:59"
+
  - name: testKeepResources
    keep_resources:
      - Patient
@@ -179,3 +160,7 @@ actions:
  - name: testDeleteResources
    delete_resources:
      - Provenance
+
+ - name: testDeleteResourcesCascade
+   delete_resources:
+     - Patient

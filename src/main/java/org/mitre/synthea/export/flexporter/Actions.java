@@ -2,6 +2,7 @@ package org.mitre.synthea.export.flexporter;
 
 import ca.uhn.fhir.parser.IParser;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,9 +19,24 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
+import org.hl7.fhir.r4.model.CarePlan;
+import org.hl7.fhir.r4.model.Claim;
+import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.DiagnosticReport;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.ExplanationOfBenefit;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.mitre.synthea.export.FhirR4;
+import org.mitre.synthea.export.flexporter.FieldWrapper.DateFieldWrapper;
+import org.mitre.synthea.export.flexporter.FieldWrapper.ReferenceFieldWrapper;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
@@ -80,6 +96,9 @@ public abstract class Actions {
     } else if (action.containsKey("create_resource")) {
       createResource(bundle, (List<Map<String, Object>>) action.get("create_resource"), person,
           null);
+
+    } else if (action.containsKey("min_date") || action.containsKey("max_date")) {
+      dateFilter(returnBundle, (String)action.get("min_date"), (String)action.get("max_date"));
 
     } else if (action.containsKey("execute_script")) {
       returnBundle = executeScript((List<Map<String, String>>) action.get("execute_script"), bundle,
@@ -352,7 +371,78 @@ public abstract class Actions {
       }
     }
 
-    // TODO: additional passes for deleted resource IDs
+    if (!deletedResourceIDs.isEmpty()) {
+      pruneDeletedResources(bundle, deletedResourceIDs);
+    }
+  }
+
+
+  private static final Map<ResourceType, List<DateFieldWrapper>> DATE_FIELDS = buildDateFields();
+
+  private static Map<ResourceType, List<DateFieldWrapper>> buildDateFields() {
+    Map<ResourceType, List<DateFieldWrapper>> dateFields = new HashMap<>();
+
+    dateFields.put(ResourceType.Encounter, List.of(
+        new DateFieldWrapper(Encounter.class, "period")
+      ));
+
+    dateFields.put(ResourceType.Condition, List.of(
+          new DateFieldWrapper(Condition.class, "onsetDateTime")
+        ));
+
+    dateFields.put(ResourceType.Procedure, List.of(
+        new DateFieldWrapper(Procedure.class, "performed[x]") // Period or dateTime
+      ));
+
+    dateFields.put(ResourceType.MedicationRequest, List.of(
+        new DateFieldWrapper(MedicationRequest.class, "authoredOn")
+      ));
+
+    return dateFields;
+  }
+
+  public static void dateFilter(Bundle bundle, String minDateStr, String maxDateStr) {
+    if (minDateStr == null && maxDateStr == null) {
+      return;
+    }
+
+    // TODO: support dates with or without time
+    LocalDateTime minDate = null;
+    LocalDateTime maxDate = null;
+
+    if (minDateStr != null) {
+      minDate = LocalDateTime.parse(minDateStr);
+    }
+
+    if (maxDateStr != null) {
+      maxDate = LocalDateTime.parse(maxDateStr);
+    }
+
+    Set<String> deletedResourceIDs = new HashSet<>();
+
+    Iterator<BundleEntryComponent> itr = bundle.getEntry().iterator();
+
+    while (itr.hasNext()) {
+      BundleEntryComponent entry = itr.next();
+
+      Resource resource = entry.getResource();
+      List<DateFieldWrapper> dateFieldsOnResource = DATE_FIELDS.get(resource.getResourceType());
+
+      if (dateFieldsOnResource == null) {
+        continue;
+      }
+
+      for (DateFieldWrapper dateField : dateFieldsOnResource) {
+        if (!dateField.valueInRange(resource, minDate, maxDate)) {
+          deletedResourceIDs.add(resource.getId());
+          itr.remove();
+        }
+      }
+    }
+
+    if (!deletedResourceIDs.isEmpty()) {
+      pruneDeletedResources(bundle, deletedResourceIDs);
+    }
   }
 
   /**
@@ -381,7 +471,115 @@ public abstract class Actions {
       }
     }
 
-    // TODO: additional passes for deleted resource IDs
+    if (!deletedResourceIDs.isEmpty()) {
+      pruneDeletedResources(bundle, deletedResourceIDs);
+    }
+  }
+
+  private static final Map<ResourceType, List<ReferenceFieldWrapper>> REFERENCE_FIELDS =
+      buildReferenceFields();
+
+  private static Map<ResourceType, List<ReferenceFieldWrapper>> buildReferenceFields() {
+    Map<ResourceType, List<ReferenceFieldWrapper>> refFields = new HashMap<>();
+
+    refFields.put(ResourceType.Encounter, List.of(
+        new ReferenceFieldWrapper(Encounter.class, "subject")
+      ));
+
+    refFields.put(ResourceType.Condition, List.of(
+          new ReferenceFieldWrapper(Condition.class, "subject"),
+          new ReferenceFieldWrapper(Condition.class, "encounter")
+        ));
+
+    refFields.put(ResourceType.Procedure, List.of(
+        new ReferenceFieldWrapper(Procedure.class, "subject"),
+        new ReferenceFieldWrapper(Procedure.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.MedicationRequest, List.of(
+        new ReferenceFieldWrapper(MedicationRequest.class, "subject"),
+        new ReferenceFieldWrapper(MedicationRequest.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.MedicationAdministration, List.of(
+        new ReferenceFieldWrapper(MedicationAdministration.class, "subject"),
+        new ReferenceFieldWrapper(MedicationAdministration.class, "context")
+      ));
+
+    refFields.put(ResourceType.Observation, List.of(
+        new ReferenceFieldWrapper(Observation.class, "subject"),
+        new ReferenceFieldWrapper(Observation.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.DiagnosticReport, List.of(
+        new ReferenceFieldWrapper(DiagnosticReport.class, "subject"),
+        new ReferenceFieldWrapper(DiagnosticReport.class, "encounter"),
+        new ReferenceFieldWrapper(DiagnosticReport.class, "result")
+      ));
+
+    refFields.put(ResourceType.CarePlan, List.of(
+        new ReferenceFieldWrapper(CarePlan.class, "subject"),
+        new ReferenceFieldWrapper(CarePlan.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.DocumentReference, List.of(
+        new ReferenceFieldWrapper(DocumentReference.class, "subject")
+      ));
+
+    refFields.put(ResourceType.Claim, List.of(
+        new ReferenceFieldWrapper(Claim.class, "patient")
+      ));
+
+    refFields.put(ResourceType.ExplanationOfBenefit, List.of(
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "patient"),
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "claim")
+      ));
+
+    refFields.put(ResourceType.Provenance, List.of(
+        new ReferenceFieldWrapper(Provenance.class, "target")
+      ));
+
+    return refFields;
+  }
+
+  // TODO: add modes -- cascade delete resources, clear out the one field, etc
+  private static void pruneDeletedResources(Bundle bundle, Set<String> deletedResourceIDs) {
+    Iterator<BundleEntryComponent> itr = bundle.getEntry().iterator();
+
+    Set<String> deletedIDsThisRound = new HashSet<>();
+
+    while (itr.hasNext()) {
+      BundleEntryComponent entry = itr.next();
+
+      Resource resource = entry.getResource();
+
+      List<ReferenceFieldWrapper> references = REFERENCE_FIELDS.get(resource.getResourceType());
+
+      if (references == null) {
+        continue;
+      }
+
+      for (ReferenceFieldWrapper rf : references) {
+        List<String> referencedIDs = rf.getReferences(resource);
+
+        boolean deleted = false;
+        for (String referencedID : referencedIDs) {
+          if (deletedResourceIDs.contains(referencedID)) {
+            deletedIDsThisRound.add(resource.getId());
+            itr.remove();
+            deleted = true;
+            break;
+          }
+        }
+        if (deleted) {
+          break;
+        }
+      }
+    }
+
+    if (!deletedIDsThisRound.isEmpty()) {
+      pruneDeletedResources(bundle, deletedIDsThisRound);
+    }
   }
 
   /**

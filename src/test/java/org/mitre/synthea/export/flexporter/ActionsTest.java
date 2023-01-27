@@ -292,6 +292,34 @@ public class ActionsTest {
         .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
 
     assertEquals(0, countProvenance);
+  }
+
+  @Test
+  public void testDeleteResourcesCascade() throws Exception {
+    Bundle b = loadFixtureBundle("sample_complete_patient.json");
+
+    System.out.println(b.getEntry().size());
+
+    Map<String, Object> action = getActionByName("testDeleteResourcesCascade");
+
+    // action deletes Patient resource, everything should reference back to Patient
+
+    Actions.applyAction(b, action, null, null);
+
+    System.out.println(b.getEntry().size());
+    b.getEntry().forEach(e -> System.out.println(e.getResource().getResourceType()));
+  }
+
+  @Test
+  public void testDateFilter() throws Exception {
+    Bundle b = loadFixtureBundle("sample_complete_patient.json");
+
+    System.out.println(b.getEntry().size());
+    Map<String, Object> action = getActionByName("testDateFilter");
+
+    Actions.applyAction(b, action, null, null);
+
+    System.out.println(b.getEntry().size());
 
   }
 
