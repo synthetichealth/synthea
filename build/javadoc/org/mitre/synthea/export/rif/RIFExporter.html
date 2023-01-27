@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":9};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -189,21 +189,26 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#COVERAGE_START_DATE">COVERAGE_START_DATE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="BB2RIFExporter.html" title="class in org.mitre.synthea.export.rif">BB2RIFExporter</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exporter">exporter</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static java.util.concurrent.atomic.AtomicLong</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nextClaimGroupId">nextClaimGroupId</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected static java.util.concurrent.atomic.AtomicLong</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nextClaimId">nextClaimId</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static java.util.concurrent.atomic.AtomicLong</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nextFiDocCntlNum">nextFiDocCntlNum</a></span></code></th>
 <td class="colLast">&nbsp;</td>
@@ -261,11 +266,26 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDiagnosesCodes(org.mitre.synthea.world.agents.Person,long)">getDiagnosesCodes</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;time)</code></th>
 <td class="colLast">
-<div class="block">This returns the list of active diagnoses, sorted by most recent first
- and oldest last.</div>
+<div class="block">Returns the list of active diagnoses at a point in time.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>protected long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                    java.lang.String&nbsp;code)</code></th>
+<td class="colLast">
+<div class="block">Returns the earliest diagnosis time stamp for a particular condition.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">hasPartABCoverage</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                 long&nbsp;timestamp)</code></th>
+<td class="colLast">
+<div class="block">Test whether a person has part A and B coverage at the specified timestamp.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseSimpleDate(java.lang.String)">parseSimpleDate</a></span>&#8203;(java.lang.String&nbsp;dateStr)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -373,6 +393,19 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="COVERAGE_START_DATE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>COVERAGE_START_DATE</h4>
+<pre>protected static final&nbsp;java.lang.String COVERAGE_START_DATE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.mitre.synthea.export.rif.RIFExporter.COVERAGE_START_DATE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a id="cliaLabNumbers">
 <!--   -->
 </a>
@@ -446,13 +479,50 @@ extends java.lang.Object</pre>
 <h4>getDiagnosesCodes</h4>
 <pre class="methodSignature">protected&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;getDiagnosesCodes&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                                              long&nbsp;time)</pre>
-<div class="block">This returns the list of active diagnoses, sorted by most recent first
- and oldest last.</div>
+<div class="block">Returns the list of active diagnoses at a point in time. Diagnoses are sorted by onset
+ time with most recent first and oldest last.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - patient with the diagnoses.</dd>
+<dd><code>time</code> - the point in time</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the list of active diagnoses, sorted by most recent first and oldest last.</dd>
+</dl>
+</li>
+</ul>
+<a id="getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getEarliestDiagnosis</h4>
+<pre class="methodSignature">protected&nbsp;long&nbsp;getEarliestDiagnosis&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                    java.lang.String&nbsp;code)</pre>
+<div class="block">Returns the earliest diagnosis time stamp for a particular condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - patient with the diagnoses</dd>
+<dd><code>code</code> - the condition code</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the diagnosis time stamp or Long.MAX_VALUE if not diagnosed</dd>
+</dl>
+</li>
+</ul>
+<a id="hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasPartABCoverage</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;hasPartABCoverage&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                 long&nbsp;timestamp)</pre>
+<div class="block">Test whether a person has part A and B coverage at the specified timestamp.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person</dd>
+<dd><code>timestamp</code> - the timestamp to check coverage at</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if covered, false otherwise</dd>
 </dl>
 </li>
 </ul>
