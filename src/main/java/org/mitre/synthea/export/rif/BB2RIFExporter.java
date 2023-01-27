@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -80,7 +82,6 @@ public class BB2RIFExporter {
   final CodeMapper hhaRevCntrMapper;
   final CodeMapper hospiceRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
-  final Map<String, String> missingDmeCodes;
   final CMSStateCodeMapper locationMapper;
   final BeneficiaryExporter beneExp;
   final InpatientExporter inpatientExp;
@@ -122,7 +123,6 @@ public class BB2RIFExporter {
       // and if these do throw ioexceptions there's nothing we can do anyway
       throw new RuntimeException(e);
     }
-    missingDmeCodes = new HashMap<String, String>();
     beneExp = new BeneficiaryExporter(this);
     inpatientExp = new InpatientExporter(this);
     outpatientExp = new OutpatientExporter(this);
@@ -221,7 +221,7 @@ public class BB2RIFExporter {
     output.mkdirs();
     StringWriter manifest = new StringWriter();
     manifest.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-    manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v9\"");
+    manifest.write("<dataSetManifest xmlns=\"http://cms.hhs.gov/bluebutton/api/schema/ccw-rif/v10\"");
     manifest.write(String.format(" timestamp=\"%s\" ",
              java.time.Instant.now()
                      .atZone(ZoneOffset.UTC)
@@ -316,14 +316,29 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Display DME codes that were not mappable during export.
+   * Export codes that were not mappable during export.
    * These missing codes might be accidental, they may be intentional.
    */
-  public void displayMissingDmeCodes() {
-    String description;
-    for (String code : missingDmeCodes.keySet()) {
-      description = missingDmeCodes.get(code);
-      System.err.println(" *** Possibly Missing DME Code: " + code + " | " + description);
+  public void exportMissingCodes() throws IOException {
+    if (Config.getAsBoolean("exporter.bfd.export_missing_codes", true)) {
+      List<Map<String, String>> allMissingCodes = new LinkedList<>();
+      allMissingCodes.addAll(conditionCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(medicationCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(drgCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(dmeCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(hcpcsCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(betosCodeMapper.getMissingCodes());
+      allMissingCodes.addAll(snfPPSMapper.getMissingCodes());
+      allMissingCodes.addAll(snfPDPMMapper.getMissingCodes());
+      allMissingCodes.addAll(snfRevCntrMapper.getMissingCodes());
+      allMissingCodes.addAll(hhaRevCntrMapper.getMissingCodes());
+      allMissingCodes.addAll(hospiceRevCntrMapper.getMissingCodes());
+
+      File outputDir = Exporter.getOutputFolder("bfd", null);
+      if (!allMissingCodes.isEmpty()) {
+        Files.write(outputDir.toPath().resolve("missing_codes.csv"),
+                SimpleCSV.unparse(allMissingCodes).getBytes());
+      }
     }
   }
 

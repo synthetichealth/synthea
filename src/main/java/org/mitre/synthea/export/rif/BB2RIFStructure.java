@@ -237,7 +237,13 @@ public class BB2RIFStructure {
     STATE_CNTY_ZIP_CD,
     EFCTV_BGN_DT,
     EFCTV_END_DT,
-    BENE_LINK_KEY
+    BENE_LINK_KEY,
+    PTA_CVRG_STRT_DT,
+    PTA_CVRG_END_DT,
+    PTB_CVRG_STRT_DT,
+    PTB_CVRG_END_DT,
+    PTD_CVRG_STRT_DT,
+    PTD_CVRG_END_DT
   }
 
   public static final BENEFICIARY[] beneficiaryMedicareStatusFields = {
@@ -1187,6 +1193,7 @@ public class BB2RIFStructure {
     ICD_DGNS_VRSN_CD12,
     CLM_CLNCL_TRIL_NUM,
     CARR_CLM_CNTL_NUM,
+    CARR_CLM_BLG_NPI_NUM,
     LINE_NUM,
     CARR_PRFRNG_PIN_NUM,
     PRF_PHYSN_UPIN,
@@ -1532,6 +1539,7 @@ public class BB2RIFStructure {
     CLM_ADMSN_DT,
     FI_DOC_CLM_CNTL_NUM,
     FI_ORIG_CLM_CNTL_NUM,
+    CLAIM_QUERY_CODE,
     CLM_LINE_NUM,
     REV_CNTR,
     REV_CNTR_DT,
@@ -1694,6 +1702,7 @@ public class BB2RIFStructure {
     BENE_HOSPC_PRD_CNT,
     FI_DOC_CLM_CNTL_NUM,
     FI_ORIG_CLM_CNTL_NUM,
+    CLAIM_QUERY_CODE,
     CLM_LINE_NUM,
     REV_CNTR,
     REV_CNTR_DT,

@@ -434,7 +434,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * THIS method is for loading providers and generating clinicians with specific specialties
    *
    * @param location the state being loaded
-   * @param filename Location of the file, relative to src/main/resources
+   * @param filename Location of the file
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
    * @param random Source of randomness for provider generation
@@ -449,7 +449,7 @@ public class Provider implements QuadTreeElement, Serializable {
       return;
     }
 
-    String resource = Utilities.readResource(filename);
+    String resource = Utilities.readResource(filename, true, true);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
 
     while (csv.hasNext()) {

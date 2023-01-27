@@ -123,7 +123,7 @@ public class PayerManager {
   private static void loadPayers(Location location, String fileName) throws IOException {
     PayerManager.loadNoInsurance();
 
-    String resource = Utilities.readResourceAndStripBOM(fileName);
+    String resource = Utilities.readResource(fileName, true, true);
     Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
 
     while (csv.hasNext()) {
@@ -156,7 +156,7 @@ public class PayerManager {
     String fileName = Config.get("generate.payers.insurance_plans.default_file");
     Iterator<? extends Map<String, String>> csv = null;
     try {
-      String resource = Utilities.readResourceAndStripBOM(fileName);
+      String resource = Utilities.readResource(fileName, true, true);
       csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();

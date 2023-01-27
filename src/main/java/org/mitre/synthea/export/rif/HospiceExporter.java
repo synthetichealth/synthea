@@ -39,6 +39,9 @@ public class HospiceExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.HOSPICE)) {
         continue;
       }
@@ -69,8 +72,8 @@ public class HospiceExporter extends RIFExporter {
         if (lineItem.entry instanceof HealthRecord.Procedure) {
           String hcpcsCode = null;
           for (HealthRecord.Code code : lineItem.entry.codes) {
-            if (exporter.hcpcsCodeMapper.canMap(code.code)) {
-              hcpcsCode = exporter.hcpcsCodeMapper.map(code.code, person, true);
+            if (exporter.hcpcsCodeMapper.canMap(code)) {
+              hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
               if (exporter.hospiceRevCntrMapper.canMap(hcpcsCode)) {
                 revCenter = exporter.hospiceRevCntrMapper.map(hcpcsCode, person, true);
               }
@@ -234,8 +237,8 @@ public class HospiceExporter extends RIFExporter {
     if (encounter.reason != null) {
       // If the encounter has a recorded reason, enter the mapped
       // values into the principle diagnoses code.
-      if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-        String icdCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+      if (exporter.conditionCodeMapper.canMap(encounter.reason)) {
+        String icdCode = exporter.conditionCodeMapper.map(encounter.reason, person, true);
         fieldValues.put(BB2RIFStructure.HOSPICE.PRNCPAL_DGNS_CD, icdCode);
       }
     }

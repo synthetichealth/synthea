@@ -74,6 +74,9 @@ public class CarrierExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.CARRIER)) {
         continue;
       }
@@ -129,6 +132,7 @@ public class CarrierExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.cmsPin);
       fieldValues.put(BB2RIFStructure.CARRIER.ORG_NPI_NUM, encounter.provider.npi);
+      fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_BLG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.RFR_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_SPCLTY,
@@ -159,8 +163,8 @@ public class CarrierExporter extends RIFExporter {
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
-        if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-          icdReasonCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+        if (exporter.conditionCodeMapper.canMap(encounter.reason)) {
+          icdReasonCode = exporter.conditionCodeMapper.map(encounter.reason, person, true);
           fieldValues.put(BB2RIFStructure.CARRIER.PRNCPAL_DGNS_CD, icdReasonCode);
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_ICD_DGNS_CD, icdReasonCode);
         }
@@ -195,8 +199,8 @@ public class CarrierExporter extends RIFExporter {
           String ndcCode = "";
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (exporter.hcpcsCodeMapper.canMap(code.code)) {
-                hcpcsCode = exporter.hcpcsCodeMapper.map(code.code, person, true);
+              if (exporter.hcpcsCodeMapper.canMap(code)) {
+                hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
                 break; // take the first mappable code for each procedure
               }
             }
@@ -204,7 +208,7 @@ public class CarrierExporter extends RIFExporter {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
               hcpcsCode = "T1502";  // Administration of medication
-              ndcCode = exporter.medicationCodeMapper.map(med.codes.get(0).code, person);
+              ndcCode = exporter.medicationCodeMapper.map(med.codes.get(0), person);
             }
           }
           if (icdReasonCode == null) {

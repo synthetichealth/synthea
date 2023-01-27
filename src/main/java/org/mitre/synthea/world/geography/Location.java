@@ -104,7 +104,7 @@ public class Location implements Serializable {
     String filename = null;
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
-      String csv = Utilities.readResource(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
 
       zipCodes = new HashMap<>();
@@ -130,7 +130,7 @@ public class Location implements Serializable {
     try {
       filename = Config.get("generate.geography.sdoh.default_file",
         "geography/sdoh.csv");
-      String csv = Utilities.readResource(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> sdohList = SimpleCSV.parse(csv);
 
       for (Map<String,String> line : sdohList) {
@@ -405,7 +405,7 @@ public class Location implements Serializable {
     String filename = null;
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
-      String csv = Utilities.readResource(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
 
       for (Map<String,String> line : ziplist) {
@@ -466,7 +466,7 @@ public class Location implements Serializable {
     String filename = null;
     try {
       filename = Config.get("generate.geography.timezones.default_file");
-      String csv = Utilities.readResource(filename);
+      String csv = Utilities.readResource(filename, true, true);
       List<? extends Map<String,String>> tzlist = SimpleCSV.parse(csv);
 
       for (Map<String,String> line : tzlist) {
@@ -502,7 +502,7 @@ public class Location implements Serializable {
   protected static Map<String, List<String>> loadCitiesByLanguage(String resource) {
     Map<String, List<String>> foreignPlacesOfBirth = new HashMap<>();
     try {
-      String json = Utilities.readResource(resource);
+      String json = Utilities.readResourceOrPath(resource);
       foreignPlacesOfBirth = new Gson().fromJson(json, HashMap.class);
     } catch (Exception e) {
       System.err.println("ERROR: unable to load foreign places of birth");

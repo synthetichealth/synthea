@@ -360,7 +360,7 @@
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -990,7 +990,7 @@
           "display": "Screening surveillance (regime/therapy)"
         }
       ],
-      "encounter_class": "inpatient"
+      "encounter_class": "ambulatory"
     },
     "End Mammogram Followup Visit": {
       "type": "EncounterEnd",
@@ -1058,7 +1058,7 @@
     },
     "Gynecologist Visit": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
       "codes": [
         {
@@ -1288,7 +1288,7 @@
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
-      "direct_transition": "End Initial Follow-Up Doctor Visit",
+      "direct_transition": "Follow up examination",
       "remarks": [
         "Doctor visits: At first, your follow-up doctor visits will probably be scheduled for every few months. The longer you have been free of cancer, the less often the appointments are needed. After 5 years, they are typically done about once a year.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
@@ -1308,7 +1308,7 @@
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1390,7 +1390,7 @@
           "display": "Discussion about treatment (procedure)"
         }
       ],
-      "direct_transition": "End Meeting with Oncologist",
+      "direct_transition": "Discussion",
       "remarks": [
         "Treatment Options:",
         "https://www.cancer.net/cancer-types/breast-cancer/types-treatment"
@@ -1516,7 +1516,7 @@
     },
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1752,7 +1752,7 @@
     },
     "Start New Chemo Cycle": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
       "codes": [
         {
@@ -2124,6 +2124,46 @@
     "End the Initial Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Delay for Analysis of Possible Treatments"
+    },
+    "Discussion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223487003,
+          "display": "Discussion about options (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 45
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Meeting with Oncologist",
+      "reason": "breast_cancer_condition"
+    },
+    "Follow up examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 25656009,
+          "display": "Physical examination, complete (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 45,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "breast_cancer_condition",
+      "direct_transition": "End Initial Follow-Up Doctor Visit"
     }
   },
   "gmf_version": 1

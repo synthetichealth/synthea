@@ -46,6 +46,9 @@ public class HHAExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.HHA)) {
         continue;
       }
@@ -91,10 +94,10 @@ public class HHAExporter extends RIFExporter {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (exporter.hcpcsCodeMapper.canMap(code.code)) {
-                hcpcsCode = exporter.hcpcsCodeMapper.map(code.code, person, true);
-                if (exporter.hhaRevCntrMapper.canMap(code.code)) {
-                  revCenter = exporter.hhaRevCntrMapper.map(code.code, person);
+              if (exporter.hcpcsCodeMapper.canMap(code)) {
+                hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
+                if (exporter.hhaRevCntrMapper.canMap(code)) {
+                  revCenter = exporter.hhaRevCntrMapper.map(code, person);
                 }
                 break; // take the first mappable code for each procedure
               }
@@ -141,8 +144,8 @@ public class HHAExporter extends RIFExporter {
       if (finalEncounterOfPeriod.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
-        if (exporter.conditionCodeMapper.canMap(finalEncounterOfPeriod.reason.code)) {
-          String icdCode = exporter.conditionCodeMapper.map(finalEncounterOfPeriod.reason.code,
+        if (exporter.conditionCodeMapper.canMap(finalEncounterOfPeriod.reason)) {
+          String icdCode = exporter.conditionCodeMapper.map(finalEncounterOfPeriod.reason,
                   person, true);
           fieldValues.put(BB2RIFStructure.HHA.PRNCPAL_DGNS_CD, icdCode);
         }

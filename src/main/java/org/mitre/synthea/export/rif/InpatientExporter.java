@@ -42,6 +42,9 @@ public class InpatientExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.INPATIENT)) {
         previousEmergency = false;
         continue;
@@ -149,8 +152,8 @@ public class InpatientExporter extends RIFExporter {
       if (encounter.reason != null) {
         // If the encounter has a recorded reason, enter the mapped
         // values into the principle diagnoses code.
-        if (exporter.conditionCodeMapper.canMap(encounter.reason.code)) {
-          icdReasonCode = exporter.conditionCodeMapper.map(encounter.reason.code, person, true);
+        if (exporter.conditionCodeMapper.canMap(encounter.reason)) {
+          icdReasonCode = exporter.conditionCodeMapper.map(encounter.reason, person, true);
           fieldValues.put(BB2RIFStructure.INPATIENT.PRNCPAL_DGNS_CD, icdReasonCode);
           fieldValues.put(BB2RIFStructure.INPATIENT.ADMTG_DGNS_CD, icdReasonCode);
         }
@@ -200,9 +203,9 @@ public class InpatientExporter extends RIFExporter {
         List<String> mappedProcedureCodes = new ArrayList<>();
         for (HealthRecord.Procedure procedure : encounter.procedures) {
           for (HealthRecord.Code code : procedure.codes) {
-            if (exporter.conditionCodeMapper.canMap(code.code)) {
+            if (exporter.conditionCodeMapper.canMap(code)) {
               mappableProcedures.add(procedure);
-              mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code.code, person, true));
+              mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code, person, true));
               break; // take the first mappable code for each procedure
             }
           }
@@ -233,8 +236,8 @@ public class InpatientExporter extends RIFExporter {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (exporter.hcpcsCodeMapper.canMap(code.code)) {
-                hcpcsCode = exporter.hcpcsCodeMapper.map(code.code, person, true);
+              if (exporter.hcpcsCodeMapper.canMap(code)) {
+                hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
                 break; // take the first mappable code for each procedure
               }
             }

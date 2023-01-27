@@ -510,7 +510,14 @@
       "type": "SetAttribute",
       "attribute": "inpatient-los",
       "direct_transition": "Inpatient CarePlan",
-      "value": 0
+      "value": 0,
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 5.8
+        }
+      }
     },
     "Reset inpatient count": {
       "type": "SetAttribute",
@@ -538,29 +545,20 @@
     "Inpatient Discharge decision": {
       "type": "Counter",
       "attribute": "inpatient-los",
-      "action": "increment",
-      "complex_transition": [
+      "action": "decrement",
+      "conditional_transition": [
         {
+          "transition": "Inpatient daily routine",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "inpatient-los",
-            "operator": ">=",
-            "value": 5
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient Discharge",
-              "distribution": 0.8
-            },
-            {
-              "transition": "Inpatient daily routine",
-              "distribution": 0.19999999999999996
-            }
-          ]
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Inpatient Discharge"
         }
-      ],
-      "remarks": [
-        "Model the ALOS (5.8) through an increased likelihood of a discharge after 5 days."
       ]
     },
     "Inpatient Death decision": {

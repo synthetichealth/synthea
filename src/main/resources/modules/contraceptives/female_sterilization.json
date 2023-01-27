@@ -25,7 +25,7 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "End_Consultation"
+      "direct_transition": "Consultation"
     },
     "End_Consultation": {
       "type": "EncounterEnd",
@@ -95,7 +95,7 @@
           "display": "Recommendation to limit sexual activity"
         }
       ],
-      "direct_transition": "End_Surgery_Encounter"
+      "direct_transition": "Postoperative Care"
     },
     "End_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -117,6 +117,43 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 268533009,
+          "display": "Sterilization education (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 45
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Consultation"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 5
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "End_Surgery_Encounter"
     }
   },
   "gmf_version": 1
