@@ -70,6 +70,9 @@ public class PDEExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (!hasPartABCoverage(person, encounter.stop)) {
+        continue;
+      }
       if (RIFExporter.isVAorIHS(encounter)) {
         continue;
       }

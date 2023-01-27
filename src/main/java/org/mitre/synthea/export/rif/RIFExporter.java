@@ -10,11 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.mitre.synthea.export.rif.identifiers.CLIA;
-import org.mitre.synthea.export.rif.identifiers.HICN;
-import org.mitre.synthea.export.rif.identifiers.MBI;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -35,6 +32,7 @@ public abstract class RIFExporter {
   protected static final String BB2_BENE_ID = "BB2_BENE_ID";
   protected static final String BB2_HIC_ID = "BB2_HIC_ID";
   protected static final String BB2_MBI = "BB2_MBI";
+  protected static final String COVERAGE_START_DATE = "BB2_COVERAGE_START_DATE";
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
@@ -160,9 +158,10 @@ public abstract class RIFExporter {
   };
 
   /**
-   * This returns the list of active diagnoses, sorted by most recent first
-   * and oldest last.
+   * Returns the list of active diagnoses at a point in time. Diagnoses are sorted by onset
+   * time with most recent first and oldest last.
    * @param person patient with the diagnoses.
+   * @param time the point in time
    * @return the list of active diagnoses, sorted by most recent first and oldest last.
    */
   protected List<String> getDiagnosesCodes(Person person, long time) {
@@ -192,6 +191,43 @@ public abstract class RIFExporter {
       mappedDiagnosisCodes.add(dx.codes.remove(dx.codes.size() - 1).code);
     }
     return mappedDiagnosisCodes;
+  }
+
+  /**
+   * Returns the earliest diagnosis time stamp for a particular condition.
+   * @param person patient with the diagnoses
+   * @param code the condition code
+   * @return the diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestDiagnosis(Person person, String code) {
+    List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      for (HealthRecord.Entry dx : encounter.conditions) {
+        if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
+          String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0).code, person, true);
+          if (mapped.equals(code)) {
+            diagnoses.add(dx);
+          }
+        }
+      }
+    }
+    if (!diagnoses.isEmpty()) {
+      // Sort them by date and then return the oldest
+      diagnoses.sort(ENTRY_SORTER);
+      return diagnoses.get(diagnoses.size() - 1).start;
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Test whether a person has part A and B coverage at the specified timestamp.
+   * @param person the person
+   * @param timestamp the timestamp to check coverage at
+   * @return true if covered, false otherwise
+   */
+  public boolean hasPartABCoverage(Person person, long timestamp) {
+    Long coverageStartDate = (Long)person.attributes.get(RIFExporter.COVERAGE_START_DATE);
+    return timestamp >= coverageStartDate;
   }
 
   /**

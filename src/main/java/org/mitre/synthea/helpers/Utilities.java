@@ -127,8 +127,26 @@ public class Utilities {
     return calendar.get(Calendar.MONTH) + 1;
   }
 
+  /**
+   * Get the timestamp of the supplied local date.
+   * @param date the local date
+   * @return the timestamp
+   */
   public static long localDateToTimestamp(LocalDate date) {
     return date.atStartOfDay().toInstant(OffsetDateTime.now().getOffset()).toEpochMilli();
+  }
+
+  /**
+   * Get the timestamp of the nth anniversary of the supplied timestamp.
+   * @param date the timestamp
+   * @param anniversary the number of years after
+   * @return the anniversary timestamp
+   */
+  public static long getAnniversary(long date, int anniversary) {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    calendar.setTimeInMillis(date);
+    calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + anniversary);
+    return calendar.getTimeInMillis();
   }
 
   /**

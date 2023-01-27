@@ -2,7 +2,9 @@ package org.mitre.synthea.export.rif.enrollment;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -207,6 +209,22 @@ public abstract class ContractHistory<T extends FixedLengthIdentifier> {
      */
     public ContractPeriod(int year, RandomNumberGenerator rand) {
       this(year, 1, rand);
+    }
+
+    /**
+     * Get the start of the period as epoch millis.
+     * @return the start of the period
+     */
+    public long getStart() {
+      return startDate.toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC) * 1000;
+    }
+
+    /**
+     * Get the end of the period as epoch millis.
+     * @return the start of the period
+     */
+    public long getEnd() {
+      return (endDate.plusDays(1).toEpochSecond(LocalTime.MIDNIGHT, ZoneOffset.UTC) * 1000) - 1;
     }
 
     /**
