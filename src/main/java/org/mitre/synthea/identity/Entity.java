@@ -1,11 +1,10 @@
 package org.mitre.synthea.identity;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.mitre.synthea.helpers.Utilities;
 
 /**
  * This class represents a set of desired demographic information about a Person to be simulated.
@@ -63,8 +62,7 @@ public class Entity {
     if (timestamp == Long.MIN_VALUE) {
       return seeds.get(0);
     }
-    LocalDate date = LocalDateTime.from(Instant.ofEpochMilli(timestamp)
-        .atZone(ZoneId.of("UTC"))).toLocalDate();
+    LocalDate date = Utilities.timestampToLocalDate(timestamp);
     return seedAt(date);
   }
 
