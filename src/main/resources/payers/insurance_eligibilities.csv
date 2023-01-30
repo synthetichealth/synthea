@@ -1,9 +1,11 @@
 ﻿Name,Poverty Multiplier,Income Threshold,Age Threshold,Qualifying Codes,Qualifying Attributes,Poverty Multiplier File,Spenddown File,Acceptance Likelihood,Sub-Eligibilities,Logical Operator,Notes
-StandardSocialSecurityDisability,,,,payers/eligibility_input_files/ssd_eligibility.csv,,,,0.9,,and,
-StandardMedicare,,,65,,end_stage_renal_disease = true,,,,StandardSocialSecurityDisability,or,
-StandardMedicaid,,,,,blindness = true,payers/eligibility_input_files/medicaid_income_eligibilities.csv,payers/eligibility_input_files/medicaid_mnil_eligibilities.csv,,,or,
-StandardDualEligible,,,,,,,,0.85,StandardMedicare|StandardMedicaid,and
-ACASubsidy150,,1.5,,,,,,,,,Eligibility Criteria for subsidized ACA plans under 150% of the Federal Poverty Level.
-ACASubsidy200,,2.0,,,,,,,,,Eligibility Criteria for subsidized ACA plans under 200% of the Federal Poverty Level.
-ACASubsidy300,,3.0,,,,,,,,,Eligibility Criteria for subsidized ACA plans under 300% of the Federal Poverty Level.
-ACASubsidy400,,4.0,,,,,,,,,Eligibility Criteria for subsidized ACA plans under 400% of the Federal Poverty Level.
+StandardSocialSecurityDisability,,,,payers/eligibility_input_files/ssd_eligibility.csv,,,,0.85,,and,
+MedicareElig,,,65,,end_stage_renal_disease = true,,,,StandardSocialSecurityDisability,or,
+Medicare50Elig,,,50,,,,,,MedicareElig,or,
+MedicaidElig,,,,,blindness = true,payers/eligibility_input_files/medicaid_income_eligibilities.csv,payers/eligibility_input_files/medicaid_mnil_eligibilities.csv,,,or,
+Medicaid300Elig,3.0,,,,,,,,MedicaidElig,or,
+DualElig,,,,,,,,0.85,MedicareElig|Medicaid300Elig,and,
+ACASubsidy150,1.5,,,,,,,0.75,,and,Eligibility Criteria for subsidized ACA plans under 150% of the Federal Poverty Level.
+ACASubsidy200,2.0,,,,,,,0.75,,and,Eligibility Criteria for subsidized ACA plans under 200% of the Federal Poverty Level.
+ACASubsidy300,3.0,,,,,,,0.75,,and,Eligibility Criteria for subsidized ACA plans under 300% of the Federal Poverty Level.
+ACASubsidy400,4.0,,,,,,,0.75,,and,Eligibility Criteria for subsidized ACA plans under 400% of the Federal Poverty Level.

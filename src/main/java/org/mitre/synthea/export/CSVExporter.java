@@ -1340,6 +1340,7 @@ public class CSVExporter {
     if (planRecord.ownerName != null) {
       s.append(planRecord.ownerName);
     }
+    s.append(',');
     // PLAN_ID
     s.append(planRecord.getPlan().getId());
 

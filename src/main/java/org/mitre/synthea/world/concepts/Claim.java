@@ -164,17 +164,17 @@ public class Claim implements Serializable {
         remainingBalance = remainingBalance.subtract(adjustment);
       }
       // Check if the patient has remaining deductible
-      // if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0 && planRecord.remainingDeductible
-      //         .compareTo(Claim.ZERO_CENTS) > 0) {
-      //   if (planRecord.remainingDeductible.compareTo(remainingBalance) >= 0) {
-      //     this.deductiblePaidByPatient = remainingBalance;
-      //   } else {
-      //     this.deductiblePaidByPatient = planRecord.remainingDeductible;
-      //   }
-      //   remainingBalance = remainingBalance.subtract(this.deductiblePaidByPatient);
-      //   planRecord.remainingDeductible = planRecord.remainingDeductible
-      //       .subtract(this.deductiblePaidByPatient);
-      // }
+      if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0 && planRecord.remainingDeductible
+              .compareTo(Claim.ZERO_CENTS) > 0) {
+        if (planRecord.remainingDeductible.compareTo(remainingBalance) >= 0) {
+          this.deductiblePaidByPatient = remainingBalance;
+        } else {
+          this.deductiblePaidByPatient = planRecord.remainingDeductible;
+        }
+        remainingBalance = remainingBalance.subtract(this.deductiblePaidByPatient);
+        planRecord.remainingDeductible = planRecord.remainingDeductible
+            .subtract(this.deductiblePaidByPatient);
+      }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
         // Check if the patient has coinsurance
         BigDecimal patientCoinsurance = plan.getPatientCoinsurance();
