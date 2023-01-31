@@ -1,0 +1,81 @@
+{
+  "name": "Lost Care - Breast Cancer",
+  "remarks": [
+    "A very simple and incomplete module that defines a higher likelihood of mortality if breast cancer care is missed."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_For_Missed_Breast_Cancer_Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_For_Missed_Breast_Cancer_Care": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pause_Breast_Cancer_Module",
+          "condition": {
+            "condition_type": "Lost Care",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "33195004",
+                "display": "Breast Cancer Care"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Yearly_Mortality_Check"
+        }
+      ]
+    },
+    "Mortality_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Yearly_Mortality_Check",
+          "distribution": 0.32999999999999996
+        },
+        {
+          "transition": "Death",
+          "distribution": 0.67
+        }
+      ]
+    },
+    "Death": {
+      "type": "Death",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "LOST_CARE",
+          "display": "LOST_CARE_BREAST_CANCER"
+        }
+      ]
+    },
+    "Yearly_Mortality_Check": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check_For_Missed_Breast_Cancer_Care"
+    },
+    "Pause_Breast_Cancer_Module": {
+      "type": "Simple",
+      "direct_transition": "Mortality_Check",
+      "modulesToPause": "breast_cancer"
+    }
+  },
+  "gmf_version": 2
+}

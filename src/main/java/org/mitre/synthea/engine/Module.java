@@ -45,6 +45,7 @@ import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
  * Module represents the entry point of a generic module.
@@ -130,8 +131,14 @@ public class Module implements Cloneable, Serializable {
     Path basePath = modulesPath.getParent();
     Utilities.walkAllModules(modulesPath, t -> {
       String relativePath = relativePath(t, modulesPath);
+      boolean isLostCareModule = relativePath.split("/")[0].equals(Config.get("generate.payers.lost_care_directory","lost_care"));
+      if(isLostCareModule && !HealthRecord.lossOfCareEnabled) {
+        // Since loss of care is disabled, loss of care modules should not be loaded.
+        return;
+      }
       boolean submodule = !t.getParent().equals(modulesPath);
-      if (submodule) {
+      // Although lost care modules are in directories like submodules, they should be treated as full modules.
+      if (submodule && !isLostCareModule) {
         submoduleCount.getAndIncrement();
       }
       Path loadPath = localFiles ? t : basePath.relativize(t);
