@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.export.JSONSkip;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
@@ -42,6 +43,12 @@ public class HealthRecord implements Serializable {
   public static final String PROCEDURES = "procedures";
   public static final String MEDICATIONS = "medications";
   public static final String IMMUNIZATIONS = "immunizations";
+
+  /**
+   * Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
+   * care due to costs or lack of health insurance coverage.
+   */
+  public static boolean lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
 
   /**
    * HealthRecord.Code represents a system, code, and display value.
@@ -114,6 +121,7 @@ public class HealthRecord implements Serializable {
       this.display = definition.get("display").getAsString();
     }
 
+    @Override
     public String toString() {
       return String
           .format("system=%s, code=%s, display=%s, valueSet=%s", system, code, display, valueSet);
@@ -1486,5 +1494,16 @@ public class HealthRecord implements Serializable {
       }
       seriesNo += 1;
     }
+  }
+
+  /**
+   * Returns whether this health record contains the given code within any of its current conditions or encounters.
+   * 
+   * @param code the code to check for.
+   */
+  public boolean containsCode(Code code) {
+    boolean conditionContainsCode = this.present.containsKey(code.code);
+    boolean encounterContainsCode = this.encounters.stream().anyMatch((Encounter e) -> e.containsCode(code.code, code.system));
+    return conditionContainsCode || encounterContainsCode;
   }
 }

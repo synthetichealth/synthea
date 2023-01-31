@@ -154,17 +154,15 @@ public class PayerManager {
 
   private static void loadPlans() {
     String fileName = Config.get("generate.payers.insurance_plans.default_file");
-    Iterator<? extends Map<String, String>> csv = null;
     try {
       String resource = Utilities.readResource(fileName, true, true);
-      csv = SimpleCSV.parseLineByLine(resource);
+      Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
+      while (csv.hasNext()) {
+        Map<String, String> row = csv.next();
+        csvLineToPlan(row);
+      }
     } catch (IOException e) {
       e.printStackTrace();
-    }
-
-    while (csv.hasNext()) {
-      Map<String, String> row = csv.next();
-      csvLineToPlan(row);
     }
   }
 
@@ -291,7 +289,7 @@ public class PayerManager {
     }
     if (payerList.size() > 1) {
       throw new RuntimeException(payerList.size()
-          + " payers have id '" + payerId + "'. Ids should be unique.");
+          + " payers have id '" + payerId + "'. Ids must be unique.");
     }
     return null;
   }
