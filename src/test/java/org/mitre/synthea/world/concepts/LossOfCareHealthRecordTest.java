@@ -44,6 +44,7 @@ public class LossOfCareHealthRecordTest {
         "generic/payers/test_plans.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("lifecycle.death_by_loss_of_care", "true");
+    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
     // Load in the .csv list of Payers for MA.
     PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
@@ -57,6 +58,7 @@ public class LossOfCareHealthRecordTest {
   public static void clean() {
     Config.set("generate.payers.loss_of_care", "false");
     Config.set("lifecycle.death_by_loss_of_care", "false");
+    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
   }
 
   @Test
