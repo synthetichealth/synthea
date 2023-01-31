@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.ode.DerivativeException;
@@ -2266,6 +2267,36 @@ public abstract class State implements Cloneable, Serializable {
         entry.codes.add(code);
       }
       entry.series = this.series;
+      return true;
+    }
+  }
+
+  /**
+   * This state type pauses the module with the given name for the given person.
+   * Currently, as implemented, this will remove the module completely from the person not just pause it.
+   */
+  public static class PauseModule extends State {
+    private String moduleToPause;
+
+    @Override
+    public PauseModule clone() {
+      PauseModule clone = (PauseModule) super.clone();
+      return clone;
+    }
+
+    @Override
+    public boolean process(Person person, long time) {
+      // Find the module in the person.
+      List<Module> modules = person.currentModules.stream().filter(module -> module.name.equals(moduleToPause)).collect(Collectors.toList());
+      if(modules.size() != 1){
+        throw new RuntimeException("There should be exactly one module with the given name '" + moduleToPause + "'. Found " + modules.size() + ".");
+      }
+      Module module = modules.get(0);
+      // Pause the person's progression of that module.
+      /**
+       * TODO: This REMOVES the module and does NOT pause it.
+       */
+      person.currentModules.remove(module);
       return true;
     }
   }
