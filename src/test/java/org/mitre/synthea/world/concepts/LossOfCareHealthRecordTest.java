@@ -54,6 +54,9 @@ public class LossOfCareHealthRecordTest {
     testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
   }
 
+  /**
+   * Sets loss of care properties back to defaults.
+   */
   @AfterClass
   public static void clean() {
     Config.set("generate.payers.loss_of_care", "false");

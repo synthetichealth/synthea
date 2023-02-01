@@ -598,7 +598,7 @@ public abstract class Logic implements Serializable {
   public static class LostCare extends ActiveLogic {
     @Override
     boolean checkCode(Person person, Code code) {
-      if(HealthRecord.lossOfCareEnabled) {
+      if (HealthRecord.lossOfCareEnabled) {
         return person.lossOfCareRecord.containsCode(code);
       }
       return false;

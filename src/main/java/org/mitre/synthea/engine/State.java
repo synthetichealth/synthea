@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.ode.DerivativeException;
@@ -2270,5 +2269,4 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
   }
-
 }

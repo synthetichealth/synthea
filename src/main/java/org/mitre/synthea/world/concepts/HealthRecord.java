@@ -48,7 +48,8 @@ public class HealthRecord implements Serializable {
    * Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
    * care due to costs or lack of health insurance coverage.
    */
-  public static boolean lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+  public static boolean lossOfCareEnabled
+      = Config.getAsBoolean("generate.payers.loss_of_care", false);
 
   /**
    * HealthRecord.Code represents a system, code, and display value.
@@ -1497,13 +1498,15 @@ public class HealthRecord implements Serializable {
   }
 
   /**
-   * Returns whether this health record contains the given code within any of its current conditions or encounters.
-   * 
+   * Returns whether this health record contains the given code within any of its current
+   * conditions or encounters.
+   *
    * @param code the code to check for.
    */
   public boolean containsCode(Code code) {
     boolean conditionContainsCode = this.present.containsKey(code.code);
-    boolean encounterContainsCode = this.encounters.stream().anyMatch((Encounter e) -> e.containsCode(code.code, code.system));
+    boolean encounterContainsCode = this.encounters.stream()
+        .anyMatch((Encounter e) -> e.containsCode(code.code, code.system));
     return conditionContainsCode || encounterContainsCode;
   }
 }

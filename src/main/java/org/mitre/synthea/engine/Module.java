@@ -131,13 +131,15 @@ public class Module implements Cloneable, Serializable {
     Path basePath = modulesPath.getParent();
     Utilities.walkAllModules(modulesPath, t -> {
       String relativePath = relativePath(t, modulesPath);
-      boolean isLostCareModule = relativePath.split("/")[0].equals(Config.get("generate.payers.lost_care_directory","lost_care"));
-      if(isLostCareModule && !HealthRecord.lossOfCareEnabled) {
+      boolean isLostCareModule = relativePath.split("/")[0].equals(
+          Config.get("generate.payers.lost_care_directory","lost_care"));
+      if (isLostCareModule && !HealthRecord.lossOfCareEnabled) {
         // Since loss of care is disabled, loss of care modules should not be loaded.
         return;
       }
       boolean submodule = !t.getParent().equals(modulesPath);
-      // Although lost care modules are in directories like submodules, they should be treated as full modules.
+      // Although lost care modules are in directories like submodules,
+      // they should be treated as full modules.
       if (submodule && !isLostCareModule) {
         submoduleCount.getAndIncrement();
       }

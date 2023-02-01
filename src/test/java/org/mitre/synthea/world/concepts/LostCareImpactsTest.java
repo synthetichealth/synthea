@@ -30,10 +30,14 @@ public class LostCareImpactsTest {
   // Modules (including lost care test module)
   private static Map<String, Module.ModuleSupplier> modules;
 
+  /**
+   * Sets up loss of care module tests.
+   */
   @Before
   public void setup() throws Exception {
     // Hack in the lost care test module
-    modules = Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    modules
+        = Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
     Module testLostCareModule = TestHelper.getFixture("lost_care/lost_care_test.json");
     modules.put("lost_care_test", new Module.ModuleSupplier(testLostCareModule));
 
@@ -50,6 +54,9 @@ public class LostCareImpactsTest {
     PayerManager.loadPayers(new Location(testState, null));
   }
 
+  /**
+   * Resets loss of care properties.
+   */
   @AfterClass
   public static void clean() {
     Config.set("generate.payers.loss_of_care", "false");
@@ -72,16 +79,17 @@ public class LostCareImpactsTest {
     attributes.put(Person.GENDER, "F");
     attributes.put(Person.OCCUPATION_LEVEL, 0.0);
     // Set person's income to $1 lower than the encounter cost to cause debt after an encounter.
-    attributes.put(Person.INCOME, (int) defaultEncounterCost-1);
+    attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
     Person person = new Person(0L);
     person.attributes.putAll(attributes);
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
     healthInsuranceModule.process(person, time);
-    person.coverage.setPlanAtTime(time, PayerManager.getNoInsurancePlan(), PayerManager.getNoInsurancePlan());
+    person.coverage
+        .setPlanAtTime(time, PayerManager.getNoInsurancePlan(), PayerManager.getNoInsurancePlan());
     time = time + Utilities.convertTime("months", 2);
     assertEquals(PayerManager.getNoInsurancePlan(), person.coverage.getPlanAtTime(time));
     person.setProvider(EncounterType.WELLNESS, new Provider());
-    Code code = new Code("SNOMED-CT", "4815162342", "Fake Code that, if missed, results in death.");
+    Code code = new Code("SNOMED-CT", "4815162342", "Fake Code that results in death if missed.");
 
     // First encounter is uncovered but affordable.
     Encounter coveredEncounter = person.encounterStart(time, EncounterType.WELLNESS);
@@ -98,7 +106,7 @@ public class LostCareImpactsTest {
     time = time + Utilities.convertTime("months", 2);
     lostCareModule.process(person, time);
 
-    assertTrue("Test that the person is still alive. They got the initial code, should not die yet.",
+    assertTrue("The person should be still alive since they recived care for the initial code.",
         person.alive(time));
 
     // Second encounter is uncovered and unaffordable because they are $1 in debt.
@@ -114,7 +122,7 @@ public class LostCareImpactsTest {
     time = time + Utilities.convertTime("months", 13);
     lostCareModule.process(person, time);
     assertFalse(
-        "Test that the person is no longer alive because the SNOMED code is now in the lost care record.",
+        "The person should be dead because the SNOMED code is now in the lost care record.",
         person.alive(time));
 
     // The person's cause of death should be lost care.
