@@ -1308,7 +1308,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Living_with_CP"
+      "direct_transition": "End_Cerebral_Palsy_Encounter1"
     },
     "Cerebral_Palsy_Pneumonia": {
       "type": "ConditionOnset",
@@ -1520,13 +1520,17 @@
           "distribution": 0.4
         },
         {
-          "transition": "Terminal",
+          "transition": "End Encounter and Exit",
           "distribution": 0.6000000000000001
         }
       ]
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "End Encounter and Exit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "remarks": [

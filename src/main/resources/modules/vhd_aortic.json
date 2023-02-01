@@ -122,7 +122,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Terminal",
+          "transition": "End Encounter and Exit",
           "condition": {
             "condition_type": "At Least",
             "minimum": 1,
@@ -209,7 +209,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Terminal",
+          "transition": "End Encounter and Exit",
           "condition": {
             "condition_type": "At Least",
             "minimum": 1,
@@ -670,6 +670,10 @@
     "Delay 10 years": {
       "type": "Simple",
       "direct_transition": "AVRr Sequence"
+    },
+    "End Encounter and Exit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 2
