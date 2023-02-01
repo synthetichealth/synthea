@@ -865,10 +865,6 @@ public final class LifecycleModule extends Module {
   // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
-  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
-  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
-  public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
-      "Death due to Uncovered and Unreceived Treatment");
 
   protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {

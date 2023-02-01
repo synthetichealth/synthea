@@ -1,7 +1,7 @@
 {
   "name": "Lost Care - Breast Cancer",
   "remarks": [
-    "A very simple and incomplete module that defines a higher likelihood of mortality if breast cancer care is missed."
+    "A very simple and incomplete module that defines a higher likelihood of mortality if breast cancer care is missed. Specifically, this module will check that SNOMED code 33195004 was \"missed\" and is in the lost-care health record using the \"Lost Care\" transition type. If the care was missed, the module will check yearly for whether the person should have a higher mortality rate. This module is not based in fact, a 67% yearly mortality rate for missed breast cancer care is made up."
   ],
   "states": {
     "Initial": {
@@ -15,28 +15,31 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Pause_Breast_Cancer_Module",
+          "transition": "Mortality_Check",
           "condition": {
             "condition_type": "Lost Care",
             "codes": [
               {
                 "system": "SNOMED-CT",
                 "code": "33195004",
-                "display": "Breast Cancer Care"
+                "display": "Teleradiotherapy procedure (procedure)"
               }
             ]
           }
         },
         {
-          "transition": "Yearly_Mortality_Check"
+          "transition": "Delay_LOC_Mortality_Check"
         }
+      ],
+      "remarks": [
+        "This state uses the \"Lost Care\" transition to check if a person missed breast cancer care using the SNOMED code 33195004 (Teleradiotherapy procedure (procedure)). Although this is not breast cancer specific, Synthea only uses this code in the breast cancer modules."
       ]
     },
     "Mortality_Check": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Yearly_Mortality_Check",
+          "transition": "Delay_LOC_Mortality_Check",
           "distribution": 0.32999999999999996
         },
         {
@@ -55,12 +58,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "LOST_CARE",
-          "display": "LOST_CARE_BREAST_CANCER"
+          "code": 397709008,
+          "display": "Death due to Uncovered and Unreceived Treatment"
         }
+      ],
+      "remarks": [
+        "Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment."
       ]
     },
-    "Yearly_Mortality_Check": {
+    "Delay_LOC_Mortality_Check": {
       "type": "Delay",
       "distribution": {
         "kind": "EXACT",
@@ -70,11 +76,6 @@
       },
       "unit": "years",
       "direct_transition": "Check_For_Missed_Breast_Cancer_Care"
-    },
-    "Pause_Breast_Cancer_Module": {
-      "type": "Simple",
-      "direct_transition": "Mortality_Check",
-      "modulesToPause": "breast_cancer"
     }
   },
   "gmf_version": 2
