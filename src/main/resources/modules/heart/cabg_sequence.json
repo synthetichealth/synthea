@@ -166,7 +166,7 @@
       "submodule": "heart/cabg/referral",
       "conditional_transition": [
         {
-          "transition": "Terminal",
+          "transition": "End Last Encounter",
           "condition": {
             "condition_type": "Or",
             "conditions": [
@@ -202,16 +202,12 @@
     "Postop ICU and Ward": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg/postop",
-      "direct_transition": "End Operation Encounter"
+      "direct_transition": "End Last Encounter"
     },
     "Deceased": {
       "type": "Death",
-      "direct_transition": "Terminal",
+      "direct_transition": "End Last Encounter",
       "referenced_by_attribute": "cardiac_surgery_reason"
-    },
-    "End Operation Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
     },
     "Terminal": {
       "type": "Terminal"
@@ -220,6 +216,10 @@
       "type": "CallSubmodule",
       "submodule": "heart/operative_status",
       "direct_transition": "Set Outcomes"
+    },
+    "End Last Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 2
