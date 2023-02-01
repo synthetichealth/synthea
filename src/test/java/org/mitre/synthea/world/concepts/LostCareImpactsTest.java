@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -27,10 +25,6 @@ import org.mitre.synthea.world.geography.Location;
 import org.powermock.reflect.Whitebox;
 
 public class LostCareImpactsTest {
-
-  // TODO: There should be a way to pause a module (i.e. pause the breast cancer
-  // module once lossofcare triggers. Should the patient get insurance, resume
-  // it)
 
   private double defaultEncounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
   // Modules (including lost care test module)
@@ -126,34 +120,6 @@ public class LostCareImpactsTest {
     // The person's cause of death should be lost care.
     Code lostCareCode = new Code("SNOMED-CT", "LOST_CARE_TEST_CODE", "LOST_CARE_TEST_DISPLAY");
     assertEquals(lostCareCode, person.attributes.get(Person.CAUSE_OF_DEATH));
-  }
-
-  /**
-   * Tests that the lost care modules are loaded when loss of care is enabled.
-   */
-  @Test
-  public void shouldLoadLostCareModule() {
-    Config.set("generate.payers.loss_of_care", "true");
-    Config.set("lifecycle.death_by_loss_of_care", "true");
-    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
-    List<String> importedModules = Arrays.asList(Module.getModuleNames());
-    assertTrue("Modules imported should include the lost care breast cancer module.",
-        importedModules.contains("lost_care/lost_care_breast_cancer"));
-  }
-
-  /**
-   * Tests that the lost care modules are not loaded when loss of care is
-   * not enabled.
-   */
-  @Test
-  public void shouldNotLoadLostCareModule() {
-    Config.set("generate.payers.loss_of_care", "false");
-    Config.set("lifecycle.death_by_loss_of_care", "false");
-    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
-    assertFalse(HealthRecord.lossOfCareEnabled);
-    List<String> importedModules = Arrays.asList(Module.getModuleNames());
-    assertFalse("Modules imported should not include the lost care breast cancer module.",
-        importedModules.contains("lost_care/lost_care_breast_cancer"));
   }
 
 }

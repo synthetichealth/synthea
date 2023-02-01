@@ -64,9 +64,9 @@ public class Module implements Cloneable, Serializable {
       .mappingProvider(new GsonMappingProvider())
       .build();
 
-  private static final Map<String, ModuleSupplier> modules = loadModules();
+  protected static Map<String, ModuleSupplier> modules = loadModules();
 
-  private static Map<String, ModuleSupplier> loadModules() {
+  protected static Map<String, ModuleSupplier> loadModules() {
     Map<String, ModuleSupplier> retVal = new ConcurrentHashMap<>();
     int submoduleCount = 0;
 

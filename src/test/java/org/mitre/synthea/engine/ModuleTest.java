@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.powermock.reflect.Whitebox;
 
 public class ModuleTest {
@@ -309,5 +312,33 @@ public class ModuleTest {
         fail(e.getMessage());
       }
     });
+  }
+
+  /**
+   * Tests that lost care modules are loaded when loss of care is enabled.
+   */
+  @Test
+  public void shouldLoadLostCareModule() {
+    Config.set("generate.payers.loss_of_care", "true");
+    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    assertTrue(HealthRecord.lossOfCareEnabled);
+    Module.modules = Module.loadModules();
+    List<String> importedModules = Arrays.asList(Module.getModuleNames());
+    assertTrue("Modules imported should include the lost care breast cancer module.",
+        importedModules.contains("lost_care/lost_care_breast_cancer"));
+  }
+
+  /**
+   * Tests that lost care modules are not loaded when loss of care is disabled.
+   */
+  @Test
+  public void shouldNotLoadLostCareModule() {
+    Config.set("generate.payers.loss_of_care", "false");
+    HealthRecord.lossOfCareEnabled = Config.getAsBoolean("generate.payers.loss_of_care", false);
+    assertFalse(HealthRecord.lossOfCareEnabled);
+    Module.modules = Module.loadModules();
+    List<String> importedModules = Arrays.asList(Module.getModuleNames());
+    assertFalse("Modules imported should not include the lost care breast cancer module.",
+        importedModules.contains("lost_care/lost_care_breast_cancer"));
   }
 }
