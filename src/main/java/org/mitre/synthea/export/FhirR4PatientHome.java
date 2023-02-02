@@ -5,7 +5,6 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
-import org.mitre.synthea.world.agents.Person;
 
 /**
  * Singleton class to manage the instance of the "Patient's Home" Location resource.
@@ -32,9 +31,10 @@ public class FhirR4PatientHome {
               .setDisplay(LocationPhysicalType.HO.getDisplay())
           ));
       patientHome.setDescription("Patient's Home");
-      // Not really generating a random UUID. Given that this is not tied to a particular provider
-      // or person, this just makes up a person with a hardcoded random seed.
-      patientHome.setId(new Person(1).randUUID().toString());
+      // Given that this is not tied to a particular provider or person,
+      // this is a fixed value based on an arbitrary choice:
+      // new Patient(1).randUUID().toString() --> bb1ad573-19b8-9cd8-68fb-0e6f684df992
+      patientHome.setId("bb1ad573-19b8-9cd8-68fb-0e6f684df992");
       Identifier identifier = patientHome.addIdentifier();
       identifier.setSystem(FhirR4.SYNTHEA_IDENTIFIER);
       identifier.setValue(patientHome.getId());

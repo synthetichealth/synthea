@@ -471,7 +471,7 @@ public class CSVExporter {
 
     for (Encounter encounter : person.record.encounters) {
 
-      String encounterID = encounter(person, personID, encounter);
+      String encounterID = encounter(personID, encounter);
       String payerID = encounter.claim.plan.getPayer().uuid;
 
       claim(person, encounter.claim, encounter, encounterID, time);
@@ -512,11 +512,11 @@ public class CSVExporter {
       }
 
       for (CarePlan careplan : encounter.careplans) {
-        careplan(person, personID, encounterID, careplan);
+        careplan(personID, encounterID, careplan);
       }
 
       for (ImagingStudy imagingStudy : encounter.imagingStudies) {
-        imagingStudy(person, personID, encounterID, imagingStudy);
+        imagingStudy(personID, encounterID, imagingStudy);
       }
 
       for (Device device : encounter.devices) {
@@ -655,19 +655,18 @@ public class CSVExporter {
   /**
    * Write a single Encounter line to encounters.csv.
    *
-   * @param rand      Source of randomness to use when generating ids etc
    * @param personID  The ID of the person that had this encounter
    * @param encounter The encounter itself
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
-  private String encounter(RandomNumberGenerator rand, String personID,
+  private String encounter(String personID,
           Encounter encounter) throws IOException {
     // Id,START,STOP,PATIENT,ORGANIZATION,PROVIDER,PAYER,ENCOUNTERCLASS,CODE,DESCRIPTION,
     // BASE_ENCOUNTER_COST,TOTAL_CLAIM_COST,PAYER_COVERAGE,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String encounterID = rand.randUUID().toString();
+    String encounterID = encounter.uuid.toString();
     // ID
     s.append(encounterID).append(',');
     // START
@@ -1038,18 +1037,17 @@ public class CSVExporter {
   /**
    * Write a single CarePlan to careplans.csv.
    *
-   * @param rand        Source of randomness to use when generating ids etc
    * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private String careplan(RandomNumberGenerator rand, String personID, String encounterID,
+  private String careplan(String personID, String encounterID,
       CarePlan careplan) throws IOException {
     // Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
-    String careplanID = rand.randUUID().toString();
+    String careplanID = careplan.uuid.toString();
     s.append(careplanID).append(',');
     s.append(dateFromTimestamp(careplan.start)).append(',');
     if (careplan.stop != 0L) {
@@ -1081,19 +1079,18 @@ public class CSVExporter {
   /**
    * Write a single ImagingStudy to imaging_studies.csv.
    *
-   * @param rand         Source of randomness to use when generating ids etc
    * @param personID     ID of the person the ImagingStudy was taken of.
    * @param encounterID  ID of the encounter where the ImagingStudy was performed
    * @param imagingStudy The ImagingStudy itself
    * @throws IOException if any IO error occurs
    */
-  private String imagingStudy(RandomNumberGenerator rand, String personID, String encounterID,
+  private String imagingStudy(String personID, String encounterID,
       ImagingStudy imagingStudy) throws IOException {
     // Id,DATE,PATIENT,ENCOUNTER,SERIES_UID,BODYSITE_CODE,BODYSITE_DESCRIPTION,
     // MODALITY_CODE,MODALITY_DESCRIPTION,INSTANCE_UID,SOP_CODE,SOP_DESCRIPTION,PROCEDURE_CODE
     StringBuilder s = new StringBuilder();
 
-    String studyID = rand.randUUID().toString();
+    String studyID = imagingStudy.uuid.toString();
 
     for (ImagingStudy.Series series: imagingStudy.series) {
       String seriesDicomUid = series.dicomUid;
@@ -1412,7 +1409,7 @@ public class CSVExporter {
 
     StringBuilder s = new StringBuilder();
     // Claim Id. Should be a number.
-    String claimId = rand.randUUID().toString();
+    String claimId = claim.uuid.toString();
     s.append(claimId).append(',');
     // PATIENTID
     s.append(claim.person.attributes.get(Person.ID)).append(',');
@@ -1811,6 +1808,7 @@ public class CSVExporter {
      */
     public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
         long chargeId, Claim.ClaimEntry claimEntry, RandomNumberGenerator rand) {
+      // TODO: fix this one
       this.id = rand.randUUID().toString();
       this.encounterId = encounterId;
       this.claimId = claimId;

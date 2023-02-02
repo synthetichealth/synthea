@@ -234,7 +234,7 @@ public class CPCDSExporter {
     long end = 0;
 
     for (Encounter encounter : person.record.encounters) {
-      String encounterID = person.randUUID().toString();
+      String encounterID = encounter.uuid.toString();
       UUID medRecordNumber = person.randUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
 

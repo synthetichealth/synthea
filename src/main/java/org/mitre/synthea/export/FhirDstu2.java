@@ -248,7 +248,7 @@ public class FhirDstu2 {
       }
 
       // one claim per encounter
-      encounterClaim(person, personEntry, bundle, encounterEntry, encounter.claim);
+      encounterClaim(personEntry, bundle, encounterEntry, encounter.claim);
     }
     return bundle;
   }
@@ -603,7 +603,7 @@ public class FhirDstu2 {
       encounterResource.setHospitalization(hospitalization);
     }
 
-    return newEntry(person, bundle, encounterResource);
+    return newEntry(bundle, encounterResource, encounter.uuid.toString());
   }
 
   /**
@@ -646,8 +646,6 @@ public class FhirDstu2 {
   /**
    * Create an entry for the given Claim, which references a Medication.
    *
-   * @param rand
-   *          Source of randomness to use when generating ids etc
    * @param personEntry
    *          Entry for the person
    * @param bundle
@@ -660,7 +658,7 @@ public class FhirDstu2 {
    *          The Entry for the Medication object, previously created
    * @return the added Entry
    */
-  private static Entry medicationClaim(RandomNumberGenerator rand, Entry personEntry,
+  private static Entry medicationClaim(Entry personEntry,
           Bundle bundle, Entry encounterEntry, Claim claim, Entry medicationEntry) {
     ca.uhn.fhir.model.dstu2.resource.Claim claimResource =
         new ca.uhn.fhir.model.dstu2.resource.Claim();
@@ -681,14 +679,12 @@ public class FhirDstu2 {
 
     // TODO add cost information
 
-    return newEntry(rand, bundle, claimResource);
+    return newEntry(bundle, claimResource, claim.uuid.toString());
   }
 
   /**
    * Create an entry for the given Claim, associated to an Encounter.
    *
-   * @param rand
-   *          Source of randomness to use when generating ids etc
    * @param personEntry
    *          Entry for the person
    * @param bundle
@@ -699,7 +695,7 @@ public class FhirDstu2 {
    *          the Claim object
    * @return the added Entry
    */
-  private static Entry encounterClaim(RandomNumberGenerator rand, Entry personEntry,
+  private static Entry encounterClaim(Entry personEntry,
           Bundle bundle, Entry encounterEntry, Claim claim) {
     ca.uhn.fhir.model.dstu2.resource.Claim claimResource =
         new ca.uhn.fhir.model.dstu2.resource.Claim();
@@ -788,7 +784,7 @@ public class FhirDstu2 {
       itemSequence++;
     }
 
-    return newEntry(rand, bundle, claimResource);
+    return newEntry(bundle, claimResource, claim.uuid.toString());
   }
 
   /**
@@ -827,7 +823,7 @@ public class FhirDstu2 {
       conditionResource.setClinicalStatus(ConditionClinicalStatusCodesEnum.RESOLVED);
     }
 
-    Entry conditionEntry = newEntry(rand, bundle, conditionResource);
+    Entry conditionEntry = newEntry(bundle, conditionResource, condition.uuid.toString());
 
     condition.fullUrl = conditionEntry.getFullUrl();
 
@@ -870,7 +866,7 @@ public class FhirDstu2 {
     Code code = allergy.codes.get(0);
     allergyResource.setSubstance(mapCodeToCodeableConcept(code, SNOMED_URI));
 
-    Entry allergyEntry = newEntry(rand, bundle, allergyResource);
+    Entry allergyEntry = newEntry(bundle, allergyResource, allergy.uuid.toString());
     allergy.fullUrl = allergyEntry.getFullUrl();
     return allergyEntry;
   }
@@ -925,7 +921,7 @@ public class FhirDstu2 {
     observationResource.setEffective(convertFhirDateTime(observation.start, true));
     observationResource.setIssued(new InstantDt(new Date(observation.start)));
 
-    Entry entry = newEntry(rand, bundle, observationResource);
+    Entry entry = newEntry(bundle, observationResource, observation.uuid.toString());
     observation.fullUrl = entry.getFullUrl();
     return entry;
   }
@@ -1051,7 +1047,7 @@ public class FhirDstu2 {
       }
     }
 
-    Entry procedureEntry = newEntry(rand, bundle, procedureResource);
+    Entry procedureEntry = newEntry(bundle, procedureResource, procedure.uuid.toString());
     procedure.fullUrl = procedureEntry.getFullUrl();
 
     return procedureEntry;
@@ -1067,7 +1063,7 @@ public class FhirDstu2 {
     immResource.setWasNotGiven(false);
     immResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
     immResource.setEncounter(new ResourceReferenceDt(encounterEntry.getFullUrl()));
-    Entry immunizationEntry = newEntry(rand, bundle, immResource);
+    Entry immunizationEntry = newEntry(bundle, immResource, immunization.uuid.toString());
     immunization.fullUrl = immunizationEntry.getFullUrl();
 
     return immunizationEntry;
@@ -1076,8 +1072,8 @@ public class FhirDstu2 {
   /**
    * Map the given Medication to a FHIR MedicationRequest resource, and add it to the given Bundle.
    *
-   * @param rand
-   *          Source of randomness to use when generating ids etc
+   * @param person
+   *          The Person
    * @param personEntry
    *          The Entry for the Person
    * @param bundle
@@ -1088,7 +1084,7 @@ public class FhirDstu2 {
    *          The Medication
    * @return The added Entry
    */
-  private static Entry medication(RandomNumberGenerator rand, Entry personEntry, Bundle bundle,
+  private static Entry medication(Person person, Entry personEntry, Bundle bundle,
           Entry encounterEntry, Medication medication) {
     MedicationOrder medicationResource = new MedicationOrder();
 
@@ -1166,13 +1162,13 @@ public class FhirDstu2 {
       medicationResource.setDosageInstruction(dosageInstruction);
     }
 
-    Entry medicationEntry = newEntry(rand, bundle, medicationResource);
+    Entry medicationEntry = newEntry(bundle, medicationResource, medication.uuid.toString());
     // create new claim for medication
-    medicationClaim(rand, personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
+    medicationClaim(personEntry, bundle, encounterEntry, medication.claim, medicationEntry);
 
     // Create new administration for medication, if needed
     if (medication.administration) {
-      medicationAdministration(rand, personEntry, bundle, encounterEntry, medication);
+      medicationAdministration(person, personEntry, bundle, encounterEntry, medication);
     }
 
     return medicationEntry;
@@ -1181,14 +1177,14 @@ public class FhirDstu2 {
   /**
    * Add a MedicationAdministration if needed for the given medication.
    *
-   * @param rand              Source of randomness to use when generating ids etc
+   * @param person            The Person
    * @param personEntry       The Entry for the Person
    * @param bundle            Bundle to add the MedicationAdministration to
    * @param encounterEntry    Current Encounter entry
    * @param medication        The Medication
    * @return The added Entry
    */
-  private static Entry medicationAdministration(RandomNumberGenerator rand, Entry personEntry,
+  private static Entry medicationAdministration(Person person, Entry personEntry,
           Bundle bundle, Entry encounterEntry, Medication medication) {
     MedicationAdministration medicationResource = new MedicationAdministration();
 
@@ -1239,7 +1235,10 @@ public class FhirDstu2 {
       }
     }
 
-    Entry medicationAdminEntry = newEntry(rand, bundle, medicationResource);
+    String medicationAdminUUID = ExportHelper.buildUUID(person, medication.start,
+        "MedicationAdministration for " + medication.uuid);
+
+    Entry medicationAdminEntry = newEntry(bundle, medicationResource, medicationAdminUUID);
     return medicationAdminEntry;
   }
 
@@ -1290,7 +1289,7 @@ public class FhirDstu2 {
       reportResource.setResult(result);
     }
 
-    return newEntry(rand, bundle, reportResource);
+    return newEntry(bundle, reportResource, report.uuid.toString());
   }
 
   /**
@@ -1308,7 +1307,7 @@ public class FhirDstu2 {
    *          The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static Entry careplan(RandomNumberGenerator rand, Entry personEntry, Bundle bundle,
+  private static Entry careplan(Person person, Entry personEntry, Bundle bundle,
           Entry encounterEntry, CarePlan carePlan) {
     ca.uhn.fhir.model.dstu2.resource.CarePlan careplanResource =
         new ca.uhn.fhir.model.dstu2.resource.CarePlan();
@@ -1370,11 +1369,11 @@ public class FhirDstu2 {
     }
 
     for (JsonObject goal : carePlan.goals) {
-      Entry goalEntry = caregoal(rand, bundle, goalStatus, goal);
+      Entry goalEntry = caregoal(person, bundle, carePlan.start, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
-    return newEntry(rand, bundle, careplanResource);
+    return newEntry(bundle, careplanResource, carePlan.uuid.toString());
   }
 
   /**
@@ -1468,7 +1467,7 @@ public class FhirDstu2 {
     imagingStudyResource.setSeries(seriesResourceList);
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
 
-    return newEntry(rand, bundle, imagingStudyResource);
+    return newEntry(bundle, imagingStudyResource, imagingStudy.uuid.toString());
   }
 
   /**
@@ -1519,7 +1518,7 @@ public class FhirDstu2 {
 
     mediaResource.setContent(contentResource);
 
-    return newEntry(rand, bundle, mediaResource);
+    return newEntry(bundle, mediaResource, obs.uuid.toString());
   }
 
   /**
@@ -1550,7 +1549,7 @@ public class FhirDstu2 {
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
     deviceResource.setPatient(new ResourceReferenceDt(personEntry.getFullUrl()));
 
-    return newEntry(rand, bundle, deviceResource);
+    return newEntry(bundle, deviceResource, device.uuid.toString());
   }
 
   /**
@@ -1589,7 +1588,7 @@ public class FhirDstu2 {
 
     supplyResource.setTime((DateTimeDt) convertFhirDateTime(supply.start, true));
 
-    return newEntry(rand, bundle, supplyResource);
+    return newEntry(bundle, supplyResource, supply.uuid.toString());
   }
 
   /**
@@ -1675,13 +1674,13 @@ public class FhirDstu2 {
   /**
    * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
    *
-   * @param rand Source of randomness to use when generating ids etc
+   * @param person The Person
    * @param bundle The Bundle to add to
    * @param goalStatus The GoalStatus
    * @param goal The JsonObject
    * @return The added Entry
    */
-  private static Entry caregoal(RandomNumberGenerator rand, Bundle bundle,
+  private static Entry caregoal(Person person, Bundle bundle, long carePlanStart,
           GoalStatusEnum goalStatus, JsonObject goal) {
 
     ca.uhn.fhir.model.dstu2.resource.Goal goalResource =
@@ -1726,7 +1725,12 @@ public class FhirDstu2 {
       }
     }
 
-    return newEntry(rand, bundle, goalResource);
+    // note: this ID logic assumes the person will not have 2 careplans
+    // that start at the same timestep with the same code
+    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
+        "CareGoal for " + goalResource.getDescription());
+
+    return newEntry(bundle, goalResource, resourceID);
   }
 
   /**
@@ -1808,21 +1812,6 @@ public class FhirDstu2 {
     to.addCoding(coding);
 
     return to;
-  }
-
-  /**
-   * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
-   * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
-   * the bundle.
-   *
-   * @param rand Source of randomness to use when generating ids etc
-   * @param bundle The Bundle to add the Entry to
-   * @param resource Resource the new Entry should contain
-   * @return the created Entry
-   */
-  private static Entry newEntry(RandomNumberGenerator rand, Bundle bundle, BaseResource resource) {
-    String resourceID = rand.randUUID().toString();
-    return newEntry(bundle, resource, resourceID);
   }
 
   /**
