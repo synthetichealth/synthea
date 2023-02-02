@@ -2452,7 +2452,7 @@ public class FhirR4 {
    * Add a clinical note to the Bundle, which adds both a DocumentReference and a
    * DiagnosticReport.
    *
-   * @param Person         The Person
+   * @param person         The Person
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Report to
    * @param encounterEntry Current Encounter entry
