@@ -53,7 +53,7 @@ public class C19Vaccine {
             "212", false, 0.071, 0));
 
     List<Pair<EUASet, Double>> pmf = EUAs.entrySet().stream()
-        .map(entry -> new Pair<EUASet, Double>(entry.getKey(), entry.getValue().getUsagePercentage()))
+        .map(entry -> new Pair<>(entry.getKey(), entry.getValue().getUsagePercentage()))
         .collect(Collectors.toList());
 
     shotSelector = new SyncedEnumeratedDistro<EUASet>(pmf);
