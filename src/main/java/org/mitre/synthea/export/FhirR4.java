@@ -2667,11 +2667,6 @@ public class FhirR4 {
       BundleEntryComponent personEntry, long carePlanStart,
       CodeableConcept goalStatus, JsonObject goal) {
 
-    // note: this ID logic assumes the person will not have 2 careplans
-    // that start at the same timestep with the same code
-    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
-        "CareGoal for CarePlan " + goalStatus.getCodingFirstRep().getCode());
-
     Goal goalResource = new Goal();
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
@@ -2681,7 +2676,6 @@ public class FhirR4 {
     }
     goalResource.setLifecycleStatus(GoalLifecycleStatus.ACCEPTED);
     goalResource.setAchievementStatus(goalStatus);
-    goalResource.setId(resourceID);
     goalResource.setSubject(new Reference(personEntry.getFullUrl()));
 
     if (goal.has("text")) {
@@ -2739,6 +2733,11 @@ public class FhirR4 {
         }
       }
     }
+
+    // note: this ID logic assumes the person will not have 2 careplans
+    // that start at the same timestep with the same description
+    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
+        "CareGoal for " + goalResource.getDescription());
 
     return newEntry(bundle, goalResource, resourceID);
   }
