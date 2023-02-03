@@ -34,6 +34,7 @@ import org.mitre.synthea.engine.Transition.LookupTableTransition;
 import org.mitre.synthea.engine.Transition.LookupTableTransitionOption;
 import org.mitre.synthea.engine.Transition.TypeOfCareTransition;
 import org.mitre.synthea.engine.Transition.TypeOfCareTransitionOptions;
+import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.ConstantValueGenerator;
 import org.mitre.synthea.helpers.ExpressionProcessor;
@@ -262,10 +263,10 @@ public abstract class State implements Cloneable, Serializable {
       if (submod == null) {
         throw new RuntimeException("Unknown submodule: " + submodule);
       }
-      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      if (encounter != null) {
-        person.setCurrentEncounter(submod, encounter);
-      }
+      // set the submodule name to have the same name as this parent
+      // module, that way the submodule is empowered (and vice versa)
+      // to act on encounters created using the same name.
+      submod.name = module.name;
       boolean completed = submod.process(person, time);
 
       if (completed) {
@@ -287,17 +288,11 @@ public abstract class State implements Cloneable, Serializable {
           moduleHistory.addAll(0, person.history);
         }
         // clear the submodule history
-        person.attributes.remove(submod.name);
+        person.attributes.remove(submod.submoduleName);
         // reset person.history to this module's history
         person.history = moduleHistory;
         // add this state to history to indicate we returned to this module
         person.history.add(0, this);
-        // start using the current encounter, it may have changed
-        encounter = person.getCurrentEncounter(submod);
-        if (encounter != null) {
-          person.setCurrentEncounter(module, encounter);
-          person.setCurrentEncounter(submod, null);
-        }
         return true;
       } else {
         // reset person.history to this module's history
@@ -454,6 +449,19 @@ public abstract class State implements Cloneable, Serializable {
   public static class Terminal extends State {
     @Override
     public boolean process(Person person, long time) {
+      if (person.hasCurrentEncounter()
+          && !module.submodule // only auto-close encounter for top-level modules
+          && person.getCurrentEncounterModule().equals(module.name)) {
+        // End any encounter this module is accidentally leaving open
+        HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+        if (encounter != null) {
+          EncounterType type = EncounterType.fromString(encounter.type);
+          person.record.encounterEnd(time, type);
+        }
+        // reset current provider hash
+        person.removeCurrentProvider(module.name);
+        person.releaseCurrentEncounter(time, module.name);
+      }
       return false;
     }
   }
@@ -837,23 +845,49 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       if (wellness) {
-        HealthRecord.Encounter encounter = person.record.currentEncounter(time);
-        entry = encounter;
-        String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.module.name;
-        if (person.attributes.containsKey(activeKey)) {
-          person.attributes.remove(activeKey);
-          person.setCurrentEncounter(module, encounter);
-          diagnosePastConditions(person, time);
-          if (!encounter.chronicMedsRenewed && person.chronicMedications.size() > 0) {
-            renewChronicMedicationsAtWellness(person, time);
-            encounter.chronicMedsRenewed = true;
+        if (person.hasCurrentEncounter()
+            && person.getCurrentEncounterModule().equals(EncounterModule.NAME)) {
+          HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+          entry = encounter;
+          String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + module.name;
+          if (person.attributes.containsKey(activeKey)) {
+            // check-in with the activeKey...
+            boolean status = (Boolean) person.attributes.get(activeKey);
+            if (status == false) {
+              // mark that we have used our active key
+              person.attributes.put(activeKey, true);
+              diagnosePastConditions(person, time);
+              if (!encounter.chronicMedsRenewed && person.chronicMedications.size() > 0) {
+                renewChronicMedicationsAtWellness(person, time);
+                encounter.chronicMedsRenewed = true;
+              }
+              return true;
+            } else {
+              // We have looped back to the current wellness encounter,
+              // so block until the NEXT wellness encounter
+              return false;
+            }
+          } else {
+            // We should no longer be in a wellness encounter
+            return false;
           }
-          return true;
         } else {
           // Block until we're in a wellness encounter... then proceed.
           return false;
         }
       } else {
+        if (person.hasCurrentEncounter()) {
+          if (person.getCurrentEncounterModule().equals(module.name)) {
+            // This module has the lock, but the previous encounter was not released...
+            HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+            EncounterType encounterType = EncounterType.fromString(encounter.type);
+            person.record.encounterEnd(time, encounterType);
+            person.releaseCurrentEncounter(time, module.name);
+          } else {
+            // Block until the other module finishes their encounter...
+            return false;
+          }
+        }
         EncounterType type = null;
         if (telemedicinePossibility != null && !telemedicinePossibility.isEmpty()) {
           TelemedicinePossibility possibility =
@@ -884,12 +918,11 @@ public abstract class State implements Cloneable, Serializable {
           specialty = this.module.specialty;
         }
         HealthRecord.Encounter encounter = EncounterModule.createEncounter(person, time, type,
-            specialty, null);
+            specialty, null, module.name);
         entry = encounter;
         if (codes != null) {
           encounter.mergeCodeList(codes);
         }
-        person.setCurrentEncounter(module, encounter);
         encounter.name = this.name;
 
         diagnosePastConditions(person, time);
@@ -1021,19 +1054,38 @@ public abstract class State implements Cloneable, Serializable {
 
     @Override
     public boolean process(Person person, long time) {
-      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-      if (encounter != null) {
-        EncounterType type = EncounterType.fromString(encounter.type);
-        if (type != EncounterType.WELLNESS) {
+      String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + module.name;
+      if (person.hasCurrentEncounter()
+          && person.getCurrentEncounterModule().equals(module.name)) {
+        HealthRecord.Encounter encounter = person.record.currentEncounter(time);
+        if (encounter != null) {
+          EncounterType type = EncounterType.fromString(encounter.type);
           person.record.encounterEnd(time, type);
+          encounter.discharge = dischargeDisposition;
         }
-        encounter.discharge = dischargeDisposition;
+        // reset current provider hash
+        person.removeCurrentProvider(module.name);
+        person.releaseCurrentEncounter(time, module.name);
+        return true;
+      } else if (person.hasCurrentEncounter()
+          && person.getCurrentEncounterModule().equals(EncounterModule.NAME)) {
+        // exit the current wellness encounter
+        person.attributes.remove(activeKey);
+        return true;
+      } else if (person.attributes.containsKey(activeKey)) {
+        // possibly due to wellness encounters crossing a time-step boundary,
+        // it is possible for the EncounterModule to end a wellness encounter
+        // while a module did not hit the EncounterEnd state yet...
+        // so, as a backup, we check for the presence of the activeKey...
+        person.attributes.remove(activeKey);
+        return true;
+      } else if (person.hasCurrentEncounter()) {
+        // trying to end an encounter when another module has the reservation
+        return false;
+      } else {
+        // trying to end an encounter when no module has the reservation
+        return true;
       }
-
-      // reset current provider hash
-      person.removeCurrentProvider(module.name);
-      person.setCurrentEncounter(module, null);
-      return true;
     }
   }
 
@@ -1068,8 +1120,11 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       updateOnsetInfo(person, time);
-      HealthRecord.Encounter encounter = person.getCurrentEncounter(module);
-
+      HealthRecord.Encounter encounter = null;
+      if (person.hasCurrentEncounter()
+          && person.getCurrentEncounterModule().equals(module.name)) {
+        encounter = person.record.currentEncounter(time);
+      }
       if (targetEncounter == null || targetEncounter.trim().length() == 0
           || (encounter != null && targetEncounter.equals(encounter.name))) {
         diagnose(person, time);

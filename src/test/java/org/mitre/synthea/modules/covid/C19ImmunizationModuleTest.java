@@ -14,18 +14,26 @@ import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.agents.ProviderTest;
-import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
 public class C19ImmunizationModuleTest {
+
+  private Person buildPerson(long birthday) {
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, birthday);
+    Provider provider = TestHelper.buildMockProvider();
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
+    return person;
+  }
 
   @Test
   public void currentlyHasCOVID() {
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthday);
+    Person person = buildPerson(birthday);
     assertFalse(C19ImmunizationModule.currentlyHasCOVID(person));
     person.record.conditionStart(decemberFifteenth, C19ImmunizationModule.COVID_CODE);
     assertTrue(C19ImmunizationModule.currentlyHasCOVID(person));
@@ -35,8 +43,7 @@ public class C19ImmunizationModuleTest {
   public void eligibleForShot() {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthday);
+    Person person = buildPerson(birthday);
     assertTrue(C19ImmunizationModule.eligibleForShot(person, decemberFifteenth));
     long eleven = TestHelper.timestamp(2009, 8, 1, 0, 0, 0);
     person.attributes.put(Person.BIRTHDATE, eleven);
@@ -47,8 +54,7 @@ public class C19ImmunizationModuleTest {
   public void selectVaccine() {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthday);
+    Person person = buildPerson(birthday);
     assertTrue(C19Vaccine.EUASet.PFIZER
         == C19ImmunizationModule.selectVaccine(person, decemberFifteenth));
     long januaryOne = TestHelper.timestamp(2021, 1, 1, 0, 0, 0);
@@ -61,13 +67,9 @@ public class C19ImmunizationModuleTest {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
     Location here = new Location("Massachusetts", "Billerica");
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthday);
+    Person person = buildPerson(birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     here.assignPoint(person, "Billerica");
-    Provider.loadProviders(here, ProviderTest.providerRandom);
-    person.setProvider(HealthRecord.EncounterType.OUTPATIENT,
-        Provider.findService(person, HealthRecord.EncounterType.OUTPATIENT, decemberFifteenth));
     PayerManager.loadPayers(here);
     person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
         PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
@@ -88,8 +90,7 @@ public class C19ImmunizationModuleTest {
   public void process() {
     long decemberFirst = TestHelper.timestamp(2020, 12, 1, 0, 0, 0);
     long birthday = TestHelper.timestamp(2010, 8, 1, 0, 0, 0);
-    Person person = new Person(0L);
-    person.attributes.put(Person.BIRTHDATE, birthday);
+    Person person = buildPerson(birthday);
     C19ImmunizationModule mod = new C19ImmunizationModule();
     mod.process(person, decemberFirst);
     assertNull(person.attributes.get(C19ImmunizationModule.C19_VACCINE_STATUS));

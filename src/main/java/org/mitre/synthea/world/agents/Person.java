@@ -576,63 +576,49 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return returnValue;
   }
 
-  public static final String CURRENT_ENCOUNTERS = "current-encounters";
+  public static final String CURRENT_ENCOUNTER_MODULE = "current-encounter-module";
 
   /**
-   * Get the current encounter for the specified module or null if none exists.
+   * Get the module with the current encounter or null if no module is
+   * currently in an encounter.
    */
-  @SuppressWarnings("unchecked")
-  public Encounter getCurrentEncounter(Module module) {
-    Map<String, Encounter> moduleToCurrentEncounter
-        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
-
-    if (moduleToCurrentEncounter == null) {
-      moduleToCurrentEncounter = new HashMap<>();
-      attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
-    }
-
-    return moduleToCurrentEncounter.get(module.name);
+  public String getCurrentEncounterModule() {
+    return (String) attributes.get(CURRENT_ENCOUNTER_MODULE);
   }
 
   /**
-   * Check if there are any current encounters.
-   * @return true if there current encounters, false otherwise
+   * Check if there is a current encounter.
+   * @return true if there is a current encounter, false otherwise.
    */
   public boolean hasCurrentEncounter() {
-    if (attributes != null) {
-      Map<String, Encounter> moduleToCurrentEncounter
-              = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
-
-      if (moduleToCurrentEncounter != null && !moduleToCurrentEncounter.isEmpty()) {
-        // Uncomment the following lines to see which module encounters are blocking the start
-        // of wellness encounters in the encounter module.
-        // System.out.println("Pre-wellness Encounter Check Failed:");
-        // for (String module: moduleToCurrentEncounter.keySet()) {
-        //   Encounter encounter = moduleToCurrentEncounter.get(module);
-        //   System.out.printf("%s, %s\n", module, encounter.codes.get(0).code);
-        // }
-        return true;
-      }
-    }
-    return false;
+    return attributes.containsKey(CURRENT_ENCOUNTER_MODULE);
   }
 
   /**
-   * Set the current encounter for the specified module.
+   * Releases the current encounter reservation.
+   * This always succeeds, so any calls should make sure they are
+   * the owners using 'getCurrentEncounterModule()'.
+   * Currently the parameters are unused.
+   * @param time The time in the simulation.
+   * @param module The name of the module releasing the reservation.
    */
-  @SuppressWarnings("unchecked")
-  public void setCurrentEncounter(Module module, Encounter encounter) {
-    Map<String, Encounter> moduleToCurrentEncounter
-        = (Map<String, Encounter>) attributes.get(CURRENT_ENCOUNTERS);
+  public void releaseCurrentEncounter(long time, String module) {
+    attributes.remove(CURRENT_ENCOUNTER_MODULE);
+  }
 
-    if (moduleToCurrentEncounter == null) {
-      moduleToCurrentEncounter = new HashMap<>();
-      attributes.put(CURRENT_ENCOUNTERS, moduleToCurrentEncounter);
-    }
-    if (encounter == null) {
-      moduleToCurrentEncounter.remove(module.name);
+  /**
+   * Reserve the current Encounter... no other module can run an encounter
+   * (except for Wellness Encounters).
+   * @param time The time in the simulation.
+   * @param module The name of the module making the reservation.
+   * @return true if the encounter is reserved, false otherwise.
+   */
+  public boolean reserveCurrentEncounter(long time, String module) {
+    if (hasCurrentEncounter()) {
+      return false;
     } else {
-      moduleToCurrentEncounter.put(module.name, encounter);
+      attributes.put(CURRENT_ENCOUNTER_MODULE, module);
+      return true;
     }
   }
 

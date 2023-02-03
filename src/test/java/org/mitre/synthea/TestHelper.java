@@ -15,13 +15,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public abstract class TestHelper {
 
@@ -138,6 +145,23 @@ public abstract class TestHelper {
 
   public static long years(long numYears) {
     return Utilities.convertTime("years", numYears);
+  }
+
+  /**
+   * Create a provider that can assigned to Patients.
+   * @return General practice provider with all services.
+   */
+  public static Provider buildMockProvider() {
+    Provider provider = new Provider();
+    for (EncounterType type : EncounterType.values()) {
+      provider.servicesProvided.add(type);
+    }
+    RandomNumberGenerator rng = new DefaultRandomNumberGenerator(0L);
+    Clinician doc = new Clinician(0L, rng, 0L, provider);
+    ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
+    clinicians.add(doc);
+    provider.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, clinicians);
+    return provider;
   }
 
   /**

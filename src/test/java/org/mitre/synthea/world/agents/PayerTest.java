@@ -258,6 +258,10 @@ public class PayerTest {
     person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.attributes.put(Person.GENDER, "F");
+    Provider provider = TestHelper.buildMockProvider();
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
     person.record.conditionStart(time, "254837009");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.

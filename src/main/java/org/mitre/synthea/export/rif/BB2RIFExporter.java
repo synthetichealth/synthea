@@ -352,6 +352,9 @@ public class BB2RIFExporter {
   public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
     long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
+    if (yearsOfHistory == 0) {
+      startTime = (long) person.attributes.get(Person.BIRTHDATE);
+    }
     exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneExp.export(person, startTime, stopTime));
     beneExp.exportHistory(person, startTime, stopTime);
     exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,

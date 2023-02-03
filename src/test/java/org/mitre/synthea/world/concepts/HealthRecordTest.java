@@ -22,6 +22,7 @@ import org.mitre.synthea.world.geography.Location;
 
 public class HealthRecordTest {
 
+  Provider provider;
   InsurancePlan noInsurance;
   long time;
 
@@ -30,14 +31,22 @@ public class HealthRecordTest {
    */
   @Before
   public void setup() {
+    provider = TestHelper.buildMockProvider();
     PayerManager.loadPayers(new Location("Massachusetts", null));
     noInsurance = PayerManager.getNoInsurancePlan();
     time = 0L;
   }
 
+  private void setProvider(Person person) {
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
+  }
+
   @Test
   public void testReportAllObs() {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
@@ -57,6 +66,7 @@ public class HealthRecordTest {
   @Test
   public void testReportSomeObs() {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
@@ -75,6 +85,7 @@ public class HealthRecordTest {
   @Test
   public void testReportTooManyObs() {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.coverage.setPlanToNoInsurance(time);
     HealthRecord record = new HealthRecord(person);
@@ -94,6 +105,7 @@ public class HealthRecordTest {
   @Test
   public void testMedicationAdministrationQuantity() {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", false);
@@ -105,6 +117,7 @@ public class HealthRecordTest {
   @Test
   public void testMedicationPrescriptionQuantity() {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
     Medication med = person.record.medicationStart(time, "foobar", true);
@@ -115,9 +128,9 @@ public class HealthRecordTest {
   @Test
   public void testMedicationDetailedQuantity() throws Exception {
     Person person = new Person(0L);
+    setProvider(person);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
 
     Module module = TestHelper.getFixture("medication_order.json");
 

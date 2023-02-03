@@ -5,13 +5,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
@@ -26,9 +29,13 @@ public class CostsTest {
   @Before
   public void setup() {
     Costs.loadCostData();
-    person = new Person(System.currentTimeMillis());
     PayerManager.loadNoInsurance();
     time = 0L;
+    person = new Person(System.currentTimeMillis());
+    Provider provider = TestHelper.buildMockProvider();
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
   }
@@ -49,7 +56,8 @@ public class CostsTest {
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
 
-    person.attributes.put(Person.STATE, "Massachusetts");
+    String state = Config.get("test_state.default", Generator.DEFAULT_STATE);
+    person.attributes.put(Person.STATE, state);
     double adjFactor = 0.5096;
     cost = Costs.determineCostOfEntry(fakeMedication, person);
     assertTrue(cost <= (maxCost * adjFactor));
@@ -70,7 +78,8 @@ public class CostsTest {
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
 
-    person.attributes.put(Person.STATE, "Massachusetts");
+    String state = Config.get("test_state.default", Generator.DEFAULT_STATE);
+    person.attributes.put(Person.STATE, state);
     double adjFactor = 0.8183;
     cost = Costs.determineCostOfEntry(fakeDevice, person);
     assertTrue(cost <= (maxCost * adjFactor));
@@ -91,7 +100,8 @@ public class CostsTest {
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
 
-    person.attributes.put(Person.STATE, "Massachusetts");
+    String state = Config.get("test_state.default", Generator.DEFAULT_STATE);
+    person.attributes.put(Person.STATE, state);
     double adjFactor = 0.8183;
     cost = Costs.determineCostOfEntry(fakeSupply, person);
     assertTrue(cost <= (maxCost * adjFactor));
@@ -116,7 +126,8 @@ public class CostsTest {
     assertTrue(cost <= maxCost);
     assertTrue(cost >= minCost);
     // Now test cost with adjustment factor.
-    person.attributes.put(Person.STATE, "California");
+    String state = Config.get("test_state.alternative", "California");
+    person.attributes.put(Person.STATE, state);
     double adjFactor = 1.0227;
     cost = Costs.determineCostOfEntry(fakeMedication, person);
     assertTrue(cost <= (maxCost * adjFactor));
