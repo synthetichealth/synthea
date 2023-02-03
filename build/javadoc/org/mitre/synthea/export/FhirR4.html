@@ -251,8 +251,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Bundle.BundleEntryComponent</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#practitioner(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">practitioner</a></span>&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-            org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#practitioner(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">practitioner</a></span>&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
             <a href="../world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&nbsp;clinician)</code></th>
 <td class="colLast">
 <div class="block">Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.</div>
@@ -260,8 +259,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Bundle.BundleEntryComponent</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#provider(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">provider</a></span>&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-        org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#provider(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">provider</a></span>&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
         <a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</code></th>
 <td class="colLast">
 <div class="block">Map the Provider into a FHIR Organization resource, and add it to the given Bundle.</div>
@@ -269,8 +267,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected static org.hl7.fhir.r4.model.Location</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#providerLocation(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">providerLocation</a></span>&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-                org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#providerLocation(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">providerLocation</a></span>&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
                 <a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</code></th>
 <td class="colLast">
 <div class="block">Map the Provider into a FHIR Location resource, and add it to the given Bundle.</div>
@@ -434,19 +431,17 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="provider(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">
+<a id="provider(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>provider</h4>
-<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Bundle.BundleEntryComponent&nbsp;provider&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-                                                                            org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Bundle.BundleEntryComponent&nbsp;provider&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
                                                                             <a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</pre>
 <div class="block">Map the Provider into a FHIR Organization resource, and add it to the given Bundle.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rand</code> - Source of randomness to use when generating ids etc</dd>
 <dd><code>bundle</code> - The Bundle to add to</dd>
 <dd><code>provider</code> - The Provider</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -454,19 +449,17 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="providerLocation(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">
+<a id="providerLocation(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>providerLocation</h4>
-<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Location&nbsp;providerLocation&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-                                                                 org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Location&nbsp;providerLocation&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
                                                                  <a href="../world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</pre>
 <div class="block">Map the Provider into a FHIR Location resource, and add it to the given Bundle.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rand</code> - Source of randomness to use when generating ids etc</dd>
 <dd><code>bundle</code> - The Bundle to add to</dd>
 <dd><code>provider</code> - The Provider</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -474,19 +467,17 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="practitioner(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">
+<a id="practitioner(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>practitioner</h4>
-<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Bundle.BundleEntryComponent&nbsp;practitioner&#8203;(<a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand,
-                                                                                org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
+<pre class="methodSignature">protected static&nbsp;org.hl7.fhir.r4.model.Bundle.BundleEntryComponent&nbsp;practitioner&#8203;(org.hl7.fhir.r4.model.Bundle&nbsp;bundle,
                                                                                 <a href="../world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a>&nbsp;clinician)</pre>
 <div class="block">Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>rand</code> - Source of randomness to use when generating ids etc</dd>
 <dd><code>bundle</code> - The Bundle to add to</dd>
 <dd><code>clinician</code> - The clinician</dd>
 <dt><span class="returnLabel">Returns:</span></dt>

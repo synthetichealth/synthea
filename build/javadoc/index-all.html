@@ -832,6 +832,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">This will validate the reaction probabilities and generate the underlying objects used
  to get weighted samples of reaction severities.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ExportHelper.html#buildUUID(long,long,java.lang.String)">buildUUID(long, long, String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ExportHelper.html" title="class in org.mitre.synthea.export">ExportHelper</a></dt>
+<dd>
+<div class="block">Construct a consistent UUID based on the given seed, timestamp, and a key.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ExportHelper.html#buildUUID(org.mitre.synthea.world.agents.Person,long,java.lang.String)">buildUUID(Person, long, String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ExportHelper.html" title="class in org.mitre.synthea.export">ExportHelper</a></dt>
+<dd>
+<div class="block">Construct a consistent UUID based on the given Person, timestamp, and a key.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY.html#BUYIN_MO_CNT">BUYIN_MO_CNT</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.BENEFICIARY</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -8205,7 +8213,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#practitioner(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">practitioner(RandomNumberGenerator, Bundle, Clinician)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#practitioner(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Clinician)">practitioner(Bundle, Clinician)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
 <dd>
 <div class="block">Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.</div>
 </dd>
@@ -8584,7 +8592,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Map the Provider into a FHIR Organization resource, and add it to the given Bundle.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#provider(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">provider(RandomNumberGenerator, Bundle, Provider)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#provider(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">provider(Bundle, Provider)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
 <dd>
 <div class="block">Map the Provider into a FHIR Organization resource, and add it to the given Bundle.</div>
 </dd>
@@ -8614,7 +8622,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/providerfinder/ProviderFinderRandom.html#%3Cinit%3E()">ProviderFinderRandom()</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.providerfinder.<a href="org/mitre/synthea/world/agents/behaviors/providerfinder/ProviderFinderRandom.html" title="class in org.mitre.synthea.world.agents.behaviors.providerfinder">ProviderFinderRandom</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#providerLocation(org.mitre.synthea.helpers.RandomNumberGenerator,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">providerLocation(RandomNumberGenerator, Bundle, Provider)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#providerLocation(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.world.agents.Provider)">providerLocation(Bundle, Provider)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
 <dd>
 <div class="block">Map the Provider into a FHIR Location resource, and add it to the given Bundle.</div>
 </dd>
@@ -10475,6 +10483,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html#toString()">toString()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord.PlanRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html#toString()">toString()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html#toString()">toString()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#toString()">toString()</a></span> - Method in enum org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
@@ -10733,6 +10743,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Payer.html#uuid">uuid</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#uuid">uuid</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#uuid">uuid</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#uuid">uuid</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a id="I:V">
