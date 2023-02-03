@@ -9,10 +9,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Person;
 
 /**
- * Returns the requested Payer elgibility algorithm. This prevents redundant
+ * Returns the requested Payer eligibility algorithm. This prevents redundant
  * recreations of the same objects over and over.
  */
 public class PlanEligibilityFinder {
@@ -21,34 +20,30 @@ public class PlanEligibilityFinder {
 
   private static final String ELIGIBILITY_NAME = "Name";
   public static final String GENERIC = "GENERIC";
+  public static final IPlanEligibility DEFAULT = new DefaultPlanEligibility();
 
   /**
-   * Returns the correct elgibility algorithm based on the given string.
+   * Returns the correct eligibility algorithm based on the given string.
    * @param eligibility The name of the eligibility type.
    * @return  The requested payer eligibility algorithm.
    */
   public static IPlanEligibility getEligibilityAlgorithm(String eligibility) {
-    String cleanedEigibility = eligibility.replaceAll("\\s", "").toUpperCase();
-    if (planEligibilities.containsKey(cleanedEigibility)) {
-      return planEligibilities.get(cleanedEigibility);
+    String cleanedEligibility = eligibility.replaceAll("\\s", "").toUpperCase();
+    if (cleanedEligibility.equals(GENERIC)) {
+      return DEFAULT;
+    } else if (planEligibilities.containsKey(cleanedEligibility)) {
+      return planEligibilities.get(cleanedEligibility);
     }
-    throw new RuntimeException("Plan eligiblity " + eligibility + " does not exist.");
+    throw new RuntimeException("Plan eligibility " + eligibility + " does not exist.");
   }
 
   /**
-   * Builds the plan eligiblities for the given state and CSV input file.
+   * Builds the plan eligibilities for the given state and CSV input file.
    * @param state The state.
    */
   public static void buildPlanEligibilities(String state, String fileName) {
     planEligibilities = new HashMap<>();
-    // Generic eliigblities always return true.
-    planEligibilities.put(PlanEligibilityFinder.GENERIC, new IPlanEligibility() {
-      @Override
-      public boolean isPersonEligible(Person person, long time) {
-        return true;
-      }
-    });
-    // Build the CSV input eligbility algorithms.
+    // Build the CSV input eligibility algorithms.
     CSVEligibility.buildEligibilityOptions(state);
     String resource = null;
     Iterator<? extends Map<String, String>> csv = null;

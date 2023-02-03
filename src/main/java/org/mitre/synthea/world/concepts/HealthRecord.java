@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -744,35 +745,45 @@ public class HealthRecord implements Serializable {
         // starting with observations...
         long max;
         if (observations.size() > 0) {
-          max = observations.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = observations.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
         // reports...
         if (reports.size() > 0) {
-          max = reports.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = reports.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
         // procedures...
         if (procedures.size() > 0) {
-          max = procedures.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = procedures.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
         // immunizations...
         if (immunizations.size() > 0) {
-          max = immunizations.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = immunizations.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
         // imaging studies...
         if (imagingStudies.size() > 0) {
-          max = imagingStudies.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = imagingStudies.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
         // supplies...
         if (supplies.size() > 0) {
-          max = supplies.stream().map((e) -> e.stop).max(Long::compare).get();
+          max = supplies.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
           endTime = Long.max(endTime, max);
         }
-        this.stop = Long.max(endTime, time);
+        if (this.stop == 0L || endTime == 0L) {
+          this.stop = time;
+        } else {
+          this.stop = Long.max(endTime, time);
+        }
         this.ended = true;
         this.endedTime = time;
       }
@@ -893,12 +904,17 @@ public class HealthRecord implements Serializable {
    */
   public Encounter currentEncounter(long time) {
     Encounter encounter = null;
-    if (encounters.size() >= 1) {
-      encounter = encounters.get(encounters.size() - 1);
-    } else {
-      encounter = new Encounter(time, EncounterType.WELLNESS.toString());
+    if (encounters.size() == 0) {
+      encounter = EncounterModule.createEncounter(person, time, EncounterType.WELLNESS,
+          ClinicianSpecialty.GENERAL_PRACTICE,
+          EncounterModule.WELL_CHILD_VISIT, EncounterModule.NAME);
       encounter.name = "First Wellness";
-      encounters.add(encounter);
+    }
+    for (int i = encounters.size() - 1; i >= 0; i--) {
+      encounter = encounters.get(i);
+      if (encounter.start <= time) {
+        return encounter;
+      }
     }
     return encounter;
   }

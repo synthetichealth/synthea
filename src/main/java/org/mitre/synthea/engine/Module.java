@@ -277,7 +277,10 @@ public class Module implements Cloneable, Serializable {
 
   public String name;
   public String specialty;
+  /** true if this is a submodule, false otherwise. */
   public boolean submodule;
+  /** if a submodule, the original name of this submodule. Otherwise null. */
+  public String submoduleName;
   public Double gmfVersion;
   public List<String> remarks;
   private Map<String, State> states;
@@ -333,11 +336,18 @@ public class Module implements Cloneable, Serializable {
     clone.name = this.name;
     clone.specialty = this.specialty;
     clone.submodule = this.submodule;
+    if (clone.submodule) {
+      // Only if this is a submodule, it wants to remember its own name.
+      // later, the `name` will be overwritten by the top-level module.
+      clone.submoduleName = clone.name;
+    }
     clone.remarks = this.remarks;
     if (this.states != null) {
       clone.states = new ConcurrentHashMap<String, State>();
       for (String key : this.states.keySet()) {
-        clone.states.put(key, this.states.get(key).clone());
+        State state = this.states.get(key).clone();
+        state.module = clone;
+        clone.states.put(key, state);
       }
     }
     return clone;
@@ -373,18 +383,24 @@ public class Module implements Cloneable, Serializable {
     if (terminateOnDeath && !person.alive(time)) {
       return true;
     }
+    // Possibly reset wellness encounters for this module.
+    String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.name;
+    if (!person.attributes.containsKey(activeKey)) {
+      // "false" means the person has not entered (or is still within) a wellness encounter
+      person.attributes.put(activeKey, false);
+    }
     person.history = null;
     // what current state is this person in?
-    if (!person.attributes.containsKey(this.name)) {
+    String historyKey = this.name;
+    if (this.submodule) {
+      historyKey = this.submoduleName;
+    }
+    if (!person.attributes.containsKey(historyKey)) {
       person.history = new LinkedList<State>();
       person.history.add(initialState());
-      person.attributes.put(this.name, person.history);
+      person.attributes.put(historyKey, person.history);
     }
-    person.history = (List<State>) person.attributes.get(this.name);
-    String activeKey = EncounterModule.ACTIVE_WELLNESS_ENCOUNTER + " " + this.name;
-    if (person.attributes.containsKey(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER)) {
-      person.attributes.put(activeKey, true);
-    }
+    person.history = (List<State>) person.attributes.get(historyKey);
     State current = person.history.get(0);
     // System.out.println(" Resuming at " + current.name);
     // process the current state,
@@ -412,7 +428,6 @@ public class Module implements Cloneable, Serializable {
         current = person.history.get(0);
       }
     }
-    person.attributes.remove(activeKey);
     return (current instanceof State.Terminal);
   }
 

@@ -88,7 +88,7 @@ public class BB2RIFExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.bfd.export", "true");
     Config.set("exporter.bfd.require_code_maps", "false");
-    Config.set("exporter.bfd.years_of_history", "10");
+    Config.set("exporter.years_of_history", "10");
     Config.set("generate.only_alive_patients", "true");
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());

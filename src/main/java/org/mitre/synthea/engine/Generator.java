@@ -45,6 +45,8 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Costs;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Demographics;
 import org.mitre.synthea.world.geography.Location;
@@ -707,6 +709,40 @@ public class Generator {
       time += timestep;
     }
 
+    // If the person has an open encounter, we need to override the default
+    // encounter times and charges, with the current length of stay and activities.
+    // This also ensures that long encounters like hospice and SNF have proper
+    // lengths of stay, and if the patient died before discharge, that the encounter
+    // ended upon their death.
+    if (person.hasCurrentEncounter()) {
+      // For most encounters, use `person.lastUpdated`, because
+      // the call to `person.record.encounterEnd(...)` will calculate the
+      // length of the encounter from the procedures inside it, and then
+      // choose between that time and the `lastUpdated` time
+      // (picking whichever accounts for all the procedures).
+      long endTime = person.lastUpdated;
+      Encounter previous = person.record.currentEncounter(stop);
+      EncounterType previousType = EncounterType.fromString(previous.type);
+      if (previousType.equals(EncounterType.INPATIENT)
+          || previousType.equals(EncounterType.HOSPICE)
+          || previousType.equals(EncounterType.SNF)) {
+        // But for long-running encounters, we use `stop`, because if
+        // the module didn't manually end the encounter, we want them to run
+        // right up to the present day.
+        endTime = stop;
+      }
+      if (person.attributes.containsKey(Person.DEATHDATE)) {
+        long deathTime = (Long) person.attributes.get(Person.DEATHDATE);
+        if (deathTime < endTime) {
+          // However, if the patient is dead, do not continue the encounter
+          // after their death.
+          endTime = deathTime;
+        }
+      }
+      person.record.encounterEnd(endTime, previousType);
+    }
+
+    // If the person is dead, we need a death certificate.
     DeathModule.process(person, time);
   }
 
