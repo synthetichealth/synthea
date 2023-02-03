@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,8 +28,10 @@ public class PlanFinderPriority implements IPlanFinder {
       Set<Integer> eligiblePriorities = eligiblePlans.stream().map(plan ->
           plan.getPayer().getPriority()).collect(Collectors.toSet());
       int maxEligiblePriority = Collections.min(eligiblePriorities);
-      eligiblePlans = eligiblePlans.stream().filter(plan ->
-          plan.getPayer().getPriority() == maxEligiblePriority).collect(Collectors.toList());
+      eligiblePlans = eligiblePlans.stream()
+          .filter(plan -> plan.getPayer().getPriority() == maxEligiblePriority)
+          .sorted(Comparator.comparing(InsurancePlan::toString))
+          .collect(Collectors.toList());
     }
 
     return chooseRandomPlan(eligiblePlans, person);

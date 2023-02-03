@@ -13,8 +13,13 @@ import ca.uhn.fhir.validation.ValidationResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -155,6 +160,28 @@ public class FHIRR4ExporterTest {
           }
         }
       }
+
+      // make sure all entries have a unique fullURL
+      List<String> allFullUrls = bundle.getEntry().stream()
+          .map(e -> e.getFullUrl()).collect(Collectors.toList());
+      Set<String> uniqueFullUrls = new HashSet<>(allFullUrls);
+
+      if (allFullUrls.size() != uniqueFullUrls.size()) {
+        Map<String, List<Bundle.BundleEntryComponent>> entriesByUrl = bundle.getEntry().stream()
+            .collect(Collectors.groupingBy(Bundle.BundleEntryComponent::getFullUrl));
+
+        entriesByUrl.values().forEach(entryList -> {
+          if (entryList.size() > 1) {
+            String fullUrl = entryList.get(0).getFullUrl();
+            String resourceTypes = entryList.stream()
+                .map(e -> e.getResource().getResourceType().toString())
+                .collect(Collectors.joining(" , "));
+            validationErrors.add("Found bundle entries with duplicate fullURL: " + fullUrl
+                + " - Types: " + resourceTypes);
+          }
+        });
+      }
+
       if (! validationErrors.isEmpty()) {
         FailedExportHelper.dumpInfo("FHIRR4", fhirJson, validationErrors, person);
       }

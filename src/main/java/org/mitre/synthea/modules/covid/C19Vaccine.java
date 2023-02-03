@@ -1,7 +1,8 @@
 package org.mitre.synthea.modules.covid;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.math3.util.Pair;
@@ -19,7 +20,7 @@ import org.mitre.synthea.world.agents.Person;
  * </p>
  */
 public class C19Vaccine {
-  public static final HashMap<EUASet, C19Vaccine> EUAs = new HashMap();
+  public static final Map<EUASet, C19Vaccine> EUAs = new TreeMap<>();
   private static SyncedEnumeratedDistro<EUASet> shotSelector;
 
   private String display;
@@ -51,10 +52,11 @@ public class C19Vaccine {
             + "recombinant spike protein-Ad26, preservative free, 0.5 mL",
             "212", false, 0.071, 0));
 
-    List pmf = EUAs.entrySet().stream()
-        .map(entry -> new Pair(entry.getKey(), entry.getValue().getUsagePercentage()))
+    List<Pair<EUASet, Double>> pmf = EUAs.entrySet().stream()
+        .map(entry -> new Pair<>(entry.getKey(), entry.getValue().getUsagePercentage()))
         .collect(Collectors.toList());
-    shotSelector = new SyncedEnumeratedDistro(pmf);
+
+    shotSelector = new SyncedEnumeratedDistro<EUASet>(pmf);
   }
 
   /**

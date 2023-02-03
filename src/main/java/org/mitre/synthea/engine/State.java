@@ -1938,13 +1938,16 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     public boolean process(Person person, long time) {
       // Randomly pick number of series and instances if bounds were provided
-      duplicateSeries(person, time);
-      duplicateInstances(person, time);
+      // Don't modify the instance series as it gets reused - create a local copy
+      List<HealthRecord.ImagingStudy.Series> mySeries = duplicateSeries(person, time);
+      duplicateInstances(person, time, mySeries);
 
       // The modality code of the first series is a good approximation
       // of the type of ImagingStudy this is
-      String primaryModality = series.get(0).modality.code;
-      entry = person.record.imagingStudy(time, primaryModality, series);
+      String primaryModality = mySeries.get(0).modality.code;
+      entry = person.record.imagingStudy(time, primaryModality, mySeries);
+      // note the imagingStudy call will choose dicomUIDs,
+      // so they don't need to be selected here
 
       // Add the procedure code to the ImagingStudy
       String primaryProcedureCode = procedureCode.code;
@@ -1958,35 +1961,35 @@ public abstract class State implements Cloneable, Serializable {
       return true;
     }
 
-    private void duplicateSeries(RandomNumberGenerator random, long time) {
+    private List<HealthRecord.ImagingStudy.Series> duplicateSeries(
+        RandomNumberGenerator random, long time) {
       if (minNumberSeries > 0 && maxNumberSeries >= minNumberSeries
           && series.size() > 0) {
 
         // Randomly pick the number of series in this study
         int numberOfSeries = (int) random.rand(minNumberSeries, maxNumberSeries + 1);
         HealthRecord.ImagingStudy.Series referenceSeries = series.get(0);
-        series = new ArrayList<HealthRecord.ImagingStudy.Series>();
+        List<HealthRecord.ImagingStudy.Series> seriesClones = new ArrayList<>();
 
-        // Create the new series with random series UID
         for (int i = 0; i < numberOfSeries; i++) {
-          HealthRecord.ImagingStudy.Series newSeries = referenceSeries.clone();
-          newSeries.dicomUid = Utilities.randomDicomUid(random, time, i + 1, 0);
-          series.add(newSeries);
+          seriesClones.add(referenceSeries.clone());
         }
+
+        return seriesClones;
       } else {
         // Ensure series references are distinct (required if no. of instances is picked randomly)
-        List<HealthRecord.ImagingStudy.Series> oldSeries = series;
-        series = new ArrayList<HealthRecord.ImagingStudy.Series>();
-        for (int i = 0; i < oldSeries.size(); i++) {
-          HealthRecord.ImagingStudy.Series newSeries = oldSeries.get(i).clone();
-          series.add(newSeries);
+        List<HealthRecord.ImagingStudy.Series> seriesClones = new ArrayList<>();
+        for (int i = 0; i < this.series.size(); i++) {
+          seriesClones.add(this.series.get(i).clone());
         }
+        return seriesClones;
       }
     }
 
-    private void duplicateInstances(RandomNumberGenerator random, long time) {
-      for (int i = 0; i < series.size(); i++) {
-        HealthRecord.ImagingStudy.Series s = series.get(i);
+    private void duplicateInstances(RandomNumberGenerator random, long time,
+        List<HealthRecord.ImagingStudy.Series> mySeries) {
+      for (int i = 0; i < mySeries.size(); i++) {
+        HealthRecord.ImagingStudy.Series s = mySeries.get(i);
         if (s.minNumberInstances > 0 && s.maxNumberInstances >= s.minNumberInstances
             && s.instances.size() > 0) {
 
@@ -1994,14 +1997,22 @@ public abstract class State implements Cloneable, Serializable {
           int numberOfInstances =
               (int) random.rand(s.minNumberInstances, s.maxNumberInstances + 1);
           HealthRecord.ImagingStudy.Instance referenceInstance = s.instances.get(0);
-          s.instances = new ArrayList<HealthRecord.ImagingStudy.Instance>();
+          List<HealthRecord.ImagingStudy.Instance> instanceClones = new ArrayList<>();
 
-          // Create the new instances with random instance UIDs
+          // Create the new instances
           for (int j = 0; j < numberOfInstances; j++) {
-            HealthRecord.ImagingStudy.Instance newInstance = referenceInstance.clone();
-            newInstance.dicomUid = Utilities.randomDicomUid(random, time, i + 1, j + 1);
-            s.instances.add(newInstance);
+            instanceClones.add(referenceInstance.clone());
           }
+          s.instances = instanceClones;
+        } else {
+          // just clone whatever is there
+          List<HealthRecord.ImagingStudy.Instance> instanceClones = new ArrayList<>();
+
+          // Create the new instances
+          for (int j = 0; j < s.instances.size(); j++) {
+            instanceClones.add(s.instances.get(i).clone());
+          }
+          s.instances = instanceClones;
         }
       }
     }

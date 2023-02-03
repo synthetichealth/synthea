@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.export.JSONSkip;
@@ -151,7 +152,8 @@ public class HealthRecord implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
     @JSONSkip
     HealthRecord record = HealthRecord.this;
-    public String fullUrl;
+    public final UUID uuid = record.person.randUUID();
+    public String fullUrl; // cache the fullURL used in FHIR exporters
     public String name;
     public long start;
     public long stop;

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.r4.model.Address;
@@ -137,7 +138,6 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
@@ -330,13 +330,13 @@ public class FhirR4 {
 
       if (shouldExport(Condition.class)) {
         for (HealthRecord.Entry condition : encounter.conditions) {
-          condition(person, personEntry, bundle, encounterEntry, condition);
+          condition(personEntry, bundle, encounterEntry, condition);
         }
       }
 
       if (shouldExport(AllergyIntolerance.class)) {
         for (HealthRecord.Allergy allergy : encounter.allergies) {
-          allergy(person, personEntry, bundle, encounterEntry, allergy);
+          allergy(personEntry, bundle, encounterEntry, allergy);
         }
       }
 
@@ -348,28 +348,28 @@ public class FhirR4 {
         // Observation resources in v4 don't support Attachments
         if (observation.value instanceof Attachment) {
           if (shouldExportMedia) {
-            media(person, personEntry, bundle, encounterEntry, observation);
+            media(personEntry, bundle, encounterEntry, observation);
           }
         } else if (shouldExportObservation) {
-          observation(person, personEntry, bundle, encounterEntry, observation);
+          observation(personEntry, bundle, encounterEntry, observation);
         }
       }
 
       if (shouldExport(org.hl7.fhir.r4.model.Procedure.class)) {
         for (Procedure procedure : encounter.procedures) {
-          procedure(person, personEntry, bundle, encounterEntry, procedure);
+          procedure(personEntry, bundle, encounterEntry, procedure);
         }
       }
 
       if (shouldExport(Device.class)) {
         for (HealthRecord.Device device : encounter.devices) {
-          device(person, personEntry, bundle, device);
+          device(personEntry, bundle, device);
         }
       }
 
       if (shouldExport(SupplyDelivery.class)) {
         for (HealthRecord.Supply supply : encounter.supplies) {
-          supplyDelivery(person, personEntry, bundle, supply, encounter);
+          supplyDelivery(personEntry, bundle, supply, encounter);
         }
       }
 
@@ -381,13 +381,13 @@ public class FhirR4 {
 
       if (shouldExport(Immunization.class)) {
         for (HealthRecord.Entry immunization : encounter.immunizations) {
-          immunization(person, personEntry, bundle, encounterEntry, immunization);
+          immunization(personEntry, bundle, encounterEntry, immunization);
         }
       }
 
       if (shouldExport(DiagnosticReport.class)) {
         for (Report report : encounter.reports) {
-          report(person, personEntry, bundle, encounterEntry, report);
+          report(personEntry, bundle, encounterEntry, report);
         }
       }
 
@@ -406,7 +406,7 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.ImagingStudy.class)) {
         for (ImagingStudy imagingStudy : encounter.imagingStudies) {
-          imagingStudy(person, personEntry, bundle, encounterEntry, imagingStudy);
+          imagingStudy(personEntry, bundle, encounterEntry, imagingStudy);
         }
       }
 
@@ -855,7 +855,7 @@ public class FhirR4 {
       if (providerFullUrl != null) {
         encounterResource.setServiceProvider(new Reference(providerFullUrl));
       } else {
-        BundleEntryComponent providerOrganization = provider(person, bundle, provider);
+        BundleEntryComponent providerOrganization = provider(bundle, provider);
         encounterResource.setServiceProvider(new Reference(providerOrganization.getFullUrl()));
       }
     }
@@ -896,7 +896,7 @@ public class FhirR4 {
         if (practitionerFullUrl != null) {
           encounterResource.addParticipant().setIndividual(new Reference(practitionerFullUrl));
         } else {
-          BundleEntryComponent practitioner = practitioner(person, bundle, encounter.clinician);
+          BundleEntryComponent practitioner = practitioner(bundle, encounter.clinician);
           encounterResource.addParticipant().setIndividual(
                   new Reference(practitioner.getFullUrl()));
         }
@@ -918,7 +918,7 @@ public class FhirR4 {
       encounterResource.setHospitalization(hospitalization);
     }
 
-    BundleEntryComponent entry = newEntry(person, bundle, encounterResource);
+    BundleEntryComponent entry = newEntry(bundle, encounterResource, encounter.uuid.toString());
     if (USE_US_CORE_IG) {
       // US Core Encounters should have an identifier to support the required
       // Encounter.identifier search parameter
@@ -1085,7 +1085,8 @@ public class FhirR4 {
     moneyResource.setCurrency("USD");
     claimResource.setTotal(moneyResource);
 
-    BundleEntryComponent medicationClaimEntry = newEntry(person, bundle, claimResource);
+    BundleEntryComponent medicationClaimEntry =
+        newEntry(bundle, claimResource, claim.uuid.toString());
 
     explanationOfBenefit(personEntry, bundle, encounterEntry, person,
         medicationClaimEntry, encounter, claim);
@@ -1221,7 +1222,7 @@ public class FhirR4 {
     moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
-    return newEntry(person, bundle, claimResource);
+    return newEntry(bundle, claimResource, encounter.claim.uuid.toString());
   }
 
   /**
@@ -1536,20 +1537,21 @@ public class FhirR4 {
     eob.setPayment(new ExplanationOfBenefit.PaymentComponent()
         .setAmount(payment));
 
-    return newEntry(person, bundle,eob);
+    String uuid = ExportHelper.buildUUID(person, claim.mainEntry.entry.start,
+        "ExplanationOfBenefit for Claim" + claim.uuid);
+    return newEntry(bundle, eob, uuid);
   }
 
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         The Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param condition      The Condition
    * @return The added Entry
    */
-  private static BundleEntryComponent condition(RandomNumberGenerator rand,
+  private static BundleEntryComponent condition(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
@@ -1595,24 +1597,22 @@ public class FhirR4 {
       status.getCodingFirstRep().setCode("resolved");
     }
 
-    BundleEntryComponent conditionEntry = newEntry(rand, bundle, conditionResource);
-
+    BundleEntryComponent conditionEntry =
+        newEntry(bundle, conditionResource, condition.uuid.toString());
     condition.fullUrl = conditionEntry.getFullUrl();
-
     return conditionEntry;
   }
 
   /**
    * Map the Condition into a FHIR AllergyIntolerance resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         The Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param allergy        The Allergy Entry
    * @return The added Entry
    */
-  private static BundleEntryComponent allergy(RandomNumberGenerator rand,
+  private static BundleEntryComponent allergy(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Allergy allergy) {
 
@@ -1670,7 +1670,9 @@ public class FhirR4 {
     allergyResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
 
     if (allergy.reactions != null) {
-      allergy.reactions.keySet().stream().forEach(manifestation -> {
+      List<Code> sortedReactions = new ArrayList<>(allergy.reactions.keySet());
+      sortedReactions.sort((a,b) -> a.code.compareTo(b.code));
+      sortedReactions.forEach(manifestation -> {
         AllergyIntolerance.AllergyIntoleranceReactionComponent reactionComponent =
             new AllergyIntolerance.AllergyIntoleranceReactionComponent();
         reactionComponent.addManifestation(mapCodeToCodeableConcept(manifestation, SNOMED_URI));
@@ -1700,7 +1702,7 @@ public class FhirR4 {
           "http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance");
       allergyResource.setMeta(meta);
     }
-    BundleEntryComponent allergyEntry = newEntry(rand, bundle, allergyResource);
+    BundleEntryComponent allergyEntry = newEntry(bundle, allergyResource, allergy.uuid.toString());
     allergy.fullUrl = allergyEntry.getFullUrl();
     return allergyEntry;
   }
@@ -1709,14 +1711,13 @@ public class FhirR4 {
   /**
    * Map the given Observation into a FHIR Observation resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Person Entry
    * @param bundle         The Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param observation    The Observation
    * @return The added Entry
    */
-  private static BundleEntryComponent observation(RandomNumberGenerator rand,
+  private static BundleEntryComponent observation(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Observation observation) {
     org.hl7.fhir.r4.model.Observation observationResource =
@@ -1791,7 +1792,7 @@ public class FhirR4 {
       observationResource.setMeta(meta);
     }
 
-    BundleEntryComponent entry = newEntry(rand, bundle, observationResource);
+    BundleEntryComponent entry = newEntry(bundle, observationResource, observation.uuid.toString());
     observation.fullUrl = entry.getFullUrl();
     return entry;
   }
@@ -1863,14 +1864,13 @@ public class FhirR4 {
   /**
    * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Person entry
    * @param bundle         Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param procedure      The Procedure
    * @return The added Entry
    */
-  private static BundleEntryComponent procedure(RandomNumberGenerator rand,
+  private static BundleEntryComponent procedure(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Procedure procedure) {
     org.hl7.fhir.r4.model.Procedure procedureResource = new org.hl7.fhir.r4.model.Procedure();
@@ -1931,22 +1931,21 @@ public class FhirR4 {
       procedureResource.addExtension(performedContext);
     }
 
-    BundleEntryComponent procedureEntry = newEntry(rand, bundle, procedureResource);
+    BundleEntryComponent procedureEntry =
+        newEntry(bundle, procedureResource, procedure.uuid.toString());
     procedure.fullUrl = procedureEntry.getFullUrl();
-
     return procedureEntry;
   }
 
   /**
    * Map the HealthRecord.Device into a FHIR Device and add it to the Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Person entry.
    * @param bundle         Bundle to add to.
    * @param device         The device to add.
    * @return The added Entry.
    */
-  private static BundleEntryComponent device(RandomNumberGenerator rand,
+  private static BundleEntryComponent device(
           BundleEntryComponent personEntry, Bundle bundle, HealthRecord.Device device) {
     Device deviceResource = new Device();
     if (USE_US_CORE_IG) {
@@ -1974,20 +1973,19 @@ public class FhirR4 {
         .setType(DeviceNameType.USERFRIENDLYNAME);
     deviceResource.setType(mapCodeToCodeableConcept(device.codes.get(0), SNOMED_URI));
     deviceResource.setPatient(new Reference(personEntry.getFullUrl()));
-    return newEntry(rand, bundle, deviceResource);
+    return newEntry(bundle, deviceResource, device.uuid.toString());
   }
 
   /**
    * Map the JsonObject for a Supply into a FHIR SupplyDelivery and add it to the Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Person entry.
    * @param bundle         Bundle to add to.
    * @param supply         The supplied object to add.
    * @param encounter      The encounter during which the supplies were delivered
    * @return The added Entry.
    */
-  private static BundleEntryComponent supplyDelivery(RandomNumberGenerator rand,
+  private static BundleEntryComponent supplyDelivery(
           BundleEntryComponent personEntry, Bundle bundle, HealthRecord.Supply supply,
           Encounter encounter) {
 
@@ -2010,7 +2008,7 @@ public class FhirR4 {
 
     supplyResource.setOccurrence(convertFhirDateTime(supply.start, true));
 
-    return newEntry(rand, bundle, supplyResource);
+    return newEntry(bundle, supplyResource, supply.uuid.toString());
   }
 
   /**
@@ -2081,10 +2079,15 @@ public class FhirR4 {
     agent.setOnBehalfOf(new Reference()
         .setReference(organizationFullUrl)
         .setDisplay(providerOrganization.name));
-    return newEntry(person, bundle, provenance);
+
+    // NOTE: this assumes only one Provenance per bundle.
+    // If that assumption is ever not true, change the timestamp used and/or key here
+    String uuid = ExportHelper.buildUUID(person, (long) person.attributes.get(Person.BIRTHDATE),
+        "Provenance");
+    return newEntry(bundle, provenance, uuid);
   }
 
-  private static BundleEntryComponent immunization(RandomNumberGenerator rand,
+  private static BundleEntryComponent immunization(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry immunization) {
     Immunization immResource = new Immunization();
@@ -2114,7 +2117,8 @@ public class FhirR4 {
       immResource.setLocation(encounterResource.getLocationFirstRep().getLocation());
     }
 
-    BundleEntryComponent immunizationEntry = newEntry(rand, bundle, immResource);
+    BundleEntryComponent immunizationEntry =
+        newEntry(bundle, immResource, immunization.uuid.toString());
     immunization.fullUrl = immunizationEntry.getFullUrl();
 
     return immunizationEntry;
@@ -2186,7 +2190,9 @@ public class FhirR4 {
       drugResource.setMeta(meta);
       drugResource.setCode(medicationCodeableConcept);
       drugResource.setStatus(MedicationStatus.ACTIVE);
-      BundleEntryComponent drugEntry = newEntry(person, bundle, drugResource);
+      String drugUUID = ExportHelper.buildUUID(person, medication.start,
+          "Medication Resource for " + medication.uuid);
+      BundleEntryComponent drugEntry = newEntry(bundle, drugResource, drugUUID);
       medicationResource.setMedication(new Reference(drugEntry.getFullUrl()));
 
       // Set the MedicationRequest.category
@@ -2293,7 +2299,8 @@ public class FhirR4 {
 
     }
 
-    BundleEntryComponent medicationEntry = newEntry(person, bundle, medicationResource);
+    BundleEntryComponent medicationEntry =
+        newEntry(bundle, medicationResource, medication.uuid.toString());
 
     if (shouldExport(org.hl7.fhir.r4.model.Claim.class)) {
       // create new claim for medication
@@ -2313,7 +2320,7 @@ public class FhirR4 {
   /**
    * Add a MedicationAdministration if needed for the given medication.
    *
-   * @param rand              Source of randomness to use when generating ids etc
+   * @param person            The Person
    * @param personEntry       The Entry for the Person
    * @param bundle            Bundle to add the MedicationAdministration to
    * @param encounterEntry    Current Encounter entry
@@ -2322,7 +2329,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent medicationAdministration(
-      RandomNumberGenerator rand, BundleEntryComponent personEntry, Bundle bundle,
+      Person person, BundleEntryComponent personEntry, Bundle bundle,
           BundleEntryComponent encounterEntry, Medication medication,
           MedicationRequest medicationRequest) {
 
@@ -2382,7 +2389,10 @@ public class FhirR4 {
       }
     }
 
-    BundleEntryComponent medicationAdminEntry = newEntry(rand, bundle, medicationResource);
+    String medicationAdminUUID = ExportHelper.buildUUID(person, medication.start,
+        "MedicationAdministration for " + medication.uuid);
+    BundleEntryComponent medicationAdminEntry =
+        newEntry(bundle, medicationResource, medicationAdminUUID);
     return medicationAdminEntry;
   }
 
@@ -2394,14 +2404,13 @@ public class FhirR4 {
   /**
    * Map the given Report to a FHIR DiagnosticReport resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Report to
    * @param encounterEntry Current Encounter entry
    * @param report         The Report
    * @return The added Entry
    */
-  private static BundleEntryComponent report(RandomNumberGenerator rand,
+  private static BundleEntryComponent report(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Report report) {
     DiagnosticReport reportResource = new DiagnosticReport();
@@ -2438,14 +2447,14 @@ public class FhirR4 {
       }
     }
 
-    return newEntry(rand, bundle, reportResource);
+    return newEntry(bundle, reportResource, report.uuid.toString());
   }
 
   /**
    * Add a clinical note to the Bundle, which adds both a DocumentReference and a
    * DiagnosticReport.
    *
-   * @param rand           Source of randomness to use when generating ids etc
+   * @param person         The Person
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Report to
    * @param encounterEntry Current Encounter entry
@@ -2453,7 +2462,7 @@ public class FhirR4 {
    * @param currentNote If this is the most current note.
    * @return The entry for the DocumentReference.
    */
-  private static void clinicalNote(RandomNumberGenerator rand,
+  private static void clinicalNote(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           String clinicalNoteText, boolean currentNote) {
     // We'll need the encounter...
@@ -2486,7 +2495,13 @@ public class FhirR4 {
     reportResource.addPresentedForm()
         .setContentType("text/plain; charset=utf-8")
         .setData(clinicalNoteText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-    newEntry(rand, bundle, reportResource);
+
+    // the note text might be exactly identical for multiple encounters,
+    // so to ensure the UUID is unique use the encounter ID as the key
+    // IMPORTANT: if this function is called more than once per encounter, change here and below!
+    String reportUUID = ExportHelper.buildUUID(person, 0,
+        "DiagnosticReport for note on encounter " + encounter.getId());
+    newEntry(bundle, reportResource, reportUUID);
 
     if (shouldExport(DocumentReference.class)) {
       // Add a DocumentReference
@@ -2522,14 +2537,17 @@ public class FhirR4 {
           .addEncounter(reportResource.getEncounter())
           .setPeriod(encounter.getPeriod()));
 
-      newEntry(rand, bundle, documentReference);
+      String documentUUID = ExportHelper.buildUUID(person, 0,
+          "DocumentReference for note on encounter " + encounter.getId());
+
+      newEntry(bundle, documentReference, documentUUID);
     }
   }
 
   /**
    * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
+   * @param person         The Person
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the CarePlan to
    * @param encounterEntry Current Encounter entry
@@ -2537,7 +2555,7 @@ public class FhirR4 {
    * @param carePlan       The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent carePlan(RandomNumberGenerator rand,
+  private static BundleEntryComponent carePlan(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan) {
     org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
@@ -2628,29 +2646,28 @@ public class FhirR4 {
 
     for (JsonObject goal : carePlan.goals) {
       BundleEntryComponent goalEntry =
-          careGoal(rand, bundle, personEntry, carePlan.start, goalStatus, goal);
+          careGoal(person, bundle, personEntry, carePlan.start, goalStatus, goal);
       careplanResource.addGoal().setReference(goalEntry.getFullUrl());
     }
 
     careplanResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(narrative)));
 
-    return newEntry(rand, bundle, careplanResource);
+    return newEntry(bundle, careplanResource, carePlan.uuid.toString());
   }
 
   /**
    * Map the JsonObject into a FHIR Goal resource, and add it to the given Bundle.
-   * @param rand Source of randomness to use when generating ids etc
+   * @param person The Person
    * @param bundle The Bundle to add to
    * @param goalStatus The GoalStatus
    * @param goal The JsonObject
    * @return The added Entry
    */
   private static BundleEntryComponent careGoal(
-      RandomNumberGenerator rand, Bundle bundle,
+      Person person, Bundle bundle,
       BundleEntryComponent personEntry, long carePlanStart,
       CodeableConcept goalStatus, JsonObject goal) {
-    String resourceID = rand.randUUID().toString();
 
     Goal goalResource = new Goal();
     if (USE_US_CORE_IG) {
@@ -2661,7 +2678,6 @@ public class FhirR4 {
     }
     goalResource.setLifecycleStatus(GoalLifecycleStatus.ACCEPTED);
     goalResource.setAchievementStatus(goalStatus);
-    goalResource.setId(resourceID);
     goalResource.setSubject(new Reference(personEntry.getFullUrl()));
 
     if (goal.has("text")) {
@@ -2720,20 +2736,25 @@ public class FhirR4 {
       }
     }
 
-    return newEntry(rand, bundle, goalResource);
+    // note: this ID logic assumes the person will not have 2 careplans
+    // that start at the same timestep with the same description
+    String resourceID = ExportHelper.buildUUID(person, carePlanStart,
+        "CareGoal for " + goalResource.getDescription());
+
+    return newEntry(bundle, goalResource, resourceID);
   }
 
   /**
    * Map the given CarePlan to a FHIR CareTeam resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
+   * @param person         The Person
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the CarePlan to
    * @param encounterEntry Current Encounter entry
    * @param carePlan       The CarePlan to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent careTeam(RandomNumberGenerator rand,
+  private static BundleEntryComponent careTeam(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           CarePlan carePlan) {
 
@@ -2801,7 +2822,10 @@ public class FhirR4 {
     participant.setMember(encounter.getServiceProvider());
     careTeam.addManagingOrganization(encounter.getServiceProvider());
 
-    return newEntry(rand, bundle, careTeam);
+    String careTeamUUID = ExportHelper.buildUUID(person, carePlan.start,
+        "CareTeam for CarePlan " + carePlan.uuid);
+
+    return newEntry(bundle, careTeam, careTeamUUID);
   }
 
   private static Identifier generateIdentifier(String uid) {
@@ -2815,14 +2839,13 @@ public class FhirR4 {
   /**
    * Map the given ImagingStudy to a FHIR ImagingStudy resource, and add it to the given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the ImagingStudy to
    * @param encounterEntry Current Encounter entry
    * @param imagingStudy   The ImagingStudy to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent imagingStudy(RandomNumberGenerator rand,
+  private static BundleEntryComponent imagingStudy(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           ImagingStudy imagingStudy) {
     org.hl7.fhir.r4.model.ImagingStudy imagingStudyResource =
@@ -2900,21 +2923,20 @@ public class FhirR4 {
 
     imagingStudyResource.setSeries(seriesResourceList);
     imagingStudyResource.setNumberOfInstances(totalNumberOfInstances);
-    return newEntry(rand, bundle, imagingStudyResource);
+    return newEntry(bundle, imagingStudyResource, imagingStudy.uuid.toString());
   }
 
   /**
    * Map the given Observation with attachment element to a FHIR Media resource, and add it to the
    * given Bundle.
    *
-   * @param rand           Source of randomness to use when generating ids etc
    * @param personEntry    The Entry for the Person
    * @param bundle         Bundle to add the Media to
    * @param encounterEntry Current Encounter entry
    * @param obs   The Observation to map to FHIR and add to the bundle
    * @return The added Entry
    */
-  private static BundleEntryComponent media(RandomNumberGenerator rand,
+  private static BundleEntryComponent media(
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Observation obs) {
     org.hl7.fhir.r4.model.Media mediaResource =
@@ -2954,18 +2976,17 @@ public class FhirR4 {
 
     mediaResource.setContent(contentResource);
 
-    return newEntry(rand, bundle, mediaResource);
+    return newEntry(bundle, mediaResource, obs.uuid.toString());
   }
 
   /**
    * Map the Provider into a FHIR Organization resource, and add it to the given Bundle.
    *
-   * @param rand     Source of randomness to use when generating ids etc
    * @param bundle   The Bundle to add to
    * @param provider The Provider
    * @return The added Entry
    */
-  protected static BundleEntryComponent provider(RandomNumberGenerator rand, Bundle bundle,
+  protected static BundleEntryComponent provider(Bundle bundle,
           Provider provider) {
     Organization organizationResource = new Organization();
     if (USE_US_CORE_IG) {
@@ -3021,10 +3042,10 @@ public class FhirR4 {
 
     org.hl7.fhir.r4.model.Location location = null;
     if (USE_US_CORE_IG) {
-      location = providerLocation(rand, bundle, provider);
+      location = providerLocation(bundle, provider);
     }
 
-    BundleEntryComponent entry = newEntry(bundle, organizationResource, provider.getResourceID());
+    BundleEntryComponent entry = newEntry(bundle, organizationResource, provider.uuid);
     // add location to bundle *after* organization to ensure no forward reference
     if (location != null) {
       newEntry(bundle, location, provider.getResourceLocationID());
@@ -3036,12 +3057,11 @@ public class FhirR4 {
   /**
    * Map the Provider into a FHIR Location resource, and add it to the given Bundle.
    *
-   * @param rand     Source of randomness to use when generating ids etc
    * @param bundle   The Bundle to add to
    * @param provider The Provider
    * @return The added Entry or null if the bundle already contains this provider location
    */
-  protected static org.hl7.fhir.r4.model.Location providerLocation(RandomNumberGenerator rand,
+  protected static org.hl7.fhir.r4.model.Location providerLocation(
           Bundle bundle, Provider provider) {
     org.hl7.fhir.r4.model.Location location = new org.hl7.fhir.r4.model.Location();
     if (USE_US_CORE_IG) {
@@ -3092,12 +3112,11 @@ public class FhirR4 {
 
   /**
    * Map the clinician into a FHIR Practitioner resource, and add it to the given Bundle.
-   * @param rand   Source of randomness to use when generating ids etc
    * @param bundle The Bundle to add to
    * @param clinician The clinician
    * @return The added Entry
    */
-  protected static BundleEntryComponent practitioner(RandomNumberGenerator rand, Bundle bundle,
+  protected static BundleEntryComponent practitioner(Bundle bundle,
           Clinician clinician) {
     Practitioner practitionerResource = new Practitioner();
     if (USE_US_CORE_IG) {
@@ -3182,7 +3201,14 @@ public class FhirR4 {
       }
       practitionerRole.addTelecom(practitionerResource.getTelecomFirstRep());
 
-      newEntry(rand, bundle, practitionerRole);
+      // clinicians do not have any associated "individual seed" or "timestamp"
+      // so we'll just re-use the uuid bits
+      UUID origUUID = UUID.fromString(clinician.uuid);
+      String uuid = ExportHelper.buildUUID(origUUID.getLeastSignificantBits(),
+          origUUID.getMostSignificantBits(),
+          "PractitionerRole for Clinician " + origUUID);
+
+      newEntry(bundle, practitionerRole, uuid);
     }
 
     return practitionerEntry;
@@ -3266,23 +3292,7 @@ public class FhirR4 {
 
   /**
    * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
-   * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
-   * the bundle.
-   *
-   * @param rand     Source of randomness to use when generating ids etc
-   * @param bundle   The Bundle to add the Entry to
-   * @param resource Resource the new Entry should contain
-   * @return the created Entry
-   */
-  private static BundleEntryComponent newEntry(RandomNumberGenerator rand, Bundle bundle,
-          Resource resource) {
-    String resourceID = rand.randUUID().toString();
-    return newEntry(bundle, resource, resourceID);
-  }
-
-  /**
-   * Helper function to create an Entry for the given Resource within the given Bundle. Sets the
-   * resourceID to a random UUID, sets the entry's fullURL to that resourceID, and adds the entry to
+   * resourceID to the given ID, sets the entry's fullURL to that resourceID, and adds the entry to
    * the bundle.
    *
    * @param bundle   The Bundle to add the Entry to
