@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -271,7 +271,7 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_ENCOUNTERS">CURRENT_ENCOUNTERS</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CURRENT_ENCOUNTER_MODULE">CURRENT_ENCOUNTER_MODULE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -725,10 +725,11 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 </td>
 </tr>
 <tr id="i11" class="rowColor">
-<td class="colFirst"><code><a href="../concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCurrentEncounter(org.mitre.synthea.engine.Module)">getCurrentEncounter</a></span>&#8203;(<a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module)</code></th>
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCurrentEncounterModule()">getCurrentEncounterModule</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get the current encounter for the specified module or null if none exists.</div>
+<div class="block">Get the module with the current encounter or null if no module is
+ currently in an encounter.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
@@ -863,7 +864,7 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasCurrentEncounter()">hasCurrentEncounter</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Check if there are any current encounters.</div>
+<div class="block">Check if there is a current encounter.</div>
 </td>
 </tr>
 <tr id="i31" class="rowColor">
@@ -939,20 +940,28 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 </tr>
 <tr id="i41" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#releaseCurrentEncounter(long,java.lang.String)">releaseCurrentEncounter</a></span>&#8203;(long&nbsp;time,
+                       java.lang.String&nbsp;module)</code></th>
+<td class="colLast">
+<div class="block">Releases the current encounter reservation.</div>
+</td>
+</tr>
+<tr id="i42" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeCurrentProvider(java.lang.String)">removeCurrentProvider</a></span>&#8203;(java.lang.String&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Remove the current provider for the specified module.</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCurrentEncounter(org.mitre.synthea.engine.Module,org.mitre.synthea.world.concepts.HealthRecord.Encounter)">setCurrentEncounter</a></span>&#8203;(<a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
-                   <a href="../concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
+<tr id="i43" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reserveCurrentEncounter(long,java.lang.String)">reserveCurrentEncounter</a></span>&#8203;(long&nbsp;time,
+                       java.lang.String&nbsp;module)</code></th>
 <td class="colLast">
-<div class="block">Set the current encounter for the specified module.</div>
+<div class="block">Reserve the current Encounter...</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProvider(org.mitre.synthea.world.concepts.HealthRecord.EncounterType,long)">setProvider</a></span>&#8203;(<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;type,
            long&nbsp;time)</code></th>
@@ -961,7 +970,7 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
  at the specified time.</div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProvider(org.mitre.synthea.world.concepts.HealthRecord.EncounterType,org.mitre.synthea.world.agents.Provider)">setProvider</a></span>&#8203;(<a href="../concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a>&nbsp;type,
            <a href="Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a>&nbsp;provider)</code></th>
@@ -969,7 +978,7 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 <div class="block">Set the preferred provider for the specified encounter type.</div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSymptom(java.lang.String,java.lang.String,java.lang.String,long,int,java.lang.Boolean)">setSymptom</a></span>&#8203;(java.lang.String&nbsp;module,
           java.lang.String&nbsp;cause,
@@ -982,7 +991,7 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
  the symptom is set.</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVitalSign(org.mitre.synthea.world.concepts.VitalSign,double)">setVitalSign</a></span>&#8203;(<a href="../concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
             double&nbsp;value)</code></th>
@@ -990,13 +999,13 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 <div class="block">Convenience function to set a vital sign to a constant value.</div>
 </td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVitalSign(org.mitre.synthea.world.concepts.VitalSign,org.mitre.synthea.helpers.ValueGenerator)">setVitalSign</a></span>&#8203;(<a href="../concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a>&nbsp;vitalSign,
             <a href="../../helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a>&nbsp;valueGenerator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#symptomTotal()">symptomTotal</a></span>()</code></th>
 <td class="colLast">
@@ -2049,16 +2058,16 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 <div class="block">Record of insurance coverage.</div>
 </li>
 </ul>
-<a id="CURRENT_ENCOUNTERS">
+<a id="CURRENT_ENCOUNTER_MODULE">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>CURRENT_ENCOUNTERS</h4>
-<pre>public static final&nbsp;java.lang.String CURRENT_ENCOUNTERS</pre>
+<h4>CURRENT_ENCOUNTER_MODULE</h4>
+<pre>public static final&nbsp;java.lang.String CURRENT_ENCOUNTER_MODULE</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.agents.Person.CURRENT_ENCOUNTERS">Constant Field Values</a></dd>
+<dd><a href="../../../../../constant-values.html#org.mitre.synthea.world.agents.Person.CURRENT_ENCOUNTER_MODULE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -2532,14 +2541,15 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 </dl>
 </li>
 </ul>
-<a id="getCurrentEncounter(org.mitre.synthea.engine.Module)">
+<a id="getCurrentEncounterModule()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getCurrentEncounter</h4>
-<pre class="methodSignature">public&nbsp;<a href="../concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;getCurrentEncounter&#8203;(<a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module)</pre>
-<div class="block">Get the current encounter for the specified module or null if none exists.</div>
+<h4>getCurrentEncounterModule</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCurrentEncounterModule()</pre>
+<div class="block">Get the module with the current encounter or null if no module is
+ currently in an encounter.</div>
 </li>
 </ul>
 <a id="hasCurrentEncounter()">
@@ -2549,22 +2559,49 @@ implements java.io.Serializable, <a href="../../helpers/RandomNumberGenerator.ht
 <li class="blockList">
 <h4>hasCurrentEncounter</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;hasCurrentEncounter()</pre>
-<div class="block">Check if there are any current encounters.</div>
+<div class="block">Check if there is a current encounter.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>true if there current encounters, false otherwise</dd>
+<dd>true if there is a current encounter, false otherwise.</dd>
 </dl>
 </li>
 </ul>
-<a id="setCurrentEncounter(org.mitre.synthea.engine.Module,org.mitre.synthea.world.concepts.HealthRecord.Encounter)">
+<a id="releaseCurrentEncounter(long,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setCurrentEncounter</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setCurrentEncounter&#8203;(<a href="../../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&nbsp;module,
-                                <a href="../concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
-<div class="block">Set the current encounter for the specified module.</div>
+<h4>releaseCurrentEncounter</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;releaseCurrentEncounter&#8203;(long&nbsp;time,
+                                    java.lang.String&nbsp;module)</pre>
+<div class="block">Releases the current encounter reservation.
+ This always succeeds, so any calls should make sure they are
+ the owners using 'getCurrentEncounterModule()'.
+ Currently the parameters are unused.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - The time in the simulation.</dd>
+<dd><code>module</code> - The name of the module releasing the reservation.</dd>
+</dl>
+</li>
+</ul>
+<a id="reserveCurrentEncounter(long,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reserveCurrentEncounter</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;reserveCurrentEncounter&#8203;(long&nbsp;time,
+                                       java.lang.String&nbsp;module)</pre>
+<div class="block">Reserve the current Encounter... no other module can run an encounter
+ (except for Wellness Encounters).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>time</code> - The time in the simulation.</dd>
+<dd><code>module</code> - The name of the module making the reservation.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the encounter is reserved, false otherwise.</dd>
+</dl>
 </li>
 </ul>
 <a id="getProvider(org.mitre.synthea.world.concepts.HealthRecord.EncounterType,long)">

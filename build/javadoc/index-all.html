@@ -825,7 +825,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html#buildPlanEligibilities(java.lang.String,java.lang.String)">buildPlanEligibilities(String, String)</a></span> - Static method in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PlanEligibilityFinder</a></dt>
 <dd>
-<div class="block">Builds the plan eligiblities for the given state and CSV input file.</div>
+<div class="block">Builds the plan eligibilities for the given state and CSV input file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#buildReactionDistributions()">buildReactionDistributions()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
 <dd>
@@ -2023,7 +2023,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Create a JFreeChart object based on values from a MultiTable.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/EncounterModule.html#createEncounter(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.world.concepts.HealthRecord.EncounterType,java.lang.String,org.mitre.synthea.world.concepts.HealthRecord.Code)">createEncounter(Person, long, HealthRecord.EncounterType, String, HealthRecord.Code)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/EncounterModule.html" title="class in org.mitre.synthea.modules">EncounterModule</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/EncounterModule.html#createEncounter(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.world.concepts.HealthRecord.EncounterType,java.lang.String,org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String)">createEncounter(Person, long, HealthRecord.EncounterType, String, HealthRecord.Code, String)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/EncounterModule.html" title="class in org.mitre.synthea.modules">EncounterModule</a></dt>
 <dd>
 <div class="block">Create an Encounter that is coded, with a provider organization, and a clinician.</div>
 </dd>
@@ -2097,7 +2097,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Odds of an encounter being virtual, a.k.a.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENT_ENCOUNTERS">CURRENT_ENCOUNTERS</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENT_ENCOUNTER_MODULE">CURRENT_ENCOUNTER_MODULE</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENT_WEIGHT_LENGTH_PERCENTILE">CURRENT_WEIGHT_LENGTH_PERCENTILE</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
@@ -2203,6 +2203,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">deductible paid by patient.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html#DEFAULT">DEFAULT</a></span> - Static variable in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PlanEligibilityFinder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/BirthStatistics.html#DEFAULT_HEIGHT">DEFAULT_HEIGHT</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/BirthStatistics.html" title="class in org.mitre.synthea.world.concepts">BirthStatistics</a></dt>
 <dd>
 <div class="block">Default birth height.</div>
@@ -2214,6 +2216,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Default birth weight.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.NamedDistribution.html#defaultDistribution">defaultDistribution</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.NamedDistribution.html" title="class in org.mitre.synthea.engine">Transition.NamedDistribution</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/DefaultPlanEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility"><span class="typeNameLink">DefaultPlanEligibility</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/package-summary.html">org.mitre.synthea.world.agents.behaviors.planeligibility</a></dt>
+<dd>
+<div class="block">DefaultPlanEligibility can be used for the No Insurance plan.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/DefaultPlanEligibility.html#%3Cinit%3E()">DefaultPlanEligibility()</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/DefaultPlanEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">DefaultPlanEligibility</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/helpers/DefaultRandomNumberGenerator.html" title="class in org.mitre.synthea.helpers"><span class="typeNameLink">DefaultRandomNumberGenerator</span></a> - Class in <a href="org/mitre/synthea/helpers/package-summary.html">org.mitre.synthea.helpers</a></dt>
 <dd>
@@ -3598,9 +3606,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Get a list of years covered by this period.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCurrentEncounter(org.mitre.synthea.engine.Module)">getCurrentEncounter(Module)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCurrentEncounterModule()">getCurrentEncounterModule()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
-<div class="block">Get the current encounter for the specified module or null if none exists.</div>
+<div class="block">Get the module with the current encounter or null if no module is
+ currently in an encounter.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCurrentProvider(java.lang.String)">getCurrentProvider(String)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
@@ -3648,7 +3657,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html#getEligibilityAlgorithm(java.lang.String)">getEligibilityAlgorithm(String)</a></span> - Static method in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PlanEligibilityFinder</a></dt>
 <dd>
-<div class="block">Returns the correct elgibility algorithm based on the given string.</div>
+<div class="block">Returns the correct eligibility algorithm based on the given string.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/enrollment/PartDContractHistory.html#getEmployeePDPIndicator(org.mitre.synthea.export.rif.identifiers.PartDContractID)">getEmployeePDPIndicator(PartDContractID)</a></span> - Method in class org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/PartDContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment">PartDContractHistory</a></dt>
 <dd>
@@ -4555,7 +4564,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#hasCurrentEncounter()">hasCurrentEncounter()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>
-<div class="block">Check if there are any current encounters.</div>
+<div class="block">Check if there is a current encounter.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/enrollment/PartDContractHistory.html#hasEmployeePDP()">hasEmployeePDP()</a></span> - Method in class org.mitre.synthea.export.rif.enrollment.<a href="org/mitre/synthea/export/rif/enrollment/PartDContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment">PartDContractHistory</a></dt>
 <dd>
@@ -6442,6 +6451,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/CSVEligibility.html#isPersonEligible(org.mitre.synthea.world.agents.Person,long)">isPersonEligible(Person, long)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/CSVEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">CSVEligibility</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/DefaultPlanEligibility.html#isPersonEligible(org.mitre.synthea.world.agents.Person,long)">isPersonEligible(Person, long)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/DefaultPlanEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">DefaultPlanEligibility</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IncomeSpenddownEligibility.html#isPersonEligible(org.mitre.synthea.world.agents.Person,long)">isPersonEligible(Person, long)</a></span> - Method in class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IncomeSpenddownEligibility.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">IncomeSpenddownEligibility</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html#isPersonEligible(org.mitre.synthea.world.agents.Person,long)">isPersonEligible(Person, long)</a></span> - Method in interface org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility">IPlanEligibility</a></dt>
@@ -7345,6 +7356,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The name of the place.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/EncounterModule.html#NAME">NAME</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/EncounterModule.html" title="class in org.mitre.synthea.modules">EncounterModule</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#NAME">NAME</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#NAME">NAME</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
@@ -8129,7 +8142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility"><span class="typeNameLink">PlanEligibilityFinder</span></a> - Class in <a href="org/mitre/synthea/world/agents/behaviors/planeligibility/package-summary.html">org.mitre.synthea.world.agents.behaviors.planeligibility</a></dt>
 <dd>
-<div class="block">Returns the requested Payer elgibility algorithm.</div>
+<div class="block">Returns the requested Payer eligibility algorithm.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html#%3Cinit%3E()">PlanEligibilityFinder()</a></span> - Constructor for class org.mitre.synthea.world.agents.behaviors.planeligibility.<a href="org/mitre/synthea/world/agents/behaviors/planeligibility/PlanEligibilityFinder.html" title="class in org.mitre.synthea.world.agents.behaviors.planeligibility">PlanEligibilityFinder</a></dt>
 <dd>&nbsp;</dd>
@@ -9206,6 +9219,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Create a relative path from a folder to a file, removing the file extension and normalizing
  path segment separators.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#releaseCurrentEncounter(long,java.lang.String)">releaseCurrentEncounter(long, String)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>
+<div class="block">Releases the current encounter reservation.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html#remainingDeductible">remainingDeductible</a></span> - Variable in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord.PlanRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.html#remarks">remarks</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.html" title="class in org.mitre.synthea.engine">Logic</a></dt>
@@ -9240,6 +9257,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html#reports">reports</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#reserveCurrentEncounter(long,java.lang.String)">reserveCurrentEncounter(long, String)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>
+<div class="block">Reserve the current Encounter...</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#reset()">reset()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>
 <div class="block">Reset all claim costs to zero.</div>
@@ -9633,10 +9654,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.html#setClassName(java.lang.String)">setClassName(String)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#setCurrentEncounter(org.mitre.synthea.engine.Module,org.mitre.synthea.world.concepts.HealthRecord.Encounter)">setCurrentEncounter(Module, HealthRecord.Encounter)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
-<dd>
-<div class="block">Set the current encounter for the specified module.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/LifecycleModule.html#setCurrentWeightForLengthPercentile(org.mitre.synthea.world.agents.Person,long)">setCurrentWeightForLengthPercentile(Person, long)</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/LifecycleModule.html" title="class in org.mitre.synthea.modules">LifecycleModule</a></dt>
 <dd>
 <div class="block">If the person is 36 months old or less, then the "weight for length"
@@ -10239,7 +10256,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.ModuleSupplier.html#submodule">submodule</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#submodule">submodule</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">true if this is a submodule, false otherwise.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#submoduleName">submoduleName</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
+<dd>
+<div class="block">if a submodule, the original name of this submodule.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.PDE.html#SUBMSN_CLR_CD">SUBMSN_CLR_CD</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.PDE.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.PDE</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.NPI.html#SUFFIX">SUFFIX</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.NPI.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.NPI</a></dt>
