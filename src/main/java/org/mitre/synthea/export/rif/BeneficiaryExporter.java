@@ -89,9 +89,12 @@ public class BeneficiaryExporter extends RIFExporter {
     person.attributes.put(RIFExporter.BB2_PARTD_CONTRACTS, partDContracts);
 
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    long dateOf65thBrithday = Utilities.getAnniversary(birthdate, 65);
+    long dateOf65thBirthday = Utilities.getAnniversary(birthdate, 65);
+    int monthOf65thBirthday = Utilities.getMonth(dateOf65thBirthday) - 1;
     long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
-    long coverageStartDate = Long.min(dateOf65thBrithday, dateOfESRD);
+    // TODO: date of disability
+    // TODO: if child or spouse, date of primary beneficiary start
+    long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
 
     boolean firstYearOutput = true;
@@ -117,6 +120,10 @@ public class BeneficiaryExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.BENEFICIARY.PTA_CVRG_STRT_DT, coverageStartStr);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_STRT_DT, coverageStartStr);
       int monthCount = year == endYear ? endMonth : 12;
+      // TODO: subtract the months before coverage started
+      // e.g., before 65 or before disability
+      // e.g., if they turned 65 in March, then January and February should not count
+      // while they were not enrolled (which will effect mdcr_stus*, mdcr_entlmnt*, etc.
       String monthCountStr = String.valueOf(monthCount);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.A_MO_CNT, monthCountStr);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.B_MO_CNT, monthCountStr);
@@ -178,18 +185,32 @@ public class BeneficiaryExporter extends RIFExporter {
           fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_END_DT, deathDateStr);
         }
       }
-      boolean medicareAgeThisYear = ageAtEndOfYear(birthdate, year) >= 65;
+      int ageYearEnd = ageAtEndOfYear(birthdate, year);
+      int ageYearBegin = ageYearEnd - 1;
+      boolean medicareAgeThisYear = (ageYearEnd >= 65);
       boolean esrdThisYear = hasESRD(person, year);
+      // Technically, disabled should be checked year by year, but we don't currently
+      // have that level of resolution.
+      boolean disabled = isDisabled(person);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
-      // "0" = old age, "2" = ESRD
+      // "0" = old age, "1" = Disabled, "2" = ESRD, "3" = ESRD && Disabled
       if (medicareAgeThisYear) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "0");
+      } else if (esrdThisYear && disabled) {
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "3");
       } else if (esrdThisYear) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "2");
+      } else if (disabled) {
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "1");
+      } else {
+        // TODO: are they a child or spouse of the beneficiary? "X" is not a legal value.
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "X");
       }
       if (initialBeneEntitlementReason == null) {
         initialBeneEntitlementReason = fieldValues.get(
                 BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR);
+        person.attributes.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG.toString(),
+            initialBeneEntitlementReason);
       }
       if (initialBeneEntitlementReason != null) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_ORIG,
@@ -262,14 +283,29 @@ public class BeneficiaryExporter extends RIFExporter {
 
       String dualEligibleStatusCode = getDualEligibilityCode(person, year);
       String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
-              isBlind(person));
+          isDisabled(person));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
       String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
         fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
                 dualEligibleStatusCode);
+        if (ageYearBegin == 64) {
+          boolean medicareThisMonth = (month >= monthOf65thBirthday);
+          medicareStatusCode = getMedicareStatusCode(medicareThisMonth, esrdThisYear,
+              isDisabled(person));
+          if (!medicareThisMonth) {
+            // Not enrolled
+            fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],"00");
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDContractFields[month],"0");
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDPBPFields[month],"");
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDCostSharingFields[month],"00");
+            fieldValues.put(BB2RIFStructure.beneficiaryPartDSegmentFields[month], "");
+            fieldValues.put(BB2RIFStructure.benficiaryPartDRetireeDrugSubsidyFields[month],"0");
+          }
+        }
         fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
                 medicareStatusCode);
+        buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
         fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
                 buyInIndicator);
       }
@@ -305,12 +341,16 @@ public class BeneficiaryExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_BIRTH_DT,
             RIFExporter.bb2DateFromTimestamp(birthdate));
     String zipCode = (String)person.attributes.get(Person.ZIP);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_COUNTY_CD,
-            exporter.locationMapper.zipToCountyCode(zipCode));
+    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ZIP_CD, zipCode);
+    String countyCode = exporter.locationMapper.zipToCountyCode(zipCode);
+    if (countyCode == null) {
+      countyCode = exporter.locationMapper.stateCountyNameToCountyCode(
+          (String)person.attributes.get(Person.STATE),
+          (String)person.attributes.get(Person.COUNTY), person);
+    }
+    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_COUNTY_CD, countyCode);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.STATE_CODE,
             exporter.locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ZIP_CD,
-            (String)person.attributes.get(Person.ZIP));
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_RACE_CD,
             bb2RaceCode(
                     (String)person.attributes.get(Person.ETHNICITY),
@@ -336,33 +376,55 @@ public class BeneficiaryExporter extends RIFExporter {
     int year = Utilities.getYear(stopTime);
     boolean medicareAge = ageAtEndOfYear(birthdate, year) >= 65;
     boolean esrd = hasESRD(person, year);
+    // Technically, disabled should be checked year by year, but we don't currently
+    // have that level of resolution.
+    boolean disabled = isDisabled(person);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ESRD_IND, esrd ? "Y" : "0");
-    // "0" = old age, "2" = ESRD
+    // "0" = old age, "1" = Disabled, "2" = ESRD, "3" = ESRD && Disabled
     if (medicareAge) {
       fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "0");
+    } else if (esrd && disabled) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "3");
     } else if (esrd) {
       fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "2");
+    } else if (disabled) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "1");
+    } else {
+      // TODO: are they a child or spouse of the beneficiary? "X" is not a legal value.
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "X");
     }
-    String initialBeneEntitlementReason = fieldValues.get(
-            BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR);
-    if (initialBeneEntitlementReason != null) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG,
-              initialBeneEntitlementReason);
+    String originalReason = (String) person.attributes.get(
+        BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG.toString());
+    if (originalReason != null) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, originalReason);
+    } else if (esrd && disabled) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "3");
+    } else if (esrd) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "2");
+    } else if (disabled) {
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "1");
+    } else {
+      String initialBeneEntitlementReason = fieldValues.get(
+          BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR);
+      if (initialBeneEntitlementReason != null) {
+        fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG,
+            initialBeneEntitlementReason);
+        }
     }
     String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd,
-              isBlind(person));
+        isDisabled(person));
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
     exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY_HISTORY.class, fieldValues);
   }
 
-  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean blind) {
+  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean disabled) {
     if (medicareAge) {
       if (esrd) {
         return "11";
       } else {
         return "10";
       }
-    } else if (blind) {
+    } else if (disabled) {
       if (esrd) {
         return "21";
       } else {
@@ -494,7 +556,7 @@ public class BeneficiaryExporter extends RIFExporter {
       return incomeBandTwoDualCodes.next(person);
     } else if (partDCostSharingCode.equals("01")) {
       return incomeBandOneDualCodes.next(person);
-    } else if (hasESRD(person, year) || isBlind(person)) {
+    } else if (hasESRD(person, year) || isDisabled(person)) {
       return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
     } else {
       return "NA"; // (68.3%) Non-Medicaid
@@ -513,7 +575,8 @@ public class BeneficiaryExporter extends RIFExporter {
     return mappedDiagnosisCodes.contains(ESRD_CODE);
   }
 
-  private static boolean isBlind(Person person) {
+  private static boolean isDisabled(Person person) {
+    // TODO add more qualifying attributes and codes
     return person.attributes.containsKey(Person.BLINDNESS)
             && person.attributes.get(Person.BLINDNESS).equals(true);
   }

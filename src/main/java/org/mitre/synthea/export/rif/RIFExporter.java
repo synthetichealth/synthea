@@ -153,7 +153,13 @@ public abstract class RIFExporter {
           new Comparator<HealthRecord.Entry>() {
     @Override
     public int compare(HealthRecord.Entry o1, HealthRecord.Entry o2) {
-      return (int)(o2.start - o1.start);
+      if (o2.start == o1.start) {
+        return 0;
+      } else if (o2.start > o1.start) {
+        return 1;
+      } else {
+        return -1;
+      }
     }
   };
 
