@@ -34,7 +34,6 @@ import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Clinician;
@@ -159,6 +158,9 @@ public class CSVExporter {
 
   /**
    * Thread-safe monotonically increasing transactionId.
+   * NOTE: This is intentionally unique per-run rather than per-patient,
+   * which means that the claim_transactions.chargeid column will not be consistent
+   * when recreating a population using multiple threads.
    */
   private AtomicLong transactionId;
 
@@ -1392,7 +1394,7 @@ public class CSVExporter {
    * @param claim The claim to be exported.
    * @throws IOException if any IO error occurs.
    */
-  private void claim(RandomNumberGenerator rand, Claim claim, Encounter encounter,
+  private void claim(Person person, Claim claim, Encounter encounter,
       String encounterID, long time) throws IOException {
     // Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,
     // DEPARTMENTID,PATIENTDEPARTMENTID,DIAGNOSIS1,DIAGNOSIS2,DIAGNOSIS3,DIAGNOSIS4,
@@ -1583,7 +1585,7 @@ public class CSVExporter {
     write(s.toString(), claims);
 
     // Main Claim
-    simulateClaimProcess(rand, claim, claimId, encounter, encounterID, claim.mainEntry,
+    simulateClaimProcess(person, claim, claimId, encounter, encounterID, claim.mainEntry,
         diagnosisCodes, departmentId, true);
 
     // Each Entry...
@@ -1593,19 +1595,19 @@ public class CSVExporter {
       if ((entry instanceof HealthRecord.Procedure)
           || (entry instanceof HealthRecord.Immunization)
           || (entry instanceof HealthRecord.Medication)) {
-        simulateClaimProcess(rand, claim, claimId, encounter, encounterID, claimEntry,
+        simulateClaimProcess(person, claim, claimId, encounter, encounterID, claimEntry,
             diagnosisCodes, departmentId, false);
       }
     }
   }
 
-  private void simulateClaimProcess(RandomNumberGenerator rand, Claim claim, String claimId,
+  private void simulateClaimProcess(Person person, Claim claim, String claimId,
       Encounter encounter, String encounterId, Claim.ClaimEntry claimEntry,
       String[] diagnosisCodes, String departmentId, boolean mainEntry) throws IOException {
     long chargeId = transactionId.getAndIncrement();
     // CHARGE
     ClaimTransaction t = new ClaimTransaction(encounter, encounterId,
-        claim, claimId, chargeId, claimEntry, rand);
+        claim, claimId, chargeId, claimEntry, person);
     t.type = ClaimTransactionType.CHARGE;
     t.setAmount(claimEntry.cost);
     t.departmentId = departmentId;
@@ -1628,7 +1630,7 @@ public class CSVExporter {
           remainder = Claim.ZERO_CENTS;
         }
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claimEntry, rand);
+            claim, claimId, chargeId, claimEntry, person);
         t.type = ClaimTransactionType.PAYMENT;
         t.method = PaymentMethod.COPAY;
         t.payment = claimEntry.copayPaidByPatient;
@@ -1647,7 +1649,7 @@ public class CSVExporter {
         remainder = Claim.ZERO_CENTS;
       }
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.ADJUSTMENT;
       t.method = PaymentMethod.SYSTEM;
       t.adjustment = claimEntry.adjustment;
@@ -1663,7 +1665,7 @@ public class CSVExporter {
       // PAYMENT FROM INSURANCE
       remainder = remainder.subtract(payerAmount);
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.PAYMENT;
       t.method = PaymentMethod.ECHECK;
       t.payment = payerAmount;
@@ -1678,7 +1680,7 @@ public class CSVExporter {
     if (secondaryPayerAmount.compareTo(Claim.ZERO_CENTS) > 0) {
       // TRANSFEROUT
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.TRANSFEROUT;
       t.amount = remainder;
       t.unpaid = remainder;
@@ -1690,7 +1692,7 @@ public class CSVExporter {
 
       // TRANSFERIN
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.TRANSFERIN;
       t.transferType = "2"; // "2" if secondary insurance
       t.transferId = transferOut;
@@ -1706,7 +1708,7 @@ public class CSVExporter {
 
       // PAYMENT
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.PAYMENT;
       t.method = PaymentMethod.ECHECK;
       t.payment = secondaryPayerAmount;
@@ -1721,7 +1723,7 @@ public class CSVExporter {
       if (claim.plan != PayerManager.getNoInsurancePlan()) {
         // TRANSFEROUT
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claimEntry, rand);
+            claim, claimId, chargeId, claimEntry, person);
         t.type = ClaimTransactionType.TRANSFEROUT;
         t.amount = remainder;
         t.unpaid = remainder;
@@ -1733,7 +1735,7 @@ public class CSVExporter {
 
         // TRANSFERIN
         t = new ClaimTransaction(encounter, encounterId,
-            claim, claimId, chargeId, claimEntry, rand);
+            claim, claimId, chargeId, claimEntry, person);
         t.type = ClaimTransactionType.TRANSFERIN;
         t.transferType = "p"; // patient
         t.transferId = transferOut;
@@ -1746,12 +1748,13 @@ public class CSVExporter {
       }
       // PAYMENT
       t = new ClaimTransaction(encounter, encounterId,
-          claim, claimId, chargeId, claimEntry, rand);
+          claim, claimId, chargeId, claimEntry, person);
       t.type = ClaimTransactionType.PAYMENT;
-      String[] opts = { PaymentMethod.CASH.toString(),
-          PaymentMethod.CHECK.toString(),
-          PaymentMethod.CC.toString()};
-      t.method = PaymentMethod.valueOf(rand.rand(opts));
+      PaymentMethod[] opts = { PaymentMethod.CASH,
+          PaymentMethod.CHECK,
+          PaymentMethod.CC};
+      // a choice that "looks random" but is consistent when chargeID is consistent
+      t.method = opts[(int)(chargeId % opts.length)];
       t.payment = remainder;
       t.unpaid = Claim.ZERO_CENTS;
       t.departmentId = departmentId;
@@ -1804,12 +1807,14 @@ public class CSVExporter {
      * @param claimId The Claim ID.
      * @param chargeId The Charge ID.
      * @param claimEntry The entry for the transactions.
-     * @param rand A random number generator.
+     * @param person The Person.
      */
     public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
-        long chargeId, Claim.ClaimEntry claimEntry, RandomNumberGenerator rand) {
-      // TODO: fix this one
-      this.id = rand.randUUID().toString();
+        long chargeId, Claim.ClaimEntry claimEntry, Person person) {
+      // NOTE: see note above about the transactionId field
+      // ID here will only be consistent if chargeID is consistent
+      this.id = ExportHelper.buildUUID(person, encounter.start,
+          "ClaimTransaction for Claim " + claimId + " " + chargeId);
       this.encounterId = encounterId;
       this.claimId = claimId;
       this.chargeId = chargeId;

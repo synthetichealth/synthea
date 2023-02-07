@@ -13,7 +13,7 @@
       <substanceAdministration classCode="SBADM" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.16"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.16" extension="2014-06-09"/>
-        <id root="${UUID?api.toString()}"/>
+        <id root="${entry.uuid}"/>
         <statusCode code="completed"/>
         <effectiveTime xsi:type="IVL_TS">
           <low value="${entry.start?number_to_date?string["yyyyMMddHHmmss"]}"/>

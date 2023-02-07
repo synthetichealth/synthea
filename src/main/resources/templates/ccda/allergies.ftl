@@ -14,7 +14,7 @@
         <templateId root="2.16.840.1.113883.10.20.22.4.30"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
         <!--Allergy act template -->
-        <id root="${UUID?api.toString()}"/>
+        <id root="${entry.uuid}"/>
         <code nullFlavor="NA"/>
         <statusCode code="active"/>
         <effectiveTime>

@@ -13,7 +13,7 @@
         <entry>
          <observation classCode="OBS" moodCode="EVN">
              <templateId root="2.16.840.1.113883.10.20.22.4.69"/>
-             <id root="${UUID?api.toString()}"/>
+             <id root="${entry.uuid}"/>
              <@codes.code_section codes=entry.codes section="functional-status" counter=entry?counter />
              <text>
                <reference value="#functional-status-desc-${entry?counter}"/>
