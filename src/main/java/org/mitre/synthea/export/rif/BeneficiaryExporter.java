@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
 
 /**
  * Export beneficiary and beneficiary history files.
@@ -32,6 +33,10 @@ public class BeneficiaryExporter extends RIFExporter {
   protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   private static final String ESRD_CODE = "N18.6";
+  private static final String ESRD_SNOMED = "46177005";
+  private static final QualifyingConditionCodesEligibility ssd =
+      new QualifyingConditionCodesEligibility(
+          "payers/eligibility_input_files/ssd_eligibility.csv");
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -92,9 +97,13 @@ public class BeneficiaryExporter extends RIFExporter {
     long dateOf65thBirthday = Utilities.getAnniversary(birthdate, 65);
     int monthOf65thBirthday = Utilities.getMonth(dateOf65thBirthday) - 1;
     long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
-    // TODO: date of disability
-    // TODO: if child or spouse, date of primary beneficiary start
     long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
+    boolean disabled = isDisabled(person);
+    if (disabled) {
+      long dateOfDisability = ssd.getEarliestDiagnosis(person);
+      coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
+    }
+    // TODO: if child or spouse, date of primary beneficiary start
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
 
     boolean firstYearOutput = true;
@@ -191,7 +200,6 @@ public class BeneficiaryExporter extends RIFExporter {
       boolean esrdThisYear = hasESRD(person, year);
       // Technically, disabled should be checked year by year, but we don't currently
       // have that level of resolution.
-      boolean disabled = isDisabled(person);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ESRD_IND, esrdThisYear ? "Y" : "0");
       // "0" = old age, "1" = Disabled, "2" = ESRD, "3" = ESRD && Disabled
       if (medicareAgeThisYear) {
@@ -283,7 +291,7 @@ public class BeneficiaryExporter extends RIFExporter {
 
       String dualEligibleStatusCode = getDualEligibilityCode(person, year);
       String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
-          isDisabled(person));
+          disabled);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
       String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
@@ -291,8 +299,7 @@ public class BeneficiaryExporter extends RIFExporter {
                 dualEligibleStatusCode);
         if (ageYearBegin == 64) {
           boolean medicareThisMonth = (month >= monthOf65thBirthday);
-          medicareStatusCode = getMedicareStatusCode(medicareThisMonth, esrdThisYear,
-              isDisabled(person));
+          medicareStatusCode = getMedicareStatusCode(medicareThisMonth, esrdThisYear, disabled);
           if (!medicareThisMonth) {
             // Not enrolled
             fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],"00");
@@ -411,8 +418,7 @@ public class BeneficiaryExporter extends RIFExporter {
             initialBeneEntitlementReason);
         }
     }
-    String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd,
-        isDisabled(person));
+    String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd, disabled);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
     exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY_HISTORY.class, fieldValues);
   }
@@ -546,6 +552,9 @@ public class BeneficiaryExporter extends RIFExporter {
   }
 
   String getDualEligibilityCode(Person person, int year) {
+    if (hasESRD(person, year) || isDisabled(person)) {
+      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+    }
     // TBD add support for the following additional code (%-age in brackets is observed
     // frequency in CMS data):
     // 00 (15.6%) - Not enrolled in Medicare for the month
@@ -556,8 +565,6 @@ public class BeneficiaryExporter extends RIFExporter {
       return incomeBandTwoDualCodes.next(person);
     } else if (partDCostSharingCode.equals("01")) {
       return incomeBandOneDualCodes.next(person);
-    } else if (hasESRD(person, year) || isDisabled(person)) {
-      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
     } else {
       return "NA"; // (68.3%) Non-Medicaid
     }
@@ -572,12 +579,22 @@ public class BeneficiaryExporter extends RIFExporter {
   private boolean hasESRD(Person person, int year) {
     long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
-    return mappedDiagnosisCodes.contains(ESRD_CODE);
+    boolean esrdGivenYear = mappedDiagnosisCodes.contains(ESRD_CODE);
+    if (esrdGivenYear) {
+      return esrdGivenYear;
+    }
+    // boolean esrdGivenAttribute = person.attributes.containsKey("dialysis_reason");
+    // boolean esrdGivenPresent = person.record.conditionActive(ESRD_SNOMED);
+    Long esrdPresentOnset = person.record.presentOnset(ESRD_SNOMED);
+    if (esrdPresentOnset != null) {
+      return (Utilities.getYear(esrdPresentOnset) <= year);
+    }
+    return false;
   }
 
   private static boolean isDisabled(Person person) {
-    // TODO add more qualifying attributes and codes
-    return person.attributes.containsKey(Person.BLINDNESS)
-            && person.attributes.get(Person.BLINDNESS).equals(true);
+    return (person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true))
+        || ssd.isPersonEligible(person, 0L);
   }
 }

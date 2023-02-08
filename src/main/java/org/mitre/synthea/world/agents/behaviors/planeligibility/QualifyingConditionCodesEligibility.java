@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -73,5 +74,23 @@ public class QualifyingConditionCodesEligibility implements IPlanEligibility {
       eligibleCodes.addAll(Arrays.asList(codes));
     }
     return eligibleCodes;
+  }
+
+  /**
+   * Gets the earliest occurrence of a qualifying condition
+   * that is active/present on the person.
+   * @param person The person.
+   * @return Start time of the earliest qualifying condition,
+   * or Long.MAX_VALUE if not present.
+   */
+  public long getEarliestDiagnosis(Person person) {
+    long earliest = Long.MAX_VALUE;
+    for (String code : qualifyingCodes) {
+      Long onset = person.record.presentOnset(code);
+      if (onset != null) {
+        earliest = Long.min(earliest, onset);
+      }
+    }
+    return earliest;
   }
 }
