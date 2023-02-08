@@ -416,7 +416,7 @@ public class BeneficiaryExporter extends RIFExporter {
       if (initialBeneEntitlementReason != null) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG,
             initialBeneEntitlementReason);
-        }
+      }
     }
     String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd, disabled);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);

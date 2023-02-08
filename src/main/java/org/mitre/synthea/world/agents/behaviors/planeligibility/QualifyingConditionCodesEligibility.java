@@ -80,8 +80,7 @@ public class QualifyingConditionCodesEligibility implements IPlanEligibility {
    * Gets the earliest occurrence of a qualifying condition
    * that is active/present on the person.
    * @param person The person.
-   * @return Start time of the earliest qualifying condition,
-   * or Long.MAX_VALUE if not present.
+   * @return Start time of the earliest qualifying condition, or Long.MAX_VALUE if not present.
    */
   public long getEarliestDiagnosis(Person person) {
     long earliest = Long.MAX_VALUE;
