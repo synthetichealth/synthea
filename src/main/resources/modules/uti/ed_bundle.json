@@ -1336,8 +1336,21 @@
     },
     "Blood Culture Check": {
       "type": "Simple",
-      "direct_transition": "Urinalysis",
-      "name": "Blood Culture Check"
+      "name": "Blood Culture Check",
+      "conditional_transition": [
+        {
+          "transition": "Blood Culture",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "<=",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Urinalysis"
+        }
+      ]
     },
     "Urinalysis": {
       "type": "Procedure",
@@ -1483,8 +1496,47 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Blood Culture Check",
-      "name": "BMP"
+      "name": "BMP",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": ">=",
+            "value": 1
+          },
+          "distributions": [],
+          "transition": "Basic_Metabolic_Panel_with_Kidney Damage"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "<=",
+            "value": 2
+          },
+          "distributions": [],
+          "transition": "Basic_Metabolic_Panel_with_Normal_Kidney"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Basic_Metabolic_Panel_with_Kidney Damage",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Basic_Metabolic_Panel_with_Normal_Kidney",
+              "distribution": 0.95
+            }
+          ]
+        }
+      ]
     },
     "Comprehensive_Metabolic_Panel": {
       "type": "DiagnosticReport",
@@ -1923,6 +1975,341 @@
       ],
       "name": "Comprehensive_Metabolic_Panel_with_Kidney_Damage",
       "direct_transition": "Blood Culture Check"
+    },
+    "Basic_Metabolic_Panel_with_Normal_Kidney": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 2.5,
+            "high": 3
+          }
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 14
+          }
+        }
+      ],
+      "direct_transition": "Blood Culture Check",
+      "name": "Basic_Metabolic_Panel_with_Normal_Kidney"
+    },
+    "Basic_Metabolic_Panel_with_Kidney Damage": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "vital_sign": "Glucose",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Urea Nitrogen",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 2.5,
+            "high": 3
+          }
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Calcium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Sodium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Potassium",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Chloride",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "vital_sign": "Carbon Dioxide",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "unit": "mmol/L"
+        },
+        {
+          "category": "laboratory",
+          "unit": "mL/min",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 14
+          }
+        }
+      ],
+      "name": "Basic_Metabolic_Panel_with_Kidney Damage",
+      "direct_transition": "Blood Culture Check"
+    },
+    "Blood Culture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 30088009,
+          "display": "Blood culture (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "name": "Blood Culture",
+      "distributed_transition": [
+        {
+          "transition": "Positive_Blood_Culture",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Negative Blood Culture",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Negative Blood Culture": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "600-7",
+          "display": "Bacteria identified in Blood by Culture",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Urinalysis",
+      "name": "Negative Blood Culture",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 708118007,
+        "display": "Microbiologic culture finding negative (finding)"
+      }
+    },
+    "Positive_Blood_Culture": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "600-7",
+          "display": "Bacteria identified in Blood by Culture",
+          "value_set": ""
+        }
+      ],
+      "name": "Positive_Blood_Culture",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 8730001000004107,
+        "display": "Blood culture positive for microorganism (finding)"
+      },
+      "direct_transition": "Set BldCx"
+    },
+    "Set BldCx": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Positive_BldCx",
+      "direct_transition": "Urinalysis",
+      "name": "Set BldCx",
+      "value": true
     }
   },
   "gmf_version": 2
