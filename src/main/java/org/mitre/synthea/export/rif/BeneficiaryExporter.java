@@ -99,12 +99,29 @@ public class BeneficiaryExporter extends RIFExporter {
     long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
     long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
     boolean disabled = isDisabled(person);
+    long dateOfDisability = Long.MAX_VALUE;
     if (disabled) {
-      long dateOfDisability = ssd.getEarliestDiagnosis(person);
+      dateOfDisability = ssd.getEarliestDiagnosis(person);
       coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
     }
-    // TODO: if child or spouse, date of primary beneficiary start
+    // if child or spouse, date of primary beneficiary start
+    String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
+    boolean lowIncome = partDCostSharingCode.equals("01");
+    boolean disabledNow = (dateOfDisability < stopTime);
+    boolean esrdNow = (dateOfESRD < stopTime);
+    int ageThisYear = ageAtEndOfYear(birthdate, (endYear - yearsOfHistory));
+    String crntBic = getCurrentBeneficiaryIdCode(
+        person, ageThisYear, disabledNow, esrdNow, lowIncome);
+    if (!crntBic.equals("A")) {
+      // if child or spouse, date of primary beneficiary start
+      if (yearsOfHistory > ageThisYear) {
+        coverageStartDate = stopTime - Utilities.convertTime("years", ageThisYear);
+      } else {
+        coverageStartDate = stopTime - Utilities.convertTime("years", yearsOfHistory);
+      }
+    }
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
+
 
     boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
@@ -114,6 +131,7 @@ public class BeneficiaryExporter extends RIFExporter {
       if (!hasPartABCoverage(person, endOfYearTimeStamp)) {
         continue;
       }
+      ageThisYear = ageAtEndOfYear(birthdate, year);
 
       HashMap<BB2RIFStructure.BENEFICIARY, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY.class, person);
@@ -122,7 +140,11 @@ public class BeneficiaryExporter extends RIFExporter {
         // need to be "UPDATE"
         fieldValues.put(BB2RIFStructure.BENEFICIARY.DML_IND, "UPDATE");
       }
-
+      // CRNT_BIC
+      disabledNow = (dateOfDisability < endOfYearTimeStamp);
+      esrdNow = (dateOfESRD < endOfYearTimeStamp);
+      crntBic = getCurrentBeneficiaryIdCode(person, ageThisYear, disabledNow, esrdNow, lowIncome);
+      fieldValues.put(BB2RIFStructure.BENEFICIARY.CRNT_BIC, crntBic);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.RFRNC_YR, String.valueOf(year));
       String coverageStartStr = bb2DateFromTimestamp(coverageStartDate);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.COVSTART, coverageStartStr);
@@ -179,7 +201,7 @@ public class BeneficiaryExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_BIRTH_DT,
               RIFExporter.bb2DateFromTimestamp(birthdate));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.AGE,
-              String.valueOf(ageAtEndOfYear(birthdate, year)));
+              String.valueOf(ageThisYear));
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTA_TRMNTN_CD, "0");
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_PTB_TRMNTN_CD, "0");
       if (deathDate != -1) {
@@ -241,7 +263,6 @@ public class BeneficiaryExporter extends RIFExporter {
         }
       }
 
-      String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
       int rdsMonthCount = 0;
       long partDCoverageStart = Long.MAX_VALUE;
       long partDCoverageEnd = Long.MIN_VALUE;
@@ -568,6 +589,97 @@ public class BeneficiaryExporter extends RIFExporter {
     } else {
       return "NA"; // (68.3%) Non-Medicaid
     }
+  }
+
+  /**
+   * The the current beneficiary ID code (CRNT_BIC).
+   * @param person The person.
+   * @param ageThisYear The person's current age (at the end of the year).
+   * @param disabled If the person is disabled according to SSD.
+   * @param esrd If the person has ESRD.
+   * @param lowIncome If the person is low income (e.g., Part D cost sharing).
+   * @return The current beneficiary ID code.
+   */
+  private String getCurrentBeneficiaryIdCode(Person person, int ageThisYear,
+      boolean disabled, boolean esrd, boolean lowIncome) {
+    // Default to "A" primary claimant (over 65 or (esrd and/or disabled))
+    // T if partDCostSharingCode=="01" or under-65 w/ ESRD
+    // else if under-65
+    //   - if minor, pick child code
+    //   - if male, pick husband or widower code
+    //   - if female, pick wife or widow code
+    String currentBeneIdCode = "A"; // primary claimant
+    String maritalStatus = (String)
+        person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
+    if (ageThisYear < 65) {
+      // Under 65
+      if (lowIncome || esrd) {
+        // Uninsured entitled to HIB or renal provisions
+        currentBeneIdCode = "T";
+      } else if (disabled) {
+        currentBeneIdCode = "A";
+      } else if (ageThisYear < 18) {
+        // child codes
+        currentBeneIdCode = person.rand(new String[] {"C1", "C1", "C1", "C2", "C2", "C3"});
+      } else if (person.attributes.get(Person.GENDER).equals("F")) {
+        if (maritalStatus.equals("M")) {
+          // Married Woman
+          if (ageThisYear >= 62) {
+            // Aged wife age 62 or over 1st claimant
+            currentBeneIdCode = "B";
+          } else {
+            currentBeneIdCode = person.rand(new String[] {"B2", "B3"});
+          }
+        } else if (maritalStatus.equals("D")) {
+          // Divorced Woman
+          if (ageThisYear >= 62) {
+            // Divorced wife age 62 or over 1st claimant
+            currentBeneIdCode = "B6";
+          } else {
+            // Divorced wife 2nd claimant
+            currentBeneIdCode = "B9";
+          }
+        } else if (maritalStatus.equals("W")) {
+          if (ageThisYear >= 60) {
+            // Aged widow 60 or over 1st claimant
+            currentBeneIdCode = "D";
+          } else {
+            // Aged widow 2nd claimant
+            currentBeneIdCode = "D2";
+          }
+        } else {
+          // Uninsured not qualified for deemed HIB
+          currentBeneIdCode = "M";
+        }
+      } else {
+        // Adult male under 65
+        if (maritalStatus.equals("M")) {
+          // Married man
+          if (ageThisYear >= 62) {
+            // Aged husband age 62 or over 1st claimant
+            currentBeneIdCode = "B1";
+          } else {
+            // Young husband 1st claimant
+            currentBeneIdCode = "BY";
+          }
+        } else if (maritalStatus.equals("D")) {
+          // Divorced husband 1st claimant
+          currentBeneIdCode = "BR";
+        } else if (maritalStatus.equals("W")) {
+          if (ageThisYear >= 60) {
+            // Aged widower age 60 or over 1st claimant
+            currentBeneIdCode = "D1";
+          } else {
+            // Aged widower 2nd claimant
+            currentBeneIdCode = "D3";
+          }
+        } else {
+          // Uninsured not qualified for deemed HIB
+          currentBeneIdCode = "M";
+        }
+      }
+    }
+    return currentBeneIdCode;
   }
 
   /**
