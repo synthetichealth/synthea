@@ -75,7 +75,7 @@ jobs:
         run: ./gradlew check
   
       - name: Code coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
