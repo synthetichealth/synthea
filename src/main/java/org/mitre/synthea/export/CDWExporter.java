@@ -668,6 +668,10 @@ public class CDWExporter {
     if (marital != null) {
       if (marital.equals("M")) {
         s.append(",Married");
+      } else if (marital.equals("W")) {
+        s.append(",Widowed");
+      } else if (marital.equals("D")) {
+        s.append(",Divorced");
       } else {
         marital = "N";
         s.append(",Never Married");

@@ -309,7 +309,7 @@ public final class LifecycleModule extends Module {
           }
         }
         break;
-      case 27:
+      case 28:
         // get married
         if (person.attributes.get(Person.MARITAL_STATUS) == null) {
           Boolean getsMarried = (person.rand() < 0.8);
@@ -345,6 +345,60 @@ public final class LifecycleModule extends Module {
           List<String> suffixList = Arrays.asList("PhD", "JD", "MD");
           person.attributes.put(Person.NAME_SUFFIX,
               suffixList.get(person.randInt(suffixList.size())));
+        }
+        break;
+      case 35:
+        if (person.attributes.get(Person.MARITAL_STATUS + "Decade3") == null) {
+          // divorce and widowing...
+          // gross approximations for next 10 years based on:
+          // https://www.census.gov/content/dam/Census/library/publications/2021/demo/p70-167.pdf
+          if (person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+            double check = person.rand();
+            if (check < 0.02) {
+              // widow
+              person.attributes.put(Person.MARITAL_STATUS, "W");
+            } else if (check < 0.20) {
+              // divorce
+              person.attributes.put(Person.MARITAL_STATUS, "D");
+            }
+          }
+          person.attributes.put(Person.MARITAL_STATUS + "Decade3", true);
+        }
+        break;
+      case 45:
+        if (person.attributes.get(Person.MARITAL_STATUS + "Decade4") == null) {
+          // divorce and widowing...
+          // gross approximations for next 10 years based on:
+          // https://www.census.gov/content/dam/Census/library/publications/2021/demo/p70-167.pdf
+          if (person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+            double check = person.rand();
+            if (check < 0.03) {
+              // widow
+              person.attributes.put(Person.MARITAL_STATUS, "W");
+            } else if (check < 0.05) {
+              // divorce
+              person.attributes.put(Person.MARITAL_STATUS, "D");
+            }
+          }
+          person.attributes.put(Person.MARITAL_STATUS + "Decade4", true);
+        }
+        break;
+      case 55:
+        if (person.attributes.get(Person.MARITAL_STATUS + "Decade5") == null) {
+          // divorce and widowing...
+          // gross approximations for next 10 years based on:
+          // https://www.census.gov/content/dam/Census/library/publications/2021/demo/p70-167.pdf
+          if (person.attributes.get(Person.MARITAL_STATUS).equals("M")) {
+            double check = person.rand();
+            if (check < 0.06) {
+              // widow
+              person.attributes.put(Person.MARITAL_STATUS, "W");
+            } else if (check < 0.11) {
+              // divorce
+              person.attributes.put(Person.MARITAL_STATUS, "D");
+            }
+          }
+          person.attributes.put(Person.MARITAL_STATUS + "Decade5", true);
         }
         break;
       default:
