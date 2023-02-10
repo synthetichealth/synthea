@@ -355,7 +355,12 @@ public class BB2RIFExporter {
     if (yearsOfHistory == 0) {
       startTime = (long) person.attributes.get(Person.BIRTHDATE);
     }
-    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneExp.export(person, startTime, stopTime));
+    String beneId = beneExp.export(person, startTime, stopTime);
+    if (beneId == null) {
+      // was not a medicare beneficiary
+      return;
+    }
+    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneId);
     beneExp.exportHistory(person, startTime, stopTime);
     exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
             Long.toString(inpatientExp.export(person, startTime, stopTime)));

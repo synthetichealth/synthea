@@ -34,6 +34,7 @@ public class BeneficiaryExporter extends RIFExporter {
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   private static final String ESRD_CODE = "N18.6";
   private static final String ESRD_SNOMED = "46177005";
+  private static final String CKD4_SNOMED = "431857002";
   private static final QualifyingConditionCodesEligibility ssd =
       new QualifyingConditionCodesEligibility(
           "payers/eligibility_input_files/ssd_eligibility.csv");
@@ -132,6 +133,13 @@ public class BeneficiaryExporter extends RIFExporter {
         continue;
       }
       ageThisYear = ageAtEndOfYear(birthdate, year);
+      // if they are not children AND also too young to have been married
+      // to a primary beneficiary
+      if ((ageThisYear > 18) && (ageThisYear < 50)
+          && !(dateOfESRD < endOfYearTimeStamp) // and they don't have ESRD
+          && !(dateOfDisability < endOfYearTimeStamp)) { // and they aren't disabled
+        continue;
+      }
 
       HashMap<BB2RIFStructure.BENEFICIARY, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY.class, person);
@@ -340,7 +348,12 @@ public class BeneficiaryExporter extends RIFExporter {
       exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY.class, fieldValues, year);
       firstYearOutput = false;
     }
-    return beneIdStr;
+    if (firstYearOutput) {
+      // person was never a beneficiary
+      return null;
+    } else {
+      return beneIdStr;
+    }
   }
 
   /**
@@ -618,7 +631,7 @@ public class BeneficiaryExporter extends RIFExporter {
         currentBeneIdCode = "T";
       } else if (disabled) {
         currentBeneIdCode = "A";
-      } else if (ageThisYear < 18) {
+      } else if (ageThisYear <= 18) {
         // child codes
         currentBeneIdCode = person.rand(new String[] {"C1", "C1", "C1", "C2", "C2", "C3"});
       } else if (person.attributes.get(Person.GENDER).equals("F")) {
@@ -696,10 +709,16 @@ public class BeneficiaryExporter extends RIFExporter {
       return esrdGivenYear;
     }
     // boolean esrdGivenAttribute = person.attributes.containsKey("dialysis_reason");
+    // or attribute "ckd" == 5
     // boolean esrdGivenPresent = person.record.conditionActive(ESRD_SNOMED);
     Long esrdPresentOnset = person.record.presentOnset(ESRD_SNOMED);
     if (esrdPresentOnset != null) {
       return (Utilities.getYear(esrdPresentOnset) <= year);
+    }
+    // Widen the fishing net a little bit to include more folks...
+    Long ckd4PresentOnset = person.record.presentOnset(CKD4_SNOMED);
+    if (ckd4PresentOnset != null) {
+      return (Utilities.getYear(ckd4PresentOnset) <= year);
     }
     return false;
   }

@@ -2120,8 +2120,8 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
-                "attribute": "end_stage_renal_disease",
-                "operator": "is nil"
+                "attribute": "kidney_transplant",
+                "operator": "is not nil"
               },
               {
                 "condition_type": "Active Condition",
@@ -2168,5 +2168,6 @@
     "Terminal": {
       "type": "Terminal"
     }
-  }
+  },
+  "gmf_version": 2
 }
