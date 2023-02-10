@@ -3,27 +3,43 @@ package org.mitre.synthea.export.flexporter;
 import ca.uhn.fhir.context.BaseRuntimeChildDefinition;
 import ca.uhn.fhir.context.RuntimeResourceDefinition;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.CarePlan;
+import org.hl7.fhir.r4.model.Claim;
+import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.DiagnosticReport;
+import org.hl7.fhir.r4.model.DocumentReference;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.InstantType;
+import org.hl7.fhir.r4.model.MedicationAdministration;
+import org.hl7.fhir.r4.model.MedicationRequest;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.TimeType;
 import org.mitre.synthea.export.FhirR4;
+
 
 public abstract class FieldWrapper {
   protected BaseRuntimeChildDefinition fieldDef;
@@ -88,13 +104,25 @@ public abstract class FieldWrapper {
 
       Base rawValueBase = (Base) rawValue;
       if (rawValueBase.isPrimitive()) {
-        String strValue = rawValueBase.primitiveValue();
-        return ZonedDateTime.parse(strValue).toLocalDateTime();
 
-      } else {
-        // TODO - this would happen if it's a Period
-        throw new IllegalArgumentException("Unable to normalize " + rawValue);
+        String strValue = rawValueBase.primitiveValue();
+
+        if (rawValueBase instanceof DateType) {
+          return LocalDate.parse(strValue).atStartOfDay();
+        } else if (rawValueBase instanceof DateTimeType) {
+          return ZonedDateTime.parse(strValue).toLocalDateTime();
+        } else if (rawValueBase instanceof DateType) {
+          return ZonedDateTime.parse(strValue).toLocalDateTime();
+        } else if (rawValueBase instanceof TimeType) {
+          return ZonedDateTime.parse(strValue).toLocalDateTime();
+        } else if (rawValueBase instanceof InstantType) {
+          return ZonedDateTime.parse(strValue).toLocalDateTime();
+        }
       }
+
+      // various reasons we arrive here, for example a choice type that includes non-time values
+      return null;
+
     }
 
     public static Period shift(Period period, TemporalAmount amount) {
@@ -113,13 +141,11 @@ public abstract class FieldWrapper {
         return null;
       }
 
-      Date d = dateTime.getValue();
+      String s = dateTime.getValueAsString();
 
-      Instant shifted = d.toInstant().plus(amount);
+      ZonedDateTime shifted = ZonedDateTime.parse(s).plus(amount);
 
-      d.setTime(shifted.toEpochMilli());
-
-      // TODO: is it necessary to call dateTime.setValue(d) again?
+      dateTime.setValueAsString(shifted.toString());
 
       return dateTime;
     }
@@ -129,13 +155,11 @@ public abstract class FieldWrapper {
         return null;
       }
 
-      Date d = date.getValue();
+      String s = date.getValueAsString();
 
-      Instant shifted = d.toInstant().plus(amount);
+      LocalDate shifted = LocalDate.parse(s).plus(amount);
 
-      d.setTime(shifted.toEpochMilli());
-
-      // TODO: is it necessary to call date.setValue(d) again?
+      date.setValueAsString(shifted.toString());
 
       return date;
     }
@@ -143,6 +167,12 @@ public abstract class FieldWrapper {
     public static TimeType shift(TimeType time, TemporalAmount amount) {
       if (time == null) {
         return null;
+      }
+
+      if (amount instanceof java.time.Period) {
+        // trying to shift years/months/days but we only have a time of day
+        // so just keep it the same
+        return time;
       }
 
       String t = time.getValue();
@@ -159,35 +189,21 @@ public abstract class FieldWrapper {
         return null;
       }
 
-      Date d = instant.getValue();
+      String s = instant.getValueAsString();
 
-      Instant shifted = d.toInstant().plus(amount);
+      // note that we use ZonedDateTime vs java Instant here
+      // because Instant doesn't allow shifting by time units > Days
+      ZonedDateTime shifted = ZonedDateTime.parse(s).plus(amount);
 
-      d.setTime(shifted.toEpochMilli());
-
-      // TODO: is it necessary to call instant.setValue(d) again?
+      instant.setValueAsString(shifted.toString());
 
       return instant;
     }
 
-    public void shift(Resource resource, String amountString) {
+    public void shift(Resource resource, TemporalAmount amount) {
       IBase value = getSingle(resource);
       if (value == null) {
         return;
-      }
-
-      // note: amount can either be <= 1 day with second precision, or > 1 day with day precision
-      // not both
-      // (for example you can't shift by a year and 3 hours)
-      TemporalAmount amount = null;
-
-      if (amountString.contains("Y") || (amountString.indexOf('M') < amountString.indexOf('T'))) {
-        // ISO-8601 period formats {@code PnYnMnD}
-        // if we see Y, or M before T, it's a Period
-        amount = java.time.Period.parse(amountString);
-      } else {
-        // ISO-8601 duration format {@code PnDTnHnMn.nS}
-        amount = Duration.parse(amountString);
       }
 
       IBase newValue;
@@ -203,7 +219,11 @@ public abstract class FieldWrapper {
       } else if (value instanceof InstantType) {
         newValue = shift((InstantType) value, amount);
       } else {
-        throw new IllegalArgumentException("Unexpected value for a temporal field: " + value);
+        // many choice fields have both temporal and  non-temporal options,
+        // for example Observation.value
+        // just do nothing
+
+        return;
       }
 
       set(resource, newValue);
@@ -248,6 +268,11 @@ public abstract class FieldWrapper {
       } else if (value != null) {
         LocalDateTime myValue = normalize(value);
 
+        if (myValue == null) {
+          return true;
+          // probably wasn't actually a temporal value
+        }
+
         return (myValue.isAfter(min) || myValue.isEqual(min))
             && (myValue.isBefore(max) || myValue.isEqual(max));
 
@@ -257,6 +282,40 @@ public abstract class FieldWrapper {
         return true;
       }
     }
+  }
+
+  public static final Map<ResourceType, List<DateFieldWrapper>> DATE_FIELDS = buildDateFields();
+
+  private static Map<ResourceType, List<DateFieldWrapper>> buildDateFields() {
+    Map<ResourceType, List<DateFieldWrapper>> dateFields = new HashMap<>();
+
+    dateFields.put(ResourceType.Patient, List.of(
+        new DateFieldWrapper(Patient.class, "birthDate")
+        ));
+
+    dateFields.put(ResourceType.Encounter, List.of(
+        new DateFieldWrapper(Encounter.class, "period")
+      ));
+
+    dateFields.put(ResourceType.Condition, List.of(
+          new DateFieldWrapper(Condition.class, "onsetDateTime")
+        ));
+
+    dateFields.put(ResourceType.Procedure, List.of(
+        new DateFieldWrapper(Procedure.class, "performed[x]") // Period or dateTime
+      ));
+
+    dateFields.put(ResourceType.Observation, List.of(
+        new DateFieldWrapper(Observation.class, "effective[x]"),
+        new DateFieldWrapper(Observation.class, "value[x]"),
+        new DateFieldWrapper(Observation.class, "issued")
+        ));
+
+    dateFields.put(ResourceType.MedicationRequest, List.of(
+        new DateFieldWrapper(MedicationRequest.class, "authoredOn")
+      ));
+
+    return dateFields;
   }
 
   public static class ReferenceFieldWrapper extends FieldWrapper {
@@ -284,5 +343,71 @@ public abstract class FieldWrapper {
           .map(ro -> ((Reference)ro).getReference())
           .collect(Collectors.toList());
     }
+  }
+
+  public static final Map<ResourceType, List<ReferenceFieldWrapper>> REFERENCE_FIELDS =
+      buildReferenceFields();
+
+  private static Map<ResourceType, List<ReferenceFieldWrapper>> buildReferenceFields() {
+    Map<ResourceType, List<ReferenceFieldWrapper>> refFields = new HashMap<>();
+
+    refFields.put(ResourceType.Encounter, List.of(
+        new ReferenceFieldWrapper(Encounter.class, "subject")
+      ));
+
+    refFields.put(ResourceType.Condition, List.of(
+          new ReferenceFieldWrapper(Condition.class, "subject"),
+          new ReferenceFieldWrapper(Condition.class, "encounter")
+        ));
+
+    refFields.put(ResourceType.Procedure, List.of(
+        new ReferenceFieldWrapper(Procedure.class, "subject"),
+        new ReferenceFieldWrapper(Procedure.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.MedicationRequest, List.of(
+        new ReferenceFieldWrapper(MedicationRequest.class, "subject"),
+        new ReferenceFieldWrapper(MedicationRequest.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.MedicationAdministration, List.of(
+        new ReferenceFieldWrapper(MedicationAdministration.class, "subject"),
+        new ReferenceFieldWrapper(MedicationAdministration.class, "context")
+      ));
+
+    refFields.put(ResourceType.Observation, List.of(
+        new ReferenceFieldWrapper(Observation.class, "subject"),
+        new ReferenceFieldWrapper(Observation.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.DiagnosticReport, List.of(
+        new ReferenceFieldWrapper(DiagnosticReport.class, "subject"),
+        new ReferenceFieldWrapper(DiagnosticReport.class, "encounter"),
+        new ReferenceFieldWrapper(DiagnosticReport.class, "result")
+      ));
+
+    refFields.put(ResourceType.CarePlan, List.of(
+        new ReferenceFieldWrapper(CarePlan.class, "subject"),
+        new ReferenceFieldWrapper(CarePlan.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.DocumentReference, List.of(
+        new ReferenceFieldWrapper(DocumentReference.class, "subject")
+      ));
+
+    refFields.put(ResourceType.Claim, List.of(
+        new ReferenceFieldWrapper(Claim.class, "patient")
+      ));
+
+    refFields.put(ResourceType.ExplanationOfBenefit, List.of(
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "patient"),
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "claim")
+      ));
+
+    refFields.put(ResourceType.Provenance, List.of(
+        new ReferenceFieldWrapper(Provenance.class, "target")
+      ));
+
+    return refFields;
   }
 }

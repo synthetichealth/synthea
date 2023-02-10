@@ -31,10 +31,12 @@ import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.TimeType;
 import org.hl7.fhir.r4.model.Type;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -351,6 +353,35 @@ public class ActionsTest {
 
     Patient p = (Patient) b.getEntryFirstRep().getResource();
     assertEquals(p.getId(), createdSR.getSubject().getReference());
+  }
+
+  @Test
+  public void testShiftDates() throws Exception {
+    Patient p = new Patient();
+    p.addName().addGiven("Terry").setFamily("Teal");
+    DateType date = new DateType();
+    date.fromStringValue("1999-09-29");
+    p.setBirthDateElement(date);
+
+    Bundle b = new Bundle();
+    b.addEntry().setResource(p);
+
+    Observation o = new Observation();
+    Period period = new Period();
+    period.setStartElement(new DateTimeType("1999-10-05T10:24:01-05:00"));
+    period.setEndElement(new DateTimeType("1999-10-06T10:24:01-05:00"));
+    o.setEffective(period);
+    o.setIssuedElement(new InstantType("1999-10-06T10:24:01-05:00"));
+    o.setValue(new TimeType("10:24:01"));
+
+    b.addEntry().setResource(o);
+
+    Map<String, Object> action = getActionByName("testShiftDates");
+    Actions.applyAction(b, action, null, null);
+
+    assertEquals("1998-09-29", p.getBirthDateElement().getValueAsString());
+    assertEquals("1998-10-05T10:24:01-05:00", period.getStartElement().getValueAsString());
+    assertEquals("1998-10-06T10:24:01-05:00", period.getEndElement().getValueAsString());
   }
 
   @Test

@@ -2,7 +2,9 @@ package org.mitre.synthea.export.flexporter;
 
 import ca.uhn.fhir.parser.IParser;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,21 +21,8 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
-import org.hl7.fhir.r4.model.CarePlan;
-import org.hl7.fhir.r4.model.Claim;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.DiagnosticReport;
-import org.hl7.fhir.r4.model.DocumentReference;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.ExplanationOfBenefit;
-import org.hl7.fhir.r4.model.MedicationAdministration;
-import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Observation;
-import org.hl7.fhir.r4.model.Procedure;
-import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ResourceType;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.export.flexporter.FieldWrapper.DateFieldWrapper;
 import org.mitre.synthea.export.flexporter.FieldWrapper.ReferenceFieldWrapper;
@@ -98,7 +87,10 @@ public abstract class Actions {
           null);
 
     } else if (action.containsKey("min_date") || action.containsKey("max_date")) {
-      dateFilter(returnBundle, (String)action.get("min_date"), (String)action.get("max_date"));
+      dateFilter(bundle, (String)action.get("min_date"), (String)action.get("max_date"));
+
+    } else if (action.containsKey("shift_dates")) {
+      shiftDates(bundle, (String)action.get("shift_dates"));
 
     } else if (action.containsKey("execute_script")) {
       returnBundle = executeScript((List<Map<String, String>>) action.get("execute_script"), bundle,
@@ -376,29 +368,37 @@ public abstract class Actions {
     }
   }
 
+  public static void shiftDates(Bundle bundle, String amountString) {
+    if (amountString == null) {
+      return;
+    }
 
-  private static final Map<ResourceType, List<DateFieldWrapper>> DATE_FIELDS = buildDateFields();
+    // note: amount can either be <= 1 day with second precision, or > 1 day with day precision
+    // not both
+    // (for example you can't shift by a year and 3 hours)
+    TemporalAmount amount = null;
 
-  private static Map<ResourceType, List<DateFieldWrapper>> buildDateFields() {
-    Map<ResourceType, List<DateFieldWrapper>> dateFields = new HashMap<>();
+    if (amountString.contains("Y") || (amountString.indexOf('M') < amountString.indexOf('T'))) {
+      // ISO-8601 period formats {@code PnYnMnD}
+      // if we see Y, or M before T, it's a Period
+      amount = java.time.Period.parse(amountString);
+    } else {
+      // ISO-8601 duration format {@code PnDTnHnMn.nS}
+      amount = Duration.parse(amountString);
+    }
 
-    dateFields.put(ResourceType.Encounter, List.of(
-        new DateFieldWrapper(Encounter.class, "period")
-      ));
+    for (BundleEntryComponent entry : bundle.getEntry()) {
+      Resource resource = entry.getResource();
+      List<DateFieldWrapper> dateFieldsOnResource =
+          FieldWrapper.DATE_FIELDS.get(resource.getResourceType());
+      if (dateFieldsOnResource == null) {
+        continue;
+      }
 
-    dateFields.put(ResourceType.Condition, List.of(
-          new DateFieldWrapper(Condition.class, "onsetDateTime")
-        ));
-
-    dateFields.put(ResourceType.Procedure, List.of(
-        new DateFieldWrapper(Procedure.class, "performed[x]") // Period or dateTime
-      ));
-
-    dateFields.put(ResourceType.MedicationRequest, List.of(
-        new DateFieldWrapper(MedicationRequest.class, "authoredOn")
-      ));
-
-    return dateFields;
+      for (DateFieldWrapper dateField : dateFieldsOnResource) {
+        dateField.shift(resource, amount);
+      }
+    }
   }
 
   public static void dateFilter(Bundle bundle, String minDateStr, String maxDateStr) {
@@ -426,7 +426,8 @@ public abstract class Actions {
       BundleEntryComponent entry = itr.next();
 
       Resource resource = entry.getResource();
-      List<DateFieldWrapper> dateFieldsOnResource = DATE_FIELDS.get(resource.getResourceType());
+      List<DateFieldWrapper> dateFieldsOnResource =
+          FieldWrapper.DATE_FIELDS.get(resource.getResourceType());
 
       if (dateFieldsOnResource == null) {
         continue;
@@ -436,6 +437,7 @@ public abstract class Actions {
         if (!dateField.valueInRange(resource, minDate, maxDate)) {
           deletedResourceIDs.add(resource.getId());
           itr.remove();
+          break;
         }
       }
     }
@@ -476,72 +478,6 @@ public abstract class Actions {
     }
   }
 
-  private static final Map<ResourceType, List<ReferenceFieldWrapper>> REFERENCE_FIELDS =
-      buildReferenceFields();
-
-  private static Map<ResourceType, List<ReferenceFieldWrapper>> buildReferenceFields() {
-    Map<ResourceType, List<ReferenceFieldWrapper>> refFields = new HashMap<>();
-
-    refFields.put(ResourceType.Encounter, List.of(
-        new ReferenceFieldWrapper(Encounter.class, "subject")
-      ));
-
-    refFields.put(ResourceType.Condition, List.of(
-          new ReferenceFieldWrapper(Condition.class, "subject"),
-          new ReferenceFieldWrapper(Condition.class, "encounter")
-        ));
-
-    refFields.put(ResourceType.Procedure, List.of(
-        new ReferenceFieldWrapper(Procedure.class, "subject"),
-        new ReferenceFieldWrapper(Procedure.class, "encounter")
-      ));
-
-    refFields.put(ResourceType.MedicationRequest, List.of(
-        new ReferenceFieldWrapper(MedicationRequest.class, "subject"),
-        new ReferenceFieldWrapper(MedicationRequest.class, "encounter")
-      ));
-
-    refFields.put(ResourceType.MedicationAdministration, List.of(
-        new ReferenceFieldWrapper(MedicationAdministration.class, "subject"),
-        new ReferenceFieldWrapper(MedicationAdministration.class, "context")
-      ));
-
-    refFields.put(ResourceType.Observation, List.of(
-        new ReferenceFieldWrapper(Observation.class, "subject"),
-        new ReferenceFieldWrapper(Observation.class, "encounter")
-      ));
-
-    refFields.put(ResourceType.DiagnosticReport, List.of(
-        new ReferenceFieldWrapper(DiagnosticReport.class, "subject"),
-        new ReferenceFieldWrapper(DiagnosticReport.class, "encounter"),
-        new ReferenceFieldWrapper(DiagnosticReport.class, "result")
-      ));
-
-    refFields.put(ResourceType.CarePlan, List.of(
-        new ReferenceFieldWrapper(CarePlan.class, "subject"),
-        new ReferenceFieldWrapper(CarePlan.class, "encounter")
-      ));
-
-    refFields.put(ResourceType.DocumentReference, List.of(
-        new ReferenceFieldWrapper(DocumentReference.class, "subject")
-      ));
-
-    refFields.put(ResourceType.Claim, List.of(
-        new ReferenceFieldWrapper(Claim.class, "patient")
-      ));
-
-    refFields.put(ResourceType.ExplanationOfBenefit, List.of(
-        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "patient"),
-        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "claim")
-      ));
-
-    refFields.put(ResourceType.Provenance, List.of(
-        new ReferenceFieldWrapper(Provenance.class, "target")
-      ));
-
-    return refFields;
-  }
-
   // TODO: add modes -- cascade delete resources, clear out the one field, etc
   private static void pruneDeletedResources(Bundle bundle, Set<String> deletedResourceIDs) {
     Iterator<BundleEntryComponent> itr = bundle.getEntry().iterator();
@@ -553,7 +489,8 @@ public abstract class Actions {
 
       Resource resource = entry.getResource();
 
-      List<ReferenceFieldWrapper> references = REFERENCE_FIELDS.get(resource.getResourceType());
+      List<ReferenceFieldWrapper> references =
+          FieldWrapper.REFERENCE_FIELDS.get(resource.getResourceType());
 
       if (references == null) {
         continue;
