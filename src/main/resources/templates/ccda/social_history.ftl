@@ -15,7 +15,7 @@
       <observation classCode="OBS" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.38" extension="2015-08-01"/>
         <!-- Social history observation template -->
-        <id root="${UUID?api.toString()}"/>
+        <id root="${entry.uuid}"/>
         <@codes.code_section codes=entry.codes section="social_history" counter=entry?counter />
         <statusCode code="completed"/>
         <effectiveTime value="${entry.start?number_to_date?string["yyyyMMddHHmmss"]}"/>
@@ -31,7 +31,7 @@
         <templateId root="2.16.840.1.113883.10.20.22.4.78"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.78" extension="2014-06-09"/>
         <!-- Smoking Status Meaningful Use template -->
-        <id root="${UUID?api.toString()}"/>
+        <id root="${ehr_smoking_history.uuid}"/>
         <code code="72166-2" codeSystem="2.16.840.1.113883.6.1" displayName="Tobacco smoking status NHIS" />
         <statusCode code="completed"/>
         <effectiveTime value="${ehr_smoking_history.start?number_to_date?string["yyyyMMddHHmmss"]}"/>

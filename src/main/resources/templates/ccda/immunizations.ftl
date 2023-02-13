@@ -13,7 +13,7 @@
       <substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
         <templateId root="2.16.840.1.113883.10.20.22.4.52"/>
         <!-- Medication activity template -->
-        <id root="${UUID?api.toString()}"/>
+        <id root="${entry.uuid}"/>
         <code code='IMMUNIZ' codeSystem='2.16.840.1.113883.5.4' codeSystemName='ActCode'/>
         <text>
           <reference value="#immunizations-desc-${entry?counter}"/>

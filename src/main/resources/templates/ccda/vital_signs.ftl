@@ -27,7 +27,7 @@
             <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
-            <id root="${UUID?api.toString()}"/>
+            <id root="${entry.uuid}"/>
             <@codes.code_section codes=entry.codes section="observations" counter=entry?counter />
             <text>
               <reference value="#observations-desc-${entry?counter}"/>
@@ -52,7 +52,7 @@
             <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
-            <id root="${UUID?api.toString()}"/>
+            <id root="${obs.uuid}"/>
             <@codes.code_section codes=obs.codes section="observations" counter=entry?counter />
             <text>
               <reference value="#observations-desc-${entry?counter}"/>
@@ -81,7 +81,7 @@
             <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
             <!-- Result observation template -->
-            <id root="${UUID?api.toString()}"/>
+            <id root="${entry.uuid}"/>
             <@codes.code_section codes=entry.codes section="observations" counter=entry?counter />
             <text>
               <reference value="#observations-desc-${entry?counter}"/>
