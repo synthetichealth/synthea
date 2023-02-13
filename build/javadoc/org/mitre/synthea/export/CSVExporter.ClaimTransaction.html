@@ -157,13 +157,13 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.concepts.HealthRecord.Encounter,java.lang.String,org.mitre.synthea.world.concepts.Claim,java.lang.String,long,org.mitre.synthea.world.concepts.Claim.ClaimEntry,org.mitre.synthea.helpers.RandomNumberGenerator)">ClaimTransaction</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.concepts.HealthRecord.Encounter,java.lang.String,org.mitre.synthea.world.concepts.Claim,java.lang.String,long,org.mitre.synthea.world.concepts.Claim.ClaimEntry,org.mitre.synthea.world.agents.Person)">ClaimTransaction</a></span>&#8203;(<a href="../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter,
                 java.lang.String&nbsp;encounterId,
                 <a href="../world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a>&nbsp;claim,
                 java.lang.String&nbsp;claimId,
                 long&nbsp;chargeId,
                 <a href="../world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&nbsp;claimEntry,
-                <a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</code></th>
+                <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
 <td class="colLast">
 <div class="block">Create a new ClaimTransaction.</div>
 </td>
@@ -222,7 +222,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.mitre.synthea.world.concepts.HealthRecord.Encounter,java.lang.String,org.mitre.synthea.world.concepts.Claim,java.lang.String,long,org.mitre.synthea.world.concepts.Claim.ClaimEntry,org.mitre.synthea.helpers.RandomNumberGenerator)">
+<a id="&lt;init&gt;(org.mitre.synthea.world.concepts.HealthRecord.Encounter,java.lang.String,org.mitre.synthea.world.concepts.Claim,java.lang.String,long,org.mitre.synthea.world.concepts.Claim.ClaimEntry,org.mitre.synthea.world.agents.Person)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -234,7 +234,7 @@ extends java.lang.Object</pre>
                         java.lang.String&nbsp;claimId,
                         long&nbsp;chargeId,
                         <a href="../world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&nbsp;claimEntry,
-                        <a href="../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</pre>
+                        <a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
 <div class="block">Create a new ClaimTransaction.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -244,7 +244,7 @@ extends java.lang.Object</pre>
 <dd><code>claimId</code> - The Claim ID.</dd>
 <dd><code>chargeId</code> - The Charge ID.</dd>
 <dd><code>claimEntry</code> - The entry for the transactions.</dd>
-<dd><code>rand</code> - A random number generator.</dd>
+<dd><code>person</code> - The Person.</dd>
 </dl>
 </li>
 </ul>
