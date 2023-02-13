@@ -1,0 +1,33 @@
+{
+    "name": "Thermometer",
+    "remarks": [
+      "This module simulates a digital thermometer."
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "ThermometerEncounter"
+      },
+      "ThermometerEncounter": {
+        "type": "Encounter",
+        "wellness": true,
+        "direct_transition": "StartThermometer"
+      },
+      "StartThermometer": {
+        "type": "Observation",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "8310-5",
+            "display": "Body Temperature"
+          }
+        ],
+        "direct_transition": "End_ThermometerEncounter"
+      },
+      "End_ThermometerEncounter": {
+        "type": "Terminal",
+        "name": "Terminal"
+      }
+    },
+    "gmf_version": 1
+  }
