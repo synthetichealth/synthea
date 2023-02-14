@@ -346,6 +346,7 @@ public class BeneficiaryExporter extends RIFExporter {
                 buyInIndicator);
       }
       exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY.class, fieldValues, year);
+      exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY.class, fieldValues, 9999);
       firstYearOutput = false;
     }
     if (firstYearOutput) {
@@ -477,6 +478,7 @@ public class BeneficiaryExporter extends RIFExporter {
     }
   }
 
+  // TODO missing 1, 2, *3* (in the under 65 sub-population), A, B
   private static String getEntitlementBuyIn(String dualEligibleStatusCode,
           String medicareStatusCode) {
     if (medicareStatusCode.equals("00")) {
@@ -587,7 +589,13 @@ public class BeneficiaryExporter extends RIFExporter {
 
   String getDualEligibilityCode(Person person, int year) {
     if (hasESRD(person, year) || isDisabled(person)) {
-      return "05"; // (0.001%) Qualified Disabled Working Individual (QDWI)
+      if (person.rand() <= 0.001) {
+        // Qualified Disabled Working Individual (QDWI)
+        return "05";
+      } else {
+        // Qualified Medicare Beneficiary and full Medicaid coverage, including PDE
+        return "02";
+      }
     }
     // TBD add support for the following additional code (%-age in brackets is observed
     // frequency in CMS data):
