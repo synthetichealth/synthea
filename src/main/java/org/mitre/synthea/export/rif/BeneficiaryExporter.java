@@ -493,18 +493,20 @@ public class BeneficiaryExporter extends RIFExporter {
     }
   }
 
-  // TODO missing 1, 2, *3* (in the under 65 sub-population), A, B
+  // TODO missing 1, 2, A, B
   private static String getEntitlementBuyIn(String dualEligibleStatusCode,
           String medicareStatusCode) {
     if (medicareStatusCode.equals("00")) {
       return "0"; // not enrolled
     } else {
-      if (dualEligibleStatusCode.equals("NA")) {
-        // not dual eligible
-        return "3"; // Part A and Part B
-      } else {
-        // dual eligible
+      if (dualEligibleStatusCode.equals("02")
+          || dualEligibleStatusCode.equals("04")
+          || dualEligibleStatusCode.equals("08")) {
+        // "full duals" dual eligible
         return "C"; // Part A and Part B state buy-in
+      } else {
+        // not dual eligible or "partial duals"
+        return "3"; // Part A and Part B
       }
     }
   }
@@ -615,15 +617,20 @@ public class BeneficiaryExporter extends RIFExporter {
     // TBD add support for the following additional code (%-age in brackets is observed
     // frequency in CMS data):
     // 00 (15.6%) - Not enrolled in Medicare for the month
-    String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
-    if (partDCostSharingCode.equals("03")) {
+    double income = Double.parseDouble(person.attributes.get(Person.INCOME).toString());
+    double poverty =
+        Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 12880);
+    double medicaidThreshold = poverty * 1.33;
+    double medicaidRatio = income / medicaidThreshold;
+
+    if (income >= medicaidThreshold) {
+      return "NA"; // Non-medicaid
+    } else if (medicaidRatio >= 0.6) {
       return incomeBandThreeDualCodes.next(person);
-    } else if (partDCostSharingCode.equals("02")) {
+    } else if (medicaidRatio >= 0.3) {
       return incomeBandTwoDualCodes.next(person);
-    } else if (partDCostSharingCode.equals("01")) {
-      return incomeBandOneDualCodes.next(person);
     } else {
-      return "NA"; // (68.3%) Non-Medicaid
+      return incomeBandOneDualCodes.next(person);
     }
   }
 
