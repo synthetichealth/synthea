@@ -241,8 +241,8 @@ public class BeneficiaryExporter extends RIFExporter {
       } else if (disabled) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "1");
       } else {
-        // TODO: are they a child or spouse of the beneficiary? "X" is not a legal value.
-        fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "X");
+        // They are a child or spouse of the beneficiary.
+        fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR, "0");
       }
       if (initialBeneEntitlementReason == null) {
         initialBeneEntitlementReason = fieldValues.get(
@@ -319,8 +319,8 @@ public class BeneficiaryExporter extends RIFExporter {
       }
 
       String dualEligibleStatusCode = getDualEligibilityCode(person, year);
-      String medicareStatusCode = getMedicareStatusCode(medicareAgeThisYear, esrdThisYear,
-          disabled);
+      String medicareStatusCode = getMedicareStatusCode(ageYearBegin, medicareAgeThisYear,
+          esrdThisYear, disabled);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
       String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
@@ -328,7 +328,8 @@ public class BeneficiaryExporter extends RIFExporter {
                 dualEligibleStatusCode);
         if (ageYearBegin == 64) {
           boolean medicareThisMonth = (month >= monthOf65thBirthday);
-          medicareStatusCode = getMedicareStatusCode(medicareThisMonth, esrdThisYear, disabled);
+          medicareStatusCode = getMedicareStatusCode(ageYearEnd, medicareThisMonth,
+              esrdThisYear, disabled);
           if (!medicareThisMonth) {
             // Not enrolled
             fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],"00");
@@ -416,7 +417,8 @@ public class BeneficiaryExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
     int year = Utilities.getYear(stopTime);
-    boolean medicareAge = ageAtEndOfYear(birthdate, year) >= 65;
+    int age = ageAtEndOfYear(birthdate, year);
+    boolean medicareAge = (age >= 65);
     boolean esrd = hasESRD(person, year);
     // Technically, disabled should be checked year by year, but we don't currently
     // have that level of resolution.
@@ -432,8 +434,8 @@ public class BeneficiaryExporter extends RIFExporter {
     } else if (disabled) {
       fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "1");
     } else {
-      // TODO: are they a child or spouse of the beneficiary? "X" is not a legal value.
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "X");
+      // They are a child or spouse of the beneficiary.
+      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "0");
     }
     String originalReason = (String) person.attributes.get(
         BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG.toString());
@@ -453,12 +455,21 @@ public class BeneficiaryExporter extends RIFExporter {
             initialBeneEntitlementReason);
       }
     }
-    String medicareStatusCode = getMedicareStatusCode(medicareAge, esrd, disabled);
+    String medicareStatusCode = getMedicareStatusCode(age, medicareAge, esrd, disabled);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
     exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY_HISTORY.class, fieldValues);
   }
 
-  private static String getMedicareStatusCode(boolean medicareAge, boolean esrd, boolean disabled) {
+  /**
+   * Get the medicare status code.
+   * @param ageAtEndOfYear Age at the end of the year.
+   * @param medicareAge Whether they qualify for medicare based on age this specific month.
+   * @param esrd Whether or not they have ESRD.
+   * @param disabled Whether or not they are disabled.
+   * @return One of 00,10,11,20,21,31
+   */
+  private static String getMedicareStatusCode(
+      int ageAtEndOfYear, boolean medicareAge, boolean esrd, boolean disabled) {
     if (medicareAge) {
       if (esrd) {
         return "11";
@@ -474,7 +485,11 @@ public class BeneficiaryExporter extends RIFExporter {
     } else if (esrd) {
       return "31";
     } else {
-      return "00"; // Not enrolled
+      if ((ageAtEndOfYear <= 18) || (ageAtEndOfYear >= 50)) {
+        return "10"; // Under 65 dependent of a primary beneficiary
+      } else {
+        return "00"; // Not enrolled
+      }
     }
   }
 
