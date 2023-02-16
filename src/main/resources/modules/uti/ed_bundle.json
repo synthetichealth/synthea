@@ -1374,7 +1374,7 @@
     },
     "Labs Submodule": {
       "type": "CallSubmodule",
-      "submodule": "uti_labs",
+      "submodule": "UTI_Labs",
       "direct_transition": "Terminal",
       "name": "Labs Submodule"
     },
