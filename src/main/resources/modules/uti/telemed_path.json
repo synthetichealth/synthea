@@ -81,10 +81,14 @@
       "complex_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "uti",
-            "operator": "==",
-            "value": "Pyelonephritis"
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 45816000,
+                "display": "Pyelonephritis"
+              }
+            ]
           },
           "distributions": [],
           "transition": "Evaluation"
@@ -240,7 +244,7 @@
     },
     "UTI_HPI": {
       "type": "CallSubmodule",
-      "submodule": "UTI_HPI",
+      "submodule": "uti/hpi",
       "complex_transition": [
         {
           "condition": {
@@ -267,13 +271,13 @@
     },
     "GU_Pregnancy_Check": {
       "type": "CallSubmodule",
-      "submodule": "GU_Pregnancy_Check",
+      "submodule": "uti/gu_pregnancy_check",
       "direct_transition": "Risk_Check",
       "name": "GU_Pregnancy_Check"
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Abx",
+      "submodule": "uti/abx_tx",
       "distributed_transition": [
         {
           "transition": "End_UTI_Diagnosis",

@@ -107,7 +107,7 @@
     },
     "UTI Abx Tx Sub": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Abx_Tx",
+      "submodule": "uti/abx_tx",
       "direct_transition": "Terminal",
       "name": "UTI Abx Tx Sub"
     },

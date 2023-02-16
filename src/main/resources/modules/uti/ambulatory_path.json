@@ -57,7 +57,7 @@
     },
     "UTI_Ambulatory_Eval": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Ambulatory_Eval",
+      "submodule": "uti/ambulatory_eval",
       "name": "UTI_Ambulatory_Eval",
       "direct_transition": "End Ambulatory Encounter"
     },
@@ -75,10 +75,14 @@
                 "value": true
               },
               {
-                "condition_type": "Attribute",
-                "attribute": "uti",
-                "operator": "==",
-                "value": "Pyelonephritis"
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 45816000,
+                    "display": "Pyelonephritis"
+                  }
+                ]
               }
             ]
           },
@@ -169,7 +173,7 @@
     },
     "UTI_Lab_FollowUp": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Lab_FollowUp",
+      "submodule": "uti/lab_follow_up",
       "direct_transition": "End Telephone Encounter",
       "name": "UTI_Lab_FollowUp"
     },
@@ -195,7 +199,7 @@
     },
     "UTI_ED_Eval": {
       "type": "CallSubmodule",
-      "submodule": "UTI_ED_Eval",
+      "submodule": "uti/ed_eval",
       "direct_transition": "End ED Follow-up",
       "name": "UTI_ED_Eval"
     },
@@ -229,7 +233,7 @@
     },
     "UTI_HPI": {
       "type": "CallSubmodule",
-      "submodule": "UTI_HPI",
+      "submodule": "uti/hpi",
       "direct_transition": "Exam",
       "name": "UTI_HPI"
     }

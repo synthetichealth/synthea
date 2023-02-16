@@ -1,5 +1,5 @@
 {
-  "name": "ED_UTI_Bundle",
+  "name": "UTI_ED_Bundle",
   "remarks": [
     "A blank module"
   ],
@@ -1374,7 +1374,7 @@
     },
     "Labs Submodule": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Labs",
+      "submodule": "uti/labs",
       "direct_transition": "Terminal",
       "name": "Labs Submodule"
     },

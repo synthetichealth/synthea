@@ -15,7 +15,7 @@
     },
     "UTI_ED_Bundle": {
       "type": "CallSubmodule",
-      "submodule": "UTI_ED_Bundle",
+      "submodule": "uti/ed_bundle",
       "name": "UTI_ED_Bundle",
       "complex_transition": [
         {
@@ -54,16 +54,10 @@
         },
         {
           "condition": {
-            "condition_type": "Observation",
-            "codes": [
-              {
-                "system": "LOINC",
-                "code": "75636-1",
-                "display": "Emergency severity index 3"
-              }
-            ],
+            "condition_type": "Attribute",
+            "attribute": "esi",
             "operator": "==",
-            "value": 0
+            "value": 3
           },
           "distributions": [
             {
@@ -75,6 +69,16 @@
               "distribution": 0.85
             }
           ]
+        },
+        {
+          "distributions": [],
+          "transition": "Hospital admission",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "<=",
+            "value": 2
+          }
         },
         {
           "distributions": [],
@@ -105,7 +109,7 @@
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Abx",
+      "submodule": "uti/abx_tx",
       "direct_transition": "Patient discharge",
       "name": "UTI_Abx"
     },

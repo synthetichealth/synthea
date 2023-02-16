@@ -38,7 +38,7 @@
     },
     "UTI_ED_Eval": {
       "type": "CallSubmodule",
-      "submodule": "UTI_ED_Eval",
+      "submodule": "uti/ed_eval",
       "name": "UTI_ED_Eval",
       "direct_transition": "End_ED_Follow_up"
     },
@@ -49,7 +49,7 @@
     },
     "UTI_HPI": {
       "type": "CallSubmodule",
-      "submodule": "UTI_HPI",
+      "submodule": "uti/hpi",
       "name": "UTI_HPI",
       "direct_transition": "UTI_ED_Eval"
     }

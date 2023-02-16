@@ -127,17 +127,19 @@
     },
     "UTI Telemed Sub": {
       "type": "CallSubmodule",
-      "submodule": "UTI_Telemed",
+      "submodule": "uti/telemed_path",
       "direct_transition": "Time Delay",
       "name": "UTI Telemed Sub"
     },
     "UTI Ambulatory Sub": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "uti/ambulatory_path",
       "direct_transition": "Time Delay",
       "name": "UTI Ambulatory Sub"
     },
     "UTI ED Sub": {
-      "type": "Simple",
+      "type": "CallSubmodule",
+      "submodule": "uti/ed_path",
       "direct_transition": "Time Delay",
       "name": "UTI ED Sub"
     },
