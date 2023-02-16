@@ -400,8 +400,9 @@ public class BeneficiaryExporter extends RIFExporter {
                     (String)person.attributes.get(Person.RACE)));
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_SRNM_NAME,
             (String)person.attributes.get(Person.LAST_NAME));
+    String givenName = (String)person.attributes.get(Person.FIRST_NAME);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_GVN_NAME,
-            (String)person.attributes.get(Person.FIRST_NAME));
+            StringUtils.truncate(givenName, 15));
     if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
       String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
       middleName = middleName.substring(0, 1);
