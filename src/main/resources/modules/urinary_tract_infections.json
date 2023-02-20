@@ -60,7 +60,7 @@
     },
     "Cystitis": {
       "type": "ConditionOnset",
-      "target_encounter": "text",
+      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -293,7 +293,18 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Care Pathways",
+      "lookup_table_transition": [
+        {
+          "transition": "Cystitis",
+          "default_probability": 0.9,
+          "lookup_table_name": "uti_recurrence.csv"
+        },
+        {
+          "transition": "Pyelonephritis",
+          "default_probability": 0.1,
+          "lookup_table_name": "uti_recurrence.csv"
+        }
+      ],
       "name": "Recurrent UTI"
     }
   },
