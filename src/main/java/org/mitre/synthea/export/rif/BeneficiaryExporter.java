@@ -318,7 +318,8 @@ public class BeneficiaryExporter extends RIFExporter {
                 bb2DateFromTimestamp(Long.min(partDCoverageEnd, endOfYearTimeStamp)));
       }
 
-      String dualEligibleStatusCode = getDualEligibilityCode(person, year);
+      String dualEligibleStatusCode = getDualEligibilityCode(person, medicareAgeThisYear,
+          esrdThisYear, disabled);
       String medicareStatusCode = getMedicareStatusCode(ageYearBegin, medicareAgeThisYear,
           esrdThisYear, disabled);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
@@ -556,82 +557,56 @@ public class BeneficiaryExporter extends RIFExporter {
     return year - Utilities.getYear(birthdate);
   }
 
-  // Income level < 0.3
-  private static final RandomCollection<String> incomeBandOneDualCodes = new RandomCollection<>();
-  // 0.3 <= Income level < 0.6
-  private static final RandomCollection<String> incomeBandTwoDualCodes = new RandomCollection<>();
-  // 0.6 <= Income level < 1.0
-  private static final RandomCollection<String> incomeBandThreeDualCodes = new RandomCollection<>();
+  // Dual eligible codes weighted by observed frequency. Weights are % but do not add up to 100%
+  // since codes 00 (15.6%) and NA (68.3%) are dealt with separately based on patient properties
+  private static final RandomCollection<String> dualCodes = new RandomCollection<>();
 
   static {
-    // Specified Low-Income Medicare Beneficiary (SLMB)-only
-    incomeBandOneDualCodes.add(1.3, "03");
-    // SLMB and full Medicaid coverage, including prescription drugs
-    incomeBandOneDualCodes.add(0.5, "04");
-    // Other dual eligible, but without Medicaid coverage
-    incomeBandOneDualCodes.add(0.007, "09");
-    // Unknown
-    incomeBandOneDualCodes.add(0.05, "99");
-    // Not in code book but present in database
-    incomeBandOneDualCodes.add(0.04, "AA");
-    // Not in code book but present in database
-    incomeBandOneDualCodes.add(0.1, "");
-
-    // QMB and full Medicaid coverage, including prescription drugs
-    incomeBandTwoDualCodes.add(8.2, "02");
-    // Other dual eligible, but without Medicaid coverage
-    incomeBandTwoDualCodes.add(0.007, "09");
-    // Unknown
-    incomeBandTwoDualCodes.add(0.05, "99");
-    // Not in code book but present in database
-    incomeBandTwoDualCodes.add(0.04, "AA");
-    // Not in code book but present in database
-    incomeBandTwoDualCodes.add(0.1, "");
-
     // Qualified Medicare Beneficiary (QMB)-only
-    incomeBandThreeDualCodes.add(2.2, "01");
+    dualCodes.add(2.2, "01");
+    // QMB and full Medicaid coverage, including prescription drugs
+    dualCodes.add(8.2, "02");
+    // Specified Low-Income Medicare Beneficiary (SLMB)-only
+    dualCodes.add(1.3, "03");
+    // SLMB and full Medicaid coverage, including prescription drugs
+    dualCodes.add(0.5, "04");
+    // Qualified Disabled Working Individual (QDWI)
+    dualCodes.add(0.001, "05");
     // Qualifying individuals (QI)
-    incomeBandThreeDualCodes.add(0.8, "06");
+    dualCodes.add(0.8, "06");
     // Other dual eligible (not QMB, SLMB, QWDI, or QI) with full Medicaid coverage, including
     // prescription Drugs
-    incomeBandThreeDualCodes.add(2.9, "08");
+    dualCodes.add(2.9, "08");
     // Other dual eligible, but without Medicaid coverage
-    incomeBandThreeDualCodes.add(0.007, "09");
+    dualCodes.add(0.007, "09");
     // Unknown
-    incomeBandThreeDualCodes.add(0.05, "99");
+    dualCodes.add(0.05, "99");
     // Not in code book but present in database
-    incomeBandThreeDualCodes.add(0.04, "AA");
+    dualCodes.add(0.04, "AA");
     // Not in code book but present in database
-    incomeBandThreeDualCodes.add(0.1, "");
+    dualCodes.add(0.1, "");
   }
 
-  String getDualEligibilityCode(Person person, int year) {
-    if (hasESRD(person, year) || isDisabled(person)) {
-      if (person.rand() <= 0.001) {
-        // Qualified Disabled Working Individual (QDWI)
-        return "05";
-      } else {
-        // Qualified Medicare Beneficiary and full Medicaid coverage, including PDE
-        return "02";
-      }
-    }
-    // TBD add support for the following additional code (%-age in brackets is observed
-    // frequency in CMS data):
-    // 00 (15.6%) - Not enrolled in Medicare for the month
-    double income = Double.parseDouble(person.attributes.get(Person.INCOME).toString());
-    double poverty =
+  static final double POVERTY_LEVEL =
         Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 12880);
-    double medicaidThreshold = poverty * 1.33;
-    double medicaidRatio = income / medicaidThreshold;
+  // 1.8 multiplier chosen to fit generated % of medicaid eligible patients to real dual
+  // eligibility code distribution
+  static final double MEDICAID_THRESHOLD = POVERTY_LEVEL * 1.8;
 
-    if (income >= medicaidThreshold) {
-      return "NA"; // Non-medicaid
-    } else if (medicaidRatio >= 0.6) {
-      return incomeBandThreeDualCodes.next(person);
-    } else if (medicaidRatio >= 0.3) {
-      return incomeBandTwoDualCodes.next(person);
+  String getDualEligibilityCode(Person person, boolean medicareAge,
+          boolean esrd, boolean disabled) {
+    double income = Double.parseDouble(person.attributes.get(Person.INCOME).toString());
+    boolean medicareEligible = medicareAge | esrd | disabled;
+    boolean medicaidEligible = income < MEDICAID_THRESHOLD;
+
+    if (medicareEligible && medicaidEligible) {
+      return dualCodes.next(person);
+    } else if (medicaidEligible) {
+      return "00"; // Not enrolled in Medicare (medicaid only)
+    } else if (medicareEligible) {
+      return "NA"; // Non-medicaid (medicare only)
     } else {
-      return incomeBandOneDualCodes.next(person);
+      return "";
     }
   }
 
