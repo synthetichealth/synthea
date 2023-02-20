@@ -23,6 +23,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public abstract class RIFExporter {
 
   protected static final String BB2_PARTD_CONTRACTS = "BB2_PARTD_CONTRACTS";
+  protected static final String BB2_PARTB_ENROLLEE = "BB2_PARTB_ENROLLEE";
   protected static final AtomicLong nextFiDocCntlNum = new AtomicLong(
           Config.getAsLong("exporter.bfd.fi_doc_cntl_num_start", -1));
   protected static final AtomicLong nextClaimId = new AtomicLong(

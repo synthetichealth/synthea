@@ -32,6 +32,7 @@ public class BeneficiaryExporter extends RIFExporter {
           HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
+  private static final double PART_B_ENROLLEE_PERCENT = 90.0;
   private static final String ESRD_CODE = "N18.6";
   private static final String ESRD_SNOMED = "46177005";
   private static final String CKD4_SNOMED = "431857002";
@@ -87,6 +88,11 @@ public class BeneficiaryExporter extends RIFExporter {
       }
     }
 
+    // About 7% of non-dual-eligible beneficiaries decline Medicare Part B
+    // Carrier claims won't be generated unless the beneficiary is enrolled in Part B
+    boolean partBEnrollee = person.rand(0.0, 100.0) < PART_B_ENROLLEE_PERCENT;
+    person.attributes.put(RIFExporter.BB2_PARTB_ENROLLEE, partBEnrollee);
+
     PartCContractHistory partCContracts = new PartCContractHistory(person,
             deathDate == -1 ? stopTime : deathDate, yearsOfHistory);
     PartDContractHistory partDContracts = new PartDContractHistory(person,
@@ -122,7 +128,6 @@ public class BeneficiaryExporter extends RIFExporter {
       }
     }
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
-
 
     boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
@@ -323,7 +328,6 @@ public class BeneficiaryExporter extends RIFExporter {
       String medicareStatusCode = getMedicareStatusCode(ageYearBegin, medicareAgeThisYear,
           esrdThisYear, disabled);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_MDCR_STATUS_CD, medicareStatusCode);
-      String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
       for (int month = 0; month < monthCount; month++) {
         fieldValues.put(BB2RIFStructure.beneficiaryDualEligibleStatusFields[month],
                 dualEligibleStatusCode);
@@ -343,7 +347,8 @@ public class BeneficiaryExporter extends RIFExporter {
         }
         fieldValues.put(BB2RIFStructure.beneficiaryMedicareStatusFields[month],
                 medicareStatusCode);
-        buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode);
+        String buyInIndicator = getEntitlementBuyIn(dualEligibleStatusCode, medicareStatusCode,
+                partBEnrollee);
         fieldValues.put(BB2RIFStructure.beneficiaryMedicareEntitlementFields[month],
                 buyInIndicator);
       }
@@ -497,18 +502,20 @@ public class BeneficiaryExporter extends RIFExporter {
 
   // TODO missing 1, 2, A, B
   private static String getEntitlementBuyIn(String dualEligibleStatusCode,
-          String medicareStatusCode) {
+          String medicareStatusCode, boolean partBEnrollee) {
     if (medicareStatusCode.equals("00")) {
       return "0"; // not enrolled
     } else {
-      if (dualEligibleStatusCode.equals("02")
-          || dualEligibleStatusCode.equals("04")
-          || dualEligibleStatusCode.equals("08")) {
-        // "full duals" dual eligible
-        return "C"; // Part A and Part B state buy-in
+      if (dualEligibleStatusCode.equals("NA") || dualEligibleStatusCode.equals("09")) {
+        // NA = not dual eligible, 09 = dual eligible but not medicaid
+        if (partBEnrollee) {
+          return "3"; // Part A and Part B
+        } else {
+          return "1"; // Part A only
+        }
       } else {
-        // not dual eligible or "partial duals"
-        return "3"; // Part A and Part B
+        // dual eligible
+        return "C"; // Part A and B state buy-in
       }
     }
   }
@@ -591,22 +598,20 @@ public class BeneficiaryExporter extends RIFExporter {
         Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 12880);
   // 1.8 multiplier chosen to fit generated % of medicaid eligible patients to real dual
   // eligibility code distribution
-  static final double MEDICAID_THRESHOLD = POVERTY_LEVEL * 1.8;
+  static final double MEDICAID_THRESHOLD = POVERTY_LEVEL * 2.0;
 
   String getDualEligibilityCode(Person person, boolean medicareAge,
           boolean esrd, boolean disabled) {
     double income = Double.parseDouble(person.attributes.get(Person.INCOME).toString());
-    boolean medicareEligible = medicareAge | esrd | disabled;
+    boolean medicareEligible = medicareAge || esrd || disabled;
     boolean medicaidEligible = income < MEDICAID_THRESHOLD;
 
     if (medicareEligible && medicaidEligible) {
       return dualCodes.next(person);
     } else if (medicaidEligible) {
       return "00"; // Not enrolled in Medicare (medicaid only)
-    } else if (medicareEligible) {
-      return "NA"; // Non-medicaid (medicare only)
     } else {
-      return "";
+      return "NA"; // Non-medicaid (medicare only)
     }
   }
 
