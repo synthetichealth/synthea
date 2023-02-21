@@ -10,7 +10,20 @@
       "type": "SetAttribute",
       "attribute": "ckd",
       "value": 0,
-      "direct_transition": "Guard_for_Htn_or_DM"
+      "distributed_transition": [
+        {
+          "transition": "Guard_for_Htn_or_DM",
+          "distribution": 0.998
+        },
+        {
+          "transition": "Nephropathy_Progression",
+          "distribution": 0.001
+        },
+        {
+          "transition": "Renal Dysplasia",
+          "distribution": 0.001
+        }
+      ]
     },
     "Guard_for_Htn_or_DM": {
       "type": "Guard",
@@ -435,6 +448,17 @@
         "low": 45,
         "high": 100
       }
+    },
+    "Renal Dysplasia": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 204949001,
+          "display": "Renal dysplasia (disorder)"
+        }
+      ],
+      "direct_transition": "Expected_Lifespan_for_ESRD"
     }
   },
   "gmf_version": 1

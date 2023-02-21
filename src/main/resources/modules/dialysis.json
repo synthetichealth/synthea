@@ -14,7 +14,20 @@
         "quantity": 3,
         "unit": "days"
       },
-      "direct_transition": "Dialysis_Encounter"
+      "conditional_transition": [
+        {
+          "transition": "CKD guard",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "<",
+            "value": 4
+          }
+        },
+        {
+          "transition": "Dialysis_Encounter"
+        }
+      ]
     },
     "Dialysis_Encounter": {
       "type": "Encounter",
@@ -55,7 +68,8 @@
         {
           "transition": "Dialysis weight record"
         }
-      ]
+      ],
+      "reason": "dialysis_reason"
     },
     "end dialysis": {
       "type": "EncounterEnd",
@@ -735,7 +749,8 @@
         "Recommended starting dose for adult patients is 50 to 100 Units/kg 3 times weekly. Reduce or interrupt the dose if hemoglobin level approaches or exceeds 11 g/dl - Ref: Section -For Adult Patients with CKD on Dialysis (https://www.rxlist.com/epogen-drug.htm#description)"
       ],
       "assign_to_attribute": "anemia_medication",
-      "reason": "anemia"
+      "reason": "anemia",
+      "administration": true
     },
     "Epogen_Administered": {
       "type": "MedicationEnd",
