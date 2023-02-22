@@ -134,13 +134,15 @@ public class BeneficiaryExporter extends RIFExporter {
     for (int year = endYear - yearsOfHistory; year <= endYear; year++) {
       long startOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year);
       long endOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year + 1) - 1;
+      if (endOfYearTimeStamp < CLAIM_CUTOFF) {
+        continue;
+      }
       if (!hasPartABCoverage(person, endOfYearTimeStamp)) {
         continue;
       }
       ageThisYear = ageAtEndOfYear(birthdate, year);
-      // if they are not children AND also too young to have been married
-      // to a primary beneficiary
-      if ((ageThisYear > 18) && (ageThisYear < 50)
+      // if too young to have been married to a primary beneficiary
+      if ((ageThisYear < 50)
           && !(dateOfESRD < endOfYearTimeStamp) // and they don't have ESRD
           && !(dateOfDisability < endOfYearTimeStamp)) { // and they aren't disabled
         continue;
