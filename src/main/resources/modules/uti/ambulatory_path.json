@@ -218,7 +218,7 @@
     "UTI Diagnosis": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "Select Condition/Enter Attribute",
+      "reason": "uti",
       "telemedicine_possibility": "none",
       "codes": [
         {

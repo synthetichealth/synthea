@@ -25,7 +25,7 @@
     "UTI_Diagnosis_Encounter_Audio_Only": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "uti",
       "telemedicine_possibility": "always",
       "codes": [
         {

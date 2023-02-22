@@ -266,6 +266,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "direct_transition": "ED Check",
       "name": "Nitro 5 day",
       "assign_to_attribute": "UTI_Tx",
@@ -292,6 +293,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Nitro 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -318,6 +320,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Fosfo",
       "prescription": {
         "dosage": {
@@ -344,6 +347,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Sulfa 3 day",
       "prescription": {
         "dosage": {
@@ -370,6 +374,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Sulfa 7 day",
       "prescription": {
         "dosage": {
@@ -396,6 +401,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Sulfa 10 day",
       "prescription": {
         "dosage": {
@@ -422,6 +428,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "AmxClav 500, 5 day",
       "assign_to_attribute": "UTI_Tx",
       "direct_transition": "ED Check"
@@ -436,6 +443,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "AmxClav 875, 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -462,6 +470,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "AmxClav 875, 10 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -488,6 +497,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Amox 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -514,6 +524,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cepha 5 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -540,6 +551,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cepha 10 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -566,6 +578,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cepha 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -592,6 +605,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cipro 250, 3 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -618,6 +632,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cipro 500, 5 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -644,6 +659,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cipro_500 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -670,6 +686,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cefpo 100",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -696,6 +713,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Cefpo 200",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
@@ -722,6 +740,7 @@
           "value_set": ""
         }
       ],
+      "reason": "uti",
       "name": "Ceftriaxone",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
