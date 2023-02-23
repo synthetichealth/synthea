@@ -742,7 +742,6 @@
       ],
       "reason": "uti",
       "name": "Ceftriaxone",
-      "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -755,7 +754,8 @@
           "unit": "days"
         }
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "administration": true
     },
     "ED Check": {
       "type": "Simple",
@@ -790,9 +790,13 @@
             },
             {
               "transition": "Terminal",
-              "distribution": 1
+              "distribution": 0.25
             }
           ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
         }
       ]
     },
