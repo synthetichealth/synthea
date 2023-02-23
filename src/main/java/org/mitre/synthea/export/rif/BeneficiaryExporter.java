@@ -548,6 +548,8 @@ public class BeneficiaryExporter extends RIFExporter {
   // Dual eligible codes weighted by observed frequency. Weights are % but do not add up to 100%
   // since codes 00 (15.6%) and NA (68.3%) are dealt with separately based on patient properties
   private static final RandomCollection<String> dualCodes = new RandomCollection<>();
+  // BIC Codes
+  private static final RandomCollection<String> bicCodes = new RandomCollection<>();
 
   static {
     // Qualified Medicare Beneficiary (QMB)-only
@@ -573,6 +575,23 @@ public class BeneficiaryExporter extends RIFExporter {
     dualCodes.add(0.04, "AA");
     // Not in code book but present in database
     dualCodes.add(0.1, "");
+
+    // A = Primary claimant
+    bicCodes.add(8190, "A");
+    // codes based on marital status
+    bicCodes.add(500, "MARITAL_STATUS");
+    // M = Uninsured not qualified for deemed HIB
+    bicCodes.add(170, "M");
+    // C1 = Child includes minor student or disabled child 1st claimant
+    bicCodes.add(120, "C1");
+    // TA = Medicare Qualified Government Employment (MQGE) primary claimant
+    bicCodes.add(90, "TA");
+    // 10 = Railroad Retirement Board (RRB) Retirement employee or annuitant
+    bicCodes.add(40, "10");
+    // C2 = Child includes minor student or disabled child 2nd claimant
+    bicCodes.add(30, "C2");
+    // C3 = Child includes minor student or disabled child 3rd claimant
+    bicCodes.add(15, "C3");
   }
 
   static final double POVERTY_LEVEL =
@@ -607,84 +626,49 @@ public class BeneficiaryExporter extends RIFExporter {
    */
   private String getCurrentBeneficiaryIdCode(Person person, int ageThisYear,
       boolean disabled, boolean esrd, boolean lowIncome) {
-    // Default to "A" primary claimant (over 65)
-    // else if under-65
-    //   - if minor, pick child code
-    //   - if male, pick husband or widower code
-    //   - if female, pick wife or widow code
-    String currentBeneIdCode = "A"; // primary claimant
-    String maritalStatus = (String)
-        person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
-    if (ageThisYear < 65) {
-      // Under 65
-      if (ageThisYear <= 18) {
-        // child codes
-        currentBeneIdCode = person.rand(new String[] {"C1", "C1", "C1", "C2", "C2", "C3"});
-      } else if (person.attributes.get(Person.GENDER).equals("F")) {
-        if (maritalStatus.equals("M")) {
-          // Married Woman
-          if (ageThisYear >= 62) {
-            // Aged wife age 62 or over 1st claimant
-            currentBeneIdCode = "B";
-          } else {
-            currentBeneIdCode = person.rand(new String[] {"B2", "B3"});
-          }
-        } else if (maritalStatus.equals("D")) {
-          // Divorced Woman
-          if (ageThisYear >= 62) {
-            // Divorced wife age 62 or over 1st claimant
-            currentBeneIdCode = "B6";
-          } else {
-            // Divorced wife 2nd claimant
-            currentBeneIdCode = "B9";
-          }
-        } else if (maritalStatus.equals("W")) {
-          if (ageThisYear >= 60) {
-            // Aged widow 60 or over 1st claimant
-            currentBeneIdCode = "D";
-          } else {
-            // Aged widow 2nd claimant
-            currentBeneIdCode = "D2";
-          }
-        } else if (lowIncome) {
-          // Uninsured entitled to HIB or renal provisions
-          currentBeneIdCode = "T";
-        } else {
-          // Uninsured not qualified for deemed HIB
-          currentBeneIdCode = "M";
-        }
-      } else {
-        // Adult male under 65
-        if (maritalStatus.equals("M")) {
-          // Married man
-          if (ageThisYear >= 62) {
-            // Aged husband age 62 or over 1st claimant
-            currentBeneIdCode = "B1";
-          } else {
-            // Young husband 1st claimant
-            currentBeneIdCode = "BY";
-          }
-        } else if (maritalStatus.equals("D")) {
-          // Divorced husband 1st claimant
-          currentBeneIdCode = "BR";
-        } else if (maritalStatus.equals("W")) {
-          if (ageThisYear >= 60) {
-            // Aged widower age 60 or over 1st claimant
-            currentBeneIdCode = "D1";
-          } else {
-            // Aged widower 2nd claimant
-            currentBeneIdCode = "D3";
-          }
-        } else if (lowIncome) {
-          // Uninsured entitled to HIB or renal provisions
-          currentBeneIdCode = "T";
-        } else {
-          // Uninsured not qualified for deemed HIB
-          currentBeneIdCode = "M";
-        }
+    if (esrd) {
+      // T = Uninsured entitled to HIB under deemed or renal provisions
+      return "T";
+    }
+
+    String currentBeneIdCode = bicCodes.next(person);
+    if (currentBeneIdCode.startsWith("C")) {
+      if (ageThisYear >= 65) {
+        currentBeneIdCode = pickMaritalStatusBIC(person);
       }
+    } else if (currentBeneIdCode.startsWith("MARITAL_STATUS")) {
+      currentBeneIdCode = pickMaritalStatusBIC(person);
     }
     return currentBeneIdCode;
+  }
+
+  private String pickMaritalStatusBIC(Person person) {
+    String maritalStatus = (String)
+        person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
+    String gender = (String) person.attributes.get(Person.GENDER);
+
+    if (maritalStatus.equals("S")) {
+      return "A";
+    } else if (gender.equals("F")) {
+      // female
+      if (maritalStatus.equals("M")) {
+        return person.rand(new String[] {"B","B","B1","B2"});
+      } else if (maritalStatus.equals("D")) {
+        return person.rand(new String[] {"D6","D6","B6","B9"});
+      } else if (maritalStatus.equals("W")) {
+        return person.rand(new String[] {"D","D","D2"});
+      }
+    } else {
+      // male
+      if (maritalStatus.equals("M")) {
+        return person.rand(new String[] {"B1","B1","BY"});
+      } else if (maritalStatus.equals("D")) {
+        return person.rand(new String[] {"BR","BR","BT"});
+      } else if (maritalStatus.equals("W")) {
+        return person.rand(new String[] {"D1","D1","D3"});
+      }
+    }
+    return "M";
   }
 
   /**
