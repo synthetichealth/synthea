@@ -257,7 +257,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 198379,
+          "code": 108515,
           "display": "1 ML tacrolimus 5 MG/ML Injection"
         }
       ],
@@ -1623,7 +1623,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 198379,
+          "code": 108515,
           "display": "1 ML tacrolimus 5 MG/ML Injection"
         }
       ],
@@ -1666,7 +1666,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 198379,
+          "code": 108515,
           "display": "1 ML tacrolimus 5 MG/ML Injection"
         }
       ],
@@ -1988,7 +1988,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1664461,
+          "code": 1664463,
           "display": "24 HR tacrolimus 1 MG Extended Release Oral Tablet"
         }
       ],
@@ -2081,7 +2081,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1431985,
+          "code": 1431987,
           "display": "24 HR tacrolimus 5 MG Extended Release Oral Capsule"
         }
       ],
