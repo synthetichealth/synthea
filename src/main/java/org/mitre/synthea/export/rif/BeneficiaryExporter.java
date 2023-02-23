@@ -18,7 +18,6 @@ import org.mitre.synthea.export.rif.identifiers.PartDContractID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -32,8 +31,10 @@ public class BeneficiaryExporter extends RIFExporter {
           HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
   protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
-  private static final double PART_B_ENROLLEE_PERCENT = 90.0;
-  private static final String ESRD_CODE = "N18.6";
+  // https://aspe.hhs.gov/sites/default/files/documents/f81aafbba0b331c71c6e8bc66512e25d/medicare-beneficiary-enrollment-ib.pdf
+  private static final double PART_B_ENROLLEE_PERCENT = 92.5;
+  // https://fivethirtyeight.com/features/whats-the-average-age-difference-in-a-couple/
+  private static final double SPOUSE_AGE_DIFFERENCE_STDEV = 2.3;
   private static final String ESRD_SNOMED = "46177005";
   private static final String CKD4_SNOMED = "431857002";
 
@@ -103,28 +104,23 @@ public class BeneficiaryExporter extends RIFExporter {
     long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
     long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
     boolean disabled = isDisabled(person);
-    long dateOfDisability = Long.MAX_VALUE;
-    if (disabled) {
-      dateOfDisability = LifecycleModule.getEarliestDisabilityDiagnosisTime(person);
-      coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
+    long dateOfDisability = getDateOfDisability(person);
+    coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
+
+    // if has/had a spouse, then make them eligible on date of spouse's 65th birthday if sooner
+    // than own eligibility
+    String maritalStatus = (String)
+        person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
+    if (!maritalStatus.equals("S")) {
+      double spouseYearsAgeDifference = person.randGaussian() * SPOUSE_AGE_DIFFERENCE_STDEV;
+      // TBD may want to shift +/- depending on gender
+      long spouse65thBirthday = dateOf65thBirthday + Utilities.convertTime(
+              "years", spouseYearsAgeDifference);
+      coverageStartDate = Long.min(coverageStartDate, spouse65thBirthday);
     }
-    // if child or spouse, date of primary beneficiary start
     String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
-    boolean lowIncome = partDCostSharingCode.equals("01");
-    boolean disabledNow = (dateOfDisability < stopTime);
-    boolean esrdNow = (dateOfESRD < stopTime);
-    int ageThisYear = ageAtEndOfYear(birthdate, (endYear - yearsOfHistory));
-    String crntBic = getCurrentBeneficiaryIdCode(
-        person, ageThisYear, disabledNow, esrdNow, lowIncome);
-    if (!crntBic.equals("A")) {
-      // if child or spouse, date of primary beneficiary start
-      if (yearsOfHistory > ageThisYear) {
-        coverageStartDate = stopTime - Utilities.convertTime("years", ageThisYear);
-      } else {
-        coverageStartDate = stopTime - Utilities.convertTime("years", yearsOfHistory);
-      }
-    }
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
+    boolean lowIncome = partDCostSharingCode.equals("01");
 
     boolean firstYearOutput = true;
     String initialBeneEntitlementReason = null;
@@ -134,14 +130,8 @@ public class BeneficiaryExporter extends RIFExporter {
       if (endOfYearTimeStamp < CLAIM_CUTOFF) {
         continue;
       }
+      int ageThisYear = ageAtEndOfYear(birthdate, year);
       if (!hasPartABCoverage(person, endOfYearTimeStamp)) {
-        continue;
-      }
-      ageThisYear = ageAtEndOfYear(birthdate, year);
-      // if too young to have been married to a primary beneficiary
-      if ((ageThisYear < 50)
-          && !(dateOfESRD < endOfYearTimeStamp) // and they don't have ESRD
-          && !(dateOfDisability < endOfYearTimeStamp)) { // and they aren't disabled
         continue;
       }
 
@@ -152,10 +142,12 @@ public class BeneficiaryExporter extends RIFExporter {
         // need to be "UPDATE"
         fieldValues.put(BB2RIFStructure.BENEFICIARY.DML_IND, "UPDATE");
       }
+
       // CRNT_BIC
-      disabledNow = (dateOfDisability < endOfYearTimeStamp);
-      esrdNow = (dateOfESRD < endOfYearTimeStamp);
-      crntBic = getCurrentBeneficiaryIdCode(person, ageThisYear, disabledNow, esrdNow, lowIncome);
+      boolean disabledNow = (dateOfDisability < endOfYearTimeStamp);
+      boolean esrdNow = (dateOfESRD < endOfYearTimeStamp);
+      String crntBic = getCurrentBeneficiaryIdCode(person, ageThisYear, disabledNow, esrdNow,
+              lowIncome);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.CRNT_BIC, crntBic);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.RFRNC_YR, String.valueOf(year));
       String coverageStartStr = bb2DateFromTimestamp(coverageStartDate);
@@ -228,7 +220,7 @@ public class BeneficiaryExporter extends RIFExporter {
           fieldValues.put(BB2RIFStructure.BENEFICIARY.PTB_CVRG_END_DT, deathDateStr);
         }
       }
-      int ageYearEnd = ageAtEndOfYear(birthdate, year);
+      int ageYearEnd = RIFExporter.ageAtEndOfYear(birthdate, year);
       int ageYearBegin = ageYearEnd - 1;
       boolean medicareAgeThisYear = (ageYearEnd >= 65);
       boolean esrdThisYear = hasESRD(person, year);
@@ -423,7 +415,7 @@ public class BeneficiaryExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
     int year = Utilities.getYear(stopTime);
-    int age = ageAtEndOfYear(birthdate, year);
+    int age = RIFExporter.ageAtEndOfYear(birthdate, year);
     boolean medicareAge = (age >= 65);
     boolean esrd = hasESRD(person, year);
     // Technically, disabled should be checked year by year, but we don't currently
@@ -551,16 +543,6 @@ public class BeneficiaryExporter extends RIFExporter {
       }
       return bbRaceCode;
     }
-  }
-
-  /**
-   * Calculate the age of a person at the end of the given year.
-   * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
-   * @param year the year
-   * @return the person's age
-   */
-  private static int ageAtEndOfYear(long birthdate, int year) {
-    return year - Utilities.getYear(birthdate);
   }
 
   // Dual eligible codes weighted by observed frequency. Weights are % but do not add up to 100%
@@ -731,11 +713,5 @@ public class BeneficiaryExporter extends RIFExporter {
       return (Utilities.getYear(ckd4PresentOnset) <= year);
     }
     return false;
-  }
-
-  private static boolean isDisabled(Person person) {
-    return (person.attributes.containsKey(Person.BLINDNESS)
-            && person.attributes.get(Person.BLINDNESS).equals(true))
-        || LifecycleModule.isDisabled(person, 0L);
   }
 }
