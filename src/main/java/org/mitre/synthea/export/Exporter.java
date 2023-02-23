@@ -152,7 +152,7 @@ public abstract class Exporter {
             person.attributes.putAll(variant.demographicAttributesForPerson());
           }
           boolean exported = exportRecord(person, Integer.toString(i), stopTime, options);
-          wasExported = wasExported | exported;
+          wasExported = wasExported || exported;
           i++;
         }
       } else {
