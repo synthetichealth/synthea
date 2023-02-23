@@ -108,8 +108,8 @@ public class BB2RIFExporterTest {
     generatorOpts.population = numberOfPeople;
     generatorOpts.seed = 505;
     RandomNumberGenerator rand = new DefaultRandomNumberGenerator(generatorOpts.seed);
-    generatorOpts.minAge = 70;
-    generatorOpts.maxAge = 80;
+    generatorOpts.minAge = 75;
+    generatorOpts.maxAge = 90;
     generatorOpts.ageSpecified = true;
     generatorOpts.overflow = false;
     Generator generator = new Generator(generatorOpts, exportOpts);

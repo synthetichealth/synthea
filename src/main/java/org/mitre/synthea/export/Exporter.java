@@ -129,8 +129,10 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    * @param options Runtime exporter options
    */
-  public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
+  public static boolean export(Person person, long stopTime, ExporterRuntimeOptions options) {
+    boolean wasExported = false;
     if (options.deferExports) {
+      wasExported = true;
       deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
       if (options.yearsOfHistory > 0) {
@@ -149,13 +151,15 @@ public abstract class Exporter {
             Variant variant = seed.selectVariant(person);
             person.attributes.putAll(variant.demographicAttributesForPerson());
           }
-          exportRecord(person, Integer.toString(i), stopTime, options);
+          boolean exported = exportRecord(person, Integer.toString(i), stopTime, options);
+          wasExported = wasExported | exported;
           i++;
         }
       } else {
-        exportRecord(person, "", stopTime, options);
+        wasExported = exportRecord(person, "", stopTime, options);
       }
     }
+    return wasExported;
   }
 
   /**
@@ -178,8 +182,9 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    * @param options Generator's record queue (may be null)
    */
-  private static void exportRecord(Person person, String fileTag, long stopTime,
+  private static boolean exportRecord(Person person, String fileTag, long stopTime,
           ExporterRuntimeOptions options) {
+    boolean wasExported = true;
     if (options.terminologyService) {
       // Resolve any coded values within the record that are specified using a ValueSet URI.
       ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
@@ -260,7 +265,7 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
         BB2RIFExporter exporter = BB2RIFExporter.getInstance();
-        exporter.export(person, stopTime, options.yearsOfHistory);
+        wasExported = exporter.export(person, stopTime, options.yearsOfHistory);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -332,6 +337,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    return wasExported;
   }
 
   /**

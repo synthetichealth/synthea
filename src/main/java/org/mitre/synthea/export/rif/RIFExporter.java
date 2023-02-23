@@ -13,8 +13,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.mitre.synthea.export.rif.identifiers.CLIA;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
@@ -37,6 +39,10 @@ public abstract class RIFExporter {
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
+  protected static final String ESRD_CODE = "N18.6";
+  protected static final QualifyingConditionCodesEligibility ssd =
+      new QualifyingConditionCodesEligibility(
+          "payers/eligibility_input_files/ssd_eligibility.csv");
 
   protected final BB2RIFExporter exporter;
 
@@ -227,12 +233,34 @@ public abstract class RIFExporter {
   }
 
   /**
+   * Calculate the age of a person at the end of the specified year.
+   * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
+   * @param year the year
+   * @return the person's age
+   */
+  static int ageAtEndOfYear(long birthdate, int year) {
+    return year - Utilities.getYear(birthdate);
+  }
+
+  /**
    * Test whether a person has part A and B coverage at the specified timestamp.
    * @param person the person
    * @param timestamp the timestamp to check coverage at
    * @return true if covered, false otherwise
    */
   public boolean hasPartABCoverage(Person person, long timestamp) {
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    int year = Utilities.getYear(timestamp);
+    int ageThisYear = ageAtEndOfYear(birthdate, year);
+    long endOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year + 1) - 1;
+    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
+    long dateOfDisability = getDateOfDisability(person);
+    if ((ageThisYear < 65)
+        && !(dateOfESRD < endOfYearTimeStamp) // and they don't have ESRD
+        && !(dateOfDisability < endOfYearTimeStamp)) { // and they aren't disabled
+      // only diabled or ESRD are covered if under 65
+      return false;
+    }
     Long coverageStartDate = (Long)person.attributes.get(RIFExporter.COVERAGE_START_DATE);
     return timestamp >= coverageStartDate;
   }
@@ -288,5 +316,30 @@ public abstract class RIFExporter {
       placeOfServiceCode = "11"; // office
     }
     return placeOfServiceCode;
+  }
+
+  /**
+   * Was the person disabled at any time.
+   * @param person the person
+   * @return true if disabled, false if not
+   */
+  protected static boolean isDisabled(Person person) {
+    return (person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true))
+            || ssd.isPersonEligible(person, 0L);
+  }
+
+  /**
+   * Get the date of disability.
+   * @param person the person
+   * @return the date of disability or Long.MAX_VALUE if never disabled
+   */
+  protected long getDateOfDisability(Person person) {
+    boolean disabled = isDisabled(person);
+    long dateOfDisability = Long.MAX_VALUE;
+    if (disabled) {
+      dateOfDisability = ssd.getEarliestDiagnosis(person);
+    }
+    return dateOfDisability;
   }
 }

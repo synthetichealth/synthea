@@ -450,6 +450,7 @@ public class Generator {
   public Person generatePerson(int index, long personSeed) {
 
     Person person = new Person(personSeed);
+    boolean wasExported = true;
 
     try {
       int tryNumber = 0; // Number of tries to create these demographics
@@ -532,9 +533,13 @@ public class Generator {
 
         // TODO - export is DESTRUCTIVE when it filters out data
         // this means export must be the LAST THING done with the person
-        Exporter.export(person, finishTime, exporterRuntimeOptions);
+        wasExported = Exporter.export(person, finishTime, exporterRuntimeOptions);
+        if (!wasExported) {
+          personSeed = person.randLong();
+          demoAttributes = randomDemographics(person);
+        }
 
-      } while (!patientMeetsCriteria);
+      } while (!patientMeetsCriteria || !wasExported);
       //repeat while patient doesn't meet criteria
       // if the patient is alive and we want only dead ones => loop & try again
       //  (and dont even export, see above)
