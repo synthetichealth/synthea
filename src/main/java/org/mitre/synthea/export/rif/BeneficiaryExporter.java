@@ -18,8 +18,8 @@ import org.mitre.synthea.export.rif.identifiers.PartDContractID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
 
 /**
  * Export beneficiary and beneficiary history files.
@@ -36,9 +36,6 @@ public class BeneficiaryExporter extends RIFExporter {
   private static final String ESRD_CODE = "N18.6";
   private static final String ESRD_SNOMED = "46177005";
   private static final String CKD4_SNOMED = "431857002";
-  private static final QualifyingConditionCodesEligibility ssd =
-      new QualifyingConditionCodesEligibility(
-          "payers/eligibility_input_files/ssd_eligibility.csv");
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -108,7 +105,7 @@ public class BeneficiaryExporter extends RIFExporter {
     boolean disabled = isDisabled(person);
     long dateOfDisability = Long.MAX_VALUE;
     if (disabled) {
-      dateOfDisability = ssd.getEarliestDiagnosis(person);
+      dateOfDisability = LifecycleModule.getEarliestDisabilityDiagnosisTime(person);
       coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
     }
     // if child or spouse, date of primary beneficiary start
@@ -739,6 +736,6 @@ public class BeneficiaryExporter extends RIFExporter {
   private static boolean isDisabled(Person person) {
     return (person.attributes.containsKey(Person.BLINDNESS)
             && person.attributes.get(Person.BLINDNESS).equals(true))
-        || ssd.isPersonEligible(person, 0L);
+        || LifecycleModule.isDisabled(person, 0L);
   }
 }
