@@ -253,8 +253,8 @@ public abstract class RIFExporter {
     long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
     long dateOfDisability = getDateOfDisability(person);
     if ((ageThisYear < 65)
-        && !(dateOfESRD < endOfYearTimeStamp) // and they don't have ESRD
-        && !(dateOfDisability < endOfYearTimeStamp)) { // and they aren't disabled
+        && (dateOfESRD >= endOfYearTimeStamp) // and they don't have ESRD
+        && (dateOfDisability >= endOfYearTimeStamp)) { // and they aren't disabled
       // only diabled or ESRD are covered if under 65
       return false;
     }

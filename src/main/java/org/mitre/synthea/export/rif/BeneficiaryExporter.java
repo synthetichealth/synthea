@@ -607,8 +607,7 @@ public class BeneficiaryExporter extends RIFExporter {
    */
   private String getCurrentBeneficiaryIdCode(Person person, int ageThisYear,
       boolean disabled, boolean esrd, boolean lowIncome) {
-    // Default to "A" primary claimant (over 65 or (esrd and/or disabled))
-    // T if partDCostSharingCode=="01" or under-65 w/ ESRD
+    // Default to "A" primary claimant (over 65)
     // else if under-65
     //   - if minor, pick child code
     //   - if male, pick husband or widower code
@@ -618,12 +617,7 @@ public class BeneficiaryExporter extends RIFExporter {
         person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
     if (ageThisYear < 65) {
       // Under 65
-      if (lowIncome || esrd) {
-        // Uninsured entitled to HIB or renal provisions
-        currentBeneIdCode = "T";
-      } else if (disabled) {
-        currentBeneIdCode = "A";
-      } else if (ageThisYear <= 18) {
+      if (ageThisYear <= 18) {
         // child codes
         currentBeneIdCode = person.rand(new String[] {"C1", "C1", "C1", "C2", "C2", "C3"});
       } else if (person.attributes.get(Person.GENDER).equals("F")) {
@@ -652,6 +646,9 @@ public class BeneficiaryExporter extends RIFExporter {
             // Aged widow 2nd claimant
             currentBeneIdCode = "D2";
           }
+        } else if (lowIncome) {
+          // Uninsured entitled to HIB or renal provisions
+          currentBeneIdCode = "T";
         } else {
           // Uninsured not qualified for deemed HIB
           currentBeneIdCode = "M";
@@ -678,6 +675,9 @@ public class BeneficiaryExporter extends RIFExporter {
             // Aged widower 2nd claimant
             currentBeneIdCode = "D3";
           }
+        } else if (lowIncome) {
+          // Uninsured entitled to HIB or renal provisions
+          currentBeneIdCode = "T";
         } else {
           // Uninsured not qualified for deemed HIB
           currentBeneIdCode = "M";
