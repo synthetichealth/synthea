@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.mitre.synthea.export.rif.identifiers.CLIA;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
@@ -40,9 +40,6 @@ public abstract class RIFExporter {
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
   protected static final String ESRD_CODE = "N18.6";
-  protected static final QualifyingConditionCodesEligibility ssd =
-      new QualifyingConditionCodesEligibility(
-          "payers/eligibility_input_files/ssd_eligibility.csv");
 
   protected final BB2RIFExporter exporter;
 
@@ -326,7 +323,7 @@ public abstract class RIFExporter {
   protected static boolean isDisabled(Person person) {
     return (person.attributes.containsKey(Person.BLINDNESS)
             && person.attributes.get(Person.BLINDNESS).equals(true))
-            || ssd.isPersonEligible(person, 0L);
+        || LifecycleModule.isDisabled(person, 0L);
   }
 
   /**
@@ -338,7 +335,7 @@ public abstract class RIFExporter {
     boolean disabled = isDisabled(person);
     long dateOfDisability = Long.MAX_VALUE;
     if (disabled) {
-      dateOfDisability = ssd.getEarliestDiagnosis(person);
+      dateOfDisability = LifecycleModule.getEarliestDisabilityDiagnosisTime(person);
     }
     return dateOfDisability;
   }

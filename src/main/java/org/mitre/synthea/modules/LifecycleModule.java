@@ -20,6 +20,7 @@ import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
 import org.mitre.synthea.world.concepts.BMI;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
@@ -39,6 +40,8 @@ public final class LifecycleModule extends Module {
       GrowthChart.loadCharts();
   private static final List<LinkedHashMap<String, String>> weightForLengthChart =
       loadWeightForLengthChart();
+  private static final QualifyingConditionCodesEligibility disabilityCriteria =
+      loadDisabilityData();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String DAYS_UNTIL_DEATH = "days_until_death";
@@ -81,6 +84,18 @@ public final class LifecycleModule extends Module {
     return soDistribution;
   }
 
+  private static QualifyingConditionCodesEligibility loadDisabilityData() {
+    QualifyingConditionCodesEligibility criteria = null;
+    String filename = "payers/eligibility_input_files/ssd_eligibility.csv";
+    try {
+      criteria = new QualifyingConditionCodesEligibility(filename);
+    } catch (Exception e) {
+      System.err.println("ERROR: unable to load disability csv: " + filename);
+      e.printStackTrace();
+    }
+    return criteria;
+  }
+
   public Module clone() {
     return this;
   }
@@ -105,6 +120,7 @@ public final class LifecycleModule extends Module {
     adherence(person, time);
     calculateVitalSigns(person, time);
     calculateFallRisk(person, time);
+    person.attributes.put(Person.DISABLED, isDisabled(person, time));
     death(person, time);
 
     // java modules will never "finish"
@@ -1168,6 +1184,35 @@ public final class LifecycleModule extends Module {
       // TODO - research actual effectiveness of these interventions
 
       person.attributes.put("probability_of_fall_injury", fallRisk);
+    }
+  }
+
+  /**
+   * Determines if the person is disabled according to input file
+   * criteria. If the input file is unavailable, the default is false.
+   * @param person The person.
+   * @param time The time.
+   * @return true or false.
+   */
+  public static boolean isDisabled(Person person, long time) {
+    if (disabilityCriteria != null) {
+      return disabilityCriteria.isPersonEligible(person, time);
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Determines earliest disability diagnosis time according to input file
+   * criteria. If the input file is unavailable, the default is Long.MAX_VALUE.
+   * @param person The person.
+   * @return Time of earliest disability diagnosis.
+   */
+  public static long getEarliestDisabilityDiagnosisTime(Person person) {
+    if (disabilityCriteria != null) {
+      return disabilityCriteria.getEarliestDiagnosis(person);
+    } else {
+      return Long.MAX_VALUE;
     }
   }
 
