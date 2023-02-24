@@ -652,7 +652,7 @@ public class BeneficiaryExporter extends RIFExporter {
     } else if (gender.equals("F")) {
       // female
       if (maritalStatus.equals("M")) {
-        return person.rand(new String[] {"B","B","B1","B2"});
+        return person.rand(new String[] {"B","B","B3","B2"});
       } else if (maritalStatus.equals("D")) {
         return person.rand(new String[] {"D6","D6","B6","B9"});
       } else if (maritalStatus.equals("W")) {
