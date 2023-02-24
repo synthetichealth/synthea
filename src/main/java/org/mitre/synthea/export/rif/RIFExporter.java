@@ -39,8 +39,7 @@ public abstract class RIFExporter {
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
-  protected static final String ESRD_CODE = "N18.6";
-
+  protected static final String[] ESRD_CODES = new String[] {"N18.6", "N18.4", "Q61.4"};
   protected final BB2RIFExporter exporter;
 
   protected RIFExporter(BB2RIFExporter exporter) {
@@ -204,6 +203,21 @@ public abstract class RIFExporter {
   }
 
   /**
+   * Returns the earliest diagnosis time stamp for a set of conditions.
+   * @param person patient with the diagnoses
+   * @param codes the condition codes
+   * @return the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestDiagnosis(Person person, String[] codes) {
+    long earliest = Long.MAX_VALUE;
+    for (String code : codes) {
+      long diagnosisTime = getEarliestDiagnosis(person, code);
+      earliest = Long.min(earliest, diagnosisTime);
+    }
+    return earliest;
+  }
+
+  /**
    * Returns the earliest diagnosis time stamp for a particular condition.
    * @param person patient with the diagnoses
    * @param code the condition code
@@ -218,6 +232,44 @@ public abstract class RIFExporter {
           if (mapped.equals(code)) {
             diagnoses.add(dx);
           }
+        }
+      }
+    }
+    if (!diagnoses.isEmpty()) {
+      // Sort them by date and then return the oldest
+      diagnoses.sort(ENTRY_SORTER);
+      return diagnoses.get(diagnoses.size() - 1).start;
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Returns the earliest unmapped diagnosis time stamp for a set of conditions.
+   * @param person patient with the diagnoses
+   * @param codes the condition codes
+   * @return the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestUnmappedDiagnosis(Person person, String[] codes) {
+    long earliest = Long.MAX_VALUE;
+    for (String code : codes) {
+      long diagnosisTime = getEarliestUnmappedDiagnosis(person, code);
+      earliest = Long.min(earliest, diagnosisTime);
+    }
+    return earliest;
+  }
+
+  /**
+   * Returns the earliest unmapped diagnosis time stamp for a particular condition.
+   * @param person patient with the diagnoses
+   * @param code the condition code
+   * @return the diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestUnmappedDiagnosis(Person person, String code) {
+    List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      for (HealthRecord.Entry dx : encounter.conditions) {
+        if (dx.codes.get(0).code.equals(code)) {
+          diagnoses.add(dx);
         }
       }
     }
@@ -246,18 +298,6 @@ public abstract class RIFExporter {
    * @return true if covered, false otherwise
    */
   public boolean hasPartABCoverage(Person person, long timestamp) {
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    int year = Utilities.getYear(timestamp);
-    int ageThisYear = ageAtEndOfYear(birthdate, year);
-    long endOfYearTimeStamp = Utilities.convertCalendarYearsToTime(year + 1) - 1;
-    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
-    long dateOfDisability = getDateOfDisability(person);
-    if ((ageThisYear < 65)
-        && (dateOfESRD >= endOfYearTimeStamp) // and they don't have ESRD
-        && (dateOfDisability >= endOfYearTimeStamp)) { // and they aren't disabled
-      // only diabled or ESRD are covered if under 65
-      return false;
-    }
     Long coverageStartDate = (Long)person.attributes.get(RIFExporter.COVERAGE_START_DATE);
     return timestamp >= coverageStartDate;
   }

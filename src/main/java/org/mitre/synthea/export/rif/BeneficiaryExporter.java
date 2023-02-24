@@ -33,10 +33,7 @@ public class BeneficiaryExporter extends RIFExporter {
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   // https://aspe.hhs.gov/sites/default/files/documents/f81aafbba0b331c71c6e8bc66512e25d/medicare-beneficiary-enrollment-ib.pdf
   private static final double PART_B_ENROLLEE_PERCENT = 92.5;
-  // https://fivethirtyeight.com/features/whats-the-average-age-difference-in-a-couple/
-  private static final double SPOUSE_AGE_DIFFERENCE_STDEV = 2.3;
-  private static final String ESRD_SNOMED = "46177005";
-  private static final String CKD4_SNOMED = "431857002";
+  private static final String[] ESRD_SNOMEDS = new String[] {"46177005", "431857002", "204949001"};
 
   static String getBB2SexCode(String sex) {
     switch (sex) {
@@ -101,23 +98,14 @@ public class BeneficiaryExporter extends RIFExporter {
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     long dateOf65thBirthday = Utilities.getAnniversary(birthdate, 65);
     int monthOf65thBirthday = Utilities.getMonth(dateOf65thBirthday) - 1;
-    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODE);
+    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODES);
     long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
+    long dateOfUnmappedESRD = getEarliestUnmappedDiagnosis(person, ESRD_SNOMEDS);
+    coverageStartDate = Long.min(coverageStartDate, dateOfUnmappedESRD);
     boolean disabled = isDisabled(person);
     long dateOfDisability = getDateOfDisability(person);
     coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
 
-    // if has/had a spouse, then make them eligible on date of spouse's 65th birthday if sooner
-    // than own eligibility
-    String maritalStatus = (String)
-        person.attributes.getOrDefault(Person.MARITAL_STATUS, "S");
-    if (!maritalStatus.equals("S")) {
-      double spouseYearsAgeDifference = person.randGaussian() * SPOUSE_AGE_DIFFERENCE_STDEV;
-      // TBD may want to shift +/- depending on gender
-      long spouse65thBirthday = dateOf65thBirthday + Utilities.convertTime(
-              "years", spouseYearsAgeDifference);
-      coverageStartDate = Long.min(coverageStartDate, spouse65thBirthday);
-    }
     String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
     person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
     boolean lowIncome = partDCostSharingCode.equals("01");
@@ -418,9 +406,13 @@ public class BeneficiaryExporter extends RIFExporter {
     int age = RIFExporter.ageAtEndOfYear(birthdate, year);
     boolean medicareAge = (age >= 65);
     boolean esrd = hasESRD(person, year);
-    // Technically, disabled should be checked year by year, but we don't currently
-    // have that level of resolution.
     boolean disabled = isDisabled(person);
+    if (disabled) {
+      long dateOfDisability = getDateOfDisability(person);
+      if (!(dateOfDisability <= stopTime)) {
+        disabled = false;
+      }
+    }
     fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ESRD_IND, esrd ? "Y" : "0");
     // "0" = old age, "1" = Disabled, "2" = ESRD, "3" = ESRD && Disabled
     if (medicareAge) {
@@ -680,22 +672,12 @@ public class BeneficiaryExporter extends RIFExporter {
   private boolean hasESRD(Person person, int year) {
     long timestamp = Utilities.convertCalendarYearsToTime(year + 1); // +1 for end of year
     List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, timestamp);
-    boolean esrdGivenYear = mappedDiagnosisCodes.contains(ESRD_CODE);
-    if (esrdGivenYear) {
-      return esrdGivenYear;
+    for (String code : ESRD_CODES) {
+      if (mappedDiagnosisCodes.contains(code)) {
+        return true;
+      }
     }
-    // boolean esrdGivenAttribute = person.attributes.containsKey("dialysis_reason");
-    // or attribute "ckd" == 5
-    // boolean esrdGivenPresent = person.record.conditionActive(ESRD_SNOMED);
-    Long esrdPresentOnset = person.record.presentOnset(ESRD_SNOMED);
-    if (esrdPresentOnset != null) {
-      return (Utilities.getYear(esrdPresentOnset) <= year);
-    }
-    // Widen the fishing net a little bit to include more folks...
-    Long ckd4PresentOnset = person.record.presentOnset(CKD4_SNOMED);
-    if (ckd4PresentOnset != null) {
-      return (Utilities.getYear(ckd4PresentOnset) <= year);
-    }
-    return false;
+    long esrdOnset = getEarliestUnmappedDiagnosis(person, ESRD_SNOMEDS);
+    return (esrdOnset <= timestamp);
   }
 }
