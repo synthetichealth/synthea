@@ -523,7 +523,8 @@
       },
       "unit": "minutes",
       "direct_transition": "Urine Culture Result",
-      "name": "Urine Culture"
+      "name": "Urine Culture",
+      "assign_to_attribute": "UTI_Lab_Send_Out"
     },
     "Urine Culture Result": {
       "type": "Simple",
