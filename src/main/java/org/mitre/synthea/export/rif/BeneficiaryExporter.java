@@ -145,7 +145,7 @@ public class BeneficiaryExporter extends RIFExporter {
 
       // CRNT_BIC
       boolean disabledNow = (dateOfDisability < endOfYearTimeStamp);
-      boolean esrdNow = (dateOfESRD < endOfYearTimeStamp);
+      boolean esrdNow = hasESRD(person, year);
       String crntBic = getCurrentBeneficiaryIdCode(person, ageThisYear, disabledNow, esrdNow,
               lowIncome);
       fieldValues.put(BB2RIFStructure.BENEFICIARY.CRNT_BIC, crntBic);
