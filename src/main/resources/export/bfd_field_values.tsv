@@ -129,7 +129,7 @@ Line	Field	BENEFICIARY	BENEFICIARY_HISTORY	INPATIENT	OUTPATIENT	CARRIER	PDE	DME	
 127	COVSTART	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Typically birthdate when patient turns 65
 128	CREAT_TS	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 129	CREAT_USER_ID	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
-130	CRNT_BIC	"A,A,D,D,TA"	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
+130	CRNT_BIC	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	
 131	CST_SHR_GRP_APR_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
 132	CST_SHR_GRP_AUG_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations
 133	CST_SHR_GRP_DEC_CD	Coded	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	TRUE	Could make copayment match these designations

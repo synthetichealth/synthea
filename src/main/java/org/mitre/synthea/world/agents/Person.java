@@ -104,6 +104,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String LINK_ID = "link_id";
   public static final String VETERAN = "veteran";
   public static final String BLINDNESS = "blindness";
+  public static final String DISABLED = "disabled";
   private static final String LAST_MONTH_PAID = "last_month_paid";
   public static final String HOUSEHOLD_ROLE = "household_role";
   public static final String TARGET_WEIGHT_LOSS = "target_weight_loss";

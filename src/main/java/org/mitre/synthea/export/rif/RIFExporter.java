@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.mitre.synthea.export.rif.identifiers.CLIA;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -23,6 +25,7 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 public abstract class RIFExporter {
 
   protected static final String BB2_PARTD_CONTRACTS = "BB2_PARTD_CONTRACTS";
+  protected static final String BB2_PARTB_ENROLLEE = "BB2_PARTB_ENROLLEE";
   protected static final AtomicLong nextFiDocCntlNum = new AtomicLong(
           Config.getAsLong("exporter.bfd.fi_doc_cntl_num_start", -1));
   protected static final AtomicLong nextClaimId = new AtomicLong(
@@ -36,7 +39,7 @@ public abstract class RIFExporter {
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
-
+  protected static final String[] ESRD_CODES = new String[] {"N18.6", "N18.4", "Q61.4"};
   protected final BB2RIFExporter exporter;
 
   protected RIFExporter(BB2RIFExporter exporter) {
@@ -153,7 +156,13 @@ public abstract class RIFExporter {
           new Comparator<HealthRecord.Entry>() {
     @Override
     public int compare(HealthRecord.Entry o1, HealthRecord.Entry o2) {
-      return (int)(o2.start - o1.start);
+      if (o2.start == o1.start) {
+        return 0;
+      } else if (o2.start > o1.start) {
+        return 1;
+      } else {
+        return -1;
+      }
     }
   };
 
@@ -194,6 +203,21 @@ public abstract class RIFExporter {
   }
 
   /**
+   * Returns the earliest diagnosis time stamp for a set of conditions.
+   * @param person patient with the diagnoses
+   * @param codes the condition codes
+   * @return the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestDiagnosis(Person person, String[] codes) {
+    long earliest = Long.MAX_VALUE;
+    for (String code : codes) {
+      long diagnosisTime = getEarliestDiagnosis(person, code);
+      earliest = Long.min(earliest, diagnosisTime);
+    }
+    return earliest;
+  }
+
+  /**
    * Returns the earliest diagnosis time stamp for a particular condition.
    * @param person patient with the diagnoses
    * @param code the condition code
@@ -217,6 +241,54 @@ public abstract class RIFExporter {
       return diagnoses.get(diagnoses.size() - 1).start;
     }
     return Long.MAX_VALUE;
+  }
+
+  /**
+   * Returns the earliest unmapped diagnosis time stamp for a set of conditions.
+   * @param person patient with the diagnoses
+   * @param codes the condition codes
+   * @return the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestUnmappedDiagnosis(Person person, String[] codes) {
+    long earliest = Long.MAX_VALUE;
+    for (String code : codes) {
+      long diagnosisTime = getEarliestUnmappedDiagnosis(person, code);
+      earliest = Long.min(earliest, diagnosisTime);
+    }
+    return earliest;
+  }
+
+  /**
+   * Returns the earliest unmapped diagnosis time stamp for a particular condition.
+   * @param person patient with the diagnoses
+   * @param code the condition code
+   * @return the diagnosis time stamp or Long.MAX_VALUE if not diagnosed
+   */
+  protected long getEarliestUnmappedDiagnosis(Person person, String code) {
+    List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
+    for (HealthRecord.Encounter encounter : person.record.encounters) {
+      for (HealthRecord.Entry dx : encounter.conditions) {
+        if (dx.codes.get(0).code.equals(code)) {
+          diagnoses.add(dx);
+        }
+      }
+    }
+    if (!diagnoses.isEmpty()) {
+      // Sort them by date and then return the oldest
+      diagnoses.sort(ENTRY_SORTER);
+      return diagnoses.get(diagnoses.size() - 1).start;
+    }
+    return Long.MAX_VALUE;
+  }
+
+  /**
+   * Calculate the age of a person at the end of the specified year.
+   * @param birthdate a person's birthdate specified as number of milliseconds since the epoch
+   * @param year the year
+   * @return the person's age
+   */
+  static int ageAtEndOfYear(long birthdate, int year) {
+    return year - Utilities.getYear(birthdate);
   }
 
   /**
@@ -281,5 +353,30 @@ public abstract class RIFExporter {
       placeOfServiceCode = "11"; // office
     }
     return placeOfServiceCode;
+  }
+
+  /**
+   * Was the person disabled at any time.
+   * @param person the person
+   * @return true if disabled, false if not
+   */
+  protected static boolean isDisabled(Person person) {
+    return (person.attributes.containsKey(Person.BLINDNESS)
+            && person.attributes.get(Person.BLINDNESS).equals(true))
+        || LifecycleModule.isDisabled(person, 0L);
+  }
+
+  /**
+   * Get the date of disability.
+   * @param person the person
+   * @return the date of disability or Long.MAX_VALUE if never disabled
+   */
+  protected long getDateOfDisability(Person person) {
+    boolean disabled = isDisabled(person);
+    long dateOfDisability = Long.MAX_VALUE;
+    if (disabled) {
+      dateOfDisability = LifecycleModule.getEarliestDisabilityDiagnosisTime(person);
+    }
+    return dateOfDisability;
   }
 }

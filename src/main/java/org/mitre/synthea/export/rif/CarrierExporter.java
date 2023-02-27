@@ -65,6 +65,12 @@ public class CarrierExporter extends RIFExporter {
    * @throws IOException if something goes wrong
    */
   long export(Person person, long startTime, long stopTime) throws IOException {
+    Boolean partBEnrollee = (Boolean)person.attributes.get(RIFExporter.BB2_PARTB_ENROLLEE);
+    if (partBEnrollee.equals(false)) {
+      // Skip carrier claims if beneficiary is not enrolled in part B
+      return 0;
+    }
+
     HashMap<BB2RIFStructure.CARRIER, String> fieldValues = new HashMap<>();
 
     long claimCount = 0;

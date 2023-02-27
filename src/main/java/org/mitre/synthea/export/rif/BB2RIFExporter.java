@@ -349,13 +349,18 @@ public class BB2RIFExporter {
    * @param yearsOfHistory number of years of claims to export
    * @throws IOException if something goes wrong
    */
-  public void export(Person person, long stopTime, int yearsOfHistory) throws IOException {
+  public boolean export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
     long startTime = stopTime - Utilities.convertTime("years", yearsOfHistory);
     if (yearsOfHistory == 0) {
       startTime = (long) person.attributes.get(Person.BIRTHDATE);
     }
-    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneExp.export(person, startTime, stopTime));
+    String beneId = beneExp.export(person, startTime, stopTime);
+    if (beneId == null) {
+      // was not a medicare beneficiary
+      return false;
+    }
+    exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneId);
     beneExp.exportHistory(person, startTime, stopTime);
     exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
             Long.toString(inpatientExp.export(person, startTime, stopTime)));
@@ -374,6 +379,7 @@ public class BB2RIFExporter {
     exportCounts.put(EXPORT_SUMMARY.SNF_CLAIMS,
             Long.toString(snfExp.export(person, startTime, stopTime)));
     rifWriters.getOrCreateWriter(EXPORT_SUMMARY.class, -1, "csv", ",").writeValues(exportCounts);
+    return true;
   }
 
   /**

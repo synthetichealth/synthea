@@ -291,8 +291,13 @@ public class SNFExporter extends RIFExporter {
         fieldValues.put(dxField[1], "0"); // 0=ICD10
       }
       if (!fieldValues.containsKey(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD)) {
-        fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-        fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, mappedDiagnosisCodes.get(0));
+        String icdCode = mappedDiagnosisCodes.get(0);
+        fieldValues.put(BB2RIFStructure.SNF.PRNCPAL_DGNS_CD, icdCode);
+        fieldValues.put(BB2RIFStructure.SNF.ADMTG_DGNS_CD, icdCode);
+        if (exporter.drgCodeMapper.canMap(icdCode)) {
+          fieldValues.put(BB2RIFStructure.SNF.CLM_DRG_CD,
+                  exporter.drgCodeMapper.map(icdCode, person));
+        }
       }
     }
 

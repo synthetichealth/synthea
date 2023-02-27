@@ -374,11 +374,6 @@
           "system": "SNOMED-CT",
           "code": 414088005,
           "display": "Emergency coronary artery bypass graft (procedure)"
-        },
-        {
-          "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code"
         }
       ],
       "distribution": {

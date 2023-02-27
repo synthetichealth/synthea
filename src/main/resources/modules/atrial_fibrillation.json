@@ -92,8 +92,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 897718,
-          "display": "Verapamil Hydrochloride 40 MG"
+          "code": 897685,
+          "display": "verapamil hydrochloride 80 MG Oral Tablet"
         }
       ],
       "direct_transition": "Warfarin",
