@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":9};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -175,22 +175,32 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BB2_PARTD_CONTRACTS">BB2_PARTD_CONTRACTS</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected static long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CLAIM_CUTOFF">CLAIM_CUTOFF</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected static <a href="identifiers/CLIA.html" title="class in org.mitre.synthea.export.rif.identifiers">CLIA</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cliaLabNumbers">cliaLabNumbers</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BB2_PARTB_ENROLLEE">BB2_PARTB_ENROLLEE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BB2_PARTD_CONTRACTS">BB2_PARTD_CONTRACTS</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected static long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CLAIM_CUTOFF">CLAIM_CUTOFF</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static <a href="identifiers/CLIA.html" title="class in org.mitre.synthea.export.rif.identifiers">CLIA</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cliaLabNumbers">cliaLabNumbers</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#COVERAGE_START_DATE">COVERAGE_START_DATE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static java.lang.String[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ESRD_CODES">ESRD_CODES</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -262,6 +272,13 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
+<td class="colLast">
+<div class="block">Get the date of disability.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDiagnosesCodes(org.mitre.synthea.world.agents.Person,long)">getDiagnosesCodes</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;time)</code></th>
@@ -269,7 +286,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the list of active diagnoses at a point in time.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                     java.lang.String&nbsp;code)</code></th>
@@ -277,7 +294,31 @@ extends java.lang.Object</pre>
 <div class="block">Returns the earliest diagnosis time stamp for a particular condition.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                    java.lang.String[]&nbsp;codes)</code></th>
+<td class="colLast">
+<div class="block">Returns the earliest diagnosis time stamp for a set of conditions.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                            java.lang.String&nbsp;code)</code></th>
+<td class="colLast">
+<div class="block">Returns the earliest unmapped diagnosis time stamp for a particular condition.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>protected long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                            java.lang.String[]&nbsp;codes)</code></th>
+<td class="colLast">
+<div class="block">Returns the earliest unmapped diagnosis time stamp for a set of conditions.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">hasPartABCoverage</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;timestamp)</code></th>
@@ -285,7 +326,14 @@ extends java.lang.Object</pre>
 <div class="block">Test whether a person has part A and B coverage at the specified timestamp.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>protected static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisabled(org.mitre.synthea.world.agents.Person)">isDisabled</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
+<td class="colLast">
+<div class="block">Was the person disabled at any time.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseSimpleDate(java.lang.String)">parseSimpleDate</a></span>&#8203;(java.lang.String&nbsp;dateStr)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -324,6 +372,19 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#org.mitre.synthea.export.rif.RIFExporter.BB2_PARTD_CONTRACTS">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="BB2_PARTB_ENROLLEE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BB2_PARTB_ENROLLEE</h4>
+<pre>protected static final&nbsp;java.lang.String BB2_PARTB_ENROLLEE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.mitre.synthea.export.rif.RIFExporter.BB2_PARTB_ENROLLEE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -424,6 +485,15 @@ extends java.lang.Object</pre>
 <pre>protected static final&nbsp;long CLAIM_CUTOFF</pre>
 </li>
 </ul>
+<a id="ESRD_CODES">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ESRD_CODES</h4>
+<pre>protected static final&nbsp;java.lang.String[] ESRD_CODES</pre>
+</li>
+</ul>
 <a id="exporter">
 <!--   -->
 </a>
@@ -490,6 +560,24 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getEarliestDiagnosis</h4>
+<pre class="methodSignature">protected&nbsp;long&nbsp;getEarliestDiagnosis&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                    java.lang.String[]&nbsp;codes)</pre>
+<div class="block">Returns the earliest diagnosis time stamp for a set of conditions.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - patient with the diagnoses</dd>
+<dd><code>codes</code> - the condition codes</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed</dd>
+</dl>
+</li>
+</ul>
 <a id="getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">
 <!--   -->
 </a>
@@ -499,6 +587,42 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">protected&nbsp;long&nbsp;getEarliestDiagnosis&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                                     java.lang.String&nbsp;code)</pre>
 <div class="block">Returns the earliest diagnosis time stamp for a particular condition.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - patient with the diagnoses</dd>
+<dd><code>code</code> - the condition code</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the diagnosis time stamp or Long.MAX_VALUE if not diagnosed</dd>
+</dl>
+</li>
+</ul>
+<a id="getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getEarliestUnmappedDiagnosis</h4>
+<pre class="methodSignature">protected&nbsp;long&nbsp;getEarliestUnmappedDiagnosis&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                            java.lang.String[]&nbsp;codes)</pre>
+<div class="block">Returns the earliest unmapped diagnosis time stamp for a set of conditions.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - patient with the diagnoses</dd>
+<dd><code>codes</code> - the condition codes</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed</dd>
+</dl>
+</li>
+</ul>
+<a id="getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getEarliestUnmappedDiagnosis</h4>
+<pre class="methodSignature">protected&nbsp;long&nbsp;getEarliestUnmappedDiagnosis&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
+                                            java.lang.String&nbsp;code)</pre>
+<div class="block">Returns the earliest unmapped diagnosis time stamp for a particular condition.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>person</code> - patient with the diagnoses</dd>
@@ -529,7 +653,7 @@ extends java.lang.Object</pre>
 <a id="bb2TaxId(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>bb2TaxId</h4>
 <pre class="methodSignature">public static&nbsp;java.lang.String&nbsp;bb2TaxId&#8203;(java.lang.String&nbsp;ssn)</pre>
@@ -539,6 +663,38 @@ extends java.lang.Object</pre>
 <dd><code>ssn</code> - the SSN</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>formatted SSN or empty string</dd>
+</dl>
+</li>
+</ul>
+<a id="isDisabled(org.mitre.synthea.world.agents.Person)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isDisabled</h4>
+<pre class="methodSignature">protected static&nbsp;boolean&nbsp;isDisabled&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Was the person disabled at any time.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if disabled, false if not</dd>
+</dl>
+</li>
+</ul>
+<a id="getDateOfDisability(org.mitre.synthea.world.agents.Person)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getDateOfDisability</h4>
+<pre class="methodSignature">protected&nbsp;long&nbsp;getDateOfDisability&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Get the date of disability.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the date of disability or Long.MAX_VALUE if never disabled</dd>
 </dl>
 </li>
 </ul>

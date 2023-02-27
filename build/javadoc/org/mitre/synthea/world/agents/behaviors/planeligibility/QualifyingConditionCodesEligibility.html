@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -193,6 +193,14 @@ implements <a href="IPlanEligibility.html" title="interface in org.mitre.synthea
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
+<td class="colLast">
+<div class="block">Gets the earliest occurrence of a qualifying condition
+ that is active/present on the person.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPersonEligible(org.mitre.synthea.world.agents.Person,long)">isPersonEligible</a></span>&#8203;(<a href="../../Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                 long&nbsp;time)</code></th>
@@ -252,7 +260,7 @@ implements <a href="IPlanEligibility.html" title="interface in org.mitre.synthea
 <a id="isPersonEligible(org.mitre.synthea.world.agents.Person,long)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>isPersonEligible</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isPersonEligible&#8203;(<a href="../../Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
@@ -268,6 +276,23 @@ implements <a href="IPlanEligibility.html" title="interface in org.mitre.synthea
 <dd><code>time</code> - The time.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether the person is eligible.</dd>
+</dl>
+</li>
+</ul>
+<a id="getEarliestDiagnosis(org.mitre.synthea.world.agents.Person)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getEarliestDiagnosis</h4>
+<pre class="methodSignature">public&nbsp;long&nbsp;getEarliestDiagnosis&#8203;(<a href="../../Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Gets the earliest occurrence of a qualifying condition
+ that is active/present on the person.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - The person.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Start time of the earliest qualifying condition, or Long.MAX_VALUE if not present.</dd>
 </dl>
 </li>
 </ul>
