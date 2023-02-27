@@ -332,7 +332,6 @@ public class BeneficiaryExporter extends RIFExporter {
                 buyInIndicator);
       }
       exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY.class, fieldValues, year);
-      exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY.class, fieldValues, 9999);
       firstYearOutput = false;
     }
     if (firstYearOutput) {
