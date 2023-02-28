@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.ConsolidatedServicePeriods;
 import org.mitre.synthea.helpers.ConsolidatedServicePeriods.ConsolidatedServicePeriod;
@@ -123,7 +124,8 @@ public class HHAExporter extends RIFExporter {
           String.format("%.2f", consolidatedClaimLines.getTotalClaimCost()));
       fieldValues.put(BB2RIFStructure.HHA.CLM_HHA_TOT_VISIT_CNT,
               "" + servicePeriod.getEncounters().size());
-      fieldValues.put(BB2RIFStructure.HHA.PRVDR_NUM, servicePeriod.getProvider().cmsProviderNum);
+      fieldValues.put(BB2RIFStructure.HHA.PRVDR_NUM,
+              StringUtils.truncate(servicePeriod.getProvider().cmsProviderNum, 6));
       fieldValues.put(BB2RIFStructure.HHA.ORG_NPI_NUM, servicePeriod.getProvider().npi);
       fieldValues.put(BB2RIFStructure.HHA.PRVDR_STATE_CD,
           exporter.locationMapper.getStateCode(servicePeriod.getProvider().state));

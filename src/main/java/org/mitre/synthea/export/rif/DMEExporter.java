@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
@@ -73,10 +74,12 @@ public class DMEExporter extends RIFExporter {
                       BB2RIFStructure.CARRIER.CARR_NUM));
       fieldValues.put(BB2RIFStructure.DME.NCH_WKLY_PROC_DT,
               RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(BB2RIFStructure.DME.PRVDR_NUM, encounter.provider.cmsProviderNum);
+      fieldValues.put(BB2RIFStructure.DME.PRVDR_NUM,
+              StringUtils.truncate(encounter.provider.cmsProviderNum, 10));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_NPI, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.DME.RFR_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(BB2RIFStructure.DME.RFR_PHYSN_UPIN, encounter.provider.cmsUpin);
+      fieldValues.put(BB2RIFStructure.DME.RFR_PHYSN_UPIN,
+              StringUtils.truncate(encounter.provider.cmsUpin, 12));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));

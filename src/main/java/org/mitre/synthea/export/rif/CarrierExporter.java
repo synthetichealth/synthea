@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.apache.commons.lang3.StringUtils;
 
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.export.rif.identifiers.CLIA;
@@ -135,8 +136,10 @@ public class CarrierExporter extends RIFExporter {
               String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_CASH_DDCTBL_APLD_AMT,
               String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
-      fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_RFRNG_PIN_NUM, encounter.provider.cmsPin);
-      fieldValues.put(BB2RIFStructure.CARRIER.CARR_PRFRNG_PIN_NUM, encounter.provider.cmsPin);
+      fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_RFRNG_PIN_NUM,
+              StringUtils.truncate(encounter.provider.cmsPin, 14));
+      fieldValues.put(BB2RIFStructure.CARRIER.CARR_PRFRNG_PIN_NUM,
+              StringUtils.truncate(encounter.provider.cmsPin, 15));
       fieldValues.put(BB2RIFStructure.CARRIER.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_BLG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
@@ -160,8 +163,10 @@ public class CarrierExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
       // OPTIONAL
-      fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_UPIN, encounter.provider.cmsUpin);
-      fieldValues.put(BB2RIFStructure.CARRIER.RFR_PHYSN_UPIN, encounter.provider.cmsUpin);
+      fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_UPIN,
+              StringUtils.truncate(encounter.provider.cmsUpin, 12));
+      fieldValues.put(BB2RIFStructure.CARRIER.RFR_PHYSN_UPIN,
+              StringUtils.truncate(encounter.provider.cmsUpin, 12));
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_STATE_CD, encounter.provider.state);
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_ZIP, encounter.provider.zip);
 

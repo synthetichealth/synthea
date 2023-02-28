@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -193,7 +194,8 @@ public class HospiceExporter extends RIFExporter {
             RIFExporter.bb2DateFromTimestamp(encounter.stop));
     fieldValues.put(BB2RIFStructure.HOSPICE.NCH_WKLY_PROC_DT,
             RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-    fieldValues.put(BB2RIFStructure.HOSPICE.PRVDR_NUM, encounter.provider.cmsProviderNum);
+    fieldValues.put(BB2RIFStructure.HOSPICE.PRVDR_NUM,
+            StringUtils.truncate(encounter.provider.cmsProviderNum, 6));
     fieldValues.put(BB2RIFStructure.HOSPICE.AT_PHYSN_NPI, encounter.clinician.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
