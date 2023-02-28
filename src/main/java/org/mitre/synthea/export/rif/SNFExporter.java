@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -188,7 +189,8 @@ public class SNFExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.SNF.CLM_THRU_DT, bb2DateFromTimestamp(encounter.stop));
     fieldValues.put(BB2RIFStructure.SNF.NCH_WKLY_PROC_DT,
         bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-    fieldValues.put(BB2RIFStructure.SNF.PRVDR_NUM, encounter.provider.cmsProviderNum);
+    fieldValues.put(BB2RIFStructure.SNF.PRVDR_NUM,
+            StringUtils.truncate(encounter.provider.cmsProviderNum, 6));
     fieldValues.put(BB2RIFStructure.SNF.ORG_NPI_NUM, encounter.provider.npi);
 
     fieldValues.put(BB2RIFStructure.SNF.CLM_PMT_AMT,

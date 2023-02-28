@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -64,7 +65,8 @@ public class OutpatientExporter extends RIFExporter {
               RIFExporter.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_WKLY_PROC_DT,
               RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.PRVDR_NUM, encounter.provider.cmsProviderNum);
+      fieldValues.put(BB2RIFStructure.OUTPATIENT.PRVDR_NUM,
+              StringUtils.truncate(encounter.provider.cmsProviderNum, 6));
       fieldValues.put(BB2RIFStructure.OUTPATIENT.AT_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.ORG_NPI_NUM, encounter.provider.npi);
