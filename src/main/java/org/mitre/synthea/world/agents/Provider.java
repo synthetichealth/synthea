@@ -695,7 +695,13 @@ public class Provider implements QuadTreeElement, Serializable {
     d.cmsProviderType = line.remove("provider_type_code");
     d.cmsProviderNum = line.remove("provider_num");
     d.cmsPin = line.remove("pin");
+    if (d.cmsPin != null && d.cmsPin.length() > 14) {
+      d.cmsPin = null; // the pin is too long and is probably garbage
+    }
     d.cmsUpin = line.remove("upin");
+    if (d.cmsUpin != null && d.cmsUpin.length() > 12) {
+      d.cmsUpin = null; // the pin is too long and is probably garbage
+    }
     d.cmsRegion = line.remove("region_code");
     d.cliaNumber = line.remove("clia_lab_number");
 
