@@ -150,7 +150,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Terminal",
+      "direct_transition": "Antibiotic therapy",
       "name": "Hospital admission"
     }
   },
