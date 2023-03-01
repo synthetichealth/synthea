@@ -27,6 +27,7 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.IProviderFinder;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearest;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearestMedicare;
 import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -52,6 +53,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public static final String NEAREST = "nearest";
   public static final String RANDOM = "random";
   public static final String NETWORK = "network";
+  public static final String MEDICARE = "medicare";
 
   /** Map of providers imported by UUID. */
   private static Map<String, Provider> providerByUuid = new HashMap<String, Provider>();
@@ -61,8 +63,6 @@ public class Provider implements QuadTreeElement, Serializable {
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
       Config.getAsDouble("generate.providers.maximum_search_distance", 2);
-  public static final String PROVIDER_SELECTION_BEHAVIOR =
-      Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
   public static final Boolean USE_HOSPITAL_AS_DEFAULT =
       Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
@@ -160,6 +160,9 @@ public class Provider implements QuadTreeElement, Serializable {
       case RANDOM:
       case NETWORK:
         finder = new ProviderFinderRandom();
+        break;
+      case MEDICARE:
+        finder = new ProviderFinderNearestMedicare();
         break;
       case NEAREST:
       default:
