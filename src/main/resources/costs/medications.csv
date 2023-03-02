@@ -39,7 +39,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 106258,3,7,12,Hydrocortisone 10 MG/ML Topical Cream - OTC
 308971,2,35,500,Carbamazepine[Tegretol] -- note fairly high variability
 197591,0.145,0.29,0.58,Diazepam 5 MG Oral Tablet
-204892,0.11,9.36,1097.62,clonazePAM 0.25 MG Oral Tablet
+204892,0.11,0.61,1.22,clonazePAM 0.25 MG Oral Tablet
 198014,3,8,30,Naproxen 500 MG Oral Tablet
 483438,0.45,0.9,1.8,pregabalin 100 MG Oral Capsule
 596926,0.12,0.84,2.14,duloxetine 20 MG Delayed Release Oral Capsule
@@ -80,17 +80,17 @@ CODE,MIN,MODE,MAX,COMMENTS
 313820,3,4,8,Acetaminophen 160 MG Chewable Tablet - OTC
 198405,1.11,7,45,Ibuprofen 100 MG Oral Tablet
 310965,1.11,8,45,Ibuprofen 200 MG Oral Tablet
-1049683,3,200,2700,oxyCODONE Hydrochloride 10 MG Oral Tablet
-864718,2.75,18,350,Methadone Hydrochloride 5 MG Oral Tablet
+1049683,0.19,0.49,0.80,oxyCODONE Hydrochloride 10 MG Oral Tablet
+864718,0.15,0.2,0.4,Methadone Hydrochloride 5 MG Oral Tablet
 860975,0.01,0.25,4.32,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet
 897122,200,600,1600,3 ML liraglutide 6 MG/ML Pen Injector -- note: I see 2-pak and 3-pak
 1373463,75,400,885,canagliflozin 100 MG Oral Tablet
 106892,8.30,16.61,33.22,insulin human isophane 70 UNT/ML / Regular Insulin Human 30 UNT/ML Injectable Suspension [Humulin]
 865098,15.465,30.93,61.86,Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]
 856987,0.06,1.38,8.15,Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet
-1860154,3,200,2700,Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet
+1860154,3,4.89,8.06,Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet
 904419,0.03,0.34,1.54,Alendronic acid 10 MG Oral Tablet -- SEE ALENDRONATE SODIUM
-105585,1.13,51.66,539.60,Methotrexate 2.5 MG Oral Tablet
+105585,0.88,1.92,2.13,Methotrexate 2.5 MG Oral Tablet
 562251,3,16,153,Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet -- see AMOX TR-POTASSIUM CLAVULANATE
 834061,0.01,7,43,Penicillin V Potassium 250 MG Oral Tablet
 834102,0.01,7,43,Penicillin V Potassium 500 MG Oral Tablet
