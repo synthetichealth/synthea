@@ -26,7 +26,7 @@
                     {
                       "system": "SNOMED-CT",
                       "code": "422034002",
-                      "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                      "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
                 }
@@ -50,7 +50,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "422034002",
-                    "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+                    "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
               }
@@ -69,7 +69,7 @@
         {
           "system": "SNOMED-CT",
           "code": "422034002",
-          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+          "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Nonproliferative_Retinopathy"
@@ -80,7 +80,7 @@
         {
           "system": "SNOMED-CT",
           "code": "422034002",
-          "display": "Diabetic retinopathy associated with type II diabetes mellitus (disorder)"
+          "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Nonproliferative_Retinopathy"

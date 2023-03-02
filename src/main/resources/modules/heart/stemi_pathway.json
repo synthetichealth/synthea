@@ -188,7 +188,7 @@
         {
           "system": "SNOMED-CT",
           "code": 33367005,
-          "display": "Coronary angiography (procedure)"
+          "display": "Angiography of coronary artery (procedure)"
         }
       ],
       "unit": "minutes",
@@ -199,7 +199,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 25338004,
+          "code": "225338004",
           "display": "Risk assessment (procedure)"
         }
       ],

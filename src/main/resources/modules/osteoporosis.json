@@ -176,7 +176,7 @@
         {
           "system": "LOINC",
           "code": "38265-5",
-          "display": "DXA [T-score] Bone density"
+          "display": "DXA Radius and Ulna [T-score] Bone density"
         }
       ],
       "range": {

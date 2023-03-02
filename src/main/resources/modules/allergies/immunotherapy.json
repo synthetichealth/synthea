@@ -73,7 +73,7 @@
         {
           "system": "SNOMED-CT",
           "code": "182678001",
-          "display": "Hyposensitization to allergens (procedure)"
+          "display": "Allergen immunotherapy (regime/therapy)"
         }
       ],
       "direct_transition": "Benchmark_Allergy_Test"

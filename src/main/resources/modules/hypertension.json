@@ -205,7 +205,7 @@
         {
           "system": "SNOMED-CT",
           "code": 59621000,
-          "display": "Hypertension"
+          "display": "Essential hypertension (disorder)"
         }
       ],
       "assign_to_attribute": "hypertension_dx",
@@ -220,7 +220,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP"
@@ -285,7 +285,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP_2"
@@ -298,7 +298,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Hypertension follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_BP_3",
@@ -598,7 +598,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [
@@ -649,7 +649,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [
@@ -700,7 +700,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [

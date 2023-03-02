@@ -257,7 +257,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "History_of_Appendectomy",
@@ -283,8 +283,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183452005",
-          "display": "Encounter Inpatient"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Appendectomy",

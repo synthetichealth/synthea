@@ -218,7 +218,7 @@
         {
           "system": "LOINC",
           "code": "55405-5",
-          "display": "Heartfailure Tracking Panel"
+          "display": "Heart failure tracking panel"
         }
       ],
       "observations": [

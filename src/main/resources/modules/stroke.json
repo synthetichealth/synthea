@@ -18,7 +18,7 @@
         {
           "system": "SNOMED-CT",
           "code": 433112001,
-          "display": "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance"
+          "display": "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance with contrast (procedure)"
         }
       ],
       "duration": {

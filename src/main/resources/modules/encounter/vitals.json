@@ -56,7 +56,7 @@
         {
           "system": "LOINC",
           "code": "39156-5",
-          "display": "Body Mass Index"
+          "display": "Body mass index (BMI) [Ratio]"
         }
       ],
       "unit": "kg/m2",
@@ -69,7 +69,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [

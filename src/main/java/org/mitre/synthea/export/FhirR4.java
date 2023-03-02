@@ -563,7 +563,7 @@ public class FhirR4 {
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's License");
+      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's license number");
       patientResource.addIdentifier()
           .setType(mapCodeToCodeableConcept(driversCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
@@ -783,8 +783,20 @@ public class FhirR4 {
 
     String maritalStatus = ((String) person.attributes.get(Person.MARITAL_STATUS));
     if (maritalStatus != null) {
+      Map<String, String> maritalStatusCodes = Map.of(
+          "A", "Annulled",
+          "D", "Divorced",
+          "I", "Interlocutory",
+          "L", "Legally Separated",
+          "M", "Married",
+          "P", "Polygamous",
+          "T", "Domestic partner",
+          "U", "unmarried",
+          "S", "Never Married",
+          "W", "Widowed");
+      String maritalStatusDisplay = maritalStatusCodes.getOrDefault(maritalStatus, maritalStatus);
       Code maritalStatusCode = new Code("http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-          maritalStatus, maritalStatus);
+          maritalStatus, maritalStatusDisplay);
       patientResource.setMaritalStatus(
           mapCodeToCodeableConcept(maritalStatusCode,
               "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
@@ -1369,7 +1381,7 @@ public class FhirR4 {
     CodeableConcept primaryCareRole = new CodeableConcept().addCoding(new Coding()
         .setCode("primary")
         .setSystem("http://terminology.hl7.org/CodeSystem/claimcareteamrole")
-        .setDisplay("Primary Care Practitioner"));
+        .setDisplay("Primary provider"));
     Reference providerReference = new Reference().setDisplay("Unknown");
     if (encounter.clinician != null) {
       String practitionerFullUrl = TRANSACTION_BUNDLE
@@ -1822,9 +1834,17 @@ public class FhirR4 {
       }
     }
 
+    // map the code to the official display, ex "vital-signs" --> "Vital Signs"
+    // in all cases the text is the same just with these two differences- space/hyphen and caps
+    // https://terminology.hl7.org/5.0.0/CodeSystem-observation-category.html
+    String categoryDisplay = null;
+    if (observation.category != null) {
+      categoryDisplay = StringUtils.capitalize(observation.category.replace('-', ' '));
+    }
+
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-        .setDisplay(observation.category);
+        .setDisplay(categoryDisplay);
 
     if (observation.value != null) {
       Type value = mapValueToFHIRType(observation.value, observation.unit);
@@ -2386,7 +2406,7 @@ public class FhirR4 {
         dosage.setDoseAndRate(details);
 
         if (rxInfo.has("instructions")) {
-          String text = "";
+          StringBuilder text = new StringBuilder();
           for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
             JsonObject instruction = instructionElement.getAsJsonObject();
             Code instructionCode = new Code(
@@ -2394,10 +2414,11 @@ public class FhirR4 {
                 instruction.get("code").getAsString(),
                 instruction.get("display").getAsString()
             );
-            text += instructionCode.display + "\n";
+            text.append(instructionCode.display).append('\n');
             dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
           }
-          dosage.setText(text);
+          text.deleteCharAt(text.length() - 1); // delete the last newline char
+          dosage.setText(text.toString());
         }
       }
 
@@ -2639,7 +2660,7 @@ public class FhirR4 {
       documentReference.addContent()
           .setAttachment(reportResource.getPresentedFormFirstRep())
           .setFormat(
-            new Coding("http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
+            new Coding("http://ihe.net/fhir/ihe.formatcode.fhir/CodeSystem/formatcode",
                 "urn:ihe:iti:xds:2017:mimeTypeSufficient", "mimeType Sufficient"));
       documentReference.setContext(new DocumentReferenceContextComponent()
           .addEncounter(reportResource.getEncounter())
@@ -3016,7 +3037,7 @@ public class FhirR4 {
         instanceResource.setUid(instance.dicomUid);
         instanceResource.setTitle(instance.title);
         instanceResource.setSopClass(new Coding()
-            .setCode(instance.sopClass.code)
+            .setCode("urn:oid:" + instance.sopClass.code)
             .setSystem("urn:ietf:rfc:3986"));
         instanceResource.setNumber(instanceNo);
 
@@ -3290,11 +3311,11 @@ public class FhirR4 {
           .setDisplay(clinician.getOrganization().name));
       practitionerRole.addCode(
           mapCodeToCodeableConcept(
-              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice Physician"),
               null));
       practitionerRole.addSpecialty(
           mapCodeToCodeableConcept(
-              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice Physician"),
               null));
       practitionerRole.addLocation()
           .setIdentifier(new Identifier()

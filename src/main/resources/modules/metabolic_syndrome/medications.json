@@ -235,7 +235,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "127013003",
-                "display": "Diabetic renal disease (disorder)"
+                "display": "Disorder of kidney due to diabetes mellitus (disorder)"
               }
             ]
           },
@@ -256,7 +256,7 @@
               {
                 "system": "RxNorm",
                 "code": "106892",
-                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+                "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
               }
             ]
           },
@@ -295,7 +295,7 @@
         {
           "system": "RxNorm",
           "code": "106892",
-          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+          "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
         }
       ],
       "reason": "diabetes_stage",
@@ -308,7 +308,7 @@
         {
           "system": "RxNorm",
           "code": "106892",
-          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+          "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
         }
       ],
       "direct_transition": "Prescribe_Prandial_Insulin"
@@ -336,7 +336,7 @@
               {
                 "system": "RxNorm",
                 "code": "106892",
-                "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+                "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
               }
             ]
           },
@@ -366,7 +366,7 @@
         {
           "system": "RxNorm",
           "code": "106892",
-          "display": "insulin human, isophane 70 UNT/ML / Regular Insulin, Human 30 UNT/ML Injectable Suspension [Humulin]"
+          "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
         }
       ],
       "direct_transition": "Terminal"
