@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -185,21 +186,58 @@ public class FhirR4 {
       Config.getAsBoolean("exporter.fhir.use_shr_extensions");
   protected static boolean TRANSACTION_BUNDLE =
       Config.getAsBoolean("exporter.fhir.transaction_bundle");
+
+  /* For the most part the US Core changes from v4 -> v5 are backwards compatible,
+   * so for those cases just check USE_US_CORE_IG.
+   * If there are version differences then use USE_US_CORE_(#) to separate them out.
+   */
   protected static boolean USE_US_CORE_IG =
       Config.getAsBoolean("exporter.fhir.use_us_core_ig");
+  protected static String US_CORE_VERSION =
+      Config.get("exporter.fhir.us_core_version", "");
+
+  private static Table<String, String, String> US_CORE_MAPPING;
+  private static final Table<String, String, String> US_CORE_4_MAPPING;
+  private static final Table<String, String, String> US_CORE_5_MAPPING;
+
+  protected static boolean useUSCore4() {
+    boolean useUSCore4 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("4");
+    if (useUSCore4) {
+      US_CORE_MAPPING = US_CORE_4_MAPPING;
+    }
+    return useUSCore4;
+  }
+
+  protected static boolean useUSCore5() {
+    boolean useUSCore5 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("5");
+    if (useUSCore5) {
+      US_CORE_MAPPING = US_CORE_5_MAPPING;
+    }
+    return useUSCore5;
+  }
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static final Table<String, String, String> SHR_MAPPING =
       loadMapping("shr_mapping.csv");
-  private static final Table<String, String, String> US_CORE_MAPPING =
-      loadMapping("us_core_mapping.csv");
 
   private static final HashSet<Class<? extends Resource>> includedResources = new HashSet<>();
   private static final HashSet<Class<? extends Resource>> excludedResources = new HashSet<>();
 
   static {
     reloadIncludeExclude();
+
+    Map<String, Table<String, String, String>> usCoreMappings =
+        loadMappingWithVersions("us_core_mapping.csv", "4", "5");
+
+    US_CORE_4_MAPPING = usCoreMappings.get("4");
+    US_CORE_5_MAPPING = usCoreMappings.get("5");
+
+    if (US_CORE_VERSION.startsWith("4")) {
+      US_CORE_MAPPING = US_CORE_4_MAPPING;
+    } else if (US_CORE_VERSION.startsWith("5")) {
+      US_CORE_MAPPING = US_CORE_5_MAPPING;
+    }
   }
 
   static void reloadIncludeExclude() {
@@ -301,6 +339,43 @@ public class FhirR4 {
     }
 
     return mappingTable;
+  }
+
+  private static Map<String, Table<String, String, String>>
+      loadMappingWithVersions(String filename, String... supportedVersions) {
+    Map<String, Table<String,String,String>> versions = new HashMap<>();
+
+    for (String version : supportedVersions) {
+      versions.put(version, HashBasedTable.create());
+    }
+
+    List<LinkedHashMap<String, String>> csvData;
+    try {
+      csvData = SimpleCSV.parse(Utilities.readResource(filename));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    for (LinkedHashMap<String, String> line : csvData) {
+      String system = line.get("SYSTEM");
+      String code = line.get("CODE");
+      String url = line.get("URL");
+      String version = line.get("VERSION");
+
+      if (StringUtils.isBlank(version)) {
+        // blank means applies to ALL versions
+        versions.values().forEach(table -> table.put(system, code, url));
+      } else {
+        Table<String, String, String> mappingTable = versions.get(version);
+        if (mappingTable == null) {
+          throw new IllegalArgumentException("Unknown version " + version);
+        }
+        mappingTable.put(system, code, url);
+      }
+    }
+
+    return versions;
   }
 
   public static FhirContext getContext() {
@@ -1558,8 +1633,13 @@ public class FhirR4 {
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
-      meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition");
+      if (useUSCore5()) {
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis");
+      } else {
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition");
+      }
       conditionResource.setMeta(meta);
       conditionResource.addCategory(new CodeableConcept().addCoding(new Coding(
           "http://terminology.hl7.org/CodeSystem/condition-category", "encounter-diagnosis",
@@ -1775,10 +1855,38 @@ public class FhirR4 {
       } else if (observation.report != null && observation.category.equals("laboratory")) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
+
+      if (useUSCore5() && observation.category != null) {
+        switch (observation.category) {
+          case "imaging":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
+            break;
+          case "social-history":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
+            break;
+          case "survey":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
+            // note that the -sdoh-assessment profile is a subset of -survey,
+            // those are handled by code in US_CORE_MAPPING above
+            break;
+          case "exam":
+            // this one is a little nebulous -- are all exams also clinical tests?
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
+
+            observationResource.addCategory().addCoding().setCode("clinical-test")
+                .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
+                .setDisplay("Clinical Test");
+            break;
+          default:
+            // do nothing
+        }
+      }
+
       if (meta.hasProfile()) {
         observationResource.setMeta(meta);
       }
-    } else if (USE_SHR_EXTENSIONS) {
+    }
+    if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
       meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
       if ("vital-signs".equals(observation.category)) {
