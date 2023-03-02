@@ -104,8 +104,7 @@
       },
       "unit": "minutes",
       "direct_transition": "UTI_Abx",
-      "name": "Antibiotic therapy",
-      "assign_to_attribute": "UTI_Tx"
+      "name": "Antibiotic therapy"
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
@@ -134,22 +133,7 @@
       "name": "Patient discharge"
     },
     "Hospital admission": {
-      "type": "Procedure",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 32485007,
-          "display": "Hospital admission (procedure)",
-          "value_set": ""
-        }
-      ],
-      "distribution": {
-        "kind": "EXACT",
-        "parameters": {
-          "value": 10
-        }
-      },
-      "unit": "minutes",
+      "type": "Simple",
       "direct_transition": "Antibiotic therapy",
       "name": "Hospital admission"
     }
