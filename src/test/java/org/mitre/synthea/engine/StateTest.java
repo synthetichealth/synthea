@@ -222,7 +222,7 @@ public class StateTest {
     Encounter enc = person.record.encounters.get(0);
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
-    assertEquals("Emergency Room Admission", code.display);
+    assertEquals("Emergency room admission (procedure)", code.display);
     assertEquals(1, enc.conditions.size());
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("73211009", code.code);
@@ -251,7 +251,7 @@ public class StateTest {
     Encounter enc = person.record.encounters.get(0);
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
-    assertEquals("Emergency Room Admission", code.display);
+    assertEquals("Emergency room admission (procedure)", code.display);
     assertEquals(1, enc.conditions.size());
     code = enc.conditions.get(0).codes.get(0);
     assertEquals("47693006", code.code);
@@ -990,7 +990,7 @@ public class StateTest {
 
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
-    assertEquals("Emergency Room Admission", code.display);
+    assertEquals("Emergency room admission (procedure)", code.display);
   }
 
   @Test
@@ -1014,7 +1014,7 @@ public class StateTest {
 
     Code code = enc.codes.get(0);
     assertEquals("50849002", code.code);
-    assertEquals("Emergency Room Admission", code.display);
+    assertEquals("Emergency room admission (procedure)", code.display);
   }
 
   @Test

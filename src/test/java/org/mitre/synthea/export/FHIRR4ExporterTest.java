@@ -119,6 +119,7 @@ public class FHIRR4ExporterTest {
       FhirR4.reloadIncludeExclude();
       FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
       FhirR4.USE_US_CORE_IG = person.randBoolean();
+      FhirR4.US_CORE_VERSION = person.randBoolean() ? "4" : "5";
       FhirR4.USE_SHR_EXTENSIONS = false;
 
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
