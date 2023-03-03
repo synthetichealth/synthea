@@ -24,7 +24,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "remarks": [
         "lower limb amputation occurs in 0.65% of the diabetic population",
         " with upper limb amputation occurring in an ever fewer 0.034%",
@@ -104,7 +104,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Foot_Amputation"
     },
     "Potential_Amputation_of_Right_Foot": {
@@ -145,7 +145,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Foot_Amputation"
     },
     "Potential_Amputation_of_Left_Leg": {
@@ -177,7 +177,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Lower_Limb_Amputation"
     },
     "Potential_Amputation_of_Right_Leg": {
@@ -209,7 +209,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Lower_Limb_Amputation"
     },
     "History_of_Lower_Limb_Amputation": {
@@ -274,7 +274,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Hand_Amputation"
     },
     "Potential_Amputation_of_Right_Hand": {
@@ -315,7 +315,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Hand_Amputation"
     },
     "Potential_Amputation_of_Right_Arm": {
@@ -347,7 +347,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Upper_Limb_Amputation"
     },
     "Potential_Amputation_of_Left_Arm": {
@@ -379,7 +379,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "Diagnose_Neuropathy",
+      "reason": "diabetic_neuropathy",
       "direct_transition": "History_of_Upper_Limb_Amputation"
     },
     "History_of_Upper_Limb_Amputation": {

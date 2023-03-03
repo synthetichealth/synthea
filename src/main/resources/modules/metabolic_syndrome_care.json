@@ -598,7 +598,8 @@
           "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
-      "direct_transition": "Consider_Procedures"
+      "direct_transition": "Consider_Procedures",
+      "assign_to_attribute": "diabetic_neuropathy"
     },
     "End_Neuropathy": {
       "type": "ConditionEnd",
