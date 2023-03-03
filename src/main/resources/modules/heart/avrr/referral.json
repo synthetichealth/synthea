@@ -22,7 +22,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Liaising with referral source"
+      "direct_transition": "Liaising with referral source",
+      "reason": "vhd_diagnosis"
     },
     "Liaising with referral source": {
       "type": "Procedure",
@@ -34,7 +35,8 @@
         }
       ],
       "unit": "minutes",
-      "direct_transition": "Medical Records Review"
+      "direct_transition": "Medical Records Review",
+      "reason": "vhd_diagnosis"
     },
     "Medical Records Review": {
       "type": "Procedure",
@@ -46,7 +48,8 @@
         }
       ],
       "unit": "minutes",
-      "direct_transition": "Care Plan Coordination"
+      "direct_transition": "Care Plan Coordination",
+      "reason": "vhd_diagnosis"
     },
     "Care Plan Coordination": {
       "type": "Procedure",
@@ -58,7 +61,8 @@
         }
       ],
       "unit": "minutes",
-      "direct_transition": "AVRr Care Plan"
+      "direct_transition": "AVRr Care Plan",
+      "reason": "vhd_diagnosis"
     },
     "AVRr Care Plan": {
       "type": "CarePlanStart",
@@ -87,7 +91,8 @@
           "display": "Refer for angiogram (procedure)"
         }
       ],
-      "assign_to_attribute": "avrr_careplan"
+      "assign_to_attribute": "avrr_careplan",
+      "reason": "vhd_diagnosis"
     },
     "Priority_1_Next_Encounter": {
       "type": "Delay",
@@ -141,7 +146,8 @@
           "display": "Hospital admission (procedure)"
         }
       ],
-      "direct_transition": "AVRr Preop"
+      "direct_transition": "AVRr Preop",
+      "reason": "vhd_diagnosis"
     },
     "Preoperative_Outpatient": {
       "type": "Encounter",
@@ -153,7 +159,8 @@
           "display": "Follow-up encounter (procedure)"
         }
       ],
-      "direct_transition": "Set_Immediate_Admission_False"
+      "direct_transition": "Set_Immediate_Admission_False",
+      "reason": "vhd_diagnosis"
     },
     "Set_Immediate_Admission_False": {
       "type": "SetAttribute",
@@ -185,7 +192,8 @@
           "transition": "Treatment Plan",
           "distribution": 0.8
         }
-      ]
+      ],
+      "reason": "vhd_diagnosis"
     },
     "Heart Team Conference": {
       "type": "Procedure",
@@ -197,7 +205,8 @@
         }
       ],
       "unit": "minutes",
-      "direct_transition": "Treatment Plan"
+      "direct_transition": "Treatment Plan",
+      "reason": "vhd_diagnosis"
     },
     "Treatment Plan": {
       "type": "Procedure",
@@ -218,7 +227,8 @@
           "transition": "Patient referral",
           "distribution": 0.1
         }
-      ]
+      ],
+      "reason": "vhd_diagnosis"
     },
     "Scheduling": {
       "type": "Procedure",
@@ -243,7 +253,8 @@
         {
           "transition": "End Preoperative"
         }
-      ]
+      ],
+      "reason": "vhd_diagnosis"
     },
     "Patient referral": {
       "type": "Procedure",
@@ -264,7 +275,8 @@
           "transition": "Palliative Care",
           "distribution": 0.4
         }
-      ]
+      ],
+      "reason": "vhd_diagnosis"
     },
     "End Preoperative": {
       "type": "EncounterEnd",
@@ -304,7 +316,7 @@
     "Valve Surgery": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "",
+      "reason": "vhd_diagnosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -385,7 +397,8 @@
           "transition": "End Preoperative Encounter",
           "distribution": 0.6
         }
-      ]
+      ],
+      "reason": "vhd_diagnosis"
     },
     "End_VHD_Referral_Consultation": {
       "type": "EncounterEnd",

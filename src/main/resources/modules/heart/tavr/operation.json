@@ -126,7 +126,8 @@
           "display": "History of aortic valve replacement (situation)"
         }
       ],
-      "direct_transition": "Finish Surgery"
+      "direct_transition": "Finish Surgery",
+      "assign_to_attribute": "tavr_history"
     },
     "Transfemoral TAVR": {
       "type": "Procedure",

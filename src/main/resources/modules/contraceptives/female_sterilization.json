@@ -38,7 +38,7 @@
         "high": 3,
         "unit": "weeks"
       },
-      "direct_transition": "Tubal_Ligation_Surgery_Encounter"
+      "direct_transition": "History of Tubal Ligation"
     },
     "Tubal_Ligation_Surgery_Encounter": {
       "type": "Encounter",
@@ -50,7 +50,8 @@
           "display": "Admission to surgical department"
         }
       ],
-      "direct_transition": "Tubal_Ligation_Procedure"
+      "direct_transition": "Tubal_Ligation_Procedure",
+      "reason": "History of Tubal Ligation"
     },
     "Tubal_Ligation_Procedure": {
       "type": "Procedure",
@@ -95,7 +96,8 @@
           "display": "Recommendation to limit sexual activity"
         }
       ],
-      "direct_transition": "Postoperative Care"
+      "direct_transition": "Postoperative Care",
+      "reason": "History of Tubal Ligation"
     },
     "End_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -153,7 +155,20 @@
         }
       },
       "unit": "hours",
-      "direct_transition": "End_Surgery_Encounter"
+      "direct_transition": "End_Surgery_Encounter",
+      "reason": "History of Tubal Ligation"
+    },
+    "History of Tubal Ligation": {
+      "type": "ConditionOnset",
+      "target_encounter": "Tubal_Ligation_Surgery_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 267020005,
+          "display": "History of tubal ligation (situation)"
+        }
+      ],
+      "direct_transition": "Tubal_Ligation_Surgery_Encounter"
     }
   },
   "gmf_version": 1

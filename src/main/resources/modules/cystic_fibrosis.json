@@ -178,7 +178,8 @@
       ],
       "remarks": [
         "https://www.cff.org/What-is-CF/Testing/"
-      ]
+      ],
+      "reason": "Cystic_Fibrosis"
     },
     "Sweat_Test": {
       "type": "Procedure",

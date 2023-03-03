@@ -903,7 +903,8 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "Lung Cancer Condition"
     },
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",

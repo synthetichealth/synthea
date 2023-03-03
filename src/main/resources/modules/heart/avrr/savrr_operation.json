@@ -306,7 +306,8 @@
           "display": "History of aortic valve replacement (situation)"
         }
       ],
-      "direct_transition": "Finish_Surgery"
+      "direct_transition": "Finish_Surgery",
+      "assign_to_attribute": "savrr_history"
     },
     "AV Repair History": {
       "type": "ConditionOnset",
@@ -317,7 +318,8 @@
           "display": "History of aortic valve repair (situation)"
         }
       ],
-      "direct_transition": "Finish_Surgery"
+      "direct_transition": "Finish_Surgery",
+      "assign_to_attribute": "savrr_history"
     },
     "Transesophageal Echo​": {
       "type": "ImagingStudy",

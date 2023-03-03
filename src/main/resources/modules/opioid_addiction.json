@@ -536,11 +536,11 @@
         },
         {
           "distribution": 0.0425,
-          "transition": "Enter_Addiction_Treatment"
+          "transition": "Drug Addiction"
         },
         {
           "distribution": 0.10375,
-          "transition": "Recovery_Management"
+          "transition": "Drug_Addiction"
         }
       ]
     },
@@ -555,7 +555,7 @@
         }
       ],
       "direct_transition": "Pain_Vital_4",
-      "reason": "Addiction_Overdose"
+      "reason": "opioid_drug_addiction"
     },
     "End_Addiction_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -593,7 +593,7 @@
         }
       ],
       "direct_transition": "Recovery Rehab",
-      "reason": "Addiction_Overdose"
+      "reason": "opioid_drug_addiction"
     },
     "End_Recovery_Management_Encounter": {
       "type": "EncounterEnd",
@@ -901,7 +901,33 @@
       },
       "unit": "minutes",
       "direct_transition": "End_Recovery_Management_Encounter",
-      "reason": "Addiction_Overdose"
+      "reason": "opioid_drug_addiction"
+    },
+    "Drug Addiction": {
+      "type": "ConditionOnset",
+      "target_encounter": "Enter_Addiction_Treatment",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6525002,
+          "display": "Dependent drug abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Enter_Addiction_Treatment",
+      "assign_to_attribute": "opioid_drug_addiction"
+    },
+    "Drug_Addiction": {
+      "type": "ConditionOnset",
+      "target_encounter": "Recovery_Management",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6525002,
+          "display": "Dependent drug abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Recovery_Management",
+      "assign_to_attribute": "opioid_drug_addiction"
     }
   },
   "gmf_version": 1
