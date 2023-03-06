@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,9 +41,9 @@ import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
   private static final long serialVersionUID = 4322116644425686379L;
-  private static final ZoneId timeZone = ZoneId.systemDefault();
 
   public static final String BIRTHDATE = "birthdate";
+  public static final String BIRTHDATE_AS_LOCALDATE = "birthdate_as_localdate";
   public static final String DEATHDATE = "deathdate";
   public static final String FIRST_NAME = "first_name";
   public static final String MIDDLE_NAME = "middle_name";
@@ -250,9 +250,16 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     Period age = Period.ZERO;
 
     if (attributes.containsKey(BIRTHDATE)) {
-      LocalDate now = Instant.ofEpochMilli(time).atZone(timeZone).toLocalDate();
-      LocalDate birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
-          .atZone(timeZone).toLocalDate();
+      LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneOffset.UTC).toLocalDate();
+
+      // we call age() a lot, so caching the birthdate as a LocalDate saves some translation
+      LocalDate birthdate = (LocalDate) attributes.get(BIRTHDATE_AS_LOCALDATE);
+      if (birthdate == null) {
+        birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
+            .atZone(ZoneOffset.UTC).toLocalDate();
+        attributes.put(BIRTHDATE_AS_LOCALDATE, birthdate);
+      }
+
       age = Period.between(birthdate, now);
     }
     return age;

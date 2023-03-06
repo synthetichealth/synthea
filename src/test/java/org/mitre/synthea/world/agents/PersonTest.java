@@ -162,11 +162,13 @@ public class PersonTest {
 
   private void testAgeYears(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInYears(now));
   }
 
   private void testAgeMonths(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInMonths(now));
   }
 
