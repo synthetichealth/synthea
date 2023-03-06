@@ -23,6 +23,7 @@ public class App {
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-cs clinicianSeed] [-p populationSize]");
+    System.out.println("         [-ps singlePersonSeed]");
     System.out.println("         [-r referenceDate as YYYYMMDD]");
     System.out.println("         [-e endDate as YYYYMMDD]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
@@ -74,6 +75,9 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-cs")) {
             String value = argsQ.poll();
             options.clinicianSeed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-ps")) {
+            String value = argsQ.poll();
+            options.singlePersonSeed = Long.valueOf(value);
           } else if (currArg.equalsIgnoreCase("-r")) {
             String value = argsQ.poll();
             // note that Y = "week year" and y = "year" per the formatting guidelines
