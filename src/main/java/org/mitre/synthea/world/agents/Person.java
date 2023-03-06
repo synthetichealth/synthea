@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.mitre.synthea.engine.ExpressedConditionRecord;
 import org.mitre.synthea.engine.ExpressedSymptom;
 import org.mitre.synthea.engine.Module;
@@ -394,14 +397,16 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * TODO These symptoms are not filtered by time.
    * @return list of active symptoms above the threshold.
    */
-  public Set<String> getSymptoms() {
-    Set<String> active = new HashSet<String>(symptoms.keySet());
-    for (String symptom : symptoms.keySet()) {
-      int severity = getSymptom(symptom);
-      if (severity < 20) {
-        active.remove(symptom);
-      }
-    }
+  public List<String> getSymptoms() {
+    List<String> active = symptoms.keySet().stream()
+        // map each symptom text to a pair (text, severity)
+        .map(symptom -> Pair.of(symptom, getSymptom(symptom)))
+        // sort by severity, descending
+        .sorted(Comparator.comparing(Pair::getRight, Comparator.reverseOrder()))
+        .filter(p -> p.getRight() >= 20) // filter by severity >= 20
+        .map(Pair::getLeft) // map back to symptom text
+        .collect(Collectors.toList());
+
     return active;
   }
 
