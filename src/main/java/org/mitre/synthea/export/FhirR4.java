@@ -194,7 +194,7 @@ public class FhirR4 {
   protected static boolean USE_US_CORE_IG =
       Config.getAsBoolean("exporter.fhir.use_us_core_ig");
   protected static String US_CORE_VERSION =
-      Config.get("exporter.fhir.us_core_version", "");
+      Config.get("exporter.fhir.us_core_version", "5.0.1");
 
   private static Table<String, String, String> US_CORE_MAPPING;
   private static final Table<String, String, String> US_CORE_4_MAPPING;
@@ -369,7 +369,9 @@ public class FhirR4 {
       } else {
         Table<String, String, String> mappingTable = versions.get(version);
         if (mappingTable == null) {
-          throw new IllegalArgumentException("Unknown version " + version);
+          throw new IllegalArgumentException("Error in loading mapping from file " + filename
+              + ". File contains row with version '" + version
+              + "' but supported version numbers are: " + String.join(",", supportedVersions));
         }
         mappingTable.put(system, code, url);
       }

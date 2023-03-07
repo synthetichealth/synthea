@@ -101,8 +101,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -112,8 +112,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -124,8 +124,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -135,8 +135,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -151,8 +151,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -163,8 +163,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -175,8 +175,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -187,8 +187,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -199,15 +199,15 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -228,8 +228,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -239,8 +239,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -251,8 +251,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -262,8 +262,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -278,8 +278,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -290,8 +290,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -302,8 +302,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -314,8 +314,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -326,15 +326,15 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -355,8 +355,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -366,8 +366,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -378,8 +378,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -389,8 +389,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -405,8 +405,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -417,8 +417,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -429,8 +429,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -441,8 +441,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -453,15 +453,15 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -482,8 +482,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -493,8 +493,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -505,8 +505,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -516,8 +516,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -532,8 +532,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -544,8 +544,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -556,8 +556,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -568,8 +568,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -580,15 +580,15 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
@@ -609,8 +609,8 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "code": "24321-2",
+          "display": "Basic metabolic 2000 panel - Serum or Plasma"
         }
       ],
       "observations": [
@@ -620,8 +620,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -632,8 +632,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "code": "3094-0",
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -643,8 +643,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL",
@@ -659,8 +659,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -671,8 +671,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -683,8 +683,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -695,8 +695,8 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "code": "2075-0",
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
@@ -707,15 +707,15 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "unit": "mmol/L"
         },
         {
           "category": "laboratory",
-          "unit": "mL/min",
+          "unit": "mL/min/{1.73_m2}",
           "codes": [
             {
               "system": "LOINC",
