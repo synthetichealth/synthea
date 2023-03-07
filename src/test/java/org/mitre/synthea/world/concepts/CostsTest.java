@@ -42,9 +42,9 @@ public class CostsTest {
 
   @Test public void testCostByKnownCode() {
     Code code = new Code("RxNorm","705129","Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray");
-    // note: cost range = 8.5-400, with mode at 20
-    double minCost = 8.5;
-    double maxCost = 400;
+    // note: cost range = 1.01-66.30, with mode at 6.05
+    double minCost = 1.01;
+    double maxCost = 66.30;
 
     Medication fakeMedication = person.record.medicationStart(time, code.display, true);
     fakeMedication.administration = true; // quantity of 1
