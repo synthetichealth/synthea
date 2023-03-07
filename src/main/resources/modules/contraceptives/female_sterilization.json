@@ -38,7 +38,7 @@
         "high": 3,
         "unit": "weeks"
       },
-      "direct_transition": "History of Tubal Ligation"
+      "direct_transition": "Tubal_Ligation_Surgery_Encounter"
     },
     "Tubal_Ligation_Surgery_Encounter": {
       "type": "Encounter",
@@ -51,7 +51,7 @@
         }
       ],
       "direct_transition": "Tubal_Ligation_Procedure",
-      "reason": "History of Tubal Ligation"
+      "reason": "Sterilization Requested"
     },
     "Tubal_Ligation_Procedure": {
       "type": "Procedure",
@@ -67,7 +67,8 @@
         "high": 3,
         "unit": "hours"
       },
-      "direct_transition": "Become_Infertile"
+      "direct_transition": "Sterilization Complete",
+      "reason": "Sterilization Requested"
     },
     "Become_Infertile": {
       "type": "SetAttribute",
@@ -97,7 +98,7 @@
         }
       ],
       "direct_transition": "Postoperative Care",
-      "reason": "History of Tubal Ligation"
+      "reason": "History_of_Tubal_Ligation"
     },
     "End_Surgery_Encounter": {
       "type": "EncounterEnd",
@@ -137,7 +138,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "End_Consultation"
+      "direct_transition": "Sterilization Requested"
     },
     "Postoperative Care": {
       "type": "Procedure",
@@ -156,9 +157,9 @@
       },
       "unit": "hours",
       "direct_transition": "End_Surgery_Encounter",
-      "reason": "History of Tubal Ligation"
+      "reason": "History_of_Tubal_Ligation"
     },
-    "History of Tubal Ligation": {
+    "History_of_Tubal_Ligation": {
       "type": "ConditionOnset",
       "target_encounter": "Tubal_Ligation_Surgery_Encounter",
       "codes": [
@@ -168,7 +169,23 @@
           "display": "History of tubal ligation (situation)"
         }
       ],
-      "direct_transition": "Tubal_Ligation_Surgery_Encounter"
+      "direct_transition": "Become_Infertile"
+    },
+    "Sterilization Requested": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183996000,
+          "display": "Sterilization requested (situation)"
+        }
+      ],
+      "direct_transition": "End_Consultation"
+    },
+    "Sterilization Complete": {
+      "type": "ConditionEnd",
+      "direct_transition": "History_of_Tubal_Ligation",
+      "condition_onset": "Sterilization Requested"
     }
   },
   "gmf_version": 1
