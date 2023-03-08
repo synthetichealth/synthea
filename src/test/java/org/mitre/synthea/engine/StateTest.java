@@ -12,6 +12,8 @@ import static org.mockito.Mockito.withSettings;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2259,6 +2261,23 @@ public class StateTest {
     List<HealthRecord.Device> devices = encounter.devices;
     HealthRecord.Device device = devices.get(0);
     assertEquals(time, device.stop);
+  }
+
+  @Test
+  public void testEndByMissingAttribute() throws Exception {
+    Path modulesFolder = Paths.get("bad_attribute");
+    Path moduleFile = modulesFolder.resolve("bad_attribute.json");
+
+    Module module = Module.loadFile(moduleFile, false, null, false);
+
+    State medicationEndState = module.getState("nihilism");
+    try {
+      medicationEndState.process(person, time);
+    } catch (IllegalStateException ise) {
+      assert(ise.getMessage().startsWith("State MedicationEnd 'nihilism' attempted to access attribute 'doesNotExist'"));
+      return;
+    }
+    fail("MedicationEnd referencing a null attribute did not throw an exception");
   }
 
   @Test

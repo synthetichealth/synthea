@@ -1,0 +1,24 @@
+{
+  "name": "Bad Attribute",
+  "remarks": [
+    "This module is intentionally broken for testing purposes."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "nihilism",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "nihilism": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "name": "nihilism",
+      "referenced_by_attribute": "doesNotExist"
+    }
+  },
+  "gmf_version": 2
+}

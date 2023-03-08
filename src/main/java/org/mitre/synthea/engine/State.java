@@ -213,6 +213,16 @@ public abstract class State implements Cloneable, Serializable {
     return this.getClass().getSimpleName() + " '" + name + "'";
   }
 
+  protected Entry checkedFetchFromAttributes(Person person, String attributeName) {
+    Entry entry = (Entry) person.attributes.get(attributeName);
+    if (entry == null) {
+      throw new IllegalStateException(
+              String.format("State %s attempted to access attribute '%s', "
+                      + "but that attribute is not set", this.toString(), attributeName));
+    }
+    return entry;
+  }
+
   /**
    * The Initial state type is the first state that is processed in a generic module. It does not
    * provide any specific function except to indicate the starting point, so it has no properties
@@ -1297,7 +1307,7 @@ public abstract class State implements Cloneable, Serializable {
       if (allergyOnset != null) {
         person.record.allergyEndByState(time, allergyOnset);
       } else if (referencedByAttribute != null) {
-        Entry allergy = (Entry) person.attributes.get(referencedByAttribute);
+        Entry allergy = checkedFetchFromAttributes(person, referencedByAttribute);
         allergy.stop = time;
         person.record.allergyEnd(time, allergy.type);
       } else if (codes != null) {
@@ -1457,7 +1467,8 @@ public abstract class State implements Cloneable, Serializable {
       if (medicationOrder != null) {
         person.record.medicationEndByState(time, medicationOrder, EXPIRED);
       } else if (referencedByAttribute != null) {
-        Medication medication = (Medication) person.attributes.get(referencedByAttribute);
+        Medication medication = (Medication) checkedFetchFromAttributes(person,
+                referencedByAttribute);
         medication.stop = time;
         person.record.medicationEnd(time, medication.type, EXPIRED);
       } else if (codes != null) {
@@ -1548,7 +1559,7 @@ public abstract class State implements Cloneable, Serializable {
       if (careplan != null) {
         person.record.careplanEndByState(time, careplan, FINISHED);
       } else if (referencedByAttribute != null) {
-        CarePlan careplan = (CarePlan) person.attributes.get(referencedByAttribute);
+        CarePlan careplan = (CarePlan) checkedFetchFromAttributes(person, referencedByAttribute);
         careplan.stop = time;
         person.record.careplanEnd(time, careplan.type, FINISHED);
       } else if (codes != null) {
