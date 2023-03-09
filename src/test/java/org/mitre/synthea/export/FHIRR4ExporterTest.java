@@ -152,26 +152,6 @@ public class FHIRR4ExporterTest {
                * Ignore warnings.
                */
               valid = true;
-            } else if (emessage.getMessage().equals("Unknown Code System 'http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category'")) {
-              // TODO: this is a bandage around HAPI validation
-              // This code system is known and valid.
-              // https://terminology.hl7.org/3.1.0/CodeSystem-observation-category.html
-
-              // The alternatives here are to either load all of US Core
-              // (slow, and most of it would be unnecessary)
-              // (https://hapifhir.io/hapi-fhir/docs/validation/instance_validator.html#packages)
-              // or to load the one code system into the HAPI validator.
-              // Unfortunately there is a bug in HAPI:
-              // https://github.com/hapifhir/hapi-fhir/issues/2442
-              // so that even if we load the code system we still get this validation error.
-              // Once the bug in HAPI is fixed, use this in ValidationResources:
-              //     prepopulated = new PrePopulatedValidationSupport(ctx);
-              //     IParser parser = ctx.newJsonParser();
-              //     String json = Utilities.readResource(filepath);
-              //     IBaseResource codeSystem = parser.parseResource(json);
-              //     prepopulated.addCodeSystem(codeSystem);
-              // and add that PrePopulatedValidationSupport to the ValidationSupportChain
-              valid = true;
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));
