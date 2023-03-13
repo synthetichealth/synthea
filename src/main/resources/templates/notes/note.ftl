@@ -10,7 +10,7 @@ ${time?number_to_date?string["yyyy-MM-dd"]}
 
 # History of Present Illness
 <#if name??>${name?keep_before_last(" ")}<#else><#if gender=='F'>Jane<#else>John</#if> Doe</#if>
- is a <#if ehr_ageInYears gt 0>${ehr_ageInYears} year-old<#elseif ehr_ageInMonths gt 0>${ehr_ageInMonths} month-old<#else>newborn</#if> ${ethnicity_display_lookup[race]} ${race} <#if gender=='F'>female<#else>male</#if>.<#if ehr_activeConditions?has_content> Patient has a history of <#list ehr_activeConditions as display>${display?lower_case}<#sep>, </#list>.</#if>
+ is a <#if ehr_ageInYears gt 0>${ehr_ageInYears} year-old<#elseif ehr_ageInMonths gt 0>${ehr_ageInMonths} month-old<#else>newborn</#if> ${ethnicity} ${race} <#if gender=='F'>female<#else>male</#if>.<#if ehr_activeConditions?has_content> Patient has a history of <#list ehr_activeConditions as display>${display?lower_case}<#sep>, </#list>.</#if>
 
 # Social History
 <#if ehr_ageInYears gt 18 && marital_status??><#if marital_status=='M'>Patient is married.<#else>Patient is single.</#if></#if><#if ehr_ageInYears gt 18 && homeless?? && homeless> <#if homelessness_category=='chronic'>Patient is chronically homeless.<#else>Patient is temporarily homeless.</#if></#if><#if opioid_addiction_careplan??> Patient has a documented history of opioid addiction.</#if><#if ehr_ageInYears gt 16 && smoker?? && smoker> Patient is an active smoker<#elseif quit_smoking_age??> Patient quit smoking at age ${quit_smoking_age}<#else> Patient has never smoked</#if><#if alcoholic?? && alcoholic> and is an alcoholic.<#else>.</#if>
