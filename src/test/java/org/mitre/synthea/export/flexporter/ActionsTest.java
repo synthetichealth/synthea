@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
@@ -202,21 +203,16 @@ public class ActionsTest {
     Map<String, Object> action = getActionByName("testSetValues_getField_diff_applicability");
 
     Actions.applyAction(b, action, null, null);
-
-    // HAPI automatically applies the local timezone to dates,
-    // so we can't just pick a fixed string to compare to
-    String timeZeroInLocalTime = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
-        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     
     Extension e1 = p1.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
     assertNotNull(e1);
-    DateTimeType d1 = (DateTimeType) e1.getValue();
-    assertEquals(timeZeroInLocalTime, d1.getValueAsString());
+    String d1 = ((DateTimeType) e1.getValue()).getValueAsString();
+    assertEquals(0, ZonedDateTime.parse(d1).toInstant().getEpochSecond());
     
     Extension e2 = p2.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
     assertNotNull(e2);
-    DateTimeType d2 = (DateTimeType) e2.getValue();
-    assertEquals(timeZeroInLocalTime, d2.getValueAsString());
+    String d2 = ((DateTimeType) e2.getValue()).getValueAsString();
+    assertEquals(0, ZonedDateTime.parse(d2).toInstant().getEpochSecond());
   }
   
   @Test
