@@ -10,7 +10,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +30,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.InstantType;
@@ -180,6 +185,40 @@ public class ActionsTest {
     assertEquals("2022-02-22", i.getRecordedElement().getValueAsString());
   }
 
+  @Test
+  public void testSetValues_getField_diff_applicability() {
+    Procedure p1 = new Procedure();
+    Date startDate = new Date(0);
+    Date endDate = new Date(1000000);
+    p1.setPerformed(new Period().setStart(startDate).setEnd(endDate));
+    
+    Procedure p2 = new Procedure();
+    p2.setPerformed(new DateTimeType(new Date(0)));
+    
+    Bundle b = new Bundle();
+    b.addEntry().setResource(p1);
+    b.addEntry().setResource(p2);
+    
+    Map<String, Object> action = getActionByName("testSetValues_getField_diff_applicability");
+
+    Actions.applyAction(b, action, null, null);
+
+    // HAPI automatically applies the local timezone to dates,
+    // so we can't just pick a fixed string to compare to
+    String timeZeroInLocalTime = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    
+    Extension e1 = p1.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
+    assertNotNull(e1);
+    DateTimeType d1 = (DateTimeType) e1.getValue();
+    assertEquals(timeZeroInLocalTime, d1.getValueAsString());
+    
+    Extension e2 = p2.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
+    assertNotNull(e2);
+    DateTimeType d2 = (DateTimeType) e2.getValue();
+    assertEquals(timeZeroInLocalTime, d2.getValueAsString());
+  }
+  
   @Test
   public void testSetValues_overwrite() {
     Observation o = new Observation();

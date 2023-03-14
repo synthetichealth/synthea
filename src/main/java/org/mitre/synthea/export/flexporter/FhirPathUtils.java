@@ -92,37 +92,40 @@ public abstract class FhirPathUtils {
    */
   public static List<Base> evaluateBundle(Bundle bundle, String fhirpath,
       Map<String, Object> variables, boolean returnResources) {
-
-    for (Map.Entry<String, Object> entry : variables.entrySet()) {
-      Object replacementObj = entry.getValue();
-
-      String replacement = null;
-      if (replacementObj instanceof String) {
-        replacement = (String) replacementObj;
-      } else if (replacementObj instanceof List) {
-        List<String> replacementList = (List<String>) replacementObj;
-
-        replacementList = replacementList.stream()
-            .map(s -> {
-              if (StringUtils.isQuoted(s)) {
-                return s;
-              }
-              // quoting strings is very difficult in general
-              // but for now assume this will simple things like codes
-              // which don't contain nested quotes
-              if (s.contains("'")) {
-                return "\"" + s + "\"";
-              } else {
-                return "'" + s + "'";
-              }
-            })
-            .collect(Collectors.toList());
-
-        replacement = "(" + String.join(" | ", replacementList) + ")";
-      }
-
-      if (replacement != null) {
-        fhirpath = fhirpath.replace("%" + entry.getKey(), replacement);
+    
+    if (variables != null) {
+      for (Map.Entry<String, Object> entry : variables.entrySet()) {
+        Object replacementObj = entry.getValue();
+  
+        String replacement = null;
+        if (replacementObj instanceof String) {
+          replacement = (String) replacementObj;
+        } else if (replacementObj instanceof List) {
+          List<String> replacementList = (List<String>) replacementObj;
+  
+          replacementList = replacementList.stream()
+              .map(s -> {
+                if (StringUtils.isQuoted(s)) {
+                  return s;
+                }
+                // quoting strings is very difficult in general
+                // but for now assume this will simple things like codes
+                // which don't contain nested quotes
+                if (s.contains("'")) {
+                  return "\"" + s + "\"";
+                } else {
+                  return "'" + s + "'";
+                }
+              })
+              .collect(Collectors.toList());
+  
+          replacement = "(" + String.join(" | ", replacementList) + ")";
+        }
+        
+  
+        if (replacement != null) {
+          fhirpath = fhirpath.replace("%" + entry.getKey(), replacement);
+        }
       }
     }
 

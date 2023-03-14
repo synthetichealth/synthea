@@ -43,6 +43,16 @@ actions:
            # but that doesn't seem to work with HAPI's FhirPath
 
 
+ - name: testSetValues_getField_diff_applicability
+   set_values:
+     - applicability: Procedure.performed.ofType(Period)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed.start])
+     - applicability: Procedure.performed.ofType(dateTime)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed])
 
  - name: testSetValues_overwrite
    set_values:

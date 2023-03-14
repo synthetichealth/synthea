@@ -20,8 +20,8 @@ actions:
      applicability: Patient
    - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter
      applicability: Encounter
-   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition
-     applicability: Condition
+   # - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition
+   #   applicability: Condition
    - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation
      applicability: Observation
    - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure
@@ -55,6 +55,15 @@ actions:
            # it would be nice to put "occurrenceDateTime" here
            # since that's what's actually in the JSON
            # but that doesn't seem to work with HAPI's FhirPath
+
+     - applicability: Procedure.performed.ofType(Period)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed.start])
+     - applicability: Procedure.performed.ofType(dateTime)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed])
 
 
 
