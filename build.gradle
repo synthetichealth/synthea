@@ -33,6 +33,9 @@ repositories {
   maven {
     url "https://oss.sonatype.org/content/repositories/snapshots"
   }
+  maven {
+    url 'https://www.dcm4che.org/maven2/'
+  }
 }
 
 // Uncomment to see deprecation warnings
@@ -84,6 +87,9 @@ dependencies {
   implementation 'info.cqframework:elm-jackson:2.1.0'
 
   implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+  // DICOM support
+  implementation group: 'dcm4che', name: 'dcm4che-core', version: '2.0.29'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
