@@ -1,0 +1,836 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="e58498ef-aa76-4c28-8afa-f42cd8108b38" version="4">
+  <model name="Talemi2015 - Persistent telomere-associated DNA damage foci (TAF), a measure to predict cancer risks" id="MODEL1412200000" metaid="COPASI0">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <pre>A Robust Model of DNA Damage Dynamics.
+Rasgou Talemi and Schaber, 12.20.2014.
+</pre>
+      </body>
+    </notes>
+    <annotation>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <rdf:Description rdf:about="#COPASI0">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2014-12-20T14:53:19Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+            <dcterms:creator>
+              <rdf:Description>
+                <vCard:EMAIL>soheil.rastgou@med.ovgu.de</vCard:EMAIL>
+                <vCard:N>
+                  <rdf:Description>
+                    <vCard:Family>Rastgou Talemi</vCard:Family>
+                    <vCard:Given>Soheil</vCard:Given>
+                  </rdf:Description>
+                </vCard:N>
+                <vCard:ORG>
+                  <rdf:Description>
+                    <vCard:Orgname>OVGU University of Magdeburg</vCard:Orgname>
+                  </rdf:Description>
+                </vCard:ORG>
+              </rdf:Description>
+            </dcterms:creator>
+            <dcterms:creator>
+              <rdf:Description>
+                <vCard:EMAIL>joerg.schaber@med.ovgu.de</vCard:EMAIL>
+                <vCard:N>
+                  <rdf:Description>
+                    <vCard:Family>Schaber</vCard:Family>
+                    <vCard:Given>Joerg</vCard:Given>
+                  </rdf:Description>
+                </vCard:N>
+                <vCard:ORG>
+                  <rdf:Description>
+                    <vCard:Orgname>OVGU University of Magdeburg</vCard:Orgname>
+                  </rdf:Description>
+                </vCard:ORG>
+              </rdf:Description>
+            </dcterms:creator>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+	<rdf:Description rdf:about="#COPASI0">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Rastgou Talemi</vCard:Family>
+	<vCard:Given>Soheil</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>soheil.rastgou@med.ovgu.de</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>OVGU University of Magdeburg</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Schaber</vCard:Family>
+	<vCard:Given>Joerg</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>joerg.schaber@med.ovgu.de</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>OVGU University of Magdeburg</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2014-12-20T14:53:19Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2014-12-20T14:53:19Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL1412200000"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+      <listOfFunctionDefinitions>
+      <functionDefinition name="comb 2dn order MA" id="comb_2dn_order_MA" metaid="COPASI26">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI26">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T14:44:13Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> S1 </ci>
+            </bvar>
+            <bvar>
+              <ci> S2 </ci>
+            </bvar>
+            <bvar>
+              <ci> k </ci>
+            </bvar>
+            <bvar>
+              <ci> Tot </ci>
+            </bvar>
+            <apply>
+              <times/>
+              <ci> S1 </ci>
+              <ci> k </ci>
+              <ci> S2 </ci>
+              <ci> Tot </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition name="volume" id="volume" metaid="_9cf2e429-81fd-4f13-8af8-9063f8133e94">
+        <listOfUnits>
+          <unit scale="0" metaid="_3c4c42d8-a23e-43dd-bd90-f81c8acc4ef4" kind="dimensionless" multiplier="1" exponent="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition name="time" id="time" metaid="e571f574-c3c4-4f04-a3bc-ab4da0e28f86">
+        <listOfUnits>
+          <unit scale="0" metaid="_4a158996-55be-40d1-ab46-e54eec79b1e1" kind="second" multiplier="3600" exponent="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition name="substance" id="substance" metaid="_360e5430-db5d-4dc9-9f9f-130a86358da8">
+        <listOfUnits>
+          <unit scale="0" metaid="fe587d42-989b-4282-8dc8-7a7d2618f77c" kind="item" multiplier="1" exponent="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment constant="true" size="1" metaid="COPASI1" name="compartment" id="compartment" spatialDimensions="3">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI1">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T14:40:17Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species boundaryCondition="true" constant="false" metaid="COPASI2" hasOnlySubstanceUnits="false" compartment="compartment" name="TAF" id="TAF" initialConcentration="0.889883170980968">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI2">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-17T15:52:28Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" constant="false" metaid="COPASI3" hasOnlySubstanceUnits="false" compartment="compartment" name="FAST" id="FAST" initialConcentration="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI3">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T15:28:05Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" constant="false" metaid="COPASI4" hasOnlySubstanceUnits="false" compartment="compartment" name="FASTi" id="FASTi" initialConcentration="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI4">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T15:28:26Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" constant="false" metaid="COPASI5" hasOnlySubstanceUnits="false" compartment="compartment" name="SLOWi" id="SLOWi" initialConcentration="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI5">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T15:28:28Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" constant="false" metaid="_9b514692-8d3d-43b0-b86c-15e8045a6740" hasOnlySubstanceUnits="false" compartment="compartment" name="SLOW" id="SLOW" initialConcentration="0"/>
+      <species boundaryCondition="false" constant="false" metaid="COPASI6" hasOnlySubstanceUnits="false" compartment="compartment" name="RP" id="RP" initialConcentration="20">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI6">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T08:46:27Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter name="Tot" constant="false" id="Tot" metaid="COPASI7" value="1.87907428496686">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI7">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-07-31T11:56:53Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="DNAdamagefoci_0" constant="false" id="DNAdamagefoci_0" metaid="COPASI8" value="750.500039901129">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI8">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-07-31T12:13:12Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="Gy" constant="true" id="Gy" metaid="COPASI9" value="20">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI9">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-05T15:20:25Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="FociperGy" constant="true" id="FociperGy" metaid="COPASI10" value="167.816910633523">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI10">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-05T15:59:35Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="prop_C" constant="true" id="prop_C" metaid="COPASI11" value="0.0225659121497629">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI11">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-11T15:05:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="TAF0" constant="true" id="TAF0" metaid="COPASI12" value="0.889883170980968">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI12">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-17T15:56:27Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="k_TAF" constant="true" id="k_TAF" metaid="COPASI13" value="0.790501839872594">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI13">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-17T15:56:43Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="BaseDNAdamage" constant="true" id="BaseDNAdamage" metaid="COPASI14" value="0.989191113985894">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI14">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-17T15:59:41Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="percentTAF" constant="false" id="percentTAF" metaid="COPASI15" value="47.3575301466414">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI15">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-19T11:49:10Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="kcross" constant="true" id="kcross" metaid="COPASI16" value="0.000151844699335433">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI16">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T14:55:19Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="TotalRP" constant="false" id="TotalRP" metaid="COPASI17" value="20">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI17">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T15:13:46Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="Toti" constant="false" id="Toti" metaid="COPASI18" value="0">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI18">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T15:21:33Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+            </parameter>
+      <parameter name="Initial for TAF" constant="true" id="Metabolite_1" metaid="_43c0d407-ee2f-4dce-aad5-e2a8b62f319e" value="0.889883170980968">
+        <annotation>
+          <initialValue xmlns="http://copasi.org/initialValue" parent="TAF"/>
+        </annotation>
+            </parameter>
+      <parameter name="Initial for FociperGy" constant="true" id="ModelValue_3" metaid="d2669bdc-9de4-4067-b478-b4b7926333ac" value="167.816910633523">
+        <annotation>
+          <initialValue xmlns="http://copasi.org/initialValue" parent="FociperGy"/>
+        </annotation>
+            </parameter>
+      <parameter name="Initial for Gy" constant="true" id="ModelValue_2" metaid="_1c963c68-ddc8-4432-9934-f9294e653474" value="20">
+        <annotation>
+          <initialValue xmlns="http://copasi.org/initialValue" parent="Gy"/>
+        </annotation>
+            </parameter>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment metaid="_4ddb305f-3845-412f-9689-03edbdef728b" symbol="TAF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> TAF0 </ci>
+        </math>
+            </initialAssignment>
+      <initialAssignment metaid="f8b33ffc-941b-4b88-b4a4-bf3a68bd611e" symbol="Metabolite_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> TAF </ci>
+        </math>
+            </initialAssignment>
+      <initialAssignment metaid="_5157634b-8006-44a5-b7ab-b25b7301b4e3" symbol="ModelValue_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> FociperGy </ci>
+        </math>
+            </initialAssignment>
+      <initialAssignment metaid="e67407a3-67a1-4ee9-8c23-f994239b015e" symbol="ModelValue_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> Gy </ci>
+        </math>
+            </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="Tot" metaid="_09545bb1-fb04-4e25-8c3c-ec109191f0a5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> BaseDNAdamage </ci>
+            <ci> FAST </ci>
+            <ci> FASTi </ci>
+            <ci> SLOW </ci>
+            <ci> SLOWi </ci>
+            <ci> TAF </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="DNAdamagefoci_0" metaid="_03240d31-e619-48bc-8f50-08cb3069f5c3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <apply>
+              <root/>
+              <degree>
+                <cn type="integer"> 2 </cn>
+              </degree>
+              <ci> ModelValue_2 </ci>
+            </apply>
+            <ci> ModelValue_3 </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="percentTAF" metaid="a6cae973-4684-412a-b2d7-5d6668342a1e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 100 </cn>
+              <ci> TAF </ci>
+            </apply>
+            <ci> Tot </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="TotalRP" metaid="_626fdc28-8046-4477-999e-5cef427ebbdd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> FAST </ci>
+            <ci> RP </ci>
+            <ci> SLOW </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule variable="Toti" metaid="f87141b9-4608-4adf-addb-dc0528a18d80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> FASTi </ci>
+            <ci> SLOWi </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction name="rf" id="rf" metaid="COPASI20" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI20">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-11T14:40:16Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="ac2b3ef9-e032-45dc-a5d5-b399cdee1902" species="FAST"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="ef239605-5839-4a87-9e0f-b261f5e6015d" species="RP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_16620609-4680-41d5-af7f-79f316ffa569" species="FAST"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_0f3b1ecd-55fe-4712-8e84-a17c9fbda095">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> FAST </ci>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter name="k1" id="k1" metaid="_500c9a7d-2386-4570-a597-cdc906beccbf" value="2000"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction name="rs" id="rs" metaid="COPASI21" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI21">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-11T14:40:21Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="_216a4778-5d93-4a99-b1d5-11a6a3a9b50a" species="SLOW"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="a4951078-907e-457f-b4c7-bfdc9732cd3f" species="RP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="ffd6fa9c-b25d-43a7-868d-20811df63d44" species="SLOW"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_2df38277-cd31-4d74-8f58-b8b8b9a350c4">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> SLOW </ci>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter name="k1" id="k1" metaid="_6ebe3423-808d-4712-b269-e3fa1fddde49" value="0.00511497"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction name="v1" id="v1" metaid="COPASI22" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI22">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T14:49:46Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="f605859c-ff5f-43a8-8f0f-3b3aa5b40566" species="FASTi"/>
+          <speciesReference stoichiometry="1" metaid="abedac32-61ca-4ac6-884e-8bb3f6350af5" species="RP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="b4536a04-a026-42f0-856e-d6b703f29865" species="FAST"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_251552d9-6704-41ac-9f6e-895dcfe88184" species="FASTi"/>
+          <modifierSpeciesReference metaid="db7f21a0-cdc9-440a-a6db-ccc826979852" species="RP"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_4330cc38-edf5-492b-a85a-0587061e0754">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> FASTi </ci>
+              <ci> RP </ci>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter name="k1" id="k1" metaid="_8afe9172-8cfb-4861-b4cb-fb1a6dfbf010" value="0.00535262"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction name="v3" id="v3" metaid="COPASI23" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI23">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-21T15:34:20Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="_4f2fb31d-fb0e-4b82-8272-254525339a38" species="SLOWi"/>
+          <speciesReference stoichiometry="1" metaid="f85b70a4-39fb-4409-83e9-0b2d8a87b97a" species="RP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="e1b114b5-b0e5-422d-b63e-0f0fdee5482b" species="SLOW"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_5d2580c5-443e-4e3d-8772-313cb7486e91" species="SLOWi"/>
+          <modifierSpeciesReference metaid="b0daaa6f-d019-4d24-9590-6c61d2fda814" species="RP"/>
+        </listOfModifiers>
+        <kineticLaw metaid="a8186de4-9444-4116-a14d-d36d95f4929c">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> k1 </ci>
+              <ci> SLOWi </ci>
+              <ci> RP </ci>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter name="k1" id="k1" metaid="ba94514a-14df-40e6-8cd2-cc19efab5848" value="0.000467362"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction name="vcross1" id="vcross1" metaid="COPASI24" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI24">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T14:47:08Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="e62f4404-9790-48cf-b3fe-38043ee0ea99" species="FASTi"/>
+          <speciesReference stoichiometry="1" metaid="_6000c88f-5bdb-4257-82ba-872c39369faf" species="RP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="bfb784b9-ce01-4318-b865-e75b6e42f32b" species="FAST"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="f23b0bc4-4079-4b3c-9027-11b0766778cf" species="FASTi"/>
+          <modifierSpeciesReference metaid="_1a09e01d-95a0-434c-9634-fb563a8c127f" species="RP"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_49313175-b707-4879-80ad-a9f4707b5c10">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> comb_2dn_order_MA </ci>
+                <ci> FASTi </ci>
+                <ci> RP </ci>
+                <ci> kcross </ci>
+                <ci> Toti </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction name="vcross2" id="vcross2" metaid="COPASI25" reversible="false">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI25">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-10-23T14:47:57Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <listOfReactants>
+          <speciesReference stoichiometry="1" metaid="bd99f042-6c87-48ae-88e3-dd237dc492a9" species="SLOWi"/>
+          <speciesReference stoichiometry="1" metaid="_5a7b8db7-693a-4253-8acd-9c08a337a36f" species="RP"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference stoichiometry="1" metaid="_1f0d84d7-390f-4e2f-95b4-fb03c26e44f8" species="SLOW"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_43906c39-b2fa-4f75-b7c3-24c63c1b8c8c" species="SLOWi"/>
+          <modifierSpeciesReference metaid="ddd1e02f-fd4d-4904-aa0b-ea7a1a7ecf43" species="RP"/>
+        </listOfModifiers>
+        <kineticLaw metaid="bdbc1fe4-df56-4b23-b004-de57d07a663c">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> comb_2dn_order_MA </ci>
+                <ci> SLOWi </ci>
+                <ci> RP </ci>
+                <ci> kcross </ci>
+                <ci> Toti </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+    <listOfEvents>
+      <event name="DNAdamage" id="DNAdamage" metaid="COPASI19">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI19">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2013-12-17T16:09:29Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+              <trigger metaid="de8d661b-f4f7-4708-8636-4828591f01c0">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <gt/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <cn> 0 </cn>
+            </apply>
+          </math>
+                </trigger>
+        <listOfEventAssignments>
+          <eventAssignment variable="TAF" metaid="_0f5f5164-6dce-42a7-89c6-20c1ec52d5cd">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">            
+              <apply>
+                <plus/>
+                <ci> Metabolite_1 </ci>
+                <apply>
+                  <times/>
+                  <ci> k_TAF </ci>
+                  <apply>
+                    <root/>
+                    <degree>
+                      <cn type="integer"> 2 </cn>
+                    </degree>
+                    <ci> Gy </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </math>
+                    </eventAssignment>
+          <eventAssignment variable="SLOWi" metaid="_9b1df261-f13e-41d2-a9d9-2b29cceede77">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">            
+              <apply>
+                <times/>
+                <ci> prop_C </ci>
+                <ci> DNAdamagefoci_0 </ci>
+              </apply>
+            </math>
+                    </eventAssignment>
+          <eventAssignment variable="FASTi" metaid="_24a4696b-2fe8-4dfe-a7ac-402a062c6758">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">            
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> prop_C </ci>
+                </apply>
+                <ci> DNAdamagefoci_0 </ci>
+              </apply>
+            </math>
+                    </eventAssignment>
+        </listOfEventAssignments>
+      </event>
+    </listOfEvents>
+  </model>
+</sbml>

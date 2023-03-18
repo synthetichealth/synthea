@@ -1,0 +1,835 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" metaid="metaid_0000001" version="3">
+  <model id="Hong2009_CircadianClock" metaid="metaid_0000002" name="Hong2009_CircadianClock">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p>
+      This a model from the article:
+      <br/>
+        <strong> Minimum criteria for DNA damage-induced phase advances in circadian rhythms.
+</strong>
+        <br/>
+Hong CI, Zámborszky J, Csikász-Nagy A.
+      <em>PLoS Comput Biol. </em>2009 May;5(5):e1000384.  
+      <a href="http://www.ncbi.nlm.nih.gov/pubmed/19424508">19424508</a>,
+      <br/>
+        <strong>Abstract:</strong>
+        <br/>
+Robust oscillatory behaviors are common features of circadian and cell cycle rhythms. These cyclic processes, however, behave distinctively in terms of their periods and phases in response to external influences such as light, temperature, nutrients, etc. Nevertheless, several links have been found between these two oscillators. Cell division cycles gated by the circadian clock have been observed since the late 1950s. On the other hand, ionizing radiation (IR) treatments cause cells to undergo a DNA damage response, which leads to phase shifts (mostly advances) in circadian rhythms. Circadian gating of the cell cycle can be attributed to the cell cycle inhibitor kinase Wee1 (which is regulated by the heterodimeric circadian clock transcription factor, BMAL1/CLK), and possibly in conjunction with other cell cycle components that are known to be regulated by the circadian clock (i.e., c-Myc and cyclin D1). It has also been shown that DNA damage-induced activation of the cell cycle regulator, Chk2, leads to phosphorylation and destruction of a circadian clock component (i.e., PER1 in Mus or FRQ in Neurospora crassa). However, the molecular mechanism underlying how DNA damage causes predominantly phase advances in the circadian clock remains unknown. In order to address this question, we employ mathematical modeling to simulate different phase response curves (PRCs) from either dexamethasone (Dex) or IR treatment experiments. Dex is known to synchronize circadian rhythms in cell culture and may generate both phase advances and delays. We observe unique phase responses with minimum delays of the circadian clock upon DNA damage when two criteria are met: (1) existence of an autocatalytic positive feedback mechanism in addition to the time-delayed negative feedback loop in the clock system and (2) Chk2-dependent phosphorylation and degradation of PERs that are not bound to BMAL1/CLK.
+   </p>
+        <p>
+The original xpp file of the model is available as a supplement of the article (<a href="http://www.ploscompbiol.org/article/fetchSingleRepresentation.action?uri=info:doi/10.1371/journal.pcbi.1000384.s002">Text S1</a>).
+	  </p>
+        <p>This model originates from BioModels Database: A Database of Annotated Published Models. It is copyright (c) 2005-2010 The BioModels Team.<br/>For more information see the <a href="http://www.ebi.ac.uk/biomodels/legal.html" target="_blank">terms of use</a>.<br/>To cite BioModels Database, please use <a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&amp;pubmedid=16381960" target="_blank"> Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.</a>
+      </p>
+    </body>
+  </notes>
+    <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+        <rdf:Description rdf:about="#metaid_0000002">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Chelliah</vCard:Family>
+	<vCard:Given>Vijayalakshmi</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>viji@ebi.ac.uk</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>EMBL-EBI</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Zamborszky</vCard:Family>
+	<vCard:Given>Judit</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>zamborszky@cosbi.edu</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>The Microsoft Research-University of Trento Centre for Computational and Systems Biology, Povo, Italy</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Hong</vCard:Family>
+	<vCard:Given>Christian</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>Christian.I.Hong@Dartmouth.EDU</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>Department of Genetics, Dartmouth Medical School, USA</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2009-04-03T11:51:42Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2015-02-25T13:15:34Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL7984093336"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000216"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:isDescribedBy>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pubmed/19424508"/>
+	</rdf:Bag>
+	</bqmodel:isDescribedBy>
+	<bqmodel:isDerivedFrom>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pubmed/18057329"/>
+	</rdf:Bag>
+	</bqmodel:isDerivedFrom>
+	<bqbiol:hasTaxon>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/taxonomy/40674"/>
+	</rdf:Bag>
+	</bqbiol:hasTaxon>
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.pathway/map04710"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0042752"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+      <listOfFunctionDefinitions>
+      <functionDefinition id="function_4_r1" metaid="metaid_0000003" name="function_4_r1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> Dex </ci>
+            </bvar>
+            <bvar>
+              <ci> system </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <ci> Dex </ci>
+              <ci> system </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+      <functionDefinition id="function_4_r8" metaid="metaid_0000004" name="function_4_r8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> CP </ci>
+            </bvar>
+            <bvar>
+              <ci> CP2 </ci>
+            </bvar>
+            <bvar>
+              <ci> IC </ci>
+            </bvar>
+            <bvar>
+              <ci> Jp </ci>
+            </bvar>
+            <bvar>
+              <ci> kp1 </ci>
+            </bvar>
+            <bvar>
+              <ci> system </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kp1 </ci>
+                  <ci> CP </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Jp </ci>
+                  <ci> CP </ci>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> CP2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> IC </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> system </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+      <functionDefinition id="function_4_r2" metaid="metaid_0000005" name="function_4_r2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> J </ci>
+            </bvar>
+            <bvar>
+              <ci> TF </ci>
+            </bvar>
+            <bvar>
+              <ci> kms </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <bvar>
+              <ci> system </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kms </ci>
+                  <apply>
+                    <power/>
+                    <ci> TF </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> J </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> TF </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> system </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+      <functionDefinition id="function_4_r17" metaid="metaid_0000006" name="function_4_r17">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> CP </ci>
+            </bvar>
+            <bvar>
+              <ci> CP2 </ci>
+            </bvar>
+            <bvar>
+              <ci> IC </ci>
+            </bvar>
+            <bvar>
+              <ci> Jp </ci>
+            </bvar>
+            <bvar>
+              <ci> kp2 </ci>
+            </bvar>
+            <bvar>
+              <ci> system </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kp2 </ci>
+                  <ci> IC </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Jp </ci>
+                  <ci> CP </ci>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> CP2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> IC </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> system </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+      <functionDefinition id="function_4_r13" metaid="metaid_0000007" name="function_4_r13">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> CP </ci>
+            </bvar>
+            <bvar>
+              <ci> CP2 </ci>
+            </bvar>
+            <bvar>
+              <ci> IC </ci>
+            </bvar>
+            <bvar>
+              <ci> Jp </ci>
+            </bvar>
+            <bvar>
+              <ci> kp2 </ci>
+            </bvar>
+            <bvar>
+              <ci> system </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kp2 </ci>
+                  <ci> CP2 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Jp </ci>
+                  <ci> CP </ci>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> CP2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> IC </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> system </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+      <functionDefinition id="function_1" metaid="metaid_0000008" name="Rate Law for r4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> kcps </ci>
+            </bvar>
+            <bvar>
+              <ci> M </ci>
+            </bvar>
+            <apply>
+              <times/>
+              <ci> kcps </ci>
+              <ci> M </ci>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="system" metaid="metaid_0000026" name="system" sboTerm="SBO:0000290" size="1">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000026">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0005623"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species compartment="system" id="M" initialConcentration="1.4" metaid="metaid_0000027" name="M" sboTerm="SBO:0000278">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000027">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:33699"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="system" id="TF" initialConcentration="0.13" metaid="metaid_0000028" name="TF" sboTerm="SBO:0000296">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000028">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P49759"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="system" id="CP" initialConcentration="0.037" metaid="metaid_0000029" name="CP" sboTerm="SBO:0000252">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000029">
+	<bqbiol:isHomologTo>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O15516"/>
+	</rdf:Bag>
+	</bqbiol:isHomologTo>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="system" id="CP2" initialConcentration="0.046" metaid="metaid_0000030" name="CP2" sboTerm="SBO:0000297">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000030">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O15516"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="system" id="IC" initialConcentration="0.37" metaid="metaid_0000031" name="IC" sboTerm="SBO:0000296">
+        <notes>
+        <p xmlns="http://www.w3.org/1999/xhtml">Inactive complex of clock dimers and transcription factor: IC= TFtot-TF</p>
+      </notes>
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000031">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P49759"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O15516"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species boundaryCondition="true" compartment="system" id="CPtot" metaid="metaid_0000120" name="CPtot"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="Dex" metaid="metaid_0000009" name="Dex" sboTerm="SBO:0000196" value="0">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000009">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:41879"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </parameter>
+      <parameter id="kms" metaid="metaid_0000010" name="kms" value="1"/>
+      <parameter id="n" metaid="metaid_0000011" name="n" value="2"/>
+      <parameter id="J" metaid="metaid_0000012" name="J" value="0.3"/>
+      <parameter id="kmd" metaid="metaid_0000013" name="kmd" value="0.1"/>
+      <parameter id="kcps" metaid="metaid_0000014" name="kcps" value="0.5"/>
+      <parameter id="kcpd" metaid="metaid_0000015" name="kcpd" value="0.525"/>
+      <parameter id="ka" metaid="metaid_0000016" name="ka" value="100"/>
+      <parameter id="kd" metaid="metaid_0000017" name="kd" value="0.01"/>
+      <parameter id="kp1" metaid="metaid_0000018" name="kp1" value="10"/>
+      <parameter id="Jp" metaid="metaid_0000019" name="Jp" value="0.05"/>
+      <parameter id="chk2" metaid="metaid_0000020" name="chk2" value="0"/>
+      <parameter id="kicd" metaid="metaid_0000021" name="kicd" value="0.01"/>
+      <parameter id="kcp2d" metaid="metaid_0000022" name="kcp2d" value="0.0525"/>
+      <parameter id="kica" metaid="metaid_0000023" name="kica" value="20"/>
+      <parameter id="chk2c" metaid="metaid_0000024" name="chk2c" value="0"/>
+      <parameter id="kp2" metaid="metaid_0000025" name="kp2" value="0.1"/>
+      <parameter id="ICtot" metaid="metaid_0000051" name="TFtot" value="1">
+        <notes>
+        <p xmlns="http://www.w3.org/1999/xhtml">Inactive complex of clock dimers and transcription factor: IC=TFtot-TF</p>
+      </notes>
+      </parameter>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule metaid="metaid_0000050" variable="CPtot">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> CP </ci>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> CP2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> IC </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="r1" metaid="metaid_0000032" name="r1" reversible="false">
+        <listOfProducts>
+          <speciesReference metaid="_4378dea5-9712-471b-8191-3f56301641f9" species="M"/>
+        </listOfProducts>
+        <kineticLaw metaid="_6f14499e-ab4f-4faf-8064-7e649580c810">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_4_r1 </ci>
+                <ci> Dex </ci>
+                <ci> system </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r2" metaid="metaid_0000033" name="r2" reversible="false">
+        <listOfProducts>
+          <speciesReference metaid="_0bc65724-3cb7-4b2e-baf1-6549a0abcc4f" species="M"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_2ce8e6c4-ce15-4406-8a7e-9afb12e19269" species="TF"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_1a4675b4-c04c-40b7-b3f8-95f7391097e9">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_4_r2 </ci>
+                <ci> J </ci>
+                <ci> TF </ci>
+                <ci> kms </ci>
+                <ci> n </ci>
+                <ci> system </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r3" metaid="metaid_0000034" name="r3" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="d585f9e6-4e90-4c3d-a9d6-6530c8dc24bd" species="M"/>
+        </listOfReactants>
+        <kineticLaw metaid="a2e5abe7-92ea-4df1-b2bb-1207a9f05bf7">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kmd </ci>
+              <ci> M </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r4" metaid="metaid_0000035" name="r4" reversible="false">
+        <listOfProducts>
+          <speciesReference metaid="_33534cee-eaea-4664-82ee-b850fe3ed0a4" species="CP"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_79e093b4-fade-4808-b4e2-8cbe8da28377" species="M"/>
+        </listOfModifiers>
+        <kineticLaw metaid="fcca1c8a-386d-4800-9d18-7558c4f4954b">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_1 </ci>
+                <ci> kcps </ci>
+                <ci> M </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r5" metaid="metaid_0000036" name="r5" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_4d8f10ce-05e0-4dee-9220-b7da7b0a81e2" species="CP"/>
+        </listOfReactants>
+        <kineticLaw metaid="f6b4720e-0e02-461d-8b63-d44297532866">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kcpd </ci>
+              <ci> CP </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r6" metaid="metaid_0000037" name="r6" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_2b3f2fbc-ca0c-4362-bd8b-22749d548d44" species="CP" stoichiometry="2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="ad6a60b1-e69a-496f-b5f8-5216fd4a7d9a" species="CP2"/>
+        </listOfProducts>
+        <kineticLaw metaid="ae6293b9-3bdd-4249-9c3e-cdaa0142ce1a">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> ka </ci>
+              <apply>
+                <power/>
+                <ci> CP </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r7" metaid="metaid_0000038" name="r7" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_99d6c0e6-6346-49c1-84ab-a079635953d9" species="CP2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="d244db09-4919-4cae-9deb-96781ea8de93" species="CP" stoichiometry="2"/>
+        </listOfProducts>
+        <kineticLaw metaid="_8f3f6c08-af47-4450-87ba-11f6faa052aa">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kd </ci>
+              <ci> CP2 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r8" metaid="metaid_0000039" name="r8" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_80ddf5b7-5a4a-48c3-9c6e-5ad79dea3e8b" species="CP"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_57052581-33ed-4499-b0ef-679162ef22fb" species="CP2"/>
+          <modifierSpeciesReference metaid="_4614630e-f975-44de-8fde-3bc1f017d933" species="IC"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_7f703ff8-22f3-43d6-91cb-77936526d408">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_4_r8 </ci>
+                <ci> CP </ci>
+                <ci> CP2 </ci>
+                <ci> IC </ci>
+                <ci> Jp </ci>
+                <ci> kp1 </ci>
+                <ci> system </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r9" metaid="metaid_0000040" name="r9" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="b2213faa-47eb-4bda-b3b3-c4bc9b0aca36" species="CP"/>
+        </listOfReactants>
+        <kineticLaw metaid="fb7d6c50-c24c-4b92-b383-03d56f7bcf5f">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> chk2 </ci>
+              <ci> CP </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r10" metaid="metaid_0000041" name="r10" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_71a1dbd9-1211-40ee-8303-bc0b03d6a640" species="IC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_7ffef5c0-6a50-48f0-9356-66040fe8e73c" species="CP2"/>
+          <speciesReference metaid="_8d4cd787-7542-44d6-88b2-0318a2ab3304" species="TF"/>
+        </listOfProducts>
+        <kineticLaw metaid="_5ca84259-4248-4854-96c6-748acb471673">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kicd </ci>
+              <ci> IC </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r11" metaid="metaid_0000042" name="r11" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="bdc14089-9df4-467c-bd50-d1df851623da" species="CP2"/>
+        </listOfReactants>
+        <kineticLaw metaid="_0fc50df3-ab40-48be-adf5-5005af729df3">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kcp2d </ci>
+              <ci> CP2 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r12" metaid="metaid_0000043" name="r12" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_5c7cc473-1629-4417-8712-897cf9241892" species="CP2"/>
+          <speciesReference metaid="ae375a67-771e-4873-b008-38a21660fcf9" species="TF"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="fd9fdcc9-41b8-4e3b-b9c8-e55bebed64bd" species="IC"/>
+        </listOfProducts>
+        <kineticLaw metaid="a64eb7c0-d31a-4d48-bfa1-9fc5b42224a1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kica </ci>
+              <ci> CP2 </ci>
+              <ci> TF </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r13" metaid="metaid_0000044" name="r13" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_2691df30-61f7-4880-86ca-51ecf7a4a4d6" species="CP2"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_86c879a1-6dbb-4366-b0cc-d99b541522f4" species="CP"/>
+          <modifierSpeciesReference metaid="_4217a549-018d-4662-87a9-46c0ae7fd232" species="IC"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_08337289-312d-44c3-b3ee-9ba4c4040228">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_4_r13 </ci>
+                <ci> CP </ci>
+                <ci> CP2 </ci>
+                <ci> IC </ci>
+                <ci> Jp </ci>
+                <ci> kp2 </ci>
+                <ci> system </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r14" metaid="metaid_0000045" name="r14" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="d94a78f0-881f-4474-adf3-14137d6db9d4" species="CP2"/>
+        </listOfReactants>
+        <kineticLaw metaid="_7fbc7412-7481-482c-8702-0479fe392756">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> chk2 </ci>
+              <ci> CP2 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r15" metaid="metaid_0000046" name="r15" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="f236a790-1a0e-4c48-b83e-bea4161ece08" species="IC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="f5cc2ba7-d5ad-4fd0-8b26-8b4828c56ecb" species="TF"/>
+        </listOfProducts>
+        <kineticLaw metaid="_9326f3fc-9bfe-4e23-adcb-5a5cb22776f9">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> kcp2d </ci>
+              <ci> IC </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r16" metaid="metaid_0000047" name="r16" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_5214e866-1d44-46d0-aa62-8b684f421257" species="IC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_6902e1ba-fd56-4ce3-9cba-9422e7655d7e" species="TF"/>
+        </listOfProducts>
+        <kineticLaw metaid="_5fae3091-abe2-458a-a6e5-7a9ad3306ca5">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <ci> chk2c </ci>
+              <ci> IC </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="r17" metaid="metaid_0000048" name="r17" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_6bae55cc-899a-4083-9a44-d0fe630733f4" species="IC"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="b43deff5-a8f1-4693-9c27-a52678fe1900" species="TF"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="ec7023d3-86f9-46de-aa45-cac41cd8cf99" species="CP2"/>
+          <modifierSpeciesReference metaid="_77fc3d5e-e0b6-4652-afbd-db5e91fd3376" species="CP"/>
+        </listOfModifiers>
+        <kineticLaw metaid="b9a0c8b1-1b1e-472b-a234-18466b16b22b">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> system </ci>
+              <apply>
+                <ci> function_4_r17 </ci>
+                <ci> CP </ci>
+                <ci> CP2 </ci>
+                <ci> IC </ci>
+                <ci> Jp </ci>
+                <ci> kp2 </ci>
+                <ci> system </ci>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

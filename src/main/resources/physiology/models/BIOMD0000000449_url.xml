@@ -1,0 +1,1585 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="c979a956_cbc6_4ba6_91d4_d867bd154440" version="4">
+  <model id="MODEL1304160000" metaid="_878754b7_fd3b_4c76_94dc_acbb46a38e05" name="Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div class="dc:title">Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)</div>
+            <div class="dc:description">      <p>The paper describes insulin signalling in human adipocytes under normal and diabetic states using mathematical models based on experimental data. This model corresponds to insulin signalling under diabetic condtion</p>
+                </div>
+            <div class="dc:bibliographicCitation">      <p>This model is described in the article:</p>
+                <div class="bibo:title">        <a href="http://identifiers.org/pubmed/23400783" title="Access to this publication">Insulin Signaling in Type 2 Diabetes: EXPERIMENTAL AND MODELING ANALYSES REVEAL MECHANISMS OF INSULIN RESISTANCE IN HUMAN ADIPOCYTES.</a>
+                    </div>
+                <div class="bibo:authorList">Brännmark C, Nyman E, Fagerholm S, Bergenholm L, Ekstrand EM, Cedersund G, Strålfors P.</div>
+                <div class="bibo:Journal">J Biol Chem. 2013 Apr 5;288(14):9867-80.</div>
+                <p>Abstract:</p>
+                <div class="bibo:abstract">        <p>Type 2 diabetes originates in an expanding adipose tissue that for unknown reasons becomes insulin resistant. Insulin resistance reflects impairments in insulin signaling, but mechanisms involved are unclear because current research is fragmented. We report a systems level mechanistic understanding of insulin resistance, using systems wide and internally consistent data from human adipocytes. Based on quantitative steady-state and dynamic time course data on signaling intermediaries, normally and in diabetes, we developed a dynamic mathematical model of insulin signaling. The model structure and parameters are identical in the normal and diabetic states of the model, except for three parameters that change in diabetes: (i) reduced concentration of insulin receptor, (ii) reduced concentration of insulin-regulated glucose transporter GLUT4, and (iii) changed feedback from mammalian target of rapamycin in complex with raptor (mTORC1). Modeling reveals that at the core of insulin resistance in human adipocytes is attenuation of a positive feedback from mTORC1 to the insulin receptor substrate-1, which explains reduced sensitivity and signal strength throughout the signaling network. Model simulations with inhibition of mTORC1 are comparable with experimental data on inhibition of mTORC1 using rapamycin in human adipocytes. We demonstrate the potential of the model for identification of drug targets, e.g. increasing the feedback restores insulin signaling, both at the cellular level and, using a multilevel model, at the whole body level. Our findings suggest that insulin resistance in an expanded adipose tissue results from cell growth restriction to prevent cell necrosis.</p>
+                    </div>
+                </div>
+            <div class="dc:publisher">      <p>This model is hosted on        <a href="http://www.ebi.ac.uk/biomodels/">BioModels Database</a>
+            and identified
+by:        <a href="http://identifiers.org/biomodels.db/MODEL1304160000">MODEL1304160000</a>
+            .        </p>
+                <p>To cite BioModels Database, please use:        <a href="http://identifiers.org/pubmed/20587024" title="Latest BioModels Database publication">BioModels Database: An enhanced, curated and annotated resource
+for published quantitative kinetic models</a>
+            .        </p>
+                </div>
+            <div class="dc:license">      <p>To the extent possible under law, all copyright and related or
+neighbouring rights to this encoded model have been dedicated to the public
+domain worldwide. Please refer to        <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication">CC0 Public Domain
+Dedication</a>
+            for more information.        </p>
+                </div>
+            </body>
+      
+    </notes>
+    <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+        <rdf:Description rdf:about="#_878754b7_fd3b_4c76_94dc_acbb46a38e05">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Chelliah</vCard:Family>
+	<vCard:Given>Vijayalakshmi</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>viji@ebi.ac.uk</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>EMBL-EBI</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Nyman</vCard:Family>
+	<vCard:Given>Elin</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>elin.nyman@liu.se</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>Linköping University</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2013-04-19T14:43:57Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2017-06-16T19:21:27Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL1304160000"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000449"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:isDescribedBy>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pubmed/23400783"/>
+	</rdf:Bag>
+	</bqmodel:isDescribedBy>
+	<bqmodel:isDerivedFrom>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000343"/>
+	</rdf:Bag>
+	</bqmodel:isDerivedFrom>
+	<bqbiol:hasTaxon>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/taxonomy/9606"/>
+	</rdf:Bag>
+	</bqbiol:hasTaxon>
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0032869"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	<bqbiol:hasProperty>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/mamo/MAMO_0000046"/>
+	</rdf:Bag>
+	</bqbiol:hasProperty>
+	<bqbiol:hasVersion>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/doid/DOID:9352"/>
+	</rdf:Bag>
+	</bqbiol:hasVersion>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+      <listOfCompartments>
+      <compartment id="cellvolume" metaid="a7858a4c_7eae_49d5_b1d1_e08726d4913d" name="cellvolume" sboTerm="SBO:0000290" size="1">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#a7858a4c_7eae_49d5_b1d1_e08726d4913d">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0005623"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species compartment="cellvolume" id="IR" initialConcentration="49.9344643421136" metaid="c84666b2_d4d9_409f_a2e4_b6edbb17b779" name="IR">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#c84666b2_d4d9_409f_a2e4_b6edbb17b779">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P06213"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRp" initialConcentration="0.000931221500588088" metaid="_0377fb64_43b1_47bd_ae79_93451659e8db" name="IRp">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_0377fb64_43b1_47bd_ae79_93451659e8db">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P06213"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRins" initialConcentration="0" metaid="a1698b41_e251_4979_9aea_f483b08a2d93" name="IRins">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#a1698b41_e251_4979_9aea_f483b08a2d93">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P06213"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRip" initialConcentration="0.011815001204792" metaid="bd3917af_4632_4667_aa1d_c5a1283a7285" name="IRip">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#bd3917af_4632_4667_aa1d_c5a1283a7285">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P06213"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRi" initialConcentration="0.0527894351383809" metaid="d5c4beb0_a6eb_4e26_81f7_60c826d05bd8" name="IRi">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#d5c4beb0_a6eb_4e26_81f7_60c826d05bd8">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P06213"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRS1" initialConcentration="86.2418960059256" metaid="_1f099c5f_a18c_4f8e_9fa5_734563483846" name="IRS1">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_1f099c5f_a18c_4f8e_9fa5_734563483846">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P35568"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRS1p" initialConcentration="0.00095272377217019" metaid="_9f1c3f16_e794_4354_81c9_c7c28b82b3e2" name="IRS1p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_9f1c3f16_e794_4354_81c9_c7c28b82b3e2">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P35568"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRS1p307" initialConcentration="0.00891531075576947" metaid="d1f7ae05_40f6_48e1_b4e2_27871e362ecc" name="IRS1p307">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#d1f7ae05_40f6_48e1_b4e2_27871e362ecc">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P35568"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	<rdf:li rdf:resource="urn:miriam:mod:MOD%3A00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="IRS1307" initialConcentration="13.7482359094757" metaid="_113383e4_44b3_4955_b30c_653524a6066e" name="IRS1307">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_113383e4_44b3_4955_b30c_653524a6066e">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P35568"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="X" initialConcentration="99.9986712896423" metaid="de39c4f9_dd7f_43b2_b3e1_5b321b6f9ea8" name="X">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#de39c4f9_dd7f_43b2_b3e1_5b321b6f9ea8">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:36080"/>
+	<rdf:li rdf:resource="http://identifiers.org/fma/FMA:74531"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="Xp" initialConcentration="0.00132871035763352" metaid="ff6b7ac6_23f5_412d_b1ca_2db83560713c" name="Xp">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#ff6b7ac6_23f5_412d_b1ca_2db83560713c">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	<rdf:li rdf:resource="http://identifiers.org/fma/FMA:74531"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="PKB" initialConcentration="78.0219322115859" metaid="_25eba3cb_5c70_4539_8269_3cce2d44a8c2" name="PKB">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_25eba3cb_5c70_4539_8269_3cce2d44a8c2">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P31751"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="PKB308p" initialConcentration="12.2197372437326" metaid="_8ffa7626_57b0_44b9_be57_8ff67ca4ad30" name="PKB308p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_8ffa7626_57b0_44b9_be57_8ff67ca4ad30">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P31751"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="PKB473p" initialConcentration="9.6963389945784" metaid="_6bbae286_846e_431d_b0d4_05120993cef7" name="PKB473p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_6bbae286_846e_431d_b0d4_05120993cef7">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P31751"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="PKB308p473p" initialConcentration="0.061992532897245" metaid="_10b6893e_cfda_4878_8c2e_55e9369c53eb" name="PKB308p473p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_10b6893e_cfda_4878_8c2e_55e9369c53eb">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P31751"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="mTORC1" initialConcentration="96.927052256569" metaid="_2eaa3318_257a_438e_9ab1_27432804a078" name="mTORC1">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_2eaa3318_257a_438e_9ab1_27432804a078">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P42345"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q8N122"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="mTORC1a" initialConcentration="3.07294774343092" metaid="_4ae69fb0_2748_43a2_b8e7_845f214cae5c" name="mTORC1a">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_4ae69fb0_2748_43a2_b8e7_845f214cae5c">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P42345"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q8N122"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="mTORC2" initialConcentration="99.9045223943705" metaid="ce18d7c2_2ff2_491b_8a8f_e142ec7cc869" name="mTORC2">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#ce18d7c2_2ff2_491b_8a8f_e142ec7cc869">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P42345"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q6R327"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="mTORC2a" initialConcentration="0.0954776056294795" metaid="c8036aff_1de4_484e_908d_f09e9236ebb0" name="mTORC2a">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#c8036aff_1de4_484e_908d_f09e9236ebb0">
+	<bqbiol:hasPart>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P42345"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q6R327"/>
+	</rdf:Bag>
+	</bqbiol:hasPart>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="AS160" initialConcentration="95.4699007486273" metaid="d0c0aa71_52cc_43a5_9e4e_e56491a74f68" name="AS160">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#d0c0aa71_52cc_43a5_9e4e_e56491a74f68">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O60343"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="AS160p" initialConcentration="4.53009925137289" metaid="aa11d096_4031_49c9_86f9_7cbf1e3f55ce" name="AS160p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#aa11d096_4031_49c9_86f9_7cbf1e3f55ce">
+              <bqbiol:hasProperty>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+	</rdf:Bag>
+	</bqbiol:hasProperty>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/O60343"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="GLUT4m" initialConcentration="4.5880858350243" metaid="_6ca79fa6_913b_45f0_8db6_781a7f976c0a" name="GLUT4m">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_6ca79fa6_913b_45f0_8db6_781a7f976c0a">
+              <bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P14672"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	
+	<bqbiol:occursIn>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0005886"/>
+	</rdf:Bag>
+	</bqbiol:occursIn>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="GLUT4" initialConcentration="45.4119141649757" metaid="bfefa50c_0d8c_4428_9bb3_166b716c5458" name="GLUT4">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#bfefa50c_0d8c_4428_9bb3_166b716c5458">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P14672"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="S6K" initialConcentration="99.8296860066098" metaid="_9dc8477f_43a7_41e7_927c_8d27147c8ee3" name="S6K">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_9dc8477f_43a7_41e7_927c_8d27147c8ee3">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P23443"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="S6Kp" initialConcentration="0.170313993390069" metaid="d1d80f6b_aebc_41e9_a3d6_6e27965b75d2" name="S6Kp">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#d1d80f6b_aebc_41e9_a3d6_6e27965b75d2">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P23443"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="S6" initialConcentration="98.2037625421647" metaid="_8221cfa1_2f83_4017_9c7e_faea8a852899" name="S6">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_8221cfa1_2f83_4017_9c7e_faea8a852899">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P62753"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="cellvolume" id="S6p" initialConcentration="1.79623745783512" metaid="_44a21bb1_c089_44f7_bd24_80ce88e11332" name="S6p">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#_44a21bb1_c089_44f7_bd24_80ce88e11332">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P62753"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00562"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="diabetes" metaid="_061732c3_dfe9_4c19_91c8_234aecc3bd27" name="diabetes" value="0.15"/>
+      <parameter id="k1a" metaid="_7ebe5460_5d3b_4432_86b8_dd73f8dee191" name="k1a" value="0.6331"/>
+      <parameter id="k1basal" metaid="_68bbb9d3_af59_43c1_bdf4_71db85fda0d8" name="k1basal" value="0.03683"/>
+      <parameter id="k1c" metaid="b656fc65_4df5_45cd_98ad_fa298b8dbdfc" name="k1c" value="0.8768"/>
+      <parameter id="k1d" metaid="_2441555b_0fef_47cf_b078_095f98798e54" name="k1d" value="31.01"/>
+      <parameter id="k1f" metaid="e145a4f2_1e06_4b5b_b7a5_04c53b8133d2" name="k1f" value="1840"/>
+      <parameter id="k1g" metaid="_139496d4_1990_4a17_af10_9b0356a8175d" name="k1g" value="1944"/>
+      <parameter id="k1r" metaid="_5e2c2d3f_cc8b_43ae_bcb3_bb9d558b3c7b" name="k1r" value="0.5471"/>
+      <parameter id="k2a" metaid="_1c21a4d2_5b18_4d13_85e2_0a0d6079674b" name="k2a" value="3.227"/>
+      <parameter id="k2c" metaid="_65abc4f6_136b_450a_a30b_e41fbb687828" name="k2c" value="5759"/>
+      <parameter id="k2basal" metaid="_4a43bca5_40a6_4274_a62d_94f1abc21f8a" name="k2basal" value="0.04228"/>
+      <parameter id="k2b" metaid="_6163d3d0_1196_477f_9980_ae350f236ec6" name="k2b" value="3424"/>
+      <parameter id="k2d" metaid="ec106c88_cac5_41f1_8a52_f7b14fe3ab92" name="k2d" value="280.8"/>
+      <parameter id="k2f" metaid="c6dc0272_8e22_417a_83d8_fc559fe22977" name="k2f" value="2.913"/>
+      <parameter id="k2g" metaid="_367c1488_6f7f_4fd7_aa10_c5615cb03a02" name="k2g" value="0.2671"/>
+      <parameter id="k3a" metaid="_9bbefb9e_cd73_447e_a6ef_604ee58ea747" name="k3a" value="0.001377"/>
+      <parameter id="k3b" metaid="_17ee33a8_0ce4_4607_b851_a2429c40047e" name="k3b" value="0.09876"/>
+      <parameter id="k4a" metaid="cace3e33_cf65_4302_adf7_b7888a83bdd1" name="k4a" value="5790"/>
+      <parameter id="k4b" metaid="_0d84c274_593c_4327_8190_34e006f1728e" name="k4b" value="34.8"/>
+      <parameter id="k4c" metaid="_819d55e6_a928_43bd_beda_6c07254203bc" name="k4c" value="4.456"/>
+      <parameter id="k4e" metaid="_1ceaa4b1_cd06_42ed_850b_065aee8b3c7e" name="k4e" value="42.84"/>
+      <parameter id="k4f" metaid="_62378f04_9eb4_46a1_a3cc_d04b6aef978b" name="k4f" value="143.6"/>
+      <parameter id="k4h" metaid="_4f689140_6b52_4f2a_bdf7_1dbf4eebe100" name="k4h" value="0.5361"/>
+      <parameter id="k5a1" metaid="ae4a7237_8ac3_41e1_8062_0ea0bf12b5c1" name="k5a1" value="1.842"/>
+      <parameter id="k5a2" metaid="_5acb108f_7e74_4e90_886e_65aaf491c257" name="k5a2" value="0.05506"/>
+      <parameter id="k5b" metaid="f76dbfa5_b825_44ef_a3ba_284b697b72b5" name="k5b" value="24.83"/>
+      <parameter id="k5d" metaid="_73b0511a_01a7_4c9b_af6d_f626ceb1c04c" name="k5d" value="1.06"/>
+      <parameter id="km5" metaid="_9f6fde03_8241_44e2_b5c7_0399d119a3f2" name="km5" value="2.65"/>
+      <parameter id="k5c" metaid="bd770293_e40b_493d_b95f_06041fcadcb2" name="k5c" value="0.08575"/>
+      <parameter id="k6f1" metaid="b5a90e3e_1a7d_473a_876d_e542f26caf48" name="k6f1" value="2.652"/>
+      <parameter id="k6f2" metaid="_7c2f6ded_f153_4bec_9c22_cf1c20cb11f8" name="k6f2" value="36.93"/>
+      <parameter id="km6" metaid="_6ce9d90c_8fbd_450c_8587_f099b346675c" name="km6" value="30.54"/>
+      <parameter id="n6" metaid="f49e2c02_201f_4970_8f17_3b42a6d67116" name="n6" value="2.137"/>
+      <parameter id="k6b" metaid="_1c15c244_03b2_4d4f_b194_74adf9dbc79b" name="k6b" value="65.18"/>
+      <parameter id="k7f" metaid="_6c171496_d7b8_40b3_80e3_0424e0e70754" name="k7f" value="50.98"/>
+      <parameter id="k7b" metaid="_651c9597_a232_42d4_8195_b98801a5861a" name="k7b" value="2286"/>
+      <parameter id="k8" metaid="aaaf47ce_e359_44a6_9ddf_86807d8b9619" name="k8" value="724.2"/>
+      <parameter id="glut1" metaid="_6bf2fcde_9669_425a_b09f_188d91520b8f" name="glut1" value="7042"/>
+      <parameter id="k9f1" metaid="e37b9021_f17a_4719_91de_76822cebcbed" name="k9f1" value="0.1298"/>
+      <parameter id="k9b1" metaid="_887b0bf7_b516_4f30_89b3_f6d26a91a308" name="k9b1" value="0.04441"/>
+      <parameter id="k9f2" metaid="_3ed475fc_e91c_4fc5_977a_955329c1db10" name="k9f2" value="3.329"/>
+      <parameter id="k9b2" metaid="acfb1aab_479a_451e_bc3c_f9a53731f0e9" name="k9b2" value="31"/>
+      <parameter id="km9" metaid="_2da56d24_5e94_42ad_81f3_1b0d5cfc6549" name="km9" value="5873"/>
+      <parameter id="n9" metaid="_1a2ede41_4881_4e3c_9d6a_348b70c1149a" name="n9" value="0.9855"/>
+      <parameter id="scaleIR" metaid="_255e6ba2_3883_4305_9f16_1555e3b1286b" name="scaleIR" value="5.202"/>
+      <parameter id="scaleIRS1" metaid="dadf226c_8503_4e9b_be05_9cb01a983e29" name="scaleIRS1" value="0.3761"/>
+      <parameter id="scaleIRS1ds" metaid="_5681cc3d_ee5a_4226_8bf0_b8415ef5df9b" name="scaleIRS1ds" value="14.89"/>
+      <parameter id="scaleIRS1307" metaid="_5ef5c98d_a5c0_4efe_98dc_6273515068d9" name="scaleIRS1307" value="0.05866"/>
+      <parameter id="scalePKB308" metaid="b8a0575b_6153_412d_84ae_e009a0080bb8" name="scalePKB308" value="0.04356"/>
+      <parameter id="scalePKB473" metaid="af4f74b4_70bd_4ac7_ba5b_84f2473762ff" name="scalePKB473" value="0.013"/>
+      <parameter id="scaleAS160" metaid="cddeecc2_691f_46bb_9ffb_49e8bc2da651" name="scaleAS160" value="0.026656"/>
+      <parameter id="scaleGLUCOSE" metaid="_588196b0_15f8_43fb_b16c_5cf9f7759025" name="scaleGLUCOSE" value="0.04051"/>
+      <parameter id="scaleS6K" metaid="_810c55bf_b35e_4e9b_9b98_43740e9bed7e" name="scaleS6K" value="0.7465"/>
+      <parameter id="scaleS6" metaid="_69a0aae2_0a57_491f_914a_eb77c7bcfb63" name="scaleS6" value="0.1149"/>
+      <parameter id="gluc" metaid="e7b436ec_aefb_4d41_8667_5fcde7f68c8b" name="gluc" value="0.05"/>
+      <parameter id="insulin" metaid="_5f4f879a_3849_4bdd_8428_ad2878756657" name="insulin" value="10"/>
+      <parameter constant="false" id="measuredIRp" metaid="f9563b54_50d9_40e8_80c4_4adf8a354cf5" name="measuredIRp" value="0"/>
+      <parameter constant="false" id="measuredIRint" metaid="_53ef39a0_1efc_44be_b32f_82bfbfc276b1" name="measuredIRint" value="0"/>
+      <parameter constant="false" id="measuredIRS1p" metaid="_9a5293db_670e_428c_b750_1380713b9bfc" name="measuredIRS1p" value="0"/>
+      <parameter constant="false" id="measuredIRS1307" metaid="cec1d269_592b_45fb_8ffd_f299dade4489" name="measuredIRS1307" value="0"/>
+      <parameter constant="false" id="measuredPKB308p" metaid="_8789e019_5bc7_4846_a063_1c072e9c904d" name="measuredPKB308p" value="0"/>
+      <parameter constant="false" id="measuredPKB473p" metaid="_07ebe323_a60e_48eb_a921_a6d7aa5864bd" name="measuredPKB473p" value="0"/>
+      <parameter constant="false" id="measuredAS160p" metaid="_601cf4f1_39a9_4b7c_bc13_1f99a42f9244" name="measuredAS160p" value="0"/>
+      <parameter constant="false" id="measuredmTORC1a" metaid="_6dd40aed_269c_4383_8ed5_7cd349d67ae2" name="measuredmTORC1a" value="0"/>
+      <parameter constant="false" id="measuredS6Kp" metaid="_47e88285_f8ac_4c5f_b200_941f64b12213" name="measuredS6Kp" value="0"/>
+      <parameter constant="false" id="measuredS6p" metaid="_6b1f19b1_835e_41e8_a6f6_a519fba5232d" name="measuredS6p" value="0"/>
+      <parameter constant="false" id="measuredmTORC2a" metaid="d334c8aa_2630_448f_b40a_31a20b915aa1" name="measuredmTORC2a" value="0"/>
+      <parameter constant="false" id="glucoseuptake" metaid="_50284c2c_284d_4ef0_a365_39e59a8c9c76" name="glucoseuptake" value="0"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule metaid="b0ba88ec_2d18_4d66_83a8_63594e7f5c07" variable="measuredIRp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleIR </ci>
+            <apply>
+              <plus/>
+              <ci> IRp </ci>
+              <ci> IRip </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="_355d4cf9_5d43_466d_ad02_6450fa7c0a73" variable="measuredIRint">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> IRi </ci>
+            <ci> IRip </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="_9753f26d_ee0a_404a_9c05_c94843ed363d" variable="measuredIRS1p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleIRS1 </ci>
+            <apply>
+              <plus/>
+              <ci> IRS1p </ci>
+              <ci> IRS1p307 </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="_8766b3f2_6c04_46ee_bd3c_ca2e3526a75c" variable="measuredIRS1307">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleIRS1307 </ci>
+            <apply>
+              <plus/>
+              <ci> IRS1p307 </ci>
+              <ci> IRS1307 </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="a78b7de6_6e3c_45df_a7ae_92e5277dacc6" variable="measuredPKB308p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scalePKB308 </ci>
+            <apply>
+              <plus/>
+              <ci> PKB308p </ci>
+              <ci> PKB308p473p </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="fc0a04d7_c083_4a2c_9082_b191500d2276" variable="measuredPKB473p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scalePKB473 </ci>
+            <apply>
+              <plus/>
+              <ci> PKB473p </ci>
+              <ci> PKB308p473p </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="eabf19c2_3e75_4532_bd8a_a563d43910d2" variable="measuredAS160p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleAS160 </ci>
+            <ci> AS160p </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="a52bc17f_b882_487d_976f_a99f348dd392" variable="measuredmTORC1a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> mTORC1a </ci>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="e2b4ad9a_75b4_48ef_9671_83e83af37cec" variable="measuredS6Kp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleS6K </ci>
+            <ci> S6Kp </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="ab90df9e_c013_4f30_a071_33f141f609b3" variable="measuredS6p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <times/>
+            <ci> scaleS6 </ci>
+            <ci> S6p </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="b78e9c60_7dd2_486d_af5a_2e79166dd8c5" variable="measuredmTORC2a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <ci> mTORC2a </ci>
+        </math>
+            </assignmentRule>
+      <assignmentRule metaid="c481ae23_e767_40ea_b48c_440b2c7947b2" variable="glucoseuptake">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> GLUT4m </ci>
+              <ci> gluc </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> glut1 </ci>
+              <ci> gluc </ci>
+            </apply>
+          </apply>
+        </math>
+            </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="v1a" metaid="_751441fd_f82c_4424_966d_2e5d93877510" name="v1a" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_7d502b6a_b66b_4ad5_ba12_42c108a6264a" species="IR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_0aec90ba_4031_446e_8129_c0d022eb6887" species="IRins"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="cb047681_028e_4918_967d_3c97a46b0baa" species="IR"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_23a9ce1c_7f82_4213_9b9b_5180cb35b56b">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IR </ci>
+              <ci> k1a </ci>
+              <ci> insulin </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1basal" metaid="ba27544f_b7a7_4cf4_92a2_175d03bd5869" name="v1basal" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_947056f5_7ca8_404b_9c2c_083c7eb1c8c8" species="IR"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_769274b7_0fa4_4975_83fd_c032c4da576c" species="IRp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="acb56fc5_4e17_4943_a1a7_b037ea1c8285" species="IR"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_4dd257ee_3fee_48b4_b4a2_fd622ca5f40e">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k1basal </ci>
+              <ci> IR </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1c" metaid="_2476623c_eda0_40aa_92e5_a4c3f1cb0cb5" name="v1c" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_6061851b_336c_4c8a_a5a9_b3c047a92d3c" species="IRins"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="c2aff4e6_58ae_4ce3_84cd_e35543b6b7ad" species="IRp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="b9ba0a5a_c653_4ef7_841b_62ecbf9e4de6" species="IRins"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_924b7d1a_7d17_4982_a380_ac8a00bae542">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRins </ci>
+              <ci> k1c </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1d" metaid="_1fd088e1_3da9_4443_8178_332043d01e88" name="v1d" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_8024a8cf_9d30_4e4d_87b2_736a8c0e233e" species="IRp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="cb445116_cb42_4c11_8e16_88df21a5a15c" species="IRip"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_904006af_37fe_42fe_a4cc_5ab3b04a77cc" species="IRp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_493a945f_5ab8_40fb_aa98_80e40705162a">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRp </ci>
+              <ci> k1d </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1e" metaid="fa8564cf_6d01_4364_81a4_c2d84a25e6c9" name="v1e" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="f16895f4_a1af_4936_92fd_649ec2f7a8be" species="IRip"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="dbbf832c_a460_4c5e_9105_5fbeb69aae48" species="IRi"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_690b3f76_be5c_481d_ba96_d2bc0cfeafed" species="Xp"/>
+          <modifierSpeciesReference metaid="_91417a11_f3b4_48f5_a19d_c048c4ddf622" species="IRip"/>
+          <modifierSpeciesReference metaid="b2c95838_565c_4d63_8b67_27846af93322" species="Xp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_47b3e9ac_4fdb_4a15_a38e_9854700be6e1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRip </ci>
+              <ci> k1f </ci>
+              <ci> Xp </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1g" metaid="d1b94223_532d_46ba_af3e_55d4e685fbd2" name="v1g" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="b22f5564_77e3_4886_9d8a_c7144ae6ebe9" species="IRp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_442610a7_4172_42f4_a1e8_ea79d2358cba" species="IR"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_8adf74cb_f926_44fd_b402_7da1c55b6a75" species="IRp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="dc9041ab_3774_41f2_889c_70de523947e0">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRp </ci>
+              <ci> k1g </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v1r" metaid="_765d7fe4_a9d6_4fa7_8543_a772fd76d9e9" name="v1r" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="c7c3f282_5123_40f7_8569_8f388ff4c257" species="IRi"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_690389b1_2655_4b4b_a4e9_8dc9402f51d3" species="IR"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_4d09a131_2372_4e62_a790_87d4a425bfcd" species="IRi"/>
+        </listOfModifiers>
+        <kineticLaw metaid="b1d1b8f4_f783_4bed_91d0_801a53dff947">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRi </ci>
+              <ci> k1r </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2a" metaid="fbd3ff9e_8d4f_420a_99c5_324b9aef1c74" name="v2a" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_60bbe850_d42f_4d1a_921f_5713a605ca8a" species="IRS1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_57669088_325e_414d_8967_b9f651f295e5" species="IRS1p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_0c11b5dc_3afa_487d_8a07_bffe03556bfc" species="IRip"/>
+          <modifierSpeciesReference metaid="b6b4b6ec_6bf7_4a32_84ca_f2d21a65bcde" species="IRS1"/>
+          <modifierSpeciesReference metaid="_69905974_68f0_4b4f_ae06_0fe005dc8d5c" species="IRip"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_2de9631d_2410_495a_be21_d79100ccce9b">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1 </ci>
+              <ci> k2a </ci>
+              <ci> IRip </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2b" metaid="_1a7237d8_b16f_4d64_af66_cf794c150542" name="v2b" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="e251119e_38cd_4dac_a9e4_1a17e431174c" species="IRS1p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_7e8efbcd_d38b_4bc0_9b71_2dad07b80d87" species="IRS1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="a4faa837_6cda_4142_8f53_08cb9d63dd56" species="IRS1p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_59bd087d_d2d5_4737_a265_940114fa0056">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1p </ci>
+              <ci> k2b </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2c" metaid="_677875ba_5c51_4169_9bde_803c86b284f9" name="v2c" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="ed730321_f275_4f8a_83d6_af18301dc14f" species="IRS1p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_510b5cbc_6152_4b40_90b8_3a85c79a0fec" species="IRS1p307"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_56254ab9_4231_4ed0_8543_ee28883fe730" species="mTORC1a"/>
+          <modifierSpeciesReference metaid="_66c0587f_5c6c_443b_8b7a_fabe536cf58b" species="IRS1p"/>
+          <modifierSpeciesReference metaid="_629b71c6_f8bf_4e84_a503_d85a42dde7c6" species="mTORC1a"/>
+        </listOfModifiers>
+        <kineticLaw metaid="d4eee7c5_0a18_4ca4_9aa0_3a5d46fe5c98">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1p </ci>
+              <ci> k2c </ci>
+              <ci> mTORC1a </ci>
+              <ci> diabetes </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2d" metaid="_655a7a8e_7567_48c1_9519_17a28dfb4849" name="v2d" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_9b436e12_572d_430e_a738_53ddd836a856" species="IRS1p307"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_0323eccb_04bf_4b70_a53e_c3a8abd13f23" species="IRS1p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="f29fea93_b4c1_4ef6_82d3_802f75d40ef3" species="IRS1p307"/>
+        </listOfModifiers>
+        <kineticLaw metaid="ec05a33d_b0aa_4853_b7e7_3d7e7309dba9">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1p307 </ci>
+              <ci> k2d </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2f" metaid="_1cdc7d42_c572_4a29_873f_281d7dabe3f6" name="v2f" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="ee68a962_0e77_43ed_91f4_4e0eb6c07644" species="IRS1p307"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_1157f21b_17f6_4c6c_a963_6072ff1e490a" species="IRS1307"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_662f9329_5b0f_4d0c_8272_bb69f1d07766" species="IRS1p307"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_34e1725b_af9b_435d_94ee_69411d17183d">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1p307 </ci>
+              <ci> k2f </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2basal" metaid="_2f4b7b4e_cce2_4fb4_8256_79b868eef5f2" name="v2basal" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="ec34b06d_d3fe_4d14_9408_de7343fb08c2" species="IRS1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_89c17416_bbdf_4e4d_a780_bbd6b274d844" species="IRS1307"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="d27ff018_ecbe_4b98_b6eb_8ecb131974d9" species="IRS1"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_89a4c29e_d6d9_40f3_b381_398a8711872e">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1 </ci>
+              <ci> k2basal </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2g" metaid="_167e24a3_2bca_4345_84af_33385f4baab5" name="v2g" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="e773ae6b_9412_4b7e_bb25_fb6e71df15c1" species="IRS1307"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="c0e1fb19_3e54_465b_a276_aa3924a6b8f4" species="IRS1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_486f831c_693e_4ad0_bce3_d178bc39c41d" species="IRS1307"/>
+        </listOfModifiers>
+        <kineticLaw metaid="fe34e70d_1aea_4fab_bdd2_e883d835ac51">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> IRS1307 </ci>
+              <ci> k2g </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v3a" metaid="_84ed70d3_42a1_4380_a3c5_97122f5638e7" name="v3a" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_1c5e4e2c_f319_4500_a348_559b7b1fdf55" species="X"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_79aac60b_7b30_4570_b0c0_e4fec8790628" species="Xp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="b1b83142_f59f_4635_8ba9_e269ea5ad707" species="IRS1p"/>
+          <modifierSpeciesReference metaid="b93e9cb7_9bb2_4583_9c2c_a0f2549b7118" species="X"/>
+          <modifierSpeciesReference metaid="ffab0ea7_60f3_495f_bd56_374ce777ae63" species="IRS1p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_4dc92526_7f8d_4fbc_97a3_d0ecf6ec6ab1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> X </ci>
+              <ci> k3a </ci>
+              <ci> IRS1p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v3b" metaid="_92c58e43_1e85_4f15_8a4a_c3ca2d65036f" name="v3b" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="b46678ca_b84a_4db8_a23f_43bb6fda3b0d" species="Xp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="c454611d_081e_43c7_9777_5958b7b7023f" species="X"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_5d8a92ad_fdc6_4fa6_b706_df253d90638b" species="Xp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_93c3fc31_e837_4ca3_aba1_5b1ff83f6a83">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> Xp </ci>
+              <ci> k3b </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v5a" metaid="_02511f04_2585_4b4d_9e24_a4356aec78a2" name="v5a" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_64d0c5ff_0d8a_43f4_b944_ad8c2e4439ef" species="mTORC1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_198518fa_b9d5_46c0_a821_5c830b6fadc7" species="mTORC1a"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="f5c852dc_4738_481a_88af_471164e5bbc4" species="PKB308p"/>
+          <modifierSpeciesReference metaid="d16e5859_a79e_4132_b9a6_fa03e8b6acaf" species="PKB308p473p"/>
+          <modifierSpeciesReference metaid="_85294905_821f_48f6_b092_f05d75a93546" species="mTORC1"/>
+          <modifierSpeciesReference metaid="e9e00331_0126_458f_bb0d_5bc45ccd4ffe" species="PKB308p473p"/>
+          <modifierSpeciesReference metaid="_2450269b_63c8_4ac7_bfdb_366748b3c9fc" species="PKB308p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="b8ef0a35_3d2f_4345_838a_54e806133bcf">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> mTORC1 </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k5a1 </ci>
+                  <ci> PKB308p473p </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k5a2 </ci>
+                  <ci> PKB308p </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v5b" metaid="_36456197_988d_4747_9b24_2213486e4c35" name="v5b" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="b3d68a25_7444_41df_b548_9999bdc932f1" species="mTORC1a"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_413c943c_5a5b_4327_862a_56981501e747" species="mTORC1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_145c453b_eaf9_43ed_9c6b_c2557b60557a" species="mTORC1a"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_00b95fae_f37b_4399_9f7a_a6360e4acc63">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> mTORC1a </ci>
+              <ci> k5b </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v5c" metaid="_4eb226b7_4a4a_4682_a2c0_78384051e3c2" name="v5c" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_26ba293d_f2d1_4945_9ab8_ee5a436ee5e0" species="mTORC2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_1eddffe2_531f_448d_a1a2_8a6e7c09514c" species="mTORC2a"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="f795ebf9_bc61_4547_b8c2_83cb461630aa" species="IRip"/>
+          <modifierSpeciesReference metaid="_6debf2de_ff2d_4374_96da_f325f83ad083" species="mTORC2"/>
+          <modifierSpeciesReference metaid="_6fd0c2d0_f2f8_42c6_9195_62ce2ff10d91" species="IRip"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_49e930a5_89de_44be_9ced_4d4d7d53795a">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> mTORC2 </ci>
+              <ci> k5c </ci>
+              <ci> IRip </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v5d" metaid="a34e178a_9ccd_4fb0_b635_2c1f73d37529" name="v5d" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_79b8813d_9a0f_42ab_a9f9_7c99f90202c4" species="mTORC2a"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_2e714678_1b06_476a_b571_0b11736a6371" species="mTORC2"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_26d16909_5909_4a7f_8f60_ade456e4edfc" species="mTORC2a"/>
+        </listOfModifiers>
+        <kineticLaw metaid="aa23d269_6707_4e71_a754_558c909cb100">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k5d </ci>
+              <ci> mTORC2a </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4a" metaid="_99847641_8a89_4014_a6e2_df20e64d6cb0" name="v4a" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="fb45f4ea_9e8d_4ccb_99ea_712a5fae1817" species="PKB"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_2a4ceda0_2f0b_47d4_a53f_9fe2625f78c0" species="PKB308p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_04500262_e01b_46e8_9357_92c4d0bc30eb" species="IRS1p"/>
+          <modifierSpeciesReference metaid="_9be81273_b5ad_4ae7_9308_ada814049fc9" species="PKB"/>
+          <modifierSpeciesReference metaid="_94d8b76d_bcc9_4f58_a0f2_bc92c2c0f6af" species="IRS1p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_619a83ec_1c28_45cf_b706_bae85ef17c40">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4a </ci>
+              <ci> PKB </ci>
+              <ci> IRS1p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4b" metaid="d4ba181a_5ccf_47c5_88f4_4d53c56be0c8" name="v4b" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_901b8089_876b_45e6_bc44_9ff7dd832a62" species="PKB308p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_51b71798_8e55_4acc_bf09_19e70f06c143" species="PKB"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_5e627bfb_665b_4a63_8215_9b8ffd0658d2" species="PKB308p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_095900b2_f644_4eda_8391_12a555b0c4c1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4b </ci>
+              <ci> PKB308p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4c" metaid="_1a8b27a3_0f6d_4e92_add5_cdf0d762cc0b" name="v4c" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_4f3b6f73_8317_4a08_a084_7b1d291ba733" species="PKB308p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_9ad4c2d1_24c8_4702_bce5_cb91e9cf79d0" species="PKB308p473p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="d1fb3421_4f95_49fb_b030_b7cd812aadcb" species="mTORC2a"/>
+          <modifierSpeciesReference metaid="e1cc1b4f_32aa_49d4_90a5_e812480dfbcd" species="PKB308p"/>
+          <modifierSpeciesReference metaid="c794bf8a_4313_436e_a755_2532c529d19e" species="mTORC2a"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_2d7e0d44_4528_417a_af22_ad85ac0a245a">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4c </ci>
+              <ci> PKB308p </ci>
+              <ci> mTORC2a </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4e" metaid="e338fcc2_99b6_4e86_b4e5_0337f3abc33d" name="v4e" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_15101cac_cfed_43b0_9c20_0e1562ea2291" species="PKB473p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="df392543_4d04_436e_ac73_9312e7317fe5" species="PKB308p473p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="b6eeddd7_21cf_47da_86b0_e93712f17576" species="IRS1p307"/>
+          <modifierSpeciesReference metaid="dabcafa6_faf3_41fc_bace_0cae775fa1a5" species="PKB473p"/>
+          <modifierSpeciesReference metaid="_5e28d99e_b482_44ec_a98c_d42e51f953e0" species="IRS1p307"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_4eea02bd_3e68_4906_9c0f_1f80275ecbd2">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4e </ci>
+              <ci> PKB473p </ci>
+              <ci> IRS1p307 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4f" metaid="f20b8a90_d724_468c_ab43_25518113eacf" name="v4f" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_57eb01dd_4de8_454e_a8ef_080eca017fd0" species="PKB308p473p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_69ae41f4_ed38_497c_91cc_6a119de38d9f" species="PKB473p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_08e3c109_4fe9_42f8_9e85_0e6e9d59a01f" species="PKB308p473p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_65fc04b6_663f_4c53_a6bb_c59518091b8a">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4f </ci>
+              <ci> PKB308p473p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4h" metaid="af8a5fd9_6f14_4911_9f1e_7b03fce3b3bc" name="v4h" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_23c9ad52_ed3b_4423_a25a_f71731e93227" species="PKB473p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_6694ce23_de30_489e_b4d1_4b5deda1fb41" species="PKB"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="bd93abc6_9a40_415f_ba07_b81dfa4f2dd8" species="PKB473p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_7d4c6dca_6715_4d35_ac2f_8657148850a9">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> k4h </ci>
+              <ci> PKB473p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v6f1" metaid="f48d1bcc_c6ad_42b1_a68d_f6dcc2f78b3a" name="v6f1" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="e180cdd2_96b7_4384_987b_add0c77ac190" species="AS160"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_4590b2d9_3c3e_4565_8cf2_01cb2869c1e9" species="AS160p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_73bffa51_2630_4389_8dea_e7201b08452b" species="PKB308p473p"/>
+          <modifierSpeciesReference metaid="fde1d746_f8fb_46c6_b05c_b2a632003499" species="PKB473p"/>
+          <modifierSpeciesReference metaid="_19cd5039_bbc8_4c87_97a5_fca9ce93721f" species="AS160"/>
+          <modifierSpeciesReference metaid="a50866fb_f341_4aa9_a31b_1e78ee22d165" species="PKB308p473p"/>
+          <modifierSpeciesReference metaid="b3a4dd5d_20ea_42c6_9d1a_5a799a07b9ce" species="PKB473p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="f1433c07_a83f_43e3_bee1_cd1f65275ebd">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> AS160 </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k6f1 </ci>
+                  <ci> PKB308p473p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k6f2 </ci>
+                    <apply>
+                      <power/>
+                      <ci> PKB473p </ci>
+                      <ci> n6 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> km6 </ci>
+                      <ci> n6 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> PKB473p </ci>
+                      <ci> n6 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v6b1" metaid="_2cfdaa89_9276_46ce_9204_fc04d0608cb1" name="v6b1" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_11ee4ce2_1d63_4796_b8be_47faddf8ade2" species="AS160p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="e451c6c1_24bb_4df9_a6b4_e71f8ab2b2a7" species="AS160"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_4e23abf7_6f9a_45fa_917c_44d25ae59d3d" species="AS160p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_00947007_545e_46e5_b281_a9b937f244b4">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> AS160p </ci>
+              <ci> k6b </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v7f" metaid="_5e1fcac2_ef8f_49d5_8fbd_885a3058fb06" name="v7f" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="da49fc91_a8d3_4cd2_ae23_9d4d55adc92c" species="GLUT4"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_8ad965f7_7e51_4d2a_86f1_6e26af469e91" species="GLUT4m"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_6fa404db_0fd9_44f1_8744_1a580ee1cb7f" species="AS160p"/>
+          <modifierSpeciesReference metaid="_9d48d5d3_63ac_49c3_a697_4a73ae1adf07" species="GLUT4"/>
+          <modifierSpeciesReference metaid="_65d3c57b_c6da_4259_bf6c_5456e03a3493" species="AS160p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="d4b2af30_e218_460e_a531_2a8d3191ba60">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> GLUT4 </ci>
+              <ci> k7f </ci>
+              <ci> AS160p </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v7b" metaid="f663940b_b0b6_4a4b_a16c_6677cc253853" name="v7b" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="fd60b0d6_3084_4084_8cb4_8e536690ebdc" species="GLUT4m"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_5e672459_897f_49b4_99d5_b4655dd68b53" species="GLUT4"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="e352125e_459f_4403_9f8b_88ca5648b447" species="GLUT4m"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_5be750b9_8f39_414e_814e_dd72f59aefb0">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> GLUT4m </ci>
+              <ci> k7b </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v9f1" metaid="_4c992bac_c668_4a83_8307_f148d4723d2f" name="v9f1" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_708e532d_3f73_4f8d_a2a9_57b8370df81e" species="S6K"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="e2925f72_7190_49ce_aa7d_9191576d2320" species="S6Kp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_05602bd3_b7fc_438a_bb7d_8a810362e417" species="mTORC1a"/>
+          <modifierSpeciesReference metaid="a7bbc00f_88fe_47b5_8552_76c334b65135" species="S6K"/>
+          <modifierSpeciesReference metaid="d982d704_af7f_4838_a537_d1ccddaf2b9f" species="mTORC1a"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_318a9d99_fd80_4815_95e6_cd157de817ea">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> S6K </ci>
+                <ci> k9f1 </ci>
+                <apply>
+                  <power/>
+                  <ci> mTORC1a </ci>
+                  <ci> n9 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> km9 </ci>
+                  <ci> n9 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> mTORC1a </ci>
+                  <ci> n9 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v9b1" metaid="c813e87b_d6a6_407b_9f04_48acfbfc8d02" name="v9b1" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_9214bf43_7319_48bd_80c5_de37da29cfd9" species="S6Kp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_33c5cb0d_20c2_4ae6_8bb5_6c513b4f46fc" species="S6K"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_7e05877f_49d3_4277_8dc8_f9ec84652dee" species="S6Kp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="c265078c_d5aa_4321_8559_f30fcedb8474">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> S6Kp </ci>
+              <ci> k9b1 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v9f2" metaid="d55fb779_6247_47da_9161_f8ca753b1649" name="v9f2" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="b9c11e92_4134_416d_833b_71a6af5f2e92" species="S6"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_6e24aeb6_d487_4b83_ba44_e5406d326e01" species="S6p"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="f8abcb56_2801_4207_b620_02c3ac2a6bbf" species="S6Kp"/>
+          <modifierSpeciesReference metaid="c0e8d7af_efc4_4bfc_9f91_31bbff149745" species="S6"/>
+          <modifierSpeciesReference metaid="_570adff8_2eaa_43f8_9722_fb3dcaae08a7" species="S6Kp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_6e33187d_ed79_4195_b78d_fab4682d0c15">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> S6 </ci>
+              <ci> k9f2 </ci>
+              <ci> S6Kp </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v9b2" metaid="_899d9dbf_d454_44b4_9791_0bad96ac3408" name="v9b2" reversible="false">
+        <listOfReactants>
+          <speciesReference metaid="_89811454_ee8a_4a24_835c_3c5775dd007e" species="S6p"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="cfc0ccc5_2472_4749_a687_2d6d0a23f649" species="S6"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="e9e635e3_6149_4c63_9995_f210d88e8c83" species="S6p"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_76fb9944_9ff5_41cc_a99c_b7b10e09c469">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> S6p </ci>
+              <ci> k9b2 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
