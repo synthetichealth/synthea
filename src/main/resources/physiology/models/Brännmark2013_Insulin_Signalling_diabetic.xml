@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="c979a956_cbc6_4ba6_91d4_d867bd154440" version="4">
-  <model id="MODEL1304160000" metaid="_878754b7_fd3b_4c76_94dc_acbb46a38e05" name="Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)">
+  <model id="MODEL1304160000" metaid="_878754b7_fd3b_4c76_94dc_acbb46a38e05" name="Brännmark2013_Insulin_Signalling_diabetic">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <div class="dc:title">Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)</div>

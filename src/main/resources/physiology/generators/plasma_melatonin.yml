@@ -1,6 +1,6 @@
 
 # Name of the model file
-model: BIOMD0000000672_url.xml
+model: Brown1997_Plasma_Melatonin.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="c4be2a88-8ed4-4042-93d9-f7974c91dd57" version="4">
-  <model id="MODEL1311220000" metaid="COPASI1" name="Roblitz2013 - Menstrual Cycle following GnRH analogue administration">
+  <model id="MODEL1311220000" metaid="COPASI1" name="Roblitz2013_Menstrual_Cycle">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <div class="dc:title">Roblitz2013 - Menstrual Cycle following GnRH analogue administration</div>

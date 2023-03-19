@@ -1,6 +1,6 @@
 
 # Name of the model file
-model: Leloup2004_Set1.xml
+model: Leloup2004_Mammalian_Circadian_Rhythm_Non_24hr.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta

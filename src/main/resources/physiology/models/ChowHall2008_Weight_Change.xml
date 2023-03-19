@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" layout:required="false" level="3" render:required="false" version="1" xmlns:layout="http://www.sbml.org/sbml/level3/version1/layout/version1" xmlns:render="http://www.sbml.org/sbml/level3/version1/render/version1">
-  <model areaUnits="area" extentUnits="substance" id="ChowHall2008_Dynamics_of_Human_Weight_Change_1" lengthUnits="length" metaid="COPASI0" name="ChowHall2008 Dynamics of Human Weight Change_ODE_1" substanceUnits="substance" timeUnits="time" volumeUnits="volume">
+  <model areaUnits="area" extentUnits="substance" id="ChowHall2008_Weight_Change" lengthUnits="length" metaid="COPASI0" name="ChowHall2008 Dynamics of Human Weight Change_ODE_1" substanceUnits="substance" timeUnits="time" volumeUnits="volume">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
      <p>This ODE model is a representation of the two compartment macronutrient partition model that Chow and Hall outlined in their 2008 publication. It is one of three models that they outlined in that publication. The model was constructed by a team of five as part of a Workshop on Modelling conducted at Indian Institute of Technology Madras by the EBI.</p>

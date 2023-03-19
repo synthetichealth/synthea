@@ -1,11 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="e58498ef-aa76-4c28-8afa-f42cd8108b38" version="4">
-  <model name="Talemi2015 - Persistent telomere-associated DNA damage foci (TAF), a measure to predict cancer risks" id="MODEL1412200000" metaid="COPASI0">
+  <model name="Talemi2015_Telomere_DNA_Damage" id="MODEL1412200000" metaid="COPASI0">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <pre>A Robust Model of DNA Damage Dynamics.
-Rasgou Talemi and Schaber, 12.20.2014.
-</pre>
+        <pre>A Robust Model of DNA Damage Dynamics. Rasgou Talemi and Schaber, 12.20.2014.</pre>
       </body>
     </notes>
     <annotation>

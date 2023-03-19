@@ -1,10 +1,10 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: ecg
+name: telomere_associated_dna_damage
 
 # Name of the model file
-model: circulation/McSharry2003_Synthetic_ECG.xml
+model: Talemi2015_Telomere_DNA_Damage.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta

@@ -3,20 +3,15 @@
   <model id="Hong2009_CircadianClock" metaid="metaid_0000002" name="Hong2009_CircadianClock">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p>
-      This a model from the article:
+        <p>This a model from the article:
       <br/>
-        <strong> Minimum criteria for DNA damage-induced phase advances in circadian rhythms.
-</strong>
-        <br/>
-Hong CI, Zámborszky J, Csikász-Nagy A.
+        <strong> Minimum criteria for DNA damage-induced phase advances in circadian rhythms.</strong>
+        <br/>Hong CI, Zámborszky J, Csikász-Nagy A.
       <em>PLoS Comput Biol. </em>2009 May;5(5):e1000384.  
       <a href="http://www.ncbi.nlm.nih.gov/pubmed/19424508">19424508</a>,
       <br/>
         <strong>Abstract:</strong>
-        <br/>
-Robust oscillatory behaviors are common features of circadian and cell cycle rhythms. These cyclic processes, however, behave distinctively in terms of their periods and phases in response to external influences such as light, temperature, nutrients, etc. Nevertheless, several links have been found between these two oscillators. Cell division cycles gated by the circadian clock have been observed since the late 1950s. On the other hand, ionizing radiation (IR) treatments cause cells to undergo a DNA damage response, which leads to phase shifts (mostly advances) in circadian rhythms. Circadian gating of the cell cycle can be attributed to the cell cycle inhibitor kinase Wee1 (which is regulated by the heterodimeric circadian clock transcription factor, BMAL1/CLK), and possibly in conjunction with other cell cycle components that are known to be regulated by the circadian clock (i.e., c-Myc and cyclin D1). It has also been shown that DNA damage-induced activation of the cell cycle regulator, Chk2, leads to phosphorylation and destruction of a circadian clock component (i.e., PER1 in Mus or FRQ in Neurospora crassa). However, the molecular mechanism underlying how DNA damage causes predominantly phase advances in the circadian clock remains unknown. In order to address this question, we employ mathematical modeling to simulate different phase response curves (PRCs) from either dexamethasone (Dex) or IR treatment experiments. Dex is known to synchronize circadian rhythms in cell culture and may generate both phase advances and delays. We observe unique phase responses with minimum delays of the circadian clock upon DNA damage when two criteria are met: (1) existence of an autocatalytic positive feedback mechanism in addition to the time-delayed negative feedback loop in the clock system and (2) Chk2-dependent phosphorylation and degradation of PERs that are not bound to BMAL1/CLK.
-   </p>
+        <br/>Robust oscillatory behaviors are common features of circadian and cell cycle rhythms. These cyclic processes, however, behave distinctively in terms of their periods and phases in response to external influences such as light, temperature, nutrients, etc. Nevertheless, several links have been found between these two oscillators. Cell division cycles gated by the circadian clock have been observed since the late 1950s. On the other hand, ionizing radiation (IR) treatments cause cells to undergo a DNA damage response, which leads to phase shifts (mostly advances) in circadian rhythms. Circadian gating of the cell cycle can be attributed to the cell cycle inhibitor kinase Wee1 (which is regulated by the heterodimeric circadian clock transcription factor, BMAL1/CLK), and possibly in conjunction with other cell cycle components that are known to be regulated by the circadian clock (i.e., c-Myc and cyclin D1). It has also been shown that DNA damage-induced activation of the cell cycle regulator, Chk2, leads to phosphorylation and destruction of a circadian clock component (i.e., PER1 in Mus or FRQ in Neurospora crassa). However, the molecular mechanism underlying how DNA damage causes predominantly phase advances in the circadian clock remains unknown. In order to address this question, we employ mathematical modeling to simulate different phase response curves (PRCs) from either dexamethasone (Dex) or IR treatment experiments. Dex is known to synchronize circadian rhythms in cell culture and may generate both phase advances and delays. We observe unique phase responses with minimum delays of the circadian clock upon DNA damage when two criteria are met: (1) existence of an autocatalytic positive feedback mechanism in addition to the time-delayed negative feedback loop in the clock system and (2) Chk2-dependent phosphorylation and degradation of PERs that are not bound to BMAL1/CLK.</p>
         <p>
 The original xpp file of the model is available as a supplement of the article (<a href="http://www.ploscompbiol.org/article/fetchSingleRepresentation.action?uri=info:doi/10.1371/journal.pcbi.1000384.s002">Text S1</a>).
 	  </p>

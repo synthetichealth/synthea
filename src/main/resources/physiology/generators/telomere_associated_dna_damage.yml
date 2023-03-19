@@ -1,6 +1,6 @@
 
 # Name of the model file
-model: MODEL1412200000_url.xml
+model: Talemi2015_Telomere_DNA_Damage.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta

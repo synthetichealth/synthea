@@ -1,6 +1,6 @@
 
 # Name of the model file
-model: BIOMD0000000248_url.xml
+model: Lai2007_O2_Transport_Metabolism.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta

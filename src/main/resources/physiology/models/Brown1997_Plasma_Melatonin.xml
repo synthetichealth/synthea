@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="c3a93221-9870-4287-a19c-bd99db85455b" version="4">
-  <model id="Brown1997___Plasma_Melatonin_Levels" metaid="COPASI0" name="Brown1997 - Plasma Melatonin Levels">
+  <model id="Brown1997_Plasma_Melatonin" metaid="COPASI0" name="Brown1997 - Plasma Melatonin Levels">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
         <div class="dc:title">Brown1997 - Plasma Melatonin Levels</div>
