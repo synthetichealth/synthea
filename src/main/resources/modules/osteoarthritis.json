@@ -23,7 +23,8 @@
         " | Osteoarthritis |   0.34000  |    2:1    | ",
         " ------------------------------------------- "
       ],
-      "direct_transition": "Delay_Pre_Arthritis"
+      "direct_transition": "Delay_Pre_Arthritis",
+      "name": "Initial"
     },
     "Osteoarthritis": {
       "type": "Simple",
@@ -46,7 +47,8 @@
         " OSTEOARTHRITIS                                                       ",
         "======================================================================",
         "Source: http://www.cdc.gov/arthritis/basics/osteoarthritis.htm"
-      ]
+      ],
+      "name": "Osteoarthritis"
     },
     "OA_Of_The_Hand": {
       "type": "ConditionOnset",
@@ -56,10 +58,12 @@
         {
           "system": "SNOMED-CT",
           "code": "201834006",
-          "display": "Localized, primary osteoarthritis of the hand"
+          "display": "Localized, primary osteoarthritis of the hand",
+          "value_set": ""
         }
       ],
-      "direct_transition": "OA_Diagnosis"
+      "direct_transition": "OA_Diagnosis",
+      "name": "OA_Of_The_Hand"
     },
     "OA_Of_The_Knee": {
       "type": "ConditionOnset",
@@ -69,10 +73,12 @@
         {
           "system": "SNOMED-CT",
           "code": "239873007",
-          "display": "Osteoarthritis of knee"
+          "display": "Osteoarthritis of knee",
+          "value_set": ""
         }
       ],
-      "direct_transition": "OA_Diagnosis"
+      "direct_transition": "OA_Diagnosis",
+      "name": "OA_Of_The_Knee"
     },
     "OA_Of_The_Hip": {
       "type": "ConditionOnset",
@@ -82,10 +88,12 @@
         {
           "system": "SNOMED-CT",
           "code": "239872002",
-          "display": "Osteoarthritis of hip"
+          "display": "Osteoarthritis of hip",
+          "value_set": ""
         }
       ],
-      "direct_transition": "OA_Diagnosis"
+      "direct_transition": "OA_Diagnosis",
+      "name": "OA_Of_The_Hip"
     },
     "OA_Diagnosis": {
       "type": "Encounter",
@@ -96,10 +104,12 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Pain Vital"
+      "direct_transition": "Pain Vital",
+      "name": "OA_Diagnosis"
     },
     "OA_CarePlan": {
       "type": "CarePlanStart",
@@ -109,7 +119,8 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care"
+          "display": "Musculoskeletal care",
+          "value_set": ""
         }
       ],
       "activities": [
@@ -124,7 +135,8 @@
           "display": "Heat therapy"
         }
       ],
-      "direct_transition": "Assign DME"
+      "direct_transition": "Assign DME",
+      "name": "OA_CarePlan"
     },
     "OA_Pain_Medication": {
       "type": "MedicationOrder",
@@ -133,7 +145,8 @@
         {
           "system": "RxNorm",
           "code": "849574",
-          "display": "Naproxen sodium 220 MG Oral Tablet"
+          "display": "Naproxen sodium 220 MG Oral Tablet",
+          "value_set": ""
         }
       ],
       "remarks": [
@@ -189,26 +202,31 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "OA_Pain_Medication"
     },
     "Setup_Knee_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "Knee X-Ray",
+      "name": "Setup_Knee_Replacement"
     },
     "Setup_Hip_Replacement": {
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "hip",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "End_Encounter",
+      "name": "Setup_Hip_Replacement"
     },
     "End_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "OA_Symptom1_Ends"
+      "direct_transition": "OA_Symptom1_Ends",
+      "name": "End_Encounter"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Veteran": {
       "type": "Simple",
@@ -271,7 +289,8 @@
           "distributions": [],
           "transition": "Non_Veteran"
         }
-      ]
+      ],
+      "name": "Veteran"
     },
     "Non_Veteran": {
       "type": "Simple",
@@ -308,7 +327,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Non_Veteran"
     },
     "OA_Symptom1_Ends": {
       "type": "Symptom",
@@ -317,7 +337,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "OA_Symptom2_Ends"
+      "direct_transition": "OA_Symptom2_Ends",
+      "name": "OA_Symptom1_Ends"
     },
     "OA_Symptom2_Ends": {
       "type": "Symptom",
@@ -326,7 +347,8 @@
       "exact": {
         "quantity": 0
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "OA_Symptom2_Ends"
     },
     "Delay_Until_Symptoms": {
       "type": "Delay",
@@ -335,7 +357,8 @@
         "low": 0,
         "high": 15,
         "unit": "years"
-      }
+      },
+      "name": "Delay_Until_Symptoms"
     },
     "OA_Symptom1": {
       "type": "Symptom",
@@ -345,7 +368,8 @@
       "range": {
         "low": 0,
         "high": 20
-      }
+      },
+      "name": "OA_Symptom1"
     },
     "OA_Symptom2": {
       "type": "Symptom",
@@ -355,7 +379,8 @@
       "range": {
         "low": 0,
         "high": 20
-      }
+      },
+      "name": "OA_Symptom2"
     },
     "Delay_Pre_Arthritis": {
       "type": "Delay",
@@ -380,7 +405,8 @@
       "exact": {
         "quantity": 25,
         "unit": "years"
-      }
+      },
+      "name": "Delay_Pre_Arthritis"
     },
     "Delay_Until_Arthritis": {
       "type": "Delay",
@@ -389,7 +415,8 @@
         "low": 5,
         "high": 30,
         "unit": "years"
-      }
+      },
+      "name": "Delay_Until_Arthritis"
     },
     "OA_Symptom1_Advances": {
       "type": "Symptom",
@@ -399,7 +426,8 @@
       "range": {
         "low": 0,
         "high": 50
-      }
+      },
+      "name": "OA_Symptom1_Advances"
     },
     "OA_Symptom2_Advances": {
       "type": "Symptom",
@@ -409,7 +437,8 @@
       "range": {
         "low": 0,
         "high": 50
-      }
+      },
+      "name": "OA_Symptom2_Advances"
     },
     "Pain Vital": {
       "type": "Observation",
@@ -419,7 +448,8 @@
         {
           "system": "LOINC",
           "code": "72514-3",
-          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+          "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported",
+          "value_set": ""
         }
       ],
       "direct_transition": "OA_CarePlan",
@@ -427,7 +457,8 @@
         "decimals": 0,
         "low": 5,
         "high": 10
-      }
+      },
+      "name": "Pain Vital"
     },
     "Assign DME": {
       "type": "Simple",
@@ -464,12 +495,14 @@
       ],
       "remarks": [
         "Based on sample from CMS claims."
-      ]
+      ],
+      "name": "Assign DME"
     },
     "Wheelchair": {
       "type": "CallSubmodule",
       "submodule": "dme/wheelchair",
-      "direct_transition": "Finish DME"
+      "direct_transition": "Finish DME",
+      "name": "Wheelchair"
     },
     "Walker": {
       "type": "Device",
@@ -479,12 +512,48 @@
         "display": "Walker (physical object)"
       },
       "assign_to_attribute": "osteoarthritis_dme",
-      "direct_transition": "Finish DME"
+      "direct_transition": "Finish DME",
+      "name": "Walker"
     },
     "Finish DME": {
       "type": "Simple",
-      "direct_transition": "OA_Pain_Medication"
+      "direct_transition": "OA_Pain_Medication",
+      "name": "Finish DME"
+    },
+    "Knee X-Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 74016001,
+        "display": "Radiologic examination of knee (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 72696002,
+            "display": "Knee region structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "RG",
+            "display": "Radiographic imaging (conventional film/screen)"
+          },
+          "instances": [
+            {
+              "title": "X-Ray of Knee",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image IOD"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "End_Encounter",
+      "name": "Knee X-Ray"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class KneeXRayEditor implements HealthRecordEditor {
 
   public static String OA_OF_KNEE = "239873007";
-  public static String KNEE_XRAY = "TBD";
+  public static String KNEE_XRAY = "74016001";
 
   @Override
   public boolean shouldRun(Person person, HealthRecord record, long time) {
