@@ -47,7 +47,7 @@
     },
     "Next Wellness Visit": {
       "type": "Encounter",
-      "reason": "",
+      "reason": "Diagnosis",
       "telemedicine_possibility": "none",
       "wellness": true,
       "conditional_transition": [
@@ -92,8 +92,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 897685,
-          "display": "verapamil hydrochloride 80 MG Oral Tablet"
+          "code": 897718,
+          "display": "Verapamil Hydrochloride 40 MG"
         }
       ],
       "direct_transition": "Warfarin",
