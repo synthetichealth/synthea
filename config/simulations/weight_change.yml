@@ -16,28 +16,38 @@ stepSize: 0.01
 # Simulation duration in seconds
 duration: 10
 
-# Model parameter inputs. Any unspecified parameters will use the model's default value.
-inputs:
-    hrmean: 80
-    arr_t0: 0.25
-    arr_t1: 0.35
-    arr_base: 0.2
-    rng_seed: 0.54345
-    #e_variance: 0.3
-    #vfib_start: 5
-    #vfib_end: 10
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
 # If you need more control over the chart, import the csv file into another program with that capability.
 charts:
-    - filename: ecg.png
+    - filename: weight_change.png
       type: line
-      title: "ECG: AFib"
+      title: "weight_change"
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: Current (A)
+      axisLabelY: alpha
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: zf
+        - param: alpha
+
+
+
+# <parameter constant="false" id="p___Ratio" metaid="COPASI5" name="p - Ratio" value="0.038480263286012"><parameter constant="false" id="alpha" metaid="COPASI6" name="alpha" value="24.9873481781377">
+# <parameter constant="false" id="alpha" metaid="COPASI6" name="alpha" value="24.9873481781377"><parameter constant="true" id="rho_F" metaid="COPASI7" name="rho_F" value="39.5">
+# <parameter constant="true" id="rho_F" metaid="COPASI7" name="rho_F" value="39.5">
+# <parameter constant="true" id="rho_L" metaid="COPASI8" name="rho_L" value="7.6">
+# <parameter constant="true" id="Intake_Rate" metaid="COPASI9" name="Intake Rate" value="9.2">
+# <parameter constant="false" id="Energy_Expenditure_Rate" metaid="COPASI10" name="Energy Expenditure Rate" value="11.05">
+# <parameter constant="false" id="Psy" metaid="COPASI11" name="Psy" value="0.00102051309738594">

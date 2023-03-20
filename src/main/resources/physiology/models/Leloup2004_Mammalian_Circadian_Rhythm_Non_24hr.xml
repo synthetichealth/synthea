@@ -2153,12 +2153,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI21">
-	<bqbiol:isEncodedBy>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000317276"/>
-	</rdf:Bag>
-	</bqbiol:isEncodedBy>
-	</rdf:Description>
+              <bqbiol:isEncodedBy>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000317276"/>
+              </rdf:Bag>
+              </bqbiol:isEncodedBy>
+              </rdf:Description>
 	
 	
 	
@@ -2180,12 +2180,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI22">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2207,12 +2207,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI23">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2234,12 +2234,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI24">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2261,12 +2261,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI25">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000363"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000363"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2288,12 +2288,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI26">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2315,12 +2315,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI27">
-	<bqbiol:isEncodedBy>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000008527"/>
-	</rdf:Bag>
-	</bqbiol:isEncodedBy>
-	</rdf:Description>
+              <bqbiol:isEncodedBy>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000008527"/>
+              </rdf:Bag>
+              </bqbiol:isEncodedBy>
+              </rdf:Description>
 	
 	
 	
@@ -2342,12 +2342,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI28">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2369,12 +2369,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI29">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2396,12 +2396,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI30">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2423,12 +2423,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI31">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000363"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000363"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2450,13 +2450,13 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI32">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
-	
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
+              
 	
 	
           </rdf:RDF>
@@ -2477,12 +2477,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI33">
-	<bqbiol:isEncodedBy>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000403290"/>
-	</rdf:Bag>
-	</bqbiol:isEncodedBy>
-	</rdf:Description>
+              <bqbiol:isEncodedBy>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ensembl/ENST00000403290"/>
+              </rdf:Bag>
+              </bqbiol:isEncodedBy>
+              </rdf:Description>
 	
 	
 	
@@ -2504,12 +2504,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI34">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2531,12 +2531,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI35">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C47822"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2558,12 +2558,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI36">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2585,12 +2585,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI37">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000261"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000261"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2612,12 +2612,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI38">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2639,12 +2639,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI39">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O15534"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/uniprot/O15534"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2666,12 +2666,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI40">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q16526"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/uniprot/Q16526"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2694,17 +2694,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI41">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O15534"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/uniprot/O15534"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -2732,17 +2732,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI42">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q16526"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/uniprot/Q16526"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -2769,12 +2769,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI43">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2807,12 +2807,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI44">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -2846,17 +2846,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI45">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -2896,17 +2896,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI46">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -2945,13 +2945,13 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI47">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
-	
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
+              
 	
 	
           </rdf:RDF>
@@ -2973,17 +2973,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI48">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -3010,12 +3010,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI49">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -3038,17 +3038,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI50">
               <bqbiol:isVersionOf>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
-	</rdf:Bag>
-	</bqbiol:isVersionOf>
-	
-	<bqbiol:hasProperty>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
-	</rdf:Bag>
-	</bqbiol:hasProperty>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/uniprot/O00327"/>
+                </rdf:Bag>
+                </bqbiol:isVersionOf>
+                
+                <bqbiol:hasProperty>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/pato/PATO:0002220"/>
+                </rdf:Bag>
+                </bqbiol:hasProperty>
+                </rdf:Description>
 	
 	
 	
@@ -3076,17 +3076,17 @@
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI51">
               <bqbiol:hasPart>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990513"/>
-	</rdf:Bag>
-	</bqbiol:hasPart>
-	
-	<bqbiol:hasPart>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
-	</rdf:Bag>
-	</bqbiol:hasPart>
-	</rdf:Description>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/go/GO:1990513"/>
+                </rdf:Bag>
+                </bqbiol:hasPart>
+                
+                <bqbiol:hasPart>
+                <rdf:Bag>
+                <rdf:li rdf:resource="http://identifiers.org/go/GO:1990512"/>
+                </rdf:Bag>
+                </bqbiol:hasPart>
+                </rdf:Description>
 	
 	
 	
@@ -3118,13 +3118,13 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI52">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
-	
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
+              
 	
 	
           </rdf:RDF>
@@ -3150,12 +3150,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI53">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -3182,12 +3182,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI54">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -3209,12 +3209,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI55">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	
@@ -3236,12 +3236,12 @@
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
             <rdf:Description rdf:about="#COPASI56">
-	<bqbiol:is>
-	<rdf:Bag>
-	<rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
-	</rdf:Bag>
-	</bqbiol:is>
-	</rdf:Description>
+              <bqbiol:is>
+              <rdf:Bag>
+              <rdf:li rdf:resource="http://identifiers.org/ncit/C94967"/>
+              </rdf:Bag>
+              </bqbiol:is>
+              </rdf:Description>
 	
 	
 	

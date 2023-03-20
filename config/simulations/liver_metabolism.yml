@@ -16,28 +16,37 @@ stepSize: 0.01
 # Simulation duration in seconds
 duration: 10
 
-# Model parameter inputs. Any unspecified parameters will use the model's default value.
-inputs:
-    hrmean: 80
-    arr_t0: 0.25
-    arr_t1: 0.35
-    arr_base: 0.2
-    rng_seed: 0.54345
-    #e_variance: 0.3
-    #vfib_start: 5
-    #vfib_end: 10
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
 
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
 # If you need more control over the chart, import the csv file into another program with that capability.
 charts:
-    - filename: ecg.png
+    - filename: liver_metabolism.png
       type: line
-      title: "ECG: AFib"
+      title: "liver_metabolism"
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: Current (A)
+      axisLabelY: OBJECTIVE_COEFFICIENT
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: zf
+        - param: OBJECTIVE_COEFFICIENT
+
+
+
+#<listOfParameters>
+#      <parameter metaid="_650898" id="LOWER_BOUND" value="0" units="mmol_per_gDW_per_hr"/>
+#      <parameter metaid="_650899" id="UPPER_BOUND" value="1000" units="mmol_per_gDW_per_hr"/>
+#      <parameter metaid="_650902" id="OBJECTIVE_COEFFICIENT" value="0"/>
+#      <parameter metaid="_650905" id="FLUX_VALUE" value="500" units="mmol_per_hr"/>
+#</listOfParameters>
