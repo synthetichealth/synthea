@@ -266,7 +266,8 @@
         }
       ],
       "reactions": [],
-      "direct_transition": "Delay_For_Allergist_Initial_Visit"
+      "direct_transition": "Delay_For_Allergist_Initial_Visit",
+      "assign_to_attribute": "allergy_unspecified"
     }
   },
   "gmf_version": 1
