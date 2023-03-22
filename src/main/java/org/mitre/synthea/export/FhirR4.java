@@ -147,6 +147,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -2166,21 +2167,44 @@ public class FhirR4 {
     // Provenance sources...
     int index = person.record.encounters.size() - 1;
     Clinician clinician = null;
-    while (index >= 0 && clinician == null) {
+    Provider providerOrganization = null;
+    while (index >= 0 && (clinician == null || providerOrganization == null)) {
       clinician = person.record.encounters.get(index).clinician;
+      providerOrganization = person.record.encounters.get(index).provider;
       index--;
     }
-    String clinicianDisplay = null;
-    if (clinician != null) {
-      clinicianDisplay = clinician.getFullname();
+
+    if (clinician == null && providerOrganization == null) {
+      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+      clinician =
+          providerOrganization.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, person);
+    } else if (clinician == null || providerOrganization == null) {
+      if (clinician == null && providerOrganization != null) {
+        clinician =
+            providerOrganization.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, person);
+      } else if (clinician != null && providerOrganization == null) {
+        providerOrganization = clinician.getOrganization();
+        if (providerOrganization == null) {
+          providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+        }
+      }
     }
+
+    if (clinician.getEncounterCount() == 0) {
+      clinician.incrementEncounters();
+    }
+    if (providerOrganization.getUtilization().isEmpty()) {
+      // If this provider has never been used, ensure they have at least one encounter
+      // (encounter creating this Provenance record) so that the provider is exported.
+      providerOrganization.incrementEncounters(EncounterType.VIRTUAL, Utilities.getYear(stopTime));
+    }
+
+    String clinicianDisplay = clinician.getFullname();
+
     String practitionerFullUrl = TRANSACTION_BUNDLE
             ? ExportHelper.buildFhirNpiSearchUrl(clinician)
             : findPractitioner(clinician, bundle);
-    Provider providerOrganization = person.record.provider;
-    if (providerOrganization == null) {
-      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
-    }
+
     String organizationFullUrl = TRANSACTION_BUNDLE
             ? ExportHelper.buildFhirSearchUrl("Organization",
                     providerOrganization.getResourceID())
