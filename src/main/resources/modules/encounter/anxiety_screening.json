@@ -171,7 +171,7 @@
         {
           "system": "SNOMED-CT",
           "code": "80583007",
-          "display": "Severe anxiety (panic) (finding"
+          "display": "Severe anxiety (panic) (finding)"
         }
       ],
       "direct_transition": "GAD-7"

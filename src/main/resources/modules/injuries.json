@@ -534,7 +534,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Spinal_Injury"
@@ -705,7 +705,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "Gunshot_Wound_Ends"
@@ -875,7 +875,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Concussion_Injury"
@@ -1160,7 +1160,7 @@
           "body_site": {
             "system": "SNOMED-CT",
             "code": "40983000",
-            "display": "Arm"
+            "display": "Structure of upper extremity between shoulder and elbow (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1199,7 +1199,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": "60027007",
-        "display": "X-ray or wrist"
+        "display": "Radiography of wrist (procedure)"
       },
       "series": [
         {
@@ -1571,7 +1571,7 @@
         {
           "system": "LOINC",
           "code": "38265-5",
-          "display": "DXA [T-score] Bone density"
+          "display": "DXA Radius and Ulna [T-score] Bone density"
         }
       ],
       "remarks": [
@@ -1592,7 +1592,7 @@
         {
           "system": "LOINC",
           "code": "38265-5",
-          "display": "DXA [T-score] Bone density"
+          "display": "DXA Radius and Ulna [T-score] Bone density"
         }
       ],
       "range": {
@@ -1662,7 +1662,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End DME"
@@ -1761,7 +1761,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403190006",
-          "display": "First degree burn"
+          "display": "Epidermal burn of skin (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1828,7 +1828,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "403190006",
-                "display": "First degree burn"
+                "display": "Epidermal burn of skin (disorder)"
               }
             ]
           },
@@ -1931,7 +1931,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Burn_Injury"
@@ -2229,7 +2229,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -2358,7 +2358,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -2558,7 +2558,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229586001",
-          "display": "Rest, ice, compression and elevation treatment programme"
+          "display": "Rest, ice, compression and elevation treatment program (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -2650,7 +2650,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Shoulder_Injury"

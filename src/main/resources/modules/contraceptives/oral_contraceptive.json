@@ -394,7 +394,7 @@
         {
           "system": "RxNorm",
           "code": "235389",
-          "display": "Mestranol / Norethynodrel [Enovid]"
+          "display": "Mestranol / Norethynodrel"
         }
       ],
       "direct_transition": "End_Encounter"

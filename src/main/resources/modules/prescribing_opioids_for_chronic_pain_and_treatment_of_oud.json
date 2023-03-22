@@ -85,7 +85,7 @@
         {
           "system": "SNOMED-CT",
           "code": 228557008,
-          "display": "Cognitive and behavior therapy"
+          "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
       "distributed_transition": [
@@ -290,7 +290,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -305,7 +305,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -320,7 +320,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -613,7 +613,7 @@
           {
             "system": "SNOMED-CT",
             "code": 1831000175103,
-            "display": "Every 12 hours as needed (qualifier value)"
+            "display": "Every twelve hours as required (qualifier value)"
           }
         ],
         "refills": 3
@@ -672,7 +672,7 @@
           {
             "system": "SNOMED-CT",
             "code": 396143001,
-            "display": "Every seventy two hours as needed (qualifier value)"
+            "display": "Every seventy two hours (qualifier value)"
           }
         ],
         "refills": 3
@@ -983,7 +983,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -998,7 +998,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -1013,7 +1013,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -1351,7 +1351,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -1366,7 +1366,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -1381,7 +1381,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -2850,7 +2850,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -2865,7 +2865,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -2880,7 +2880,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {

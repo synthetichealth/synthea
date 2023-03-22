@@ -87,7 +87,7 @@
         {
           "system": "SNOMED-CT",
           "code": 33195004,
-          "display": "Teleradiotherapy procedure (procedure)"
+          "display": "External beam radiation therapy procedure (procedure)"
         }
       ],
       "duration": {

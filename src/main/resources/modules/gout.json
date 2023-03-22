@@ -147,7 +147,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183301007",
-          "display": "Physical exercises"
+          "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",

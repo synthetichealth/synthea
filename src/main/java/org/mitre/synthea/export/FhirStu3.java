@@ -349,7 +349,7 @@ public class FhirStu3 {
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's License");
+      Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's license number");
       patientResource.addIdentifier()
           .setType(mapCodeToCodeableConcept(driversCode, "http://hl7.org/fhir/v2/0203"))
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
@@ -1511,7 +1511,7 @@ public class FhirStu3 {
         .setRole(new CodeableConcept().addCoding(new Coding()
             .setCode("primary")
             .setSystem("http://hl7.org/fhir/claimcareteamrole")
-            .setDisplay("Primary Care Practitioner"))));
+            .setDisplay("Primary provider"))));
 
     eob.setType(new CodeableConcept()
         .addCoding(new Coding()

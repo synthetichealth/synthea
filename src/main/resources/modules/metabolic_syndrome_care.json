@@ -331,7 +331,7 @@
         {
           "system": "SNOMED-CT",
           "code": "44054006",
-          "display": "Diabetes"
+          "display": "Diabetes mellitus type 2 (disorder)"
         }
       ],
       "assign_to_attribute": "diabetes_stage",

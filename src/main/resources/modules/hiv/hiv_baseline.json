@@ -59,7 +59,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -330,7 +330,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "vital_sign": "EGFR"
@@ -544,7 +544,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -857,7 +857,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -898,7 +898,7 @@
             {
               "system": "LOINC",
               "code": "6690-2",
-              "display": "WBC Auto (Bld) [#/Vol]"
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -913,7 +913,7 @@
             {
               "system": "LOINC",
               "code": "789-8",
-              "display": "RBC Auto (Bld) [#/Vol]"
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -973,7 +973,7 @@
             {
               "system": "LOINC",
               "code": "21000-5",
-              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
             }
           ],
           "range": {
@@ -1036,7 +1036,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -1077,7 +1077,7 @@
             {
               "system": "LOINC",
               "code": "6690-2",
-              "display": "WBC Auto (Bld) [#/Vol]"
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1092,7 +1092,7 @@
             {
               "system": "LOINC",
               "code": "789-8",
-              "display": "RBC Auto (Bld) [#/Vol]"
+              "display": "Erythrocytes [#/volume] in Blood by Automated count"
             }
           ],
           "range": {
@@ -1152,7 +1152,7 @@
             {
               "system": "LOINC",
               "code": "21000-5",
-              "display": "RDW - Erythrocyte distribution width Auto (RBC) [Entitic vol]"
+              "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
             }
           ],
           "range": {
@@ -1332,7 +1332,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "5767-9",
+              "code": "34533-0",
               "display": "Odor of Urine"
             }
           ],
@@ -1587,7 +1587,7 @@
         {
           "system": "LOINC",
           "code": "57698-3",
-          "display": "Lipid Panel"
+          "display": "Lipid panel with direct LDL - Serum or Plasma"
         }
       ],
       "observations": [
@@ -1598,7 +1598,7 @@
             {
               "system": "LOINC",
               "code": "2093-3",
-              "display": "Total Cholesterol"
+              "display": "Cholesterol [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -1634,7 +1634,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "High Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"

@@ -334,7 +334,7 @@
         {
           "system": "SNOMED-CT",
           "code": 305351004,
-          "display": "Admit to intensive care unit (ICU)"
+          "display": "Admission to intensive care unit (procedure)"
         }
       ],
       "duration": {
