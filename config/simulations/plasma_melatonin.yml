@@ -35,12 +35,20 @@ charts:
       type: line
       title: "plasma_melatonin"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: H1
+      axisLabelX: time (?)
+      axisLabelY: ???
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
         - param: H1
+        # - param: H2
+        # - param: A
+        # - param: t_on
+        # - param: t_off
+        # - param: beta_I
+        # - param: beta_C
+        # - param: alpha
+        # - param: lambda
 
 
 

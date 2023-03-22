@@ -4,17 +4,18 @@
 name: mammalian_circadian_rhythm_non_24hr
 
 # Name of the model file
-model: Leloup2004_Mammalian_Circadian_Rhythm_Non_24hr.xml
+model: Leloup2004_CircadianRhythmsSet4.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: dormand_prince_54
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 0.1
 
 # Simulation duration in seconds
-duration: 10
+duration: 168
+# duration: 86400
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -35,12 +36,12 @@ charts:
       type: line
       title: "mammalian_circadian_rhythm_non_24hr"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: MP
+      axisLabelX: time (hr)
+      axisLabelY: MB
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: MP
+        - param: MB
 
 
 # <parameter constant="false" id="MP" metaid="COPASI21" name="MP" units="unit_0" value="0">

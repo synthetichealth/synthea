@@ -8,7 +8,7 @@ model: Lai2007_O2_Transport_Metabolism.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: rosenbrock
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
 stepSize: 0.01
@@ -16,9 +16,10 @@ stepSize: 0.01
 # Simulation duration in seconds
 duration: 10
 
+
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
-#inputs:
-#    hrmean: 80
+inputs:
+   exercise_level: 3
 #    arr_t0: 0.25
 #    arr_t1: 0.35
 #    arr_base: 0.2
@@ -35,12 +36,20 @@ charts:
       type: line
       title: "o2_transport_metabolism"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: StO2m
+      axisLabelX: time (s?)
+      axisLabelY: ???
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
         - param: StO2m
+        - param: PCr
+        - param: Katpase
+        # - param: RStO2m
+        - param: ATP
+        - param: Vmax
+        # - param: Kadp
+        # - param: ADP
+        # - param: VfCK
 
 
     # <listOfParameters>

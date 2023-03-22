@@ -1,19 +1,19 @@
 
 # Name of the model file
-model: Leloup2004_Mammalian_Circadian_Rhythm_Non_24hr.xml
+model: Leloup2004_CircadianRhythmsSet4.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsch_stoer, higham_hall_54, rosenbrock, runge_kutta
 solver: runge_kutta
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 1
 
 # Simulation duration in seconds
-simDuration: 4.0
+simDuration: 259200
 
 # Simulation lead time in seconds before output data is captured
-leadTime: 2.0
+leadTime: 2
 
 ## Whether the simulation should use other generators before any input thresholds
 ## are reached.

@@ -8,13 +8,13 @@ model: Jerby2010_Liver_Metabolism.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: dormand_prince_853
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
 stepSize: 0.01
 
 # Simulation duration in seconds
-duration: 10
+duration: 60
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -35,12 +35,22 @@ charts:
       type: line
       title: "liver_metabolism"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: OBJECTIVE_COEFFICIENT
+      axisLabelX: time (?)
+      axisLabelY: Metabolites
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: OBJECTIVE_COEFFICIENT
+        - param: M_ac_c
+        - param: M_acetone_c
+        - param: M_ach_c
+        - param: M_ade_c
+        - param: M_adrnl_c
+        - param: M_bilirub_c
+        - param: M_chsterol_c
+        - param: M_co2_c
+        - param: M_creat_e
+        
+        
 
 
 

@@ -8,10 +8,10 @@ model: Talemi2015_Telomere_DNA_Damage.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: rosenbrock
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 0.1
 
 # Simulation duration in seconds
 duration: 10
@@ -36,12 +36,25 @@ charts:
       title: "telomere_associated_dna_damage"
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: Tot
+      axisLabelY: ???
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
         - param: Tot
-
+        - param: DNAdamagefoci_0
+        - param: Gy
+        - param: FociperGy
+        - param: prop_C
+        - param: TAF0
+        - param: k_TAF
+        - param: BaseDNAdamage
+        - param: percentTAF
+        - param: kcross
+        - param: TotalRP
+        - param: Toti
+        - param: Metabolite_1
+        - param: ModelValue_3
+        - param: ModelValue_2
 
 
 

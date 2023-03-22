@@ -8,13 +8,13 @@ model: Guyton1972_PulmonaryOxygenIntake.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: euler
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 0.1
 
 # Simulation duration in seconds
-duration: 10
+duration: 60
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -36,11 +36,25 @@ charts:
       title: "pulmonary_oxygen_intake"
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: VPF
+      axisLabelY: ???
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
         - param: VPF
+        # - param: DOB
+        # - param: QRO
+        # - param: RMO
+        # - param: HM
+        - param: O2DFS
+        - param: O2UTIL
+        # - param: ALVENT
+        # - param: PO2ALV
+
+        # - param: RSPDFC
+        - param: OVA
+        - param: DOVA
+        # - param: PO2ART
+        # - param: OSA
 
 
 

@@ -8,10 +8,10 @@ model: Guyton1972_PulmonaryFluidDynamics.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: rosenbrock
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 1
 
 # Simulation duration in seconds
 duration: 10
@@ -35,13 +35,34 @@ charts:
       type: line
       title: "pulmonary_fluid_dynamics"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: PPC
+      axisLabelX: time (?)
+      axisLabelY: ???
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
+        # - param: VPF
+        # - param: CPP
+        - param: CPN
         - param: PPC
+        # - param: PPD
 
+        # - param: PPA
+        # - param: PLA
+        # - param: RPV
+        # - param: RPA
+        # - param: DFP
+        # - param: PCP
+        # - param: VPF1
+        # - param: PLF
+        # - param: POS
+        # - param: PPR1
+        # - param: CPF
+        # - param: PFI
+        # - param: DFZ
+        # - param: PPI
+        # - param: PPZ
+        # - param: PPR
+        # - param: PPO
 
 
   # <parameter metaid="_645354" id="PPC" name="PPC" value="29.9941" units="dimensionless"/>

@@ -14,7 +14,7 @@ solver: runge_kutta
 stepSize: 0.01
 
 # Simulation duration in seconds
-duration: 10
+duration: 24
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -35,12 +35,12 @@ charts:
       type: line
       title: "circadian_clock"
       axisParamX: time
-      axisLabelX: time (s)
+      axisLabelX: time (hr)
       axisLabelY: kms
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: kms
+        - param: CPtot
 
 
 # possible parameters

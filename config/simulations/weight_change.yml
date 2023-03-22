@@ -8,13 +8,13 @@ model: ChowHall2008_Weight_Change.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: rosenbrock
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
-stepSize: 0.01
+stepSize: 0.1
 
 # Simulation duration in seconds
-duration: 10
+duration: 600
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -40,7 +40,13 @@ charts:
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
+        - param: p___Ratio
         - param: alpha
+        - param: rho_F 
+        - param: rho_L
+        - param: Intake_Rate
+        - param: Energy_Expenditure_Rate
+        - param: Psy
 
 
 

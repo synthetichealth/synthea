@@ -8,13 +8,15 @@ model: Roblitz2013_Menstrual_Cycle.xml
 
 # Which differential equation solver to use.
 # Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
-solver: runge_kutta
+solver: adams_bashforth
 
 # Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
 stepSize: 0.01
 
 # Simulation duration in seconds
-duration: 10
+# duration: 2419200
+# duration: 86400
+duration: 28
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -35,12 +37,21 @@ charts:
       type: line
       title: "menstrual_cycle"
       axisParamX: time
-      axisLabelX: time (s)
-      axisLabelY: p1
+      axisLabelX: time (d)
+      axisLabelY: IU/L
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: p1
+        - param: AF1
+        - param: E2
+        - param: GnRH
+        - param: InhA
+        - param: Lut1
+        - param: OvF
+        - param: P4
+        - param: FSH_R
+        - param: R_FSH
+        - param: R_FSH_des
 
 
     # <listOfParameters>
