@@ -13,7 +13,7 @@
       "type": "SetAttribute",
       "attribute": "contraceptive_type",
       "value": "sterilization",
-      "direct_transition": "Consultation_Encounter"
+      "direct_transition": "Sterilization Requested"
     },
     "Consultation_Encounter": {
       "type": "Encounter",
@@ -25,7 +25,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Consultation"
+      "direct_transition": "Consultation",
+      "reason": "Sterilization Requested"
     },
     "End_Consultation": {
       "type": "EncounterEnd",
@@ -138,7 +139,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Sterilization Requested"
+      "direct_transition": "End_Consultation"
     },
     "Postoperative Care": {
       "type": "Procedure",
@@ -180,7 +181,8 @@
           "display": "Sterilization requested (situation)"
         }
       ],
-      "direct_transition": "End_Consultation"
+      "direct_transition": "Consultation_Encounter",
+      "target_encounter": "Consultation_Encounter"
     },
     "Sterilization Complete": {
       "type": "ConditionEnd",

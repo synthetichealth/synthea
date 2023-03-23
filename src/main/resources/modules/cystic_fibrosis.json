@@ -801,7 +801,8 @@
         "http://pediatrics.aappublications.org/content/early/2016/03/22/peds.2015-1784",
         "",
         "Overview of the standard of care per quarter"
-      ]
+      ],
+      "reason": "Cystic_Fibrosis"
     },
     "Chest_XRay": {
       "type": "Procedure",

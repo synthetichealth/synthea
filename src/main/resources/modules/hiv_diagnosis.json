@@ -36,7 +36,8 @@
           "display": "Human immunodeficiency virus infection (disorder)"
         }
       ],
-      "direct_transition": "Diagnosis_Encounter_End"
+      "direct_transition": "Diagnosis_Encounter_Later_Years",
+      "target_encounter": "Diagnosis_Encounter_Later_Years"
     },
     "Living_with_Diagnosis_Later_Years": {
       "type": "Delay",
@@ -59,7 +60,8 @@
           "display": "Acquired immune deficiency syndrome (disorder)"
         }
       ],
-      "direct_transition": "Diagnosis_Encounter_End_Early_Years"
+      "direct_transition": "Diagnosis_Encounter_Early_Years",
+      "target_encounter": "Diagnosis_Encounter_Early_Years"
     },
     "Mortality Check Early Years": {
       "type": "Simple",
@@ -158,7 +160,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Screening Submodule"
+      "direct_transition": "Screening Submodule",
+      "reason": "Diagnosis Later Years"
     },
     "Diagnosis_Encounter_Early_Years": {
       "type": "Encounter",
@@ -170,7 +173,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "Screening_Submodule"
+      "direct_transition": "Screening_Submodule",
+      "reason": "Diagnosis Early Years"
     },
     "Diagnosis_Encounter_End": {
       "type": "EncounterEnd",
@@ -183,23 +187,23 @@
     "Screening Submodule": {
       "type": "CallSubmodule",
       "submodule": "hiv/hiv_screening",
-      "direct_transition": "Diagnosis Later Years"
+      "direct_transition": "Diagnosis_Encounter_End"
     },
     "Screening_Submodule": {
       "type": "CallSubmodule",
       "submodule": "hiv/hiv_screening",
-      "direct_transition": "Diagnosis Early Years"
+      "direct_transition": "Diagnosis_Encounter_End_Early_Years"
     },
     "Diagnosed_Later_Years": {
       "type": "SetAttribute",
       "attribute": "hiv_infection",
-      "direct_transition": "Diagnosis_Encounter_Later_Years",
+      "direct_transition": "Diagnosis Later Years",
       "value": true
     },
     "Diagnosed_Early_Years": {
       "type": "SetAttribute",
       "attribute": "hiv_infection",
-      "direct_transition": "Diagnosis_Encounter_Early_Years",
+      "direct_transition": "Diagnosis Early Years",
       "value": true
     },
     "Wait_Until_Next_Diagnosis_Check": {
