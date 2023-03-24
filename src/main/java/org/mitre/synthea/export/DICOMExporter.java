@@ -27,6 +27,11 @@ public class DICOMExporter {
       dicomObject.putDate(Tag.PatientBirthDate, VR.DA, new Date((long) person.attributes.get(Person.BIRTHDATE)));
       dicomObject.putString(Tag.StudyInstanceUID, VR.UI, studyUID);
       dicomObject.putDate(Tag.StudyDate, VR.DA, new Date(studyStart));
+      // Fix the image class to XRay
+      dicomObject.putString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.1.1");
+      dicomObject.putString(Tag.PatientID, VR.LO, (String) person.attributes.get(Person.ID));
+      // Fix the modality to XRay
+      dicomObject.putString(Tag.Modality, VR.CS, "RG");
 
       File outputFile = new File(targetExportLocation);
       try(DicomOutputStream dos = new DicomOutputStream(outputFile)) {
