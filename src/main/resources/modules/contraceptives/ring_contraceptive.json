@@ -59,7 +59,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Nuvaring"
+      "direct_transition": "Prescribe_Nuvaring",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Nuvaring": {
       "type": "MedicationOrder",

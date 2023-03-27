@@ -81,7 +81,7 @@
       "type": "SetAttribute",
       "attribute": "homeless",
       "value": true,
-      "direct_transition": "Homelessness_Counter"
+      "direct_transition": "Homeless_Condition"
     },
     "Homelessness_Counter": {
       "type": "Counter",
@@ -198,7 +198,8 @@
           "display": "Domiciliary or rest home patient evaluation and management"
         }
       ],
-      "direct_transition": "Information_Gathering"
+      "direct_transition": "Information_Gathering",
+      "reason": "Homeless_Condition"
     },
     "Information_Gathering": {
       "type": "Procedure",
@@ -436,7 +437,24 @@
       "type": "SetAttribute",
       "attribute": "homeless",
       "value": false,
-      "direct_transition": "Potential_Homelessness"
+      "direct_transition": "End_Homeless_Condition"
+    },
+    "Homeless_Condition": {
+      "type": "ConditionOnset",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32911000,
+          "display": "Homeless (finding)"
+        }
+      ],
+      "direct_transition": "Homelessness_Counter"
+    },
+    "End_Homeless_Condition": {
+      "type": "ConditionEnd",
+      "direct_transition": "Potential_Homelessness",
+      "condition_onset": "Homeless_Condition"
     }
   },
   "gmf_version": 1
