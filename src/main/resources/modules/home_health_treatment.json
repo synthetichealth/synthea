@@ -362,7 +362,7 @@
     },
     "Transition_To_Home": {
       "type": "ConditionOnset",
-      "target_encounter": "",
+      "target_encounter": "Face_to_Face_Encounter",
       "codes": [
         {
           "system": "SNOMED-CT",
