@@ -107,7 +107,8 @@ actions:
  - name: testCreateResources_createBasedOn
    create_resource: 
      - resourceType: ServiceRequest
-       based_on: Procedure
+       based_on: 
+         resource: Procedure
        fields:
          - location: ServiceRequest.intent
            value: plan
@@ -128,6 +129,29 @@ actions:
          - location: Procedure.basedOn.reference
            value: $setRef([ServiceRequest])
 
+ - name: testCreateResources_createBasedOnState
+   create_resource: 
+     - resourceType: MedicationRequest
+       based_on: 
+         module: Sinusitis
+         state: Prescribe_Alternative_Antibiotic
+       profiles:
+         - http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested
+       fields:
+         - location: MedicationRequest.doNotPerform
+           value: "true"
+         - location: MedicationRequest.status
+           value: completed
+         - location: MedicationRequest.intent
+           value: order
+         # - location: MedicationRequest.encounter.reference
+         #   value: $getField([Procedure.encounter.reference])
+         - location: MedicationRequest.subject.reference
+           value: $findRef([Patient])
+         # - location: MedicationRequest.medicationCodeableConcept
+         #   value: $getField([Procedure.code])
+         - location: MedicationRequest.authoredOn
+           value: $getField([Encounter.period.start])
 
  - name: testCreateResources_getAttribute
    create_resource: 
@@ -150,11 +174,10 @@ actions:
           }
      - apply_to: resource
        function_name: apply2
+       resource_type: Patient
        function: |
          function apply2(resource, bundle) {
-           if (resource.resourceType == 'Patient') {
-             resource.birthDate = '2022-02-22';
-           }
+           resource.birthDate = '2022-02-22';
          }
 
  - name: testShiftDates

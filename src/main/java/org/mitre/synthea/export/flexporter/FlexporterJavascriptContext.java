@@ -3,6 +3,7 @@ package org.mitre.synthea.export.flexporter;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
@@ -105,8 +106,9 @@ public class FlexporterJavascriptContext {
    * The function must have already been loaded by loadFile or loadFunction.
    *
    * @param fnName Function name to invoke
+   * @param resourceType Resource Type to apply the function to, other resources will be ignored
    */
-  public void applyFunctionToResources(String fnName) {
+  public void applyFunctionToResources(String fnName, String resourceType) {
     // assumption is the fn has already been loaded by loadFunction
 
     Value applyFn = jsContext.getBindings("js").getMember(fnName);
@@ -115,8 +117,14 @@ public class FlexporterJavascriptContext {
 
     for (int i = 0; i < entries.getArraySize(); i++) {
       Value entry = entries.getArrayElement(i);
-
       Value resource = entry.getMember("resource");
+
+      if (StringUtils.isNotBlank(resourceType)) {
+        String type = resource.getMember("resourceType").asString();
+        if (!resourceType.equalsIgnoreCase(type)) {
+          continue;
+        }
+      }
 
       // provide both the resource and the full bundle for context
       // (eg, so we can create references to other resources)

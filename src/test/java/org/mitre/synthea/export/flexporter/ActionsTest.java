@@ -10,14 +10,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +33,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.InstantType;
+import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
@@ -47,6 +46,8 @@ import org.hl7.fhir.r4.model.Type;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.agents.Person;
 
@@ -192,29 +193,29 @@ public class ActionsTest {
     Date startDate = new Date(0);
     Date endDate = new Date(1000000);
     p1.setPerformed(new Period().setStart(startDate).setEnd(endDate));
-    
+
     Procedure p2 = new Procedure();
     p2.setPerformed(new DateTimeType(new Date(0)));
-    
+
     Bundle b = new Bundle();
     b.addEntry().setResource(p1);
     b.addEntry().setResource(p2);
-    
+
     Map<String, Object> action = getActionByName("testSetValues_getField_diff_applicability");
 
     Actions.applyAction(b, action, null, null);
-    
+
     Extension e1 = p1.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
     assertNotNull(e1);
     String d1 = ((DateTimeType) e1.getValue()).getValueAsString();
     assertEquals(0, ZonedDateTime.parse(d1).toInstant().getEpochSecond());
-    
+
     Extension e2 = p2.getExtensionByUrl("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded");
     assertNotNull(e2);
     String d2 = ((DateTimeType) e2.getValue()).getValueAsString();
     assertEquals(0, ZonedDateTime.parse(d2).toInstant().getEpochSecond());
   }
-  
+
   @Test
   public void testSetValues_overwrite() {
     Observation o = new Observation();
@@ -503,6 +504,84 @@ public class ActionsTest {
     assertEquals(0, serviceRequests.size());
 
   }
+
+  @Test
+  public void testCreateResources_createBasedOnState() throws Exception {
+    Patient p = new Patient();
+    p.setId("mypatient");
+
+    Bundle b = new Bundle();
+    b.setType(BundleType.COLLECTION);
+    b.addEntry().setResource(p);
+
+    Person person = new Person(0L);
+    person.history = new LinkedList<State>();
+    Module m = Module.getModuleByPath("sinusitis");
+
+    // this is cheating but the alternative is to pick a seed that goes through this path
+    // which is flaky
+    for (String stateName : List.of("Initial", "Potential_Onset", "Bacterial_Infection_Starts",
+        "Doctor_Visit", "Penicillin_Allergy_Check", "Prescribe_Alternative_Antibiotic")) {
+      State s = m.getState(stateName).clone();
+
+      s.entered = 120_000L;
+      s.exited = 120_000L;
+
+      person.history.add(0, s);
+    }
+    person.attributes.put(m.name, person.history);
+
+
+    Map<String, Object> action = getActionByName("testCreateResources_createBasedOnState");
+
+    Actions.applyAction(b, action, person, null);
+
+
+
+    List<BundleEntryComponent> entries = b.getEntry();
+    assertEquals(2, entries.size());
+    /*
+ - name: testCreateResources_createBasedOnState
+   create_resource:
+     - resourceType: MedicationRequest
+       based_on:
+         module: Sinusitis
+         state: Prescribe_Alternative_Antibiotic
+       profiles:
+         - http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested
+       fields:
+         - location: MedicationRequest.doNotPerform
+           value: "true"
+         - location: MedicationRequest.status
+           value: completed
+         - location: MedicationRequest.intent
+           value: order
+         # - location: MedicationRequest.encounter.reference
+         #   value: $getField([Procedure.encounter.reference])
+         - location: MedicationRequest.subject.reference
+           value: $findRef([Patient])
+         # - location: MedicationRequest.medicationCodeableConcept
+         #   value: $getField([Procedure.code])
+         - location: MedicationRequest.authoredOn
+           value: $getField([Encounter.period.start])
+     */
+
+    Resource newResource = entries.get(1).getResource();
+
+    assertEquals("MedicationRequest", newResource.getResourceType().toString());
+
+    MedicationRequest mr = (MedicationRequest) newResource;
+
+    assertEquals(true, mr.getDoNotPerform());
+    assertEquals("COMPLETED", mr.getStatus().toString());
+    assertEquals("ORDER", mr.getIntent().toString());
+    assertEquals("Patient/mypatient", mr.getSubject().getReference());
+
+    // note: the date conversion loses the millis part
+    // so this will only work if the value % 1000 == 0
+    assertEquals(120_000L, mr.getAuthoredOn().toInstant().toEpochMilli());
+  }
+
 
   @Test
   public void testGetAttribute() throws Exception {

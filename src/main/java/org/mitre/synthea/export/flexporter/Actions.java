@@ -5,7 +5,9 @@ import ca.uhn.fhir.parser.IParser;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Base;
@@ -21,8 +24,12 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Resource;
+import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.export.flexporter.FieldWrapper.DateFieldWrapper;
 import org.mitre.synthea.export.flexporter.FieldWrapper.ReferenceFieldWrapper;
@@ -198,20 +205,74 @@ public abstract class Actions {
     for (Map<String, Object> newResourceDef : resourcesToCreate) {
 
       String resourceType = (String) newResourceDef.get("resourceType");
-      String basedOnPath = (String) newResourceDef.get("based_on");
+
+      String basedOnPath = null;
+      String basedOnState = null;
+      String basedOnModule = null;
+      Map<String, Object> basedOn = (Map<String, Object>) newResourceDef.get("based_on");
+      if (basedOn != null) {
+        basedOnPath = (String) basedOn.get("resource");
+        basedOnState = (String) basedOn.get("state");
+        basedOnModule = (String) basedOn.get("module");
+      }
+
       List<String> profiles = (List<String>) newResourceDef.get("profiles");
 
       List<Base> basedOnResources;
       List<Map<String, Object>> writeback;
 
-      if (basedOnPath == null) {
-        basedOnResources = Collections.singletonList(null);
-        writeback = null;
-      } else {
+      if (basedOnPath != null) {
         basedOnResources = FhirPathUtils.evaluateBundle(bundle, basedOnPath, true);
         // this may return empty list, in which no new resources will be created
 
         writeback = (List<Map<String, Object>>) newResourceDef.get("writeback");
+
+      } else if (basedOnState != null && basedOnModule != null) {
+        String moduleKey = String.format("%s Module", basedOnModule);
+        List<State> moduleHistory = (List<State>)person.attributes.get(moduleKey);
+
+        if (moduleHistory == null) {
+
+          // TODO - maybe throw an exception?
+          return;
+        }
+        final String basedOnStateName = basedOnState; // java weirdness
+        List<State> instances = moduleHistory.stream()
+            .filter(s -> s.name.equals(basedOnStateName))
+            .collect(Collectors.toList());
+
+        basedOnResources = new ArrayList<>();
+
+        for (State instance : instances) {
+          Long entered = instance.entered;
+          Long exited = instance.exited;
+
+          // map these to a FHIR type so that we can re-use the existing concepts
+
+          // TODO: not sure Encounter is the best but it gives us a Period
+          //  and a reference to another encounter.
+          // Parameters could also work if we want more generic things,
+          //  but the FHIRPath to retrieve from it is ugly
+          Encounter dummyEncounter = new Encounter();
+          Period period = new Period();
+          if (entered != null) {
+            period.setStartElement(new DateTimeType(new Date(entered)));
+          }
+          if (exited != null) {
+            period.setEndElement(new DateTimeType(new Date(exited)));
+          }
+          dummyEncounter.setPeriod(period);
+          // TODO: figure out what encounter, if any, was active at this time
+          // and set the dummy.partOf as a reference to it
+          // dummyEncounter.setPartOf(new Reference("urn:uuid:" + enc.uuid.toString()));
+
+          basedOnResources.add(dummyEncounter);
+        }
+
+        writeback = null;
+      } else {
+        basedOnResources = Collections.singletonList(null);
+        writeback = null;
       }
 
       List<Map<String, Object>> fields = (List<Map<String, Object>>) newResourceDef.get("fields");
@@ -232,6 +293,7 @@ public abstract class Actions {
         // seems like this should work as part of the fhirpathgenerator, but it didn't
         // this might be easier anyway
         createdResource.setId(UUID.randomUUID().toString());
+        // TODO: consistent UUIDs
         if (profiles != null) {
           profiles.forEach(p -> applyProfile(createdResource, p));
         }
@@ -549,7 +611,8 @@ public abstract class Actions {
       if (applyTo.equalsIgnoreCase("bundle")) {
         fjContext.applyFunctionToBundle(functionName);
       } else if (applyTo.equalsIgnoreCase("resource") || applyTo.equalsIgnoreCase("resources")) {
-        fjContext.applyFunctionToResources(functionName);
+        String resourceType = scriptDef.get("resource_type");
+        fjContext.applyFunctionToResources(functionName, resourceType);
       } else {
         throw new IllegalArgumentException("Unknown option for execute_script.apply_to: '" + applyTo
             + "'. Valid options are 'bundle' and 'resources'");

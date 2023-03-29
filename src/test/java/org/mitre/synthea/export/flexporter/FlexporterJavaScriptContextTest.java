@@ -44,7 +44,7 @@ public class FlexporterJavaScriptContextTest {
     context.loadBundle(bundleJson);
 
     context.applyFunctionToBundle("giveEveryResourceSomeText");
-    context.applyFunctionToResources("applySomeProfile");
+    context.applyFunctionToResources("applySomeProfile", "Patient");
 
     String outBundleJson = context.getBundle();
 
