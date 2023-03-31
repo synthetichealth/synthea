@@ -114,6 +114,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String KILOGRAMS_TO_GAIN = "kilograms_to_gain";
   public static final String ENTITY = "ENTITY";
   public static final String INSURANCE_STATUS = "insurance_status";
+  public static final String FOOD_INSECURITY = "food_insecurity";
+  public static final String SEVERE_HOUSING_COST_BURDEN = "severe_housing_cost_burden";
+  public static final String UNEMPLOYED = "unemployed";
+  public static final String EMPLOYMENT_MODEL = "employment_model";
+
+  public static final String NO_VEHICLE_ACCESS = "no_vehicle_access";
+  public static final String UNINSURED = "uninsured";
 
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;

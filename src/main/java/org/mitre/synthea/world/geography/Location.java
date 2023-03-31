@@ -19,6 +19,7 @@ import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Employment;
 
 public class Location implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -395,6 +396,10 @@ public class Location implements Serializable {
     if (sdoh != null) {
       for (String determinant : sdoh.keySet()) {
         Double probability = sdoh.get(determinant);
+        if (determinant.equals(Person.UNEMPLOYED)) {
+          person.attributes.put(Person.UNEMPLOYED, false);
+          person.attributes.put(Person.EMPLOYMENT_MODEL, new Employment(probability));
+        }
         person.attributes.put(determinant, (person.rand() <= probability));
       }
     }

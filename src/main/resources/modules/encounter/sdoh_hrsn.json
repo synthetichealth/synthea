@@ -1122,23 +1122,12 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "A11A",
+          "transition": "Check Unemployment Change",
           "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "income",
-                "operator": "<=",
-                "value": 5000
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "unemployed",
-                "operator": "==",
-                "value": true
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "unemployed",
+            "operator": "==",
+            "value": true
           }
         },
         {
@@ -2087,7 +2076,8 @@
         {
           "system": "SNOMED-CT",
           "code": 266934004,
-          "display": "Transport problem (finding)"
+          "display": "Transport problem (finding)",
+          "value_set": ""
         }
       ],
       "direct_transition": "Q16",
@@ -2893,6 +2883,42 @@
       "type": "ConditionEnd",
       "direct_transition": "A11D",
       "name": "Start Change to Not in Labor Force",
+      "referenced_by_attribute": "employment_condition"
+    },
+    "Check Unemployment Change": {
+      "type": "Simple",
+      "name": "Check Unemployment Change",
+      "conditional_transition": [
+        {
+          "transition": "Q12",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 73438004,
+                "display": "Unemployed (finding)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "A11A",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "employment_condition",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Start Change to Unemployed"
+        }
+      ]
+    },
+    "Start Change to Unemployed": {
+      "type": "ConditionEnd",
+      "direct_transition": "A11A",
+      "name": "Start Change to Unemployed",
       "referenced_by_attribute": "employment_condition"
     }
   },
