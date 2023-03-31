@@ -140,7 +140,7 @@
     },
     "Diagnosis_Encounter": {
       "type": "Encounter",
-      "reason": "",
+      "reason": "IHD_Start",
       "direct_transition": "ECG / Labs",
       "wellness": true
     },

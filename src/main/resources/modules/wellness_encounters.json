@@ -6,12 +6,13 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Wellness_Encounter_Reason"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Record_Height"
+      "direct_transition": "Record_Height",
+      "reason": "wellness_encounter_reason"
     },
     "Record_Height": {
       "type": "Observation",
@@ -1029,6 +1030,16 @@
       ],
       "vital_sign": "Head Circumference Percentile",
       "direct_transition": "Record Head Circumference"
+    },
+    "Wellness_Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "wellness_encounter_reason",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 410424005,
+        "display": "Wellness surveillance (regime/therapy)"
+      }
     }
   },
   "gmf_version": 1

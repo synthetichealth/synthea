@@ -11,49 +11,6 @@
       ],
       "direct_transition": "Veteran Guard"
     },
-    "Attempts_Suicide": {
-      "type": "Simple",
-      "remarks": [
-        "It's difficult to find accurate statistics for how many people actually attempt suicide since ",
-        "those who attempt suicide often don't seek medical attention afterwards. Therefore, the attempts ",
-        "modeled in this module are considered severe enough to merit medical attention.",
-        "Males COMPLETE suicide 3.5x as often as females do. Suicides have a 7% completion rate overall."
-      ],
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          },
-          "distributions": [
-            {
-              "distribution": 0.0546,
-              "transition": "Fatal_Attempt"
-            },
-            {
-              "distribution": 0.9454,
-              "transition": "VA Hotline Call"
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          },
-          "distributions": [
-            {
-              "distribution": 0.0156,
-              "transition": "Fatal_Attempt"
-            },
-            {
-              "distribution": 0.9844,
-              "transition": "VA Hotline Call"
-            }
-          ]
-        }
-      ]
-    },
     "Attempt_By_Poisoning": {
       "type": "ConditionOnset",
       "target_encounter": "ED_Visit_For_Attempted_Suicide",
@@ -235,7 +192,7 @@
       "distributed_transition": [
         {
           "distribution": 0.753,
-          "transition": "Terminal"
+          "transition": "End_Suicidal_Thoughts"
         },
         {
           "distribution": 0.247,
@@ -254,7 +211,7 @@
         "high": 36,
         "unit": "months"
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "Suicidal_Thoughts"
     },
     "Fatal_Attempt": {
       "type": "Simple",
@@ -384,7 +341,7 @@
         "high": 56,
         "unit": "years"
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "Suicidal_Thoughts"
     },
     "Delay 35 to 54 years old": {
       "type": "Delay",
@@ -393,7 +350,7 @@
         "high": 36,
         "unit": "years"
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "Suicidal_Thoughts"
     },
     "Delay 75 to 110 years old": {
       "type": "Delay",
@@ -402,7 +359,7 @@
         "high": 92,
         "unit": "years"
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "Suicidal_Thoughts"
     },
     "Delay 18 to 34 years old": {
       "type": "Delay",
@@ -411,7 +368,7 @@
         "high": 16,
         "unit": "years"
       },
-      "direct_transition": "Attempts_Suicide"
+      "direct_transition": "Suicidal_Thoughts"
     },
     "MH & SUD Comorbidty Check": {
       "type": "CallSubmodule",
@@ -532,13 +489,14 @@
           "display": "Telephone encounter (procedure)"
         }
       ],
-      "direct_transition": "Hotline Mental Health Note"
+      "direct_transition": "Hotline Mental Health Note",
+      "reason": "Suicidal_Thoughts"
     },
     "end telehealth": {
       "type": "EncounterEnd",
       "distributed_transition": [
         {
-          "transition": "Terminal",
+          "transition": "End_Suicidal_Thoughts",
           "distribution": 0.8
         },
         {
@@ -571,6 +529,62 @@
         "operator": "is not nil"
       },
       "direct_transition": "MH & SUD Comorbidty Check"
+    },
+    "End_Suicidal_Thoughts": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "condition_onset": "Suicidal_Thoughts"
+    },
+    "Suicidal_Thoughts": {
+      "type": "ConditionOnset",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6471006,
+          "display": "Suicidal thoughts (finding)"
+        }
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0546,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9454,
+              "transition": "VA Hotline Call"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0156,
+              "transition": "Fatal_Attempt"
+            },
+            {
+              "distribution": 0.9844,
+              "transition": "VA Hotline Call"
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "It's difficult to find accurate statistics for how many people actually attempt suicide since ",
+        "those who attempt suicide often don't seek medical attention afterwards. Therefore, the attempts ",
+        "modeled in this module are considered severe enough to merit medical attention.",
+        "Males COMPLETE suicide 3.5x as often as females do. Suicides have a 7% completion rate overall."
+      ]
     }
   },
   "gmf_version": 1
