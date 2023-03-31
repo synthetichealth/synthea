@@ -24,6 +24,7 @@ import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingCondit
 import org.mitre.synthea.world.concepts.BMI;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
+import org.mitre.synthea.world.concepts.Employment;
 import org.mitre.synthea.world.concepts.GrowthChart;
 import org.mitre.synthea.world.concepts.GrowthChartEntry;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -121,6 +122,9 @@ public final class LifecycleModule extends Module {
     calculateVitalSigns(person, time);
     calculateFallRisk(person, time);
     person.attributes.put(Person.DISABLED, isDisabled(person, time));
+    if (person.ageInYears(time) >= 18) {
+      ((Employment) person.attributes.get(Person.EMPLOYMENT_MODEL)).checkEmployment(person, time);
+    }
     death(person, time);
 
     // java modules will never "finish"
