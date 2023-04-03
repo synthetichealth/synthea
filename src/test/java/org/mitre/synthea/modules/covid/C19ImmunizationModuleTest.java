@@ -47,6 +47,7 @@ public class C19ImmunizationModuleTest {
     assertTrue(C19ImmunizationModule.eligibleForShot(person, decemberFifteenth));
     long eleven = TestHelper.timestamp(2009, 8, 1, 0, 0, 0);
     person.attributes.put(Person.BIRTHDATE, eleven);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertFalse(C19ImmunizationModule.eligibleForShot(person, decemberFifteenth));
   }
 
@@ -100,6 +101,7 @@ public class C19ImmunizationModuleTest {
         person.attributes.get(C19ImmunizationModule.C19_VACCINE_STATUS));
     long newBirthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
     person.attributes.put(Person.BIRTHDATE, newBirthday);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     mod.process(person, januaryOne);
     C19ImmunizationModule.VaccinationStatus status =
         (C19ImmunizationModule.VaccinationStatus)
