@@ -292,7 +292,7 @@
         {
           "system": "LOINC",
           "code": "2713-6",
-          "display": "Oxygen Saturation"
+          "display": "Oxygen saturation Calculated from oxygen partial pressure in Blood"
         }
       ],
       "direct_transition": "Lactate_Level1",
@@ -385,7 +385,7 @@
         {
           "system": "SNOMED-CT",
           "code": 305351004,
-          "display": "Admit to ICU (procedure)"
+          "display": "Admission to intensive care unit (procedure)"
         }
       ],
       "duration": {
@@ -485,7 +485,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [
@@ -586,7 +586,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "observations": [

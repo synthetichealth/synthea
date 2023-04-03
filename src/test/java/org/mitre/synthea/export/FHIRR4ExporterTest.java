@@ -40,15 +40,16 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
-import org.mockito.Mockito;
 
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
@@ -119,6 +120,7 @@ public class FHIRR4ExporterTest {
       FhirR4.reloadIncludeExclude();
       FhirR4.TRANSACTION_BUNDLE = person.randBoolean();
       FhirR4.USE_US_CORE_IG = person.randBoolean();
+      FhirR4.US_CORE_VERSION = person.randBoolean() ? "4" : "5";
       FhirR4.USE_SHR_EXTENSIONS = false;
 
       String fhirJson = FhirR4.convertToFHIRJson(person, System.currentTimeMillis());
@@ -205,14 +207,20 @@ public class FHIRR4ExporterTest {
     person.attributes.put(Person.CONTACT_EMAIL, "test@test.test");
     person.attributes.put(Person.CONTACT_GIVEN_NAME, "John");
     person.attributes.put(Person.CONTACT_FAMILY_NAME, "Appleseed");
-
     person.history = new LinkedList<>();
-    Provider mock = Mockito.mock(Provider.class);
-    Mockito.when(mock.getResourceID()).thenReturn("Mock-UUID");
-    person.setProvider(EncounterType.AMBULATORY, mock);
-    person.setProvider(EncounterType.WELLNESS, mock);
-    person.setProvider(EncounterType.EMERGENCY, mock);
-    person.setProvider(EncounterType.INPATIENT, mock);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, person, 0, stub);
+    doc.attributes.put(Person.GENDER, "F");
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    person.setProvider(EncounterType.AMBULATORY, stub);
+    person.setProvider(EncounterType.WELLNESS, stub);
+    person.setProvider(EncounterType.EMERGENCY, stub);
+    person.setProvider(EncounterType.INPATIENT, stub);
 
     Long time = System.currentTimeMillis();
     int age = 35;
@@ -267,14 +275,20 @@ public class FHIRR4ExporterTest {
     person.attributes.put("Pulmonary Resistance", 0.1552);
     person.attributes.put("BMI Multiplier", 0.055);
     person.setVitalSign(VitalSign.BMI, 21.0);
-
     person.history = new LinkedList<>();
-    Provider mock = Mockito.mock(Provider.class);
-    Mockito.when(mock.getResourceID()).thenReturn("Mock-Provider");
-    person.setProvider(EncounterType.AMBULATORY, mock);
-    person.setProvider(EncounterType.WELLNESS, mock);
-    person.setProvider(EncounterType.EMERGENCY, mock);
-    person.setProvider(EncounterType.INPATIENT, mock);
+
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, person, 0, stub);
+    doc.attributes.put(Person.GENDER, "F");
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    person.setProvider(EncounterType.AMBULATORY, stub);
+    person.setProvider(EncounterType.WELLNESS, stub);
+    person.setProvider(EncounterType.EMERGENCY, stub);
+    person.setProvider(EncounterType.INPATIENT, stub);
 
     Long time = System.currentTimeMillis();
     int age = 35;
@@ -381,7 +395,18 @@ public class FHIRR4ExporterTest {
     p.attributes.put(Person.BIRTHDATE, 0L);
     p.attributes.put(Person.GENDER, "F");
 
-    p.record.provider = new Provider(); // dummy
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.AMBULATORY, stub);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.setProvider(EncounterType.EMERGENCY, stub);
+    p.setProvider(EncounterType.INPATIENT, stub);
+    p.record.provider = stub;
 
     HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
     e.provider = p.record.provider;
@@ -433,7 +458,18 @@ public class FHIRR4ExporterTest {
     p.attributes.put(Person.BIRTHDATE, 0L);
     p.attributes.put(Person.GENDER, "F");
 
-    p.record.provider = new Provider(); // dummy
+    Provider stub = new Provider();
+    stub.name = "Fake Provider";
+    stub.npi = "0";
+    Clinician doc = new Clinician(0, p, 0, stub);
+    ArrayList<Clinician> docs = new ArrayList<Clinician>();
+    docs.add(doc);
+    stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
+    p.setProvider(EncounterType.AMBULATORY, stub);
+    p.setProvider(EncounterType.WELLNESS, stub);
+    p.setProvider(EncounterType.EMERGENCY, stub);
+    p.setProvider(EncounterType.INPATIENT, stub);
+    p.record.provider = stub;
 
     HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
     e.provider = p.record.provider;

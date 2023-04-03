@@ -55,7 +55,7 @@
             {
               "system": "LOINC",
               "code": "56051-6",
-              "display": "Are you Hispanic or Latino?"
+              "display": "Do you consider yourself Hispanic/Latino?"
             }
           ],
           "attribute": "prapare_a1"
@@ -67,7 +67,7 @@
             {
               "system": "LOINC",
               "code": "32624-9",
-              "display": "Which race(s) are you?"
+              "display": "Race"
             }
           ],
           "attribute": "prapare_a2"
@@ -103,7 +103,7 @@
             {
               "system": "LOINC",
               "code": "54899-0",
-              "display": "What language are you most comfortable speaking?"
+              "display": "Preferred language"
             }
           ],
           "attribute": "prapare_a5"
@@ -115,7 +115,7 @@
             {
               "system": "LOINC",
               "code": "63512-8",
-              "display": "How many family members, including yourself, do you currently live with?"
+              "display": "How many people are living or staying at this address?"
             }
           ],
           "attribute": "household_size"
@@ -127,7 +127,7 @@
             {
               "system": "LOINC",
               "code": "71802-3",
-              "display": "What is your housing situation today?"
+              "display": "Housing status"
             }
           ],
           "attribute": "prapare_a7"
@@ -151,7 +151,7 @@
             {
               "system": "LOINC",
               "code": "56799-0",
-              "display": "What address do you live at?"
+              "display": "Address"
             }
           ],
           "attribute": "address"
@@ -163,7 +163,7 @@
             {
               "system": "LOINC",
               "code": "82589-3",
-              "display": "What is the highest level of school that you have finished?"
+              "display": "Highest level of education"
             }
           ],
           "attribute": "prapare_a10"
@@ -175,7 +175,7 @@
             {
               "system": "LOINC",
               "code": "67875-5",
-              "display": "What is your current work situation?"
+              "display": "Employment status - current"
             }
           ],
           "attribute": "prapare_a11"
@@ -187,7 +187,7 @@
             {
               "system": "LOINC",
               "code": "76437-3",
-              "display": "What is your main insurance?"
+              "display": "Primary insurance"
             }
           ],
           "attribute": "prapare_a12"
@@ -199,7 +199,7 @@
             {
               "system": "LOINC",
               "code": "63586-2",
-              "display": "During the past year, what was the total combined income for you and the family members you live with? This information will help us determine if you are eligible for any benefits."
+              "display": "What was your best estimate of the total income of all family members from all sources, before taxes, in last year?"
             }
           ],
           "attribute": "income"
@@ -223,7 +223,7 @@
             {
               "system": "LOINC",
               "code": "93030-5",
-              "display": "Has lack of transportation kept you from medical appointments, meetings, work, or from getting things needed for daily living?"
+              "display": "Has lack of transportation kept you from medical appointments, meetings, work, or from getting things needed for daily living"
             }
           ],
           "attribute": "prapare_a15"
@@ -247,7 +247,7 @@
             {
               "system": "LOINC",
               "code": "93038-8",
-              "display": "Stress is when someone feels tense, nervous, anxious or can't sleep at night because their mind is troubled. How stressed are you?"
+              "display": "Stress level"
             }
           ],
           "attribute": "prapare_a17"
@@ -295,7 +295,7 @@
             {
               "system": "LOINC",
               "code": "76501-6",
-              "display": "In the past year, have you been afraid of your partner or ex-partner?"
+              "display": "Within the last year, have you been afraid of your partner or ex-partner?"
             }
           ],
           "attribute": "prapare_a21"
@@ -466,7 +466,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA46-8",
-        "display": "Other, Please write"
+        "display": "Other"
       },
       "direct_transition": "Q3",
       "name": "A2_Other"
@@ -1000,7 +1000,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA30190-5",
-        "display": "I do not have housing"
+        "display": "I do not have housing (staying with others, in a hotel, in a shelter, living outside on the street, on a beach, in a car, or in a park)"
       },
       "name": "A7_Homeless"
     },
@@ -1319,7 +1319,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA17956-6",
-        "display": "Unemployed (finding)"
+        "display": "Unemployed"
       },
       "direct_transition": "Unemployed",
       "name": "A11A"
@@ -1391,7 +1391,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA30137-6",
-        "display": "Otherwise unemployed but not seeking work"
+        "display": "Otherwise unemployed but not seeking work (ex: student, retired, disabled, unpaid primary care giver)"
       },
       "direct_transition": "Employed Not",
       "name": "A11D"
@@ -1465,7 +1465,7 @@
       "attribute": "prapare_a12",
       "value_code": {
         "system": "LOINC",
-        "code": "LA30194-7",
+        "code": "LA17849-3",
         "display": "Medicaid"
       },
       "direct_transition": "Q14",
@@ -1640,7 +1640,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA30127-7",
-        "display": "Childcare"
+        "display": "Child care"
       },
       "direct_transition": "Q15",
       "name": "A14_Childcare"
@@ -1651,7 +1651,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA30128-5",
-        "display": "Medicine or Any Health Care"
+        "display": "Medicine or Any Health Care (Medical, Dental, Mental Health, Vision)"
       },
       "direct_transition": "Q15",
       "name": "A14_Medicine"
@@ -1673,7 +1673,7 @@
       "value_code": {
         "system": "LOINC",
         "code": "LA46-8",
-        "display": "Other, Please write"
+        "display": "Other"
       },
       "direct_transition": "Q15",
       "name": "A14_Other"
@@ -2087,7 +2087,7 @@
         {
           "system": "SNOMED-CT",
           "code": 266934004,
-          "display": "Transport problems (finding)",
+          "display": "Transport problem (finding)",
           "value_set": ""
         }
       ],

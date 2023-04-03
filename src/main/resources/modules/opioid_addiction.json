@@ -234,7 +234,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183452005",
-          "display": "Emergency treatment (procedure)"
+          "display": "Emergency hospital admission (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_2"

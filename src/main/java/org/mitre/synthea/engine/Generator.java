@@ -114,6 +114,7 @@ public class Generator {
     /** By default use the current time as random seed. */
     public long seed = referenceTime;
     public long clinicianSeed = referenceTime;
+    public Long singlePersonSeed;
     /** Population as exclusively live persons or including deceased.
      * True for live, false includes deceased */
     public boolean overflow = true;
@@ -373,13 +374,16 @@ public class Generator {
           threadPool.submit(() -> updateRecordExportPerson(p, index));
         }
       }
-    } else {
+    } else if (this.options.singlePersonSeed == null) {
       // Generate patients up to the specified population size.
       for (int i = 0; i < this.options.population; i++) {
         final int index = i;
         final long seed = this.populationRandom.randLong();
         threadPool.submit(() -> generatePerson(index, seed));
       }
+    } else {
+      // we have a single fixed seed to generate, don't bother with threadpool
+      generatePerson(0, this.options.singlePersonSeed);
     }
 
     try {

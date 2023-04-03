@@ -377,8 +377,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
-          "display": "Emergency Room Admission"
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "remarks": [
@@ -611,7 +611,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Postoperative_Follow-up",
@@ -624,7 +624,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "reason": "Open_Cholecystectomy",
@@ -838,7 +838,7 @@
             {
               "system": "LOINC",
               "code": "2345-7",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Glucose"
@@ -850,7 +850,7 @@
             {
               "system": "LOINC",
               "code": "3094-0",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Urea Nitrogen"
@@ -862,7 +862,7 @@
             {
               "system": "LOINC",
               "code": "2160-0",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Creatinine"
@@ -874,7 +874,7 @@
             {
               "system": "LOINC",
               "code": "17861-6",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Calcium"
@@ -886,7 +886,7 @@
             {
               "system": "LOINC",
               "code": "2951-2",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Sodium"
@@ -898,7 +898,7 @@
             {
               "system": "LOINC",
               "code": "2823-3",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Potassium"
@@ -910,7 +910,7 @@
             {
               "system": "LOINC",
               "code": "2075-0",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Chloride"
@@ -922,7 +922,7 @@
             {
               "system": "LOINC",
               "code": "2028-9",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Carbon Dioxide"

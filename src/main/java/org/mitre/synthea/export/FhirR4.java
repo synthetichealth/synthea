@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -146,6 +147,7 @@ import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
+import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
@@ -185,21 +187,58 @@ public class FhirR4 {
       Config.getAsBoolean("exporter.fhir.use_shr_extensions");
   protected static boolean TRANSACTION_BUNDLE =
       Config.getAsBoolean("exporter.fhir.transaction_bundle");
+
+  /* For the most part the US Core changes from v4 -> v5 are backwards compatible,
+   * so for those cases just check USE_US_CORE_IG.
+   * If there are version differences then use USE_US_CORE_(#) to separate them out.
+   */
   protected static boolean USE_US_CORE_IG =
       Config.getAsBoolean("exporter.fhir.use_us_core_ig");
+  protected static String US_CORE_VERSION =
+      Config.get("exporter.fhir.us_core_version", "5.0.1");
+
+  private static Table<String, String, String> US_CORE_MAPPING;
+  private static final Table<String, String, String> US_CORE_4_MAPPING;
+  private static final Table<String, String, String> US_CORE_5_MAPPING;
+
+  protected static boolean useUSCore4() {
+    boolean useUSCore4 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("4");
+    if (useUSCore4) {
+      US_CORE_MAPPING = US_CORE_4_MAPPING;
+    }
+    return useUSCore4;
+  }
+
+  protected static boolean useUSCore5() {
+    boolean useUSCore5 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("5");
+    if (useUSCore5) {
+      US_CORE_MAPPING = US_CORE_5_MAPPING;
+    }
+    return useUSCore5;
+  }
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static final Table<String, String, String> SHR_MAPPING =
       loadMapping("shr_mapping.csv");
-  private static final Table<String, String, String> US_CORE_MAPPING =
-      loadMapping("us_core_mapping.csv");
 
   private static final HashSet<Class<? extends Resource>> includedResources = new HashSet<>();
   private static final HashSet<Class<? extends Resource>> excludedResources = new HashSet<>();
 
   static {
     reloadIncludeExclude();
+
+    Map<String, Table<String, String, String>> usCoreMappings =
+        loadMappingWithVersions("us_core_mapping.csv", "4", "5");
+
+    US_CORE_4_MAPPING = usCoreMappings.get("4");
+    US_CORE_5_MAPPING = usCoreMappings.get("5");
+
+    if (US_CORE_VERSION.startsWith("4")) {
+      US_CORE_MAPPING = US_CORE_4_MAPPING;
+    } else if (US_CORE_VERSION.startsWith("5")) {
+      US_CORE_MAPPING = US_CORE_5_MAPPING;
+    }
   }
 
   static void reloadIncludeExclude() {
@@ -301,6 +340,45 @@ public class FhirR4 {
     }
 
     return mappingTable;
+  }
+
+  private static Map<String, Table<String, String, String>>
+      loadMappingWithVersions(String filename, String... supportedVersions) {
+    Map<String, Table<String,String,String>> versions = new HashMap<>();
+
+    for (String version : supportedVersions) {
+      versions.put(version, HashBasedTable.create());
+    }
+
+    List<LinkedHashMap<String, String>> csvData;
+    try {
+      csvData = SimpleCSV.parse(Utilities.readResource(filename));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    for (LinkedHashMap<String, String> line : csvData) {
+      String system = line.get("SYSTEM");
+      String code = line.get("CODE");
+      String url = line.get("URL");
+      String version = line.get("VERSION");
+
+      if (StringUtils.isBlank(version)) {
+        // blank means applies to ALL versions
+        versions.values().forEach(table -> table.put(system, code, url));
+      } else {
+        Table<String, String, String> mappingTable = versions.get(version);
+        if (mappingTable == null) {
+          throw new IllegalArgumentException("Error in loading mapping from file " + filename
+              + ". File contains row with version '" + version
+              + "' but supported version numbers are: " + String.join(",", supportedVersions));
+        }
+        mappingTable.put(system, code, url);
+      }
+    }
+
+    return versions;
   }
 
   public static FhirContext getContext() {
@@ -488,7 +566,7 @@ public class FhirR4 {
         .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
 
     if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's License");
+      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's license number");
       patientResource.addIdentifier()
           .setType(mapCodeToCodeableConcept(driversCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
           .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
@@ -708,8 +786,20 @@ public class FhirR4 {
 
     String maritalStatus = ((String) person.attributes.get(Person.MARITAL_STATUS));
     if (maritalStatus != null) {
+      Map<String, String> maritalStatusCodes = Map.of(
+          "A", "Annulled",
+          "D", "Divorced",
+          "I", "Interlocutory",
+          "L", "Legally Separated",
+          "M", "Married",
+          "P", "Polygamous",
+          "T", "Domestic partner",
+          "U", "unmarried",
+          "S", "Never Married",
+          "W", "Widowed");
+      String maritalStatusDisplay = maritalStatusCodes.getOrDefault(maritalStatus, maritalStatus);
       Code maritalStatusCode = new Code("http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
-          maritalStatus, maritalStatus);
+          maritalStatus, maritalStatusDisplay);
       patientResource.setMaritalStatus(
           mapCodeToCodeableConcept(maritalStatusCode,
               "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"));
@@ -1294,7 +1384,7 @@ public class FhirR4 {
     CodeableConcept primaryCareRole = new CodeableConcept().addCoding(new Coding()
         .setCode("primary")
         .setSystem("http://terminology.hl7.org/CodeSystem/claimcareteamrole")
-        .setDisplay("Primary Care Practitioner"));
+        .setDisplay("Primary provider"));
     Reference providerReference = new Reference().setDisplay("Unknown");
     if (encounter.clinician != null) {
       String practitionerFullUrl = TRANSACTION_BUNDLE
@@ -1558,8 +1648,13 @@ public class FhirR4 {
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
-      meta.addProfile(
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition");
+      if (useUSCore5()) {
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis");
+      } else {
+        meta.addProfile(
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition");
+      }
       conditionResource.setMeta(meta);
       conditionResource.addCategory(new CodeableConcept().addCoding(new Coding(
           "http://terminology.hl7.org/CodeSystem/condition-category", "encounter-diagnosis",
@@ -1742,9 +1837,17 @@ public class FhirR4 {
       }
     }
 
+    // map the code to the official display, ex "vital-signs" --> "Vital Signs"
+    // in all cases the text is the same just with these two differences- space/hyphen and caps
+    // https://terminology.hl7.org/5.0.0/CodeSystem-observation-category.html
+    String categoryDisplay = null;
+    if (observation.category != null) {
+      categoryDisplay = StringUtils.capitalize(observation.category.replace('-', ' '));
+    }
+
     observationResource.addCategory().addCoding().setCode(observation.category)
         .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
-        .setDisplay(observation.category);
+        .setDisplay(categoryDisplay);
 
     if (observation.value != null) {
       Type value = mapValueToFHIRType(observation.value, observation.unit);
@@ -1775,10 +1878,38 @@ public class FhirR4 {
       } else if (observation.report != null && observation.category.equals("laboratory")) {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
+
+      if (useUSCore5() && observation.category != null) {
+        switch (observation.category) {
+          case "imaging":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
+            break;
+          case "social-history":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
+            break;
+          case "survey":
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
+            // note that the -sdoh-assessment profile is a subset of -survey,
+            // those are handled by code in US_CORE_MAPPING above
+            break;
+          case "exam":
+            // this one is a little nebulous -- are all exams also clinical tests?
+            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
+
+            observationResource.addCategory().addCoding().setCode("clinical-test")
+                .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
+                .setDisplay("Clinical Test");
+            break;
+          default:
+            // do nothing
+        }
+      }
+
       if (meta.hasProfile()) {
         observationResource.setMeta(meta);
       }
-    } else if (USE_SHR_EXTENSIONS) {
+    }
+    if (USE_SHR_EXTENSIONS) {
       Meta meta = new Meta();
       meta.addProfile(SHR_EXT + "shr-finding-Observation"); // all Observations are Observations
       if ("vital-signs".equals(observation.category)) {
@@ -2036,21 +2167,44 @@ public class FhirR4 {
     // Provenance sources...
     int index = person.record.encounters.size() - 1;
     Clinician clinician = null;
-    while (index >= 0 && clinician == null) {
+    Provider providerOrganization = null;
+    while (index >= 0 && (clinician == null || providerOrganization == null)) {
       clinician = person.record.encounters.get(index).clinician;
+      providerOrganization = person.record.encounters.get(index).provider;
       index--;
     }
-    String clinicianDisplay = null;
-    if (clinician != null) {
-      clinicianDisplay = clinician.getFullname();
+
+    if (clinician == null && providerOrganization == null) {
+      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+      clinician =
+          providerOrganization.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, person);
+    } else if (clinician == null || providerOrganization == null) {
+      if (clinician == null && providerOrganization != null) {
+        clinician =
+            providerOrganization.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, person);
+      } else if (clinician != null && providerOrganization == null) {
+        providerOrganization = clinician.getOrganization();
+        if (providerOrganization == null) {
+          providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+        }
+      }
     }
+
+    if (clinician.getEncounterCount() == 0) {
+      clinician.incrementEncounters();
+    }
+    if (providerOrganization.getUtilization().isEmpty()) {
+      // If this provider has never been used, ensure they have at least one encounter
+      // (encounter creating this Provenance record) so that the provider is exported.
+      providerOrganization.incrementEncounters(EncounterType.VIRTUAL, Utilities.getYear(stopTime));
+    }
+
+    String clinicianDisplay = clinician.getFullname();
+
     String practitionerFullUrl = TRANSACTION_BUNDLE
             ? ExportHelper.buildFhirNpiSearchUrl(clinician)
             : findPractitioner(clinician, bundle);
-    Provider providerOrganization = person.record.provider;
-    if (providerOrganization == null) {
-      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
-    }
+
     String organizationFullUrl = TRANSACTION_BUNDLE
             ? ExportHelper.buildFhirSearchUrl("Organization",
                     providerOrganization.getResourceID())
@@ -2278,7 +2432,7 @@ public class FhirR4 {
         dosage.setDoseAndRate(details);
 
         if (rxInfo.has("instructions")) {
-          String text = "";
+          StringBuilder text = new StringBuilder();
           for (JsonElement instructionElement : rxInfo.get("instructions").getAsJsonArray()) {
             JsonObject instruction = instructionElement.getAsJsonObject();
             Code instructionCode = new Code(
@@ -2286,10 +2440,11 @@ public class FhirR4 {
                 instruction.get("code").getAsString(),
                 instruction.get("display").getAsString()
             );
-            text += instructionCode.display + "\n";
+            text.append(instructionCode.display).append('\n');
             dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
           }
-          dosage.setText(text);
+          text.deleteCharAt(text.length() - 1); // delete the last newline char
+          dosage.setText(text.toString());
         }
       }
 
@@ -2531,7 +2686,7 @@ public class FhirR4 {
       documentReference.addContent()
           .setAttachment(reportResource.getPresentedFormFirstRep())
           .setFormat(
-            new Coding("http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
+            new Coding("http://ihe.net/fhir/ihe.formatcode.fhir/CodeSystem/formatcode",
                 "urn:ihe:iti:xds:2017:mimeTypeSufficient", "mimeType Sufficient"));
       documentReference.setContext(new DocumentReferenceContextComponent()
           .addEncounter(reportResource.getEncounter())
@@ -2908,7 +3063,7 @@ public class FhirR4 {
         instanceResource.setUid(instance.dicomUid);
         instanceResource.setTitle(instance.title);
         instanceResource.setSopClass(new Coding()
-            .setCode(instance.sopClass.code)
+            .setCode("urn:oid:" + instance.sopClass.code)
             .setSystem("urn:ietf:rfc:3986"));
         instanceResource.setNumber(instanceNo);
 
@@ -3182,11 +3337,11 @@ public class FhirR4 {
           .setDisplay(clinician.getOrganization().name));
       practitionerRole.addCode(
           mapCodeToCodeableConcept(
-              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice Physician"),
               null));
       practitionerRole.addSpecialty(
           mapCodeToCodeableConcept(
-              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice"),
+              new Code("http://nucc.org/provider-taxonomy", "208D00000X", "General Practice Physician"),
               null));
       practitionerRole.addLocation()
           .setIdentifier(new Identifier()

@@ -2,7 +2,7 @@
   "english": {
     "code": "en-US",
     "system": "urn:ietf:bcp:47",
-    "display": "English"
+    "display": "English (United States)"
   },
   "spanish": {
     "code": "es",
@@ -57,7 +57,7 @@
   "greek": {
     "code": "el",
     "system": "urn:ietf:bcp:47",
-    "display": "Greek"
+    "display": "Modern Greek (1453-)"
   },
   "arabic": {
     "code": "ar",

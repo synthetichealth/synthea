@@ -48,7 +48,7 @@
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "50849002",
-                "display": "Emergency Room Admission"
+                "display": "Emergency room admission (procedure)"
             }],
             "reason" : "Diabetes",
             "direct_transition": "ED_Visit_AttributeReason"
@@ -60,7 +60,7 @@
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "50849002",
-                "display": "Emergency Room Admission"
+                "display": "Emergency room admission (procedure)"
             }],
             "reason" : "some_active_condition",
             "direct_transition": "Terminal"

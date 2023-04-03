@@ -162,11 +162,13 @@ public class PersonTest {
 
   private void testAgeYears(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInYears(now));
   }
 
   private void testAgeMonths(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInMonths(now));
   }
 
@@ -533,6 +535,20 @@ public class PersonTest {
         assertEquals(fileContents.get(f - 1).get(l), fileContents.get(f).get(l));
       }
     }
+  }
+
+  @Test
+  public void testGetSymptoms() {
+    Person person = new Person(0L);
+    person.setSymptom("LifecycleModule", "life", "confusion", 0, 20, false);
+    person.setSymptom("LifecycleModule", "life", "headache", 0, 67, false);
+    person.setSymptom("LifecycleModule", "life", "irritability", 0, 8, false);
+    person.setSymptom("LifecycleModule", "life", "back pain", 0, 55, false);
+
+    // expect a sorted list of symptom names, for symptoms of severity >= 20
+    List<String> symptoms = person.getSymptoms();
+    assertEquals(3, symptoms.size());
+    assertEquals(List.of("headache", "back pain", "confusion"), symptoms);
   }
 
   @Test()

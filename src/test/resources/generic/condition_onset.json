@@ -30,7 +30,7 @@
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "50849002",
-                "display": "Emergency Room Admission"
+                "display": "Emergency room admission (procedure)"
             }],
             "direct_transition": "Appendicitis"
         },
