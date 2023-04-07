@@ -14,7 +14,7 @@ public class EmploymentTest extends TestCase {
     person.attributes.put(Person.UNEMPLOYED, false);
     employment.checkEmployment(person, 0);
     // Person becomes instantly unemployed due to the high unemployment rate.
-    // Length of unemployment will be 1814400000
+    // Length of unemployment will be 4233601000
     assertTrue((Boolean) person.attributes.get(Person.UNEMPLOYED));
     employment.checkEmployment(person, 1000);
     // Still unemployed
@@ -22,7 +22,7 @@ public class EmploymentTest extends TestCase {
     employment.checkEmployment(person, 2000);
     // Still unemployed
     assertTrue((Boolean) person.attributes.get(Person.UNEMPLOYED));
-    employment.checkEmployment(person, 1814400001);
+    employment.checkEmployment(person, 4233601001L);
     // End of unemployment
     assertFalse((Boolean) person.attributes.get(Person.UNEMPLOYED));
   }
