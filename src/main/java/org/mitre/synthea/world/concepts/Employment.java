@@ -21,8 +21,11 @@ public class Employment implements Serializable {
   private static EnumeratedDistribution<LengthOfUnemployment> distribution =
           loadUnemploymentLengthDistro();
 
+  // Minimum employment length in months
+  public static long MIN_EMPLOYMENT_LENGTH = 6;
+
   private double chanceOfUnemployment;
-  private long endOfUnemployment;
+  private long nextTimeToCheck;
   private boolean unemployed;
 
   /**
@@ -51,7 +54,8 @@ public class Employment implements Serializable {
   }
 
   /**
-   * Checks on the employment status for the person. If the person is employed, it will make
+   * Checks on the employment status for the person. First it will see if it is time to change
+   * employment status. If it is and the person is employed, it will make
    * weighted random selection as to whether the person should be unemployed, based on the provided
    * distribution. If the person becomes unemployed, it will select a length of unemployment, based
    * on information from the Bureau of Labor Statistics.
@@ -61,22 +65,26 @@ public class Employment implements Serializable {
    * @param time in simulation
    */
   public void checkEmployment(Person person, long time) {
-    if (unemployed == true) {
-      if (time > endOfUnemployment) {
+    if (time >= nextTimeToCheck) {
+      if (unemployed == true) {
         unemployed = false;
         person.attributes.put(Person.UNEMPLOYED, false);
-      }
-    } else {
-      if (person.rand() < chanceOfUnemployment) {
-        unemployed = true;
-        person.attributes.put(Person.UNEMPLOYED, true);
-        LengthOfUnemployment loe = null;
-        synchronized (distribution) {
-          distribution.reseedRandomGenerator(person.randLong());
-          loe = distribution.sample();
+        nextTimeToCheck = time + Utilities.convertTime("months", MIN_EMPLOYMENT_LENGTH);
+      } else {
+        if (person.rand() < chanceOfUnemployment) {
+          unemployed = true;
+          person.attributes.put(Person.UNEMPLOYED, true);
+          LengthOfUnemployment loe = null;
+          synchronized (distribution) {
+            distribution.reseedRandomGenerator(person.randLong());
+            loe = distribution.sample();
+          }
+          int weeksOfUnemployment = loe.min + person.randInt(loe.max - loe.min);
+          nextTimeToCheck = time + Utilities.convertTime("weeks", weeksOfUnemployment);
+        } else {
+          nextTimeToCheck = time + Utilities.convertTime("months", MIN_EMPLOYMENT_LENGTH);
         }
-        int weeksOfUnemployment = loe.min + person.randInt(loe.max - loe.min);
-        endOfUnemployment = time + Utilities.convertTime("weeks", weeksOfUnemployment);
+
       }
     }
   }
