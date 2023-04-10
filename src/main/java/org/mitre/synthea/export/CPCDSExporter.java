@@ -244,8 +244,8 @@ public class CPCDSExporter {
         payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
         payerName = clean(Config.get("single_payer.name"));
       } else {
-        payerId = encounter.claim.plan.getPayer().uuid.toString();
-        payerName = encounter.claim.plan.getPayer().getName();
+        payerId = encounter.claim.getPayer().uuid.toString();
+        payerName = encounter.claim.getPayer().getName();
       }
 
       for (CarePlan careplan : encounter.careplans) {

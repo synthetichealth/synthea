@@ -10,7 +10,6 @@ import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.helpers.ConsolidatedServicePeriods;
 import org.mitre.synthea.helpers.ConsolidatedServicePeriods.ConsolidatedServicePeriod;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -135,9 +134,7 @@ public class HHAExporter extends RIFExporter {
       // TODO: update ConsolidatedServicePeriods to separate encounters based on provider, clinician
       HealthRecord.Encounter finalEncounterOfPeriod = servicePeriod.getEncounters().get(
               servicePeriod.getEncounters().size() - 1);
-      if (finalEncounterOfPeriod.claim.plan == PayerManager
-              .getGovernmentPayer(PayerManager.MEDICARE)
-              .getGovernmentPayerPlan()) {
+      if (finalEncounterOfPeriod.claim.coveredByMedicare()) {
         fieldValues.put(BB2RIFStructure.HHA.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(BB2RIFStructure.HHA.NCH_PRMRY_PYR_CLM_PD_AMT,

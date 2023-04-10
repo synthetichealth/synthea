@@ -54,7 +54,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Supply;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 
 /**
  * Researchers have requested a simple table-based format that could easily be
@@ -426,7 +426,7 @@ public class CSVExporter {
       payers.flush();
     }
     // Export No Insurance statistics
-    payer(PayerManager.noInsurance);
+    payer(PayerManager.getNoInsurancePlan().getPayer());
     payers.flush();
   }
 
@@ -437,9 +437,9 @@ public class CSVExporter {
    * @throws IOException if any IO errors occur.
    */
   private void exportPayerTransitions(Person person, long stopTime) throws IOException {
-    for (PlanRecord plan : person.coverage.getPlanHistory()) {
-      if (plan.start <= stopTime) {
-        payerTransition(person, plan);
+    for (PlanRecord planRecord : person.coverage.getPlanHistory()) {
+      if (planRecord.getStartTime() <= stopTime) {
+        payerTransition(person, planRecord);
       }
     }
     payerTransitions.flush();
@@ -453,7 +453,7 @@ public class CSVExporter {
    */
   private void exportPatientExpenses(Person person, long stopTime) throws IOException {
     for (PlanRecord planRecord : person.coverage.getPlanHistory()) {
-      if (planRecord.start <= stopTime) {
+      if (planRecord.getStartTime() <= stopTime) {
         patientExpense(person, planRecord);
       }
     }
@@ -474,7 +474,7 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(personID, encounter);
-      String payerID = encounter.claim.plan.getPayer().uuid;
+      String payerID = encounter.claim.getPayer().uuid;
 
       claim(person, encounter.claim, encounter, encounterID, time);
 
@@ -638,7 +638,7 @@ public class CSVExporter {
     // LAT,LON
     s.append(',').append(person.getY()).append(',').append(person.getX()).append(',');
     // HEALTHCARE_EXPENSES
-    s.append(person.coverage.getTotalHealthcareExpenses()).append(',');
+    s.append(person.coverage.getTotalOutOfPocketExpenses()).append(',');
     // HEALTHCARE_COVERAGE
     s.append(person.coverage.getTotalCoverage()).append(',');
     // INCOME
@@ -694,8 +694,8 @@ public class CSVExporter {
       s.append(',');
     }
     // PAYER
-    if (encounter.claim.plan.getPayer() != null) {
-      s.append(encounter.claim.plan.getPayer().getResourceID()).append(',');
+    if (encounter.claim.getPayer() != null) {
+      s.append(encounter.claim.getPayer().getResourceID()).append(',');
     } else {
       s.append(',');
     }
@@ -1316,20 +1316,20 @@ public class CSVExporter {
     }
     s.append(",");
     // START_YEAR
-    s.append(iso8601Timestamp(planRecord.start)).append(',');
+    s.append(iso8601Timestamp(planRecord.getStartTime())).append(',');
     // END_YEAR
-    s.append(iso8601Timestamp(planRecord.stop)).append(',');
+    s.append(iso8601Timestamp(planRecord.getStopTime())).append(',');
     // PAYER_ID
-    s.append(planRecord.plan.getPayer().getResourceID()).append(',');
+    s.append(planRecord.getPlan().getPayer().getResourceID()).append(',');
     // SECONDARY_PAYER_ID
-    if (planRecord.secondaryPlan.getPayer() != null && !planRecord.secondaryPlan.getPayer()
-        .isNoInsurance()) {
-      s.append(planRecord.secondaryPlan.getPayer().getResourceID());
+    if (planRecord.getSecondaryPlan().getPayer() != null
+        && !planRecord.getSecondaryPlan().isNoInsurance()) {
+      s.append(planRecord.getPlan().getPayer().getResourceID());
     }
     s.append(',');
     // PLAN_OWNERSHIP
-    if (planRecord.owner != null) {
-      s.append(planRecord.owner);
+    if (planRecord.ownership != null) {
+      s.append(planRecord.ownership);
     }
     s.append(',');
     // OWNERNAME
@@ -1347,14 +1347,14 @@ public class CSVExporter {
     // PATIENT_ID
     s.append(person.attributes.get(Person.ID)).append(",");
     // YEAR
-    s.append(iso8601Timestamp(planRecord.start)).append(',');
+    s.append(iso8601Timestamp(planRecord.getStartTime())).append(',');
     // PAYER_ID
-    s.append(planRecord.plan.getPayer().getResourceID()).append(',');
+    s.append(planRecord.getPlan().getPayer().getResourceID()).append(',');
     // HEALTHCARE_EXPENSES
-    double healthcareExpenses = planRecord.getHealthcareExpenses().doubleValue();
+    double healthcareExpenses = planRecord.getOutOfPocketExpenses().doubleValue();
     s.append(healthcareExpenses).append(',');
     // INSURANCE_COSTS
-    double insuranceCosts = planRecord.getInsuranceCosts().doubleValue();
+    double insuranceCosts = planRecord.getInsuranceExpenses().doubleValue();
     s.append(insuranceCosts).append(',');
     // COVERED_COSTS
     double coveredExpenses = planRecord.getCoveredExpenses().doubleValue();
@@ -1422,18 +1422,18 @@ public class CSVExporter {
       s.append(',');
     }
     // PRIMARYPATIENTINSURANCEID
-    if (encounter.claim.plan.getPayer() == null
-        || encounter.claim.plan.isNoInsurance()) {
+    if (encounter.claim.getPayer() == null
+        || encounter.claim.getPayer().isNoInsurance()) {
       s.append("0,"); // 0 == No Insurance
     } else {
-      s.append(claim.plan.getPayer().getResourceID()).append(',');
+      s.append(claim.getPayer().getResourceID()).append(',');
     }
     // SECONDARYPATIENTINSURANCEID (0 default if none)
-    if (encounter.claim.secondaryPlan == null
-        || encounter.claim.secondaryPlan.isNoInsurance()) {
+    if (encounter.claim.getSecondaryPayer() == null
+        || encounter.claim.getSecondaryPayer().isNoInsurance()) {
       s.append("0,");
     } else {
-      s.append(claim.secondaryPlan.getPayer().getResourceID()).append(',');
+      s.append(claim.getSecondaryPayer().getResourceID()).append(',');
     }
     // DEPARTMENTID
     String departmentId = claimDepartmentCode(encounter, claim.person);
@@ -1492,8 +1492,8 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("CLOSED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         s.append("CLOSED,");
       } else {
         s.append(',');
@@ -1503,8 +1503,8 @@ public class CSVExporter {
       // OUTSTANDING1
       s.append("0,");
       // OUTSTANDING2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         s.append("0,");
       } else {
         s.append(',');
@@ -1514,8 +1514,8 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.stop)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         s.append(iso8601Timestamp(encounter.stop)).append(',');
       } else {
         s.append(',');
@@ -1528,8 +1528,8 @@ public class CSVExporter {
       // STATUS1 for Payer1
       s.append("BILLED,");
       // STATUS2 for Payer2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         s.append("BILLED,");
       } else {
         s.append(',');
@@ -1540,8 +1540,8 @@ public class CSVExporter {
       s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
               .append(',');
       // OUTSTANDING2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         // TODO this is not correct
         s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost()))
                 .append(',');
@@ -1554,8 +1554,8 @@ public class CSVExporter {
       // LASTBILLEDDATE1
       s.append(iso8601Timestamp(encounter.start)).append(',');
       // LASTBILLEDDATE2
-      if (claim.secondaryPlan != null
-          && claim.secondaryPlan.isNoInsurance()) {
+      if (claim.getSecondaryPayer() != null
+          && claim.getSecondaryPayer().isNoInsurance()) {
         s.append(iso8601Timestamp(encounter.start)).append(',');
       } else {
         s.append(',');
@@ -1571,8 +1571,8 @@ public class CSVExporter {
       s.append("1,");
     }
     // HEALTHCARECLAIMTYPEID2
-    if (claim.secondaryPlan != null
-        && claim.secondaryPlan.isNoInsurance()) {
+    if (claim.getSecondaryPayer() != null
+        && claim.getSecondaryPayer().isNoInsurance()) {
       if (institutional) {
         s.append('2');
       } else {
@@ -1612,7 +1612,7 @@ public class CSVExporter {
     t.setAmount(claimEntry.cost);
     t.departmentId = departmentId;
     t.diagnosisCodes = diagnosisCodes;
-    if (claim.plan.isNoInsurance()) {
+    if (claim.getPayer().isNoInsurance()) {
       t.transferType = "p";
     } else {
       t.transferType = "1";
@@ -1720,7 +1720,7 @@ public class CSVExporter {
     }
 
     if (remainder.compareTo(Claim.ZERO_CENTS) > 0) {
-      if (claim.plan != PayerManager.getNoInsurancePlan()) {
+      if (!claim.getPayer().isNoInsurance()) {
         // TRANSFEROUT
         t = new ClaimTransaction(encounter, encounterId,
             claim, claimId, chargeId, claimEntry, person);
@@ -1819,10 +1819,7 @@ public class CSVExporter {
       this.claimId = claimId;
       this.chargeId = chargeId;
       this.patientId = (String) claim.person.attributes.get(Person.ID);
-      PlanRecord plan = claim.person.coverage.getPlanRecordAtTime(encounter.start);
-      if (plan != null) {
-        this.memberId = plan.id;
-      }
+      this.memberId = claim.getPlanRecordMemberId();
       this.units = 1;
       this.start = claimEntry.entry.start;
       this.stop = claimEntry.entry.stop;
