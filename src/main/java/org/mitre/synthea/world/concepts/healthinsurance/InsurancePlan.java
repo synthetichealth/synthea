@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Payer;
@@ -27,8 +28,12 @@ public class InsurancePlan implements Serializable {
   private final BigDecimal defaultCopay;
   private final BigDecimal defaultCoinsurance;
   private final BigDecimal monthlyPremium;
+  private final BigDecimal maxOutOfPocket;
+  private final int priority;
   private final Set<String> servicesCovered;
   private final boolean medicareSupplement;
+  private final boolean isACA;
+  private final boolean incomeBasedPremium;
   private final String insuranceStatus;
   // Plan Eligibility.
   private final IPlanEligibility planEligibility;
@@ -36,28 +41,44 @@ public class InsurancePlan implements Serializable {
   private final Range<Long> activeTimeRange;
 
   /**
-   * Constructor for an InsurancePlan.
+   * Insurance Plan Constructor
    * @param payer The plan's payer.
    * @param servicesCovered The services covered.
    * @param deductible  The deductible.
    * @param defaultCoinsurance  The default coinsurance.
    * @param defaultCopay  The default copay.
    * @param monthlyPremium  The monthly premium.
+   * @param maxOutOfPocket Max yearly out of pocket cost to patient.
+   * @param medicareSupplement If this is a medicare supplement plan.
+   * @param isACA If this is an Affordable Care Act plan.
+   * @param incomeBasedPremium If this plan has an income-based percentage premium.
+   * @param activeYearStart The first year the plan is available.
+   * @param activeYearEnd The last year the plan is available.
+   * @param priority The priority of this plan for patients to choose it.
    * @param eligibilityName The eligibility algorithm to use.
    */
-  public InsurancePlan(Payer payer, Set<String> servicesCovered, BigDecimal deductible,
-      BigDecimal defaultCoinsurance, BigDecimal defaultCopay, BigDecimal monthlyPremium,
-      boolean medicareSupplement, int activeYearStart, int activeYearEnd, String eligibilityName) {
+  public InsurancePlan(Payer payer, /*int id,*/ Set<String> servicesCovered,
+      BigDecimal deductible, BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
+      BigDecimal monthlyPremium, BigDecimal maxOutOfPocket,
+      boolean medicareSupplement, boolean isACA, boolean incomeBasedPremium,
+      int activeYearStart, int activeYearEnd, int priority, String eligibilityName) {
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
     this.defaultCopay = defaultCopay;
     this.monthlyPremium = monthlyPremium;
+    this.maxOutOfPocket = maxOutOfPocket;
+    this.priority = priority;
     this.servicesCovered = servicesCovered;
     this.medicareSupplement = medicareSupplement;
+    this.isACA = isACA;
+    this.incomeBasedPremium = incomeBasedPremium;
+    if(incomeBasedPremium && (monthlyPremium.compareTo(BigDecimal.ONE) > 1)) {
+      throw new RuntimeException("Income based premium plans must have premiums in range 0.0 - 1.0, a percentage of a patient's income. Given " + monthlyPremium + ".");
+    }
     if (activeYearStart >= activeYearEnd) {
-      throw new RuntimeException("Plan start year cannot be after its end year."
-      + "Was given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
+      throw new RuntimeException("Plan start year cannot be after its end year. "
+      + "Given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
     }
     long activeTimeStart = Utilities.convertCalendarYearsToTime(activeYearStart);
     long activeTimeEnd = Utilities.convertCalendarYearsToTime(activeYearEnd);
@@ -84,16 +105,21 @@ public class InsurancePlan implements Serializable {
    *
    * @param entry the entry to calculate the copay for.
    */
-  public BigDecimal determineCopay(Entry entry) {
+  public BigDecimal determineCopay(String entryType, long entryStart) {
     BigDecimal copay = this.defaultCopay;
-    if (entry.type.equalsIgnoreCase(EncounterType.WELLNESS.toString())
-        && entry.start > HealthInsuranceModule.mandateTime) {
+    if (entryType.equalsIgnoreCase(EncounterType.WELLNESS.toString())
+        && entryStart > HealthInsuranceModule.mandateTime) {
       copay = Claim.ZERO_CENTS;
     }
     return copay;
   }
 
-  public BigDecimal getMonthlyPremium() {
+  public BigDecimal getMonthlyPremium(int income) {
+    if(this.incomeBasedPremium) {
+      return (this.monthlyPremium
+          .multiply(new BigDecimal(income))
+          .divide(new BigDecimal(12), RoundingMode.HALF_UP));
+    }
     return this.monthlyPremium;
   }
 
@@ -115,16 +141,21 @@ public class InsurancePlan implements Serializable {
    *
    * @return the monthly premium amount.
    */
-  public BigDecimal payMonthlyPremium() {
-    BigDecimal premiumPaid = this.getMonthlyPremium();
-    this.payer.addRevenue(premiumPaid);
-    return premiumPaid;
+  public BigDecimal payMonthlyPremium(double employerLevel, int income) {
+    BigDecimal premiumPrice = this.getMonthlyPremium(income);
+    this.payer.addRevenue(premiumPrice);
+    if (employerLevel > Config.getAsDouble("generate.insurance.mandate.occupation")
+        && (!this.payer.isGovernmentPayer() && !this.isACA)) {
+      // If this is a private plan and is not an ACA plan, then employer may provide coverage.
+      double employeeContribution = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
+      premiumPrice = premiumPrice.multiply(new BigDecimal(employeeContribution));
+    }
+    return premiumPrice;
   }
 
   public Payer getPayer() {
     return this.payer;
   }
-
 
   /**
    * Determines and returns the insurance status that this plan's payer would have
@@ -220,10 +251,10 @@ public class InsurancePlan implements Serializable {
    * Returns the yearly cost of this plan.
    * @return the yearly cost.
    */
-  public BigDecimal getYearlyCost() {
-    BigDecimal yearlyPremiumTotal = this.getMonthlyPremium()
+  public BigDecimal getYearlyCost(int income) {
+    BigDecimal yearlyPremiumTotal = this.getMonthlyPremium(income)
             .multiply(BigDecimal.valueOf(12))
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(0, RoundingMode.HALF_EVEN);
     return yearlyPremiumTotal;
   }
 
@@ -270,11 +301,23 @@ public class InsurancePlan implements Serializable {
   }
 
   /**
+   * Returns the priority level of this plan.
+   * @return The priority level of the plan.
+   */
+  public int getPriority() {
+    return this.priority;
+  }
+
+  /**
    * Returns whether this plan is copay-based.
    * @return whether this is a copay-based plan.
    */
   public boolean isCopayBased() {
     return this.defaultCopay.compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  public BigDecimal getMaxOop() {
+    return this.maxOutOfPocket;
   }
 
   @Override
