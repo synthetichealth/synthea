@@ -162,18 +162,19 @@ public class BB2RIFExporterTest {
       // TODO: more meaningful testing of contents (e.g. count of claims)
       File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
       assertTrue(inpatientFile.exists() && inpatientFile.isFile());
+      validateInpatientTotals(inpatientFile);
       File outpatientFile = expectedExportFolder.toPath().resolve("outpatient.csv").toFile();
       assertTrue(outpatientFile.exists() && outpatientFile.isFile());
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
-      validateClaimTotals(carrierFile);
+      validateCarrierTotals(carrierFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
       // TODO: more meaningful testing of contents
       File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
       assertTrue(dmeFile.exists() && dmeFile.isFile());
-      validateClaimTotals(dmeFile);
+      validateCarrierTotals(dmeFile);
     }
 
     if (bb2Exporter.medicationCodeMapper.hasMap()) {
@@ -183,7 +184,7 @@ public class BB2RIFExporterTest {
     }
   }
 
-  private static class ClaimTotals {
+  private static class CarrierTotals {
     private final String claimID;
     private final BigDecimal claimPaymentAmount;
     private final BigDecimal claimAllowedAmount;
@@ -198,7 +199,7 @@ public class BB2RIFExporterTest {
     private BigDecimal lineProviderPaymentAmount;
     private BigDecimal lineProviderPaymentAmountTotal;
 
-    ClaimTotals(LinkedHashMap<String, String> row) {
+    CarrierTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
       claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
       claimAllowedAmount = new BigDecimal(row.get("NCH_CARR_CLM_ALOWD_AMT")).setScale(2);
@@ -224,7 +225,7 @@ public class BB2RIFExporterTest {
     }
   }
 
-  private void validateClaimTotals(File file) throws IOException {
+  private void validateCarrierTotals(File file) throws IOException {
     String csvData = new String(Files.readAllBytes(file.toPath()));
 
     // the BB2 exporter doesn't use the SimpleCSV class to write the data,
@@ -233,16 +234,16 @@ public class BB2RIFExporterTest {
     assertTrue(
             "Expected at least 1 row in " + file.getName() + ", found " + rows.size(),
             rows.size() >= 1);
-    Map<String, ClaimTotals> claims = new HashMap<>();
+    Map<String, CarrierTotals> claims = new HashMap<>();
     rows.forEach(row -> {
       assertTrue("Expected non-zero length claim ID",
           row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
       String claimID = row.get("CLM_ID");
       if (!claims.containsKey(claimID)) {
-        ClaimTotals claim = new ClaimTotals(row);
+        CarrierTotals claim = new CarrierTotals(row);
         claims.put(claimID, claim);
       }
-      ClaimTotals claim = claims.get(claimID);
+      CarrierTotals claim = claims.get(claimID);
       claim.addLineItems(row);
       assertTrue(claim.linePaymentAmount.equals(
               claim.lineBenePaymentAmount.add(claim.lineProviderPaymentAmount)));
@@ -306,6 +307,67 @@ public class BB2RIFExporterTest {
       pdeIds.add(pdeId);
       PDETotals event = new PDETotals(row);
       assertTrue("PDE dollar amounts do not add up correctly.", event.isValid());
+    });
+  }
+
+  private static class InpatientTotals {
+    private final String claimID;
+    private final BigDecimal claimPaymentAmount;
+    private final BigDecimal claimTotalChargeAmount;
+    private final BigDecimal claimNotCoveredAmount;
+    private BigDecimal revCenterChargeTotal;
+    private BigDecimal revCenterNotCoveredTotal;
+
+    InpatientTotals(LinkedHashMap<String, String> row) {
+      claimID = row.get("CLM_ID");
+      claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
+      claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
+      claimNotCoveredAmount = new BigDecimal(row.get("NCH_IP_NCVRD_CHRG_AMT")).setScale(2);
+      revCenterChargeTotal = Claim.ZERO_CENTS;
+      revCenterNotCoveredTotal = Claim.ZERO_CENTS;
+    }
+
+    void addLineItems(LinkedHashMap<String, String> row) {
+      revCenterChargeTotal = revCenterChargeTotal.add(
+              new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2));
+      revCenterNotCoveredTotal = revCenterNotCoveredTotal.add(
+              new BigDecimal(row.get("REV_CNTR_NCVRD_CHRG_AMT")).setScale(2));
+    }
+
+    void validate() {
+      assertTrue("Expected payment to equal charge amount",
+              claimPaymentAmount.equals(claimTotalChargeAmount));
+      assertTrue("Expected payment to equal sum of line item charges",
+              claimPaymentAmount.equals(revCenterChargeTotal));
+      assertTrue("Expected uncovered amount to equal sum of line item uncovered amounts",
+              claimNotCoveredAmount.equals(revCenterNotCoveredTotal));
+    }
+  }
+
+  private void validateInpatientTotals(File file) throws IOException {
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in " + file.getName() + ", found " + rows.size(),
+            rows.size() >= 1);
+    Map<String, InpatientTotals> claims = new HashMap<>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length claim ID",
+          row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+      String claimID = row.get("CLM_ID");
+      if (!claims.containsKey(claimID)) {
+        InpatientTotals claim = new InpatientTotals(row);
+        claims.put(claimID, claim);
+      }
+      InpatientTotals claim = claims.get(claimID);
+      claim.addLineItems(row);
+    });
+
+    claims.values().forEach(claim -> {
+      claim.validate();
     });
   }
 }
