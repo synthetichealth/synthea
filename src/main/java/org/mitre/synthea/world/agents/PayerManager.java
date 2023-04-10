@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +26,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
+import java.math.BigDecimal;
+
 /**
  * A class that maintains and manages Payers.
  */
@@ -40,22 +41,26 @@ public class PayerManager {
   private static final String BEST_RATE = "best_rate";
   private static final String PRIORITY = "priority";
 
-  // Plan/Payer CSV headers.
+  // Payer CSV headers.
   private static final String NAME = "Name";
   private static final String ID = "Id";
   private static final String PRIORITY_LEVEL = "Priority Level";
   private static final String STATES_COVERED = "States Covered";
   private static final String OWNERSHIP = "Ownership";
+  // Plan CSV Headers.
+  private static final String PAYER_ID = "Payer Id";
+  private static final String PLAN_ID = "Plan Id";
   private static final String SERVICES_COVERED = "Services Covered";
   private static final String DEDUCTIBLE = "Deductible";
   private static final String COINSURANCE = "Default Coinsurance";
   private static final String COPAY = "Default Copay";
   private static final String MONTHLY_PREMIUM = "Monthly Premium";
+  private static final String MAX_OOP = "Max Out of Pocket";
   private static final String MEDICARE_SUPPLEMENT = "Medicare Supplement";
+  private static final String ACA = "Is ACA Plan";
+  private static final String INCOME_BASED_PREMIUM = "Income Based Premium";
   private static final String START_YEAR = "Start Year";
   private static final String END_YEAR = "End Year";
-  private static final String PAYER_ID = "Payer Id";
-  private static final String PLAN_ID = "Plan Id";
   private static final String ELIGIBILITY_POLICY = "Eligibility Policy";
 
   public static final String GOV_OWNERSHIP = "GOVERNMENT";
@@ -69,13 +74,11 @@ public class PayerManager {
   public static final String DUAL_ELIGIBLE =
       Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
-  /* Set of all Private Payers imported. */
-  private static final Set<Payer> privatePayers = new HashSet<Payer>();
-  /* Map of all Government Payers imported. */
-  private static final Map<String, Payer> governmentPayers = new HashMap<String, Payer>();
+  /* Map of all loaded Payers. */
+  private static final Map<Integer, Payer> payers = new HashMap<Integer, Payer>();
 
   /* No Insurance Payer. */
-  public static Payer noInsurance;
+  private static Payer noInsurance;
 
   /* U.S. States loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
@@ -136,16 +139,7 @@ public class PayerManager {
 
         Payer parsedPayer = csvLineToPayer(row);
         parsedPayer.setPayerAdjustment(buildPayerAdjustment());
-
-        // Put the payer in their correct List/Map based on Government/Private.
-        if (parsedPayer.isGovernmentPayer()) {
-          // Government payers go in a map, allowing for easy retrieval of specific
-          // government payers.
-          PayerManager.governmentPayers.put(parsedPayer.getName(), parsedPayer);
-        } else {
-          // Private payers go in a list.
-          PayerManager.privatePayers.add(parsedPayer);
-        }
+        PayerManager.payers.put(parsedPayer.getPlanLinkId(), parsedPayer);
       }
     }
 
@@ -154,17 +148,15 @@ public class PayerManager {
 
   private static void loadPlans() {
     String fileName = Config.get("generate.payers.insurance_plans.default_file");
-    Iterator<? extends Map<String, String>> csv = null;
     try {
       String resource = Utilities.readResource(fileName, true, true);
-      csv = SimpleCSV.parseLineByLine(resource);
+      Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
+      while (csv.hasNext()) {
+        Map<String, String> row = csv.next();
+        csvLineToPlan(row);
+      }
     } catch (IOException e) {
       e.printStackTrace();
-    }
-
-    while (csv.hasNext()) {
-      Map<String, String> row = csv.next();
-      csvLineToPlan(row);
     }
   }
 
@@ -221,25 +213,22 @@ public class PayerManager {
 
     // Uses .remove() instead of .get() so we can iterate over remaining keys later.
     String payerName = line.remove(NAME).trim();
-    String payerId = line.remove(ID).trim();
+    int payerId = Integer.parseInt(line.remove(ID).trim());
+    if (PayerManager.payers.containsKey(payerId)) {
+      throw new RuntimeException("The given payer id '" + payerId + "' exists more than once. There can be no duplicates.");
+    }
+    if (payerId < 0) {
+      throw new RuntimeException("Payer IDs must be non-negative. Given Id " + payerId + ".");
+    }
     Set<String> statesCovered = commaSeparatedStringToHashSet(line.remove(STATES_COVERED).trim());
-    String ownership = line.remove(OWNERSHIP).trim();
-    if (ownership.equalsIgnoreCase(GOV_OWNERSHIP)
-        || ownership.equalsIgnoreCase(PRIVATE_OWNERSHIP)) {
-      ownership = ownership.toUpperCase();
-    } else {
+    String ownership = line.remove(OWNERSHIP).trim().toUpperCase();
+    if (!(ownership.equals(GOV_OWNERSHIP) || ownership.equals(PRIVATE_OWNERSHIP))) {
       throw new RuntimeException("A Payer's ownership must be tagged as either "
           + GOV_OWNERSHIP + " or " + PRIVATE_OWNERSHIP + ". Payer " + payerName
           + " " + payerId + " has ownership of " + ownership + ".");
     }
-    String priorityString = line.remove(PRIORITY_LEVEL).trim();
-    int priority = Integer.MAX_VALUE;
-    // A blank priority is minimum priority, so give it the maximum value.
-    if (!StringUtils.isBlank(priorityString)) {
-      priority = Integer.parseInt(priorityString);
-    }
 
-    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership, priority);
+    Payer newPayer = new Payer(payerName, payerId, statesCovered, ownership);
 
     // Add remaining columns we didn't map to first-class fields.
     for (Map.Entry<String, String> e : line.entrySet()) {
@@ -254,58 +243,52 @@ public class PayerManager {
    * @param line The Map with the CSV key-value pairs.
    */
   private static void csvLineToPlan(Map<String, String> line) {
-    String payerId = line.remove(PAYER_ID).trim();
-    Payer payer = PayerManager.getPayerById(payerId);
-    if (payer == null) {
-      // return without an error, because the given payer might
-      // only exist in another state.
-      return;
+    int payerId = Integer.parseInt(line.remove(PAYER_ID).trim());
+    int planId = Integer.parseInt(line.remove(PLAN_ID).trim());
+    if (planId < 0) {
+      throw new RuntimeException("Plan IDs must be non-negative. Given Id " + planId + ".");
     }
-
-    String planId = line.remove(PLAN_ID).trim();
     String planName = line.remove(NAME).trim();
     Set<String> servicesCovered
         = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
-    double deductible = Double.parseDouble(line.remove(DEDUCTIBLE).trim());
-    double defaultCoinsurance = Double.parseDouble(line.remove(COINSURANCE).trim());
-    double defaultCopay = Double.parseDouble(line.remove(COPAY).trim());
-    double monthlyPremium = Double.parseDouble(line.remove(MONTHLY_PREMIUM).trim());
+    BigDecimal deductible = new BigDecimal(line.remove(DEDUCTIBLE).trim());
+    BigDecimal defaultCoinsurance = new BigDecimal(line.remove(COINSURANCE).trim());
+    BigDecimal defaultCopay = new BigDecimal(line.remove(COPAY).trim());
+    BigDecimal monthlyPremium = new BigDecimal(line.remove(MONTHLY_PREMIUM).trim());
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
+    boolean isACA = Boolean.parseBoolean(line.remove(ACA).trim());
+    boolean incomeBasedPremium = Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim());
     int yearStart = Integer.parseInt(line.remove(START_YEAR).trim());
     String yearEndStr = line.remove(END_YEAR).trim();
-    int yearEnd = Utilities.getYear(System.currentTimeMillis()) + 1;
-    if (!StringUtils.isBlank(yearEndStr)) {
-      yearEnd = Integer.parseInt(yearEndStr);
-    }
+    int yearEnd = StringUtils.isBlank(yearEndStr) ?
+        Utilities.getYear(System.currentTimeMillis()) + 1 : Integer.parseInt(yearEndStr);
+    BigDecimal maxOutOfPocket = new BigDecimal(line.remove(MAX_OOP).trim());
+    // If the priority is blank, give it minimum priority (maximum int value).
+    String priorityString = line.remove(PRIORITY_LEVEL).trim();
+    int priority = StringUtils.isBlank(priorityString) ?
+        Integer.MAX_VALUE : Integer.parseInt(priorityString);
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
-    payer.createPlan(servicesCovered, deductible, defaultCoinsurance,
-        defaultCopay, monthlyPremium, medicareSupplement, yearStart, yearEnd, eligibilityName);
-  }
-
-  private static Payer getPayerById(String payerId) {
-    List<Payer> payerList = getAllPayers().stream().filter(payer ->
-        payer.getPlanLinkId().equals(payerId)).collect(Collectors.toList());
-    if (payerList.size() == 1) {
-      return payerList.get(0);
+    if (!PayerManager.payers.containsKey(payerId)) {
+      // TODO - return without an error, because the given payer might only exist in another state.
+      throw new RuntimeException("The given payer id '" + payerId + "' does not exist for plan " + planId + ".");
     }
-    if (payerList.size() > 1) {
-      throw new RuntimeException(payerList.size()
-          + " payers have id '" + payerId + "'. Ids should be unique.");
-    }
-    return null;
+    Payer payer = PayerManager.payers.get(payerId);
+    InsurancePlan newPlan = new InsurancePlan(payer, servicesCovered, deductible,
+        defaultCoinsurance, defaultCopay, monthlyPremium, maxOutOfPocket, medicareSupplement,
+        isACA, incomeBasedPremium, yearStart, yearEnd, priority, eligibilityName);
+    payer.addPlan(newPlan);
   }
 
   /**
-   * Given a comma seperated string, convert the data into a Set.
+   * Converts a comma separated string to a Set.
    *
    * @param field the string to extract the Set from.
-   * @return the HashSet of services covered.
+   * @return the Set of services covered.
    */
   private static Set<String> commaSeparatedStringToHashSet(String field) {
     String[] commaSeparatedField = field.split("\\s*,\\s*");
-    List<String> parsedValues = Arrays.stream(commaSeparatedField).collect(Collectors.toList());
-    return new HashSet<String>(parsedValues);
+    return Arrays.stream(commaSeparatedField).collect(Collectors.toSet());
   }
 
   /**
@@ -315,45 +298,20 @@ public class PayerManager {
     // noInsurance 'covers' all states.
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
-    PayerManager.noInsurance = new Payer(NO_INSURANCE, "000000",
-        statesCovered, NO_INSURANCE, Integer.MAX_VALUE);
-    PayerManager.noInsurance.createPlan(new HashSet<String>(), 0.0, 0.0, 0.0, 0.0, false, 0,
-        Utilities.getYear(System.currentTimeMillis()) + 1, PlanEligibilityFinder.GENERIC);
+    PayerManager.noInsurance = new Payer(NO_INSURANCE, -1, statesCovered, NO_INSURANCE);
+    InsurancePlan noInsurancePlan = new InsurancePlan(PayerManager.noInsurance, new HashSet<String>(),
+        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(Integer.MAX_VALUE),
+        false, false, false, 0, Utilities.getYear(System.currentTimeMillis()) + 1, 0,
+         PlanEligibilityFinder.GENERIC);
+    PayerManager.noInsurance.addPlan(noInsurancePlan);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
   /**
-   * Returns the list of all loaded private payers.
-   */
-  public static Set<Payer> getPrivatePayers() {
-    return PayerManager.privatePayers;
-  }
-
-  /**
-   * Returns the List of all loaded government payers.
-   */
-  public static Set<Payer> getGovernmentPayers() {
-    return PayerManager.governmentPayers.values().stream().collect(Collectors.toSet());
-  }
-
-  /**
-   * Returns a List of all loaded payers.
+   * Returns the set of all loaded payers.
    */
   public static Set<Payer> getAllPayers() {
-    Set<Payer> allPayers = new HashSet<>();
-    allPayers.addAll(PayerManager.getGovernmentPayers());
-    allPayers.addAll(PayerManager.getPrivatePayers());
-    return allPayers;
-  }
-
-  /**
-   * Returns the government payer with the given name.
-   *
-   * @param governmentPayerName the government payer to get.
-   * @return returns null if the government payer does not exist.
-   */
-  public static Payer getGovernmentPayer(String governmentPayerName) {
-    return PayerManager.governmentPayers.get(governmentPayerName);
+    return payers.values().stream().collect(Collectors.toSet());
   }
 
   /**
@@ -361,8 +319,7 @@ public class PayerManager {
    * Currently only used in tests.
    */
   public static void clear() {
-    governmentPayers.clear();
-    privatePayers.clear();
+    payers.clear();
     statesLoaded.clear();
     planFinder = buildPlanFinder();
   }
@@ -376,7 +333,7 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
+    Set<InsurancePlan> plans = PayerManager.getActivePlans(getAllPayers(), time);
     // Remove medicare supplement plans from this check.
     plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
         .collect(Collectors.toSet());
@@ -385,14 +342,16 @@ public class PayerManager {
       // Person will always choose a government plan.
       return potentialPlan;
     }
-    // If the person cannot get a government plan, they will try to keep their existing insurance.
-    InsurancePlan previousPlan = person.coverage
-        .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
-    if (previousPlan != null && !previousPlan.isNoInsurance()
-        && previousPlan.accepts(person, time) && previousPlan.isActive(time)
-        && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
-      // People will keep their previous year's insurance if they can.
-      return previousPlan;
+    if(!person.coverage.getPlanHistory().isEmpty()) {
+      // If the person can't get a government plan, they will try to keep their existing insurance.
+      InsurancePlan previousPlan = person.coverage
+          .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
+      if (!previousPlan.isNoInsurance()
+          && previousPlan.accepts(person, time) && previousPlan.isActive(time)
+          && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
+        // People will keep their previous year's insurance if they can.
+        return previousPlan;
+      }
     }
     return potentialPlan;
   }
@@ -404,10 +363,9 @@ public class PayerManager {
    * @return The set of active plans.
    */
   public static Set<InsurancePlan> getActivePlans(Set<Payer> payers, long time) {
-    Set<InsurancePlan> plans = payers.stream().map(payer ->
-        payer.getPlans()).flatMap(Set::stream).collect(Collectors.toSet());
-    plans = plans.stream().filter(plan -> plan.isActive(time)).collect(Collectors.toSet());
-    return plans;
+    return payers.stream()
+        .map(payer -> payer.getPlans()).flatMap(Set::stream)
+        .filter(plan -> plan.isActive(time)).collect(Collectors.toSet());
   }
 
   /**
