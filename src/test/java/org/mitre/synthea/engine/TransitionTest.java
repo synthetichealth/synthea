@@ -9,12 +9,13 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 
 public class TransitionTest {
 
   private Person person;
+  private long time = TestHelper.timestamp(2021, 1,1,0,0,0);
 
   /**
    * Set up the test by creating a person with a coverage record.
@@ -23,7 +24,9 @@ public class TransitionTest {
   public void setup() {
     person = new Person(19L); // seed chosen specifically for testDistributedTransition()
     person.attributes.put(Person.BIRTHDATE, 0L);
-    person.coverage = new CoverageRecord(person);
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance(0L);
+    person.coverage.setPlanToNoInsurance(time + 1);
   }
 
   @Test
@@ -108,7 +111,7 @@ public class TransitionTest {
     counts.put("Terminal3", 0);
 
     for (int i = 0; i < 100; i++) {
-      typeOfCareTransition.process(person, TestHelper.timestamp(2021, 1,1,0,0,0));
+      typeOfCareTransition.process(person, time);
       @SuppressWarnings("unchecked")
       List<State> history = (List<State>) person.attributes.remove("Telemedicine Module");
       String finalStateName = history.get(0).name;

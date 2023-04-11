@@ -270,8 +270,8 @@ public class PayerManager {
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     if (!PayerManager.payers.containsKey(payerId)) {
-      // TODO - return without an error, because the given payer might only exist in another state.
-      throw new RuntimeException("The given payer id '" + payerId + "' does not exist for plan " + planId + ".");
+      // Return without an error, because the given payer might only exist in another state.
+      return;
     }
     Payer payer = PayerManager.payers.get(payerId);
     InsurancePlan newPlan = new InsurancePlan(payer, servicesCovered, deductible,

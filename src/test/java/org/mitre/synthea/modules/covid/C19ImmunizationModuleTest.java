@@ -7,9 +7,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -18,6 +21,12 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
 public class C19ImmunizationModuleTest {
+
+  @Before
+  public void setup() {
+    Location here = new Location("Massachusetts", "Billerica");
+    PayerManager.loadPayers(here);
+  }
 
   private Person buildPerson(long birthday) {
     Person person = new Person(0L);
@@ -34,6 +43,9 @@ public class C19ImmunizationModuleTest {
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     Person person = buildPerson(birthday);
+    person.coverage.setPlanToNoInsurance(birthday);
+    for (int i = 1; i <= 43; i++) person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
+    person.coverage.setPlanToNoInsurance(decemberFifteenth);
     assertFalse(C19ImmunizationModule.currentlyHasCOVID(person));
     person.record.conditionStart(decemberFifteenth, C19ImmunizationModule.COVID_CODE);
     assertTrue(C19ImmunizationModule.currentlyHasCOVID(person));
@@ -67,16 +79,14 @@ public class C19ImmunizationModuleTest {
   public void vaccinate() {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     long birthday = TestHelper.timestamp(1978, 8, 1, 0, 0, 0);
-    Location here = new Location("Massachusetts", "Billerica");
     Person person = buildPerson(birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
-    here.assignPoint(person, "Billerica");
-    PayerManager.loadPayers(here);
     person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
-        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next().getGovernmentPayerPlan(),
         PayerManager.getNoInsurancePlan());
+    for (int i = 1; i <= 43; i++) person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
     person.coverage.setPlanAtTime(decemberFifteenth,
-        PayerManager.getGovernmentPayer("Medicare").getGovernmentPayerPlan(),
+        PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next().getGovernmentPayerPlan(),
         PayerManager.getNoInsurancePlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());

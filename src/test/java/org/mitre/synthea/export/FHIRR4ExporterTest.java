@@ -229,7 +229,7 @@ public class FHIRR4ExporterTest {
 
     PayerManager.loadNoInsurance();
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -295,7 +295,7 @@ public class FHIRR4ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -394,6 +394,7 @@ public class FHIRR4ExporterTest {
     p.attributes.put(Person.FIRST_LANGUAGE, "english");
     p.attributes.put(Person.BIRTHDATE, 0L);
     p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
 
     Provider stub = new Provider();
     stub.name = "Fake Provider";
@@ -457,6 +458,7 @@ public class FHIRR4ExporterTest {
     p.attributes.put(Person.FIRST_LANGUAGE, "english");
     p.attributes.put(Person.BIRTHDATE, 0L);
     p.attributes.put(Person.GENDER, "F");
+    p.coverage.setPlanToNoInsurance(0L);
 
     Provider stub = new Provider();
     stub.name = "Fake Provider";

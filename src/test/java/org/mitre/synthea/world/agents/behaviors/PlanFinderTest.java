@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,8 @@ public class PlanFinderTest {
   public void setup() throws Exception {
     person = new Person(0L);
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.5);
-    person.attributes.put(Person.INCOME, 100000);
+    person.attributes.put(Person.INCOME, 2500000);
+    person.attributes.put(Person.BIRTHDATE, 0L);
     // Load in the .csv test list of payers.
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/test_payers.csv");
@@ -59,7 +61,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    Payer payer = finder.find(PayerManager.getActivePlans(PayerManager.getPrivatePayers(), 0L),
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());
@@ -83,7 +86,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Payer payer = finder.find(PayerManager.getActivePlans(PayerManager.getPrivatePayers(), 0L),
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
     assertFalse(payer.isNoInsurance());

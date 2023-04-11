@@ -72,12 +72,9 @@ public class ValueSetCodeResolverTest {
     Provider.loadProviders(location, ProviderTest.providerRandom);
 
     PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
-
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance(time);
+    
     encounter = person.encounterStart(time, EncounterType.WELLNESS);
     String reasonCode = "275926002";
     String reasonDisplay = "Screening - health check";
