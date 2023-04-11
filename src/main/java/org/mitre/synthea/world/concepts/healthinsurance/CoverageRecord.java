@@ -121,7 +121,7 @@ public class CoverageRecord implements Serializable {
    */
   public boolean newEnrollmentPeriod(long time) {
     if (this.nextEnrollmentPeriod == null) {
-      // Iniitalize enrollment.
+      // Initialize enrollment.
       this.nextEnrollmentPeriod = (long) person.attributes.get(Person.BIRTHDATE);
     }
     if (time >= nextEnrollmentPeriod) {

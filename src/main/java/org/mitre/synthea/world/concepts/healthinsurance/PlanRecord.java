@@ -110,7 +110,8 @@ public class PlanRecord implements Serializable {
 
     int age = person.ageInYears(time);
     // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
-    if (this.plan.equals(prevRecord.plan)
+    if (prevRecord != null
+        && this.plan.equals(prevRecord.plan)
         && prevRecord.ownership == "Guardian"
         && age <= 18) {
       this.ownership = prevRecord.ownership;

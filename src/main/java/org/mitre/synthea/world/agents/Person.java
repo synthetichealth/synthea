@@ -187,16 +187,6 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-   * Person constructor with initial demographics.
-   * @param seed
-   */
-  public Person(long seed, Map<String, Object> initialAttributes) {
-    this(seed);
-    attributes.putAll(initialAttributes);
-    this.lastUpdated = (long) this.attributes.get(Person.BIRTHDATE);
-  }
-
-  /**
    * Returns a random double.
    */
   public double rand() {
