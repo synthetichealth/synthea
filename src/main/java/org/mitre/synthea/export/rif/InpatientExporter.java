@@ -43,7 +43,7 @@ public class InpatientExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
-      if (encounter.claim.getTotalClaimCost().equals(Claim.ZERO_CENTS)) {
+      if (encounter.claim.getTotalClaimCost().compareTo(Claim.ZERO_CENTS) == 0) {
         continue;
       }
       if (!hasPartABCoverage(person, encounter.stop)) {
@@ -329,7 +329,7 @@ public class InpatientExporter extends RIFExporter {
     billableItems.add(encounter.claim.mainEntry);
     billableItems.addAll(encounter.claim.items);
     billableItems.removeIf((claimEntry) -> {
-      if (claimEntry.cost.equals(Claim.ZERO_CENTS)) {
+      if (claimEntry.cost.compareTo(Claim.ZERO_CENTS) == 0) {
         return true; // zero cost entries are dropped
       } else if (claimEntry.entry instanceof HealthRecord.Procedure) {
         for (HealthRecord.Code code : claimEntry.entry.codes) {
