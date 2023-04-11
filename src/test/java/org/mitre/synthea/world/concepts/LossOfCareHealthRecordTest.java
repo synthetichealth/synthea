@@ -48,7 +48,8 @@ public class LossOfCareHealthRecordTest {
     // Load in the .csv list of Payers for MA.
     PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
     Payer testPrivatePayer = privatePayers.stream().filter(payer ->
         payer.getName().equals("Test Private Payer 1")).iterator().next();
     testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
@@ -106,7 +107,8 @@ public class LossOfCareHealthRecordTest {
     double encounterCost = Config.getAsDouble("generate.costs.default_encounter_cost");
     BigDecimal patientCoinsurance = testPrivatePlan.getPatientCoinsurance();
     Encounter dummyInpatientEncounter = person.encounterStart(time, EncounterType.INPATIENT);
-    BigDecimal planCopay = testPrivatePlan.determineCopay(dummyInpatientEncounter.type, dummyInpatientEncounter.start);
+    BigDecimal planCopay = testPrivatePlan
+        .determineCopay(dummyInpatientEncounter.type, dummyInpatientEncounter.start);
     BigDecimal income = BigDecimal.valueOf(encounterCost).multiply(patientCoinsurance)
         .multiply(BigDecimal.valueOf(2));
     if (testPrivatePlan.isCopayBased()) {

@@ -15,15 +15,16 @@ public class PlanFinderPriority implements IPlanFinder {
   public InsurancePlan find(Set<InsurancePlan> plans, Person person,
       EncounterType service, long time) {
 
-    // Government, Private, and ACA plans require that a person meets basic affordabilty/occupation/eligibility requirements.
-    List<InsurancePlan> eligiblePlans = (plans.stream().filter(plan -> 
-        (plan.isGovernmentPlan() || (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time))) && plan.accepts(person, time))
-        .collect(Collectors.toList()));
+    List<InsurancePlan> eligiblePlans = (plans.stream().filter(plan -> (plan.isGovernmentPlan()
+        || (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)))
+        && plan.accepts(person, time)).collect(Collectors.toList()));
 
     if (eligiblePlans.size() > 1) {
-      // If there are more than 1 affordable/eligible plans, filter to the ones with the highest priority.
-      int highestEligibltPriority = eligiblePlans.stream().min(Comparator.comparing(plan -> plan.getPriority())).get().getPriority();
-      eligiblePlans = eligiblePlans.stream().filter((plan) -> plan.getPriority() == highestEligibltPriority).collect(Collectors.toList());
+      // If there are more than 1 affordable/eligible plans, filter to the highest priority ones.
+      int highestEligibltPriority = eligiblePlans.stream()
+          .min(Comparator.comparing(plan -> plan.getPriority())).get().getPriority();
+      eligiblePlans = eligiblePlans.stream().filter(
+          (plan) -> plan.getPriority() == highestEligibltPriority).collect(Collectors.toList());
     }
 
     return chooseRandomPlan(eligiblePlans, person);

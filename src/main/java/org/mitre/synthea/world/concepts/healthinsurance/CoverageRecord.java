@@ -110,13 +110,16 @@ public class CoverageRecord implements Serializable {
    */
   public PlanRecord getLastPlanRecord() {
     if (this.planHistory.isEmpty()) {
-      throw new RuntimeException("Attempting to get previous insurance plan for a patient with no insurance history.");
+      throw new RuntimeException("Invalid attempt to get previous insurance plan for a"
+          + " patient with no insurance history.");
     }
-    return this.planHistory.stream().max((plan1, plan2) -> Long.compare(plan1.getStopTime(), plan2.getStopTime())).get();
+    return this.planHistory.stream()
+        .max((plan1, plan2) -> Long.compare(plan1.getStopTime(), plan2.getStopTime())).get();
   }
 
   /**
-   * Returns whether the person should enter an enrollment period and search for a new insurance plan.
+   * Determines whether the person should enter an enrollment period and search for a new insurance
+   * plan. If so, the next enrollment period will be accordingly updated.
    * @return
    */
   public boolean newEnrollmentPeriod(long time) {
@@ -202,6 +205,9 @@ public class CoverageRecord implements Serializable {
     this.getPlanRecordAtTime(time).payMonthlyPremiums(employerLevel, income);
   }
 
+  /**
+   * Update the quality of life score for the most recent plan.
+   */
   public void updateLastPayerQols(double qolsForYear) {
     if (!this.planHistory.isEmpty()) {
       this.getLastPlanRecord().getPlan().getPayer().addQols(qolsForYear);

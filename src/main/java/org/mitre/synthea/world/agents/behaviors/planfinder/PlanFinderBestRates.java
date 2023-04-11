@@ -41,9 +41,12 @@ public class PlanFinderBestRates implements IPlanFinder {
     BigDecimal bestExpectedRate = BigDecimal.valueOf(Double.MAX_VALUE);
 
     for (InsurancePlan plan : plans) {
-      if ((plan.isGovernmentPlan() || IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) && plan.accepts(person, time)) {
+      if ((plan.isGovernmentPlan()
+          || IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time))
+          && plan.accepts(person, time)) {
         // First, calculate the annual premium.
-        BigDecimal expectedRate = plan.getMonthlyPremium((int) person.attributes.get(Person.INCOME)).multiply(BigDecimal.valueOf(12))
+        BigDecimal expectedRate = plan.getMonthlyPremium(
+            (int) person.attributes.get(Person.INCOME)).multiply(BigDecimal.valueOf(12))
             .setScale(2, RoundingMode.HALF_EVEN);
         // Second, calculate expected copays based on last years visits.
         expectedRate = expectedRate.add(

@@ -1,6 +1,7 @@
 package org.mitre.synthea.world.agents;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,8 +26,6 @@ import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
-
-import java.math.BigDecimal;
 
 /**
  * A class that maintains and manages Payers.
@@ -215,7 +214,7 @@ public class PayerManager {
     String payerName = line.remove(NAME).trim();
     int payerId = Integer.parseInt(line.remove(ID).trim());
     if (PayerManager.payers.containsKey(payerId)) {
-      throw new RuntimeException("The given payer id '" + payerId + "' exists more than once. There can be no duplicates.");
+      throw new RuntimeException("The given payer id '" + payerId + "' already exists.");
     }
     if (payerId < 0) {
       throw new RuntimeException("Payer IDs must be non-negative. Given Id " + payerId + ".");
@@ -260,13 +259,13 @@ public class PayerManager {
     boolean incomeBasedPremium = Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim());
     int yearStart = Integer.parseInt(line.remove(START_YEAR).trim());
     String yearEndStr = line.remove(END_YEAR).trim();
-    int yearEnd = StringUtils.isBlank(yearEndStr) ?
-        Utilities.getYear(System.currentTimeMillis()) + 1 : Integer.parseInt(yearEndStr);
+    int yearEnd = StringUtils.isBlank(yearEndStr)
+        ? Utilities.getYear(System.currentTimeMillis()) + 1 : Integer.parseInt(yearEndStr);
     BigDecimal maxOutOfPocket = new BigDecimal(line.remove(MAX_OOP).trim());
     // If the priority is blank, give it minimum priority (maximum int value).
     String priorityString = line.remove(PRIORITY_LEVEL).trim();
-    int priority = StringUtils.isBlank(priorityString) ?
-        Integer.MAX_VALUE : Integer.parseInt(priorityString);
+    int priority = StringUtils.isBlank(priorityString)
+        ? Integer.MAX_VALUE : Integer.parseInt(priorityString);
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     if (!PayerManager.payers.containsKey(payerId)) {
@@ -299,10 +298,10 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, -1, statesCovered, NO_INSURANCE);
-    InsurancePlan noInsurancePlan = new InsurancePlan(PayerManager.noInsurance, new HashSet<String>(),
-        BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.valueOf(Integer.MAX_VALUE),
-        false, false, false, 0, Utilities.getYear(System.currentTimeMillis()) + 1, 0,
-         PlanEligibilityFinder.GENERIC);
+    InsurancePlan noInsurancePlan = new InsurancePlan(PayerManager.noInsurance,
+        new HashSet<String>(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+        BigDecimal.valueOf(Integer.MAX_VALUE), false, false, false, 0,
+        Utilities.getYear(System.currentTimeMillis()) + 1, 0, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.addPlan(noInsurancePlan);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
@@ -342,7 +341,7 @@ public class PayerManager {
       // Person will always choose a government plan.
       return potentialPlan;
     }
-    if(!person.coverage.getPlanHistory().isEmpty()) {
+    if (!person.coverage.getPlanHistory().isEmpty()) {
       // If the person can't get a government plan, they will try to keep their existing insurance.
       InsurancePlan previousPlan = person.coverage
           .getPlanAtTime(time - Config.getAsLong("generate.timestep"));

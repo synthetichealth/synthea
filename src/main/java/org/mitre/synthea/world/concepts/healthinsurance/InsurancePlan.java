@@ -41,7 +41,7 @@ public class InsurancePlan implements Serializable {
   private final Range<Long> activeTimeRange;
 
   /**
-   * Insurance Plan Constructor
+   * Insurance Plan Constructor.
    * @param payer The plan's payer.
    * @param servicesCovered The services covered.
    * @param deductible  The deductible.
@@ -73,8 +73,9 @@ public class InsurancePlan implements Serializable {
     this.medicareSupplement = medicareSupplement;
     this.isACA = isACA;
     this.incomeBasedPremium = incomeBasedPremium;
-    if(incomeBasedPremium && (monthlyPremium.compareTo(BigDecimal.ONE) > 1)) {
-      throw new RuntimeException("Income based premium plans must have premiums in range 0.0 - 1.0, a percentage of a patient's income. Given " + monthlyPremium + ".");
+    if (incomeBasedPremium && (monthlyPremium.compareTo(BigDecimal.ONE) > 1)) {
+      throw new RuntimeException("Income based premium plans must have premiums in"
+          + " range 0.0 - 1.0, a percentage of a patient's income. Given " + monthlyPremium + ".");
     }
     if (activeYearStart >= activeYearEnd) {
       throw new RuntimeException("Plan start year cannot be after its end year. "
@@ -103,7 +104,8 @@ public class InsurancePlan implements Serializable {
    * copays depending on the encounter type covered. If the entry is a wellness visit
    * and the time is after the mandate year, then the copay is $0.00.
    *
-   * @param entry the entry to calculate the copay for.
+   * @param entryType the entry type to calculate the copay for.
+   * @param entryStart The start time of the entry.
    */
   public BigDecimal determineCopay(String entryType, long entryStart) {
     BigDecimal copay = this.defaultCopay;
@@ -114,8 +116,13 @@ public class InsurancePlan implements Serializable {
     return copay;
   }
 
+  /**
+   * Returns the monthly premium for this plan. If this is an income based premium, it will
+   * use the income to calculate what the monthly premium should be.
+   * @param income the income to base income-based premiums on.
+   */
   public BigDecimal getMonthlyPremium(int income) {
-    if(this.incomeBasedPremium) {
+    if (this.incomeBasedPremium) {
       return (this.monthlyPremium
           .multiply(new BigDecimal(income))
           .divide(new BigDecimal(12), RoundingMode.HALF_UP));
@@ -146,8 +153,9 @@ public class InsurancePlan implements Serializable {
     this.payer.addRevenue(premiumPrice);
     if (employerLevel > Config.getAsDouble("generate.insurance.mandate.occupation")
         && (!this.payer.isGovernmentPayer() && !this.isACA)) {
-      // If this is a private plan and is not an ACA plan, then employer may provide coverage.
-      double employeeContribution = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
+      // If this is a private plan non-ACA plan, then employers will provide coverage.
+      double employeeContribution
+          = 1.0 - Config.getAsDouble("generate.insurance.employer_coverage");
       premiumPrice = premiumPrice.multiply(new BigDecimal(employeeContribution));
     }
     return premiumPrice;

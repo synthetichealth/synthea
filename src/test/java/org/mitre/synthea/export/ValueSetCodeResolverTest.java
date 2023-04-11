@@ -74,7 +74,7 @@ public class ValueSetCodeResolverTest {
     PayerManager.clear();
     PayerManager.loadNoInsurance();
     person.coverage.setPlanToNoInsurance(time);
-    
+
     encounter = person.encounterStart(time, EncounterType.WELLNESS);
     String reasonCode = "275926002";
     String reasonDisplay = "Screening - health check";

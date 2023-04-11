@@ -83,12 +83,17 @@ public class PayerTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
     // Load the two test payers.
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream()
+        .filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP))
+        .collect(Collectors.toSet());
     testPrivatePayer1 = privatePayers.stream().filter(payer ->
         payer.getName().equals("Test Private Payer 1")).iterator().next();
     testPrivatePayer2 = privatePayers.stream().filter(payer ->
         payer.getName().equals("Test Private Payer 2")).iterator().next();
-    minPrivateAffordability = Math.max(testPrivatePayer1.getPlans().iterator().next().getMonthlyPremium(0).multiply(new BigDecimal(12)).doubleValue(), testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium(0).multiply(new BigDecimal(12)).doubleValue()) * 2;
+    minPrivateAffordability = Math.max(testPrivatePayer1.getPlans().iterator().next()
+        .getMonthlyPremium(0).multiply(new BigDecimal(12)).doubleValue(),
+        testPrivatePayer2.getPlans().iterator().next().getMonthlyPremium(0)
+        .multiply(new BigDecimal(12)).doubleValue()) * 2;
   }
 
   /**
@@ -148,7 +153,8 @@ public class PayerTest {
     String secondPersonId = (String) secondPerson.attributes.get(Person.ID);
     assertEquals(20, testPrivatePayer1.getCustomerUtilization(secondPersonId)
         + testPrivatePayer2.getCustomerUtilization(secondPersonId));
-    assertEquals(41, PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICAID)).iterator().next().getCustomerUtilization(secondPersonId));
+    assertEquals(41, getGovernmentPayer(PayerManager.MEDICAID)
+        .getCustomerUtilization(secondPersonId));
     // Ensure that there were betwen 2 and 4 unique customers for the Payers.
     assertTrue(testPrivatePayer1.getUniqueCustomers()
         + testPrivatePayer2.getUniqueCustomers() >= 2);
@@ -254,7 +260,7 @@ public class PayerTest {
     healthInsModule.process(person, time);
     Payer currentPayer = person.coverage.getPlanAtTime(time).getPayer();
     assertEquals("Expected Medicare but was " + currentPayer.getName() + ".",
-        PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).iterator().next(), currentPayer);
+        getGovernmentPayer(PayerManager.MEDICARE), currentPayer);
   }
 
   @Test
@@ -276,7 +282,7 @@ public class PayerTest {
     c.add(Calendar.YEAR, 1);
     time = c.getTimeInMillis();
     healthInsModule.process(person, time);
-    assertEquals(PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).iterator().next(),
+    assertEquals(getGovernmentPayer(PayerManager.MEDICARE),
         person.coverage.getPlanAtTime(time).getPayer());
   }
 
@@ -386,8 +392,9 @@ public class PayerTest {
     healthInsModule.process(person, time);
     // They should not have Medicaid in this first year.
     assertNotEquals("Medicaid", person.coverage.getPlanAtTime(time).getPayer().getName());
-    // The MA yearly spenddown amount is $6264. They need to incur (income - 6264) in healthcare expenses.
-    person.coverage.getPlanRecordAtTime(time).incrementOutOfPocketExpenses(BigDecimal.valueOf(income - 6264));
+    // The MA yearly spenddown amount is $6264. They need $(income - 6264) in healthcare expenses.
+    person.coverage.getPlanRecordAtTime(time)
+        .incrementOutOfPocketExpenses(BigDecimal.valueOf(income - 6264));
     // Now process their insurance and they should switch to Medicaid.
     Calendar c = Calendar.getInstance();
     c.setTimeInMillis(time);
@@ -417,7 +424,7 @@ public class PayerTest {
       assertTrue("Expected " + age + " but got " + person.age(currentTime),
           person.age(currentTime).getYears() == age);
       healthInsModule.process(person, currentTime);
-      assertEquals(PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICAID)).iterator().next(),
+      assertEquals(getGovernmentPayer(PayerManager.MEDICAID),
           person.coverage.getPlanAtTime(currentTime).getPayer());
     }
     c.setTimeInMillis(birthTime);
@@ -508,23 +515,30 @@ public class PayerTest {
     assertEquals(2, person.coverage.getPlanHistory().size());
   }
 
+  private Payer getGovernmentPayer(String payerName) {
+    return PayerManager.getAllPayers().stream()
+        .filter(payer -> payer.getName().equals(payerName)).iterator().next();
+  }
+
   @Test
   public void loadGovernmentPayers() {
-    Payer medicare = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).iterator().next();
-    Payer medicaid = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICAID)).iterator().next();
-    Payer dualEligible = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.DUAL_ELIGIBLE)).iterator().next();
+    Payer medicare = getGovernmentPayer(PayerManager.MEDICARE);
+    Payer medicaid = getGovernmentPayer(PayerManager.MEDICAID);
+    Payer dualEligible = getGovernmentPayer(PayerManager.DUAL_ELIGIBLE);
 
     assertNotNull(medicare);
     assertNotNull(medicaid);
     assertNotNull(dualEligible);
-    assertEquals(PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.GOV_OWNERSHIP)).count()
-        , 3);
+    assertEquals(PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership()
+        .equals(PayerManager.GOV_OWNERSHIP)).count(), 3);
   }
 
   @Test
   public void loadAllPayers() {
-    long numGovernmentPayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.GOV_OWNERSHIP)).count();
-    long numPrivatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).count();
+    long numGovernmentPayers = PayerManager.getAllPayers().stream()
+        .filter(payer -> payer.getOwnership().equals(PayerManager.GOV_OWNERSHIP)).count();
+    long numPrivatePayers = PayerManager.getAllPayers().stream()
+        .filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).count();
     assertEquals(numGovernmentPayers + numPrivatePayers, PayerManager.getAllPayers().size());
   }
 
@@ -644,8 +658,8 @@ public class PayerTest {
     wellnessBeforeMandate.provider = new Provider();
     person.record.encounterEnd(beforeMandateTime, EncounterType.WELLNESS);
     // The copay before the mandate time should be greater than 0.
-    assertTrue(testPrivatePayer1Plan
-        .determineCopay(wellnessBeforeMandate.type, wellnessBeforeMandate.start).compareTo(BigDecimal.ZERO) == 1);
+    assertTrue(testPrivatePayer1Plan.determineCopay(wellnessBeforeMandate.type,
+        wellnessBeforeMandate.start).compareTo(BigDecimal.ZERO) == 1);
 
     Encounter inpatientBeforeMandate
         = person.record.encounterStart(beforeMandateTime, EncounterType.INPATIENT);
@@ -653,8 +667,8 @@ public class PayerTest {
     inpatientBeforeMandate.provider = new Provider();
     person.record.encounterEnd(beforeMandateTime, EncounterType.INPATIENT);
     // The copay for a non-wellness encounter should be greater than 0.
-    assertTrue(testPrivatePayer1Plan
-        .determineCopay(inpatientBeforeMandate.type, inpatientBeforeMandate.start).compareTo(BigDecimal.ZERO) == 1);
+    assertTrue(testPrivatePayer1Plan.determineCopay(inpatientBeforeMandate.type,
+        inpatientBeforeMandate.start).compareTo(BigDecimal.ZERO) == 1);
 
     // After Mandate.
     Encounter wellnessAfterMandate
@@ -663,8 +677,8 @@ public class PayerTest {
     wellnessAfterMandate.provider = new Provider();
     person.record.encounterEnd(afterMandateTime, EncounterType.WELLNESS);
     // The copay after the mandate time should be 0.
-    assertTrue(BigDecimal.ZERO.compareTo(
-        testPrivatePayer1Plan.determineCopay(wellnessAfterMandate.type, wellnessAfterMandate.start)) == 0);
+    assertTrue(BigDecimal.ZERO.compareTo(testPrivatePayer1Plan
+        .determineCopay(wellnessAfterMandate.type, wellnessAfterMandate.start)) == 0);
 
     Encounter inpatientAfterMandate
         = person.record.encounterStart(afterMandateTime, EncounterType.INPATIENT);
@@ -695,7 +709,8 @@ public class PayerTest {
     // The No Insurance payer should have $0.0 coverage.
     assertEquals(Claim.ZERO_CENTS, PayerManager.getNoInsurancePlan().getPayer().getAmountCovered());
     // The No Insurance's uncovered costs should equal the total cost.
-    assertTrue(fakeEncounter.getCost().equals(PayerManager.getNoInsurancePlan().getPayer().getAmountUncovered()));
+    assertTrue(fakeEncounter.getCost()
+        .equals(PayerManager.getNoInsurancePlan().getPayer().getAmountUncovered()));
     // The person's out of pocket expenses shoudl equal the total cost.
     assertTrue(fakeEncounter.getCost().equals(person.coverage.getTotalOutOfPocketExpenses()));
   }

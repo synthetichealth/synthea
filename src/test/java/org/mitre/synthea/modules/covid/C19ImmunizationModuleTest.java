@@ -44,7 +44,9 @@ public class C19ImmunizationModuleTest {
     long decemberFifteenth = TestHelper.timestamp(2020, 12, 15, 0, 0, 0);
     Person person = buildPerson(birthday);
     person.coverage.setPlanToNoInsurance(birthday);
-    for (int i = 1; i <= 43; i++) person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
+    for (int i = 1; i <= 43; i++) {
+      person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
+    }
     person.coverage.setPlanToNoInsurance(decemberFifteenth);
     assertFalse(C19ImmunizationModule.currentlyHasCOVID(person));
     person.record.conditionStart(decemberFifteenth, C19ImmunizationModule.COVID_CODE);
@@ -82,12 +84,16 @@ public class C19ImmunizationModuleTest {
     Person person = buildPerson(birthday);
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
-        PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next().getGovernmentPayerPlan(),
-        PayerManager.getNoInsurancePlan());
-    for (int i = 1; i <= 43; i++) person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
+        PayerManager.getAllPayers().stream().filter(payer -> payer.getName()
+        .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
+        .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
+    for (int i = 1; i <= 43; i++) {
+      person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
+    }
     person.coverage.setPlanAtTime(decemberFifteenth,
-        PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next().getGovernmentPayerPlan(),
-        PayerManager.getNoInsurancePlan());
+        PayerManager.getAllPayers().stream().filter(payer -> payer.getName()
+        .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
+        .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());

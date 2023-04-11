@@ -61,7 +61,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderRandom finder = new PlanFinderRandom();
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
@@ -86,7 +87,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(new Location((String) person.attributes.get(Person.STATE), null));
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);

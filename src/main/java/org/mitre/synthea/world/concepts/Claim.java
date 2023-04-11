@@ -14,8 +14,8 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
-import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 
 public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;
@@ -158,7 +158,7 @@ public class Claim implements Serializable {
 
       plan.incrementCoveredEntries(this.entry);
 
-      if(planRecord.getOutOfPocketExpenses().compareTo(plan.getMaxOop()) > 0) {
+      if (planRecord.getOutOfPocketExpenses().compareTo(plan.getMaxOop()) > 0) {
         // The person has already paid their maximum out-of-pocket costs.
         this.paidByPayer = remainingBalance;
         remainingBalance = remainingBalance.subtract(this.paidByPayer);
@@ -330,8 +330,12 @@ public class Claim implements Serializable {
    * @return
    */
   public boolean coveredByMedicare() {
-    // Should there be a check here for Dual Eligble? The previous version (logic was in exporters) did not have this check.
+    // TODO - Should there be a check here for Dual Eligble?
+    // The previous version (logic was in exporters) did not have this check.
     return this.getPayer().getName().equals(PayerManager.MEDICARE);
+    // String payerName = this.getPayer().getName();
+    // return payerName.equals(PayerManager.MEDICARE)
+    //    || payerName.equals(PayerManager.DUAL_ELIGIBLE);
   }
 
   /**

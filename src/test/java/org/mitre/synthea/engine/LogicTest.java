@@ -68,7 +68,9 @@ public class LogicTest {
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
     PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    for (int i = 1; i <= Utilities.getYear(time - birthTime); i++) person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    for (int i = 1; i <= Utilities.getYear(time - birthTime); i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
     person.coverage.setPlanToNoInsurance(time);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
