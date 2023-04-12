@@ -25,6 +25,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingAttributesEligibility;
+import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -335,14 +336,10 @@ public class PayerTest {
 
   @Test
   public void planTimeBoxRanges() {
-    // There is a "Fake time-boxed Medicaid Plan" that has an eligibility unique to this test:
+    // There is a "Fake time-boxed Dual-Eligble Plan" that has an eligibility unique to this test:
     // If a patient has the attribute "time-boxed-test" as true, they will get Dual Eligible.
-    // However, this unique path to Medicaid is only available from 1965-1968.
+    // However, this unique path to Dual Eligble is only available from 1965-1968.
     // Load the time-boxed plans.
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_time_box_plans.csv");
-    Config.set("generate.payers.insurance_plans.eligibilities_file",
-        "generic/payers/test_time_box_eligibilities.csv");
     PayerManager.clear();
     PayerManager.loadPayers(new Location(testState, null));
 
@@ -953,6 +950,117 @@ public class PayerTest {
     InsurancePlan secondPlan = person.coverage.getPlanAtTime(time);
     // For now, this returns true by default because it is not yet implememted.
     assertEquals(firstPlan, secondPlan);
+  }
+
+  @Test
+  public void incomeBasedPremium() {
+    long time = 0L;
+    int income = 100000;
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    person.attributes.put(Person.INCOME, income);
+    BigDecimal expectedMonthlyPremium = new BigDecimal(income).setScale(2).divide(BigDecimal.valueOf(2)).divide(BigDecimal.valueOf(12), RoundingMode.HALF_UP);
+    InsurancePlan incomeBasedPlan = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals("Test Private Payer 3")).findFirst().get().getPlans().stream().filter(plan -> plan.id == 60001).iterator().next();
+    assertEquals(expectedMonthlyPremium, incomeBasedPlan.getMonthlyPremium(income));
+    person.coverage.setPlanAtTime(time, incomeBasedPlan, PayerManager.getNoInsurancePlan());
+    person.coverage.payMonthlyPremiumsAtTime(time, (double) person.attributes.get(Person.OCCUPATION_LEVEL), (int) person.attributes.get(Person.INCOME));
+    assertEquals(expectedMonthlyPremium, person.coverage.getTotalPremiumExpenses());
+  }
+
+  @Test
+  public void willingnessToPay() {
+    int income = 100000;
+    Person person = new Person(0L);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    person.attributes.put(Person.INCOME, income);
+    InsurancePlan premiumRatioTestPlan = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals("Test Private Payer 3")).findFirst().get().getPlans().stream().filter(plan -> plan.id == 60002).iterator().next();
+    BigDecimal yearlyCost = premiumRatioTestPlan.getMonthlyPremium(0).multiply(BigDecimal.valueOf(12));
+    assertEquals(BigDecimal.valueOf(12000), yearlyCost);
+    // The income_premium_ratio flag dictates what percent of a person's yearly income they are willing to spend on insurance.
+    // In this case, 12000 is 0.12 of 100000.
+    Config.set("generate.payers.insurance_plans.income_premium_ratio", "0.11");
+    assertFalse(IPlanFinder.meetsAffordabilityRequirements(premiumRatioTestPlan, person, null, 0L));
+    Config.set("generate.payers.insurance_plans.income_premium_ratio", "0.12");
+    assertTrue(IPlanFinder.meetsAffordabilityRequirements(premiumRatioTestPlan, person, null, 0L));
+    Config.set("generate.payers.insurance_plans.income_premium_ratio", "0.13");
+    assertTrue(IPlanFinder.meetsAffordabilityRequirements(premiumRatioTestPlan, person, null, 0L));
+  }
+
+  @Test
+  public void employerPremiumCoverage() {
+    Person employerCovered = new Person(0L);
+    employerCovered.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    employerCovered.attributes.put(Person.BIRTHDATE, 0L);
+    employerCovered.attributes.put(Person.INCOME, 10000);
+    Person nonEmployerCovered = new Person(0L);
+    nonEmployerCovered.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
+    nonEmployerCovered.attributes.put(Person.BIRTHDATE, 0L);
+    nonEmployerCovered.attributes.put(Person.INCOME, 10000);
+    InsurancePlan plan = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals("Test Private Payer 3")).findFirst().get().getPlans().stream().filter(tempPlan -> tempPlan.id == 60002).iterator().next();
+    employerCovered.coverage.setPlanAtTime(0L, plan, PayerManager.getNoInsurancePlan());
+    nonEmployerCovered.coverage.setPlanAtTime(0L, plan, PayerManager.getNoInsurancePlan());
+    // Employers will cover some % of monthly premiums, 75% in this case.
+    Config.set("generate.insurance.employer_coverage", "0.75");
+    BigDecimal costToCoveredEmployee = plan.getMonthlyPremium(0).multiply(BigDecimal.valueOf(0.25));
+    employerCovered.checkToPayMonthlyPremium(0L);
+    assertEquals(costToCoveredEmployee, employerCovered.coverage.getTotalPremiumExpenses());
+    // Patients without a covering occupation level should not get any premium discounts.
+    nonEmployerCovered.checkToPayMonthlyPremium(0L);
+    assertEquals(plan.getMonthlyPremium(0).setScale(2), nonEmployerCovered.coverage.getTotalPremiumExpenses());
+  }
+
+  @Test
+  public void maxOutOfPocketTest() {
+    InsurancePlan plan = PayerManager.getAllPayers().stream().filter(payer -> payer.getName().equals("Test Private Payer 3")).findFirst().get().getPlans().stream().filter(tempPlan -> tempPlan.id == 60002).iterator().next();
+    assertEquals(BigDecimal.valueOf(200), plan.getMaxOop());
+    assertEquals(BigDecimal.valueOf(0.1), plan.getPayerCoinsurance());
+
+    long time = Utilities.convertCalendarYearsToTime(1960);
+    Person person = new Person(0L);
+    person.attributes.put(Person.BIRTHDATE, time);
+    person.attributes.put(Person.INCOME, 100000);
+    person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
+    person.attributes.put(Person.GENDER, "F");
+    person.coverage.setPlanAtTime(time, plan, PayerManager.getNoInsurancePlan());
+
+    HealthRecord healthRecord = new HealthRecord(person);
+    Code code = new Code("SNOMED-CT","705129","Fake Code");
+    Encounter fakeEncounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
+    fakeEncounter.codes.add(code);
+    healthRecord.encounterEnd(time + 1, EncounterType.INPATIENT);
+
+    BigDecimal expectedPaid = fakeEncounter.getCost().multiply(BigDecimal.valueOf(0.9)).setScale(2);
+    BigDecimal coinsurancePaid = fakeEncounter.claim.getTotalCoinsurancePaid();
+    assertEquals(expectedPaid, coinsurancePaid);
+    BigDecimal totalPaid = BigDecimal.ZERO.add(expectedPaid);
+    assertEquals(totalPaid, person.coverage.getTotalOutOfPocketExpenses());
+    assertEquals(BigDecimal.valueOf(112.50).setScale(2), person.coverage.getTotalOutOfPocketExpenses());
+    assertEquals(BigDecimal.valueOf(12.50).setScale(2), person.coverage.getTotalCoverage());
+
+    // The person has now accrued $112.50 in expenses. Even though their Max OOP is $200, their
+    // next $112.50 expense will make their OOP expenses $225. This behavior should be fixed in future.
+    fakeEncounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
+    fakeEncounter.codes.add(code);
+    healthRecord.encounterEnd(time + 1, EncounterType.INPATIENT);
+
+    expectedPaid = fakeEncounter.getCost().multiply(BigDecimal.valueOf(0.9)).setScale(2);
+    coinsurancePaid = fakeEncounter.claim.getTotalCoinsurancePaid();
+    assertEquals(expectedPaid, coinsurancePaid);
+    totalPaid = totalPaid.add(expectedPaid);
+    assertEquals(totalPaid, person.coverage.getTotalOutOfPocketExpenses());
+    assertEquals(BigDecimal.valueOf(225).setScale(2), person.coverage.getTotalOutOfPocketExpenses());
+    assertEquals(BigDecimal.valueOf(25).setScale(2), person.coverage.getTotalCoverage());
+
+    // The person's OOP costs ($225) exceed the max ($200). They should no longer have OOP costs.
+    fakeEncounter = healthRecord.encounterStart(time, EncounterType.INPATIENT);
+    fakeEncounter.codes.add(code);
+    healthRecord.encounterEnd(time + 1, EncounterType.INPATIENT);
+
+    BigDecimal coinsurancePaidAfterMaxOop = fakeEncounter.claim.getTotalCoinsurancePaid();
+    assertEquals(BigDecimal.ZERO.setScale(2), coinsurancePaidAfterMaxOop);
+    assertEquals(BigDecimal.valueOf(225).setScale(2), person.coverage.getTotalOutOfPocketExpenses());
+    assertEquals(BigDecimal.valueOf(150).setScale(2), person.coverage.getTotalCoverage());
   }
 
   @Test

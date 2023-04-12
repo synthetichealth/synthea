@@ -75,7 +75,7 @@ public class HealthInsuranceModule extends Module {
     InsurancePlan secondaryPlan = PayerManager.getNoInsurancePlan();
     // If the payer is Medicare, they may buy supplemental insurance.
     if (newPlan.mayPurchaseSupplement() && (person.rand() <= 0.9)) {
-      // 90% Medicare patients have supplemental insurance, buy some if affordable.
+      // 9 out of 10 Medicare patients have supplemental insurance, buy some if affordable.
       // https://www.kff.org/medicare/issue-brief/a-snapshot-of-sources-of-coverage-among-medicare-beneficiaries-in-2018/
       secondaryPlan = PayerManager.findMedicareSupplement(person, null, time);
     }

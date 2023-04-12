@@ -147,15 +147,17 @@ public class PayerManager {
 
   private static void loadPlans() {
     String fileName = Config.get("generate.payers.insurance_plans.default_file");
+    Iterator<? extends Map<String, String>> csv = null;
     try {
       String resource = Utilities.readResource(fileName, true, true);
-      Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
-      while (csv.hasNext()) {
-        Map<String, String> row = csv.next();
-        csvLineToPlan(row);
-      }
+      csv = SimpleCSV.parseLineByLine(resource);
     } catch (IOException e) {
       e.printStackTrace();
+    }
+
+    while (csv.hasNext()) {
+      Map<String, String> row = csv.next();
+      csvLineToPlan(row);
     }
   }
 
@@ -257,7 +259,8 @@ public class PayerManager {
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
     boolean isACA = Boolean.parseBoolean(line.remove(ACA).trim());
     boolean incomeBasedPremium = Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim());
-    int yearStart = Integer.parseInt(line.remove(START_YEAR).trim());
+    String yearStartStr = line.remove(START_YEAR).trim();
+    int yearStart = yearStartStr.equals("") ? 0 : Integer.parseInt(yearStartStr);
     String yearEndStr = line.remove(END_YEAR).trim();
     int yearEnd = StringUtils.isBlank(yearEndStr)
         ? Utilities.getYear(System.currentTimeMillis()) + 1 : Integer.parseInt(yearEndStr);
@@ -273,7 +276,7 @@ public class PayerManager {
       return;
     }
     Payer payer = PayerManager.payers.get(payerId);
-    InsurancePlan newPlan = new InsurancePlan(payer, servicesCovered, deductible,
+    InsurancePlan newPlan = new InsurancePlan(planId, payer, servicesCovered, deductible,
         defaultCoinsurance, defaultCopay, monthlyPremium, maxOutOfPocket, medicareSupplement,
         isACA, incomeBasedPremium, yearStart, yearEnd, priority, eligibilityName);
     payer.addPlan(newPlan);
@@ -298,7 +301,7 @@ public class PayerManager {
     Set<String> statesCovered = new HashSet<String>();
     statesCovered.add("*");
     PayerManager.noInsurance = new Payer(NO_INSURANCE, -1, statesCovered, NO_INSURANCE);
-    InsurancePlan noInsurancePlan = new InsurancePlan(PayerManager.noInsurance,
+    InsurancePlan noInsurancePlan = new InsurancePlan(-1, PayerManager.noInsurance,
         new HashSet<String>(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
         BigDecimal.valueOf(Integer.MAX_VALUE), false, false, false, 0,
         Utilities.getYear(System.currentTimeMillis()) + 1, 0, PlanEligibilityFinder.GENERIC);
@@ -307,7 +310,7 @@ public class PayerManager {
   }
 
   /**
-   * Returns the set of all loaded payers.
+   * Returns the Set of all loaded payers.
    */
   public static Set<Payer> getAllPayers() {
     return payers.values().stream().collect(Collectors.toSet());
@@ -332,7 +335,7 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = PayerManager.getActivePlans(getAllPayers(), time);
+    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove medicare supplement plans from this check.
     plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
         .collect(Collectors.toSet());
@@ -348,7 +351,6 @@ public class PayerManager {
       if (!previousPlan.isNoInsurance()
           && previousPlan.accepts(person, time) && previousPlan.isActive(time)
           && IPlanFinder.meetsAffordabilityRequirements(previousPlan, person, null, time)) {
-        // People will keep their previous year's insurance if they can.
         return previousPlan;
       }
     }

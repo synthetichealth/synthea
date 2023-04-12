@@ -170,7 +170,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     this.initializeDefaultHealthRecords();
-    this.coverage = new CoverageRecord(this);
+    coverage = new CoverageRecord(this);
   }
 
   /**
@@ -768,7 +768,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     BigDecimal income = BigDecimal.valueOf((int) this.attributes.get(Person.INCOME));
     BigDecimal yearlyCost = plan.getYearlyCost(income.intValue());
-    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) == 1;
+    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
   }
 
   /**

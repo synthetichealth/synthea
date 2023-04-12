@@ -94,10 +94,6 @@ public class PlanRecord implements Serializable {
     return this.insuranceExpenses;
   }
 
-  public boolean isDedctiblePlan() {
-    return this.plan.getDeductible().compareTo(BigDecimal.ZERO) == 1;
-  }
-
   public InsurancePlan getPlan() {
     return this.plan;
   }
@@ -112,7 +108,8 @@ public class PlanRecord implements Serializable {
     // Keep previous year's ownership if payer is unchanged and person has not just turned 18.
     if (prevRecord != null
         && this.plan.equals(prevRecord.plan)
-        && prevRecord.ownership == "Guardian"
+        && prevRecord.ownership != null
+        && prevRecord.ownership.equals("Guardian")
         && age <= 18) {
       this.ownership = prevRecord.ownership;
       this.ownerName = prevRecord.ownerName;
@@ -150,13 +147,13 @@ public class PlanRecord implements Serializable {
       if (person.randBoolean()) {
         this.ownership = "Spouse";
         if (person.attributes.get(Person.SEXUAL_ORIENTATION).equals("homosexual")) {
-          if ("M".equals(person.attributes.get(Person.GENDER))) {
+          if ((person.attributes.get(Person.GENDER).equals("M"))) {
             this.ownerName = "Mr. ";
           } else {
             this.ownerName = "Mrs. ";
           }
         } else {
-          if ("M".equals(person.attributes.get(Person.GENDER))) {
+          if ((person.attributes.get(Person.GENDER).equals("M"))) {
             this.ownerName = "Mrs. ";
           } else {
             this.ownerName = "Mr. ";

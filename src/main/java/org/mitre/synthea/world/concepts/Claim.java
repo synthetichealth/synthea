@@ -159,6 +159,9 @@ public class Claim implements Serializable {
       plan.incrementCoveredEntries(this.entry);
 
       if (planRecord.getOutOfPocketExpenses().compareTo(plan.getMaxOop()) > 0) {
+        // TODO - This will only trigger after a person has already paid more than their Max OOP.
+        // An accurate implementation would require a Max OOP check for every time a patient is
+        // assigned costs in this method.
         // The person has already paid their maximum out-of-pocket costs.
         this.paidByPayer = remainingBalance;
         remainingBalance = remainingBalance.subtract(this.paidByPayer);
@@ -327,7 +330,6 @@ public class Claim implements Serializable {
 
   /**
    * Returns whether this Claim was covered by Medicare as the primary payer.
-   * @return
    */
   public boolean coveredByMedicare() {
     // TODO - Should there be a check here for Dual Eligble?
@@ -340,7 +342,6 @@ public class Claim implements Serializable {
 
   /**
    * Get the plan record associated with this claim.
-   * @return
    */
   public String getPlanRecordMemberId() {
     return this.planRecord.id;
@@ -348,7 +349,6 @@ public class Claim implements Serializable {
 
   /**
    * Get the primary payer of this claim.
-   * @return
    */
   public Payer getPayer() {
     return this.planRecord.getPlan().getPayer();
@@ -356,7 +356,6 @@ public class Claim implements Serializable {
 
   /**
    * Return the secondary payer of this claim.
-   * @return
    */
   public Payer getSecondaryPayer() {
     return this.planRecord.getSecondaryPlan().getPayer();

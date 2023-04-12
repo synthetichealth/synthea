@@ -23,6 +23,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
  */
 public class InsurancePlan implements Serializable {
 
+  public final int id;
   private final Payer payer;
   private final BigDecimal deductible;
   private final BigDecimal defaultCopay;
@@ -57,11 +58,12 @@ public class InsurancePlan implements Serializable {
    * @param priority The priority of this plan for patients to choose it.
    * @param eligibilityName The eligibility algorithm to use.
    */
-  public InsurancePlan(Payer payer, /*int id,*/ Set<String> servicesCovered,
+  public InsurancePlan(int id, Payer payer, Set<String> servicesCovered,
       BigDecimal deductible, BigDecimal defaultCoinsurance, BigDecimal defaultCopay,
       BigDecimal monthlyPremium, BigDecimal maxOutOfPocket,
       boolean medicareSupplement, boolean isACA, boolean incomeBasedPremium,
       int activeYearStart, int activeYearEnd, int priority, String eligibilityName) {
+    this.id = id;
     this.payer = payer;
     this.deductible = deductible;
     this.defaultCoinsurance = defaultCoinsurance;
@@ -73,7 +75,7 @@ public class InsurancePlan implements Serializable {
     this.medicareSupplement = medicareSupplement;
     this.isACA = isACA;
     this.incomeBasedPremium = incomeBasedPremium;
-    if (incomeBasedPremium && (monthlyPremium.compareTo(BigDecimal.ONE) > 1)) {
+    if (incomeBasedPremium && (monthlyPremium.compareTo(BigDecimal.ONE) > 0)) {
       throw new RuntimeException("Income based premium plans must have premiums in"
           + " range 0.0 - 1.0, a percentage of a patient's income. Given " + monthlyPremium + ".");
     }
@@ -123,7 +125,7 @@ public class InsurancePlan implements Serializable {
    */
   public BigDecimal getMonthlyPremium(int income) {
     if (this.incomeBasedPremium) {
-      return (this.monthlyPremium
+      return (this.monthlyPremium.setScale(2)
           .multiply(new BigDecimal(income))
           .divide(new BigDecimal(12), RoundingMode.HALF_UP));
     }

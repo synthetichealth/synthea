@@ -120,7 +120,6 @@ public class CoverageRecord implements Serializable {
   /**
    * Determines whether the person should enter an enrollment period and search for a new insurance
    * plan. If so, the next enrollment period will be accordingly updated.
-   * @return
    */
   public boolean newEnrollmentPeriod(long time) {
     if (this.nextEnrollmentPeriod == null) {
