@@ -47,7 +47,7 @@
     },
     "Next Wellness Visit": {
       "type": "Encounter",
-      "reason": "",
+      "reason": "Diagnosis",
       "telemedicine_possibility": "none",
       "wellness": true,
       "conditional_transition": [

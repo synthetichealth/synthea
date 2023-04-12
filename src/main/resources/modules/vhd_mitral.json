@@ -146,7 +146,7 @@
     "Placeholder MVS Treatment": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "Mitral Valve Stenosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -154,11 +154,7 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "New_State"
-    },
-    "New_State": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "End Placeholder MVS Treatment"
     },
     "Set_Risk_Factors": {
       "type": "CallSubmodule",
@@ -167,6 +163,10 @@
       "remarks": [
         "For this initial impl, risk factors are set to true once. Later versions of this model should move this into Risk Factor Check and update the risk factors yearly"
       ]
+    },
+    "End Placeholder MVS Treatment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 2

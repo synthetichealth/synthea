@@ -70,7 +70,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Implant_Contraceptive"
+      "direct_transition": "Prescribe_Implant_Contraceptive",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Implant_Contraceptive": {
       "type": "Simple",

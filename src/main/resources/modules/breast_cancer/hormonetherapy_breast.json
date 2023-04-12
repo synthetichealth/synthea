@@ -391,7 +391,7 @@
     "ER-encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "breast_cancer_condition",
       "codes": [
         {
           "system": "SNOMED-CT",

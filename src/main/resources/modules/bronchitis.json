@@ -524,7 +524,8 @@
     "Next_Well_Visit": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "End_Bronchitis_CarePlan"
+      "direct_transition": "End_Bronchitis_CarePlan",
+      "reason": "Bronchitis_Infection"
     },
     "End_Bronchitis_CarePlan": {
       "type": "CarePlanEnd",

@@ -368,7 +368,8 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "Mammogram"
+      "direct_transition": "Mammogram",
+      "reason": "Breast Cancer"
     },
     "MRI": {
       "type": "Procedure",
@@ -1316,7 +1317,8 @@
           "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
-      "direct_transition": "Screening Mammogram"
+      "direct_transition": "Screening Mammogram",
+      "reason": "breast_cancer_screening_due"
     },
     "Breast Cancer Found": {
       "type": "ConditionOnset",
@@ -1822,7 +1824,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.48
         },
         {
@@ -1855,7 +1857,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.69
         },
         {
@@ -1879,7 +1881,7 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.63
         },
         {
@@ -1914,7 +1916,7 @@
         {
           "distributions": [
             {
-              "transition": "Regular Mammogram Visit",
+              "transition": "Breast Cancer Screening Due",
               "distribution": 0.7
             },
             {
@@ -2164,6 +2166,16 @@
       "unit": "minutes",
       "reason": "breast_cancer_condition",
       "direct_transition": "End Initial Follow-Up Doctor Visit"
+    },
+    "Breast Cancer Screening Due": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_screening_due",
+      "direct_transition": "Regular Mammogram Visit",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268547008,
+        "display": "Screening for malignant neoplasm of breast (procedure)"
+      }
     }
   },
   "gmf_version": 1

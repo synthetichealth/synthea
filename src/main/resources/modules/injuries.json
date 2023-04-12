@@ -373,7 +373,16 @@
       ]
     },
     "Spinal_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Spinal_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 262521009,
+          "display": "Traumatic injury of spinal cord and/or vertebral column (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Spinal_Injury",
       "remarks": [
         "======================================================================",
         " SPINAL INJURY                                                        ",
@@ -383,8 +392,7 @@
         "16 - 25% of spinal fractures result in neurological damage. This aligns with ",
         "The incidence of spinal cord injury folowing a spinal fracture. For simplicity ",
         "All spinal fractures with spinal cord damage also result in neurological damage."
-      ],
-      "direct_transition": "ED_Visit_For_Spinal_Injury"
+      ]
     },
     "ED_Visit_For_Spinal_Injury": {
       "type": "Encounter",
@@ -405,7 +413,8 @@
           "transition": "No_Spinal_Cord_Damage",
           "distribution": 0.75
         }
-      ]
+      ],
+      "reason": "Spinal_Injury"
     },
     "Spinal_Injury_CarePlan": {
       "type": "CarePlanStart",
@@ -546,14 +555,23 @@
         "cord damage and survived, his/her chronic paralysis will persist for life."
       ],
       "referenced_by_attribute": "spinal_injury",
-      "direct_transition": "End Wheelchair for Spine"
+      "direct_transition": "End_Spinal_Injury_Onset"
     },
     "End_Spinal_Injury_Followup": {
       "type": "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
     "Gunshot_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Gunshot_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 283545005,
+          "display": "Gunshot wound (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Gunshot_Injury",
       "remarks": [
         "======================================================================",
         " GUNSHOT INJURY                                                       ",
@@ -563,8 +581,7 @@
         "Gunshot deaths:                  31,076  => 29.8%",
         "Non-fatal hospital discharges:   73,505  => 70.2%",
         "Total gunshot injuries:         104,581"
-      ],
-      "direct_transition": "ED_Visit_For_Gunshot_Injury"
+      ]
     },
     "ED_Visit_For_Gunshot_Injury": {
       "type": "Encounter",
@@ -576,7 +593,8 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Gunshot_Wound"
+      "direct_transition": "Gunshot_Wound",
+      "reason": "Gunshot_Injury"
     },
     "Gunshot_Wound": {
       "type": "ConditionOnset",
@@ -713,14 +731,23 @@
     "Gunshot_Wound_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Gunshot_Wound",
-      "direct_transition": "End_Gunshot_Followup"
+      "direct_transition": "End_Gunshot_Injury_Onset"
     },
     "End_Gunshot_Followup": {
       "type": "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
     "Concussion_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Concussion",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110030002,
+          "display": "Concussion injury of brain (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Concussion",
       "remarks": [
         "======================================================================",
         " CONCUSSION                                                           ",
@@ -729,8 +756,7 @@
         "http://www.cdc.gov/traumaticbraininjury/data/rates.html",
         "https://www.cdc.gov/traumaticbraininjury/pdf/tbi_report_to_congress_epi_and_rehab-a.pdf",
         "http://www.cdc.gov/traumaticbraininjury/pdf/bluebook_factsheet-a.pdf"
-      ],
-      "direct_transition": "ED_Visit_For_Concussion"
+      ]
     },
     "ED_Visit_For_Concussion": {
       "type": "Encounter",
@@ -755,7 +781,8 @@
           "distribution": 0.05,
           "transition": "Severe_Concussion"
         }
-      ]
+      ],
+      "reason": "Concussion_Injury"
     },
     "Mild_Concussion": {
       "type": "ConditionOnset",
@@ -883,14 +910,23 @@
     "End_Concussion_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "concussion_injury",
-      "direct_transition": "End_Concussion_Followup"
+      "direct_transition": "End_Concussion_Injury_Onset"
     },
     "End_Concussion_Followup": {
       "type": "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
     "Whiplash_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Whiplash",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 90460009,
+          "display": "Injury of neck (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Whiplash",
       "remarks": [
         "======================================================================",
         " WHIPLASH                                                             ",
@@ -902,8 +938,7 @@
         "treated by an emergency department. If they're ever addressed at all they ",
         "are treated in an ambulatory setting by a PCP. For simplicity however, all ",
         "of the whiplash injuries seen in this module are treated by an ED department."
-      ],
-      "direct_transition": "ED_Visit_For_Whiplash"
+      ]
     },
     "ED_Visit_For_Whiplash": {
       "type": "Encounter",
@@ -915,7 +950,8 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Whiplash"
+      "direct_transition": "Whiplash",
+      "reason": "Whiplash_Injury"
     },
     "Whiplash": {
       "type": "ConditionOnset",
@@ -975,18 +1011,26 @@
     "End_Whiplash_Injury": {
       "type": "ConditionEnd",
       "condition_onset": "Whiplash",
-      "direct_transition": "Conclude_Injury"
+      "direct_transition": "End_Whiplash_Injury_Onset"
     },
     "Broken_Bone_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Broken_Bone",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 125605004,
+          "display": "Fracture of bone (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Broken_Bone",
       "remarks": [
         "======================================================================",
         " BROKEN BONE                                                          ",
         "======================================================================",
         "Further supported by the following sources: ",
         "Most commonly broken bones: https://askabiologist.asu.edu/how-bone-breaks"
-      ],
-      "direct_transition": "ED_Visit_For_Broken_Bone"
+      ]
     },
     "ED_Visit_For_Broken_Bone": {
       "type": "Encounter",
@@ -998,7 +1042,8 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Broken_Bone"
+      "direct_transition": "Broken_Bone",
+      "reason": "Broken_Bone_Injury"
     },
     "Broken_Bone": {
       "type": "Simple",
@@ -1696,10 +1741,19 @@
     },
     "End_Broken_Bone_Followup": {
       "type": "EncounterEnd",
-      "direct_transition": "Conclude_Injury"
+      "direct_transition": "End_Broken_Bone_Onset"
     },
     "Burn_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Burn",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 48333001,
+          "display": "Burn injury (morphologic abnormality)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Burn",
       "remarks": [
         "======================================================================",
         " BURN                                                                 ",
@@ -1709,8 +1763,7 @@
         "http://www.burnfoundation.org/programs/resource.cfm?c=2&a=6 (1999 incidence)",
         "Since the early 1990's the burn rates in the U.S. have declined almost 50%;",
         "however, the relative proportions of severity has stayed the same."
-      ],
-      "direct_transition": "ED_Visit_For_Burn"
+      ]
     },
     "ED_Visit_For_Burn": {
       "type": "Encounter",
@@ -1722,7 +1775,8 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Burn"
+      "direct_transition": "Burn",
+      "reason": "Burn_Injury"
     },
     "Burn": {
       "type": "Simple",
@@ -1939,14 +1993,23 @@
     "End_Burn_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "burn_injury",
-      "direct_transition": "End_Burn_Followup"
+      "direct_transition": "End_Burn_Injury_Onset"
     },
     "End_Burn_Followup": {
       "type": "EncounterEnd",
       "direct_transition": "Conclude_Injury"
     },
     "Laceration_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Laceration",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 312608009,
+          "display": "Laceration - injury (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Laceration",
       "remarks": [
         "======================================================================",
         " LACERATION                                                           ",
@@ -1955,8 +2018,7 @@
         "lacerations are equally likely.",
         "TODO: In the future, lacerations that are poorly treated by the patient may ",
         "develop an infection. Could be interesting to add this into the mix."
-      ],
-      "direct_transition": "ED_Visit_For_Laceration"
+      ]
     },
     "ED_Visit_For_Laceration": {
       "type": "Encounter",
@@ -1968,7 +2030,8 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Laceration"
+      "direct_transition": "Laceration",
+      "reason": "Laceration_Injury"
     },
     "Laceration": {
       "type": "Simple",
@@ -2155,17 +2218,25 @@
     "End_Laceration_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "laceration_injury",
-      "direct_transition": "Conclude_Injury"
+      "direct_transition": "End_Laceration_Injury_Onset"
     },
     "Sprain_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Sprain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 384709000,
+          "display": "Sprain (morphologic abnormality)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Sprain",
       "remarks": [
         "======================================================================",
         " SPRAIN                                                               ",
         "======================================================================",
         "Arbitrary distribution of sprained ankles and wrists for variety."
-      ],
-      "direct_transition": "ED_Visit_For_Sprain"
+      ]
     },
     "ED_Visit_For_Sprain": {
       "type": "Encounter",
@@ -2186,7 +2257,8 @@
           "distribution": 0.3,
           "transition": "Sprained_Wrist"
         }
-      ]
+      ],
+      "reason": "Sprain_Injury"
     },
     "Sprained_Ankle": {
       "type": "ConditionOnset",
@@ -2260,10 +2332,19 @@
     "End_Sprain_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "sprain_injury",
-      "direct_transition": "Conclude_Injury"
+      "direct_transition": "End_Sprain_Injury_Onset"
     },
     "Knee_Injury": {
-      "type": "Simple",
+      "type": "ConditionOnset",
+      "target_encounter": "ED_Visit_For_Knee_Injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 125601008,
+          "display": "Injury of knee (disorder)"
+        }
+      ],
+      "direct_transition": "ED_Visit_For_Knee_Injury",
       "remarks": [
         "======================================================================",
         " KNEE                                                                 ",
@@ -2278,8 +2359,7 @@
         "the relative proportions. Only one of the above occurs at any given time.",
         "Sources: ",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3768257/"
-      ],
-      "direct_transition": "ED_Visit_For_Knee_Injury"
+      ]
     },
     "ED_Visit_For_Knee_Injury": {
       "type": "Encounter",
@@ -2308,7 +2388,8 @@
           "transition": "Torn_Patellar_Tendon",
           "distribution": 0.2564
         }
-      ]
+      ],
+      "reason": "Knee_Injury"
     },
     "Knee_X_Ray": {
       "type": "ImagingStudy",
@@ -2502,7 +2583,7 @@
     "End_Knee_Injury": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "knee_injury",
-      "direct_transition": "Conclude_Injury"
+      "direct_transition": "End_Knee_Injury_Onset"
     },
     "Shoulder_Injury": {
       "type": "Simple",
@@ -2934,6 +3015,51 @@
       },
       "unit": "days",
       "direct_transition": "Spinal_Injury_Treatment_Encounter"
+    },
+    "End_Whiplash_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "Conclude_Injury",
+      "condition_onset": "Whiplash_Injury"
+    },
+    "End_Spinal_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Wheelchair for Spine",
+      "condition_onset": "Spinal_Injury"
+    },
+    "End_Concussion_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Concussion_Followup",
+      "condition_onset": "Concussion_Injury"
+    },
+    "End_Knee_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "Conclude_Injury",
+      "condition_onset": "Knee_Injury"
+    },
+    "End_Broken_Bone_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "Conclude_Injury",
+      "condition_onset": "Broken_Bone_Injury"
+    },
+    "End_Burn_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Burn_Followup",
+      "condition_onset": "Burn_Injury"
+    },
+    "End_Laceration_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "Conclude_Injury",
+      "condition_onset": "Laceration_Injury"
+    },
+    "End_Sprain_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "Conclude_Injury",
+      "condition_onset": "Sprain_Injury"
+    },
+    "End_Gunshot_Injury_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Gunshot_Followup",
+      "condition_onset": "Gunshot_Injury"
     }
   },
   "gmf_version": 1

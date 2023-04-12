@@ -58,7 +58,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Symptoms",
+          "transition": "MI_Onset",
           "distribution": {
             "attribute": "mi_risk",
             "default": 0
@@ -67,19 +67,6 @@
         {
           "transition": "Chance_of_MI",
           "distribution": 1
-        }
-      ]
-    },
-    "Symptoms": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Emergency_Encounter",
-          "distribution": 0.7999999999999999
-        },
-        {
-          "transition": "Pre-Hospital Death",
-          "distribution": 0.2
         }
       ]
     },
@@ -140,7 +127,7 @@
           "display": "Discharge care plan (record artifact)"
         }
       ],
-      "direct_transition": "History of MI"
+      "direct_transition": "End_MI_Onset"
     },
     "Chance_of_Recurrent_MI": {
       "type": "Simple",
@@ -150,7 +137,7 @@
           "distribution": 1
         },
         {
-          "transition": "Symptoms",
+          "transition": "MI_Onset",
           "distribution": 1
         }
       ]
@@ -179,7 +166,7 @@
     "Emergency_Encounter": {
       "type": "Encounter",
       "encounter_class": "emergency",
-      "reason": "",
+      "reason": "MI_Onset",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -228,7 +215,7 @@
     "Reset_CABG_Referral_Flag": {
       "type": "SetAttribute",
       "attribute": "ACS_CABG_referral",
-      "direct_transition": "History of MI",
+      "direct_transition": "End_MI_Onset",
       "remarks": [
         "Reset the referral flag, so that just in case the patient winds up going through this pathway a second time, the attribute will be set as appropriate"
       ]
@@ -312,6 +299,32 @@
         }
       ],
       "direct_transition": "ACS_Arrival_Meds"
+    },
+    "MI_Onset": {
+      "type": "ConditionOnset",
+      "target_encounter": "Emergency_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 22298006,
+          "display": "Myocardial infarction (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Emergency_Encounter",
+          "distribution": 0.7999999999999999
+        },
+        {
+          "transition": "Pre-Hospital Death",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "End_MI_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "History of MI",
+      "condition_onset": "MI_Onset"
     }
   },
   "gmf_version": 2

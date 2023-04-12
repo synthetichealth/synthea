@@ -53,7 +53,7 @@
     "Emergency_Encounter": {
       "type": "Encounter",
       "encounter_class": "emergency",
-      "reason": "",
+      "reason": "Stroke",
       "codes": [
         {
           "system": "SNOMED-CT",

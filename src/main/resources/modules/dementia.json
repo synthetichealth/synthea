@@ -232,7 +232,8 @@
         "This is the enounter where alzheimer's is diagnosed. ",
         "Typical life expectancy after an Alzheimer’s diagnosis is 4-to-8 years. (Alzheimer’s Association)"
       ],
-      "direct_transition": "Diagnosis_MMSE_Score"
+      "direct_transition": "Diagnosis_MMSE_Score",
+      "reason": "Type of Alzheimer's"
     },
     "Diagnosis_MMSE_Score": {
       "type": "Observation",

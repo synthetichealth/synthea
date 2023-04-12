@@ -43,13 +43,14 @@
     "annual_wellness_visit": {
       "type": "Encounter",
       "direct_transition": "wellness_procedure",
-      "wellness": true
+      "wellness": true,
+      "reason": "wellness_encounter_reason"
     },
     "male_guard": {
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "annual_wellness_visit",
+          "transition": "Wellness_Encounter_Reason",
           "condition": {
             "condition_type": "Gender",
             "gender": "M"
@@ -231,7 +232,8 @@
           "display": "Encounter for symptom"
         }
       ],
-      "direct_transition": "biopsy procedure"
+      "direct_transition": "biopsy procedure",
+      "reason": "Suspected_Prostate_Cancer"
     },
     "biopsy procedure": {
       "type": "Procedure",
@@ -287,7 +289,7 @@
           "display": "US Guidance for biopsy of Prostate"
         }
       ],
-      "direct_transition": "biopsy_visit_end",
+      "direct_transition": "End_Suspected_Prostate_Cancer",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 165131004,
@@ -326,7 +328,7 @@
           "display": "Neoplasm of prostate"
         }
       ],
-      "direct_transition": "biopsy_visit_end"
+      "direct_transition": "End_Suspected_Prostate_Cancer"
     },
     "Aggressive_Therapy_Careplan": {
       "type": "CarePlanStart",
@@ -470,7 +472,7 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "biopsy_visit"
+      "direct_transition": "Suspected_Prostate_Cancer"
     },
     "Prostate Cancer Symptom 2": {
       "type": "Symptom",
@@ -1253,6 +1255,33 @@
         }
       ],
       "direct_transition": "Chemotherapy_Hormone Order"
+    },
+    "Suspected_Prostate_Cancer": {
+      "type": "ConditionOnset",
+      "target_encounter": "biopsy_visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 315268008,
+          "display": "Suspected prostate cancer (situation)"
+        }
+      ],
+      "direct_transition": "biopsy_visit"
+    },
+    "End_Suspected_Prostate_Cancer": {
+      "type": "ConditionEnd",
+      "direct_transition": "biopsy_visit_end",
+      "condition_onset": "Suspected_Prostate_Cancer"
+    },
+    "Wellness_Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "wellness_encounter_reason",
+      "direct_transition": "annual_wellness_visit",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 410424005,
+        "display": "Wellness surveillance (regime/therapy)"
+      }
     }
   },
   "gmf_version": 1

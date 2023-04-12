@@ -599,7 +599,7 @@
     },
     "Wellness Encounter": {
       "type": "Encounter",
-      "reason": "",
+      "reason": "Sleep Disorder",
       "telemedicine_possibility": "none",
       "wellness": true,
       "direct_transition": "Assessment Check"

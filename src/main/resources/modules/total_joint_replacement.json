@@ -46,7 +46,7 @@
         "high": 12,
         "unit": "months"
       },
-      "direct_transition": "Pre_Procedure_Encounter"
+      "direct_transition": "Pre_Procedure_Encounter_Reason"
     },
     "Joint_Replacement_Encounter": {
       "type": "Encounter",
@@ -250,7 +250,8 @@
           "display": "Encounter for check up (procedure)"
         }
       ],
-      "direct_transition": "Functional_Status_Assessments"
+      "direct_transition": "Functional_Status_Assessments",
+      "reason": "pre_procedure_encounter_reason"
     },
     "Pre_Procedure_Encounter_End": {
       "type": "EncounterEnd",
@@ -358,6 +359,16 @@
       ],
       "direct_transition": "Joint_Replacement_Encounter",
       "target_encounter": "Joint_Replacement_Encounter"
+    },
+    "Pre_Procedure_Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "pre_procedure_encounter_reason",
+      "direct_transition": "Pre_Procedure_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 110466009,
+        "display": "Pre-surgery evaluation (procedure)"
+      }
     }
   },
   "gmf_version": 1

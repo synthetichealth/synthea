@@ -43,7 +43,7 @@
         "unit": "years",
         "value": 0
       },
-      "direct_transition": "Set_Yearly_Risk"
+      "direct_transition": "Hypertension_Screening_Reason"
     },
     "Set_Yearly_Risk": {
       "type": "Simple",
@@ -493,7 +493,8 @@
           "transition": "Included"
         }
       ],
-      "wellness": true
+      "wellness": true,
+      "reason": "hypertension_screening_reason"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -890,6 +891,16 @@
     "Drop Outs": {
       "type": "Simple",
       "direct_transition": "Terminal"
+    },
+    "Hypertension_Screening_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_screening_reason",
+      "direct_transition": "Set_Yearly_Risk",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 171222001,
+        "display": "Hypertension screening (procedure)"
+      }
     }
   },
   "gmf_version": 1

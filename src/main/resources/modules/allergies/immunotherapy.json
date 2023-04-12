@@ -46,7 +46,8 @@
             "pre-existing immune conditions (like AIDS), and prohibitive cost."
           ]
         }
-      ]
+      ],
+      "reason": "allergy_unspecified"
     },
     "Immunotherapy_Given": {
       "type": "SetAttribute",
@@ -159,7 +160,8 @@
           "display": "Outpatient procedure"
         }
       ],
-      "direct_transition": "Immunotherapy_Procedure"
+      "direct_transition": "Immunotherapy_Procedure",
+      "reason": "allergy_unspecified"
     },
     "Immunotherapy_Procedure": {
       "type": "Procedure",
@@ -201,7 +203,8 @@
           "display": "Allergic disorder follow-up assessment"
         }
       ],
-      "direct_transition": "Immunotherapy_CarePlan_Ends"
+      "direct_transition": "Immunotherapy_CarePlan_Ends",
+      "reason": "allergy_unspecified"
     },
     "Immunotherapy_CarePlan_Ends": {
       "type": "CarePlanEnd",

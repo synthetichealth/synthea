@@ -69,7 +69,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Injectable_Contraceptive"
+      "direct_transition": "Prescribe_Injectable_Contraceptive",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Injectable_Contraceptive": {
       "type": "Simple",

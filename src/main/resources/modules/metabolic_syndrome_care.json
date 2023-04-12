@@ -7,12 +7,13 @@
       "remarks": [
         "Initial impl == direct translation of ruby module"
       ],
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Metabolic_Syndrome_Review_Reason"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "check CKD"
+      "direct_transition": "check CKD",
+      "reason": "metabolic_syndrome_review"
     },
     "Check_Diabetes": {
       "type": "Simple",
@@ -734,6 +735,16 @@
       "type": "CallSubmodule",
       "submodule": "metabolic_syndrome/dme_supplies",
       "direct_transition": "Check_Complications"
+    },
+    "Metabolic_Syndrome_Review_Reason": {
+      "type": "SetAttribute",
+      "attribute": "metabolic_syndrome_review",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 763288003,
+        "display": "Patient review (procedure)"
+      }
     }
   },
   "gmf_version": 1

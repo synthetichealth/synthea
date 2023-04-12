@@ -97,7 +97,7 @@
         "quantity": 50,
         "unit": "years"
       },
-      "direct_transition": "Routine_Colonoscopy_Encounter"
+      "direct_transition": "Colon Cancer Screening Reason"
     },
     "Routine_Colonoscopy_Encounter": {
       "type": "Encounter",
@@ -109,7 +109,8 @@
           "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Routine_Colonoscopy_Procedure"
+      "direct_transition": "Routine_Colonoscopy_Procedure",
+      "reason": "colon_cancer_screening"
     },
     "Routine_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -470,7 +471,8 @@
           "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Followup_Colonoscopy_Procedure"
+      "direct_transition": "Followup_Colonoscopy_Procedure",
+      "reason": "colorectal_adenoma"
     },
     "Followup_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -716,7 +718,8 @@
           "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Diagnostic_Colonoscopy_Procedure"
+      "direct_transition": "Diagnostic_Colonoscopy_Procedure",
+      "reason": "Colorectal_Cancer_Symptom_2"
     },
     "Diagnostic_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -2154,6 +2157,16 @@
       "unit": "days",
       "reason": "colorectal_cancer",
       "direct_transition": "End_Diverting_Colostomy_Encounter"
+    },
+    "Colon Cancer Screening Reason": {
+      "type": "SetAttribute",
+      "attribute": "colon_cancer_screening",
+      "direct_transition": "Routine_Colonoscopy_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 275978004,
+        "display": "Screening for malignant neoplasm of colon (procedure)"
+      }
     }
   },
   "gmf_version": 1

@@ -401,7 +401,8 @@
     "Next_Adult_Welness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Lifelong_Asthma_Begins"
+      "direct_transition": "Lifelong_Asthma_Begins",
+      "reason": "asthma_condition"
     },
     "Lifelong_Asthma_Begins": {
       "type": "ConditionOnset",
@@ -505,7 +506,8 @@
     "Next_Wellness_Encounter": {
       "type": "Encounter",
       "wellness": "true",
-      "direct_transition": "Maintenance_Medication_End"
+      "direct_transition": "Maintenance_Medication_End",
+      "reason": "asthma_condition"
     },
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",

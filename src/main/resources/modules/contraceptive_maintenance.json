@@ -24,7 +24,7 @@
           "transition": "Terminal"
         },
         {
-          "transition": "Contraceptive_Type_Guard"
+          "transition": "Contraception_Care_Reason"
         }
       ]
     },
@@ -175,7 +175,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "IUD_Replacement"
+      "direct_transition": "IUD_Replacement",
+      "reason": "contraception_care_reason"
     },
     "IUD_Replacement": {
       "type": "Procedure",
@@ -207,7 +208,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "IUD_Removal"
+      "direct_transition": "IUD_Removal",
+      "reason": "contraception_care_reason"
     },
     "IUD_Removal": {
       "type": "Procedure",
@@ -315,7 +317,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "Remove_Implant_Before_Replacement"
+      "direct_transition": "Remove_Implant_Before_Replacement",
+      "reason": "contraception_care_reason"
     },
     "End_Renew_Implant_Encounter": {
       "type": "EncounterEnd",
@@ -331,7 +334,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "Remove_Implant"
+      "direct_transition": "Remove_Implant",
+      "reason": "contraception_care_reason"
     },
     "Remove_Implant": {
       "type": "Procedure",
@@ -440,7 +444,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "Regular_Contraceptive_Injection"
+      "direct_transition": "Regular_Contraceptive_Injection",
+      "reason": "contraception_care_reason"
     },
     "Regular_Contraceptive_Injection": {
       "type": "Procedure",
@@ -496,6 +501,16 @@
         "unit": "minutes"
       },
       "direct_transition": "Replace_Contraceptive_Implant"
+    },
+    "Contraception_Care_Reason": {
+      "type": "SetAttribute",
+      "attribute": "contraception_care_reason",
+      "direct_transition": "Contraceptive_Type_Guard",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 408969000,
+        "display": "Contraception care management (procedure)"
+      }
     }
   },
   "gmf_version": 1

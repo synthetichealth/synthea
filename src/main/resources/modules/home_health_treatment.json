@@ -18,7 +18,8 @@
         }
       ],
       "direct_transition": "Referral_Home_Health_Care",
-      "encounter_class": "urgentcare"
+      "encounter_class": "urgentcare",
+      "reason": "Transition_To_Home"
     },
     "Referral_Home_Health_Care": {
       "type": "Procedure",
@@ -63,7 +64,8 @@
         }
       ],
       "direct_transition": "Initial_Patient_Assessment",
-      "encounter_class": "home"
+      "encounter_class": "home",
+      "reason": "Transition_To_Home"
     },
     "Initial_Patient_Assessment": {
       "type": "Procedure",
@@ -111,7 +113,7 @@
     },
     "End_First_HH_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Follow-up_HH_Encounter"
+      "direct_transition": "Delay"
     },
     "Follow-up_HH_Encounter": {
       "type": "Encounter",
@@ -123,7 +125,8 @@
         }
       ],
       "direct_transition": "Begin_Visit",
-      "encounter_class": "home"
+      "encounter_class": "home",
+      "reason": "Transition_To_Home"
     },
     "Begin_Visit": {
       "type": "Counter",
@@ -222,7 +225,7 @@
           "display": "Patient discharge (procedure)"
         }
       ],
-      "direct_transition": "Last Visit"
+      "direct_transition": "End_Transition_To_Home"
     },
     "Nursing_Care": {
       "type": "Procedure",
@@ -349,13 +352,30 @@
           }
         ]
       },
-      "direct_transition": "Face_to_Face_Encounter"
+      "direct_transition": "Transition_To_Home"
     },
     "Reset Home Health": {
       "type": "SetAttribute",
       "attribute": "home_health",
       "direct_transition": "Wait Until Home Health",
       "value": false
+    },
+    "Transition_To_Home": {
+      "type": "ConditionOnset",
+      "target_encounter": "Face_to_Face_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1871000124103,
+          "display": "Transition from acute care to home-health care (finding)"
+        }
+      ],
+      "direct_transition": "Face_to_Face_Encounter"
+    },
+    "End_Transition_To_Home": {
+      "type": "ConditionEnd",
+      "direct_transition": "Last Visit",
+      "condition_onset": "Transition_To_Home"
     }
   },
   "gmf_version": 1

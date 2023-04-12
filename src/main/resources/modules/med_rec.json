@@ -10,7 +10,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Medication_Review_Due"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
@@ -24,7 +24,8 @@
           "distribution": 0.55,
           "transition": "End_Wellness_Encounter"
         }
-      ]
+      ],
+      "reason": "Medication_Review_Due"
     },
     "Med_Rec": {
       "type": "Procedure",
@@ -35,11 +36,28 @@
           "display": "Medication Reconciliation (procedure)"
         }
       ],
-      "direct_transition": "End_Wellness_Encounter"
+      "direct_transition": "End_Medication_Review_Due"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Initial"
+    },
+    "Medication_Review_Due": {
+      "type": "ConditionOnset",
+      "target_encounter": "Wellness_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 314529007,
+          "display": "Medication review due (situation)"
+        }
+      ],
+      "direct_transition": "Wellness_Encounter"
+    },
+    "End_Medication_Review_Due": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Wellness_Encounter",
+      "condition_onset": "Medication_Review_Due"
     }
   },
   "gmf_version": 1

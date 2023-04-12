@@ -271,7 +271,8 @@
     "DiagnosisEncounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Initial_FEV_Test"
+      "direct_transition": "Initial_FEV_Test",
+      "reason": "copd_variant"
     },
     "Initial_FEV_Test": {
       "type": "Procedure",
@@ -609,7 +610,8 @@
     "COPD_Followup_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Followup_FEV_Test"
+      "direct_transition": "Followup_FEV_Test",
+      "reason": "copd_variant"
     },
     "Followup_FEV_Test": {
       "type": "Procedure",
