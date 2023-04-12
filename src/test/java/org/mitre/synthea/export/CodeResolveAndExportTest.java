@@ -117,11 +117,7 @@ public class CodeResolveAndExportTest {
     Provider.loadProviders(location, ProviderTest.providerRandom);
 
     PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerManager.loadNoInsurance();
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);
     stu3OutputPath = stu3OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));

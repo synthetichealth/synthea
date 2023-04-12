@@ -65,8 +65,8 @@ public class FHIRSTU3ExporterTest {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
-    String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
   }
 
   /**

@@ -31,7 +31,7 @@ public class PlanFinderTest {
   private Person person;
 
   /**
-   * Setup for Payer Finder Tests.
+   * Setup for Plan Finder Tests.
    * @throws Exception on configuration loading errors
    */
   @BeforeClass
@@ -45,6 +45,9 @@ public class PlanFinderTest {
     Config.set("generate.payers.insurance_plans.income_premium_ratio", "1.0");
   }
 
+  /**
+   * Setup before each test.
+   */
   @Before
   public void setup() throws Exception {
     person = new Person(0L);
@@ -55,6 +58,9 @@ public class PlanFinderTest {
     person.attributes.put(Person.STATE, Config.get("test_state.default", "Massachusetts"));
   }
 
+  /**
+   * Cleanup after all tests complete.
+   */
   @AfterClass
   public static void cleanup() throws Exception {
     Config.set("generate.payers.insurance_companies.default_file",

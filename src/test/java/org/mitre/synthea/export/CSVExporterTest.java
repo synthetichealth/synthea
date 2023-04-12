@@ -17,8 +17,6 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
-import org.mitre.synthea.world.agents.PayerManager;
-import org.mitre.synthea.world.geography.Location;
 
 public class CSVExporterTest {
   /**
@@ -46,12 +44,6 @@ public class CSVExporterTest {
     exportDir = tempFolder.newFolder();
     Config.set("exporter.baseDirectory", exportDir.toString());
 
-    PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
   }
 
   @Test

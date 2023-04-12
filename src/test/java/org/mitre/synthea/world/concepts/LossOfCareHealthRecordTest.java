@@ -44,6 +44,8 @@ public class LossOfCareHealthRecordTest {
     Config.set("generate.payers.insurance_plans.default_file",
         "generic/payers/test_plans.csv");
     Config.set("generate.payers.loss_of_care", "true");
+    Config.set("generate.payers.insurance_plans.eligibilities_file",
+        "generic/payers/test_insurance_eligibilities.csv");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
     PayerManager.loadPayers(new Location(testState, null));
@@ -55,8 +57,17 @@ public class LossOfCareHealthRecordTest {
     testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
   }
 
+  /**
+   * Cleanup after all tests complete.
+   */
   @AfterClass
   public static void clean() {
+    Config.set("generate.payers.insurance_companies.default_file",
+        "payers/insurance_companies.csv");
+    Config.set("generate.payers.insurance_plans.default_file",
+        "payers/insurance_plans.csv");
+    Config.set("generate.payers.insurance_plans.eligibilities_file",
+        "payers/insurance_eligibilities.csv");
     Config.set("generate.payers.loss_of_care", "false");
     Config.set("lifecycle.death_by_loss_of_care", "false");
   }

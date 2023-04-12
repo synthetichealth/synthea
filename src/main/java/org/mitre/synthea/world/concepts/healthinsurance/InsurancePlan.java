@@ -125,7 +125,7 @@ public class InsurancePlan implements Serializable {
    */
   public BigDecimal getMonthlyPremium(int income) {
     if (this.incomeBasedPremium) {
-      return (this.monthlyPremium.setScale(2)
+      return (this.monthlyPremium.setScale(2, RoundingMode.HALF_UP)
           .multiply(new BigDecimal(income))
           .divide(new BigDecimal(12), RoundingMode.HALF_UP));
     }
