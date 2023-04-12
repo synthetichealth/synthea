@@ -766,9 +766,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public boolean canAffordPlan(InsurancePlan plan) {
     double incomePercentage
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
-    BigDecimal income = BigDecimal.valueOf((int) this.attributes.get(Person.INCOME));
-    BigDecimal yearlyCost = plan.getYearlyCost(income.intValue());
-    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
+    int income = (int) this.attributes.get(Person.INCOME);
+    BigDecimal yearlyCost = plan.getYearlyCost(income);
+    return BigDecimal.valueOf(income)
+        .multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
   }
 
   /**
