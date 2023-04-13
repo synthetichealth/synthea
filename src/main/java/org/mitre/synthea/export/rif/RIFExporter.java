@@ -13,10 +13,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.mitre.synthea.export.rif.identifiers.CLIA;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
@@ -378,5 +380,51 @@ public abstract class RIFExporter {
       dateOfDisability = LifecycleModule.getEarliestDisabilityDiagnosisTime(person);
     }
     return dateOfDisability;
+  }
+
+  /**
+   * Get the first code that can be mapped to HCPCS.
+   * @param codes a list of codes, assumed to be SNOMED
+   * @param rand a source of randomness
+   * @return the mapped HCPCS code or null if no mapping could be found
+   */
+  protected String getFirstMappedHCPCSCode(List<HealthRecord.Code> codes,
+          RandomNumberGenerator rand) {
+    for (HealthRecord.Code code : codes) {
+      if (exporter.hcpcsCodeMapper.canMap(code)) {
+        return exporter.hcpcsCodeMapper.map(code, rand, true);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get a list of claim entries for procedures with mappable codes and medication administrations.
+   * @param encounter the encounter
+   * @return the list of claim entries that are billable
+   */
+  protected List<Claim.ClaimEntry> getBillableProcedureAndMedAdminItems(
+          HealthRecord.Encounter encounter) {
+    List<Claim.ClaimEntry> billableItems = new ArrayList<>(encounter.claim.items.size() + 1);
+    billableItems.add(encounter.claim.mainEntry);
+    billableItems.addAll(encounter.claim.items);
+    billableItems.removeIf(claimEntry -> {
+      if (claimEntry.cost.compareTo(Claim.ZERO_CENTS) == 0) {
+        return true; // zero cost entries are dropped
+      } else if (claimEntry.entry instanceof HealthRecord.Procedure) {
+        for (HealthRecord.Code code : claimEntry.entry.codes) {
+          if (exporter.hcpcsCodeMapper.canMap(code)) {
+            return false; // mappable procedures are retained
+          }
+        }
+      } else if (claimEntry.entry instanceof HealthRecord.Medication) {
+        HealthRecord.Medication med = (HealthRecord.Medication) claimEntry.entry;
+        if (med.administration) {
+          return false; // medication administrations are retained
+        }
+      }
+      return true; // anything else is dropped
+    });
+    return billableItems;
   }
 }

@@ -55,7 +55,7 @@ public class InpatientExporter extends RIFExporter {
       }
 
       // Get subset of billable items
-      List<Claim.ClaimEntry> billableItems = getBillableItems(encounter);
+      List<Claim.ClaimEntry> billableItems = getBillableProcedureAndMedAdminItems(encounter);
       Claim.ClaimEntry billableTotal = encounter.claim.new ClaimEntry(null);
       for (Claim.ClaimEntry lineItem: billableItems) {
         billableTotal.addCosts(lineItem);
@@ -314,38 +314,4 @@ public class InpatientExporter extends RIFExporter {
     }
   }
 
-  private String getFirstMappedHCPCSCode(List<HealthRecord.Code> codes,
-          RandomNumberGenerator rand) {
-    for (HealthRecord.Code code : codes) {
-      if (exporter.hcpcsCodeMapper.canMap(code)) {
-        return exporter.hcpcsCodeMapper.map(code, rand, true);
-      }
-    }
-    return null;
-  }
-
-  private List<Claim.ClaimEntry> getBillableItems(HealthRecord.Encounter encounter) {
-    List<Claim.ClaimEntry> billableItems = new ArrayList<>(encounter.claim.items.size() + 1);
-    billableItems.add(encounter.claim.mainEntry);
-    billableItems.addAll(encounter.claim.items);
-    billableItems.removeIf((claimEntry) -> {
-      if (claimEntry.cost.compareTo(Claim.ZERO_CENTS) == 0) {
-        return true; // zero cost entries are dropped
-      } else if (claimEntry.entry instanceof HealthRecord.Procedure) {
-        for (HealthRecord.Code code : claimEntry.entry.codes) {
-          if (exporter.hcpcsCodeMapper.canMap(code)) {
-            return false; // mappable procedures are retained
-          }
-        }
-      } else if (claimEntry.entry instanceof HealthRecord.Medication) {
-        HealthRecord.Medication med = (HealthRecord.Medication) claimEntry.entry;
-        if (med.administration) {
-          return false; // medication administrations are retained
-        }
-      }
-      return true; // anything else is dropped
-    });
-
-    return billableItems;
-  }
 }
