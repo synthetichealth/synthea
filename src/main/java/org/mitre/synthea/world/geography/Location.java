@@ -397,6 +397,9 @@ public class Location implements Serializable {
       for (String determinant : sdoh.keySet()) {
         Double probability = sdoh.get(determinant);
         if (determinant.equals(Person.UNEMPLOYED)) {
+          if (probability == null) {
+            throw new IllegalStateException("Unable to determine unemployment probability");
+          }
           person.attributes.put(Person.UNEMPLOYED, false);
           person.attributes.put(Person.EMPLOYMENT_MODEL, new Employment(probability));
         }
