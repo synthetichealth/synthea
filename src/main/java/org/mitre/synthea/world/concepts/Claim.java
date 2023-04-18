@@ -164,7 +164,7 @@ public class Claim implements Serializable {
         // assigned costs in this method.
         // The person has already paid their maximum out-of-pocket costs.
         this.paidByPayer = remainingBalance;
-        remainingBalance = remainingBalance.subtract(this.paidByPayer);
+        remainingBalance = BigDecimal.ZERO;
       }
 
       // Apply copay to Encounters and Medication claims only
@@ -205,7 +205,7 @@ public class Claim implements Serializable {
         } else {
           // Payer covers all
           this.paidByPayer = remainingBalance;
-          remainingBalance = remainingBalance.subtract(this.paidByPayer);
+          remainingBalance = BigDecimal.ZERO;
         }
       }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {

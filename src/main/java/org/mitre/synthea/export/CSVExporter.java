@@ -1324,7 +1324,7 @@ public class CSVExporter {
     // SECONDARY_PAYER_ID
     if (planRecord.getSecondaryPlan().getPayer() != null
         && !planRecord.getSecondaryPlan().isNoInsurance()) {
-      s.append(planRecord.getPlan().getPayer().getResourceID());
+      s.append(planRecord.getSecondaryPlan().getPayer().getResourceID());
     }
     s.append(',');
     // PLAN_OWNERSHIP
