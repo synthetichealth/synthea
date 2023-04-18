@@ -48,7 +48,8 @@ public class DeathModuleTest {
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.loadPayers(new Location(testStateDefault, null),
+        Utilities.getYear(System.currentTimeMillis()));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(time);
   }

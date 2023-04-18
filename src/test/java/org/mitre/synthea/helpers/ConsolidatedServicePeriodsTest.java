@@ -18,7 +18,8 @@ public class ConsolidatedServicePeriodsTest {
   @BeforeClass
   public static void setup() {
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.loadPayers(new Location(testStateDefault, null),
+                Utilities.getYear(System.currentTimeMillis()));
   }
 
   @Test

@@ -158,7 +158,8 @@ public class GeneratorTest {
     }
 
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault),
+        Utilities.getYear(System.currentTimeMillis()));
 
     opts = new Generator.GeneratorOptions();
     opts.population = numberOfPeople;

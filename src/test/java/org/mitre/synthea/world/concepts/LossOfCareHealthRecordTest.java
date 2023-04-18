@@ -48,7 +48,8 @@ public class LossOfCareHealthRecordTest {
         "generic/payers/test_insurance_eligibilities.csv");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
-    PayerManager.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(new Location(testState, null),
+        Utilities.getYear(System.currentTimeMillis()));
     // Load test payers.
     Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
         .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());

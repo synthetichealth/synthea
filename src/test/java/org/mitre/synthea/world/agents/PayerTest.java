@@ -37,7 +37,7 @@ import org.mitre.synthea.world.geography.Location;
 
 public class PayerTest {
 
-  private static String testState;
+  private static String testState = Config.get("test_state.default", "Massachusetts");
   // Covers all healthcare.
   private static Payer testPrivatePayer1;
   // Covers only wellness encounters.
@@ -46,7 +46,9 @@ public class PayerTest {
   private static double medicaidLevel;
   private static long mandateTime;
   private static double minPrivateAffordability;
-
+  private static int endYear = Utilities.getYear(System.currentTimeMillis());
+  private static Location location = new Location(testState, null);
+  
   /**
    * Setup for Payer Tests.
    * @throws Exception on configuration loading error
@@ -54,7 +56,6 @@ public class PayerTest {
   @BeforeClass
   public static void setup() throws Exception {
     TestHelper.loadTestProperties();
-    testState = Config.get("test_state.default", "Massachusetts");
     // Set up Medicaid numbers.
     healthInsModule = new HealthInsuranceModule();
     // In MA, the minimum poverty multiplier is 1.33.
@@ -82,7 +83,7 @@ public class PayerTest {
     Config.set("generate.payers.insurance_plans.income_premium_ratio", "1.0");
     // Clear and reset Payers that may have already been statically loaded.
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(location, endYear);
     // Load the two test payers.
     Set<Payer> privatePayers = PayerManager.getAllPayers().stream()
         .filter(payer -> payer.getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP))
@@ -111,7 +112,7 @@ public class PayerTest {
     Config.set("generate.payers.insurance_plans.income_premium_ratio", "0.034");
     // Clear and reset Payers that may have already been statically loaded.
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(location, endYear);
   }
 
   @Test
@@ -341,7 +342,7 @@ public class PayerTest {
     // However, this unique path to Dual Eligble is only available from 1965-1968.
     // Load the time-boxed plans.
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(location, endYear);
 
     int currentYear = 1960;
     long time = Utilities.convertCalendarYearsToTime(currentYear);
@@ -544,7 +545,7 @@ public class PayerTest {
     PayerManager.clear();
     Config.set("generate.payers.insurance_companies.default_file",
         "generic/payers/bad_test_payers.csv");
-    PayerManager.loadPayers(new Location(testState, null));
+    PayerManager.loadPayers(location, endYear);
   }
 
   @Test

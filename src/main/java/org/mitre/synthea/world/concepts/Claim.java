@@ -332,12 +332,9 @@ public class Claim implements Serializable {
    * Returns whether this Claim was covered by Medicare as the primary payer.
    */
   public boolean coveredByMedicare() {
-    // TODO - Should there be a check here for Dual Eligble?
-    // The previous version (logic was in exporters) did not have this check.
-    return this.getPayer().getName().equals(PayerManager.MEDICARE);
-    // String payerName = this.getPayer().getName();
-    // return payerName.equals(PayerManager.MEDICARE)
-    //    || payerName.equals(PayerManager.DUAL_ELIGIBLE);
+    String payerName = this.getPayer().getName();
+    return payerName.equals(PayerManager.MEDICARE)
+       || payerName.equals(PayerManager.DUAL_ELIGIBLE);
   }
 
   /**

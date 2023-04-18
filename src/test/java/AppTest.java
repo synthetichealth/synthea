@@ -13,6 +13,7 @@ import org.junit.runners.MethodSorters;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.geography.Location;
 
@@ -22,6 +23,7 @@ public class AppTest {
   private static String testTownDefault;
   private static String testStateAlternative;
   private static String testTownAlternative;
+  private static int endYear = Utilities.getYear(System.currentTimeMillis());
 
   /**
    * Configure settings across these tests.
@@ -36,7 +38,7 @@ public class AppTest {
     testTownAlternative = Config.get("test_town.alternative", "Salt Lake City");
     Generator.DEFAULT_STATE = testStateDefault;
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
   }
 
   @Test
@@ -65,7 +67,7 @@ public class AppTest {
   @Test
   public void testAppWithGender() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "4", "-g", "M"};
     final PrintStream original = System.out;
@@ -113,7 +115,7 @@ public class AppTest {
   @Test
   public void testAppWithDifferentLocation() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateAlternative, testTownAlternative));
+    PayerManager.loadPayers(new Location(testStateAlternative, testTownAlternative), endYear);
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "3", testStateAlternative, testTownAlternative};
     final PrintStream original = System.out;
@@ -160,7 +162,7 @@ public class AppTest {
   @Test
   public void testAppWithModuleFilter() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
     TestHelper.exportOff();
     Config.set("test_key", "pre-test value");
     String[] args = {"-s", "0", "-p", "0", "-m", "copd" + File.pathSeparator + "allerg*"};
@@ -198,7 +200,7 @@ public class AppTest {
   @Test
   public void testAppWithLocalConfigFile() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
     TestHelper.exportOff();
     Config.set("test.bar", "42");
     String[] args = {"-s", "0", "-p", "0",
@@ -211,7 +213,7 @@ public class AppTest {
   @Test
   public void testAppWithLocalModuleDir() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "0",
         "-d", "src/test/resources/module", "-m", "copd*"};

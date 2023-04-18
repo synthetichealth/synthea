@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -39,7 +40,8 @@ public class EncounterModuleTest {
     module = new EncounterModule();
     // Ensure Person's Payer is not null.
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.loadPayers(new Location(testStateDefault, null),
+        Utilities.getYear(System.currentTimeMillis()));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage
         .setPlanToNoInsurance(System.currentTimeMillis() + Config.getAsLong("generate.timestep"));

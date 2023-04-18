@@ -25,7 +25,7 @@ public class C19ImmunizationModuleTest {
   @Before
   public void setup() {
     Location here = new Location("Massachusetts", "Billerica");
-    PayerManager.loadPayers(here);
+    PayerManager.loadPayers(here, Utilities.getYear(System.currentTimeMillis()));
   }
 
   private Person buildPerson(long birthday) {
