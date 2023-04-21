@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
+import org.mitre.synthea.editors.KneeXRayEditor;
 import org.mitre.synthea.export.CDWExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
@@ -312,6 +313,8 @@ public class Generator {
       HealthRecordEditors hrm = HealthRecordEditors.getInstance();
       hrm.registerEditor(new GrowthDataErrorsEditor());
     }
+    HealthRecordEditors hrm = HealthRecordEditors.getInstance();
+    hrm.registerEditor(new KneeXRayEditor());
   }
 
   /**

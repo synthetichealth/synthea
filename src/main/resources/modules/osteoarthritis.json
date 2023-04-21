@@ -169,11 +169,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.0121,
-              "transition": "Setup_Knee_Replacement"
+              "distribution": 0.99,
+              "transition": "Knee X-Ray"
             },
             {
-              "distribution": 0.9879,
+              "distribution": 0.01,
               "transition": "End_Encounter"
             }
           ]
@@ -209,7 +209,7 @@
       "type": "SetAttribute",
       "attribute": "joint_replacement",
       "value": "knee",
-      "direct_transition": "Knee X-Ray",
+      "direct_transition": "End_Encounter",
       "name": "Setup_Knee_Replacement"
     },
     "Setup_Hip_Replacement": {
@@ -551,8 +551,21 @@
           ]
         }
       ],
-      "direct_transition": "End_Encounter",
+      "direct_transition": "Prior Auth Delay",
       "name": "Knee X-Ray"
+    },
+    "Prior Auth Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 3,
+          "low": 1
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "Setup_Knee_Replacement",
+      "name": "Prior Auth Delay"
     }
   },
   "gmf_version": 2
