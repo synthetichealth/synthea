@@ -84,8 +84,7 @@ public class CCDAExporterTest {
   @Test
   public void testCCDAExport() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null),
-        Utilities.getYear(System.currentTimeMillis()));
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
@@ -121,8 +120,7 @@ public class CCDAExporterTest {
   @Test
   public void testExportWithNoPreferredWellnessProvider() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null),
-        Utilities.getYear(System.currentTimeMillis()));
+    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
     TestHelper.loadTestProperties();
     Person[] people = TestHelper.getGeneratedPeople();
     List<String> validationErrors = new ArrayList<String>();

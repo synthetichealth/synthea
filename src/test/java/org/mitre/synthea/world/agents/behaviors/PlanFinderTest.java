@@ -29,7 +29,6 @@ import org.mitre.synthea.world.geography.Location;
 public class PlanFinderTest {
 
   private Person person;
-  private int endYear = Utilities.getYear(System.currentTimeMillis());
   private Location location;
 
   /**
@@ -79,7 +78,7 @@ public class PlanFinderTest {
   public void noPayersRandom() {
     Config.set("generate.payers.selection_behavior", "random");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
     PlanFinderRandom finder = new PlanFinderRandom();
     Set<InsurancePlan> options = new HashSet<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
@@ -91,7 +90,7 @@ public class PlanFinderTest {
   public void onePayerRandom() {
     Config.set("generate.payers.selection_behavior", "random");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
     PlanFinderRandom finder = new PlanFinderRandom();
     Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
         .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
@@ -105,7 +104,7 @@ public class PlanFinderTest {
   public void noPayersBestRate() {
     Config.set("generate.payers.selection_behavior", "best_rate");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
     PlanFinderBestRates finder = new PlanFinderBestRates();
     Set<InsurancePlan> options = new HashSet<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
@@ -117,7 +116,7 @@ public class PlanFinderTest {
   public void onePayerBestRate() {
     Config.set("generate.payers.selection_behavior", "best_rate");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
     PlanFinderBestRates finder = new PlanFinderBestRates();
     Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
         .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
@@ -133,7 +132,7 @@ public class PlanFinderTest {
     long birthTime = Utilities.convertCalendarYearsToTime(2000);
     Config.set("generate.payers.selection_behavior", "priority");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
     Set<InsurancePlan> plans = PayerManager.getActivePlans(PayerManager.getAllPayers(), time);
     IPlanFinder finder = new PlanFinderPriority();
     Person priorityPerson = new Person(0L);
@@ -172,6 +171,6 @@ public class PlanFinderTest {
     // Note that "bestrate" should be spelled "best_rate"
     Config.set("generate.payers.selection_behavior", "bestrate");
     PayerManager.clear();
-    PayerManager.loadPayers(location, endYear);
+    PayerManager.loadPayers(location);
   }
 }

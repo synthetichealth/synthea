@@ -66,8 +66,7 @@ public class LogicTest {
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null),
-        Utilities.getYear(System.currentTimeMillis()));
+    PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     for (int i = 1; i <= Utilities.getYear(time - birthTime); i++) {
       person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));

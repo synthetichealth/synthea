@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -33,8 +32,7 @@ public class HealthRecordTest {
   @Before
   public void setup() {
     provider = TestHelper.buildMockProvider();
-    PayerManager.loadPayers(new Location("Massachusetts", null),
-        Utilities.getYear(System.currentTimeMillis()));
+    PayerManager.loadPayers(new Location("Massachusetts", null));
     noInsurance = PayerManager.getNoInsurancePlan();
     time = 0L;
   }

@@ -89,9 +89,8 @@ public class PayerManager {
    * Load into cache the list of payers for a state.
    *
    * @param location the state being loaded.
-   * @param endYear the end year of the simulation.
    */
-  public static void loadPayers(Location location, int endYear) {
+  public static void loadPayers(Location location) {
     // Load the plan eligibility algorithms.
     String eligibilitiesFile = Config.get("generate.payers.insurance_plans.eligibilities_file");
     PlanEligibilityFinder.buildPlanEligibilities(location.state, eligibilitiesFile);
@@ -103,7 +102,7 @@ public class PayerManager {
         || !statesLoaded.contains(Location.getStateName(location.state))) {
       try {
         String payerFile = Config.get("generate.payers.insurance_companies.default_file");
-        loadPayers(location, payerFile, endYear);
+        loadPayers(location, payerFile);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -121,11 +120,10 @@ public class PayerManager {
    *
    * @param location the state being loaded
    * @param fileName Location of the file, relative to src/main/resources
-   * @param endYear the end year of the simulation.
 
    * @throws IOException if the file cannot be read
    */
-  private static void loadPayers(Location location, String fileName, int endYear) throws IOException {
+  private static void loadPayers(Location location, String fileName) throws IOException {
     PayerManager.loadNoInsurance();
 
     String resource = Utilities.readResource(fileName, true, true);
@@ -145,10 +143,10 @@ public class PayerManager {
       }
     }
 
-    PayerManager.loadPlans(endYear);
+    PayerManager.loadPlans();
   }
 
-  private static void loadPlans(int endYear) {
+  private static void loadPlans() {
     String fileName = Config.get("generate.payers.insurance_plans.default_file");
     Iterator<? extends Map<String, String>> csv = null;
     try {
@@ -160,7 +158,7 @@ public class PayerManager {
 
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
-      csvLineToPlan(row, endYear);
+      csvLineToPlan(row);
     }
   }
 
@@ -246,7 +244,7 @@ public class PayerManager {
    * Converts a key-value CSV line to a plan.
    * @param line The Map with the CSV key-value pairs.
    */
-  private static void csvLineToPlan(Map<String, String> line, int endYear) {
+  private static void csvLineToPlan(Map<String, String> line) {
     int payerId = Integer.parseInt(line.remove(PAYER_ID).trim());
     int planId = Integer.parseInt(line.remove(PLAN_ID).trim());
     if (planId < 0) {
@@ -266,7 +264,7 @@ public class PayerManager {
     int yearStart = yearStartStr.equals("") ? 0 : Integer.parseInt(yearStartStr);
     String yearEndStr = line.remove(END_YEAR).trim();
     int yearEnd = StringUtils.isBlank(yearEndStr)
-        ? endYear + 1 : Integer.parseInt(yearEndStr);
+        ? Integer.MAX_VALUE : Integer.parseInt(yearEndStr);
     BigDecimal maxOutOfPocket = new BigDecimal(line.remove(MAX_OOP).trim());
     // If the priority is blank, give it minimum priority (maximum int value).
     String priorityString = line.remove(PRIORITY_LEVEL).trim();

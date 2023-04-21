@@ -23,7 +23,6 @@ public class AppTest {
   private static String testTownDefault;
   private static String testStateAlternative;
   private static String testTownAlternative;
-  private static int endYear = Utilities.getYear(System.currentTimeMillis());
 
   /**
    * Configure settings across these tests.
@@ -38,7 +37,7 @@ public class AppTest {
     testTownAlternative = Config.get("test_town.alternative", "Salt Lake City");
     Generator.DEFAULT_STATE = testStateDefault;
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
   }
 
   @Test
@@ -67,7 +66,7 @@ public class AppTest {
   @Test
   public void testAppWithGender() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "4", "-g", "M"};
     final PrintStream original = System.out;
@@ -115,7 +114,7 @@ public class AppTest {
   @Test
   public void testAppWithDifferentLocation() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateAlternative, testTownAlternative), endYear);
+    PayerManager.loadPayers(new Location(testStateAlternative, testTownAlternative));
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "3", testStateAlternative, testTownAlternative};
     final PrintStream original = System.out;
@@ -162,7 +161,7 @@ public class AppTest {
   @Test
   public void testAppWithModuleFilter() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
     TestHelper.exportOff();
     Config.set("test_key", "pre-test value");
     String[] args = {"-s", "0", "-p", "0", "-m", "copd" + File.pathSeparator + "allerg*"};
@@ -200,7 +199,7 @@ public class AppTest {
   @Test
   public void testAppWithLocalConfigFile() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
     TestHelper.exportOff();
     Config.set("test.bar", "42");
     String[] args = {"-s", "0", "-p", "0",
@@ -213,7 +212,7 @@ public class AppTest {
   @Test
   public void testAppWithLocalModuleDir() throws Exception {
     PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault), endYear);
+    PayerManager.loadPayers(new Location(testStateDefault, testTownDefault));
     TestHelper.exportOff();
     String[] args = {"-s", "0", "-p", "0",
         "-d", "src/test/resources/module", "-m", "copd*"};

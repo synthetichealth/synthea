@@ -88,8 +88,7 @@ public class StateTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null),
-        Utilities.getYear(System.currentTimeMillis()));
+    PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
     person.coverage.setPlanToNoInsurance(time + Utilities.convertTime("years", 20));
     // Ensure Physiology state is enabled by default
