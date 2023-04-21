@@ -84,7 +84,8 @@ public class InsurancePlan implements Serializable {
       + "Given start year: " + activeYearStart + " and end year " + activeYearEnd + ".");
     }
     long activeTimeStart = Utilities.convertCalendarYearsToTime(activeYearStart);
-    long activeTimeEnd = Utilities.convertCalendarYearsToTime(activeYearEnd);
+    long activeTimeEnd = activeYearEnd == Integer.MAX_VALUE ? Long.MAX_VALUE
+        : Utilities.convertCalendarYearsToTime(activeYearEnd);
     this.activeTimeRange = Range.between(activeTimeStart, activeTimeEnd);
     // Set the payer's eligibility criteria.
     this.planEligibility = PlanEligibilityFinder.getEligibilityAlgorithm(eligibilityName);
