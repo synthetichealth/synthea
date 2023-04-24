@@ -250,6 +250,10 @@ public class PayerManager {
     if (planId < 0) {
       throw new RuntimeException("Plan IDs must be non-negative. Given Id " + planId + ".");
     }
+    if (!PayerManager.payers.containsKey(payerId)) {
+      // Return without an error, because the given payer might only exist in another state.
+      return;
+    }
     String planName = line.remove(NAME).trim();
     Set<String> servicesCovered
         = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
@@ -272,10 +276,6 @@ public class PayerManager {
         ? Integer.MAX_VALUE : Integer.parseInt(priorityString);
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
-    if (!PayerManager.payers.containsKey(payerId)) {
-      // Return without an error, because the given payer might only exist in another state.
-      return;
-    }
     Payer payer = PayerManager.payers.get(payerId);
     InsurancePlan newPlan = new InsurancePlan(planId, payer, servicesCovered, deductible,
         defaultCoinsurance, defaultCopay, monthlyPremium, maxOutOfPocket, medicareSupplement,
