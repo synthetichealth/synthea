@@ -57,7 +57,6 @@ public class SNFExporter extends RIFExporter {
 
       HashMap<BB2RIFStructure.SNF, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.SNF.class, person);
-      setClaimLevelValues(fieldValues, person, encounter);
 
       int diagnosisCount = mapDiagnoses(fieldValues, person, encounter);
       int procedureCount = mapProcedures(fieldValues, person, encounter);
@@ -75,6 +74,7 @@ public class SNFExporter extends RIFExporter {
           BB2RIFStructure.SNF.FST_DGNS_E_VRSN_CD);
 
       ConsolidatedClaimLines consolidatedClaimLines = getConsolidateClaimLines(person, encounter);
+      setClaimLevelValues(fieldValues, person, encounter, consolidatedClaimLines);
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.SNF.class)) {
         int claimLine = 1;
@@ -173,7 +173,7 @@ public class SNFExporter extends RIFExporter {
   }
 
   private void setClaimLevelValues(Map<BB2RIFStructure.SNF, String> fieldValues,
-          Person person, HealthRecord.Encounter encounter) {
+          Person person, HealthRecord.Encounter encounter, Claim.ClaimCost cost) {
     // The REQUIRED Fields
     fieldValues.put(BB2RIFStructure.SNF.BENE_ID,
             (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
@@ -193,17 +193,17 @@ public class SNFExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.SNF.ORG_NPI_NUM, encounter.provider.npi);
 
     fieldValues.put(BB2RIFStructure.SNF.CLM_PMT_AMT,
-        String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+        String.format("%.2f", cost.getCoveredCost()));
     if (encounter.claim.coveredByMedicare()) {
       fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
     } else {
       fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT,
-          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+          String.format("%.2f", cost.getCoveredCost()));
     }
     fieldValues.put(BB2RIFStructure.SNF.PRVDR_STATE_CD,
         exporter.locationMapper.getStateCode(encounter.provider.state));
     fieldValues.put(BB2RIFStructure.SNF.CLM_TOT_CHRG_AMT,
-        String.format("%.2f", encounter.claim.getTotalClaimCost()));
+        String.format("%.2f", cost.getTotalClaimCost()));
     boolean isEmergency = encounter.type.equals(HealthRecord.EncounterType.EMERGENCY.toString());
     boolean isUrgent = encounter.type.equals(HealthRecord.EncounterType.URGENTCARE.toString());
     if (isEmergency) {
@@ -214,14 +214,14 @@ public class SNFExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.SNF.CLM_IP_ADMSN_TYPE_CD, "3");
     }
     fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_IP_DDCTBL_AMT,
-        String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
+        String.format("%.2f", cost.getDeductiblePaid()));
     fieldValues.put(BB2RIFStructure.SNF.NCH_BENE_PTA_COINSRNC_LBLTY_AM,
-        String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
+        String.format("%.2f", cost.getCoinsurancePaid()));
     fieldValues.put(BB2RIFStructure.SNF.NCH_IP_NCVRD_CHRG_AMT,
-        String.format("%.2f", encounter.claim.getTotalPatientCost()));
+        String.format("%.2f", cost.getPatientCost()));
     fieldValues.put(BB2RIFStructure.SNF.NCH_IP_TOT_DDCTN_AMT,
-        String.format("%.2f", encounter.claim.getTotalDeductiblePaid().add(
-                encounter.claim.getTotalCoinsurancePaid())));
+        String.format("%.2f", cost.getDeductiblePaid().add(
+                cost.getCoinsurancePaid())));
     int days = (int) ((encounter.stop - encounter.start) / (1000 * 60 * 60 * 24));
     if (days <= 0) {
       days = 1;
@@ -233,9 +233,9 @@ public class SNFExporter extends RIFExporter {
     }
     fieldValues.put(BB2RIFStructure.SNF.BENE_TOT_COINSRNC_DAYS_CNT, "" + coinDays);
     fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_TOT_CHRG_AMT,
-        String.format("%.2f", encounter.claim.getTotalClaimCost()));
+        String.format("%.2f", cost.getTotalClaimCost()));
     fieldValues.put(BB2RIFStructure.SNF.REV_CNTR_NCVRD_CHRG_AMT,
-        String.format("%.2f", encounter.claim.getTotalPatientCost()));
+        String.format("%.2f", cost.getPatientCost()));
 
     // OPTIONAL CODES
     if (encounter.reason != null) {
