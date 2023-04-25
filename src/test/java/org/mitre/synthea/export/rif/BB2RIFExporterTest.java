@@ -159,7 +159,6 @@ public class BB2RIFExporterTest {
     BB2RIFExporter bb2Exporter = BB2RIFExporter.getInstance();
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.hcpcsCodeMapper.hasMap()) {
-      // TODO: more meaningful testing of contents (e.g. count of claims)
       File inpatientFile = expectedExportFolder.toPath().resolve("inpatient.csv").toFile();
       assertTrue(inpatientFile.exists() && inpatientFile.isFile());
       validateInpatientTotals(inpatientFile);
@@ -169,10 +168,12 @@ public class BB2RIFExporterTest {
       File carrierFile = expectedExportFolder.toPath().resolve("carrier.csv").toFile();
       assertTrue(carrierFile.exists() && carrierFile.isFile());
       validateCarrierTotals(carrierFile);
+      File hhaFile = expectedExportFolder.toPath().resolve("hha.csv").toFile();
+      assertTrue(hhaFile.exists() && hhaFile.isFile());
+      validateHomeHealthTotals(hhaFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
-      // TODO: more meaningful testing of contents
       File dmeFile = expectedExportFolder.toPath().resolve("dme.csv").toFile();
       assertTrue(dmeFile.exists() && dmeFile.isFile());
       validateCarrierTotals(dmeFile);
@@ -364,6 +365,83 @@ public class BB2RIFExporterTest {
         claims.put(claimID, claim);
       }
       InpatientTotals claim = claims.get(claimID);
+      claim.addLineItems(row);
+    });
+
+    claims.values().forEach(claim -> {
+      claim.validate();
+    });
+  }
+
+  private static class HomeHealthTotals {
+    private final String claimID;
+    private final BigDecimal claimPaymentAmount;
+    private final BigDecimal claimTotalChargeAmount;
+    private BigDecimal calculatedRevCenterPaymentTotal;
+    private BigDecimal declaredRevCenterPaymentTotal;
+    private BigDecimal calculatedRevCenterChargeTotal;
+    private BigDecimal declaredRevCenterChargeTotal;
+    private static final String TOTAL_CHARGE_REV_CENTER = "0001";
+
+    HomeHealthTotals(LinkedHashMap<String, String> row) {
+      claimID = row.get("CLM_ID");
+      claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
+      claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
+      calculatedRevCenterChargeTotal = Claim.ZERO_CENTS;
+      calculatedRevCenterPaymentTotal = Claim.ZERO_CENTS;
+    }
+
+    void addLineItems(LinkedHashMap<String, String> row) {
+      String revCenter = row.get("REV_CNTR");
+      BigDecimal revCenterChargeTotal = new BigDecimal(
+              row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2);
+      BigDecimal revCenterPaymentTotal = new BigDecimal(
+              row.get("REV_CNTR_PMT_AMT_AMT")).setScale(2);
+      if (revCenter.equals(TOTAL_CHARGE_REV_CENTER)) {
+        declaredRevCenterChargeTotal = revCenterChargeTotal;
+        declaredRevCenterPaymentTotal = revCenterPaymentTotal;
+      } else {
+        calculatedRevCenterChargeTotal = calculatedRevCenterChargeTotal.add(revCenterChargeTotal);
+        calculatedRevCenterPaymentTotal = calculatedRevCenterPaymentTotal.add(
+                revCenterPaymentTotal);
+      }
+    }
+
+    void validate() {
+      assertTrue("Expected claim total payment to equal sum of line item payments",
+              claimPaymentAmount.equals(calculatedRevCenterPaymentTotal));
+      assertTrue("Expected claim total charge to equal sum of line item charges",
+              claimTotalChargeAmount.equals(calculatedRevCenterChargeTotal));
+      if (declaredRevCenterChargeTotal != null) {
+        assertTrue("Expected calculated and declared rev center charge totals to be equal",
+                calculatedRevCenterChargeTotal.equals(declaredRevCenterChargeTotal));
+      }
+      if (declaredRevCenterPaymentTotal != null) {
+        assertTrue("Expected calculated and declared rev center payment totals to be equal",
+                calculatedRevCenterPaymentTotal.equals(declaredRevCenterPaymentTotal));
+      }
+    }
+  }
+
+  private void validateHomeHealthTotals(File file) throws IOException {
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in " + file.getName() + ", found " + rows.size(),
+            rows.size() >= 1);
+    Map<String, HomeHealthTotals> claims = new HashMap<>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length claim ID",
+          row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+      String claimID = row.get("CLM_ID");
+      if (!claims.containsKey(claimID)) {
+        HomeHealthTotals claim = new HomeHealthTotals(row);
+        claims.put(claimID, claim);
+      }
+      HomeHealthTotals claim = claims.get(claimID);
       claim.addLineItems(row);
     });
 
