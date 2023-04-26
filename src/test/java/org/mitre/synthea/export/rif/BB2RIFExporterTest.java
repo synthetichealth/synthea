@@ -174,6 +174,9 @@ public class BB2RIFExporterTest {
       File hhaFile = expectedExportFolder.toPath().resolve("hha.csv").toFile();
       assertTrue(hhaFile.exists() && hhaFile.isFile());
       validateHomeHealthTotals(hhaFile);
+      File hospiceFile = expectedExportFolder.toPath().resolve("hospice.csv").toFile();
+      assertTrue(hospiceFile.exists() && hospiceFile.isFile());
+      validateHospiceTotals(hospiceFile);
     }
 
     if (bb2Exporter.conditionCodeMapper.hasMap() && bb2Exporter.dmeCodeMapper.hasMap()) {
@@ -436,6 +439,66 @@ public class BB2RIFExporterTest {
         claims.put(claimID, claim);
       }
       SnfTotals claim = claims.get(claimID);
+      claim.addLineItems(row);
+    });
+
+    claims.values().forEach(claim -> {
+      claim.validate();
+    });
+  }
+
+  private static class HospiceTotals {
+    private final String claimID;
+    private final BigDecimal claimTotalChargeAmount;
+    private BigDecimal revCenterChargeTotal;
+    private BigDecimal declaredRevCenterChargeTotal;
+    private static final String TOTAL_CHARGE_REV_CENTER = "0001";
+
+    HospiceTotals(LinkedHashMap<String, String> row) {
+      claimID = row.get("CLM_ID");
+      claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
+      revCenterChargeTotal = Claim.ZERO_CENTS;
+    }
+
+    void addLineItems(LinkedHashMap<String, String> row) {
+      String revCenter = row.get("REV_CNTR");
+      BigDecimal revCenterCharge = new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2);
+      if (revCenter.equals(TOTAL_CHARGE_REV_CENTER)) {
+        declaredRevCenterChargeTotal = revCenterCharge;
+      } else {
+        revCenterChargeTotal = revCenterChargeTotal.add(revCenterCharge);
+      }
+    }
+
+    void validate() {
+      assertTrue("Expected claim total to equal sum of line item charges",
+              claimTotalChargeAmount.equals(revCenterChargeTotal));
+      if (declaredRevCenterChargeTotal != null) {
+        assertTrue("Expected total charge rev center line item to match claim charge",
+                declaredRevCenterChargeTotal.equals(claimTotalChargeAmount));
+      }
+    }
+  }
+
+  private void validateHospiceTotals(File file) throws IOException {
+    String csvData = new String(Files.readAllBytes(file.toPath()));
+
+    // the BB2 exporter doesn't use the SimpleCSV class to write the data,
+    // so we can use it here for a level of validation
+    List<LinkedHashMap<String, String>> rows = SimpleCSV.parse(csvData, '|');
+    assertTrue(
+            "Expected at least 1 row in " + file.getName() + ", found " + rows.size(),
+            rows.size() >= 1);
+    Map<String, HospiceTotals> claims = new HashMap<>();
+    rows.forEach(row -> {
+      assertTrue("Expected non-zero length claim ID",
+          row.containsKey("CLM_ID") && row.get("CLM_ID").length() > 0);
+      String claimID = row.get("CLM_ID");
+      if (!claims.containsKey(claimID)) {
+        HospiceTotals claim = new HospiceTotals(row);
+        claims.put(claimID, claim);
+      }
+      HospiceTotals claim = claims.get(claimID);
       claim.addLineItems(row);
     });
 

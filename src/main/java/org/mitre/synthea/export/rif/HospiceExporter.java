@@ -59,7 +59,6 @@ public class HospiceExporter extends RIFExporter {
 
       HashMap<BB2RIFStructure.HOSPICE, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.HOSPICE.class, person);
-      setClaimLevelValues(fieldValues, mappedDiagnosisCodes, days, person, encounter);
 
       // Initial random revenue center from field code CSV
       String revCenter = fieldValues.get(BB2RIFStructure.HOSPICE.REV_CNTR);
@@ -93,6 +92,8 @@ public class HospiceExporter extends RIFExporter {
           }
         }
       }
+      setClaimLevelValues(fieldValues, mappedDiagnosisCodes, days, person, encounter,
+              consolidatedClaimLines);
 
       // Synchronize to ensure all claim lines are grouped togther in output file
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.HOSPICE.class)) {
@@ -176,7 +177,7 @@ public class HospiceExporter extends RIFExporter {
 
   private void setClaimLevelValues(Map<BB2RIFStructure.HOSPICE, String> fieldValues,
           List<String> mappedDiagnosisCodes, int days, Person person,
-          HealthRecord.Encounter encounter) {
+          HealthRecord.Encounter encounter, Claim.ClaimCost cost) {
     fieldValues.put(BB2RIFStructure.HOSPICE.BENE_ID,
             (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
     long claimId = RIFExporter.nextClaimId.getAndDecrement();
@@ -199,12 +200,12 @@ public class HospiceExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.HOSPICE.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.CLM_PMT_AMT,
-            String.format("%.2f", encounter.claim.getTotalClaimCost()));
+            String.format("%.2f", cost.getTotalClaimCost()));
     if (encounter.claim.coveredByMedicare()) {
       fieldValues.put(BB2RIFStructure.HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
     } else {
       fieldValues.put(BB2RIFStructure.HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+              String.format("%.2f", cost.getCoveredCost()));
     }
     fieldValues.put(BB2RIFStructure.HOSPICE.PRVDR_STATE_CD,
             exporter.locationMapper.getStateCode(encounter.provider.state));
@@ -232,7 +233,7 @@ public class HospiceExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.HOSPICE.NCH_BENE_DSCHRG_DT, dischargeDate);
     }
     fieldValues.put(BB2RIFStructure.HOSPICE.CLM_TOT_CHRG_AMT,
-            String.format("%.2f", encounter.claim.getTotalClaimCost()));
+            String.format("%.2f", cost.getTotalClaimCost()));
 
     if (encounter.reason != null) {
       // If the encounter has a recorded reason, enter the mapped
