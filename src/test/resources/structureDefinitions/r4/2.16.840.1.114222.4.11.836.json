@@ -1,0 +1,55 @@
+{
+  "resourceType": "ValueSet",
+  "id": "2.16.840.1.114222.4.11.836",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2012-10-25T12:28:31.000-04:00",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/shareablevalueset", "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm" ]
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/resource-lastReviewDate",
+    "valueDate": "2022-12-15"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+    "valueDate": "2012-10-25"
+  } ],
+  "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.836",
+  "version": "20121025",
+  "name": "Race",
+  "status": "active",
+  "experimental": false,
+  "date": "2012-10-25T12:28:31-04:00",
+  "publisher": "CDC NCHS",
+  "jurisdiction": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+      "valueString": "UNKNOWN"
+    } ]
+  } ],
+  "purpose": "(Clinical Focus: ),(Data Element Scope: ),(Inclusion Criteria: ),(Exclusion Criteria: )",
+  "compose": {
+    "include": [ {
+      "system": "urn:oid:2.16.840.1.113883.6.238",
+      "version": "1.2",
+      "concept": [ {
+        "code": "1002-5",
+        "display": "American Indian or Alaska Native"
+      }, {
+        "code": "2028-9",
+        "display": "Asian"
+      }, {
+        "code": "2054-5",
+        "display": "Black or African American"
+      }, {
+        "code": "2076-8",
+        "display": "Native Hawaiian or Other Pacific Islander"
+      }, {
+        "code": "2106-3",
+        "display": "White"
+      }, {
+        "code": "2131-1",
+        "display": "Other Race"
+      } ]
+    } ]
+  }
+}

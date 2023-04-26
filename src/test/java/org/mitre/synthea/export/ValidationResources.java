@@ -26,9 +26,20 @@ public class ValidationResources {
   /**
    * Create FHIR context, validator, and validation chain.
    */
-  public ValidationResources() {
-    initializeSTU3();
-    initializeR4();
+  private ValidationResources() {
+    // private - use the factory
+  }
+  
+  public static ValidationResources forSTU3() {
+    ValidationResources vr = new ValidationResources();
+    vr.initializeSTU3();
+    return vr;
+  }
+  
+  public static ValidationResources forR4(boolean useUSCore4, boolean useUSCore5) {
+    ValidationResources vr = new ValidationResources();
+    vr.initializeR4(useUSCore4, useUSCore5);
+    return vr;
   }
 
   private void initializeSTU3() {
@@ -47,19 +58,19 @@ public class ValidationResources {
     validatorSTU3 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
-  private void initializeR4() {
+  private void initializeR4(boolean useUSCore4, boolean useUSCore5) {
     FhirContext ctx = FhirR4.getContext();
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
     ValidationSupportChain chain = new ValidationSupportChain(
-            new ValidationSupportR4(ctx),
+            new ValidationSupportR4(ctx, useUSCore4, useUSCore5),
             new DefaultProfileValidationSupport(ctx),
             new CommonCodeSystemsTerminologyService(ctx),
             new InMemoryTerminologyServerValidationSupport(ctx)
     );
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
-    instanceValidator.setErrorForUnknownProfiles(false);
+    instanceValidator.setErrorForUnknownProfiles(true);
     validatorR4 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
