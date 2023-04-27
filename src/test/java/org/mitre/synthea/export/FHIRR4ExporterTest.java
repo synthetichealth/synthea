@@ -107,11 +107,11 @@ public class FHIRR4ExporterTest {
   @Test
   public void testFHIRR4Export() throws Exception {
     TestHelper.loadTestProperties();
-	Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
-	Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
 
-	// setting these static fields randomly per patient creates nondeterministic effects
-	// since the exporters run in parallel below.
+    // setting these static fields randomly per patient creates nondeterministic effects
+    // since the exporters run in parallel below.
     // instead, set them once and run a few patients for each of the relevant combinations
     TestHelper.exportOff();
     FhirR4.reloadIncludeExclude();
@@ -125,19 +125,24 @@ public class FHIRR4ExporterTest {
     // pass 1 - us core off
     // use the uscore 4 validator anyway
     baseTestFHIRR4Export(uscore4Validator);
-    
+
     FhirR4.USE_US_CORE_IG = true;
     FhirR4.useUSCore4();
     // pass 2 - us core 4 enabled
     baseTestFHIRR4Export(uscore4Validator);
-    
+
     ValidationResources uscore5Validator = ValidationResources.forR4(false, true);
     FhirR4.US_CORE_VERSION = "5";
     FhirR4.useUSCore5();
     // pass 3 - us core 5 enabled
     baseTestFHIRR4Export(uscore5Validator);
   }
-  
+
+  /**
+   * Common test steps for testing FHIR R4 exporter. Assumes that various settings
+   * have been previously set, and the given validator is in alignment with those settings.
+   * @param validator ValidationResources configured for specific FHIR settings
+   */
   public void baseTestFHIRR4Export(ValidationResources validator) throws Exception {
     FhirContext ctx = FhirR4.getContext();
     IParser parser = ctx.newJsonParser().setPrettyPrint(true);
@@ -175,10 +180,6 @@ public class FHIRR4ExporterTest {
                * Ignore warnings.
                */
               valid = true;
-            } else if (emessage.getMessage().equals("None of the codings provided are in the value set 'US Core DocumentReference Type' (http://hl7.org/fhir/us/core/ValueSet/us-core-documentreference-type), and a coding from this value set is required) (codes = http://loinc.org#34117-2, http://loinc.org#51847-2)")) {
-            	// ignore this specific error message
-            	// TODO: do something better than just ignoring this
-            	valid = true;
             }
             if (!valid) {
               System.out.println(parser.encodeResourceToString(entry.getResource()));

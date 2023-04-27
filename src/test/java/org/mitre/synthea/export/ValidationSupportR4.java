@@ -40,6 +40,8 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
   /**
    * Defines the custom validation support for various implementation guides.
    * @param ctx the FHIR context
+   * @param useUSCore4 Whether or not to load US Core 4 artifacts
+   * @param useUSCore5 Whether or not to load US Core 5 artifacts
    */
   public ValidationSupportR4(FhirContext ctx, boolean useUSCore4, boolean useUSCore5) {
     super(ctx);
@@ -54,11 +56,12 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
   /**
    * Loads the structure definitions from the given directory.
    * @param rootDir the directory to load structure definitions from
-   * @return a list of structure definitions
+   * @param useUSCore4 Whether or not to load US Core 4 artifacts
+   * @param useUSCore5 Whether or not to load US Core 5 artifacts
    * @throws Throwable when there is an error reading the structure definitions.
    */
-  private void loadFromDirectory(String rootDir, boolean useUSCore4, boolean useUSCore5) throws Throwable {
-
+  private void loadFromDirectory(String rootDir, boolean useUSCore4, boolean useUSCore5)
+      throws Throwable {
     IParser jsonParser = FhirR4.getContext().newJsonParser();
     jsonParser.setParserErrorHandler(new StrictErrorHandler());
 
@@ -67,13 +70,13 @@ public class ValidationSupportR4 extends PrePopulatedValidationSupport {
     Files.walk(path, Integer.MAX_VALUE).filter(Files::isReadable).filter(Files::isRegularFile)
         .filter(p -> p.toString().endsWith(".json")).forEach(f -> {
           try {
-        	  if (!useUSCore4 && f.toString().contains("uscore4")) {
-        		  return;
-        	  }
-        	  if (!useUSCore5 && f.toString().contains("uscore5")) {
-        		  return;
-        	  }
-        	  
+            if (!useUSCore4 && f.toString().contains("uscore4")) {
+              return;
+            }
+            if (!useUSCore5 && f.toString().contains("uscore5")) {
+              return;
+            }
+
             IBaseResource resource = jsonParser.parseResource(new FileReader(f.toFile()));
             handleResource(resource);
           } catch (FileNotFoundException e) {
