@@ -2,7 +2,6 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mitre.synthea.world.agents.Person;
@@ -12,7 +11,7 @@ import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 public class PlanFinderPriority implements IPlanFinder {
 
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person,
+  public InsurancePlan find(List<InsurancePlan> plans, Person person,
       EncounterType service, long time) {
 
     List<InsurancePlan> eligiblePlans = (plans.stream().filter(plan -> (plan.isGovernmentPlan()

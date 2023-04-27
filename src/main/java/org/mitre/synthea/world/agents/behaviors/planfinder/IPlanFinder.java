@@ -1,7 +1,6 @@
 package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.List;
-import java.util.Set;
 
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -25,7 +24,7 @@ public interface IPlanFinder {
    * @return Service provider or null if none is available.
    */
   public InsurancePlan
-      find(Set<InsurancePlan> plans, Person person, EncounterType service, long time);
+      find(List<InsurancePlan> plans, Person person, EncounterType service, long time);
 
   /**
    * Determine whether or not the given payer meets the person's basic requirements.

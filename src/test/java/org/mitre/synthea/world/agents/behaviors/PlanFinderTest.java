@@ -5,9 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -80,7 +79,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(location);
     PlanFinderRandom finder = new PlanFinderRandom();
-    Set<InsurancePlan> options = new HashSet<InsurancePlan>();
+    List<InsurancePlan> options = new ArrayList<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertTrue(payer.isNoInsurance());
@@ -92,8 +91,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(location);
     PlanFinderRandom finder = new PlanFinderRandom();
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
-        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    List<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).toList();
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
@@ -106,7 +105,7 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(location);
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Set<InsurancePlan> options = new HashSet<InsurancePlan>();
+    List<InsurancePlan> options = new ArrayList<InsurancePlan>();
     Payer payer = finder.find(options, person, null, 0L).getPayer();
     assertNotNull(payer);
     assertTrue(payer.isNoInsurance());
@@ -118,8 +117,8 @@ public class PlanFinderTest {
     PayerManager.clear();
     PayerManager.loadPayers(location);
     PlanFinderBestRates finder = new PlanFinderBestRates();
-    Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
-        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+    List<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).toList();
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
@@ -133,7 +132,7 @@ public class PlanFinderTest {
     Config.set("generate.payers.selection_behavior", "priority");
     PayerManager.clear();
     PayerManager.loadPayers(location);
-    Set<InsurancePlan> plans = PayerManager.getActivePlans(PayerManager.getAllPayers(), time);
+    List<InsurancePlan> plans = PayerManager.getActivePlans(PayerManager.getAllPayers(), time);
     IPlanFinder finder = new PlanFinderPriority();
     Person priorityPerson = new Person(0L);
     priorityPerson.attributes.put(Person.OCCUPATION_LEVEL, 0.0);

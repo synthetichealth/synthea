@@ -2,10 +2,12 @@ package org.mitre.synthea.world.agents;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -305,16 +307,16 @@ public class PayerManager {
     InsurancePlan noInsurancePlan = new InsurancePlan(-1, PayerManager.noInsurance,
         new HashSet<String>(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
         BigDecimal.valueOf(Integer.MAX_VALUE), false, false, false, 0,
-        Utilities.getYear(System.currentTimeMillis()) + 1, 0, PlanEligibilityFinder.GENERIC);
+        Integer.MAX_VALUE, 0, PlanEligibilityFinder.GENERIC);
     PayerManager.noInsurance.addPlan(noInsurancePlan);
     PayerManager.noInsurance.setPayerAdjustment(new PayerAdjustmentNone());
   }
 
   /**
-   * Returns the Set of all loaded payers.
+   * Returns the List of all loaded payers.
    */
-  public static Set<Payer> getAllPayers() {
-    return payers.values().stream().collect(Collectors.toSet());
+  public static List<Payer> getAllPayers() {
+    return payers.values().stream().toList();
   }
 
   /**
@@ -336,10 +338,9 @@ public class PayerManager {
    * @return a payer who the person can accept and vice versa.
    */
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
-    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
+    List<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove medicare supplement plans from this check.
-    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
-        .collect(Collectors.toSet());
+    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan()).toList();
     InsurancePlan potentialPlan = planFinder.find(plans, person, service, time);
     if (potentialPlan.isGovernmentPlan()) {
       // Person will always choose a government plan.
@@ -364,10 +365,12 @@ public class PayerManager {
    * @param time  The time for the plan to be active in.
    * @return The set of active plans.
    */
-  public static Set<InsurancePlan> getActivePlans(Set<Payer> payers, long time) {
-    return payers.stream()
-        .map(payer -> payer.getPlans()).flatMap(Set::stream)
-        .filter(plan -> plan.isActive(time)).collect(Collectors.toSet());
+  public static List<InsurancePlan> getActivePlans(List<Payer> payers, long time) {
+    List<InsurancePlan> activePlans = new ArrayList<>();
+    for (Payer payer : payers) {
+      activePlans.addAll(payer.getPlans().stream().filter(plan -> plan.isActive(time)).toList());
+    }
+    return activePlans;
   }
 
   /**
@@ -387,12 +390,10 @@ public class PayerManager {
    */
   public static InsurancePlan findMedicareSupplement(Person person,
       EncounterType service, long time) {
-    Set<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
+    List<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove non-medicare supplement plans from this check.
-    plans = plans.stream().filter(plan ->
-        plan.isMedicareSupplementPlan()).collect(Collectors.toSet());
-    InsurancePlan potentialPlan = planFinder
-        .find(plans, person, service, time);
+    plans = plans.stream().filter(plan -> plan.isMedicareSupplementPlan()).toList();
+    InsurancePlan potentialPlan = planFinder.find(plans, person, service, time);
     return potentialPlan;
   }
 }

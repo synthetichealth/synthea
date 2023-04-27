@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -41,7 +41,7 @@ public class Payer implements Serializable {
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
-  private final Set<InsurancePlan> plans;
+  private final List<InsurancePlan> plans;
   private final String ownership;
   private final int planLinkId;
 
@@ -124,7 +124,7 @@ public class Payer implements Serializable {
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
-    this.plans = new HashSet<InsurancePlan>();
+    this.plans = new ArrayList<InsurancePlan>();
     this.ownership = ownership;
     this.attributes = new LinkedTreeMap<>();
 
@@ -176,7 +176,7 @@ public class Payer implements Serializable {
    * Returns the set of plans offered by this payer.
    * @return the set of plans.
    */
-  public Set<InsurancePlan> getPlans() {
+  public List<InsurancePlan> getPlans() {
     return this.plans;
   }
 

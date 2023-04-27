@@ -2,7 +2,6 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -22,7 +21,7 @@ public class PlanFinderRandom implements IPlanFinder {
    * @return A plan or null if none is available.
    */
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans,
+  public InsurancePlan find(List<InsurancePlan> plans,
       Person person, EncounterType service, long time) {
     List<InsurancePlan> eligiblePlans = new ArrayList<InsurancePlan>();
 

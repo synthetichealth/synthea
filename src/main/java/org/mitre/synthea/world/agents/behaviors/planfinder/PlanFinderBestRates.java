@@ -3,7 +3,7 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.List;
 
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -26,7 +26,7 @@ public class PlanFinderBestRates implements IPlanFinder {
    * @return A plan or null if none is available.
    */
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person,
+  public InsurancePlan find(List<InsurancePlan> plans, Person person,
       EncounterType service, long time) {
     int numberOfExpectedEncounters = 0;
     if (person.hasMultipleRecords) {
