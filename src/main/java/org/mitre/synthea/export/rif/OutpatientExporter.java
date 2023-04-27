@@ -227,7 +227,7 @@ public class OutpatientExporter extends RIFExporter {
   private void setClaimCosts(HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues,
           Claim.ClaimEntry claim) {
     fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
-            claim.getTotalClaimCost()));
+            claim.getCoveredCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_TOT_CHRG_AMT,
             String.format("%.2f", claim.getTotalClaimCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_OP_PRVDR_PMT_AMT,

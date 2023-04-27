@@ -320,7 +320,6 @@ public class BB2RIFExporterTest {
 
   private static class InpatientTotals {
     private final String claimID;
-    private final BigDecimal claimPaymentAmount;
     private final BigDecimal claimTotalChargeAmount;
     private final BigDecimal claimNotCoveredAmount;
     private BigDecimal revCenterChargeTotal;
@@ -328,7 +327,6 @@ public class BB2RIFExporterTest {
 
     InpatientTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
-      claimPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
       claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
       claimNotCoveredAmount = new BigDecimal(row.get("NCH_IP_NCVRD_CHRG_AMT")).setScale(2);
       revCenterChargeTotal = Claim.ZERO_CENTS;
@@ -343,10 +341,8 @@ public class BB2RIFExporterTest {
     }
 
     void validate() {
-      assertTrue("Expected payment to equal charge amount",
-              claimPaymentAmount.equals(claimTotalChargeAmount));
       assertTrue("Expected payment to equal sum of line item charges",
-              claimPaymentAmount.equals(revCenterChargeTotal));
+              claimTotalChargeAmount.equals(revCenterChargeTotal));
       assertTrue("Expected uncovered amount to equal sum of line item uncovered amounts",
               claimNotCoveredAmount.equals(revCenterNotCoveredTotal));
     }
@@ -450,32 +446,44 @@ public class BB2RIFExporterTest {
   private static class HospiceTotals {
     private final String claimID;
     private final BigDecimal claimTotalChargeAmount;
+    private final BigDecimal claimTotalPaymentAmount;
     private BigDecimal revCenterChargeTotal;
+    private BigDecimal revCenterPaymentTotal;
     private BigDecimal declaredRevCenterChargeTotal;
+    private BigDecimal declaredRevCenterPaymentTotal;
     private static final String TOTAL_CHARGE_REV_CENTER = "0001";
 
     HospiceTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
       claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
+      claimTotalPaymentAmount = new BigDecimal(row.get("CLM_PMT_AMT")).setScale(2);
       revCenterChargeTotal = Claim.ZERO_CENTS;
+      revCenterPaymentTotal = Claim.ZERO_CENTS;
     }
 
     void addLineItems(LinkedHashMap<String, String> row) {
       String revCenter = row.get("REV_CNTR");
       BigDecimal revCenterCharge = new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2);
+      BigDecimal revCenterPayment = new BigDecimal(row.get("REV_CNTR_PMT_AMT_AMT")).setScale(2);
       if (revCenter.equals(TOTAL_CHARGE_REV_CENTER)) {
         declaredRevCenterChargeTotal = revCenterCharge;
+        declaredRevCenterPaymentTotal = revCenterPayment;
       } else {
         revCenterChargeTotal = revCenterChargeTotal.add(revCenterCharge);
+        revCenterPaymentTotal = revCenterPaymentTotal.add(revCenterPayment);
       }
     }
 
     void validate() {
       assertTrue("Expected claim total to equal sum of line item charges",
               claimTotalChargeAmount.equals(revCenterChargeTotal));
+      assertTrue("Expected claim payment to equal sum of line item payments",
+              claimTotalPaymentAmount.equals(revCenterPaymentTotal));
       if (declaredRevCenterChargeTotal != null) {
         assertTrue("Expected total charge rev center line item to match claim charge",
                 declaredRevCenterChargeTotal.equals(claimTotalChargeAmount));
+        assertTrue("Expected total payment rev center line item to match claim payment",
+                declaredRevCenterPaymentTotal.equals(claimTotalPaymentAmount));
       }
     }
   }
@@ -590,6 +598,7 @@ public class BB2RIFExporterTest {
     private final BigDecimal claimTotalChargeAmount;
     private final BigDecimal claimBenePaymentAmount;
     private BigDecimal revCenterChargeTotal;
+    private BigDecimal revCenterPaymentTotal;
     private BigDecimal revCenterBenePaymentTotal;
 
     OutpatientTotals(LinkedHashMap<String, String> row) {
@@ -598,21 +607,24 @@ public class BB2RIFExporterTest {
       claimTotalChargeAmount = new BigDecimal(row.get("CLM_TOT_CHRG_AMT")).setScale(2);
       claimBenePaymentAmount = new BigDecimal(row.get("CLM_OP_BENE_PMT_AMT")).setScale(2);
       revCenterChargeTotal = Claim.ZERO_CENTS;
+      revCenterPaymentTotal = Claim.ZERO_CENTS;
       revCenterBenePaymentTotal = Claim.ZERO_CENTS;
     }
 
     void addLineItems(LinkedHashMap<String, String> row) {
       revCenterChargeTotal = revCenterChargeTotal.add(
               new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2));
+      revCenterPaymentTotal = revCenterPaymentTotal.add(
+              new BigDecimal(row.get("REV_CNTR_PMT_AMT_AMT")).setScale(2));
       revCenterBenePaymentTotal = revCenterBenePaymentTotal.add(
               new BigDecimal(row.get("REV_CNTR_BENE_PMT_AMT")).setScale(2));
     }
 
     void validate() {
-      assertTrue("Expected payment to equal charge amount",
-              claimPaymentAmount.equals(claimTotalChargeAmount));
-      assertTrue("Expected payment to equal sum of line item charges",
-              claimPaymentAmount.equals(revCenterChargeTotal));
+      assertTrue("Expected total payment to equal sum of line item payments",
+              claimPaymentAmount.equals(revCenterPaymentTotal));
+      assertTrue("Expected total charge to equal sum of line item charges",
+              claimTotalChargeAmount.equals(revCenterChargeTotal));
       assertTrue("Expected uncovered amount to equal sum of line item uncovered amounts",
               claimBenePaymentAmount.equals(revCenterBenePaymentTotal));
     }

@@ -150,9 +150,9 @@ public class HospiceExporter extends RIFExporter {
                     .divide(BigDecimal.valueOf(Integer.max(1, count)), RoundingMode.HALF_EVEN)
                     .setScale(2, RoundingMode.HALF_EVEN)));
     fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+            String.format("%.2f", lineItem.getCoveredCost()));
     fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_PRVDR_PMT_AMT,
-            String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
+            String.format("%.2f", lineItem.getCoveredCost()));
     fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_TOT_CHRG_AMT,
             String.format("%.2f", lineItem.cost));
     fieldValues.put(BB2RIFStructure.HOSPICE.REV_CNTR_NCVRD_CHRG_AMT,
@@ -200,7 +200,7 @@ public class HospiceExporter extends RIFExporter {
     fieldValues.put(BB2RIFStructure.HOSPICE.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.ORG_NPI_NUM, encounter.provider.npi);
     fieldValues.put(BB2RIFStructure.HOSPICE.CLM_PMT_AMT,
-            String.format("%.2f", cost.getTotalClaimCost()));
+            String.format("%.2f", cost.getCoveredCost()));
     if (encounter.claim.coveredByMedicare()) {
       fieldValues.put(BB2RIFStructure.HOSPICE.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
     } else {

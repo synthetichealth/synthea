@@ -134,10 +134,10 @@ public class DMEExporter extends RIFExporter {
         }
       }
       fieldValues.put(BB2RIFStructure.DME.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-          String.format("%.2f", subTotals.deductiblePaidByPatient));
+          String.format("%.2f", subTotals.getDeductiblePaid()));
       fieldValues.put(BB2RIFStructure.DME.NCH_CARR_CLM_SBMTD_CHRG_AMT,
-          String.format("%.2f", subTotals.cost));
-      BigDecimal paidAmount = subTotals.coinsurancePaidByPayer.add(subTotals.paidByPayer);
+          String.format("%.2f", subTotals.getTotalClaimCost()));
+      BigDecimal paidAmount = subTotals.getCoveredCost();
       fieldValues.put(BB2RIFStructure.DME.CARR_CLM_PRMRY_PYR_PD_AMT,
           String.format("%.2f", paidAmount));
       fieldValues.put(BB2RIFStructure.DME.NCH_CARR_CLM_ALOWD_AMT,
@@ -186,14 +186,14 @@ public class DMEExporter extends RIFExporter {
           fieldValues.put(BB2RIFStructure.DME.LINE_COINSRNC_AMT,
                   String.format("%.2f", lineItem.getCoinsurancePaid()));
           // LINE_BENE_PMT_AMT and NCH_CLM_BENE_PMT_AMT are always 0, set in field value spreadsheet
-          BigDecimal providerAmount = lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer);
+          BigDecimal providerAmount = lineItem.getCoveredCost();
           fieldValues.put(BB2RIFStructure.DME.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(BB2RIFStructure.DME.LINE_NCH_PMT_AMT,
               String.format("%.2f", providerAmount));
           fieldValues.put(BB2RIFStructure.DME.LINE_SBMTD_CHRG_AMT,
-              String.format("%.2f", lineItem.cost));
-          BigDecimal allowedAmount = lineItem.cost.subtract(lineItem.adjustment);
+              String.format("%.2f", lineItem.getTotalClaimCost()));
+          BigDecimal allowedAmount = lineItem.getTotalClaimCost().subtract(lineItem.adjustment);
           fieldValues.put(BB2RIFStructure.DME.LINE_ALOWD_CHRG_AMT,
               String.format("%.2f", allowedAmount));
           fieldValues.put(BB2RIFStructure.DME.LINE_PRMRY_ALOWD_CHRG_AMT,
