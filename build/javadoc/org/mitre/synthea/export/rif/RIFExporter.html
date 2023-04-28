@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":9};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":9,"i11":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -272,13 +272,20 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected java.util.List&lt;<a href="../../world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBillableProcedureAndMedAdminItems(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">getBillableProcedureAndMedAdminItems</a></span>&#8203;(<a href="../../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</code></th>
+<td class="colLast">
+<div class="block">Get a list of claim entries for procedures with mappable codes and medication administrations.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
 <td class="colLast">
 <div class="block">Get the date of disability.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDiagnosesCodes(org.mitre.synthea.world.agents.Person,long)">getDiagnosesCodes</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;time)</code></th>
@@ -286,7 +293,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the list of active diagnoses at a point in time.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                     java.lang.String&nbsp;code)</code></th>
@@ -294,7 +301,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the earliest diagnosis time stamp for a particular condition.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                     java.lang.String[]&nbsp;codes)</code></th>
@@ -302,7 +309,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the earliest diagnosis time stamp for a set of conditions.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                             java.lang.String&nbsp;code)</code></th>
@@ -310,7 +317,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the earliest unmapped diagnosis time stamp for a particular condition.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                             java.lang.String[]&nbsp;codes)</code></th>
@@ -318,7 +325,15 @@ extends java.lang.Object</pre>
 <div class="block">Returns the earliest unmapped diagnosis time stamp for a set of conditions.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>protected java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFirstMappedHCPCSCode(java.util.List,org.mitre.synthea.helpers.RandomNumberGenerator)">getFirstMappedHCPCSCode</a></span>&#8203;(java.util.List&lt;<a href="../../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;&nbsp;codes,
+                       <a href="../../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</code></th>
+<td class="colLast">
+<div class="block">Get the first code that can be mapped to HCPCS.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">hasPartABCoverage</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
                  long&nbsp;timestamp)</code></th>
@@ -326,14 +341,14 @@ extends java.lang.Object</pre>
 <div class="block">Test whether a person has part A and B coverage at the specified timestamp.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>protected static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisabled(org.mitre.synthea.world.agents.Person)">isDisabled</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
 <td class="colLast">
 <div class="block">Was the person disabled at any time.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>protected static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseSimpleDate(java.lang.String)">parseSimpleDate</a></span>&#8203;(java.lang.String&nbsp;dateStr)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -685,7 +700,7 @@ extends java.lang.Object</pre>
 <a id="getDateOfDisability(org.mitre.synthea.world.agents.Person)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getDateOfDisability</h4>
 <pre class="methodSignature">protected&nbsp;long&nbsp;getDateOfDisability&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
@@ -695,6 +710,40 @@ extends java.lang.Object</pre>
 <dd><code>person</code> - the person</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the date of disability or Long.MAX_VALUE if never disabled</dd>
+</dl>
+</li>
+</ul>
+<a id="getFirstMappedHCPCSCode(java.util.List,org.mitre.synthea.helpers.RandomNumberGenerator)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFirstMappedHCPCSCode</h4>
+<pre class="methodSignature">protected&nbsp;java.lang.String&nbsp;getFirstMappedHCPCSCode&#8203;(java.util.List&lt;<a href="../../world/concepts/HealthRecord.Code.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Code</a>&gt;&nbsp;codes,
+                                                   <a href="../../helpers/RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;rand)</pre>
+<div class="block">Get the first code that can be mapped to HCPCS.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>codes</code> - a list of codes, assumed to be SNOMED</dd>
+<dd><code>rand</code> - a source of randomness</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the mapped HCPCS code or null if no mapping could be found</dd>
+</dl>
+</li>
+</ul>
+<a id="getBillableProcedureAndMedAdminItems(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getBillableProcedureAndMedAdminItems</h4>
+<pre class="methodSignature">protected&nbsp;java.util.List&lt;<a href="../../world/concepts/Claim.ClaimEntry.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimEntry</a>&gt;&nbsp;getBillableProcedureAndMedAdminItems&#8203;(<a href="../../world/concepts/HealthRecord.Encounter.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Encounter</a>&nbsp;encounter)</pre>
+<div class="block">Get a list of claim entries for procedures with mappable codes and medication administrations.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>encounter</code> - the encounter</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of claim entries that are billable</dd>
 </dl>
 </li>
 </ul>
