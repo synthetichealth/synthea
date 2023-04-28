@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -81,8 +80,7 @@ public class InpatientExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.INPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.INPATIENT.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
-          .getGovernmentPayerPlan()) {
+      if (encounter.claim.coveredByMedicare()) {
         fieldValues.put(BB2RIFStructure.INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(BB2RIFStructure.INPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,

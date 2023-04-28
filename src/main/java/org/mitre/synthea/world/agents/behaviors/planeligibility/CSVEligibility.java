@@ -53,6 +53,9 @@ public class CSVEligibility implements IPlanEligibility {
     }
 
     for (String key : inputEligibilities.keySet()) {
+      if (key.equals("Notes")) {
+        continue;
+      }
       if (!eligbilityOptions.containsKey(key)) {
         throw new IllegalArgumentException("Invalid CSV eligibility input column: " + key + ".");
       }

@@ -65,8 +65,8 @@ public class FHIRSTU3ExporterTest {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
-    String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
   }
 
   /**
@@ -264,7 +264,7 @@ public class FHIRSTU3ExporterTest {
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -326,7 +326,7 @@ public class FHIRSTU3ExporterTest {
 
     PayerManager.loadNoInsurance();
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 

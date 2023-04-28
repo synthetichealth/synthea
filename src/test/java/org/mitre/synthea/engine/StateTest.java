@@ -90,7 +90,7 @@ public class StateTest {
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
     PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + Utilities.convertTime("years", 20));
     // Ensure Physiology state is enabled by default
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
@@ -2175,7 +2175,7 @@ public class StateTest {
 
     // Run the whole module against the Person
     try {
-      module.process(person, 0L);
+      module.process(person, time);
       fail("Expected a RuntimeException to be thrown");
     } catch (RuntimeException ex) {
       // The module doesn't set "Arterial Pressure Values" when Physiology states

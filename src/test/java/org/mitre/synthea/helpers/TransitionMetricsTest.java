@@ -42,6 +42,8 @@ public class TransitionMetricsTest {
     person.setProvider(EncounterType.AMBULATORY, mockProvider);
     long time = System.currentTimeMillis();
     LifecycleModule.birth(person, time);
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance(time);
 
     Module example = TestHelper.getFixture("example_module.json");
     // some notes about this example module:
@@ -83,6 +85,7 @@ public class TransitionMetricsTest {
       person.setProvider(EncounterType.AMBULATORY, mockProvider);
       time = System.currentTimeMillis();
       person.attributes.put(Person.BIRTHDATE, time);
+      person.coverage.setPlanToNoInsurance(time);
 
       time = run(person, example, time);
       metrics.recordStats(person, time, modules);
@@ -108,7 +111,6 @@ public class TransitionMetricsTest {
 
   private long run(Person person, Module singleModule, long start) {
     long time = start;
-    PayerManager.loadNoInsurance();
     // hack the wellness encounter just in case
     person.releaseCurrentEncounter(time, EncounterModule.NAME);
     EncounterModule.createEncounter(person, time, EncounterType.WELLNESS,
@@ -128,8 +130,8 @@ public class TransitionMetricsTest {
         person.attributes.remove(EncounterModule.ACTIVE_WELLNESS_ENCOUNTER);
         person.releaseCurrentEncounter(time, EncounterModule.NAME);
       }
-      person.coverage.setPlanToNoInsurance(time);
       time += Utilities.convertTime("years", 1);
+      person.coverage.setPlanToNoInsurance(time);
     }
     return time;
   }

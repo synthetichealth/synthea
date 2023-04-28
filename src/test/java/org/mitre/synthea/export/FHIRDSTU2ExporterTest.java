@@ -41,7 +41,6 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 /**
@@ -183,7 +182,7 @@ public class FHIRDSTU2ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -242,10 +241,10 @@ public class FHIRDSTU2ExporterTest {
     int age = 35;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    PayerManager.loadPayers(new Location(testStateDefault, null));
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 

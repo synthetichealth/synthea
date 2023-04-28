@@ -21,6 +21,7 @@ import org.mitre.synthea.engine.Transition.DirectTransition;
 import org.mitre.synthea.engine.Transition.LookupTableKey;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -40,12 +41,13 @@ public class LookupTableTransitionTest {
    */
   @BeforeClass
   public static void setup() throws Exception {
-    // Set the lookuptable CSV location to the test directory.
-    Config.set("generate.lookup_tables", "generic/lookup_tables/");
+    PayerManager.loadNoInsurance();
 
     // Hack in the lookuptable_test.json module
     modules =
         Whitebox.<Map<String, Module.ModuleSupplier>>getInternalState(Module.class, "modules");
+    Config.set("generate.lookup_tables", "generic/lookup_tables/");
+
     // hack to load these test modules so they can be called by the CallSubmodule state
     Module lookuptabletestModule = TestHelper.getFixture("lookuptable_test.json");
     modules.put("lookuptable_test", new Module.ModuleSupplier(lookuptabletestModule));
@@ -304,6 +306,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 45; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -329,6 +336,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 55; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -354,6 +366,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 55; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -379,6 +396,9 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "irish");
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    person.coverage.newEnrollmentPeriod(conditionTime);
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -404,6 +424,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "irish");
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 53; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -429,6 +454,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "italian");
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Arizona");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 65; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -454,6 +484,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "italian");
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Arizona");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 15; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -482,6 +517,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.ETHNICITY, "spanish");
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Arizona");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 15; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -510,6 +550,11 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.GENDER, "F");
     // 'Alaska' is not accounted for in lookuptabltitis.csv.
     person.attributes.put(Person.STATE, "Alaska");
+    person.coverage.setPlanToNoInsurance(birthTime);
+    for (int i = 1; i <= 15; i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_test").get();
@@ -532,6 +577,7 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
@@ -554,6 +600,7 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
@@ -576,6 +623,7 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "New Hampshire");
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
@@ -598,6 +646,7 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();
@@ -620,6 +669,7 @@ public class LookupTableTransitionTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
+    person.coverage.setPlanToNoInsurance(conditionTime);
 
     // Process the lookuptable_test Module.
     Module lookuptableTestModule = modules.get("lookuptable_timerangetest").get();

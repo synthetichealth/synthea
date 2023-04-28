@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -195,8 +194,7 @@ public class SNFExporter extends RIFExporter {
 
     fieldValues.put(BB2RIFStructure.SNF.CLM_PMT_AMT,
         String.format("%.2f", encounter.claim.getTotalCoveredCost()));
-    if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
-        .getGovernmentPayerPlan()) {
+    if (encounter.claim.coveredByMedicare()) {
       fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
     } else {
       fieldValues.put(BB2RIFStructure.SNF.NCH_PRMRY_PYR_CLM_PD_AMT,

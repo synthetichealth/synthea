@@ -38,7 +38,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
-import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
@@ -159,7 +158,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /** History of the currently active module. */
   public List<State> history;
   /** Record of insurance coverage. */
-  public CoverageRecord coverage;
+  public final CoverageRecord coverage;
 
   /**
    * Person constructor.
@@ -774,9 +773,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public boolean canAffordPlan(InsurancePlan plan) {
     double incomePercentage
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
-    BigDecimal income = BigDecimal.valueOf((Integer) this.attributes.get(Person.INCOME));
-    BigDecimal yearlyCost = plan.getYearlyCost();
-    return income.multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) == 1;
+    int income = (int) this.attributes.get(Person.INCOME);
+    BigDecimal yearlyCost = plan.getYearlyCost(income);
+    return BigDecimal.valueOf(income)
+        .multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
   }
 
   /**
@@ -789,7 +789,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   private boolean stillHasIncome(long time) {
     int incomeRemaining = this.coverage.incomeRemaining(time);
     boolean stillHasIncome = incomeRemaining > 0;
-    if (!stillHasIncome) {
+    if (!stillHasIncome && !this.coverage.getPlanAtTime(time).isNoInsurance()) {
       // Person no longer has income for the year. They will switch to No Insurance.
       this.coverage.setPlanToNoInsurance(time);
     }
@@ -816,8 +816,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       // TODO - Check that they can still afford the premium due to any newly incurred health costs.
 
       // Pay the payer.
-      PlanRecord planRecord = this.coverage.getPlanRecordAtTime(time);
-      planRecord.payMonthlyPremiums();
+      this.coverage.payMonthlyPremiumsAtTime(time,
+          (double) this.attributes.get(Person.OCCUPATION_LEVEL),
+          (int) this.attributes.get(Person.INCOME));
       // Update the last monthly premium paid.
       this.attributes.put(Person.LAST_MONTH_PAID, currentMonth);
       // Check if person has gone in debt. If yes, then they receive no insurance.

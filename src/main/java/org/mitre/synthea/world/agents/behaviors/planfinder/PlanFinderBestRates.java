@@ -3,9 +3,8 @@ package org.mitre.synthea.world.agents.behaviors.planfinder;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.List;
 
-import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -27,7 +26,7 @@ public class PlanFinderBestRates implements IPlanFinder {
    * @return A plan or null if none is available.
    */
   @Override
-  public InsurancePlan find(Set<InsurancePlan> plans, Person person,
+  public InsurancePlan find(List<InsurancePlan> plans, Person person,
       EncounterType service, long time) {
     int numberOfExpectedEncounters = 0;
     if (person.hasMultipleRecords) {
@@ -38,20 +37,20 @@ public class PlanFinderBestRates implements IPlanFinder {
       numberOfExpectedEncounters = twelveMonthEncounterCount(person.defaultRecord, time);
     }
 
-    HealthRecord.Encounter dummy
-        = person.record.new Encounter(time, EncounterType.AMBULATORY.toString());
-
     InsurancePlan bestRatePlan = PayerManager.getNoInsurancePlan();
     BigDecimal bestExpectedRate = BigDecimal.valueOf(Double.MAX_VALUE);
 
     for (InsurancePlan plan : plans) {
-      if (IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time)) {
+      if ((plan.isGovernmentPlan()
+          || IPlanFinder.meetsAffordabilityRequirements(plan, person, service, time))
+          && plan.accepts(person, time)) {
         // First, calculate the annual premium.
-        BigDecimal expectedRate = plan.getMonthlyPremium().multiply(BigDecimal.valueOf(12))
+        BigDecimal expectedRate = plan.getMonthlyPremium(
+            (int) person.attributes.get(Person.INCOME)).multiply(BigDecimal.valueOf(12))
             .setScale(2, RoundingMode.HALF_EVEN);
         // Second, calculate expected copays based on last years visits.
         expectedRate = expectedRate.add(
-            plan.determineCopay(dummy).multiply(
+            plan.determineCopay(EncounterType.AMBULATORY.toString(), time).multiply(
                 BigDecimal.valueOf(numberOfExpectedEncounters)))
                 .setScale(2, RoundingMode.HALF_EVEN);
         // TODO consider deductibles, coinsurance, covered services, etc.

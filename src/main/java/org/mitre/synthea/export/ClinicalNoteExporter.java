@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
@@ -104,12 +103,14 @@ public class ClinicalNoteExporter {
       }
     }
 
-    InsurancePlan plan = person.coverage.getPlanAtTime(encounter.start);
-    if (plan == null || plan.getPayer() == null) {
-      person.attributes.put("ehr_insurance", "unknown insurance coverage");
+    InsurancePlan plan;
+    if (person.alive(encounterTime)) {
+      plan = person.coverage.getPlanAtTime(encounter.start);
     } else {
-      person.attributes.put("ehr_insurance", plan.getPayer().getName());
+      // If an encounter occurs after death, a plan record may be non-existent, throwing an error.
+      plan = person.coverage.getLastPlanRecord().getPlan();
     }
+    person.attributes.put("ehr_insurance", plan.getPayer().getName());
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
     person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));
     person.attributes.put("ehr_symptoms", person.getSymptoms());

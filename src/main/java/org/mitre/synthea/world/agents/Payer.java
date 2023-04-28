@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -41,10 +41,9 @@ public class Payer implements Serializable {
   private final Map<String, Object> attributes;
   private final String name;
   public final String uuid;
-  private final Set<InsurancePlan> plans;
+  private final List<InsurancePlan> plans;
   private final String ownership;
-  private final int priority;
-  private final String planLinkId;
+  private final int planLinkId;
 
   // The States that this payer covers & operates in.
   private final Set<String> statesCovered;
@@ -116,7 +115,7 @@ public class Payer implements Serializable {
    * @param statesCovered The list of states covered.
    * @param ownership The type of ownership (private/government).
    */
-  public Payer(String name, String id, Set<String> statesCovered, String ownership, int priority) {
+  public Payer(String name, int id, Set<String> statesCovered, String ownership) {
     if (name == null || name.isEmpty()) {
       throw new RuntimeException("ERROR: Payer must have a non-null name. Payer ID: " + id + ".");
     }
@@ -125,10 +124,9 @@ public class Payer implements Serializable {
     this.planLinkId = id;
     this.uuid = UUID.nameUUIDFromBytes((id + this.name).getBytes()).toString();
     this.statesCovered = statesCovered;
-    this.plans = new HashSet<InsurancePlan>();
+    this.plans = new ArrayList<InsurancePlan>();
     this.ownership = ownership;
     this.attributes = new LinkedTreeMap<>();
-    this.priority = priority;
 
     // Initial tracking values.
     this.entryUtilization = HashBasedTable.create();
@@ -139,22 +137,7 @@ public class Payer implements Serializable {
     this.totalQOLS = 0.0;
   }
 
-  /**
-   * Creates and adds a new plan with the given attributes to this payer.
-   * @param servicesCovered The services covered.
-   * @param deductible  The deductible.
-   * @param defaultCoinsurance  The default coinsurance.
-   * @param defaultCopay  The default copay.
-   * @param monthlyPremium  The monthly premium.
-   */
-  public void createPlan(Set<String> servicesCovered, double deductible, double defaultCoinsurance,
-      double defaultCopay, double monthlyPremium, boolean medicareSupplement,
-      int yearStart, int yearEnd, String eligibilityName) {
-    InsurancePlan newPlan = new InsurancePlan(
-        this, servicesCovered, BigDecimal.valueOf(deductible),
-        BigDecimal.valueOf(defaultCoinsurance), BigDecimal.valueOf(defaultCopay),
-        BigDecimal.valueOf(monthlyPremium), medicareSupplement, yearStart, yearEnd,
-        eligibilityName);
+  public void addPlan(InsurancePlan newPlan) {
     this.plans.add(newPlan);
   }
 
@@ -182,14 +165,6 @@ public class Payer implements Serializable {
   }
 
   /**
-   * Returns the priority level of this payer.
-   * @return The priority level of the payer.
-   */
-  public int getPriority() {
-    return this.priority;
-  }
-
-  /**
    * Returns the Map of the payer's second class attributes.
    * @return any second-class attributes.
    */
@@ -201,7 +176,7 @@ public class Payer implements Serializable {
    * Returns the set of plans offered by this payer.
    * @return the set of plans.
    */
-  public Set<InsurancePlan> getPlans() {
+  public List<InsurancePlan> getPlans() {
     return this.plans;
   }
 
@@ -579,7 +554,7 @@ public class Payer implements Serializable {
    * Returns the plan link id for this payer.
    * @return  The plan link id.
    */
-  public String getPlanLinkId() {
+  public int getPlanLinkId() {
     return this.planLinkId;
   }
 

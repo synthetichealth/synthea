@@ -142,13 +142,6 @@ public class GeneratorTest {
     String testTownDefault = Config.get("test_town.default", "Bedford");
     String testStateAlt = Config.get("test_state.alternative", "California");
     String testTownAlt = Config.get("test_town.alternative", "South Gate");
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    PayerManager.clear();
-    PayerManager.loadPayers(new Location(testStateAlt, testTownAlt));
-
     int numberOfPeople = 2;
     Generator.GeneratorOptions opts = new Generator.GeneratorOptions();
     opts.population = numberOfPeople;

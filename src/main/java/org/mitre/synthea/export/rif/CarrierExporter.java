@@ -15,7 +15,6 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
@@ -120,8 +119,7 @@ public class CarrierExporter extends RIFExporter {
               getCarrier(encounter.provider.state, BB2RIFStructure.CARRIER.CARR_NUM));
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_PMT_AMT,
               String.format("%.2f", encounter.claim.getTotalCoveredCost()));
-      if (encounter.claim.plan == PayerManager.getGovernmentPayer(PayerManager.MEDICARE)
-          .getGovernmentPayerPlan()) {
+      if (encounter.claim.coveredByMedicare()) {
         fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,

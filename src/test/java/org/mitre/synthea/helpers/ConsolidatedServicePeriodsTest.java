@@ -28,7 +28,9 @@ public class ConsolidatedServicePeriodsTest {
     int age = 67;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
+    person.coverage.setPlanToNoInsurance(birthTime);
     long now = Instant.now().toEpochMilli();
+    person.coverage.setPlanToNoInsurance(now + Utilities.convertTime("days", 9));
     Provider p1 = new Provider();
     p1.npi = "p1";
     Provider p2 = new Provider();

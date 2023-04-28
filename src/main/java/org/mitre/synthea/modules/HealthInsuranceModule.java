@@ -7,7 +7,6 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
@@ -21,7 +20,7 @@ public class HealthInsuranceModule extends Module {
   public static double mandateOccupation =
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
   public static double povertyLevel =
-          Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 12880);
+          Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 17550);
 
   /**
    * HealthInsuranceModule constructor.
@@ -47,16 +46,12 @@ public class HealthInsuranceModule extends Module {
       return true;
     }
 
-    // If the payerHistory at the current age is null, they must get insurance for the new year.
+    // Enroll patients in new insurance for the year if a new enrollment period is reached.
     // Note: This means the person will check to change insurance yearly, within one timestep
     // after their birthday.
-    InsurancePlan planAtTime = person.coverage.getPlanAtTime(time);
-    if (planAtTime == null) {
+    if (person.coverage.newEnrollmentPeriod(time)) {
       // Update their last plan's payer with person's QOLS for that year.
-      Payer lastPayer = person.coverage.getLastPayer();
-      if (lastPayer != null) {
-        lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
-      }
+      person.coverage.updateLastPayerQols(person.getQolsForYear(Utilities.getYear(time) - 1));
       // Update the insurance for this person at this time.
       this.updateInsurance(person, time);
     }
@@ -80,9 +75,8 @@ public class HealthInsuranceModule extends Module {
     InsurancePlan secondaryPlan = PayerManager.getNoInsurancePlan();
     // If the payer is Medicare, they may buy supplemental insurance.
     if (newPlan.mayPurchaseSupplement() && (person.rand() <= 0.9)) {
-      // 9 out of 10 Medicare patients have supplemental insurance.
+      // 9 out of 10 Medicare patients have supplemental insurance, buy some if affordable.
       // https://www.kff.org/medicare/issue-brief/a-snapshot-of-sources-of-coverage-among-medicare-beneficiaries-in-2018/
-      // Buy supplemental insurance if it is affordable.
       secondaryPlan = PayerManager.findMedicareSupplement(person, null, time);
     }
     // Set the person's new plan(s).

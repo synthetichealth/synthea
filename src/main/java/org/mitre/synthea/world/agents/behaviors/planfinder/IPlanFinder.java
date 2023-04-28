@@ -1,7 +1,6 @@
 package org.mitre.synthea.world.agents.behaviors.planfinder;
 
 import java.util.List;
-import java.util.Set;
 
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.modules.HealthInsuranceModule;
@@ -25,7 +24,7 @@ public interface IPlanFinder {
    * @return Service provider or null if none is available.
    */
   public InsurancePlan
-      find(Set<InsurancePlan> plans, Person person, EncounterType service, long time);
+      find(List<InsurancePlan> plans, Person person, EncounterType service, long time);
 
   /**
    * Determine whether or not the given payer meets the person's basic requirements.
@@ -42,8 +41,7 @@ public interface IPlanFinder {
     // Occupation determines whether their employer will pay for insurance after the mandate.
     double occupation = (Double) person.attributes.get(Person.OCCUPATION_LEVEL);
 
-    return plan.accepts(person, time)
-        && (person.canAffordPlan(plan) || (time >= HealthInsuranceModule.mandateTime
+    return (person.canAffordPlan(plan) || (time >= HealthInsuranceModule.mandateTime
         && occupation >= HealthInsuranceModule.mandateOccupation))
         && (plan.coversService(null)); // For a null service, Plan.coversService returns true.
   }
@@ -58,11 +56,7 @@ public interface IPlanFinder {
       RandomNumberGenerator rand) {
     if (options.isEmpty()) {
       return PayerManager.getNoInsurancePlan();
-    } else if (options.size() == 1) {
-      return options.get(0);
-    } else {
-      // There are a few equally good options, pick one randomly.
-      return options.get(rand.randInt(options.size()));
     }
+    return options.get(rand.randInt(options.size()));
   }
 }

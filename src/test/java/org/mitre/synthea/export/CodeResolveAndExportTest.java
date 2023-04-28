@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +42,6 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
-import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -94,7 +92,8 @@ public class CodeResolveAndExportTest {
     time = new SimpleDateFormat("yyyy-MM-dd").parse("2013-06-10").getTime();
     person.attributes.put(Person.ID, "12345");
     person.attributes.put(Person.NAME, "Foo Bar");
-    person.attributes.put(Person.BIRTHDATE, time - years(30));
+    long birthDate = time - years(30);
+    person.attributes.put(Person.BIRTHDATE, birthDate);
     person.attributes.put(Person.ADDRESS, "12 Palm Ave");
     person.attributes.put(Person.CITY, "Bandligar");
     person.attributes.put(Person.STATE, "Gromnigar");
@@ -107,6 +106,9 @@ public class CodeResolveAndExportTest {
     person.attributes.put(Person.SOCIOECONOMIC_CATEGORY, "Middle");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     person.attributes.put(Person.EDUCATION, "Middle");
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance(birthDate);
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
@@ -115,11 +117,7 @@ public class CodeResolveAndExportTest {
     Provider.loadProviders(location, ProviderTest.providerRandom);
 
     PayerManager.clear();
-    Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
-    Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
-    PayerManager.loadPayers(new Location(Generator.DEFAULT_STATE, null));
+    PayerManager.loadNoInsurance();
 
     File stu3OutputDirectory = Exporter.getOutputFolder("fhir_stu3", person);
     stu3OutputPath = stu3OutputDirectory.toPath().resolve(Exporter.filename(person, "", "json"));
@@ -132,14 +130,6 @@ public class CodeResolveAndExportTest {
   @Test
   public void resolveAndExportEncounterCodes()
       throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-    // Must process health insurance from birth to encounter time to prevent null pointers.
-    HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
-    Calendar c = Calendar.getInstance();
-    c.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
-    while (c.getTimeInMillis() <= time) {
-      healthInsuranceModule.process(person, c.getTimeInMillis());
-      c.add(Calendar.YEAR, 1);
-    }
     Encounter encounter = person.encounterStart(time, EncounterType.EMERGENCY);
     String reasonCode = "417981005";
     String reasonDisplay = "Exposure to blood and/or body fluid";

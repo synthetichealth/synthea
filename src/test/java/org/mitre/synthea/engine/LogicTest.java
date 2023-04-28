@@ -61,12 +61,16 @@ public class LogicTest {
     mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-Emergency");
     person.setProvider(EncounterType.EMERGENCY, mock);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    long birthTime = 0L;
+    person.attributes.put(Person.BIRTHDATE, birthTime);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
     PayerManager.loadPayers(new Location(testStateDefault, null));
     person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    for (int i = 1; i <= Utilities.getYear(time - birthTime); i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
     person.coverage.setPlanToNoInsurance(time);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
