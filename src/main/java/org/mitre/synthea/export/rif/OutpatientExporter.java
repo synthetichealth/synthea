@@ -238,16 +238,12 @@ public class OutpatientExporter extends RIFExporter {
 
   private void setLineItemCosts(HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues,
           Claim.ClaimEntry claim) {
-    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
-            String.format("%.2f", claim.getCoveredCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
             String.format("%.2f", claim.getPatientCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_CASH_DDCTBL_AMT,
             String.format("%.2f", claim.getDeductiblePaid()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
             String.format("%.2f", claim.getCoinsurancePaid()));
-    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
-            String.format("%.2f", claim.getTotalClaimCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PRVDR_PMT_AMT,
             String.format("%.2f", claim.getTotalClaimCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PTNT_RSPNSBLTY_PMT,

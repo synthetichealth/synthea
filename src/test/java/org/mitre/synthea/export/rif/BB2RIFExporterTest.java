@@ -102,7 +102,7 @@ public class BB2RIFExporterTest {
     URI uri = BB2RIFExporterTest.class.getResource("/module").toURI();
     File file = new File(uri);
     Module.addModules(file);
-    int numberOfPeople = 10;
+    int numberOfPeople = 20;
     Exporter.ExporterRuntimeOptions exportOpts = new Exporter.ExporterRuntimeOptions();
     Generator.GeneratorOptions generatorOpts = new Generator.GeneratorOptions();
     generatorOpts.population = numberOfPeople;
