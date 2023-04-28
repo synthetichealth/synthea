@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,7 +76,7 @@ public class PayerManager {
       Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
 
   /* Map of all loaded Payers. */
-  private static final Map<Integer, Payer> payers = new HashMap<Integer, Payer>();
+  private static final Map<Integer, Payer> payers = new LinkedHashMap<Integer, Payer>();
 
   /* No Insurance Payer. */
   private static Payer noInsurance;
@@ -316,7 +316,7 @@ public class PayerManager {
    * Returns the List of all loaded payers.
    */
   public static List<Payer> getAllPayers() {
-    return payers.values().stream().toList();
+    return payers.values().stream().collect(Collectors.toList());
   }
 
   /**
@@ -340,7 +340,8 @@ public class PayerManager {
   public static InsurancePlan findPlan(Person person, EncounterType service, long time) {
     List<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove medicare supplement plans from this check.
-    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan()).toList();
+    plans = plans.stream().filter(plan -> !plan.isMedicareSupplementPlan())
+        .collect(Collectors.toList());
     InsurancePlan potentialPlan = planFinder.find(plans, person, service, time);
     if (potentialPlan.isGovernmentPlan()) {
       // Person will always choose a government plan.
@@ -368,7 +369,8 @@ public class PayerManager {
   public static List<InsurancePlan> getActivePlans(List<Payer> payers, long time) {
     List<InsurancePlan> activePlans = new ArrayList<>();
     for (Payer payer : payers) {
-      activePlans.addAll(payer.getPlans().stream().filter(plan -> plan.isActive(time)).toList());
+      activePlans.addAll(payer.getPlans().stream().filter(plan -> plan.isActive(time))
+          .collect(Collectors.toList()));
     }
     return activePlans;
   }
@@ -392,7 +394,8 @@ public class PayerManager {
       EncounterType service, long time) {
     List<InsurancePlan> plans = getActivePlans(getAllPayers(), time);
     // Remove non-medicare supplement plans from this check.
-    plans = plans.stream().filter(plan -> plan.isMedicareSupplementPlan()).toList();
+    plans = plans.stream().filter(plan -> plan.isMedicareSupplementPlan())
+        .collect(Collectors.toList());
     InsurancePlan potentialPlan = planFinder.find(plans, person, service, time);
     return potentialPlan;
   }

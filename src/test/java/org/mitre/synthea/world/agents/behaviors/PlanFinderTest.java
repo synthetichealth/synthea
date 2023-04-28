@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -92,7 +93,7 @@ public class PlanFinderTest {
     PayerManager.loadPayers(location);
     PlanFinderRandom finder = new PlanFinderRandom();
     List<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
-        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).toList();
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toList());
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
@@ -118,7 +119,7 @@ public class PlanFinderTest {
     PayerManager.loadPayers(location);
     PlanFinderBestRates finder = new PlanFinderBestRates();
     List<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
-        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).toList();
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toList());
     Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
         person, null, 0L).getPayer();
     assertNotNull(payer);
