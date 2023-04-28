@@ -14,7 +14,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../../jquery/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -89,13 +89,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -149,6 +149,29 @@ implements java.io.Serializable</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id">id</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section>
 <ul class="blockList">
@@ -163,18 +186,23 @@ implements java.io.Serializable</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.mitre.synthea.world.agents.Payer,java.util.Set,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,boolean,int,int,java.lang.String)">InsurancePlan</a></span>&#8203;(<a href="../../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int,org.mitre.synthea.world.agents.Payer,java.util.Set,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,boolean,boolean,boolean,int,int,int,java.lang.String)">InsurancePlan</a></span>&#8203;(int&nbsp;id,
+             <a href="../../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer,
              java.util.Set&lt;java.lang.String&gt;&nbsp;servicesCovered,
              java.math.BigDecimal&nbsp;deductible,
              java.math.BigDecimal&nbsp;defaultCoinsurance,
              java.math.BigDecimal&nbsp;defaultCopay,
              java.math.BigDecimal&nbsp;monthlyPremium,
+             java.math.BigDecimal&nbsp;maxOutOfPocket,
              boolean&nbsp;medicareSupplement,
+             boolean&nbsp;isACA,
+             boolean&nbsp;incomeBasedPremium,
              int&nbsp;activeYearStart,
              int&nbsp;activeYearEnd,
+             int&nbsp;priority,
              java.lang.String&nbsp;eligibilityName)</code></th>
 <td class="colLast">
-<div class="block">Constructor for an InsurancePlan.</div>
+<div class="block">Insurance Plan Constructor.</div>
 </td>
 </tr>
 </table>
@@ -236,7 +264,8 @@ implements java.io.Serializable</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#determineCopay(org.mitre.synthea.world.concepts.HealthRecord.Entry)">determineCopay</a></span>&#8203;(<a href="../HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#determineCopay(java.lang.String,long)">determineCopay</a></span>&#8203;(java.lang.String&nbsp;entryType,
+              long&nbsp;entryStart)</code></th>
 <td class="colLast">
 <div class="block">Determines the copay owed for this Payer based on the type of entry.</div>
 </td>
@@ -255,102 +284,117 @@ implements java.io.Serializable</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMonthlyPremium()">getMonthlyPremium</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxOop()">getMaxOop</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMonthlyPremium(int)">getMonthlyPremium</a></span>&#8203;(int&nbsp;income)</code></th>
+<td class="colLast">
+<div class="block">Returns the monthly premium for this plan.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPatientCoinsurance()">getPatientCoinsurance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPayer()">getPayer</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPayerCoinsurance()">getPayerCoinsurance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPriority()">getPriority</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Returns the priority level of this plan.</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getYearlyCost()">getYearlyCost</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getYearlyCost(int)">getYearlyCost</a></span>&#8203;(int&nbsp;income)</code></th>
 <td class="colLast">
 <div class="block">Returns the yearly cost of this plan.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incrementCoveredEntries(org.mitre.synthea.world.concepts.HealthRecord.Entry)">incrementCoveredEntries</a></span>&#8203;(<a href="../HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code></th>
 <td class="colLast">
 <div class="block">Increments the number of covered entries.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incrementCustomers(java.lang.String)">incrementCustomers</a></span>&#8203;(java.lang.String&nbsp;personId)</code></th>
 <td class="colLast">
 <div class="block">Increments the number of customers that have used this plan's payers.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incrementUncoveredEntries(org.mitre.synthea.world.concepts.HealthRecord.Entry)">incrementUncoveredEntries</a></span>&#8203;(<a href="../HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</code></th>
 <td class="colLast">
 <div class="block">Increments the number of uncovered entries.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isActive(long)">isActive</a></span>&#8203;(long&nbsp;time)</code></th>
 <td class="colLast">
 <div class="block">Returns whether this plan is active at the given time.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isCopayBased()">isCopayBased</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether this plan is copay-based.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isGovernmentPlan()">isGovernmentPlan</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether this is a government plan.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isMedicareSupplementPlan()">isMedicareSupplementPlan</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether this plans is a medicare supplement plan.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isNoInsurance()">isNoInsurance</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether this plan is based on the no insurance payer.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayPurchaseSupplement()">mayPurchaseSupplement</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether a customer may buy a supplement to this plan.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>java.math.BigDecimal</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#payMonthlyPremium()">payMonthlyPremium</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#payMonthlyPremium(double,int)">payMonthlyPremium</a></span>&#8203;(double&nbsp;employerLevel,
+                 int&nbsp;income)</code></th>
 <td class="colLast">
 <div class="block">Pays the plan's premium to the Payer, increasing their revenue.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -372,6 +416,25 @@ implements java.io.Serializable</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="id">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>id</h4>
+<pre>public final&nbsp;int id</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section>
 <ul class="blockList">
@@ -379,23 +442,28 @@ implements java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.mitre.synthea.world.agents.Payer,java.util.Set,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,boolean,int,int,java.lang.String)">
+<a id="&lt;init&gt;(int,org.mitre.synthea.world.agents.Payer,java.util.Set,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,java.math.BigDecimal,boolean,boolean,boolean,int,int,int,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>InsurancePlan</h4>
-<pre>public&nbsp;InsurancePlan&#8203;(<a href="../../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer,
+<pre>public&nbsp;InsurancePlan&#8203;(int&nbsp;id,
+                     <a href="../../agents/Payer.html" title="class in org.mitre.synthea.world.agents">Payer</a>&nbsp;payer,
                      java.util.Set&lt;java.lang.String&gt;&nbsp;servicesCovered,
                      java.math.BigDecimal&nbsp;deductible,
                      java.math.BigDecimal&nbsp;defaultCoinsurance,
                      java.math.BigDecimal&nbsp;defaultCopay,
                      java.math.BigDecimal&nbsp;monthlyPremium,
+                     java.math.BigDecimal&nbsp;maxOutOfPocket,
                      boolean&nbsp;medicareSupplement,
+                     boolean&nbsp;isACA,
+                     boolean&nbsp;incomeBasedPremium,
                      int&nbsp;activeYearStart,
                      int&nbsp;activeYearEnd,
+                     int&nbsp;priority,
                      java.lang.String&nbsp;eligibilityName)</pre>
-<div class="block">Constructor for an InsurancePlan.</div>
+<div class="block">Insurance Plan Constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>payer</code> - The plan's payer.</dd>
@@ -404,6 +472,13 @@ implements java.io.Serializable</pre>
 <dd><code>defaultCoinsurance</code> - The default coinsurance.</dd>
 <dd><code>defaultCopay</code> - The default copay.</dd>
 <dd><code>monthlyPremium</code> - The monthly premium.</dd>
+<dd><code>maxOutOfPocket</code> - Max yearly out of pocket cost to patient.</dd>
+<dd><code>medicareSupplement</code> - If this is a medicare supplement plan.</dd>
+<dd><code>isACA</code> - If this is an Affordable Care Act plan.</dd>
+<dd><code>incomeBasedPremium</code> - If this plan has an income-based percentage premium.</dd>
+<dd><code>activeYearStart</code> - The first year the plan is available.</dd>
+<dd><code>activeYearEnd</code> - The last year the plan is available.</dd>
+<dd><code>priority</code> - The priority of this plan for patients to choose it.</dd>
 <dd><code>eligibilityName</code> - The eligibility algorithm to use.</dd>
 </dl>
 </li>
@@ -434,30 +509,38 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
-<a id="determineCopay(org.mitre.synthea.world.concepts.HealthRecord.Entry)">
+<a id="determineCopay(java.lang.String,long)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>determineCopay</h4>
-<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;determineCopay&#8203;(<a href="../HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a>&nbsp;entry)</pre>
+<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;determineCopay&#8203;(java.lang.String&nbsp;entryType,
+                                           long&nbsp;entryStart)</pre>
 <div class="block">Determines the copay owed for this Payer based on the type of entry.
  For now, this returns a default copay. But in the future there will be different
  copays depending on the encounter type covered. If the entry is a wellness visit
  and the time is after the mandate year, then the copay is $0.00.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>entry</code> - the entry to calculate the copay for.</dd>
+<dd><code>entryType</code> - the entry type to calculate the copay for.</dd>
+<dd><code>entryStart</code> - The start time of the entry.</dd>
 </dl>
 </li>
 </ul>
-<a id="getMonthlyPremium()">
+<a id="getMonthlyPremium(int)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getMonthlyPremium</h4>
-<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getMonthlyPremium()</pre>
+<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getMonthlyPremium&#8203;(int&nbsp;income)</pre>
+<div class="block">Returns the monthly premium for this plan. If this is an income based premium, it will
+ use the income to calculate what the monthly premium should be.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>income</code> - the income to base income-based premiums on.</dd>
+</dl>
 </li>
 </ul>
 <a id="getDeductible()">
@@ -487,13 +570,14 @@ implements java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getPatientCoinsurance()</pre>
 </li>
 </ul>
-<a id="payMonthlyPremium()">
+<a id="payMonthlyPremium(double,int)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>payMonthlyPremium</h4>
-<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;payMonthlyPremium()</pre>
+<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;payMonthlyPremium&#8203;(double&nbsp;employerLevel,
+                                              int&nbsp;income)</pre>
 <div class="block">Pays the plan's premium to the Payer, increasing their revenue.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -630,13 +714,13 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
-<a id="getYearlyCost()">
+<a id="getYearlyCost(int)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getYearlyCost</h4>
-<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getYearlyCost()</pre>
+<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getYearlyCost&#8203;(int&nbsp;income)</pre>
 <div class="block">Returns the yearly cost of this plan.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -714,6 +798,20 @@ implements java.io.Serializable</pre>
 <div class="block">Returns whether this plans is a medicare supplement plan.</div>
 </li>
 </ul>
+<a id="getPriority()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPriority</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getPriority()</pre>
+<div class="block">Returns the priority level of this plan.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The priority level of the plan.</dd>
+</dl>
+</li>
+</ul>
 <a id="isCopayBased()">
 <!--   -->
 </a>
@@ -726,6 +824,15 @@ implements java.io.Serializable</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>whether this is a copay-based plan.</dd>
 </dl>
+</li>
+</ul>
+<a id="getMaxOop()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxOop</h4>
+<pre class="methodSignature">public&nbsp;java.math.BigDecimal&nbsp;getMaxOop()</pre>
 </li>
 </ul>
 <a id="toString()">
@@ -793,13 +900,13 @@ implements java.io.Serializable</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

@@ -14,7 +14,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
 </head>
 <body>
@@ -2793,15 +2793,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>planLinkId</h4>
-<pre>java.lang.String planLinkId</pre>
+<pre>int planLinkId</pre>
 </li>
 <li class="blockList">
 <h4>plans</h4>
-<pre>java.util.Set&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&gt; plans</pre>
-</li>
-<li class="blockList">
-<h4>priority</h4>
-<pre>int priority</pre>
+<pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a>&gt; plans</pre>
 </li>
 <li class="blockList">
 <h4>revenue</h4>
@@ -3240,12 +3236,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
 </li>
 <li class="blockList">
-<h4>plan</h4>
-<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
-</li>
-<li class="blockList">
-<h4>secondaryPlan</h4>
-<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
+<h4>planRecord</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a> planRecord</pre>
 </li>
 <li class="blockList">
 <h4>totals</h4>
@@ -4063,72 +4055,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h3>Serialized Fields</h3>
 <ul class="blockList">
 <li class="blockList">
+<h4>nextEnrollmentPeriod</h4>
+<pre>java.lang.Long nextEnrollmentPeriod</pre>
+</li>
+<li class="blockList">
 <h4>person</h4>
 <pre><a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a> person</pre>
 </li>
 <li class="blockListLast">
 <h4>planHistory</h4>
-<pre>java.util.List&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">CoverageRecord.PlanRecord</a>&gt; planHistory</pre>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a id="org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord">
-<!--   -->
-</a>
-<h3>Class <a href="org/mitre/synthea/world/concepts/healthinsurance/CoverageRecord.PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord.PlanRecord</a> extends java.lang.Object implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>-547445624583743525L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>coveredExpenses</h4>
-<pre>java.math.BigDecimal coveredExpenses</pre>
-</li>
-<li class="blockList">
-<h4>healthcareExpenses</h4>
-<pre>java.math.BigDecimal healthcareExpenses</pre>
-</li>
-<li class="blockList">
-<h4>id</h4>
-<pre>java.lang.String id</pre>
-</li>
-<li class="blockList">
-<h4>insuranceCosts</h4>
-<pre>java.math.BigDecimal insuranceCosts</pre>
-</li>
-<li class="blockList">
-<h4>owner</h4>
-<pre>java.lang.String owner</pre>
-</li>
-<li class="blockList">
-<h4>ownerName</h4>
-<pre>java.lang.String ownerName</pre>
-</li>
-<li class="blockList">
-<h4>plan</h4>
-<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
-</li>
-<li class="blockList">
-<h4>remainingDeductible</h4>
-<pre>java.math.BigDecimal remainingDeductible</pre>
-</li>
-<li class="blockList">
-<h4>secondaryPlan</h4>
-<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
-</li>
-<li class="blockList">
-<h4>start</h4>
-<pre>long start</pre>
-</li>
-<li class="blockListLast">
-<h4>stop</h4>
-<pre>long stop</pre>
+<pre>java.util.Set&lt;<a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a>&gt; planHistory</pre>
 </li>
 </ul>
 </li>
@@ -4159,8 +4095,24 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>java.math.BigDecimal defaultCopay</pre>
 </li>
 <li class="blockList">
+<h4>id</h4>
+<pre>int id</pre>
+</li>
+<li class="blockList">
+<h4>incomeBasedPremium</h4>
+<pre>boolean incomeBasedPremium</pre>
+</li>
+<li class="blockList">
 <h4>insuranceStatus</h4>
 <pre>java.lang.String insuranceStatus</pre>
+</li>
+<li class="blockList">
+<h4>isACA</h4>
+<pre>boolean isACA</pre>
+</li>
+<li class="blockList">
+<h4>maxOutOfPocket</h4>
+<pre>java.math.BigDecimal maxOutOfPocket</pre>
 </li>
 <li class="blockList">
 <h4>medicareSupplement</h4>
@@ -4178,9 +4130,73 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>planEligibility</h4>
 <pre><a href="org/mitre/synthea/world/agents/behaviors/planeligibility/IPlanEligibility.html" title="interface in org.mitre.synthea.world.agents.behaviors.planeligibility">IPlanEligibility</a> planEligibility</pre>
 </li>
+<li class="blockList">
+<h4>priority</h4>
+<pre>int priority</pre>
+</li>
 <li class="blockListLast">
 <h4>servicesCovered</h4>
 <pre>java.util.Set&lt;java.lang.String&gt; servicesCovered</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="org.mitre.synthea.world.concepts.healthinsurance.PlanRecord">
+<!--   -->
+</a>
+<h3>Class <a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">org.mitre.synthea.world.concepts.healthinsurance.PlanRecord</a> extends java.lang.Object implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>-547445624583743525L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>coveredExpenses</h4>
+<pre>java.math.BigDecimal coveredExpenses</pre>
+</li>
+<li class="blockList">
+<h4>id</h4>
+<pre>java.lang.String id</pre>
+</li>
+<li class="blockList">
+<h4>insuranceExpenses</h4>
+<pre>java.math.BigDecimal insuranceExpenses</pre>
+</li>
+<li class="blockList">
+<h4>outOfPocketExpenses</h4>
+<pre>java.math.BigDecimal outOfPocketExpenses</pre>
+</li>
+<li class="blockList">
+<h4>ownerName</h4>
+<pre>java.lang.String ownerName</pre>
+</li>
+<li class="blockList">
+<h4>ownership</h4>
+<pre>java.lang.String ownership</pre>
+</li>
+<li class="blockList">
+<h4>plan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> plan</pre>
+</li>
+<li class="blockList">
+<h4>remainingDeductible</h4>
+<pre>java.math.BigDecimal remainingDeductible</pre>
+</li>
+<li class="blockList">
+<h4>secondaryPlan</h4>
+<pre><a href="org/mitre/synthea/world/concepts/healthinsurance/InsurancePlan.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">InsurancePlan</a> secondaryPlan</pre>
+</li>
+<li class="blockList">
+<h4>start</h4>
+<pre>long start</pre>
+</li>
+<li class="blockListLast">
+<h4>stop</h4>
+<pre>long stop</pre>
 </li>
 </ul>
 </li>
