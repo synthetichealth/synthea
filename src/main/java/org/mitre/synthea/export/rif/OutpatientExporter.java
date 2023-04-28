@@ -39,11 +39,21 @@ public class OutpatientExporter extends RIFExporter {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
+      if (encounter.claim.getTotalClaimCost().compareTo(Claim.ZERO_CENTS) == 0) {
+        continue;
+      }
       if (!hasPartABCoverage(person, encounter.stop)) {
         continue;
       }
       if (!RIFExporter.getClaimTypes(encounter).contains(ClaimType.OUTPATIENT)) {
         continue;
+      }
+
+      // Get subset of billable items
+      List<Claim.ClaimEntry> billableItems = getBillableProcedureAndMedAdminItems(encounter);
+      Claim.ClaimEntry billableTotal = encounter.claim.new ClaimEntry(null);
+      for (Claim.ClaimEntry lineItem: billableItems) {
+        billableTotal.addCosts(lineItem);
       }
 
       long claimId = RIFExporter.nextClaimId.getAndDecrement();
@@ -70,13 +80,12 @@ public class OutpatientExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.OUTPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
-              encounter.claim.getTotalClaimCost()));
+      setClaimCosts(fieldValues, billableTotal);
       if (encounter.claim.coveredByMedicare()) {
         fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
       } else {
         fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
-                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+                String.format("%.2f", billableTotal.getCoveredCost()));
       }
       fieldValues.put(BB2RIFStructure.OUTPATIENT.PRVDR_STATE_CD,
               exporter.locationMapper.getStateCode(encounter.provider.state));
@@ -91,30 +100,6 @@ public class OutpatientExporter extends RIFExporter {
         field = "20"; // the patient died before the encounter ended
       }
       fieldValues.put(BB2RIFStructure.OUTPATIENT.PTNT_DSCHRG_STUS_CD, field);
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_TOT_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_OP_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getTotalPatientCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_BENE_PTB_DDCTBL_AMT,
-              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_CASH_DDCTBL_AMT,
-              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
-              String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PTNT_RSPNSBLTY_PMT,
-              String.format("%.2f",
-                      encounter.claim.getTotalDeductiblePaid()
-                              .add(encounter.claim.getTotalCoinsurancePaid())));
-      fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_RDCD_COINSRNC_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
 
       String icdReasonCode = null;
       if (encounter.reason != null) {
@@ -192,15 +177,10 @@ public class OutpatientExporter extends RIFExporter {
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.OUTPATIENT.class)) {
         int claimLine = 1;
-        for (Claim.ClaimEntry lineItem : encounter.claim.items) {
+        for (Claim.ClaimEntry lineItem : billableItems) {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
-            for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (exporter.hcpcsCodeMapper.canMap(code)) {
-                hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
-                break; // take the first mappable code for each procedure
-              }
-            }
+            hcpcsCode = getFirstMappedHCPCSCode(lineItem.entry.codes, person);
             fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, revCenter);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
@@ -217,23 +197,12 @@ public class OutpatientExporter extends RIFExporter {
               fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD, "UN"); // Unit
             }
           }
-          if (hcpcsCode == null) {
-            continue;
-          }
 
           fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine++));
           fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_DT,
                   RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(BB2RIFStructure.OUTPATIENT.HCPCS_CD, hcpcsCode);
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_RATE_AMT,
-              String.format("%.2f", (lineItem.cost)));
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
-              String.format("%.2f", lineItem.coinsurancePaidByPayer.add(lineItem.paidByPayer)));
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
-              String.format("%.2f", lineItem.cost));
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
-              String.format("%.2f", lineItem.copayPaidByPatient
-              .add(lineItem.deductiblePaidByPatient).add(lineItem.patientOutOfPocket)));
+          setLineItemCosts(fieldValues, lineItem);
           exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
         }
 
@@ -245,11 +214,49 @@ public class OutpatientExporter extends RIFExporter {
                   RIFExporter.bb2DateFromTimestamp(encounter.start));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(BB2RIFStructure.OUTPATIENT.HCPCS_CD, "99241");
+          setClaimCosts(fieldValues, encounter.claim.totals);
+          setLineItemCosts(fieldValues, encounter.claim.totals);
           exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
         }
       }
       claimCount++;
     }
     return claimCount;
+  }
+
+  private void setClaimCosts(HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues,
+          Claim.ClaimEntry claim) {
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_PMT_AMT, String.format("%.2f",
+            claim.getCoveredCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_TOT_CHRG_AMT,
+            String.format("%.2f", claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_OP_PRVDR_PMT_AMT,
+            String.format("%.2f", claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_BENE_PTB_DDCTBL_AMT,
+            String.format("%.2f", claim.getDeductiblePaid()));
+  }
+
+  private void setLineItemCosts(HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues,
+          Claim.ClaimEntry claim) {
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
+            String.format("%.2f", claim.getPatientCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_CASH_DDCTBL_AMT,
+            String.format("%.2f", claim.getDeductiblePaid()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_COINSRNC_WGE_ADJSTD_C,
+            String.format("%.2f", claim.getCoinsurancePaid()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PRVDR_PMT_AMT,
+            String.format("%.2f", claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PTNT_RSPNSBLTY_PMT,
+            String.format("%.2f", claim.getDeductiblePaid().add(claim.getCoinsurancePaid())));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_RDCD_COINSRNC_AMT,
+            String.format("%.2f", claim.getCoinsurancePaid()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_RATE_AMT,
+        String.format("%.2f", claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_PMT_AMT_AMT,
+        String.format("%.2f", claim.getCoveredCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_TOT_CHRG_AMT,
+        String.format("%.2f", claim.getTotalClaimCost()));
+    fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
+        String.format("%.2f", claim.getPatientCost()));
   }
 }
