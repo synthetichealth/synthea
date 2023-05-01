@@ -1,6 +1,8 @@
 package org.mitre.synthea;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,11 +21,29 @@ public class ParallelTestingService {
    * @throws Exception when bad things happen during the test
    */
   public static List<String> runInParallel(PersonTester pt) throws Exception {
+    return runInParallel(10, pt);
+  }
+
+  /**
+   * Runs the provided PersonTester in parallel. The PersonTester will be passed up to 10 people.
+   * Tests are run in a fixed thread pool with some of the tests having to wait until the first few
+   * tests complete. Tests can return a List of validation errors (in String form).
+   * @param pt An implementation of PersonTester
+   * @return A list of errors
+   * @throws Exception when bad things happen during the test
+   */
+  public static List<String> runInParallel(int numberOfPeople, PersonTester pt) throws Exception {
+    if (numberOfPeople > 10) {
+      throw new IllegalArgumentException(
+          "At most 10 people are supported in the ParallelTestingService");
+    }
     ExecutorService service = Executors.newFixedThreadPool(6);
     List<String> validationErrors = new ArrayList<>();
-    int numberOfPeople = 10;
-    List<Future<Exception>> potentialCrashes = new ArrayList<>(10);
+    List<Future<Exception>> potentialCrashes = new ArrayList<>(numberOfPeople);
     Person[] people = TestHelper.getGeneratedPeople();
+    // shuffle the people just for a little more variety when re-used
+    Collections.shuffle(Arrays.asList(people));
+
     for (int i = 0; i < numberOfPeople; i++) {
       Person person = people[i];
       final int counter = i;

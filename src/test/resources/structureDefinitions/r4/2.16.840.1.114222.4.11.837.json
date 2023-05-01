@@ -1,0 +1,46 @@
+{
+  "resourceType": "ValueSet",
+  "id": "2.16.840.1.114222.4.11.837",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2012-10-25T12:28:31.000-04:00",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/shareablevalueset", "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm" ]
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-keyWord",
+    "valueString": "C-CDA,CCDAr1_1,CCDAr21"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/resource-lastReviewDate",
+    "valueDate": "2022-12-15"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+    "valueDate": "2012-10-25"
+  } ],
+  "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.837",
+  "version": "20121025",
+  "name": "Ethnicity",
+  "status": "active",
+  "experimental": false,
+  "date": "2012-10-25T12:28:31-04:00",
+  "publisher": "CDC NCHS",
+  "jurisdiction": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+      "valueString": "UNKNOWN"
+    } ]
+  } ],
+  "purpose": "(Clinical Focus: ),(Data Element Scope: ),(Inclusion Criteria: ),(Exclusion Criteria: )",
+  "compose": {
+    "include": [ {
+      "system": "urn:oid:2.16.840.1.113883.6.238",
+      "version": "1.2",
+      "concept": [ {
+        "code": "2135-2",
+        "display": "Hispanic or Latino"
+      }, {
+        "code": "2186-5",
+        "display": "Not Hispanic or Latino"
+      } ]
+    } ]
+  }
+}

@@ -111,7 +111,7 @@ public class FHIRSTU3ExporterTest {
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
 
-    ValidationResources validationResources = new ValidationResources();
+    ValidationResources validationResources = ValidationResources.forSTU3();
 
     List<String> errors = ParallelTestingService.runInParallel((person) -> {
       List<String> validationErrors = new ArrayList<String>();

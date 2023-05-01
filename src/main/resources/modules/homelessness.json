@@ -54,11 +54,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.009975,
+              "distribution": 0.990025,
               "transition": "Potential_Homelessness"
             },
             {
-              "distribution": 0.990025,
+              "distribution": 0.009975,
               "transition": "Begin_Homelessness"
             }
           ]
@@ -218,7 +218,7 @@
     },
     "Question_1": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -265,7 +265,7 @@
     },
     "Question_2_Positive": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -281,7 +281,7 @@
     },
     "Question_2_Negative": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -318,7 +318,7 @@
         "in the real world homelessness has a stronger asssociation with drug abuse",
         "see http://www.nationalhomeless.org/factsheets/addiction.pdf "
       ],
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -334,7 +334,7 @@
     },
     "Question_3_Nonabuser": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -350,7 +350,7 @@
     },
     "Question_4": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -382,7 +382,7 @@
     },
     "Question_5_Yes": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -398,7 +398,7 @@
     },
     "Question_5_No": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",
@@ -414,7 +414,7 @@
     },
     "Question_6": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "codes": [
         {
           "system": "LOINC",

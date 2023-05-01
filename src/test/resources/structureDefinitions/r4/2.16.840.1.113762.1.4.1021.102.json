@@ -1,0 +1,46 @@
+{
+  "resourceType": "ValueSet",
+  "id": "2.16.840.1.113762.1.4.1021.102",
+  "meta": {
+    "versionId": "5",
+    "lastUpdated": "2021-11-12T10:46:16.000-05:00",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/shareablevalueset", "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm" ]
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-author",
+    "valueString": "MD Partners Author"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/resource-lastReviewDate",
+    "valueDate": "2022-12-15"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+    "valueDate": "2021-10-28"
+  } ],
+  "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1021.102",
+  "version": "20211028",
+  "name": "Unknown or refused to answer",
+  "status": "active",
+  "experimental": false,
+  "date": "2021-10-28T01:01:40-04:00",
+  "publisher": "MD Partners Steward",
+  "jurisdiction": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+      "valueString": "UNKNOWN"
+    } ]
+  } ],
+  "purpose": "(Clinical Focus: Codes used to represent unknown and refused to answer),(Data Element Scope: ),(Inclusion Criteria: ),(Exclusion Criteria: )",
+  "compose": {
+    "include": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+      "version": "2022-11",
+      "concept": [ {
+        "code": "ASKU",
+        "display": "asked but unknown"
+      }, {
+        "code": "UNK",
+        "display": "unknown"
+      } ]
+    } ]
+  }
+}
