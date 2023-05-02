@@ -436,9 +436,13 @@ public class CSVExporter {
    *
    * @throws IOException if any IO errors occur.
    */
-  private void exportPayerTransitions(Person person, long stopTime) throws IOException {
-    for (PlanRecord planRecord : person.coverage.getPlanHistory()) {
-      if (planRecord.getStartTime() <= stopTime) {
+  private void exportPayerTransitions(Person person, long cutOffTime, long stopTime)
+      throws IOException {
+    List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
+        .sorted(Comparator.comparingLong(PlanRecord::getStartTime))
+        .collect(Collectors.toList());
+    for (PlanRecord planRecord : sortedPlanRecords) {
+      if ((planRecord.getStartTime() <= stopTime) && (planRecord.getStopTime() >= cutOffTime)) {
         payerTransition(person, planRecord);
       }
     }
@@ -451,9 +455,13 @@ public class CSVExporter {
    *
    * @throws IOException if any IO errors occur.
    */
-  private void exportPatientExpenses(Person person, long stopTime) throws IOException {
-    for (PlanRecord planRecord : person.coverage.getPlanHistory()) {
-      if (planRecord.getStartTime() <= stopTime) {
+  private void exportPatientExpenses(Person person, long cutOffTime, long stopTime)
+      throws IOException {
+    List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
+        .sorted(Comparator.comparingLong(PlanRecord::getStartTime))
+        .collect(Collectors.toList());
+    for (PlanRecord planRecord : sortedPlanRecords) {
+      if ((planRecord.getStartTime() <= stopTime) && (planRecord.getStopTime() >= cutOffTime)) {
         patientExpense(person, planRecord);
       }
     }
@@ -529,14 +537,14 @@ public class CSVExporter {
         supply(personID, encounterID, encounter, supply);
       }
     }
-    CSVExporter.getInstance().exportPayerTransitions(person, time);
-    CSVExporter.getInstance().exportPatientExpenses(person, time);
     int yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
     Calendar cutOff = new GregorianCalendar(1900, 0, 1);
     if (yearsOfHistory > 0) {
       cutOff = Calendar.getInstance();
       cutOff.set(cutOff.get(Calendar.YEAR) - yearsOfHistory, 0, 1);
     }
+    CSVExporter.getInstance().exportPayerTransitions(person, cutOff.getTimeInMillis(), time);
+    CSVExporter.getInstance().exportPatientExpenses(person, cutOff.getTimeInMillis(), time);
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();
     birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
