@@ -1,6 +1,15 @@
 <#setting number_format="computer">
 
 ${time?number_to_date?string["yyyy-MM-dd"]}
+Encounter Type: ${ehr_encounter.type}
+<#if ehr_encounter.codes?has_content>
+<#list ehr_encounter.codes as encounter_code>
+- ${encounter_code.display}
+</#list><#else>Encounter Not Coded.</#if>
+<#if ehr_encounter.reason?has_content>
+${ehr_encounter.reason.display}
+<#else>No encounter reason</#if>
+
 
 # Chief Complaint
 <#if ehr_symptoms?has_content>

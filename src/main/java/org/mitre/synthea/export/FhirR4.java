@@ -489,7 +489,7 @@ public class FhirR4 {
       }
 
       if (USE_US_CORE_IG && shouldExport(DiagnosticReport.class)) {
-        String clinicalNoteText = ClinicalNoteExporter.export(person, encounter);
+        String clinicalNoteText = NoteExporter.export(person, encounter);
         boolean lastNote =
             (encounter == person.record.encounters.get(person.record.encounters.size() - 1));
         clinicalNote(person, personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);

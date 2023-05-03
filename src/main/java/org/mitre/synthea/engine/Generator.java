@@ -28,6 +28,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.export.CDWExporter;
+import org.mitre.synthea.export.ChatGPTNoteExporter;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
@@ -394,6 +395,9 @@ public class Generator {
     } catch (InterruptedException e) {
       System.out.println("Generator interrupted. Attempting to shut down associated thread pool.");
       threadPool.shutdownNow();
+    }
+    if (Config.getAsBoolean("openai.enabled", false)) {
+      ChatGPTNoteExporter.requester.shutdown();
     }
 
     // Save a snapshot of the generated population using Java Serialization
