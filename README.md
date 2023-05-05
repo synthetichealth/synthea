@@ -4,6 +4,9 @@ Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to
 
 Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
+:wave::information_source:
+**May 2023 - We're interested in hearing how you use Synthea and what features are most useful to you! Please consider helping direct future effort by filling out our brief user survey: https://forms.office.com/g/3Mz9Ha8MLz**
+
 Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
 - Configuration-based statistics and demographics (defaults with Massachusetts Census data)
