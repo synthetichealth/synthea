@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
@@ -42,7 +43,14 @@ public class ChatGPTNoteExporter {
    */
   public static String export(Person person, HealthRecord.Encounter encounter)
           throws ExecutionException, InterruptedException {
-    String templatedNote = ClinicalNoteExporter.chatGPTPrompt(person, encounter);
+
+    String templatedNote;
+    if (encounter.codes != null && encounter.codes.contains(DeathModule.DEATH_CERTIFICATION)) {
+      templatedNote = ClinicalNoteExporter.chatGPTDeathCertificatePrompt(person, encounter);
+    } else {
+      templatedNote = ClinicalNoteExporter.chatGPTEncounterPrompt(person, encounter);
+    }
+
     Future<String> chatGPTNote = requester.submit(() -> {
       String apiKey = Config.get("openai.apikey");
       OkHttpClient client = new OkHttpClient.Builder()

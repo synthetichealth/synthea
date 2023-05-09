@@ -9,14 +9,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.mitre.synthea.modules.LifecycleModule;
-import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
-import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Export Clinical Notes using Apache FreeMarker templates.
@@ -66,85 +65,7 @@ public class ClinicalNoteExporter {
    * @return Clinical note as a plain text string.
    */
   public static String export(Person person, Encounter encounter) {
-    // The export templates fill in the record by accessing the attributes
-    // of the Person, so we add a few attributes just for the purposes of export.
-    Set<String> activeAllergies = new HashSet<String>();
-    Set<String> activeConditions = new HashSet<String>();
-    Set<String> activeMedications = new HashSet<String>();
-    Set<String> activeProcedures = new HashSet<String>();
-
-    // need to loop through record until THIS encounter
-    // to get previous data, since "present" is what is present
-    // at time of export and NOT what is present at this
-    // encounter.
-    long encounterTime = encounter.start;
-    for (Encounter pastEncounter : person.record.encounters) {
-      if (pastEncounter == encounter || pastEncounter.stop >= encounterTime) {
-        break;
-      }
-      for (Entry allergy : pastEncounter.allergies) {
-        if (allergy.stop != 0L || allergy.stop > encounterTime) {
-          activeAllergies.add(allergy.codes.get(0).display);
-        }
-      }
-      for (Entry condition : pastEncounter.conditions) {
-        if (condition.stop != 0L || condition.stop > encounterTime) {
-          String conditionName = condition.codes.get(0).display
-                  .replace("(situation)", "")
-                  .replace("(finding)", "")
-                  .replace("(disorder)", "")
-                  .strip();
-          activeConditions.add(conditionName);
-        }
-      }
-      for (Medication medication : pastEncounter.medications) {
-        if (medication.stop != 0L || medication.stop > encounterTime) {
-          activeMedications.add(medication.codes.get(0).display);
-        }
-      }
-      for (Procedure procedure : pastEncounter.procedures) {
-        if (procedure.stop != 0L || procedure.stop > encounterTime) {
-          activeProcedures.add(procedure.codes.get(0).display);
-        }
-      }
-    }
-
-    InsurancePlan plan = person.coverage.getPlanAtTime(encounter.start);
-    if (plan == null || plan.getPayer() == null) {
-      person.attributes.put("ehr_insurance", "unknown insurance coverage");
-    } else {
-      person.attributes.put("ehr_insurance", plan.getPayer().getName());
-    }
-    person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
-    person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));
-    person.attributes.put("ehr_symptoms", person.getSymptoms());
-    person.attributes.put("ehr_activeAllergies", activeAllergies);
-    person.attributes.put("ehr_activeConditions", activeConditions);
-    person.attributes.put("ehr_encounter", encounter);
-    if (activeConditions.contains("Normal pregnancy")) {
-      person.attributes.put("pregnant", true);
-    } else {
-      person.attributes.remove("pregnant");
-    }
-    person.attributes.put("ehr_activeMedications", activeMedications);
-    person.attributes.put("ehr_activeProcedures", activeProcedures);
-    person.attributes.put("ehr_conditions", encounter.conditions);
-    person.attributes.put("ehr_allergies", encounter.allergies);
-    person.attributes.put("ehr_procedures", encounter.procedures);
-    person.attributes.put("ehr_immunizations", encounter.immunizations);
-    person.attributes.put("ehr_medications", encounter.medications);
-    person.attributes.put("ehr_careplans", encounter.careplans);
-    person.attributes.put("ehr_imaging_studies", encounter.imagingStudies);
-    person.attributes.put("time", encounter.start);
-    if (person.attributes.containsKey(LifecycleModule.QUIT_SMOKING_AGE)) {
-      person.attributes.put("quit_smoking_age",
-          person.attributes.get(LifecycleModule.QUIT_SMOKING_AGE));
-    }
-    person.attributes.put("race_lookup", RaceAndEthnicity.LOOK_UP_CDC_RACE);
-    person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
-    person.attributes.put("ethnicity_display_lookup",
-        RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
-
+    buildViewAttributes(person, encounter);
     StringWriter writer = new StringWriter();
     try {
       Template template = TEMPLATES.getTemplate("note.ftl");
@@ -155,7 +76,51 @@ public class ClinicalNoteExporter {
     return writer.toString();
   }
 
-  public static String chatGPTPrompt(Person person, Encounter encounter) {
+  public static String chatGPTEncounterPrompt(Person person, Encounter encounter) {
+    buildViewAttributes(person, encounter);
+    if (!encounter.codes.isEmpty()) {
+      String encounterType = encounter.codes.get(0).display
+              .replace("(procedure)", "")
+              .replace("(environment)", "")
+              .strip();
+      person.attributes.put("ehr_encounter_type", encounterType);
+    }
+    if (encounter.reason != null) {
+      String encounterReason = encounter.reason.display
+              .replace("(situation)", "")
+              .replace("(finding)", "")
+              .replace("(disorder)", "")
+              .strip();
+      person.attributes.put("ehr_encounter_reason", encounterReason);
+    }
+    StringWriter writer = new StringWriter();
+    try {
+      Template template = TEMPLATES.getTemplate("chat_gpt_encounter_prompt.ftl");
+      template.process(person.attributes, writer);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return writer.toString();
+  }
+
+  public static String chatGPTDeathCertificatePrompt(Person person, Encounter encounter) {
+    buildViewAttributes(person, encounter);
+    person.attributes.put("date_of_death", person.attributes.get(Person.DEATHDATE));
+    HealthRecord.Code causeOfDeath =
+            (HealthRecord.Code) person.attributes.get(Person.CAUSE_OF_DEATH);
+    person.attributes.put("cause_of_death", causeOfDeath.display);
+
+    StringWriter writer = new StringWriter();
+    try {
+      Template template = TEMPLATES.getTemplate("chat_gpt_death_cert_prompt.ftl");
+      template.process(person.attributes, writer);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return writer.toString();
+  }
+
+  private static void buildViewAttributes(Person person, Encounter encounter) {
     // The export templates fill in the record by accessing the attributes
     // of the Person, so we add a few attributes just for the purposes of export.
     Set<String> activeAllergies = new HashSet<String>();
@@ -208,22 +173,6 @@ public class ClinicalNoteExporter {
     person.attributes.put("ehr_activeAllergies", activeAllergies);
     person.attributes.put("ehr_activeConditions", activeConditions);
     person.attributes.put("ehr_encounter", encounter);
-    if (!encounter.codes.isEmpty()) {
-      String encounterType = encounter.codes.get(0).display
-              .replace("(procedure)", "")
-              .replace("(environment)", "")
-              .strip();
-      person.attributes.put("ehr_encounter_type", encounterType);
-    }
-    if (encounter.reason != null) {
-      String encounterReason = encounter.reason.display
-              .replace("(situation)", "")
-              .replace("(finding)", "")
-              .replace("(disorder)", "")
-              .strip();
-      person.attributes.put("ehr_encounter_reason", encounterReason);
-    }
-
     if (activeConditions.contains("Normal pregnancy")) {
       person.attributes.put("pregnant", true);
     } else {
@@ -246,15 +195,5 @@ public class ClinicalNoteExporter {
     person.attributes.put("ethnicity_lookup", RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_CODE);
     person.attributes.put("ethnicity_display_lookup",
             RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
-
-    StringWriter writer = new StringWriter();
-    try {
-      Template template = TEMPLATES.getTemplate("chat_gpt_prompt.ftl");
-      template.process(person.attributes, writer);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return writer.toString();
-
   }
 }
