@@ -1424,14 +1424,14 @@ public class CSVExporter {
     // PRIMARYPATIENTINSURANCEID
     if (encounter.claim.getPayer() == null
         || encounter.claim.getPayer().isNoInsurance()) {
-      s.append("0,"); // 0 == No Insurance
+      s.append(","); // Empty for no insurance
     } else {
       s.append(claim.getPayer().getResourceID()).append(',');
     }
     // SECONDARYPATIENTINSURANCEID (0 default if none)
     if (encounter.claim.getSecondaryPayer() == null
         || encounter.claim.getSecondaryPayer().isNoInsurance()) {
-      s.append("0,");
+      s.append(",");
     } else {
       s.append(claim.getSecondaryPayer().getResourceID()).append(',');
     }
