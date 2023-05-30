@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +23,7 @@ import org.apache.commons.math.ode.DerivativeException;
 import org.mitre.synthea.helpers.ChartRenderer;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableChartConfig;
 import org.mitre.synthea.helpers.ChartRenderer.MultiTableSeriesConfig;
+import org.mitre.synthea.helpers.Utilities;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLException;
@@ -51,11 +50,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
  */
 public class PhysiologySimulator {
 
-  private static final URL MODELS_RESOURCE = ClassLoader.getSystemClassLoader()
-      .getResource("physiology/models");
   private static final Map<String, Class<?>> SOLVER_CLASSES;
   private static Map<String, Model> MODEL_CACHE;
-  private static Path SBML_PATH;
   private static Path OUTPUT_PATH = Paths.get("output", "physiology");
 
   private final Model model;
@@ -151,22 +147,8 @@ public class PhysiologySimulator {
     // Make unmodifiable so it doesn't change after initialization
     SOLVER_CLASSES = Collections.unmodifiableMap(initSolvers);
 
-    try {
-      SBML_PATH = Paths.get(MODELS_RESOURCE.toURI());
-    } catch (URISyntaxException ex) {
-      throw new RuntimeException(ex);
-    }
-
     // Initialize our model cache
     MODEL_CACHE = new HashMap<String, Model>();
-  }
-
-  /**
-   * Sets the path to search for SBML model files.
-   * @param newPath new path to use
-   */
-  public static void setModelsPath(Path newPath) {
-    SBML_PATH = newPath;
   }
 
   /**
@@ -192,12 +174,11 @@ public class PhysiologySimulator {
       model = MODEL_CACHE.get(modelPath);
     } else {
       // Load and instantiate the model from the SBML file
-      Path modelFilepath = Paths.get(SBML_PATH.toString(), modelPath);
       SBMLReader reader = new SBMLReader();
-      File inputFile = new File(modelFilepath.toString());
       SBMLDocument doc;
       try {
-        doc = reader.readSBML(inputFile);
+        String sbmlContent = Utilities.readResourceOrPath("physiology/models/" + modelPath);
+        doc = reader.readSBMLFromString(sbmlContent);
       } catch (IOException | XMLStreamException ex) {
         throw new RuntimeException(ex);
       }
