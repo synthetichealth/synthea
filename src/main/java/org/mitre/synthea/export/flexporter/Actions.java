@@ -217,6 +217,7 @@ public abstract class Actions {
       }
 
       List<String> profiles = (List<String>) newResourceDef.get("profiles");
+      List<Map<String, Object>> fields = (List<Map<String, Object>>) newResourceDef.get("fields");
 
       List<Base> basedOnResources;
       List<Map<String, Object>> writeback;
@@ -269,13 +270,32 @@ public abstract class Actions {
           basedOnResources.add(dummyEncounter);
         }
 
+        if (!basedOnResources.isEmpty()) {
+          // rewrite "State.entered" to "Encounter.period.start", etc
+          // so that the end user doesn't have to know we used an Encounter
+
+          for (Map<String, Object> field : fields) {
+            Object valueDef = field.get("value");
+            if (valueDef instanceof String && ((String) valueDef).startsWith("$")) {
+              String value = (String) valueDef;
+              if (value.contains("State.")) {
+                value = value
+                    .replace("State.entered", "Encounter.period.start")
+                    .replace("State.exited", "Encounter.period.end");
+
+                field.put("value", value);
+              }
+            }
+          }
+
+        }
+
         writeback = null;
       } else {
         basedOnResources = Collections.singletonList(null);
         writeback = null;
       }
 
-      List<Map<String, Object>> fields = (List<Map<String, Object>>) newResourceDef.get("fields");
 
       for (Base basedOnItem : basedOnResources) {
         // IMPORTANT: basedOnItem may be null
@@ -373,7 +393,8 @@ public abstract class Actions {
 
       } else {
         // unexpected type here - is it even possible to get anything else?
-        System.err.println("Unhandled type in createFhirPathMapping: " + valueDef.getClass());
+        String type = valueDef == null ? "null" : valueDef.getClass().toGenericString();
+        System.err.println("Unhandled type in createFhirPathMapping: " + type);
       }
     }
 
@@ -405,7 +426,7 @@ public abstract class Actions {
    * @param bundle FHIR Bundle to filter
    * @param list List of resource types to retain, all other types not listed will be removed
    */
-  public static void keepResources(Bundle bundle, List<String> list) {
+  private static void keepResources(Bundle bundle, List<String> list) {
     // TODO: make this FHIRPath instead of just straight resource types
 
     Set<String> resourceTypesToKeep = new HashSet<>(list);
@@ -430,7 +451,7 @@ public abstract class Actions {
     }
   }
 
-  public static void shiftDates(Bundle bundle, String amountString) {
+  private static void shiftDates(Bundle bundle, String amountString) {
     if (amountString == null) {
       return;
     }
@@ -463,7 +484,7 @@ public abstract class Actions {
     }
   }
 
-  public static void dateFilter(Bundle bundle, String minDateStr, String maxDateStr) {
+  private static void dateFilter(Bundle bundle, String minDateStr, String maxDateStr) {
     if (minDateStr == null && maxDateStr == null) {
       return;
     }

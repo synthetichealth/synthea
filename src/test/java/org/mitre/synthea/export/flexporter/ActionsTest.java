@@ -563,7 +563,7 @@ public class ActionsTest {
          # - location: MedicationRequest.medicationCodeableConcept
          #   value: $getField([Procedure.code])
          - location: MedicationRequest.authoredOn
-           value: $getField([Encounter.period.start])
+           value: $getField([State.entered])
      */
 
     Resource newResource = entries.get(1).getResource();

@@ -87,7 +87,6 @@ public abstract class FieldWrapper {
 
 
   public static class DateFieldWrapper extends FieldWrapper {
-
     public DateFieldWrapper(String fieldPath) {
       super(fieldPath);
     }

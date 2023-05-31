@@ -151,7 +151,7 @@ actions:
          # - location: MedicationRequest.medicationCodeableConcept
          #   value: $getField([Procedure.code])
          - location: MedicationRequest.authoredOn
-           value: $getField([Encounter.period.start])
+           value: $getField([State.entered])
 
  - name: testCreateResources_getAttribute
    create_resource: 
