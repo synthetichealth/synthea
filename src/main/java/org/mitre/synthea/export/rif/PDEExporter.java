@@ -228,7 +228,7 @@ public class PDEExporter extends RIFExporter {
     } else if (claimTypes.contains(ClaimType.CARRIER)
         || claimTypes.contains(ClaimType.OUTPATIENT)) {
       if (roll <= 0.87) {
-        residenceCode = "01"; // 03=long-term
+        residenceCode = "01"; // 01=home
       } else if (roll <= 0.95) {
         residenceCode = "00"; // 00=not specified
       } else if (roll <= 0.99) {
