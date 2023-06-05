@@ -18,9 +18,6 @@ import java.util.Random;
 
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.identity.Entity;
-import org.mitre.synthea.identity.LocalDateDeserializer;
-import org.mitre.synthea.identity.Period;
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 
@@ -37,8 +34,7 @@ public class JSONExporter {
    * @return a lot of JSON in a String
    */
   public static String export(Person person) {
-    Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
+    GsonBuilder builder = new GsonBuilder()
         .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
         .addSerializationExclusionStrategy(new SyntheaExclusionStrategy())
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
@@ -46,8 +42,11 @@ public class JSONExporter {
             new PersonSerializer(!Config.getAsBoolean("exporter.json.include_module_history")))
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
         .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
-        .registerTypeHierarchyAdapter(LocalDate.class, new LocalDateSerializer())
-        .create();
+        .registerTypeHierarchyAdapter(LocalDate.class, new LocalDateSerializer());
+    if (Config.getAsBoolean("exporter.pretty_print", true)) {
+      builder.setPrettyPrinting();
+    }
+    Gson gson = builder.create();
     return gson.toJson(person);
   }
 

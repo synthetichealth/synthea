@@ -266,7 +266,8 @@ public class FhirDstu2 {
    */
   public static String convertToFHIRJson(Person person, long stopTime) {
     Bundle bundle = convertToFHIR(person, stopTime);
-    String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(true)
+    Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
+    String bundleJson = FHIR_CTX.newJsonParser().setPrettyPrint(pretty)
         .encodeResourceToString(bundle);
     return bundleJson;
   }
