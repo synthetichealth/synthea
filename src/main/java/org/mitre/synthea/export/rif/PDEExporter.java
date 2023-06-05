@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.mitre.synthea.export.rif.enrollment.PartDContractHistory;
@@ -188,13 +189,8 @@ public class PDEExporter extends RIFExporter {
 
       fieldValues.put(BB2RIFStructure.PDE.PHRMCY_SRVC_TYPE_CD, "0" + (int) person.rand(1, 8));
       fieldValues.put(BB2RIFStructure.PDE.PD_DT, RIFExporter.bb2DateFromTimestamp(fill.time));
-      // 00=not specified, 01=home, 02=SNF, 03=long-term, 11=hospice, 14=homeless
-      if (person.attributes.containsKey("homeless")
-          && ((Boolean) person.attributes.get("homeless") == true)) {
-        fieldValues.put(BB2RIFStructure.PDE.PTNT_RSDNC_CD, "14");
-      } else {
-        fieldValues.put(BB2RIFStructure.PDE.PTNT_RSDNC_CD, "01");
-      }
+      String residenceCode = getResidenceCode(person, fill.encounter);
+      fieldValues.put(BB2RIFStructure.PDE.PTNT_RSDNC_CD, residenceCode);
 
       exporter.rifWriters.writeValues(BB2RIFStructure.PDE.class, fieldValues);
       claimCount++;
@@ -205,5 +201,45 @@ public class PDEExporter extends RIFExporter {
   private static BigDecimal getDrugOutOfPocketThreshold(int year) {
     double threshold = pdeOutOfPocketThresholds.getOrDefault(year, 4550.0);
     return BigDecimal.valueOf(threshold);
+  }
+
+  private static String getResidenceCode(Person person, HealthRecord.Encounter encounter) {
+    Set<ClaimType> claimTypes = RIFExporter.getClaimTypes(encounter);
+    String residenceCode = "00"; // 00=not specified
+    double roll = person.rand();
+    if (claimTypes.contains(ClaimType.SNF)) {
+      residenceCode = "03"; // 03=long-term
+    } else if (claimTypes.contains(ClaimType.HHA)) {
+      if (roll <= 0.95) {
+        residenceCode = "01"; // 01=home
+      } else {
+        residenceCode = "04"; // 04=assisted living
+      }
+    } else if (claimTypes.contains(ClaimType.HOSPICE)) {
+      residenceCode = "11"; // 11=hospice
+    } else if (claimTypes.contains(ClaimType.INPATIENT)) {
+      if (roll <= 0.95) {
+        residenceCode = "01"; // 01=home
+      } else if (roll <= 0.99) {
+        residenceCode = "04"; // 04=assisted living
+      } else {
+        residenceCode = "13"; // 13=inpatient rehab
+      }
+    } else if (claimTypes.contains(ClaimType.CARRIER)
+        || claimTypes.contains(ClaimType.OUTPATIENT)) {
+      if (roll <= 0.87) {
+        residenceCode = "01"; // 03=long-term
+      } else if (roll <= 0.95) {
+        residenceCode = "00"; // 00=not specified
+      } else if (roll <= 0.99) {
+        residenceCode = "04"; // 04=assisted living
+      } else if (person.attributes.containsKey("homeless")
+          && ((Boolean) person.attributes.get("homeless") == true)) {
+        residenceCode = "14"; // 14=homeless, rare in actual data
+      }
+    } else {
+      // Other
+    }
+    return residenceCode;
   }
 }
