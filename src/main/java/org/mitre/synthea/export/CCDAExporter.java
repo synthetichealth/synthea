@@ -6,15 +6,13 @@ import freemarker.template.TemplateException;
 
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
@@ -70,6 +68,14 @@ public class CCDAExporter {
    * @return String of CCDA R2.1 XML.
    */
   public static String export(Person person, long time) {
+    try {
+      person.coverage.getPlanRecordAtTime(time);
+    } catch (RuntimeException e) {
+      // If requesting the current plan at export time
+      // causes an exception, then we fake an insurance
+      // plan for the purposes of creating the super encounter.
+      person.coverage.setPlanToNoInsurance(time);
+    }
     // create a super encounter... this makes it easier to access
     // all the Allergies (for example) in the export templates,
     // instead of having to iterate through all the encounters.
@@ -157,6 +163,10 @@ public class CCDAExporter {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    return writer.toString();
+    String ccdaXml = writer.toString();
+    if (!Config.getAsBoolean("exporter.pretty_print", true)) {
+      ccdaXml = ccdaXml.replace("\n", "");
+    }
+    return ccdaXml;
   }
 }
