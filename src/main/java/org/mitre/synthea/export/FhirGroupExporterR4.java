@@ -84,7 +84,8 @@ public abstract class FhirGroupExporterR4 {
         String filename = group.getResourceType().toString() + ".ndjson";
         outFilePath = f.toPath().resolve(filename);
       } else {
-        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(true);
+        Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(pretty);
         groupJson = parser.encodeResourceToString(group);
         outFilePath = f.toPath().resolve("groupInformation" + stop + ".json");
       }

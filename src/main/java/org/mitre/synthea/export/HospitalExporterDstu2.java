@@ -55,7 +55,8 @@ public abstract class HospitalExporterDstu2 {
           Exporter.appendToFile(outFilePath, entryJson);
         }
       } else {
-        parser = parser.setPrettyPrint(true);
+        Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
+        parser = parser.setPrettyPrint(pretty);
         Path outFilePath = outputFolder.toPath().resolve("hospitalInformation" + stop + ".json");
         String bundleJson = parser.encodeResourceToString(bundle);
         Exporter.overwriteFile(outFilePath, bundleJson);

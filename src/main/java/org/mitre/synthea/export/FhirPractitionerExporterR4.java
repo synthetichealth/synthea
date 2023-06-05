@@ -84,7 +84,8 @@ public abstract class FhirPractitionerExporterR4 {
           }
         }
       } else {
-        parser = parser.setPrettyPrint(true);
+        Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
+        parser = parser.setPrettyPrint(pretty);
         Path outFilePath =
             outputFolder.toPath().resolve("practitionerInformation" + stop + ".json");
         String bundleJson = parser.encodeResourceToString(bundle);
