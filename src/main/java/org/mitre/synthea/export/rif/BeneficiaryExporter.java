@@ -231,8 +231,6 @@ public class BeneficiaryExporter extends RIFExporter {
       if (initialBeneEntitlementReason == null) {
         initialBeneEntitlementReason = fieldValues.get(
                 BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_CURR);
-        person.attributes.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG.toString(),
-            initialBeneEntitlementReason);
       }
       if (initialBeneEntitlementReason != null) {
         fieldValues.put(BB2RIFStructure.BENEFICIARY.BENE_ENTLMT_RSN_ORIG,
@@ -340,113 +338,6 @@ public class BeneficiaryExporter extends RIFExporter {
     } else {
       return beneIdStr;
     }
-  }
-
-  /**
-   * Export a beneficiary history for single person. Assumes exportBeneficiary
-   * was called first to set up various ID on person
-   * @param person the person to export
-   * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
-   * @throws IOException if something goes wrong
-   */
-  public void exportHistory(Person person, long startTime, long stopTime) throws IOException {
-    HashMap<BB2RIFStructure.BENEFICIARY_HISTORY, String> fieldValues = new HashMap<>();
-
-    exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.BENEFICIARY_HISTORY.class,
-            person);
-
-    String beneIdStr = (String)person.attributes.get(RIFExporter.BB2_BENE_ID);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ID, beneIdStr);
-    String hicId = (String)person.attributes.get(RIFExporter.BB2_HIC_ID);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_CRNT_HIC_NUM, hicId);
-    String mbiStr = (String)person.attributes.get(RIFExporter.BB2_MBI);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.MBI_NUM, mbiStr);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_SEX_IDENT_CD,
-            getBB2SexCode((String)person.attributes.get(Person.GENDER)));
-    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_BIRTH_DT,
-            RIFExporter.bb2DateFromTimestamp(birthdate));
-    String zipCode = (String)person.attributes.get(Person.ZIP);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ZIP_CD, zipCode);
-    String countyCode = exporter.locationMapper.zipToCountyCode(zipCode);
-    if (countyCode == null) {
-      countyCode = exporter.locationMapper.stateCountyNameToCountyCode(
-          (String)person.attributes.get(Person.STATE),
-          (String)person.attributes.get(Person.COUNTY), person);
-    }
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_COUNTY_CD, countyCode);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.STATE_CODE,
-            exporter.locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_RACE_CD,
-            bb2RaceCode(
-                    (String)person.attributes.get(Person.ETHNICITY),
-                    (String)person.attributes.get(Person.RACE)));
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_SRNM_NAME,
-            (String)person.attributes.get(Person.LAST_NAME));
-    String givenName = (String)person.attributes.get(Person.FIRST_NAME);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_GVN_NAME,
-            StringUtils.truncate(givenName, 15));
-    if (person.attributes.containsKey(Person.MIDDLE_NAME)) {
-      String middleName = (String) person.attributes.get(Person.MIDDLE_NAME);
-      middleName = middleName.substring(0, 1);
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDL_NAME, middleName);
-    }
-    String terminationCode = "0";
-    if (person.attributes.get(Person.DEATHDATE) != null) {
-      long deathDate = (long)person.attributes.get(Person.DEATHDATE);
-      if (deathDate <= stopTime) {
-        terminationCode = "1"; // Ignore future death date that may have been set by a module
-      }
-    }
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTA_TRMNTN_CD, terminationCode);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_PTB_TRMNTN_CD, terminationCode);
-    int year = Utilities.getYear(stopTime);
-    int age = RIFExporter.ageAtEndOfYear(birthdate, year);
-    boolean medicareAge = (age >= 65);
-    boolean esrd = hasESRD(person, year);
-    boolean disabled = isDisabled(person);
-    if (disabled) {
-      long dateOfDisability = getDateOfDisability(person);
-      if (!(dateOfDisability <= stopTime)) {
-        disabled = false;
-      }
-    }
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ESRD_IND, esrd ? "Y" : "0");
-    // "0" = old age, "1" = Disabled, "2" = ESRD, "3" = ESRD && Disabled
-    if (medicareAge) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "0");
-    } else if (esrd && disabled) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "3");
-    } else if (esrd) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "2");
-    } else if (disabled) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "1");
-    } else {
-      // They are a child or spouse of the beneficiary.
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR, "0");
-    }
-    String originalReason = (String) person.attributes.get(
-        BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG.toString());
-    if (originalReason != null) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, originalReason);
-    } else if (esrd && disabled) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "3");
-    } else if (esrd) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "2");
-    } else if (disabled) {
-      fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG, "1");
-    } else {
-      String initialBeneEntitlementReason = fieldValues.get(
-          BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_CURR);
-      if (initialBeneEntitlementReason != null) {
-        fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_ENTLMT_RSN_ORIG,
-            initialBeneEntitlementReason);
-      }
-    }
-    String medicareStatusCode = getMedicareStatusCode(age, medicareAge, esrd, disabled);
-    fieldValues.put(BB2RIFStructure.BENEFICIARY_HISTORY.BENE_MDCR_STATUS_CD, medicareStatusCode);
-    exporter.rifWriters.writeValues(BB2RIFStructure.BENEFICIARY_HISTORY.class, fieldValues);
   }
 
   /**

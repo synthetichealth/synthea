@@ -148,12 +148,6 @@ public class BB2RIFExporterTest {
       });
     }
 
-    // TODO: more meaningful testing of contents
-    File beneficiaryHistoryFile = expectedExportFolder.toPath()
-            .resolve("beneficiary_history.csv").toFile();
-    assertTrue(beneficiaryHistoryFile.exists() && beneficiaryHistoryFile.isFile());
-
-
     // Check that other expected files are present but only if the corresponding code mapping files
     // are present, otherwise the files could be empty and in that case they aren't created.
     BB2RIFExporter bb2Exporter = BB2RIFExporter.getInstance();
