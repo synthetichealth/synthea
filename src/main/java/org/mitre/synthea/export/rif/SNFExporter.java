@@ -338,7 +338,7 @@ public class SNFExporter extends RIFExporter {
           HealthRecord.Encounter encounter) {
     /**
      * PPS and PDPM codes are documented in the "Long-Term Care Facility Resident Assessment
-     * Instrument 3.0 User’s Manual", see
+     * Instrument 3.0 User's Manual", see
      * https://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/NursingHomeQualityInits/MDS30RAIManual
      * For PPS and PDPM, the HCPCS code is used to describe patient characteristics that drive
      * the level of care required, the revenue center captures the type of care provided.

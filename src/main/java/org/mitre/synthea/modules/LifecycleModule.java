@@ -729,7 +729,7 @@ public final class LifecycleModule extends Module {
       // for patients without diabetes
       // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
       // NCHS Data Brief - No. 363 - April 2020
-      // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015–2018
+      // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015-2018
       boolean lowHDL;
       boolean highTotalChol;
       if (person.attributes.containsKey("low_hdl")) {
@@ -750,7 +750,7 @@ public final class LifecycleModule extends Module {
         person.attributes.put("low_hdl", lowHDL);
 
         // from the above source:
-        //  "During 2015–2018, 11.4% of adults had high total cholesterol,
+        //  "During 2015-2018, 11.4% of adults had high total cholesterol,
         //   and prevalence was similar by race and Hispanic origin."
         highTotalChol = person.rand() < .114;
         person.attributes.put("high_total_chol", highTotalChol);
