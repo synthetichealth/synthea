@@ -219,7 +219,7 @@ public class PDEExporter extends RIFExporter {
       residenceCode = "11"; // 11=hospice
     } else if (claimTypes.contains(ClaimType.INPATIENT)) {
       if (roll <= 0.95) {
-        residenceCode = "01"; // 01=home
+        residenceCode = "03"; // 03=nursing
       } else if (roll <= 0.99) {
         residenceCode = "04"; // 04=assisted living
       } else {
