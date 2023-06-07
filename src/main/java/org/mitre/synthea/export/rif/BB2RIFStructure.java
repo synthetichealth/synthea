@@ -8,7 +8,6 @@ public class BB2RIFStructure {
 
   public static final Class<?>[] RIF_FILES = {
     BENEFICIARY.class,
-    BENEFICIARY_HISTORY.class,
     CARRIER.class,
     DME.class,
     HHA.class,
@@ -410,31 +409,6 @@ public class BB2RIFStructure {
     BENEFICIARY.FIPS_STATE_CNTY_NOV_CD,
     BENEFICIARY.FIPS_STATE_CNTY_DEC_CD
   };
-
-  @SuppressWarnings("checkstyle:typename")
-  public enum BENEFICIARY_HISTORY {
-    DML_IND,
-    BENE_ID,
-    STATE_CODE,
-    BENE_COUNTY_CD,
-    BENE_ZIP_CD,
-    BENE_BIRTH_DT,
-    BENE_SEX_IDENT_CD,
-    BENE_RACE_CD,
-    BENE_ENTLMT_RSN_ORIG,
-    BENE_ENTLMT_RSN_CURR,
-    BENE_ESRD_IND,
-    BENE_MDCR_STATUS_CD,
-    BENE_PTA_TRMNTN_CD,
-    BENE_PTB_TRMNTN_CD,
-    BENE_CRNT_HIC_NUM,
-    BENE_SRNM_NAME,
-    BENE_GVN_NAME,
-    BENE_MDL_NAME,
-    MBI_NUM,
-    EFCTV_BGN_DT,
-    EFCTV_END_DT
-  }
 
   public enum OUTPATIENT {
     DML_IND,

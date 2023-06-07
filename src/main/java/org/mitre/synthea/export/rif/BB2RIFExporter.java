@@ -361,7 +361,6 @@ public class BB2RIFExporter {
       return false;
     }
     exportCounts.put(EXPORT_SUMMARY.BENE_ID, beneId);
-    beneExp.exportHistory(person, startTime, stopTime);
     exportCounts.put(EXPORT_SUMMARY.INPATIENT_CLAIMS,
             Long.toString(inpatientExp.export(person, startTime, stopTime)));
     exportCounts.put(EXPORT_SUMMARY.OUTPATIENT_CLAIMS,
