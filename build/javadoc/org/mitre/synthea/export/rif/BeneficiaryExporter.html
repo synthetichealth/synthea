@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -231,15 +231,6 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <div class="block">Export a beneficiary details for single person.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exportHistory(org.mitre.synthea.world.agents.Person,long,long)">exportHistory</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-             long&nbsp;startTime,
-             long&nbsp;stopTime)</code></th>
-<td class="colLast">
-<div class="block">Export a beneficiary history for single person.</div>
-</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.mitre.synthea.export.rif.RIFExporter">
@@ -335,7 +326,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <a id="export(org.mitre.synthea.world.agents.Person,long,long)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>export</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;export&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
@@ -350,28 +341,6 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <dd><code>stopTime</code> - end time of simulation</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the beneficiary ID</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - if something goes wrong</dd>
-</dl>
-</li>
-</ul>
-<a id="exportHistory(org.mitre.synthea.world.agents.Person,long,long)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>exportHistory</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;exportHistory&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-                          long&nbsp;startTime,
-                          long&nbsp;stopTime)
-                   throws java.io.IOException</pre>
-<div class="block">Export a beneficiary history for single person. Assumes exportBeneficiary
- was called first to set up various ID on person</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - the person to export</dd>
-<dd><code>startTime</code> - earliest claim date to export</dd>
-<dd><code>stopTime</code> - end time of simulation</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if something goes wrong</dd>
 </dl>
