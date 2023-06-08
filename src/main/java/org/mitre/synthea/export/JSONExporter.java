@@ -94,6 +94,7 @@ public class JSONExporter {
       personOut.add("seed", new JsonPrimitive(src.getSeed()));
       personOut.add("lastUpdated", new JsonPrimitive(src.lastUpdated));
       personOut.add("coverage", context.serialize(src.coverage));
+      personOut.add("symptoms", context.serialize(src.getExpressedSymptoms()));
       JsonObject attributes = new JsonObject();
       src.attributes.forEach((key, value) -> {
         boolean keepEntry = true;
