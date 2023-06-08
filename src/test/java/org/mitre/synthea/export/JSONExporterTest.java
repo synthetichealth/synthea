@@ -37,6 +37,7 @@ public class JSONExporterTest {
       JsonElement parsedPerson = JsonParser.parseString(personJson);
       JsonObject attributes = parsedPerson.getAsJsonObject()
           .get("attributes").getAsJsonObject();
+      assertTrue(parsedPerson.getAsJsonObject().has("symptoms"));
       String gender = attributes.get("gender").getAsString();
       assertEquals(person.attributes.get(Person.GENDER), gender);
       if (moduleExport) {
