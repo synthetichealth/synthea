@@ -1,7 +1,7 @@
 function handle_cookie_action(didConsent) {
   if (didConsent) {
     if (typeof ga !== 'undefined') {
-      ga('create', '{{ site.google_analytics }}', 'auto');
+      ga('create', 'UA-82650858-2', 'auto');
       ga('send', 'pageview');
     }
   } else {
