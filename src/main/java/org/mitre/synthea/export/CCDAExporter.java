@@ -75,6 +75,7 @@ public class CCDAExporter {
       // causes an exception, then we fake an insurance
       // plan for the purposes of creating the super encounter.
       person.coverage.setPlanToNoInsurance(time);
+      person.coverage.setPlanToNoInsurance(Long.MAX_VALUE);
     }
     // create a super encounter... this makes it easier to access
     // all the Allergies (for example) in the export templates,
