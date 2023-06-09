@@ -117,7 +117,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      * Get the current value of the symptom.
      */
     public Integer getCurrentValue() {
-      if (timeInfos.containsKey(lastUpdateTime)) {
+      if (lastUpdateTime != null && timeInfos.containsKey(lastUpdateTime)) {
         return timeInfos.get(lastUpdateTime).getValue();
       }
       return null;
@@ -202,7 +202,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    * Method for retrieving the value associated to a given source.
    */
   public Integer getValueFromSource(String source) {
-    if (!sources.containsKey(source)) {
+    if (source == null || !sources.containsKey(source)) {
       return null;
     }
     return sources.get(source).getCurrentValue();
@@ -212,7 +212,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    * Method for addressing a given source.
    */
   public void addressSource(String source) {
-    if (sources.containsKey(source)) {
+    if (source != null && sources.containsKey(source)) {
       sources.get(source).resolve();
     }
   }
@@ -222,7 +222,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    */
   public Long getSymptomLastUpdatedTime(String module) {
     Long result = null;
-    if (sources.containsKey(module)) {
+    if (module != null && sources.containsKey(module)) {
       result = sources.get(module).getLastUpdateTime();
     }
     return result;
