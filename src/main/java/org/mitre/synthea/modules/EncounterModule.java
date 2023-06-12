@@ -71,50 +71,51 @@ public final class EncounterModule extends Module {
         >= recommendedTimeBetweenWellnessVisits(person, time)) {
       Code code = getWellnessVisitCode(person, time);
       encounter = createEncounter(person, time, EncounterType.WELLNESS,
-          ClinicianSpecialty.GENERAL_PRACTICE, code, name);
+              ClinicianSpecialty.GENERAL_PRACTICE, code, name);
       encounter.name = "Encounter Module Scheduled Wellness";
       person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
       startedEncounter = true;
-    } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
-      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-      }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-        person.addressLargestSymptom();
-        encounter = createEncounter(person, time, EncounterType.EMERGENCY,
-            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_EMERGENCY, name);
-        encounter.name = "Encounter Module Symptom Driven";
-        person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
-        startedEncounter = true;
-      }
-    } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
-      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-      }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-        person.addressLargestSymptom();
-        encounter = createEncounter(person, time, EncounterType.URGENTCARE,
-            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_URGENTCARE, name);
-        encounter.name = "Encounter Module Symptom Driven";
-        person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
-        startedEncounter = true;
-      }
-    } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
-      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
-      }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
-        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
-        person.addressLargestSymptom();
-        encounter = createEncounter(person, time, EncounterType.OUTPATIENT,
-            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_CHECKUP, name);
-        encounter.name = "Encounter Module Symptom Driven";
-        person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
-        startedEncounter = true;
-      }
     }
+//    } else if (person.symptomTotal() > EMERGENCY_SYMPTOM_THRESHOLD) {
+//      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+//      }
+//      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+//        person.addressLargestSymptom();
+//        encounter = createEncounter(person, time, EncounterType.EMERGENCY,
+//            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_EMERGENCY, name);
+//        encounter.name = "Encounter Module Symptom Driven";
+//        person.attributes.put(ACTIVE_EMERGENCY_ENCOUNTER, true);
+//        startedEncounter = true;
+//      }
+//    } else if (person.symptomTotal() > URGENT_CARE_SYMPTOM_THRESHOLD) {
+//      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+//      }
+//      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+//        person.addressLargestSymptom();
+//        encounter = createEncounter(person, time, EncounterType.URGENTCARE,
+//            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_URGENTCARE, name);
+//        encounter.name = "Encounter Module Symptom Driven";
+//        person.attributes.put(ACTIVE_URGENT_CARE_ENCOUNTER, true);
+//        startedEncounter = true;
+//      }
+//    } else if (person.symptomTotal() > PCP_SYMPTOM_THRESHOLD) {
+//      if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
+//      }
+//      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+//        person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
+//        person.addressLargestSymptom();
+//        encounter = createEncounter(person, time, EncounterType.OUTPATIENT,
+//            ClinicianSpecialty.GENERAL_PRACTICE, ENCOUNTER_CHECKUP, name);
+//        encounter.name = "Encounter Module Symptom Driven";
+//        person.attributes.put(ACTIVE_WELLNESS_ENCOUNTER, true);
+//        startedEncounter = true;
+//      }
+//    }
 
     if (startedEncounter) {
       Immunizations.performEncounter(person, time);
