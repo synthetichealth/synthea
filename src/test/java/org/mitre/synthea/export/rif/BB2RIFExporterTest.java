@@ -318,6 +318,7 @@ public class BB2RIFExporterTest {
     private final BigDecimal claimNotCoveredAmount;
     private BigDecimal revCenterChargeTotal;
     private BigDecimal revCenterNotCoveredTotal;
+    private static final String TOTAL_CHARGE_REV_CENTER = "0001";
 
     InpatientTotals(LinkedHashMap<String, String> row) {
       claimID = row.get("CLM_ID");
@@ -328,10 +329,12 @@ public class BB2RIFExporterTest {
     }
 
     void addLineItems(LinkedHashMap<String, String> row) {
-      revCenterChargeTotal = revCenterChargeTotal.add(
-              new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2));
-      revCenterNotCoveredTotal = revCenterNotCoveredTotal.add(
-              new BigDecimal(row.get("REV_CNTR_NCVRD_CHRG_AMT")).setScale(2));
+      if (!TOTAL_CHARGE_REV_CENTER.equals(row.get("REV_CNTR"))) {
+        revCenterChargeTotal = revCenterChargeTotal.add(
+                new BigDecimal(row.get("REV_CNTR_TOT_CHRG_AMT")).setScale(2));
+        revCenterNotCoveredTotal = revCenterNotCoveredTotal.add(
+                new BigDecimal(row.get("REV_CNTR_NCVRD_CHRG_AMT")).setScale(2));
+      }
     }
 
     void validate() {
