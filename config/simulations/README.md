@@ -64,4 +64,21 @@ run_synthea -p 10000
   - valueSampledData
 ```
 
+## References  
+
+- [Smith2004_CVS_human](https://www.ebi.ac.uk/biomodels/MODEL1006230000) 
+- [Guyton1972_PulmonaryOxygenIntake](https://www.ebi.ac.uk/biomodels/MODEL0911047946) 
+- [Guyton1972_PulmonaryFluidDynamics](https://www.ebi.ac.uk/biomodels/MODEL0911091440) 
+- [Lai2007_O2_Transport_Metabolism](https://www.ebi.ac.uk/biomodels/BIOMD0000000248) 
+- [Brännmark2013 - Insulin signalling in human adipocytes (normal condition)](https://www.ebi.ac.uk/biomodels/BIOMD0000000448) 
+- [Brännmark2013 - Insulin signalling in human adipocytes (diabetic condition)](https://www.ebi.ac.uk/biomodels/BIOMD0000000449) 
+- [Talemi2015 - Persistent telomere-associated DNA damage foci (TAF)](https://www.ebi.ac.uk/biomodels/MODEL1412200000) 
+- [ChowHall2008 Dynamics of Human Weight Change_ODE_1](https://www.ebi.ac.uk/biomodels/BIOMD0000000901) 
+- [Hong2009_CircadianClock](https://www.ebi.ac.uk/biomodels/BIOMD0000000216) 
+- [Brown1997 - Plasma Melatonin Levels](https://www.ebi.ac.uk/biomodels/BIOMD0000000672) 
+- [Leloup2004 - Mammalian Circadian Rhythm models for 23.8 and 24.2 hours](https://www.ebi.ac.uk/biomodels/BIOMD0000000975)  
+- [Roblitz2013 - Menstrual Cycle following GnRH analogue administration](https://www.ebi.ac.uk/biomodels/BIOMD0000000494) 
+- [Kyrylov2005_HPAaxis](https://www.ebi.ac.uk/biomodels/MODEL0478740924) 
+- [Jerby2010_Liver_Metabolism](https://www.ebi.ac.uk/biomodels/MODEL1009150002)
+
 
