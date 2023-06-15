@@ -39,6 +39,7 @@ charts:
       axisLabelX: time (s?)
       axisLabelY: ???
       #lowerBoundY: -0.05
+      
       #upperBoundY: 0.15
       series:
         - param: StO2m
