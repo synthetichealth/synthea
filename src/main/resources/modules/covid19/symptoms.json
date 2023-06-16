@@ -566,7 +566,6 @@
     "Conjunctival Congestion": {
       "type": "Symptom",
       "symptom": "conjunctival congestion",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -633,7 +632,6 @@
     "Nasal Congestion": {
       "type": "Symptom",
       "symptom": "nasal congestion",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -654,7 +652,6 @@
     "Headache": {
       "type": "Symptom",
       "symptom": "headache",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -675,7 +672,6 @@
     "Cough": {
       "type": "Symptom",
       "symptom": "cough",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -696,7 +692,6 @@
     "Sore Throat": {
       "type": "Symptom",
       "symptom": "sore throat",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -717,7 +712,6 @@
     "Sputum Production": {
       "type": "Symptom",
       "symptom": "sputum production",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -738,7 +732,6 @@
     "Fatigue": {
       "type": "Symptom",
       "symptom": "fatigue",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -759,7 +752,6 @@
     "Hemoptysis": {
       "type": "Symptom",
       "symptom": "hemoptysis",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -780,7 +772,6 @@
     "Shortness of Breath": {
       "type": "Symptom",
       "symptom": "dyspnea",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -801,7 +792,6 @@
     "Nausea": {
       "type": "Symptom",
       "symptom": "nausea",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -822,7 +812,6 @@
     "Vomiting": {
       "type": "Symptom",
       "symptom": "vomiting",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -843,7 +832,6 @@
     "Diarrhea": {
       "type": "Symptom",
       "symptom": "diarrhea",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -864,7 +852,6 @@
     "Muscle Pain": {
       "type": "Symptom",
       "symptom": "myalgia",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -885,7 +872,6 @@
     "Joint Pain": {
       "type": "Symptom",
       "symptom": "arthralgia",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -906,7 +892,6 @@
     "Chills": {
       "type": "Symptom",
       "symptom": "chills",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -973,7 +958,6 @@
     "Fever": {
       "type": "Symptom",
       "symptom": "fever",
-      "cause": "covid19",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -1010,7 +994,6 @@
     "Loss of Taste": {
       "type": "Symptom",
       "symptom": "loss_of_taste",
-      "cause": "",
       "probability": 1,
       "exact": {
         "quantity": 1

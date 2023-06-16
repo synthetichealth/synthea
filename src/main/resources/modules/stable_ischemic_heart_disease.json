@@ -77,7 +77,6 @@
     "Symptoms_Start": {
       "type": "Symptom",
       "symptom": "Chest Pain",
-      "cause": "",
       "probability": 1,
       "exact": {
         "quantity": 1
@@ -235,7 +234,6 @@
     "Dyspnea_Symptom": {
       "type": "Symptom",
       "symptom": "Dyspnea on exertion",
-      "cause": "",
       "probability": 1,
       "exact": {
         "quantity": 1

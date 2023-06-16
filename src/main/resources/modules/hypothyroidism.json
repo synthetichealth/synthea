@@ -60,7 +60,6 @@
     "Hypothyroid symptoms": {
       "type": "Symptom",
       "symptom": "fatigue",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -95,7 +94,6 @@
     "Hypothyroid symptom": {
       "type": "Symptom",
       "symptom": "cold intolerance",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -104,7 +102,6 @@
     "Hypothyroidism": {
       "type": "Symptom",
       "symptom": "decreased appetite",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -113,7 +110,6 @@
     "hypothyroidism": {
       "type": "Symptom",
       "symptom": "weight gain",
-      "cause": "",
       "exact": {
         "quantity": 1
       },

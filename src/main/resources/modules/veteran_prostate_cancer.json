@@ -468,7 +468,6 @@
     "Prostate Cancer Symptom": {
       "type": "Symptom",
       "symptom": "difficulty with urination",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -477,7 +476,6 @@
     "Prostate Cancer Symptom 2": {
       "type": "Symptom",
       "symptom": "blood in urine",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -486,7 +484,6 @@
     "Prostate Symtpom 3": {
       "type": "Symptom",
       "symptom": "urinary frequency",
-      "cause": "",
       "exact": {
         "quantity": 20
       },

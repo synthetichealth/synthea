@@ -9,7 +9,6 @@
     "CHF symptom onset 1": {
       "type": "Symptom",
       "symptom": "Dyspnea on exertion (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -18,7 +17,6 @@
     "CHF symptom onset 2": {
       "type": "Symptom",
       "symptom": "Dyspnea (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -27,7 +25,6 @@
     "CHF symptom onset 3": {
       "type": "Symptom",
       "symptom": "Paroxysmal dyspnea (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -781,7 +778,6 @@
     "CHF symptom onset 4": {
       "type": "Symptom",
       "symptom": "Orthopnea (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -790,7 +786,6 @@
     "CHF symptom onset 5": {
       "type": "Symptom",
       "symptom": "Edema (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -799,7 +794,6 @@
     "CHF symptom onset 6": {
       "type": "Symptom",
       "symptom": "Rales (finding)",
-      "cause": "",
       "exact": {
         "quantity": 1
       },

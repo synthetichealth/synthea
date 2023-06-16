@@ -2081,7 +2081,6 @@ public abstract class State implements Cloneable, Serializable {
    */
   public static class Symptom extends LegacyStateWithUnitlessRV {
     private String symptom;
-    private String cause;
     private Double probability;
     public boolean addressed;
     private Distribution distribution;
@@ -2089,9 +2088,6 @@ public abstract class State implements Cloneable, Serializable {
     @Override
     protected void initialize(Module module, String name, JsonObject definition) {
       super.initialize(module, name, definition);
-      if (cause == null) {
-        cause = module.name;
-      }
       if (probability == null || probability > 1 || probability < 0) {
         probability = 1.0;
       }
@@ -2120,19 +2116,19 @@ public abstract class State implements Cloneable, Serializable {
             } else {
               quantity = (int) exact.quantity;
             }
-            person.setSymptom(this.module.name, cause, symptom, time, quantity, addressed);
+            person.setSymptom(this.module.name, symptom, time, quantity, addressed);
           } else if (range != null) {
             person.setSymptom(
-                this.module.name, cause, symptom, time,
+                this.module.name, symptom, time,
                 (int) person.rand((double) range.low, (double) range.high), addressed
             );
           }
         } else {
           if (distribution != null) {
-            person.setSymptom(this.module.name, cause, symptom, time,
+            person.setSymptom(this.module.name, symptom, time,
                 (int) distribution.generate(person), addressed);
           } else {
-            person.setSymptom(this.module.name, cause, symptom, time, 0, addressed);
+            person.setSymptom(this.module.name, symptom, time, 0, addressed);
           }
         }
       }

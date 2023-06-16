@@ -408,7 +408,6 @@
     "Chole_Symptom1": {
       "type": "Symptom",
       "symptom": "Upper Abdominal Pain",
-      "cause": "Acute_Cholecystitis",
       "direct_transition": "Chole_Symptom2",
       "range": {
         "low": 50,
@@ -418,7 +417,6 @@
     "Chole_Symptom2": {
       "type": "Symptom",
       "symptom": "Fever",
-      "cause": "Acute_Cholecystitis",
       "direct_transition": "Chole_Symptom3",
       "range": {
         "low": 0,
@@ -428,7 +426,6 @@
     "Chole_Symptom3": {
       "type": "Symptom",
       "symptom": "Nausea/Vomiting",
-      "cause": "Acute_Cholecystitis",
       "direct_transition": "Chole_Symptom4",
       "range": {
         "low": 0,
@@ -438,7 +435,6 @@
     "Chole_Symptom4": {
       "type": "Symptom",
       "symptom": "Jaundice",
-      "cause": "Acute_Cholecystitis",
       "direct_transition": "Symptom_Period",
       "range": {
         "low": 0,
@@ -448,7 +444,6 @@
     "Chole_Symptom1_Ends": {
       "type": "Symptom",
       "symptom": "Upper Abdominal Pain",
-      "cause": "Acute_Cholecystitis",
       "exact": {
         "quantity": 0
       },
@@ -457,7 +452,6 @@
     "Chole_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Fever",
-      "cause": "Acute_Cholecystitis",
       "exact": {
         "quantity": 0
       },
@@ -466,7 +460,6 @@
     "Chole_Symptom3_Ends": {
       "type": "Symptom",
       "symptom": "Nausea/Vomiting",
-      "cause": "Acute_Cholecystitis",
       "exact": {
         "quantity": 0
       },
@@ -1154,7 +1147,6 @@
     "Chole_Symptom4_Ends": {
       "type": "Symptom",
       "symptom": "Jaundice",
-      "cause": "Acute_Cholecystitis",
       "exact": {
         "quantity": 0
       },

@@ -14,8 +14,6 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   // such as the cause and the associated value
   public class SymptomInfo implements Cloneable, Serializable {
     private static final long serialVersionUID = 4322116644425686801L;
-    // what is the cause of the symptom
-    private String cause;
     // what is the value associated to that symptom
     private Integer value;
     // At which time the symptom was set
@@ -24,18 +22,13 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     /**
      * Create a new instance for the supplied cause, value and time.
      */
-    public SymptomInfo(String cause, Integer value, Long time) {
-      this.cause = cause;
+    public SymptomInfo(Integer value, Long time) {
       this.value = value;
       this.time = time;
     }
 
     public SymptomInfo clone() {
-      return new SymptomInfo(this.cause, this.value, this.time);
-    }
-
-    public String getCause() {
-      return cause;
+      return new SymptomInfo(this.value, this.time);
     }
 
     public Integer getValue() {
@@ -106,8 +99,8 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     /**
      * Record a new symptom.
      */
-    public void addInfo(String cause, long time, int value, Boolean addressed) {
-      SymptomInfo info = new SymptomInfo(cause, value, time);
+    public void addInfo(long time, int value, Boolean addressed) {
+      SymptomInfo info = new SymptomInfo(value, time);
       timeInfos.put(Long.valueOf(time), info);
       lastUpdateTime = time;
       resolved = addressed;
@@ -155,11 +148,11 @@ public class ExpressedSymptom implements Cloneable, Serializable {
 
   /** this method updates the data structure wit a symptom being onset from a module.
    */
-  public void onSet(String module, String cause, long time, int value, Boolean addressed) {
+  public void onSet(String module, long time, int value, Boolean addressed) {
     if (!sources.containsKey(module)) {
       sources.put(module, new SymptomSource(module));
     }
-    sources.get(module).addInfo(cause, time, value, addressed);
+    sources.get(module).addInfo(time, value, addressed);
   }
 
   /**

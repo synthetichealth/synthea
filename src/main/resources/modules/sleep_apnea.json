@@ -102,7 +102,6 @@
     "Loud Snoring": {
       "type": "Symptom",
       "symptom": "loud snoring",
-      "cause": "",
       "probability": 1,
       "distribution": {
         "kind": "EXACT",
@@ -115,7 +114,6 @@
     "Excessive Daytime Sleepiness": {
       "type": "Symptom",
       "symptom": "excessive daytime sleepiness",
-      "cause": "",
       "probability": 1,
       "distribution": {
         "kind": "EXACT",

@@ -15,17 +15,14 @@ public class ExpressedSymptomTest {
   public void testSymptomInfo() {
     String name = "pain";
     ExpressedSymptom symptom = new ExpressedSymptom(name);
-    String cause = "test";
     Integer value = 100;
     Long time = 0L;
 
-    SymptomInfo info = symptom.new SymptomInfo(cause, value, time);
-    assertEquals(cause, info.getCause());
+    SymptomInfo info = symptom.new SymptomInfo(value, time);
     assertEquals(value, info.getValue());
     assertEquals(time, info.getTime());
 
     SymptomInfo clone = info.clone();
-    assertEquals(info.getCause(), clone.getCause());
     assertEquals(info.getValue(), clone.getValue());
     assertEquals(info.getTime(), clone.getTime());
   }
@@ -49,11 +46,10 @@ public class ExpressedSymptomTest {
     source.activate();
     assertFalse(source.isResolved());
 
-    String causeA = "foo";
     Integer valueA = 100;
     Long timeA = 0L;
 
-    source.addInfo(causeA, timeA, valueA, false);
+    source.addInfo(timeA, valueA, false);
     assertEquals(valueA, source.getCurrentValue());
     assertEquals(timeA, source.getLastUpdateTime());
     assertFalse(source.isResolved());
@@ -64,7 +60,7 @@ public class ExpressedSymptomTest {
     Integer valueB = 200;
     Long timeB = 1L;
 
-    source.addInfo(causeB, timeB, valueB, true);
+    source.addInfo(timeB, valueB, true);
     assertEquals(valueB, source.getCurrentValue());
     assertEquals(timeB, source.getLastUpdateTime());
     assertTrue(source.isResolved());
@@ -85,14 +81,13 @@ public class ExpressedSymptomTest {
     symptom.addressSource(null);
 
     String module = "testModule";
-    String cause = "testCause";
     assertNull(symptom.getSourceWithHighValue());
     assertNull(symptom.getValueFromSource(module));
     assertNull(symptom.getSymptomLastUpdatedTime(module));
     symptom.addressSource(module);
 
     for (long l = 0L; l < 3L; l++) {
-      symptom.onSet(module, cause, l, (int) (100 * l), false);
+      symptom.onSet(module, l, (int) (100 * l), false);
       assertEquals(module, symptom.getSourceWithHighValue());
       assertEquals(Integer.valueOf((int) (100 * l)), symptom.getValueFromSource(module));
       assertEquals((int) (100 * l), symptom.getSymptom());
@@ -101,7 +96,7 @@ public class ExpressedSymptomTest {
 
     String anotherModule = "anotherModule";
     for (long l = 0L; l < 3L; l++) {
-      symptom.onSet(anotherModule, cause, l, (int) (10 * l), false);
+      symptom.onSet(anotherModule, l, (int) (10 * l), false);
       assertEquals(module, symptom.getSourceWithHighValue());
       assertEquals(Integer.valueOf((int) (10 * l)), symptom.getValueFromSource(anotherModule));
       assertEquals(200, symptom.getSymptom());

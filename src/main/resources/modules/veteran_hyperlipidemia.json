@@ -61,7 +61,6 @@
     "Hyperlipidemia symptom onset 1": {
       "type": "Symptom",
       "symptom": "weight gain",
-      "cause": "",
       "exact": {
         "quantity": 1
       },

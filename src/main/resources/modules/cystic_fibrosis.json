@@ -319,7 +319,6 @@
     "chronic_cough": {
       "type": "Symptom",
       "symptom": "Chronic Cough",
-      "cause": "",
       "direct_transition": "Salty_Skin",
       "range": {
         "low": 50,
@@ -725,7 +724,6 @@
     "Salty_Skin": {
       "type": "Symptom",
       "symptom": "Salty_Skin",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -1524,7 +1522,6 @@
     "fever": {
       "type": "Symptom",
       "symptom": "fever",
-      "cause": "Sepsis_Of_Paeruginosa",
       "direct_transition": "Emergency_Room",
       "range": {
         "low": 70,
@@ -1534,7 +1531,6 @@
     "difficulty_breathing": {
       "type": "Symptom",
       "symptom": "difficulty breathing",
-      "cause": "Sepsis_of_Paeruginosa",
       "direct_transition": "fever",
       "range": {
         "low": 60,
@@ -1544,7 +1540,6 @@
     "low_blood_pressure": {
       "type": "Symptom",
       "symptom": "low blood pressure",
-      "cause": "",
       "direct_transition": "difficulty_breathing",
       "range": {
         "low": 40,
@@ -1583,7 +1578,6 @@
     "wheezing": {
       "type": "Symptom",
       "symptom": "wheezing",
-      "cause": "",
       "direct_transition": "Emergency_Room",
       "range": {
         "low": 70,

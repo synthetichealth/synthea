@@ -1782,7 +1782,6 @@
     "Opioid_Addiction_Symptom_1": {
       "type": "Symptom",
       "symptom": "Anxiety",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2",
       "range": {
@@ -1793,7 +1792,6 @@
     "Opioid_Addiction_Symptom_2": {
       "type": "Symptom",
       "symptom": "Confusion",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_3",
       "range": {
@@ -1804,7 +1802,6 @@
     "Opioid_Addiction_Symptom_3": {
       "type": "Symptom",
       "symptom": "Cognitive Difficulties",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_4",
       "range": {
@@ -1815,7 +1812,6 @@
     "Opioid_Addiction_Symptom_4": {
       "type": "Symptom",
       "symptom": "Nausea/Vomiting",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_5",
       "range": {
@@ -1826,7 +1822,6 @@
     "Opioid_Addiction_Symptom_5": {
       "type": "Symptom",
       "symptom": "Constipation",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_6",
       "range": {
@@ -1837,7 +1832,6 @@
     "Opioid_Addiction_Symptom_6": {
       "type": "Symptom",
       "symptom": "Reduced Sex Drive",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_7",
       "range": {
@@ -1848,7 +1842,6 @@
     "Opioid_Addiction_Symptom_7": {
       "type": "Symptom",
       "symptom": "Slurred Speech",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_8",
       "range": {
@@ -1859,7 +1852,6 @@
     "Opioid_Addiction_Symptom_8": {
       "type": "Symptom",
       "symptom": "Shallow Breathing",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_9",
       "range": {
@@ -1870,7 +1862,6 @@
     "Opioid_Addiction_Symptom_9": {
       "type": "Symptom",
       "symptom": "Mood Swing",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_10",
       "range": {
@@ -1881,7 +1872,6 @@
     "Opioid_Addiction_Symptom_10": {
       "type": "Symptom",
       "symptom": "Sensitivity to Pain",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_11",
       "range": {
@@ -1892,7 +1882,6 @@
     "Opioid_Addiction_Symptom_11": {
       "type": "Symptom",
       "symptom": "Yawning",
-      "cause": "Opioid_Addiction",
       "probability": 0.5,
       "direct_transition": "Opioid_Addiction_Symptom_12",
       "range": {
@@ -1903,7 +1892,6 @@
     "Opioid_Addiction_Symptom_12": {
       "type": "Symptom",
       "symptom": "Sweating",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Condition_Drug_Overdose",
       "range": {
@@ -2043,7 +2031,6 @@
     "Opioid_Addiction_Symptom_2_1": {
       "type": "Symptom",
       "symptom": "Anxiety",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_2",
       "range": {
@@ -2054,7 +2041,6 @@
     "Opioid_Addiction_Symptom_2_2": {
       "type": "Symptom",
       "symptom": "Confusion",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_3",
       "range": {
@@ -2065,7 +2051,6 @@
     "Opioid_Addiction_Symptom_2_3": {
       "type": "Symptom",
       "symptom": "Cognitive Difficulties",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_4",
       "range": {
@@ -2076,7 +2061,6 @@
     "Opioid_Addiction_Symptom_2_4": {
       "type": "Symptom",
       "symptom": "Nausea/Vomiting",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_5",
       "range": {
@@ -2087,7 +2071,6 @@
     "Opioid_Addiction_Symptom_2_5": {
       "type": "Symptom",
       "symptom": "Constipation",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_6",
       "range": {
@@ -2098,7 +2081,6 @@
     "Opioid_Addiction_Symptom_2_6": {
       "type": "Symptom",
       "symptom": "Reduced Sex Drive",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_7",
       "range": {
@@ -2109,7 +2091,6 @@
     "Opioid_Addiction_Symptom_2_7": {
       "type": "Symptom",
       "symptom": "Slurred Speech",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_8",
       "range": {
@@ -2120,7 +2101,6 @@
     "Opioid_Addiction_Symptom_2_8": {
       "type": "Symptom",
       "symptom": "Shallow Breathing",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_9",
       "range": {
@@ -2131,7 +2111,6 @@
     "Opioid_Addiction_Symptom_2_9": {
       "type": "Symptom",
       "symptom": "Mood Swing",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_10",
       "range": {
@@ -2142,7 +2121,6 @@
     "Opioid_Addiction_Symptom_2_10": {
       "type": "Symptom",
       "symptom": "Sensitivity to Pain",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_11",
       "range": {
@@ -2153,7 +2131,6 @@
     "Opioid_Addiction_Symptom_2_11": {
       "type": "Symptom",
       "symptom": "Yawning",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Opioid_Addiction_Symptom_2_12",
       "range": {
@@ -2164,7 +2141,6 @@
     "Opioid_Addiction_Symptom_2_12": {
       "type": "Symptom",
       "symptom": "Sweating",
-      "cause": "Opioid_Addiction",
       "probability": 0.3,
       "direct_transition": "Encounter_OUD",
       "range": {

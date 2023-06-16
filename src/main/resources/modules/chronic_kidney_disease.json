@@ -412,7 +412,6 @@
     "CKD4_Symptom_1": {
       "type": "Symptom",
       "symptom": "Hunger",
-      "cause": "",
       "direct_transition": "CKD4_Symptom_2",
       "range": {
         "low": 45,
@@ -422,7 +421,6 @@
     "CKD4_Symptom_2": {
       "type": "Symptom",
       "symptom": "Fatigue",
-      "cause": "",
       "direct_transition": "CKD4_Symptom_3",
       "range": {
         "low": 45,
@@ -432,7 +430,6 @@
     "CKD4_Symptom_3": {
       "type": "Symptom",
       "symptom": "Frequent Urination",
-      "cause": "",
       "direct_transition": "CKD4_Symptom_4",
       "range": {
         "low": 45,
@@ -442,7 +439,6 @@
     "CKD4_Symptom_4": {
       "type": "Symptom",
       "symptom": "Thirst",
-      "cause": "",
       "direct_transition": "Loop_back_to_Start",
       "range": {
         "low": 45,

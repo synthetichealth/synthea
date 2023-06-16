@@ -261,7 +261,6 @@
     "Fatigue": {
       "type": "Symptom",
       "symptom": "Fatigue",
-      "cause": "",
       "direct_transition": "Check_Anemia_Exist",
       "exact": {
         "quantity": 1
@@ -270,7 +269,6 @@
     "SOB": {
       "type": "Symptom",
       "symptom": "Shortness of breath",
-      "cause": "",
       "exact": {
         "quantity": 1
       },
@@ -320,7 +318,6 @@
     "Tachycardia": {
       "type": "Symptom",
       "symptom": "Tachycardia",
-      "cause": "",
       "exact": {
         "quantity": 1
       },

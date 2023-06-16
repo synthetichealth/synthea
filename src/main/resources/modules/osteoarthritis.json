@@ -313,7 +313,6 @@
     "OA_Symptom1_Ends": {
       "type": "Symptom",
       "symptom": "Joint Pain",
-      "cause": "",
       "exact": {
         "quantity": 0
       },
@@ -322,7 +321,6 @@
     "OA_Symptom2_Ends": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
-      "cause": "",
       "exact": {
         "quantity": 0
       },
@@ -340,7 +338,6 @@
     "OA_Symptom1": {
       "type": "Symptom",
       "symptom": "Joint Pain",
-      "cause": "",
       "direct_transition": "OA_Symptom2",
       "range": {
         "low": 0,
@@ -350,7 +347,6 @@
     "OA_Symptom2": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
-      "cause": "",
       "direct_transition": "Delay_Until_Arthritis",
       "range": {
         "low": 0,
@@ -394,7 +390,6 @@
     "OA_Symptom1_Advances": {
       "type": "Symptom",
       "symptom": "Joint Pain",
-      "cause": "",
       "direct_transition": "OA_Symptom2_Advances",
       "range": {
         "low": 0,
@@ -404,7 +399,6 @@
     "OA_Symptom2_Advances": {
       "type": "Symptom",
       "symptom": "Joint Stiffness",
-      "cause": "",
       "direct_transition": "Osteoarthritis",
       "range": {
         "low": 0,

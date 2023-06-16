@@ -247,25 +247,25 @@ public class LogicTest {
   @Test
   public void test_symptoms() {
     person.setSymptom(
-        "Module1", "Appendicitis", "PainLevel", System.currentTimeMillis(), 60, false
+        "Module1","PainLevel", System.currentTimeMillis(), 60, false
     );
     assertTrue(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
     // painlevel still 60 here
     person.setSymptom(
-        "Module2", "Appendicitis", "LackOfAppetite", System.currentTimeMillis(), 100, false
+        "Module2", "LackOfAppetite", System.currentTimeMillis(), 100, false
     );
     assertTrue(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
     person.setSymptom(
-        "Module1", "Appendicitis", "PainLevel", System.currentTimeMillis(), 10, false);
+        "Module1", "PainLevel", System.currentTimeMillis(), 10, false);
     assertFalse(doTest("symptomPainLevelGt50"));
     assertTrue(doTest("symptomPainLevelLte80"));
 
     person.setSymptom(
-        "Module3", "Appicitis", "PainLevel", System.currentTimeMillis(), 100, false);
+        "Module3", "PainLevel", System.currentTimeMillis(), 100, false);
     assertTrue(doTest("symptomPainLevelGt50"));
     assertFalse(doTest("symptomPainLevelLte80"));
   }

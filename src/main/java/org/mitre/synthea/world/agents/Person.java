@@ -364,13 +364,13 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /** Updating the method for accounting of the time on which
    * the symptom is set.
    */
-  public void setSymptom(String module, String cause, String type,
+  public void setSymptom(String module, String type,
       long time, int value, Boolean addressed) {
     if (!symptoms.containsKey(type)) {
       symptoms.put(type, new ExpressedSymptom(type));
     }
     ExpressedSymptom expressedSymptom = symptoms.get(type);
-    expressedSymptom.onSet(module, cause, time, value, addressed);
+    expressedSymptom.onSet(module, time, value, addressed);
   }
 
   /**
