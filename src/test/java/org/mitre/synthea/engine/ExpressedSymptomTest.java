@@ -38,7 +38,7 @@ public class ExpressedSymptomTest {
     assertNull(source.getCurrentValue());
     assertNull(source.getLastUpdateTime());
     assertFalse(source.isResolved());
-    assertTrue(source.getTimeInfos().isEmpty());
+    assertTrue(source.getSymptomInfos().isEmpty());
 
     source.resolve();
     assertTrue(source.isResolved());
@@ -53,8 +53,8 @@ public class ExpressedSymptomTest {
     assertEquals(valueA, source.getCurrentValue());
     assertEquals(timeA, source.getLastUpdateTime());
     assertFalse(source.isResolved());
-    assertFalse(source.getTimeInfos().isEmpty());
-    assertEquals(valueA, source.getTimeInfos().get(timeA).getValue());
+    assertFalse(source.getSymptomInfos().isEmpty());
+    assertEquals(valueA, source.getValueAtTime(timeA));
 
     String causeB = "bar";
     Integer valueB = 200;
@@ -64,9 +64,9 @@ public class ExpressedSymptomTest {
     assertEquals(valueB, source.getCurrentValue());
     assertEquals(timeB, source.getLastUpdateTime());
     assertTrue(source.isResolved());
-    assertFalse(source.getTimeInfos().isEmpty());
-    assertEquals(valueB, source.getTimeInfos().get(timeB).getValue());
-    assertEquals(valueA, source.getTimeInfos().get(timeA).getValue());
+    assertFalse(source.getSymptomInfos().isEmpty());
+    assertEquals(valueB, source.getValueAtTime(timeB));
+    assertEquals(valueA, source.getValueAtTime(timeA));
   }
 
   @Test

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomInfo;
 import org.mitre.synthea.engine.ExpressedSymptom.SymptomSource;
@@ -250,27 +251,10 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
      * @param symptomSource module origin of the symptom.
      */
     public void addSymptoms(String name, SymptomSource symptomSource) {
-      Map<Long, SymptomInfo> timedTypedSymptoms = symptomSource.getTimeInfos();
-      // get the value that correspond to the all times belonging
-      // to the interval [begin, end] of the condition if any.
-      List<Long> allTimes = new ArrayList<Long>();
-      for (Long time : timedTypedSymptoms.keySet()) {
-        boolean greatThanBegin = time >= onsetTime;
-        boolean lowThanEnd = (endTime != null  && time <= endTime) || (endTime == null);
-        if (greatThanBegin && lowThanEnd) {
-          allTimes.add(time);
-        }
-      }
-      if (allTimes.size() > 0) {
-        Collections.sort(allTimes);
-        if (!symptoms.containsKey(name)) {
-          symptoms.put(name, new ArrayList<Integer>());
-        }
-        for (Long time : allTimes) {
-          Integer value = timedTypedSymptoms.get(time).getValue();
-          symptoms.get(name).add(value);
-        }
-      }
+      List<SymptomInfo> timedTypedSymptoms = symptomSource.getSymptomInfos();
+      List<Integer> symptomValues =
+              timedTypedSymptoms.stream().map(si -> si.getValue()).collect(Collectors.toList());
+      symptoms.put(name, symptomValues);
     }
 
     public Long getOnsetTime() {

@@ -1,7 +1,10 @@
 package org.mitre.synthea.engine;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.mitre.synthea.export.JSONSkip;
@@ -50,19 +53,16 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     private String source;
     // what is the status from a given expressed symptom from a given module
     private boolean resolved;
-    // when the expressed was last updated from the a given module
-    private Long lastUpdateTime;
     // the time on which the expressed symptom was updated and the associated info.
-    private Map<Long, SymptomInfo> timeInfos;
+    private LinkedList<SymptomInfo> symptomInfos;
 
     /**
      * Create a new instance for the supplied module source.
      */
     public SymptomSource(String source) {
       this.source = source;
-      timeInfos = new ConcurrentHashMap<Long, ExpressedSymptom.SymptomInfo>();
+      symptomInfos = new LinkedList<>();
       resolved = false;
-      lastUpdateTime = null;
     }
 
     /**
@@ -71,8 +71,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     public SymptomSource clone() {
       SymptomSource data = new SymptomSource(this.source);
       data.resolved = this.resolved;
-      data.lastUpdateTime = this.lastUpdateTime;
-      data.timeInfos.putAll(this.timeInfos);
+      data.symptomInfos.addAll(this.symptomInfos);
       return data;
     }
 
@@ -89,7 +88,10 @@ public class ExpressedSymptom implements Cloneable, Serializable {
     }
 
     public Long getLastUpdateTime() {
-      return lastUpdateTime;
+      if (this.symptomInfos.isEmpty()) {
+        return null;
+      }
+      return this.symptomInfos.getLast().getTime();
     }
 
     public String getSource() {
@@ -101,8 +103,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      */
     public void addInfo(long time, int value, Boolean addressed) {
       SymptomInfo info = new SymptomInfo(value, time);
-      timeInfos.put(Long.valueOf(time), info);
-      lastUpdateTime = time;
+      symptomInfos.add(info);
       resolved = addressed;
     }
 
@@ -110,17 +111,27 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      * Get the current value of the symptom.
      */
     public Integer getCurrentValue() {
-      if (lastUpdateTime != null && timeInfos.containsKey(lastUpdateTime)) {
-        return timeInfos.get(lastUpdateTime).getValue();
+      if (this.symptomInfos.isEmpty()) {
+        return null;
       }
-      return null;
+      return this.symptomInfos.getLast().getValue();
+    }
+
+    public Integer getValueAtTime(long time) {
+      Optional<SymptomInfo> symptomInfo = this.symptomInfos.stream()
+              .filter(si -> si.getTime() == time).findFirst();
+      if (symptomInfo.isPresent()) {
+        return symptomInfo.get().getValue();
+      } else {
+        return null;
+      }
     }
 
     /**
      * Get the times for this symptom.
      */
-    public Map<Long, SymptomInfo> getTimeInfos() {
-      return timeInfos;
+    public List<SymptomInfo> getSymptomInfos() {
+      return symptomInfos;
     }
   }
 
