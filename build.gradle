@@ -212,8 +212,7 @@ shadowJar {
     versionText = versionFile.text.trim()
   }
   transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)
-  archiveBaseName.set('synthea-with-dependencies')
-  archiveClassifier.set('')
+  archiveClassifier.set('with-dependencies')
   archiveVersion.set('')
   manifest {
     attributes(
