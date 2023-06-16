@@ -139,12 +139,7 @@
           "display": "Chronic kidney disease stage 3 (disorder)"
         }
       ],
-      "direct_transition": "End_CKD_4_or_5"
-    },
-    "End_CKD_4_or_5": {
-      "type": "ConditionEnd",
-      "direct_transition": "Begin Post Surgical Stay",
-      "referenced_by_attribute": "dialysis_reason"
+      "direct_transition": "End_CKD_4"
     },
     "Medication Review": {
       "type": "Procedure",
@@ -2129,6 +2124,33 @@
           "display": "Renal dysplasia (disorder)"
         }
       ]
+    },
+    "End_CKD_4": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431857002,
+          "display": "Chronic kidney disease stage 4 (disorder)"
+        }
+      ],
+      "direct_transition": "End_End_Stage_Renal_Disease"
+    },
+    "End_End_Stage_Renal_Disease": {
+      "type": "ConditionEnd",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46177005",
+          "display": "End-stage renal disease (disorder)"
+        }
+      ],
+      "direct_transition": "End any other dialysis reason"
+    },
+    "End any other dialysis reason": {
+      "type": "ConditionEnd",
+      "direct_transition": "Begin Post Surgical Stay",
+      "referenced_by_attribute": "dialysis_reason"
     }
   },
   "gmf_version": 2
