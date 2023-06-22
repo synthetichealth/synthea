@@ -44,7 +44,15 @@ import org.mitre.synthea.export.FhirR4;
 public abstract class FieldWrapper {
   protected BaseRuntimeChildDefinition fieldDef;
 
+  /**
+   * Create a FieldWrapper for the field defined by the given path.
+   *
+   * @param fieldPath Path to FHIR field (not FHIRPath). Should be of the form:
+   *     Resource.field.nestedField.nested2...
+   */
   public FieldWrapper(String fieldPath) {
+    // split at the first . so we get two items in the array:
+    // [0] = resource, [1] = field[.nestedField etc]
     String[] pathParts = fieldPath.split("\\.", 2);
 
     try {
@@ -60,6 +68,12 @@ public abstract class FieldWrapper {
     }
   }
 
+  /**
+   * Create a FieldWrapper for the field on the given resource type defined by the given path.
+   *
+   * @param fieldName Path to FHIR field (not FHIRPath). Should not include resourceType and
+   *     should be of the form: field.nestedField.nested2...
+   */
   public FieldWrapper(Class<? extends Resource> clazz, String fieldName) {
     init(clazz, fieldName);
   }
@@ -68,24 +82,44 @@ public abstract class FieldWrapper {
     RuntimeResourceDefinition rd = FhirR4.getContext().getResourceDefinition(clazz);
     // TODO: this only gets top-level fields. update to suport nested fields
     this.fieldDef = rd.getChildByName(fieldName);
-    if (this.fieldDef == null) {
-      System.out.println("breakpoint");
-    }
   }
 
+  /**
+   * Get a single value from the field this FieldWrapper represents from the given resource.
+   * For fields that may have more than a single value, use getAll(Resource) instead.
+   * Calling this on a field that has more than one value will return only the first value.
+   * @param resource Resource to get value from
+   * @return the value from the field
+   */
   public IBase getSingle(Resource resource) {
     return fieldDef.getAccessor().getFirstValueOrNull(resource).orElse(null);
   }
 
+  /**
+   * Get the values from the field this FieldWrapper represents from the given resource.
+   * @param resource Resource to get value from
+   * @return the list of values from the field
+   */
   public List<IBase> getAll(Resource resource) {
     return fieldDef.getAccessor().getValues(resource);
   }
 
+  /**
+   * Set the given value for the field this FieldWrapper represents on the given resource.
+   * @param resource The resource to set a value on
+   * @param value The value to set
+   */
   public void set(Resource resource, IBase value) {
     fieldDef.getMutator().setValue(resource, value);
   }
 
 
+  /**
+   * DateFieldWrapper is used to represent a field on a resource representing a date and/or time.
+   * This wrapper offers convenience features such as normalizing the various types that a FHIR
+   * field can be to a LocalDateTime, checking if the value is in a given range,
+   * and shifting the value by a given amount.
+   */
   public static class DateFieldWrapper extends FieldWrapper {
     public DateFieldWrapper(String fieldPath) {
       super(fieldPath);
@@ -95,9 +129,16 @@ public abstract class FieldWrapper {
       super(clazz, fieldName);
     }
 
+    /**
+     * Normalize the given raw date value into a LocalDateTime. FHIR values can be a number of
+     * different types so this checks which one the value is and converts accordingly.
+     * @param rawValue Original raw FHIR value
+     * @return parsed date as LocalDateTime
+     */
     private static LocalDateTime normalize(IBase rawValue) {
       if (!(rawValue instanceof Base)) {
         // should never happen, not sure it's possible
+        // (though this also catches nulls)
         return null;
       }
 
@@ -121,53 +162,51 @@ public abstract class FieldWrapper {
 
       // various reasons we arrive here, for example a choice type that includes non-time values
       return null;
-
     }
 
-    public static Period shift(Period period, TemporalAmount amount) {
+    /**
+     * Shift the Period by the given TemporalAmount, by shifting both the start and end
+     * elements of the Period by the given amount.
+     * @param period Period to shift
+     * @param amount TemporalAmount to shift by
+     * @return the shifted Period (note: the same object instance as passed in)
+     */
+    static Period shift(Period period, TemporalAmount amount) {
       if (period == null) {
         return null;
       }
 
       period.setStartElement(shift(period.getStartElement(), amount));
       period.setEndElement(shift(period.getEndElement(), amount));
-
       return period;
     }
 
-    public static DateTimeType shift(DateTimeType dateTime, TemporalAmount amount) {
+    static DateTimeType shift(DateTimeType dateTime, TemporalAmount amount) {
       if (dateTime == null) {
         return null;
       }
 
       String s = dateTime.getValueAsString();
-
       ZonedDateTime shifted = ZonedDateTime.parse(s).plus(amount);
-
       dateTime.setValueAsString(shifted.toString());
-
       return dateTime;
     }
 
-    public static DateType shift(DateType date, TemporalAmount amount) {
+    static DateType shift(DateType date, TemporalAmount amount) {
       if (date == null) {
         return null;
       }
 
       String s = date.getValueAsString();
-
       LocalDate shifted = LocalDate.parse(s).plus(amount);
-
       date.setValueAsString(shifted.toString());
-
       return date;
     }
 
-    public static TimeType shift(TimeType time, TemporalAmount amount) {
+    static TimeType shift(TimeType time, TemporalAmount amount) {
       if (time == null) {
         return null;
       }
-
       if (amount instanceof java.time.Period) {
         // trying to shift years/months/days but we only have a time of day
         // so just keep it the same
@@ -175,15 +214,12 @@ public abstract class FieldWrapper {
       }
 
       String t = time.getValue();
-
       LocalTime localTime = LocalTime.parse(t).plus(amount);
-
       time.setValue(localTime.toString());
-
       return time;
     }
 
-    public static InstantType shift(InstantType instant, TemporalAmount amount) {
+    static InstantType shift(InstantType instant, TemporalAmount amount) {
       if (instant == null) {
         return null;
       }
@@ -199,6 +235,11 @@ public abstract class FieldWrapper {
       return instant;
     }
 
+    /**
+     * Shift the value of the field represented by this FieldWrapper by the given amount.
+     * @param resource Resource to modify the value on
+     * @param amount Amount to shift the date by
+     */
     public void shift(Resource resource, TemporalAmount amount) {
       IBase value = getSingle(resource);
       if (value == null) {
@@ -228,6 +269,15 @@ public abstract class FieldWrapper {
       set(resource, newValue);
     }
 
+    /**
+     * Tests if the value of the field represented by this FieldWrapper is in the given range.
+     * At least one or both of min or max is required, an "open range" is possible by
+     * providing only one.
+     * @param resource Resource to get the value from
+     * @param min Earliest/start value of the time range
+     * @param max Latest/stop/end value of the time range
+     * @return Whether the value is in the range.
+     */
     public boolean valueInRange(Resource resource, LocalDateTime min, LocalDateTime max) {
       if (min == null && max == null) {
         return true;
@@ -285,6 +335,9 @@ public abstract class FieldWrapper {
 
   public static final Map<ResourceType, List<DateFieldWrapper>> DATE_FIELDS = buildDateFields();
 
+  // TODO: this could instead iterate over all fields on relevant resources,
+  // which might be cleaner but also slower, especially if it means a lot of iteration
+  // over resource types or fields we never use
   private static Map<ResourceType, List<DateFieldWrapper>> buildDateFields() {
     Map<ResourceType, List<DateFieldWrapper>> dateFields = new HashMap<>();
 

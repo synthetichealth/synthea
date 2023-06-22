@@ -532,9 +532,12 @@ public abstract class Actions {
 
   /**
    * Filter the Bundle by removing selected resources.
+   * Resources that reference deleted resources will also be deleted, and so on.
+   * TODO: Support different methods for handling references:
+   * Cascade (current), Delete reference field but leave object, Do nothing
    *
    * @param bundle FHIR Bundle to filter
-   * @param list List of resource types to delete, all other types not listed will be kept
+   * @param list List of resource types to delete, other types not listed will be kept
    */
   public static void deleteResources(Bundle bundle, List<String> list) {
     // TODO: make this FHIRPath instead of just straight resource types
