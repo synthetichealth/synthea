@@ -41,7 +41,6 @@ public class InpatientExporter extends RIFExporter {
     boolean previousEmergency = false;
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
-      HashMap<BB2RIFStructure.INPATIENT, String> fieldValues = new HashMap<>();
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
         continue;
       }
@@ -67,7 +66,7 @@ public class InpatientExporter extends RIFExporter {
       long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
       long fiDocId = RIFExporter.nextFiDocCntlNum.getAndDecrement();
 
-      fieldValues.clear();
+      HashMap<BB2RIFStructure.INPATIENT, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.INPATIENT.class, person);
 
       // The REQUIRED fields
