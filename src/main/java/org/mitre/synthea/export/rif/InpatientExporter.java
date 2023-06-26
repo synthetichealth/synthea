@@ -196,6 +196,8 @@ public class InpatientExporter extends RIFExporter {
         }
 
         // Add a total charge entry.
+        fieldValues.remove(BB2RIFStructure.INPATIENT.REV_CNTR_NDC_QTY);
+        fieldValues.remove(BB2RIFStructure.INPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
         fieldValues.put(BB2RIFStructure.INPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
         // HCPCS 99221: "Inpatient hospital visits: Initial and subsequent"
         fieldValues.put(BB2RIFStructure.INPATIENT.REV_CNTR, "0001");

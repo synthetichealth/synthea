@@ -121,10 +121,6 @@ public class OutpatientExporter extends RIFExporter {
       }
 
       String originalRandomRevCenter = fieldValues.get(BB2RIFStructure.OUTPATIENT.REV_CNTR);
-      if (encounter.type.equals(HealthRecord.EncounterType.VIRTUAL.toString())) {
-        String revCenter = person.randBoolean() ? "0780" : "0789";
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, revCenter);
-      }
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.OUTPATIENT.class)) {
         int claimLine = 1;
@@ -132,7 +128,13 @@ public class OutpatientExporter extends RIFExporter {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             hcpcsCode = getFirstMappedHCPCSCode(lineItem.entry.codes, person);
-            fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, originalRandomRevCenter);
+            String revCenter = originalRandomRevCenter;
+            if (encounter.type.equals(HealthRecord.EncounterType.VIRTUAL.toString())) {
+              revCenter = person.randBoolean() ? "0780" : "0789";
+            } else if (exporter.outpatientRevCntrMapper.canMap(hcpcsCode)) {
+              revCenter = exporter.outpatientRevCntrMapper.map(hcpcsCode, person);
+            }
+            fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, revCenter);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
@@ -158,6 +160,9 @@ public class OutpatientExporter extends RIFExporter {
         }
 
         // Add a total charge entry.
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
         fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
         fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_DT,
                 RIFExporter.bb2DateFromTimestamp(encounter.start));
