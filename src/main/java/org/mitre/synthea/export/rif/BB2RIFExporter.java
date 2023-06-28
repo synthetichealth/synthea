@@ -82,6 +82,7 @@ public class BB2RIFExporter {
   final CodeMapper hhaRevCntrMapper;
   final CodeMapper hospiceRevCntrMapper;
   final CodeMapper inpatientRevCntrMapper;
+  final CodeMapper outpatientRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
   final CMSStateCodeMapper locationMapper;
   final BeneficiaryExporter beneExp;
@@ -111,6 +112,7 @@ public class BB2RIFExporter {
     hhaRevCntrMapper = new CodeMapper("export/hha_rev_cntr_code_map.json");
     hospiceRevCntrMapper = new CodeMapper("export/hospice_rev_cntr_code_map.json");
     inpatientRevCntrMapper = new CodeMapper("export/inpatient_rev_cntr_code_map.json");
+    outpatientRevCntrMapper = new CodeMapper("export/outpatient_rev_cntr_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     externalCodes = loadExternalCodes();
     try {

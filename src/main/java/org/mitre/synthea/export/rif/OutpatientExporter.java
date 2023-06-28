@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.Person;
@@ -33,13 +34,9 @@ public class OutpatientExporter extends RIFExporter {
    */
   long export(Person person, long startTime, long stopTime) throws IOException {
     long claimCount = 0;
-    HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues = new HashMap<>();
 
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       if (encounter.stop < startTime || encounter.stop < CLAIM_CUTOFF) {
-        continue;
-      }
-      if (encounter.claim.getTotalClaimCost().compareTo(Claim.ZERO_CENTS) == 0) {
         continue;
       }
       if (!hasPartABCoverage(person, encounter.stop)) {
@@ -55,11 +52,15 @@ public class OutpatientExporter extends RIFExporter {
       for (Claim.ClaimEntry lineItem: billableItems) {
         billableTotal.addCosts(lineItem);
       }
+      if (billableTotal.getTotalClaimCost().compareTo(Claim.ZERO_CENTS) == 0) {
+        continue;
+      }
 
       long claimId = RIFExporter.nextClaimId.getAndDecrement();
       long claimGroupId = RIFExporter.nextClaimGroupId.getAndDecrement();
       long fiDocId = RIFExporter.nextFiDocCntlNum.getAndDecrement();
 
+      HashMap<BB2RIFStructure.OUTPATIENT, String> fieldValues = new HashMap<>();
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.OUTPATIENT.class, person);
 
       // The REQUIRED fields
@@ -80,13 +81,7 @@ public class OutpatientExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.OUTPATIENT.RNDRNG_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.OUTPATIENT.OP_PHYSN_NPI, encounter.clinician.npi);
-      setClaimCosts(fieldValues, billableTotal);
-      if (encounter.claim.coveredByMedicare()) {
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
-      } else {
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
-                String.format("%.2f", billableTotal.getCoveredCost()));
-      }
+
       fieldValues.put(BB2RIFStructure.OUTPATIENT.PRVDR_STATE_CD,
               exporter.locationMapper.getStateCode(encounter.provider.state));
       // PTNT_DSCHRG_STUS_CD: 1=home, 2=transfer, 3=SNF, 20=died, 30=still here
@@ -111,69 +106,21 @@ public class OutpatientExporter extends RIFExporter {
         }
       }
 
-      // Use the active condition diagnoses to enter mapped values
-      // into the diagnoses codes.
-      List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
-      boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
-      if (!noDiagnoses) {
-        int smallest = Math.min(mappedDiagnosisCodes.size(),
-                BB2RIFStructure.outpatientDxFields.length);
-        for (int i = 0; i < smallest; i++) {
-          BB2RIFStructure.OUTPATIENT[] dxField = BB2RIFStructure.outpatientDxFields[i];
-          fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
-          fieldValues.put(dxField[1], "0"); // 0=ICD10
-        }
-        if (!fieldValues.containsKey(BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD)) {
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
-        }
-      }
-
-      // Check for external code...
-      exporter.setExternalCode(person, fieldValues,
-          BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD,
-          BB2RIFStructure.OUTPATIENT.ICD_DGNS_E_CD1,
-          BB2RIFStructure.OUTPATIENT.ICD_DGNS_E_VRSN_CD1);
-      exporter.setExternalCode(person, fieldValues,
-          BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD,
-          BB2RIFStructure.OUTPATIENT.FST_DGNS_E_CD,
-          BB2RIFStructure.OUTPATIENT.FST_DGNS_E_VRSN_CD);
-
-      // Use the procedures in this encounter to enter mapped values
-      boolean noProcedures = false;
-      if (!encounter.procedures.isEmpty()) {
-        List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
-        List<String> mappedProcedureCodes = new ArrayList<>();
-        for (HealthRecord.Procedure procedure : encounter.procedures) {
-          for (HealthRecord.Code code : procedure.codes) {
-            if (exporter.conditionCodeMapper.canMap(code)) {
-              mappableProcedures.add(procedure);
-              mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code, person, true));
-              break; // take the first mappable code for each procedure
-            }
-          }
-        }
-        if (!mappableProcedures.isEmpty()) {
-          int smallest = Math.min(mappableProcedures.size(),
-                  BB2RIFStructure.outpatientPxFields.length);
-          for (int i = 0; i < smallest; i++) {
-            BB2RIFStructure.OUTPATIENT[] pxField = BB2RIFStructure.outpatientPxFields[i];
-            fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
-            fieldValues.put(pxField[1], "0"); // 0=ICD10
-            fieldValues.put(pxField[2],
-                    RIFExporter.bb2DateFromTimestamp(mappableProcedures.get(i).start));
-          }
-        } else {
-          noProcedures = true;
-        }
-      }
-      if (icdReasonCode == null && noDiagnoses && noProcedures) {
+      int diagnosisCount = mapDiagnoses(fieldValues, person, encounter);
+      int procedureCount = mapProcedures(fieldValues, person, encounter);
+      if (icdReasonCode == null && (diagnosisCount + procedureCount == 0)) {
         continue; // skip this encounter
       }
-      String revCenter = fieldValues.get(BB2RIFStructure.OUTPATIENT.REV_CNTR);
-      if (encounter.type.equals(HealthRecord.EncounterType.VIRTUAL.toString())) {
-        revCenter = person.randBoolean() ? "0780" : "0789";
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, revCenter);
+
+      setClaimCosts(fieldValues, billableTotal);
+      if (encounter.claim.coveredByMedicare()) {
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT, "0");
+      } else {
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.NCH_PRMRY_PYR_CLM_PD_AMT,
+                String.format("%.2f", billableTotal.getCoveredCost()));
       }
+
+      String originalRandomRevCenter = fieldValues.get(BB2RIFStructure.OUTPATIENT.REV_CNTR);
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.OUTPATIENT.class)) {
         int claimLine = 1;
@@ -181,6 +128,12 @@ public class OutpatientExporter extends RIFExporter {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
             hcpcsCode = getFirstMappedHCPCSCode(lineItem.entry.codes, person);
+            String revCenter = originalRandomRevCenter;
+            if (encounter.type.equals(HealthRecord.EncounterType.VIRTUAL.toString())) {
+              revCenter = person.randBoolean() ? "0780" : "0789";
+            } else if (exporter.outpatientRevCntrMapper.canMap(hcpcsCode)) {
+              revCenter = exporter.outpatientRevCntrMapper.map(hcpcsCode, person);
+            }
             fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, revCenter);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
             fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
@@ -206,18 +159,18 @@ public class OutpatientExporter extends RIFExporter {
           exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
         }
 
-        if (claimLine == 1) {
-          // If claimLine still equals 1, then no line items were successfully added.
-          // Add a single top-level entry.
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_DT,
-                  RIFExporter.bb2DateFromTimestamp(encounter.start));
-          // 99241: "Office consultation for a new or established patient"
-          fieldValues.put(BB2RIFStructure.OUTPATIENT.HCPCS_CD, "99241");
-          setClaimCosts(fieldValues, encounter.claim.totals);
-          setLineItemCosts(fieldValues, encounter.claim.totals);
-          exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
-        }
+        // Add a total charge entry.
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, "0001");
+        // For outpatient total charge (0001) rev center, 99.95% of HCPCS codes are blank
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.HCPCS_CD);
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_DT,
+                RIFExporter.bb2DateFromTimestamp(encounter.start));
+        setLineItemCosts(fieldValues, billableTotal);
+        exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
       }
       claimCount++;
     }
@@ -258,5 +211,68 @@ public class OutpatientExporter extends RIFExporter {
         String.format("%.2f", claim.getTotalClaimCost()));
     fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_NCVRD_CHRG_AMT,
         String.format("%.2f", claim.getPatientCost()));
+  }
+
+  private int mapDiagnoses(Map<BB2RIFStructure.OUTPATIENT, String> fieldValues, Person person,
+        HealthRecord.Encounter encounter) {
+    // Use the active condition diagnoses to enter mapped values
+    // into the diagnoses codes.
+    List<String> mappedDiagnosisCodes = getDiagnosesCodes(person, encounter.stop);
+    boolean noDiagnoses = mappedDiagnosisCodes.isEmpty();
+    int smallest = Math.min(mappedDiagnosisCodes.size(),
+            BB2RIFStructure.outpatientDxFields.length);
+    if (!noDiagnoses) {
+      for (int i = 0; i < smallest; i++) {
+        BB2RIFStructure.OUTPATIENT[] dxField = BB2RIFStructure.outpatientDxFields[i];
+        fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
+        fieldValues.put(dxField[1], "0"); // 0=ICD10
+      }
+      if (!fieldValues.containsKey(BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD)) {
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD, mappedDiagnosisCodes.get(0));
+      }
+    }
+
+    // Check for external code...
+    exporter.setExternalCode(person, fieldValues,
+        BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD,
+        BB2RIFStructure.OUTPATIENT.ICD_DGNS_E_CD1,
+        BB2RIFStructure.OUTPATIENT.ICD_DGNS_E_VRSN_CD1);
+    exporter.setExternalCode(person, fieldValues,
+        BB2RIFStructure.OUTPATIENT.PRNCPAL_DGNS_CD,
+        BB2RIFStructure.OUTPATIENT.FST_DGNS_E_CD,
+        BB2RIFStructure.OUTPATIENT.FST_DGNS_E_VRSN_CD);
+
+    return smallest;
+  }
+
+  private int mapProcedures(Map<BB2RIFStructure.OUTPATIENT, String> fieldValues, Person person,
+          HealthRecord.Encounter encounter) {
+    // Use the procedures in this encounter to enter mapped values
+    int procedureCount = 0;
+    if (!encounter.procedures.isEmpty()) {
+      List<HealthRecord.Procedure> mappableProcedures = new ArrayList<>();
+      List<String> mappedProcedureCodes = new ArrayList<>();
+      for (HealthRecord.Procedure procedure : encounter.procedures) {
+        for (HealthRecord.Code code : procedure.codes) {
+          if (exporter.conditionCodeMapper.canMap(code)) {
+            mappableProcedures.add(procedure);
+            mappedProcedureCodes.add(exporter.conditionCodeMapper.map(code, person, true));
+            break; // take the first mappable code for each procedure
+          }
+        }
+      }
+      if (!mappableProcedures.isEmpty()) {
+        procedureCount = Math.min(mappableProcedures.size(),
+                BB2RIFStructure.outpatientPxFields.length);
+        for (int i = 0; i < procedureCount; i++) {
+          BB2RIFStructure.OUTPATIENT[] pxField = BB2RIFStructure.outpatientPxFields[i];
+          fieldValues.put(pxField[0], mappedProcedureCodes.get(i));
+          fieldValues.put(pxField[1], "0"); // 0=ICD10
+          fieldValues.put(pxField[2],
+                  RIFExporter.bb2DateFromTimestamp(mappableProcedures.get(i).start));
+        }
+      }
+    }
+    return procedureCount;
   }
 }
