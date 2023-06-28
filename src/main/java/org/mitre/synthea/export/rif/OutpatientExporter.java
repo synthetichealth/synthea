@@ -163,12 +163,12 @@ public class OutpatientExporter extends RIFExporter {
         fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_IDE_NDC_UPC_NUM);
         fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY);
         fieldValues.remove(BB2RIFStructure.OUTPATIENT.REV_CNTR_NDC_QTY_QLFR_CD);
+        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, "0001");
+        // For outpatient total charge (0001) rev center, 99.95% of HCPCS codes are blank
+        fieldValues.remove(BB2RIFStructure.OUTPATIENT.HCPCS_CD);
         fieldValues.put(BB2RIFStructure.OUTPATIENT.CLM_LINE_NUM, Integer.toString(claimLine));
         fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR_DT,
                 RIFExporter.bb2DateFromTimestamp(encounter.start));
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.REV_CNTR, "0001");
-        // 99241: "Office consultation for a new or established patient"
-        fieldValues.put(BB2RIFStructure.OUTPATIENT.HCPCS_CD, "99241");
         setLineItemCosts(fieldValues, billableTotal);
         exporter.rifWriters.writeValues(BB2RIFStructure.OUTPATIENT.class, fieldValues);
       }
