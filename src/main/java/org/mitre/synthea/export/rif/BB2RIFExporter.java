@@ -84,6 +84,8 @@ public class BB2RIFExporter {
   final CodeMapper inpatientRevCntrMapper;
   final CodeMapper outpatientRevCntrMapper;
   final Map<String, RandomCollection<String>> externalCodes;
+  final RandomCollection<String> hhaCaseMixCodes;
+  final RandomCollection<String> hhaPDGMCodes;
   final CMSStateCodeMapper locationMapper;
   final BeneficiaryExporter beneExp;
   final InpatientExporter inpatientExp;
@@ -115,6 +117,8 @@ public class BB2RIFExporter {
     outpatientRevCntrMapper = new CodeMapper("export/outpatient_rev_cntr_code_map.json");
     locationMapper = new CMSStateCodeMapper();
     externalCodes = loadExternalCodes();
+    hhaCaseMixCodes = loadPPSCodes("export/hha_pps_case_mix_codes.csv");
+    hhaPDGMCodes = loadPPSCodes("export/hha_pps_pdgm_codes.csv");
     try {
       staticFieldConfig = new StaticFieldConfig();
       rifWriters = prepareOutputFiles();
@@ -164,6 +168,30 @@ public class BB2RIFExporter {
       return null;
     }
     return data;
+  }
+
+  private static RandomCollection<String> loadPPSCodes(String resourcePath) {
+    RandomCollection<String> codes = new RandomCollection<>();
+    try {
+      String fileData = Utilities.readResourceAndStripBOM(resourcePath);
+      List<LinkedHashMap<String, String>> csv = SimpleCSV.parse(fileData);
+      for (LinkedHashMap<String, String> row : csv) {
+        String code = row.get("code");
+        long count = Long.parseLong(row.get("count"));
+        codes.add(count, code);
+      }
+    } catch (Exception e) {
+      if (Config.getAsBoolean("exporter.bfd.require_code_maps", true)) {
+        throw new MissingResourceException(
+            "Unable to read PPS code file",
+            "BB2RIFExporter", resourcePath);
+      } else {
+        // For testing, the external codes are not present.
+        System.out.printf("BB2RIFExporter is running without '%s'\n", resourcePath);
+      }
+      return null;
+    }
+    return codes;
   }
 
   <E extends Enum<E>> void setExternalCode(Person person,

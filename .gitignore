@@ -31,6 +31,8 @@ src/main/resources/export/snf_pdpm_code_map.json
 src/main/resources/export/snf_pps_code_map.json
 src/main/resources/export/snf_rev_cntr_code_map.json
 src/main/resources/export/hha_rev_cntr_code_map.json
+src/main/resources/export/hha_pps_case_mix_codes.csv
+src/main/resources/export/hha_pps_pdgm_codes.csv
 src/main/resources/export/hospice_rev_cntr_code_map.json
 src/main/resources/export/inpatient_rev_cntr_code_map.json
 src/main/resources/export/outpatient_rev_cntr_code_map.json
