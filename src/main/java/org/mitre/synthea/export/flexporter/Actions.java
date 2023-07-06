@@ -451,6 +451,12 @@ public abstract class Actions {
     }
   }
 
+  /**
+   * Shift all dates on all resources in the Bundle. Note this only modifies date/time-type fields
+   * on resources and cannot modify dates embedded within strings (for example, clinical notes).
+   * @param bundle FHIR Bundle to shift dates for
+   * @param amountString Amount to shift in ISO-8601 format, either Period or Duration
+   */
   private static void shiftDates(Bundle bundle, String amountString) {
     if (amountString == null) {
       return;
@@ -484,6 +490,14 @@ public abstract class Actions {
     }
   }
 
+  /**
+   * Filter the Bundle by date. If any resource has a date outside the provided range
+   * it will be filtered out.
+   * TODO: align this with export.years_of_history filter. "active" items outside range?
+   * @param bundle The Bundle to filter
+   * @param minDateStr Earliest/start value of the time range, in ISO-8601 format
+   * @param maxDateStr Latest/stop/end value of the time range, in ISO-8601 format
+   */
   private static void dateFilter(Bundle bundle, String minDateStr, String maxDateStr) {
     if (minDateStr == null && maxDateStr == null) {
       return;

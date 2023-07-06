@@ -379,6 +379,12 @@ public abstract class FieldWrapper {
       super(clazz, fieldName);
     }
 
+    /**
+     * Get a single reference from the field this FieldWrapper represents on the given resource,
+     * as a string.
+     * @param resource Resource to get the value from
+     * @return Reference as string, ex. "Patient/123" or "urn:uuid:98d1c..."
+     */
     public String getReference(Resource resource) {
       IBase referenceObject = getSingle(resource);
       if (!(referenceObject instanceof Reference)) {
@@ -388,6 +394,12 @@ public abstract class FieldWrapper {
       return ref.getReference();
     }
 
+    /**
+     * Get all references from the field this FieldWrapper represents on the given resource,
+     * as a list of strings.
+     * @param resource Resource to get the value from
+     * @return References as strings, ex. "Patient/123" or "urn:uuid:98d1c..."
+     */
     public List<String> getReferences(Resource resource) {
       List<IBase> referenceObjects = getAll(resource);
 
