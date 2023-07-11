@@ -1,7 +1,7 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: menstrual_cycle
+# name: menstrual_cycle
 
 # Name of the model file
 model: Roblitz2013_Menstrual_Cycle.xml
@@ -16,7 +16,10 @@ stepSize: 0.01
 # Simulation duration in seconds
 # duration: 2419200
 # duration: 86400
-duration: 28
+# duration: 28
+
+simDuration: 2419200
+
 
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
 #inputs:
@@ -32,26 +35,26 @@ duration: 28
 # What charts to draw. Results will be plotted on PNG images.
 # Note that chart support is a convenience feature and many chart options cannot be manipulated here.
 # If you need more control over the chart, import the csv file into another program with that capability.
-charts:
-    - filename: menstrual_cycle.png
-      type: line
-      title: "menstrual_cycle"
-      axisParamX: time
-      axisLabelX: time (d)
-      axisLabelY: IU/L
-      #lowerBoundY: -0.05
-      #upperBoundY: 0.15
-      series:
-        - param: AF1
-        - param: E2
-        - param: GnRH
-        - param: InhA
-        - param: Lut1
-        - param: OvF
-        - param: P4
-        - param: FSH_R
-        - param: R_FSH
-        - param: R_FSH_des
+# charts:
+#     - filename: menstrual_cycle.png
+#       type: line
+#       title: "menstrual_cycle"
+#       axisParamX: time
+#       axisLabelX: time (d)
+#       axisLabelY: IU/L
+#       #lowerBoundY: -0.05
+#       #upperBoundY: 0.15
+#       series:
+#         - param: AF1
+#         - param: E2
+#         - param: GnRH
+#         - param: InhA
+#         - param: Lut1
+#         - param: OvF
+#         - param: P4
+#         - param: FSH_R
+#         - param: R_FSH
+#         - param: R_FSH_des
 
 
     # <listOfParameters>

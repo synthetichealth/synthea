@@ -1,0 +1,33 @@
+{
+    "name": "Scale",
+    "remarks": [
+      "This module simulates a digital scale."
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "WeightScaleEncounter"
+      },
+      "WeightScaleEncounter": {
+        "type": "Encounter",
+        "wellness": true,
+        "direct_transition": "StartWeightScale"
+      },
+      "StartWeightScale": {
+        "type": "Observation",
+        "codes": [
+          {
+            "system": "http://loinc.org",
+            "code": "29463-7",
+            "display": "Body weight"
+          }
+        ],
+        "direct_transition": "End_WeightScaleEncounter"
+      },
+      "End_WeightScaleEncounter": {
+        "type": "Terminal",
+        "name": "Terminal"
+      }
+    },
+    "gmf_version": 1
+  }
