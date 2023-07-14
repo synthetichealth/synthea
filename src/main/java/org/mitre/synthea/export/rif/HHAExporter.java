@@ -104,7 +104,6 @@ public class HHAExporter extends RIFExporter {
       } else if (servicePeriod.getStart() > HHA_PPS_CASE_MIX_START) {
         ppsCode = exporter.hhaCaseMixCodes.next(person);
       }
-      System.out.printf("Assigned PPS code: %s\n", ppsCode == null ? "NULL" : ppsCode);
 
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (HealthRecord.Encounter encounter : servicePeriod.getEncounters()) {
