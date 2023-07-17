@@ -178,7 +178,7 @@ public class BB2RIFExporter {
       for (LinkedHashMap<String, String> row : csv) {
         String code = row.get("code");
         long count = Long.parseLong(row.get("count"));
-        codes.add(count, code);
+        codes.add((double) count, code);
       }
     } catch (Exception e) {
       if (Config.getAsBoolean("exporter.bfd.require_code_maps", true)) {
