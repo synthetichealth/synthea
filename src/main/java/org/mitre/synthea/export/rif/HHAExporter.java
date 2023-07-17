@@ -19,6 +19,9 @@ import org.mitre.synthea.world.concepts.HealthRecord;
  */
 public class HHAExporter extends RIFExporter {
 
+  private static final long HHA_PPS_CASE_MIX_START = parseSimpleDate("20080101");
+  private static final long HHA_PPS_PDGM_START = parseSimpleDate("20200101");
+
   /**
    * Construct an exporter for HHA claims.
    * @param exporter the exporter instance that will be used to access code mappers
@@ -87,23 +90,44 @@ public class HHAExporter extends RIFExporter {
 
       final String HHA_TOTAL_CHARGE_REV_CNTR = "0001"; // Total charge
       final String HHA_GENERAL_REV_CNTR = "0270"; // General medical/surgical supplies
+      final String HHA_PPS_REV_CNTR = "0023"; // Prospective payment system
       final String HHA_MEDICATION_CODE = "T1502"; // Administration of medication
+
+      // Select a PPS code for this service period (if a PPS program was in place at the time).
+      // Only one PPS code per service period since the code is based on patient characteristics
+      // and care need.
+      // TODO: rather than pick a weighted random PPS code, pick a code based on current patient
+      // characteristics.
+      String ppsCode = null;
+      if (servicePeriod.getStart() > HHA_PPS_PDGM_START) {
+        ppsCode = exporter.hhaPDGMCodes.next(person);
+      } else if (servicePeriod.getStart() > HHA_PPS_CASE_MIX_START) {
+        ppsCode = exporter.hhaCaseMixCodes.next(person);
+      }
+
       ConsolidatedClaimLines consolidatedClaimLines = new ConsolidatedClaimLines();
       for (HealthRecord.Encounter encounter : servicePeriod.getEncounters()) {
         for (Claim.ClaimEntry lineItem : encounter.claim.items) {
           String hcpcsCode = null;
           if (lineItem.entry instanceof HealthRecord.Procedure) {
-            for (HealthRecord.Code code : lineItem.entry.codes) {
-              if (exporter.hcpcsCodeMapper.canMap(code)) {
-                hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
-                if (exporter.hhaRevCntrMapper.canMap(code)) {
-                  revCenter = exporter.hhaRevCntrMapper.map(code, person);
+            // 10% of line items use a PPS code, use higher number here to account for
+            // every claim having a total charge line
+            if (ppsCode != null && person.rand() < 0.15) {
+              hcpcsCode = ppsCode;
+              revCenter = HHA_PPS_REV_CNTR;
+            } else {
+              for (HealthRecord.Code code : lineItem.entry.codes) {
+                if (exporter.hcpcsCodeMapper.canMap(code)) {
+                  hcpcsCode = exporter.hcpcsCodeMapper.map(code, person, true);
+                  if (exporter.hhaRevCntrMapper.canMap(hcpcsCode)) {
+                    revCenter = exporter.hhaRevCntrMapper.map(hcpcsCode, person);
+                  }
+                  break; // take the first mappable code for each procedure
                 }
-                break; // take the first mappable code for each procedure
               }
-            }
-            if (hcpcsCode == null) {
-              revCenter = HHA_GENERAL_REV_CNTR;
+              if (hcpcsCode == null) {
+                revCenter = HHA_GENERAL_REV_CNTR;
+              }
             }
             consolidatedClaimLines.addClaimLine(hcpcsCode, revCenter, lineItem, encounter);
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
