@@ -241,7 +241,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     }
 
     return 0.0;
-  } 
+  }
 
   /**
    * Get the amount that Medications will impact this Person's BP.

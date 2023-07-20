@@ -635,7 +635,6 @@ public final class LifecycleModule extends Module {
   private static final double[] RESPIRATION_RATE_NORMAL =
       BiometricsConfig.doubles("respiratory.respiration_rate.normal");
 
-
   /**
    * Calculate this person's vital signs,
    * based on their conditions, medications, body composition, etc.

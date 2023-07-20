@@ -50,10 +50,6 @@ charts:
         # - param: alpha
         # - param: lambda
 
-
-
-
-
 # <parameter constant="false" id="H1" metaid="COPASI1" name="H1" value="0.05">
 # <parameter constant="false" id="H2" metaid="COPASI2" name="H2" value="1">
 # <parameter constant="false" id="A" metaid="COPASI3" name="A" value="0">
@@ -68,7 +64,3 @@ charts:
 # <parameter constant="true" id="tau_C" metaid="COPASI12" name="tau_C" value="23.67">
 # <parameter constant="true" id="tau_alpha" metaid="COPASI13" name="tau_alpha" value="25.92">
 # <parameter constant="true" id="tau_lamda" metaid="COPASI14" name="tau_lamda" value="24.04">
-
-
-
-
