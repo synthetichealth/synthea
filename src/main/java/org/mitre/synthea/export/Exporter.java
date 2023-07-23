@@ -225,10 +225,23 @@ public abstract class Exporter {
         writeNewFile(outFilePath, bundleJson);
       }
     }
+
+
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
         org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
+        for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
+      // } else if (Config.getAsBoolean("exporter.fhir.longitudinal_data")) {
+      } else if (Config.getAsBoolean("exporter.fhir.personal_data")) {
+        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+        //IParser parser = FhirR4.getContext().newNdJsonParser().setPrettyPrint(false);
         IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
@@ -243,6 +256,10 @@ public abstract class Exporter {
       }
       FhirGroupExporterR4.addPatient((String) person.attributes.get(Person.ID));
     }
+
+
+
+
     if (Config.getAsBoolean("exporter.ccda.export")) {
       String ccdaXml = CCDAExporter.export(person, stopTime);
       File outDirectory = getOutputFolder("ccda", person);
@@ -255,6 +272,17 @@ public abstract class Exporter {
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
       writeNewFile(outFilePath, json);
     }
+
+    if (Config.getAsBoolean("exporter.ndjson.export")) {
+      // NDJSON Export
+      // String ndJson = NdJsonExporter.export(person);
+      String json = JSONExporter.export(person);
+      File outDirectory = getOutputFolder("ndjson", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "ndjson"));
+      writeNewFile(outFilePath, json);
+    }
+
+
     if (Config.getAsBoolean("exporter.csv.export")) {
       try {
         CSVExporter.getInstance().export(person, stopTime);
