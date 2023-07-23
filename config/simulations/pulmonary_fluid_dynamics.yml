@@ -1,0 +1,91 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: pulmonary_fluid_dynamics
+
+# Name of the model file
+model: Guyton1972_PulmonaryFluidDynamics.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: rosenbrock
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 1
+
+# Simulation duration in seconds
+duration: 10
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: pulmonary_fluid_dynamics.png
+      type: line
+      title: "pulmonary_fluid_dynamics"
+      axisParamX: time
+      axisLabelX: time (?)
+      axisLabelY: ???
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        # - param: VPF
+        # - param: CPP
+        - param: CPN
+        - param: PPC
+        # - param: PPD
+
+        # - param: PPA
+        # - param: PLA
+        # - param: RPV
+        # - param: RPA
+        # - param: DFP
+        # - param: PCP
+        # - param: VPF1
+        # - param: PLF
+        # - param: POS
+        # - param: PPR1
+        # - param: CPF
+        # - param: PFI
+        # - param: DFZ
+        # - param: PPI
+        # - param: PPZ
+        # - param: PPR
+        # - param: PPO
+
+
+  # <parameter metaid="_645354" id="PPC" name="PPC" value="29.9941" units="dimensionless"/>
+  # <parameter metaid="_645356" id="PPA" name="PPA" value="15.6376" units="dimensionless"/>
+  # <parameter metaid="_645358" id="PLA" name="PLA" value="2" units="dimensionless"/>
+  # <parameter metaid="_645360" id="CPP" name="CPP" value="71.9719" units="dimensionless"/>
+  # <parameter metaid="_645362" id="RPV" name="RPV" value="1.55719" units="dimensionless"/>
+  # <parameter metaid="_645364" id="RPA" name="RPA" value="1.5683" units="dimensionless"/>
+  # <parameter metaid="_645366" id="PCP" name="PCP" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645368" id="PFI" name="PFI" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645370" id="DFP" name="DFP" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645372" id="VPF" name="VPF" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645374" id="DFZ" name="DFZ" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645376" id="VPF1" name="VPF1" value="0.0123238" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645378" id="PPI" name="PPI" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645380" id="PPD" name="PPD" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645382" id="CPN" name="CPN" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645384" id="PPZ" name="PPZ" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645386" id="PPR1" name="PPR1" value="0.419998" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645388" id="PPR" name="PPR" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645390" id="POS" name="POS" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645392" id="PPN" name="PPN" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645394" id="PLF" name="PLF" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645396" id="PPO" name="PPO" units="dimensionless" constant="false"/>
+  # <parameter metaid="_645398" id="CPF" name="CPF" value="0.0003" units="dimensionless"/>
+  # <parameter metaid="_645400" id="tu" name="time_unit" value="1" units="time"/>

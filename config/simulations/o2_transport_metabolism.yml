@@ -1,0 +1,107 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: o2_transport_metabolism
+
+# Name of the model file
+model: Lai2007_O2_Transport_Metabolism.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: rosenbrock
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+duration: 10
+
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+inputs:
+   exercise_level: 3
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: o2_transport_metabolism.png
+      type: line
+      title: "o2_transport_metabolism"
+      axisParamX: time
+      axisLabelX: time (s?)
+      axisLabelY: ???
+      #lowerBoundY: -0.05
+      
+      #upperBoundY: 0.15
+      series:
+        - param: StO2m
+        - param: PCr
+        - param: Katpase
+        # - param: RStO2m
+        - param: ATP
+        - param: Vmax
+        # - param: Kadp
+        # - param: ADP
+        # - param: VfCK
+
+
+    # <listOfParameters>
+    #   <parameter constant="false" id="StO2m" metaid="metaid_0000080" name="StO2m" units="dimensionless"/>
+    #   <parameter constant="false" id="RStO2m" metaid="metaid_0000105" name="RStO2m" units="dimensionless"/>
+    #   <parameter constant="false" id="Katpase" metaid="metaid_0000012" name="Katpase" units="perMin" value="0.3207601"/>
+    #   <parameter id="KatpaseW" metaid="metaid_0000065" name="KatpaseW" units="perMin" value="0.3207601"/>
+    #   <parameter id="Kadp" metaid="metaid_0000011" name="Kadp" units="mM" value="0.058"/>
+    #   <parameter id="Kia" metaid="metaid_0000013" name="Kia" units="mM" value="0.135"/>
+    #   <parameter id="Kiq" metaid="metaid_0000015" name="Kiq" units="mM" value="3.5"/>
+    #   <parameter id="Kib" metaid="metaid_0000016" name="Kib" units="mM" value="3.9"/>
+    #   <parameter id="Kp" metaid="metaid_0000017" name="Kp" units="mM" value="3.8"/>
+    #   <parameter id="Kb" metaid="metaid_0000018" name="Kb" units="mM" value="1.11"/>
+    #   <parameter id="Km" metaid="metaid_0000053" name="Km" units="mM" value="0.0007"/>
+    #   <parameter id="VfCK" metaid="metaid_0000020" name="VfCK" units="mMperMin" value="6000"/>
+    #   <parameter id="VrCK" metaid="metaid_0000021" name="VrCK" units="mMperMin" value="3008.65837589001"/>
+    #   <parameter id="QRm" metaid="metaid_0000069" name="QRm" units="LperMin" value="0.688"/>
+    #   <parameter id="QWm" metaid="metaid_0000042" name="QWm" units="LperMin" value="3.118"/>
+    #   <parameter constant="false" id="Qm" metaid="metaid_0000062" name="Qm" units="LperMin" value="3.118"/>
+    #   <parameter id="Qc" metaid="metaid_0000048" name="Qc" units="LperMin" value="8"/>
+    #   <parameter id="PSR" metaid="metaid_0000070" name="PSR" units="LperMin" value="134.2828"/>
+    #   <parameter id="PSE" metaid="metaid_0000046" name="PSE" units="LperMin" value="20000"/>
+    #   <parameter constant="false" id="PSm" metaid="metaid_0000063" name="PSm" units="LperMin" value="5338.8"/>
+    #   <parameter id="nH" metaid="metaid_0000019" name="nH" units="dimensionless" value="2.7"/>
+    #   <parameter id="Hct" metaid="metaid_0000049" name="Hct" units="dimensionless" value="0.45"/>
+    #   <parameter id="Wmc" metaid="metaid_0000072" units="dimensionless" value="0.8064"/>
+    #   <parameter id="CmcMb" metaid="metaid_0000073" name="CmcMb" units="mM" value="0.5"/>
+    #   <parameter id="CrbcHb" metaid="metaid_0000083" name="CrbcHb" units="mM" value="5.18"/>
+    #   <parameter id="KMb" metaid="metaid_0000074" name="KMb" units="permM" value="308.642"/>
+    #   <parameter id="KHb" metaid="metaid_0000082" name="KHb" units="mM" value="7800.7"/>
+    #   <parameter id="tE" metaid="metaid_0000079" name="tE" units="time_min" value="3"/>
+    #   <parameter id="CTart" metaid="metaid_0000077" name="CTart" units="mM" value="9.199981"/>
+    #   <parameter constant="false" id="Vmax" metaid="metaid_0000010" name="Vmax" units="mMperMin" value="23.11702"/>
+    #   <parameter id="VmaxM" metaid="metaid_0000090" name="VmaxM" units="mMperMin" value="53.5150933"/>
+    #   <parameter id="VmaxH" metaid="metaid_0000091" name="VmaxH" units="mMperMin" value="34.68714"/>
+    #   <parameter id="VmaxVH" metaid="metaid_0000092" name="VmaxVH" units="mMperMin" value="23.11702"/>
+    #   <parameter constant="false" id="KatpaseE" metaid="metaid_0000066" name="KatpaseE" units="perMin" value="3.3423645"/>
+    #   <parameter id="KatpaseM" metaid="metaid_0000093" name="KatpaseM" units="perMin" value="1.71080439028658"/>
+    #   <parameter id="KatpaseH" metaid="metaid_0000094" name="KatpaseH" units="perMin" value="2.2581564"/>
+    #   <parameter id="KatpaseVH" metaid="metaid_0000095" name="KatpaseVH" units="perMin" value="3.3423645"/>
+    #   <parameter constant="false" id="dQMm" metaid="metaid_0000043" name="dQMm" units="LperMin" value="12.74981"/>
+    #   <parameter id="dQMmM" metaid="metaid_0000096" name="dQMmM" units="LperMin" value="7.9167374"/>
+    #   <parameter id="dQMmH" metaid="metaid_0000097" name="dQMmH" units="LperMin" value="9.42198"/>
+    #   <parameter id="dQMmVH" metaid="metaid_0000098" name="dQMmVH" units="LperMin" value="12.74981"/>
+    #   <parameter constant="false" id="tauQm" metaid="metaid_0000044" name="tauQm" units="time_min" value="0.42"/>
+    #   <parameter id="tauQmM" metaid="metaid_0000099" name="tauQmM" units="time_min" value="0.32"/>
+    #   <parameter id="tauQmH" metaid="metaid_0000100" name="tauQmH" units="time_min" value="0.396"/>
+    #   <parameter id="tauQmVH" metaid="metaid_0000101" name="tauQmVH" units="time_min" value="0.42"/>
+    #   <parameter id="StO2mW" metaid="metaid_0000087" name="StO2mW" units="dimensionless" value="81.17123516"/>
+    #   <parameter id="exercise_level" metaid="metaid_0000088" name="exercise_level" units="dimensionless" value="3"/>
+    #   <parameter constant="false" id="ATPase_flux_mM" metaid="metaid_0000089" name="ATPase_flux_mM" units="mMperMin"/>
+    #   <parameter constant="false" id="CK_flux_mM" metaid="metaid_0000108" name="CK_flux_mM" units="mMperMin"/>
+    #   <parameter constant="false" id="oxygen_phosph" metaid="metaid_0000109" name="oxygen_phosphorilation_rate_mM" units="mMperMin"/>
+    # </listOfParameters>

@@ -1,0 +1,121 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: insulin_signalling_diabetic
+
+# Name of the model file
+model: Brännmark2013_Insulin_Signalling_diabetic.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: rosenbrock
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.1
+
+# Simulation duration in seconds
+duration: 12
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: insulin_signalling_diabetic.png
+      type: line
+      title: "insulin_signalling_diabetic"
+      axisParamX: time
+      axisLabelX: time (hr)
+      axisLabelY: Metabolites
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: IR
+        - param: IRS1
+        - param: PKB
+        - param: mTORC1
+        - param: AS160
+        - param: GLUT4
+        - param: S6
+
+
+#  <listOfParameters>
+#  <parameter id="diabetes" metaid="_061732c3_dfe9_4c19_91c8_234aecc3bd27" name="diabetes" value="0.15"/>
+#  <parameter id="k1a" metaid="_7ebe5460_5d3b_4432_86b8_dd73f8dee191" name="k1a" value="0.6331"/>
+#  <parameter id="k1basal" metaid="_68bbb9d3_af59_43c1_bdf4_71db85fda0d8" name="k1basal" value="0.03683"/>
+#  <parameter id="k1c" metaid="b656fc65_4df5_45cd_98ad_fa298b8dbdfc" name="k1c" value="0.8768"/>
+#  <parameter id="k1d" metaid="_2441555b_0fef_47cf_b078_095f98798e54" name="k1d" value="31.01"/>
+#  <parameter id="k1f" metaid="e145a4f2_1e06_4b5b_b7a5_04c53b8133d2" name="k1f" value="1840"/>
+#  <parameter id="k1g" metaid="_139496d4_1990_4a17_af10_9b0356a8175d" name="k1g" value="1944"/>
+#  <parameter id="k1r" metaid="_5e2c2d3f_cc8b_43ae_bcb3_bb9d558b3c7b" name="k1r" value="0.5471"/>
+#  <parameter id="k2a" metaid="_1c21a4d2_5b18_4d13_85e2_0a0d6079674b" name="k2a" value="3.227"/>
+#  <parameter id="k2c" metaid="_65abc4f6_136b_450a_a30b_e41fbb687828" name="k2c" value="5759"/>
+#  <parameter id="k2basal" metaid="_4a43bca5_40a6_4274_a62d_94f1abc21f8a" name="k2basal" value="0.04228"/>
+#  <parameter id="k2b" metaid="_6163d3d0_1196_477f_9980_ae350f236ec6" name="k2b" value="3424"/>
+#  <parameter id="k2d" metaid="ec106c88_cac5_41f1_8a52_f7b14fe3ab92" name="k2d" value="280.8"/>
+#  <parameter id="k2f" metaid="c6dc0272_8e22_417a_83d8_fc559fe22977" name="k2f" value="2.913"/>
+#  <parameter id="k2g" metaid="_367c1488_6f7f_4fd7_aa10_c5615cb03a02" name="k2g" value="0.2671"/>
+#  <parameter id="k3a" metaid="_9bbefb9e_cd73_447e_a6ef_604ee58ea747" name="k3a" value="0.001377"/>
+#  <parameter id="k3b" metaid="_17ee33a8_0ce4_4607_b851_a2429c40047e" name="k3b" value="0.09876"/>
+#  <parameter id="k4a" metaid="cace3e33_cf65_4302_adf7_b7888a83bdd1" name="k4a" value="5790"/>
+#  <parameter id="k4b" metaid="_0d84c274_593c_4327_8190_34e006f1728e" name="k4b" value="34.8"/>
+#  <parameter id="k4c" metaid="_819d55e6_a928_43bd_beda_6c07254203bc" name="k4c" value="4.456"/>
+#  <parameter id="k4e" metaid="_1ceaa4b1_cd06_42ed_850b_065aee8b3c7e" name="k4e" value="42.84"/>
+#  <parameter id="k4f" metaid="_62378f04_9eb4_46a1_a3cc_d04b6aef978b" name="k4f" value="143.6"/>
+#  <parameter id="k4h" metaid="_4f689140_6b52_4f2a_bdf7_1dbf4eebe100" name="k4h" value="0.5361"/>
+#  <parameter id="k5a1" metaid="ae4a7237_8ac3_41e1_8062_0ea0bf12b5c1" name="k5a1" value="1.842"/>
+#  <parameter id="k5a2" metaid="_5acb108f_7e74_4e90_886e_65aaf491c257" name="k5a2" value="0.05506"/>
+#  <parameter id="k5b" metaid="f76dbfa5_b825_44ef_a3ba_284b697b72b5" name="k5b" value="24.83"/>
+#  <parameter id="k5d" metaid="_73b0511a_01a7_4c9b_af6d_f626ceb1c04c" name="k5d" value="1.06"/>
+#  <parameter id="km5" metaid="_9f6fde03_8241_44e2_b5c7_0399d119a3f2" name="km5" value="2.65"/>
+#  <parameter id="k5c" metaid="bd770293_e40b_493d_b95f_06041fcadcb2" name="k5c" value="0.08575"/>
+#  <parameter id="k6f1" metaid="b5a90e3e_1a7d_473a_876d_e542f26caf48" name="k6f1" value="2.652"/>
+#  <parameter id="k6f2" metaid="_7c2f6ded_f153_4bec_9c22_cf1c20cb11f8" name="k6f2" value="36.93"/>
+#  <parameter id="km6" metaid="_6ce9d90c_8fbd_450c_8587_f099b346675c" name="km6" value="30.54"/>
+#  <parameter id="n6" metaid="f49e2c02_201f_4970_8f17_3b42a6d67116" name="n6" value="2.137"/>
+#  <parameter id="k6b" metaid="_1c15c244_03b2_4d4f_b194_74adf9dbc79b" name="k6b" value="65.18"/>
+#  <parameter id="k7f" metaid="_6c171496_d7b8_40b3_80e3_0424e0e70754" name="k7f" value="50.98"/>
+#  <parameter id="k7b" metaid="_651c9597_a232_42d4_8195_b98801a5861a" name="k7b" value="2286"/>
+#  <parameter id="k8" metaid="aaaf47ce_e359_44a6_9ddf_86807d8b9619" name="k8" value="724.2"/>
+#  <parameter id="glut1" metaid="_6bf2fcde_9669_425a_b09f_188d91520b8f" name="glut1" value="7042"/>
+#  <parameter id="k9f1" metaid="e37b9021_f17a_4719_91de_76822cebcbed" name="k9f1" value="0.1298"/>
+#  <parameter id="k9b1" metaid="_887b0bf7_b516_4f30_89b3_f6d26a91a308" name="k9b1" value="0.04441"/>
+#  <parameter id="k9f2" metaid="_3ed475fc_e91c_4fc5_977a_955329c1db10" name="k9f2" value="3.329"/>
+#  <parameter id="k9b2" metaid="acfb1aab_479a_451e_bc3c_f9a53731f0e9" name="k9b2" value="31"/>
+#  <parameter id="km9" metaid="_2da56d24_5e94_42ad_81f3_1b0d5cfc6549" name="km9" value="5873"/>
+#  <parameter id="n9" metaid="_1a2ede41_4881_4e3c_9d6a_348b70c1149a" name="n9" value="0.9855"/>
+#  <parameter id="scaleIR" metaid="_255e6ba2_3883_4305_9f16_1555e3b1286b" name="scaleIR" value="5.202"/>
+#  <parameter id="scaleIRS1" metaid="dadf226c_8503_4e9b_be05_9cb01a983e29" name="scaleIRS1" value="0.3761"/>
+#  <parameter id="scaleIRS1ds" metaid="_5681cc3d_ee5a_4226_8bf0_b8415ef5df9b" name="scaleIRS1ds" value="14.89"/>
+#  <parameter id="scaleIRS1307" metaid="_5ef5c98d_a5c0_4efe_98dc_6273515068d9" name="scaleIRS1307" value="0.05866"/>
+#  <parameter id="scalePKB308" metaid="b8a0575b_6153_412d_84ae_e009a0080bb8" name="scalePKB308" value="0.04356"/>
+#  <parameter id="scalePKB473" metaid="af4f74b4_70bd_4ac7_ba5b_84f2473762ff" name="scalePKB473" value="0.013"/>
+#  <parameter id="scaleAS160" metaid="cddeecc2_691f_46bb_9ffb_49e8bc2da651" name="scaleAS160" value="0.026656"/>
+#  <parameter id="scaleGLUCOSE" metaid="_588196b0_15f8_43fb_b16c_5cf9f7759025" name="scaleGLUCOSE" value="0.04051"/>
+#  <parameter id="scaleS6K" metaid="_810c55bf_b35e_4e9b_9b98_43740e9bed7e" name="scaleS6K" value="0.7465"/>
+#  <parameter id="scaleS6" metaid="_69a0aae2_0a57_491f_914a_eb77c7bcfb63" name="scaleS6" value="0.1149"/>
+#  <parameter id="gluc" metaid="e7b436ec_aefb_4d41_8667_5fcde7f68c8b" name="gluc" value="0.05"/>
+#  <parameter id="insulin" metaid="_5f4f879a_3849_4bdd_8428_ad2878756657" name="insulin" value="10"/>
+#  <parameter constant="false" id="measuredIRp" metaid="f9563b54_50d9_40e8_80c4_4adf8a354cf5" name="measuredIRp" value="0"/>
+#  <parameter constant="false" id="measuredIRint" metaid="_53ef39a0_1efc_44be_b32f_82bfbfc276b1" name="measuredIRint" value="0"/>
+#  <parameter constant="false" id="measuredIRS1p" metaid="_9a5293db_670e_428c_b750_1380713b9bfc" name="measuredIRS1p" value="0"/>
+#  <parameter constant="false" id="measuredIRS1307" metaid="cec1d269_592b_45fb_8ffd_f299dade4489" name="measuredIRS1307" value="0"/>
+#  <parameter constant="false" id="measuredPKB308p" metaid="_8789e019_5bc7_4846_a063_1c072e9c904d" name="measuredPKB308p" value="0"/>
+#  <parameter constant="false" id="measuredPKB473p" metaid="_07ebe323_a60e_48eb_a921_a6d7aa5864bd" name="measuredPKB473p" value="0"/>
+#  <parameter constant="false" id="measuredAS160p" metaid="_601cf4f1_39a9_4b7c_bc13_1f99a42f9244" name="measuredAS160p" value="0"/>
+#  <parameter constant="false" id="measuredmTORC1a" metaid="_6dd40aed_269c_4383_8ed5_7cd349d67ae2" name="measuredmTORC1a" value="0"/>
+#  <parameter constant="false" id="measuredS6Kp" metaid="_47e88285_f8ac_4c5f_b200_941f64b12213" name="measuredS6Kp" value="0"/>
+#  <parameter constant="false" id="measuredS6p" metaid="_6b1f19b1_835e_41e8_a6f6_a519fba5232d" name="measuredS6p" value="0"/>
+#  <parameter constant="false" id="measuredmTORC2a" metaid="d334c8aa_2630_448f_b40a_31a20b915aa1" name="measuredmTORC2a" value="0"/>
+#  <parameter constant="false" id="glucoseuptake" metaid="_50284c2c_284d_4ef0_a365_39e59a8c9c76" name="glucoseuptake" value="0"/>
+#  </listOfParameters>
