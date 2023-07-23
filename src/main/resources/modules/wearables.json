@@ -11,7 +11,7 @@
     "",
     "About one-in-five Americans use a smart watch or fitness tracker",
     "https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
-    "",
+    "", 
     "Known model limitations:",
     "- This module is Apple centric, and may not model biomarkers found in Garmin devices, Fitbits, and other wearables (yet).",
     "- Most biomarkers are still modeled with Markov chains, and not yet connected to the Biomodel partial differential equation models.",
@@ -101,7 +101,7 @@
     },
     "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Wellness_Baseline_Encounter",
+      "direct_transition": "Sedentary_Lifestyle",
       "range": {
         "low": 20,
         "high": 29,
@@ -110,7 +110,7 @@
     },
     "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Wellness_Baseline_Encounter",
+      "direct_transition": "Sedentary_Lifestyle",
       "range": {
         "low": 30,
         "high": 39,
@@ -119,7 +119,7 @@
     },
     "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Wellness_Baseline_Encounter",
+      "direct_transition": "Sedentary_Lifestyle",
       "range": {
         "low": 40,
         "high": 49,
@@ -128,7 +128,7 @@
     },
     "Age_50-59": {
       "type": "Delay",
-      "direct_transition": "Wellness_Baseline_Encounter",
+      "direct_transition": "Sedentary_Lifestyle",
       "range": {
         "low": 50,
         "high": 59,
@@ -137,7 +137,7 @@
     },
     "Age_60-74": {
       "type": "Delay",
-      "direct_transition": "Wellness_Baseline_Encounter",
+      "direct_transition": "Sedentary_Lifestyle",
       "range": {
         "low": 60,
         "high": 74,
@@ -145,6 +145,70 @@
       }
     },
 
+
+    "Sedentary_Lifestyle": {
+      "type": "ConditionOnset",
+      "target_encounter": "Wellness_Baseline_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415510005,
+          "display": "Sedentary lifestyle (finding)"
+        }
+      ],
+      "remarks": [
+        "More than 60% of US adults do not engage in recommended amount of physical activity.  25% of adults are not physically active at all.",
+        "https://www.cdc.gov/nccdphp/sgr/adults.htm#:~:text=More%20than%2060%20percent%20of,Women%20than%20men."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Wellness_Baseline_Encounter",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.79
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Symptom_Onset_Delay": {
+      "type": "Delay",
+      "direct_transition": "Sedentary_Symptom1",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "years"
+      }
+    },
+    "Sedentary_Symptom1": {
+      "type": "Symptom",
+      "symptom": "Stiffness",
+      "cause": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Symptom1_Ends",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271587009,
+          "display": "Stiffness (finding)"
+        }
+      ]
+    },
+    "Sedentary_Symptom1_Ends": {
+      "type": "Symptom",
+      "symptom": "Stiffness",
+      "cause": "Sedentary_Lifestyle",
+      "direct_transition": "Physical_Activity_Resumes"
+    },
+
+    "Physical_Activity_Resumes": {
+      "type": "ConditionEnd",
+      "condition_onset": "Sedentary_Lifestyle",
+      "direct_transition": "Terminal"
+    },
 
     "Wellness_Baseline_Encounter": {
       "type": "Encounter",
@@ -157,8 +221,20 @@
           "display": "Behavioral assessment (procedure)"
         }
       ],
-      "direct_transition": "Fitness_Baseline"
+      "direct_transition": "Monitor_iWatch"
     },
+
+    "Monitor_iWatch": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 13288007,
+        "display": "Monitor, device (physical object)"
+      },
+      "direct_transition": "Fitness_Baseline",
+      "assign_to_attribute": "snf_iwatch"
+    },
+
     "Wellness_Baseline_Encounter_End": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal",
@@ -182,6 +258,9 @@
       ],
       "direct_transition": "Cycling_Baseline_Distance"
     },
+
+
+
 
     "Cycling_Baseline_Distance": {
       "type": "Observation",
