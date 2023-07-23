@@ -13,19 +13,36 @@ buildscript {
     classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
   }
 }
-apply plugin: "com.github.johnrengelman.shadow"
+buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+  }
+  dependencies {
+    // commons-io used in getting the version id below
+    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
+    // note that commons-io is already a dependency
+    // of commons-csv in the primary dependencies above
+  }
+}
 
-// Apply the java plugin to add support for Java
-apply plugin: 'java'
+plugins {
+  id 'java'
+  id 'application'
+  id 'eclipse'
+  id 'checkstyle'
+  id 'jacoco'
+  id 'maven-publish'
+  id 'signing'
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
 
-sourceCompatibility = '11'
-
-apply plugin: 'application'
-apply plugin: 'eclipse'
-apply plugin: 'checkstyle'
-apply plugin: 'jacoco'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -147,20 +164,7 @@ test {
   }
 }
 
-buildscript {
-  repositories {
-    mavenCentral()
-    maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-  }
-  dependencies {
-    // commons-io used in getting the version id below
-    classpath group: 'commons-io', name: 'commons-io', version: '2.5'
-    // note that commons-io is already a dependency
-    // of commons-csv in the primary dependencies above
-  }
-}
+
 
 jacocoTestReport {
   reports {
@@ -324,22 +328,6 @@ run {
   }
 }
 
-task sourceJar(type: Jar) {
-    classifier "sources"
-    from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier "javadoc"
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives jar
-    archives sourceJar
-    archives javadocJar
-}
-
 def mavenGroup = 'org.mitre.synthea'
 def mavenVersion = '3.2.1-SNAPSHOT'
 
@@ -350,12 +338,6 @@ publishing {
             version mavenVersion
             from components.java
 
-            artifact(sourceJar) {
-                classifier = 'sources'
-            }
-            artifact(javadocJar) {
-                classifier = 'javadoc'
-            }
             pom {
                 name = 'Synthea'
                 description = 'Synthetic Patient Population Simulator'
