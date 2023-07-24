@@ -16,9 +16,10 @@ stepSize: 0.1
 # Simulation duration in seconds
 duration: 60
 
+
 ## Model parameter inputs. Any unspecified parameters will use the model's default value.
-#inputs:
-#    hrmean: 80
+inputs:
+    OVA: 60
 #    arr_t0: 0.25
 #    arr_t1: 0.35
 #    arr_base: 0.2
@@ -36,23 +37,25 @@ charts:
       title: "pulmonary_oxygen_intake"
       axisParamX: time
       axisLabelX: time (s)
-      axisLabelY: ???
+      axisLabelY: N·m−2
       #lowerBoundY: -0.05
       #upperBoundY: 0.15
       series:
-        - param: VPF
+        - param: PO2ART
+
+        # - param: O2UTIL
+        # - param: VPF
+        # - param: O2DFS
+        # - param: OVA
+        # - param: DOVA
+
         # - param: DOB
         # - param: QRO
         # - param: RMO
         # - param: HM
-        - param: O2DFS
-        - param: O2UTIL
         # - param: ALVENT
         # - param: PO2ALV
-
         # - param: RSPDFC
-        - param: OVA
-        - param: DOVA
         # - param: PO2ART
         # - param: OSA
 
