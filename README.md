@@ -30,7 +30,7 @@ These instructions are intended for those wishing to examine the Synthea source 
 ### Installation
 
 **System Requirements:**
-Synthea<sup>TM</sup> requires Java 11 or newer.
+Synthea<sup>TM</sup> requires Java JDK 11 or newer, and is tested to work with up to Java 19.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
