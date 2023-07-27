@@ -83,9 +83,10 @@ public class App {
             // note that Y = "week year" and y = "year" per the formatting guidelines
             // and D = "day in year" and d = "day in month", so what we actually want is yyyyMMdd
             // see: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            options.referenceTime = format.parse(value).getTime();
+//            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+//            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            options.referenceTime = Long.parseLong(value);
+            options.endTime = options.referenceTime;
           } else if (currArg.equalsIgnoreCase("-e")) {
             if (currArg.equals("-E")) {
               overrideFutureDateError = true;
