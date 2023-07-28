@@ -31,6 +31,7 @@ public class DICOMExporter {
       dicomObject.putString(Tag.PatientSex, VR.CS, (String) person.attributes.get(Person.GENDER));
       dicomObject.putDate(Tag.PatientBirthDate, VR.DA, new Date((long) person.attributes.get(Person.BIRTHDATE)));
       dicomObject.putString(Tag.StudyInstanceUID, VR.UI, is.dicomUid);
+      dicomObject.putString(Tag.SOPInstanceUID, VR.UI, is.series.get(0).instances.get(0).dicomUid);
       dicomObject.putString(Tag.SeriesInstanceUID, VR.UI, is.series.get(0).dicomUid);
       dicomObject.putDate(Tag.StudyDate, VR.DA, new Date(is.start));
       dicomObject.putDate(Tag.SeriesDate, VR.DA, new Date(is.start));
