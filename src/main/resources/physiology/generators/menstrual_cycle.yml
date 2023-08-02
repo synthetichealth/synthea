@@ -65,8 +65,8 @@ inputs:
 #   "type"              -   Type of the output value "to". Must be "ATTRIBUTE" or "VITAL_SIGN".
 outputs:
     - from: "#{E2}"
-      to: e2
-    #   type: ATTRIBUTE
+      # to: e2
+      # type: ATTRIBUTE
       variance: 3.0
       preGenerator:
          className: org.mitre.synthea.helpers.RandomValueGenerator
