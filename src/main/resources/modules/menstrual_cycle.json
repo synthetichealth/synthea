@@ -174,8 +174,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 60554003,
-          "display": "Polysomnography (procedure)"
+          "code": 396540005,
+          "display": "Phlebotomy (procedure)"
         }
       ],
       "duration": {
@@ -206,7 +206,7 @@
         }
       ],
       "direct_transition": "HormonePanel",
-      "alt_direct_transition": "Sleep_Imaging"
+      "alt_direct_transition": "Clear_endocrinology_data"
     },
     "HormonePanel": {
       "type": "Observation",

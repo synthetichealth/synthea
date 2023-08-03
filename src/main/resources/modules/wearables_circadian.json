@@ -283,7 +283,7 @@
         }
       ],
       "direct_transition": "SleepMonitor_Data",
-      "alt_direct_transition": "Sleep_Imaging"
+      "alt_direct_transition": "Clear_SleepMonitor_result"
     },
     "SleepMonitor_Data": {
       "type": "Observation",
