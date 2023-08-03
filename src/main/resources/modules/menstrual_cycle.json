@@ -1,6 +1,14 @@
 {
   "name": "Wearables_Sleep",
-  "remarks": [ "" ],
+  "remarks": [ 
+    "",
+    "References",
+    "",
+    "", 
+    "Known model limitations:",
+    "",
+    ""
+   ],
   "states": {
     "Initial": {
       "type": "Initial",

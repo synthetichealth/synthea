@@ -1,21 +1,13 @@
 {
   "name": "Wearables_Circadian",
   "remarks": [
-    "Wearable devices are routinely used for fitness activities, compliance monitoring, and remote patient monitoring workflows (such as post-surgical stepdown).  This module simulates the use of an iWatch werable, and adds FHIR Observation resources corresponding to common biomarkers tracked by the iWatch (step count, step distance, flights climbed, standing time, etc).",
-    "It uses the Pew Research Center data estimating 20% of the population wears a smartwatch.  With mortality effects and demographic age brackets, this works out to approximately 10% of the Synthea patient's generated having wearables data.",
-    "If you wish to include granular SleepMonitor data and media files, enable the `physiology.state.enabled` and `physiology.generators.enabled` fields to true in the `synthea.properties` file.",
     "",
     "References",
-    "Smartwatch Statistics 2023: How Many People Use Smartwatches?",
-    "https://www.demandsage.com/smartwatch-statistics/#:~:text=45%25%20of%20Americans%20regularly%20wear%20smartwatches.",
     "",
-    "About one-in-five Americans use a smart watch or fitness tracker",
-    "https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
     "", 
     "Known model limitations:",
-    "- This module is Apple centric, and may not model biomarkers found in Garmin devices, Fitbits, and other wearables (yet).",
-    "- Most biomarkers are still modeled with Markov chains, and not yet connected to the Biomodel partial differential equation models.",
-    "- Data follows FHIR normalization best practices, and may not reflect raw biomarker data obtained from wearable devices.  One particular example of this is blood pressure, which is reported as two discreet data points in the XML exported from Apple, but which is combined into a single FHIR Observation record with multiple components."
+    "",
+    ""
   ],
   "states": {
     "Initial": {
