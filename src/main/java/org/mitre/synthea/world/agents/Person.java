@@ -771,12 +771,17 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param plan the plan to check.
    */
   public boolean canAffordPlan(InsurancePlan plan) {
-    double incomePercentage
-        = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
-    int income = (int) this.attributes.get(Person.INCOME);
+
+    double incomePercentage = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
+    int income = 0;
+    income = (int) this.attributes.get(Person.INCOME);
+    
     BigDecimal yearlyCost = plan.getYearlyCost(income);
-    return BigDecimal.valueOf(income)
-        .multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
+
+    return BigDecimal
+      .valueOf(income)
+      .multiply(BigDecimal.valueOf(incomePercentage))
+      .compareTo(yearlyCost) >= 0;
   }
 
   /**
