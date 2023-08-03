@@ -1,5 +1,5 @@
 {
-  "name": "Wearables_Sleep",
+  "name": "Wearables_Circadian",
   "remarks": [
     "Wearable devices are routinely used for fitness activities, compliance monitoring, and remote patient monitoring workflows (such as post-surgical stepdown).  This module simulates the use of an iWatch werable, and adds FHIR Observation resources corresponding to common biomarkers tracked by the iWatch (step count, step distance, flights climbed, standing time, etc).",
     "It uses the Pew Research Center data estimating 20% of the population wears a smartwatch.  With mortality effects and demographic age brackets, this works out to approximately 10% of the Synthea patient's generated having wearables data.",
@@ -152,8 +152,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 415510005,
-          "display": "Sedentary lifestyle (finding)"
+          "code": 73430006,
+          "display": "Sleep apnea (disorder)"
         }
       ],
       "remarks": [
@@ -278,12 +278,12 @@
       "outputs": [
         {
           "from_list": "CPtot",
-          "to": "SleepMonitor_result",
+          "to": "sleep_monitor_data",
           "type": "Attribute"
         }
       ],
       "direct_transition": "SleepMonitor_Data",
-      "alt_direct_transition": "Clear_SleepMonitor_result"
+      "alt_direct_transition": "SleepAnalysis"
     },
     "SleepMonitor_Data": {
       "type": "Observation",
@@ -292,13 +292,13 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": 60554003,
+          "display": "Polysomnography (procedure)"
         }
       ],
       "sampled_data": {
         "attributes": [
-          "SleepMonitor_result"
+          "sleep_monitor_data"
         ]
       },
       "direct_transition": "SleepMonitor_Chart"
@@ -310,20 +310,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": 60554003,
+          "display": "Polysomnography (procedure)"
         }
       ],
       "attachment": {
         "chart": {
           "type": "line",
-          "title": "Electrocardiogram",
+          "title": "Circadian Cycle",
           "axis_attribute_x": "time",
           "width": 400,
           "height": 200,
           "series": [
             {
-              "attribute": "SleepMonitor_result"
+              "attribute": "sleep_monitor_data"
             }
           ]
         }
@@ -332,7 +332,7 @@
     },
     "Clear_SleepMonitor_result": {
       "type": "SetAttribute",
-      "attribute": "SleepMonitor_result",
+      "attribute": "sleep_monitor_data",
       "direct_transition": "SleepAnalysis"
     },
     "SleepAnalysis": {
