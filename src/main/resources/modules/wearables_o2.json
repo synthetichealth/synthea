@@ -1,12 +1,13 @@
 {
   "name": "Wearables_O2_Stats",
   "remarks": [
+    "According to the American Medical Association, it is believed that more than 30 million people have sleep apnea in the US, about 9% of the population.  Manufacturers estimate that approximately 8 million sleep with a CPAP machine each night.",
     "",
     "References",
-    "",
+    "https://www.cpap.com/blog/sleep-apnea-statistics/",
     "", 
     "Known model limitations:",
-    "",
+    "Physiology model reports arterial oxygnation (PO2ART) over a 60 second (1 min) interval.  Wearable devices that monitor sleep typically provide summary statistics, such as '5hrs 30min of sleep last night'.  Physiology model may need to be sampled multiple times for a sleep study observation.    ",
     ""
   ],
   "states": {

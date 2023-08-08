@@ -1,13 +1,17 @@
 {
-  "name": "Wearables_Sleep",
+  "name": "Menstrual Cycle",
   "remarks": [ 
+    "The reproductive system of a female, unlike men, shows regular cyclic changes that teleologically may be regarded as periodic preparation for pregnancy and fertilization. In primates and humans, the cycle is a menstrual cycle, and its most conspicuous feature is the periodic vaginal bleeding that occurs with the shedding of uterine mucose (menstruation). The length of the cycle is notoriously variable, but an average figure is 28 days from the start of one menstrual period to the start of the next. By common usage, the days of the cycle are identified by number starting with the first day of menstruation. It begins at puberty, ranging from the ages of 10 to 16, and ends at menopause at an average age of 51.  -Thiyagarajan, Basit, Jeanmonod 2022",
     "",
     "References",
-    "",
+    "https://www.ncbi.nlm.nih.gov/books/NBK500020/",
+    "Roblitz2013_Menstrual_Cycle.pdf", 
     "", 
     "Known model limitations:",
-    "",
-    ""
+    "This model is significantly more complex than other models included in Synthea, with nearly 10x more parameters than the circadian cycle.",
+    "Currently, only Estradiol output levels are mapped to output data.",
+    "This model generates continuous data over a 28 cycle, which would not be recorded in any known clinical test.  Rather, laboratory tests would typically involve a blood draw, and a discrite value at a single point in time.",
+    "Details for writing intersection functions to extract a single value are explianed in greater detail in the Synthea Wiki."
    ],
   "states": {
     "Initial": {

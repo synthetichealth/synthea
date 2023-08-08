@@ -1,13 +1,15 @@
 {
   "name": "Wearables_Circadian",
   "remarks": [
-    "",
+    "The regulation of sleep is processed by the homeostatic physiology of the circadian rhythm, the sleep/wake cycle. Circadian rhythm is the 24-hour internal clock in our brain that regulates cycles of alertness and sleepiness by responding to light changes in our environment. ",
+    "", 
     "References",
-    "",
+    "https://www.ncbi.nlm.nih.gov/books/NBK519507/",
     "", 
     "Known model limitations:",
-    "",
-    ""
+    "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test.  Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
+    "This model can be interected with another function (i.e. a line), to produce a sleep/wake cycle.  Additional information on how to do this is provided in the Wiki.",
+    "This model me be useful in generating cyclical daily habits, such as taking medicaitons in the morning, exercising at certain times of the day, and so forth.  Please see the Wiki for additional details." 
   ],
   "states": {
     "Initial": {
