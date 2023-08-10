@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.instance.model.api.IBase;
@@ -42,7 +44,8 @@ import org.mitre.synthea.export.FhirR4;
 
 
 public abstract class FieldWrapper {
-  protected BaseRuntimeChildDefinition fieldDef;
+  protected Function<Resource, List<IBase>> getter;
+  protected BiConsumer<Resource, IBase> setter;
 
   /**
    * Create a FieldWrapper for the field defined by the given path.
@@ -80,8 +83,20 @@ public abstract class FieldWrapper {
 
   private void init(Class<? extends Resource> clazz, String fieldName) {
     RuntimeResourceDefinition rd = FhirR4.getContext().getResourceDefinition(clazz);
-    // TODO: this only gets top-level fields. update to suport nested fields
-    this.fieldDef = rd.getChildByName(fieldName);
+    if (fieldName.contains(".")) {
+      // the .stream() and everything after it is just turning List<Base> into List<IBase> ugh
+      this.getter = (resource) ->
+                      FhirPathUtils.evaluateResource(resource, fieldName)
+                        .stream()
+                        .map(b -> (IBase)b)
+                        .collect(Collectors.toList());
+      this.setter = (resource, value) ->
+                      CustomFHIRPathResourceGeneratorR4.setField(resource, fieldName, value);
+    } else {
+      BaseRuntimeChildDefinition fieldDef = rd.getChildByName(fieldName);
+      this.getter = fieldDef.getAccessor()::getValues;
+      this.setter = fieldDef.getMutator()::setValue;
+    }
   }
 
   /**
@@ -92,7 +107,7 @@ public abstract class FieldWrapper {
    * @return the value from the field
    */
   public IBase getSingle(Resource resource) {
-    return fieldDef.getAccessor().getFirstValueOrNull(resource).orElse(null);
+    return getAll(resource).stream().findFirst().orElse(null);
   }
 
   /**
@@ -101,7 +116,7 @@ public abstract class FieldWrapper {
    * @return the list of values from the field
    */
   public List<IBase> getAll(Resource resource) {
-    return fieldDef.getAccessor().getValues(resource);
+    return this.getter.apply(resource);
   }
 
   /**
@@ -110,7 +125,7 @@ public abstract class FieldWrapper {
    * @param value The value to set
    */
   public void set(Resource resource, IBase value) {
-    fieldDef.getMutator().setValue(resource, value);
+    this.setter.accept(resource, value);
   }
 
 

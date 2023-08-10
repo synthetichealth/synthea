@@ -3,8 +3,6 @@ package org.mitre.synthea.export.flexporter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import ca.uhn.fhir.context.FhirContext;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -184,5 +182,12 @@ public class CustomFHIRPathResourceGeneratorR4Test {
     Extension birthTime =
         birthdate.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/patient-birthTime");
     assertEquals("2021-12-15T17:57:28-05:00", birthTime.getValueAsPrimitive().getValueAsString());
+  }
+
+  @Test
+  public void testSingleFieldSetter() {
+    Patient p = new Patient();
+    CustomFHIRPathResourceGeneratorR4.setField(p, "name.given", "TestName");
+    assertEquals("TestName", p.getNameFirstRep().getGivenAsSingleString());
   }
 }

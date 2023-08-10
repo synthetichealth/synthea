@@ -720,4 +720,21 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   public enum PathType {
     WHERE_EQUALS, WHERE_UNEQUALS, WITHOUT_WHERE
   }
+
+  /**
+   * Helper function to set a single value on a resource.
+   * @param resource Resource to set value on
+   * @param fieldPath Path to set value to. May be a nested field
+   * @param value Value to set at given path on the resource
+   */
+  public static <T extends Resource> void setField(T resource, String fieldPath, Object value) {
+    CustomFHIRPathResourceGeneratorR4<Resource> generator =
+        new CustomFHIRPathResourceGeneratorR4<>();
+    generator.setResource(resource);
+
+    HashMap<String,Object> mapping = new HashMap<>();
+    mapping.put(fieldPath, value);
+    generator.setMapping(mapping);
+    generator.generateResource(resource.getClass());
+  }
 }
