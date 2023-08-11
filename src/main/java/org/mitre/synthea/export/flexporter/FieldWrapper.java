@@ -18,17 +18,24 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.CarePlan;
+import org.hl7.fhir.r4.model.CareTeam;
 import org.hl7.fhir.r4.model.Claim;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit;
+import org.hl7.fhir.r4.model.Goal;
+import org.hl7.fhir.r4.model.ImagingStudy;
+import org.hl7.fhir.r4.model.Immunization;
 import org.hl7.fhir.r4.model.InstantType;
+import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Observation;
@@ -39,9 +46,9 @@ import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.TimeType;
 import org.mitre.synthea.export.FhirR4;
-
 
 public abstract class FieldWrapper {
   protected Function<Resource, List<IBase>> getter;
@@ -94,6 +101,15 @@ public abstract class FieldWrapper {
                       CustomFHIRPathResourceGeneratorR4.setField(resource, fieldName, value);
     } else {
       BaseRuntimeChildDefinition fieldDef = rd.getChildByName(fieldName);
+      if (fieldDef == null) {
+        // maybe it's a choice type.
+        fieldDef = rd.getChildByName(fieldName + "[x]");
+        if (fieldDef == null) {
+          throw new IllegalArgumentException(
+              "Unknown field " + fieldName + " on resourceType " + clazz.getSimpleName());
+        }
+
+      }
       this.getter = fieldDef.getAccessor()::getValues;
       this.setter = fieldDef.getMutator()::setValue;
     }
@@ -351,13 +367,16 @@ public abstract class FieldWrapper {
   public static final Map<ResourceType, List<DateFieldWrapper>> DATE_FIELDS = buildDateFields();
 
   // TODO: this could instead iterate over all fields on relevant resources,
-  // which might be cleaner but also slower, especially if it means a lot of iteration
-  // over resource types or fields we never use
+  // which might be cleaner or slower, especially if it means a lot of iteration
+  // over resource types or fields we never use.
+  // A human would do it by looking at all fields that are actually present on a resource
+  // and see if they are dates. But I don't see an easy way to do that here
   private static Map<ResourceType, List<DateFieldWrapper>> buildDateFields() {
     Map<ResourceType, List<DateFieldWrapper>> dateFields = new HashMap<>();
 
     dateFields.put(ResourceType.Patient, List.of(
-        new DateFieldWrapper(Patient.class, "birthDate")
+        new DateFieldWrapper(Patient.class, "birthDate"),
+        new DateFieldWrapper(Patient.class, "deceased")
         ));
 
     dateFields.put(ResourceType.Encounter, List.of(
@@ -365,21 +384,72 @@ public abstract class FieldWrapper {
       ));
 
     dateFields.put(ResourceType.Condition, List.of(
-          new DateFieldWrapper(Condition.class, "onsetDateTime")
+          new DateFieldWrapper(Condition.class, "onset"),
+          new DateFieldWrapper(Condition.class, "abatement"),
+          new DateFieldWrapper(Condition.class, "recordedDate")
         ));
 
+    dateFields.put(ResourceType.AllergyIntolerance, List.of(
+        new DateFieldWrapper(AllergyIntolerance.class, "recordedDate")
+      ));
+
     dateFields.put(ResourceType.Procedure, List.of(
-        new DateFieldWrapper(Procedure.class, "performed[x]") // Period or dateTime
+        new DateFieldWrapper(Procedure.class, "performed") // Period or dateTime
       ));
 
     dateFields.put(ResourceType.Observation, List.of(
-        new DateFieldWrapper(Observation.class, "effective[x]"),
-        new DateFieldWrapper(Observation.class, "value[x]"),
+        new DateFieldWrapper(Observation.class, "effective"),
+        // new DateFieldWrapper(Observation.class, "value"),
+        // value could technically be a date but I don't think we ever use that
         new DateFieldWrapper(Observation.class, "issued")
         ));
 
     dateFields.put(ResourceType.MedicationRequest, List.of(
         new DateFieldWrapper(MedicationRequest.class, "authoredOn")
+      ));
+
+    dateFields.put(ResourceType.MedicationAdministration, List.of(
+        new DateFieldWrapper(MedicationAdministration.class, "effective")
+      ));
+
+    dateFields.put(ResourceType.CarePlan, List.of(
+        new DateFieldWrapper(CarePlan.class, "period")
+      ));
+
+    dateFields.put(ResourceType.Goal, List.of(
+        new DateFieldWrapper(Goal.class, "target.due")
+      ));
+
+    dateFields.put(ResourceType.CareTeam, List.of(
+        new DateFieldWrapper(CareTeam.class, "period")
+      ));
+
+    dateFields.put(ResourceType.ImagingStudy, List.of(
+        new DateFieldWrapper(ImagingStudy.class, "started"),
+        new DateFieldWrapper(ImagingStudy.class, "series.started")
+      ));
+
+    dateFields.put(ResourceType.DiagnosticReport, List.of(
+        new DateFieldWrapper(DiagnosticReport.class, "effective"),
+        new DateFieldWrapper(DiagnosticReport.class, "issued")
+      ));
+
+    dateFields.put(ResourceType.Device, List.of(
+        new DateFieldWrapper(Device.class, "manufactureDate"),
+        new DateFieldWrapper(Device.class, "expirationDate")
+      ));
+
+    dateFields.put(ResourceType.SupplyDelivery, List.of(
+        new DateFieldWrapper(SupplyDelivery.class, "occurrence")
+      ));
+
+    dateFields.put(ResourceType.ExplanationOfBenefit, List.of(
+        new DateFieldWrapper(ExplanationOfBenefit.class, "billablePeriod"),
+        new DateFieldWrapper(ExplanationOfBenefit.class, "procedure.date")
+      ));
+
+    dateFields.put(ResourceType.Provenance, List.of(
+        new DateFieldWrapper(Provenance.class, "recorded")
       ));
 
     return dateFields;
@@ -419,7 +489,13 @@ public abstract class FieldWrapper {
       List<IBase> referenceObjects = getAll(resource);
 
       return referenceObjects.stream()
-          .map(ro -> ((Reference)ro).getReference())
+          .map(ro -> {
+            if (!(ro instanceof Reference)) {
+              return null;
+            }
+            return ((Reference)ro).getReference();
+          })
+          .filter(ro -> ro != null)
           .collect(Collectors.toList());
     }
   }
@@ -431,7 +507,9 @@ public abstract class FieldWrapper {
     Map<ResourceType, List<ReferenceFieldWrapper>> refFields = new HashMap<>();
 
     refFields.put(ResourceType.Encounter, List.of(
-        new ReferenceFieldWrapper(Encounter.class, "subject")
+        new ReferenceFieldWrapper(Encounter.class, "subject"),
+        new ReferenceFieldWrapper(Encounter.class, "location.location"),
+        new ReferenceFieldWrapper(Encounter.class, "participant.individual")
       ));
 
     refFields.put(ResourceType.Condition, List.of(
@@ -439,19 +517,27 @@ public abstract class FieldWrapper {
           new ReferenceFieldWrapper(Condition.class, "encounter")
         ));
 
+    refFields.put(ResourceType.AllergyIntolerance, List.of(
+        new ReferenceFieldWrapper(AllergyIntolerance.class, "patient")
+      ));
+
     refFields.put(ResourceType.Procedure, List.of(
         new ReferenceFieldWrapper(Procedure.class, "subject"),
-        new ReferenceFieldWrapper(Procedure.class, "encounter")
+        new ReferenceFieldWrapper(Procedure.class, "encounter"),
+        new ReferenceFieldWrapper(Procedure.class, "reasonReference")
       ));
 
     refFields.put(ResourceType.MedicationRequest, List.of(
         new ReferenceFieldWrapper(MedicationRequest.class, "subject"),
-        new ReferenceFieldWrapper(MedicationRequest.class, "encounter")
+        new ReferenceFieldWrapper(MedicationRequest.class, "encounter"),
+        new ReferenceFieldWrapper(MedicationRequest.class, "medication"),
+        new ReferenceFieldWrapper(MedicationRequest.class, "reasonReference")
       ));
 
     refFields.put(ResourceType.MedicationAdministration, List.of(
         new ReferenceFieldWrapper(MedicationAdministration.class, "subject"),
-        new ReferenceFieldWrapper(MedicationAdministration.class, "context")
+        new ReferenceFieldWrapper(MedicationAdministration.class, "context"),
+        new ReferenceFieldWrapper(MedicationAdministration.class, "reasonReference")
       ));
 
     refFields.put(ResourceType.Observation, List.of(
@@ -467,20 +553,63 @@ public abstract class FieldWrapper {
 
     refFields.put(ResourceType.CarePlan, List.of(
         new ReferenceFieldWrapper(CarePlan.class, "subject"),
-        new ReferenceFieldWrapper(CarePlan.class, "encounter")
+        new ReferenceFieldWrapper(CarePlan.class, "encounter"),
+        new ReferenceFieldWrapper(CarePlan.class, "careTeam"),
+        new ReferenceFieldWrapper(CarePlan.class, "addresses"),
+        new ReferenceFieldWrapper(CarePlan.class, "activity.detail.reason"),
+        new ReferenceFieldWrapper(CarePlan.class, "goal")
+      ));
+
+    refFields.put(ResourceType.Goal, List.of(
+        new ReferenceFieldWrapper(Goal.class, "subject"),
+        new ReferenceFieldWrapper(Goal.class, "addresses")
+      ));
+
+    refFields.put(ResourceType.CareTeam, List.of(
+        new ReferenceFieldWrapper(CareTeam.class, "subject"),
+        new ReferenceFieldWrapper(CareTeam.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.Immunization, List.of(
+        new ReferenceFieldWrapper(Immunization.class, "patient"),
+        new ReferenceFieldWrapper(Immunization.class, "encounter")
+      ));
+
+    refFields.put(ResourceType.Device, List.of(
+        new ReferenceFieldWrapper(Device.class, "patient")
+      ));
+
+    refFields.put(ResourceType.SupplyDelivery, List.of(
+        new ReferenceFieldWrapper(SupplyDelivery.class, "patient")
+      ));
+
+    refFields.put(ResourceType.ImagingStudy, List.of(
+        new ReferenceFieldWrapper(ImagingStudy.class, "subject"),
+        new ReferenceFieldWrapper(ImagingStudy.class, "encounter")
       ));
 
     refFields.put(ResourceType.DocumentReference, List.of(
         new ReferenceFieldWrapper(DocumentReference.class, "subject")
       ));
 
+    refFields.put(ResourceType.Media, List.of(
+        new ReferenceFieldWrapper(Media.class, "subject"),
+        new ReferenceFieldWrapper(Media.class, "encounter")
+      ));
+
     refFields.put(ResourceType.Claim, List.of(
-        new ReferenceFieldWrapper(Claim.class, "patient")
+        new ReferenceFieldWrapper(Claim.class, "patient"),
+        new ReferenceFieldWrapper(Claim.class, "item.encounter"),
+        new ReferenceFieldWrapper(Claim.class, "prescription"),
+        new ReferenceFieldWrapper(Claim.class, "procedure.procedure"),  // procedureReference
+        new ReferenceFieldWrapper(Claim.class, "diagnosis.diagnosis")  // diagnosisReference
+
       ));
 
     refFields.put(ResourceType.ExplanationOfBenefit, List.of(
         new ReferenceFieldWrapper(ExplanationOfBenefit.class, "patient"),
-        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "claim")
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "claim"),
+        new ReferenceFieldWrapper(ExplanationOfBenefit.class, "provider")
       ));
 
     refFields.put(ResourceType.Provenance, List.of(

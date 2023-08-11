@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 
 import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Reference;
 import org.junit.Test;
 import org.mitre.synthea.export.flexporter.FieldWrapper.DateFieldWrapper;
@@ -28,7 +30,7 @@ public class FieldWrapperTest {
   }
 
   @Test
-  public void testNestedField() {
+  public void testGetNestedField() {
     DateFieldWrapper dfw = new DateFieldWrapper(Goal.class, "target.due");
 
     Goal goal = new Goal();
@@ -46,5 +48,30 @@ public class FieldWrapperTest {
 
     assertTrue(dfw.valueInRange(goal, jan12023, dec312023));
     assertFalse(dfw.valueInRange(goal, jan11999, dec312021));
+  }
+
+
+  @Test
+  public void testGetNestedFieldChoiceType() {
+    DateFieldWrapper dfw = new DateFieldWrapper(Procedure.class, "performed");
+
+    Procedure p = new Procedure();
+    p.setPerformed(new DateTimeType("2023-08-11T13:51:00"));
+
+    IBase result = dfw.getSingle(p);
+    assertTrue(result instanceof DateTimeType);
+    assertEquals("2023-08-11T13:51:00", ((DateTimeType)result).getValueAsString());
+  }
+
+  @Test
+  public void testSetNestedFieldChoiceType() {
+    DateFieldWrapper dfw = new DateFieldWrapper(Procedure.class, "performed");
+
+    Procedure p = new Procedure();
+    dfw.set(p, new DateTimeType("2002-08-11T13:51:00"));
+
+    IBase result = dfw.getSingle(p);
+    assertTrue(result instanceof DateTimeType);
+    assertEquals("2002-08-11T13:51:00", ((DateTimeType)result).getValueAsString());
   }
 }
