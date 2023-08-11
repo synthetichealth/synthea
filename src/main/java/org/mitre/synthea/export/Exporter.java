@@ -7,6 +7,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,7 +61,23 @@ public abstract class Exporter {
           new ConcurrentHashMap<Path, PrintWriter>();
 
   private static final int FILE_BUFFER_SIZE = 4 * 1024 * 1024;
-
+  
+  // Load the X12 importer if configured
+  private static Method exportX12 = null;
+  static {
+    if (Config.getAsBoolean("exporter.x12.export")) {
+      try {
+        File jar = new File(Config.get("exporter.x12.jar_path"));
+        URLClassLoader child = new URLClassLoader(new URL[] {jar.toURI().toURL()}, Exporter.class.getClassLoader());
+        Class classToLoad = Class.forName("org.mitre.synthea.X12.Exporter", true, child);
+        exportX12 = classToLoad.getDeclaredMethod("export", Person.class, File.class, long.class);
+      } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | SecurityException | MalformedURLException e) {
+        System.out.println("Exception loading X12 eporter");
+        // e.printStackTrace();
+      }
+    }
+  }
+  
   /**
    * Runtime configuration of the record exporter.
    */
@@ -190,7 +211,7 @@ public abstract class Exporter {
       ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
       valueSetCodeResolver.resolve();
     }
-
+    
     if (Config.getAsBoolean("exporter.fhir_stu3.export")) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
@@ -270,6 +291,15 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    if (Config.getAsBoolean("exporter.x12.export") && exportX12 != null) {
+      try {
+        exportX12.invoke(null, person, getOutputFolder("x12", person), stopTime);
+      } catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException  e) {
+        System.out.println("Exception invoking X12 eporter");
+        // e.printStackTrace();
+      }
+    }
+
     if (Config.getAsBoolean("exporter.cpcds.export")) {
       try {
         CPCDSExporter.getInstance().export(person, stopTime);
