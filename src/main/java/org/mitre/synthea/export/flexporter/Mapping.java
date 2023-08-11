@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 public class Mapping {
   public String name;
@@ -16,7 +17,7 @@ public class Mapping {
   public Map<String, Object> variables;
 
   /**
-   * Each action is a Map&lt;String,?&gt;. Nested fields within the YAML become ArrayLists and
+   * Each action is a {@code Map>String,?>}. Nested fields within the YAML become ArrayLists and
    * LinkedHashMaps.
    */
   public List<Map<String, Object>> actions;
@@ -29,7 +30,7 @@ public class Mapping {
    */
   public static Mapping parseMapping(File mappingFile) throws FileNotFoundException {
     InputStream selectorInputSteam = new FileInputStream(mappingFile);
-    Yaml yaml = new Yaml(new org.yaml.snakeyaml.constructor.Constructor(Mapping.class));
+    Yaml yaml = new Yaml(new Constructor(Mapping.class));
 
     return yaml.loadAs(selectorInputSteam, Mapping.class);
   }
