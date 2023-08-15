@@ -257,10 +257,10 @@ public abstract class Exporter {
     }
 
     if (Config.getAsBoolean("exporter.ndjson.export")) {
-      // String json = JSONExporter.export(person);
-      // File outDirectory = getOutputFolder("json", person);
-      // Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
-      // writeNewFile(outFilePath, json);
+      String ndjson = JSONExporter.export(person);
+      File outDirectory = getOutputFolder("ndjson", person);
+      Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "ndjson"));
+      writeNewFile(outFilePath, ndjson);
     }
 
 
