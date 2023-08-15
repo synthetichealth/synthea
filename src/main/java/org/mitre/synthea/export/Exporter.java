@@ -246,7 +246,7 @@ public abstract class Exporter {
         //   Path outFilePath = outDirectory.toPath().resolve(filename);
         //   String entryJson = parser.encodeResourceToString(entry.getResource());
         //   appendToFile(outFilePath, entryJson);
-        }
+        // }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
