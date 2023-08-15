@@ -69,8 +69,8 @@ public abstract class Exporter {
       try {
         File jar = new File(Config.get("exporter.x12.jar_path"));
         URLClassLoader child = new URLClassLoader(new URL[] {jar.toURI().toURL()}, Exporter.class.getClassLoader());
-        Class classToLoad = Class.forName("org.mitre.synthea.X12.Exporter", true, child);
-        exportX12 = classToLoad.getDeclaredMethod("export", Person.class, File.class, long.class);
+        Class classToLoad = Class.forName("org.mitre.synthea.X12.X12Exporter", true, child);
+        exportX12 = classToLoad.getDeclaredMethod("export", Person.class, long.class, ExporterRuntimeOptions.class);
       } catch (ClassNotFoundException | IllegalArgumentException | NoSuchMethodException | SecurityException | MalformedURLException e) {
         System.out.println("Exception loading X12 eporter");
         // e.printStackTrace();
@@ -293,7 +293,7 @@ public abstract class Exporter {
     }
     if (Config.getAsBoolean("exporter.x12.export") && exportX12 != null) {
       try {
-        exportX12.invoke(null, person, getOutputFolder("x12", person), stopTime);
+        exportX12.invoke(null, person, stopTime, options);
       } catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException  e) {
         System.out.println("Exception invoking X12 eporter");
         // e.printStackTrace();
