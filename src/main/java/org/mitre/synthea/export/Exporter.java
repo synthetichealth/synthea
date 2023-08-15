@@ -236,6 +236,17 @@ public abstract class Exporter {
           String entryJson = parser.encodeResourceToString(entry.getResource());
           appendToFile(outFilePath, entryJson);
         }
+      // } else if (Config.getAsBoolean("exporter.fhir.longitudinal_data")) {
+      } else if (Config.getAsBoolean("exporter.fhir.personal_data")) {
+        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+        //IParser parser = FhirR4.getContext().newNdJsonParser().setPrettyPrint(false);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
+        for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+          String filename = entry.getResource().getResourceType().toString() + ".ndjson";
+          Path outFilePath = outDirectory.toPath().resolve(filename);
+          String entryJson = parser.encodeResourceToString(entry.getResource());
+          appendToFile(outFilePath, entryJson);
+        }
       } else {
         String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
