@@ -60,26 +60,32 @@ public abstract class Exporter {
 
   private static List<PatientExporter> patientExporters;
   private static List<PostCompletionExporter> postCompletionExporters;
-  
+
+  /**
+   * If the config setting "exporter.enable_custom_exporters" is enabled,
+   * load classes implementing the {@link PatientExporter} or {@link PostCompletionExporter}
+   * interfaces from the classpath, via the ServiceLoader.
+   */
   public static void loadCustomExporters() {
     if (Config.getAsBoolean("exporter.enable_custom_exporters", false)) {
-      patientExporters = new LinkedList<>();
-      postCompletionExporters = new LinkedList<>();
-      
+      patientExporters = new ArrayList<>();
+      postCompletionExporters = new ArrayList<>();
+
       ServiceLoader<PatientExporter> loader = ServiceLoader.load(PatientExporter.class);
       for (PatientExporter instance : loader) {
         System.out.println(instance.getClass().getCanonicalName());
         patientExporters.add(instance);
       }
 
-      ServiceLoader<PostCompletionExporter> loader2 = ServiceLoader.load(PostCompletionExporter.class);
+      ServiceLoader<PostCompletionExporter> loader2 =
+          ServiceLoader.load(PostCompletionExporter.class);
       for (PostCompletionExporter instance : loader2) {
         System.out.println(instance.getClass().getCanonicalName());
         postCompletionExporters.add(instance);
       }
     }
   }
-  
+
   /**
    * Runtime configuration of the record exporter.
    */
@@ -341,13 +347,13 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
-    
+
     if (patientExporters != null && !patientExporters.isEmpty()) {
       for (PatientExporter patientExporter : patientExporters) {
         patientExporter.export(person, stopTime, options);
       }
     }
-    
+
     if (options.isQueueEnabled()) {
       try {
         switch (options.queuedFhirVersion()) {
@@ -538,7 +544,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
-    
+
     if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
       for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
         postCompletionExporter.export(generator, options);
