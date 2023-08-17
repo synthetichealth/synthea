@@ -560,18 +560,25 @@ public class FhirR4 {
 
     Extension birthSexExtension = new Extension(
         "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
-    if (person.attributes.get(Person.GENDER).equals("M")) {
-      patientResource.setGender(AdministrativeGender.MALE);
+    if (person.attributes.get(Person.BIRTH_SEX).equals("M")) {
       birthSexExtension.setValue(new CodeType("M"));
-    } else if (person.attributes.get(Person.GENDER).equals("F")) {
-      patientResource.setGender(AdministrativeGender.FEMALE);
+    } else if (person.attributes.get(Person.BIRTH_SEX).equals("F")) {
       birthSexExtension.setValue(new CodeType("F"));
-    } else if (person.attributes.get(Person.GENDER).equals("UNK")) {
+    } else if (person.attributes.get(Person.BIRTH_SEX).equals("UNK")) {
       patientResource.setGender(AdministrativeGender.UNKNOWN);
     }
     if (USE_US_CORE_IG) {
       patientResource.addExtension(birthSexExtension);
     }
+
+    if (person.attributes.get(Person.GENDER).equals("M")) {
+      patientResource.setGender(AdministrativeGender.MALE);
+    } else if (person.attributes.get(Person.GENDER).equals("F")) {
+      patientResource.setGender(AdministrativeGender.FEMALE);
+    } else if (person.attributes.get(Person.GENDER).equals("UNK")) {
+      patientResource.setGender(AdministrativeGender.UNKNOWN);
+    }
+
 
     String state = (String) person.attributes.get(Person.STATE);
     if (USE_US_CORE_IG) {

@@ -12,6 +12,9 @@ public class Entity implements Serializable {
   private List<Seed> seeds;
   private LocalDate dateOfBirth;
   private String gender;
+  private String sexAtBirth;
+  private String ombRaceCategory;
+  private String socioeconomicLevel;
   private String individualId;
   private String housingStatus;
 
@@ -101,5 +104,63 @@ public class Entity implements Serializable {
 
   public void setHousingStatus(String housingStatus) {
     this.housingStatus = housingStatus;
+  }
+
+  public String getSexAtBirth() {
+    return sexAtBirth;
+  }
+
+  public void setSexAtBirth(String sexAtBirth) {
+    this.sexAtBirth = sexAtBirth;
+  }
+
+  public String getOmbRaceCategory() {
+    return ombRaceCategory;
+  }
+  
+  public String getSyntheaRace() {
+    if (ombRaceCategory == null || ombRaceCategory.trim().isEmpty()) {
+      return null;
+    }
+    switch (ombRaceCategory) {
+    case "American Indian/Alaska Native":
+      return "native";
+    case "Asian":
+      return "asian";
+    case "Black/African American":
+      return "black";
+    case "Hispanic/Latino":
+      // TODO
+      return "white";
+    case "Multiple races":
+      return "other";
+    case "White":
+      return "white";
+    default:
+      throw new IllegalArgumentException("Unexpected ombRaceCategory: " + ombRaceCategory);
+    }
+
+  }
+  
+  public String getSyntheaEthnicity() {
+    if (ombRaceCategory == null) {
+      return null;
+    } else if (ombRaceCategory.equals("Hispanic/Latino")) {
+      return "hispanic";
+    } else {
+      return "nonhispanic";
+    }
+  }
+
+  public void setOmbRaceCategory(String ombRaceCategory) {
+    this.ombRaceCategory = ombRaceCategory;
+  }
+
+  public String getSocioeconomicLevel() {
+    return socioeconomicLevel;
+  }
+
+  public void setSocioeconomicLevel(String socioeconomicLevel) {
+    this.socioeconomicLevel = socioeconomicLevel;
   }
 }

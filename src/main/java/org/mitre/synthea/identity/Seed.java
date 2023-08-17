@@ -20,6 +20,7 @@ public class Seed implements IdentityRecord, Serializable {
   private Period period;
   private String givenName;
   private String familyName;
+  private String gender;
   private String phone;
   private List<String> addressLines;
   private String city;
@@ -58,6 +59,10 @@ public class Seed implements IdentityRecord, Serializable {
 
   public void setFamilyName(String familyName) {
     this.familyName = familyName;
+  }
+  
+  public void setGender(String gender) {
+    this.gender = gender;
   }
 
   public void setPhone(String phone) {
@@ -108,7 +113,7 @@ public class Seed implements IdentityRecord, Serializable {
 
   @Override
   public String getGender() {
-    return entity.getGender();
+    return gender;
   }
 
   @Override
@@ -177,6 +182,15 @@ public class Seed implements IdentityRecord, Serializable {
     attributes.put(Person.NAME, this.givenName + " " + this.familyName);
     attributes.put(Person.TELECOM, this.getPhone());
     attributes.put(Person.GENDER, this.getGender());
+    attributes.put(Person.BIRTH_SEX, this.entity.getSexAtBirth());
+    
+    // TODO
+//    attributes.put(Person.SOCIOECONOMIC_CATEGORY, ???)
+//    this.entity.getSocioeconomicLevel()
+  
+    attributes.put(Person.RACE, this.entity.getSyntheaRace());
+    attributes.put(Person.ETHNICITY, this.entity.getSyntheaEthnicity());
+    
     attributes.put(Person.STATE, this.state);
     attributes.put(Person.CITY, WordUtils.capitalizeFully(this.city));
     attributes.put(Person.ADDRESS, this.addressLines.stream()

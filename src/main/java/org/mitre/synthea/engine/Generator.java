@@ -844,6 +844,7 @@ public class Generator implements RandomNumberGenerator {
         gender = "F";
       }
     }
+    demographicsOutput.put(Person.BIRTH_SEX, gender);
     demographicsOutput.put(Person.GENDER, gender);
 
     // Pick the person's socioeconomic variables of education/income/occupation based on location.

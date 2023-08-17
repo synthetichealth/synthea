@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class EntityDeserializer implements JsonDeserializer<Entity> {
   @Override
@@ -18,10 +19,18 @@ public class EntityDeserializer implements JsonDeserializer<Entity> {
       throws JsonParseException {
     Entity entity = new Entity();
     JsonObject entityObject = json.getAsJsonObject();
-    entity.setIndividualId(entityObject.getAsJsonPrimitive("individualId").getAsString());
-    entity.setGender(entityObject.getAsJsonPrimitive("gender").getAsString());
+    
+    Function<String, String> getString = (fieldName) -> {
+      if (!entityObject.has(fieldName)) return null;
+      return entityObject.getAsJsonPrimitive(fieldName).getAsString();
+    };
+    entity.setIndividualId(getString.apply("individualId"));
+    entity.setGender(getString.apply("gender"));
+    entity.setSexAtBirth(getString.apply("sexAtBirth"));
+    entity.setOmbRaceCategory(getString.apply("ombRaceCategory"));
+    entity.setSocioeconomicLevel(getString.apply("socioeconomicLevel"));
     entity.setDateOfBirth(LocalDate.parse(
-        entityObject.getAsJsonPrimitive("dateOfBirth").getAsString(),
+        getString.apply("dateOfBirth"),
         DateTimeFormatter.ISO_LOCAL_DATE));
     List<Seed> seeds = new ArrayList<>();
     entityObject.getAsJsonArray("seeds").forEach(seedElement -> {
