@@ -103,6 +103,9 @@ public class BirthStatistics {
     String babySex = null;
     if (mother.attributes.containsKey(BIRTH_SEX)) {
       babySex = (String) mother.attributes.get(BIRTH_SEX);
+      if (babySex.length() > 1) {
+        babySex = babySex.substring(0, 1).toUpperCase(); // just M or F
+      }
     } else {
       if (mother.randBoolean()) {
         babySex = "M";

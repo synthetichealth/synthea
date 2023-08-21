@@ -54,6 +54,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String NAME = "name";
   public static final String RACE = "race";
   public static final String ETHNICITY = "ethnicity";
+  public static final String NATIONALITY = "nationality";
   public static final String FIRST_LANGUAGE = "first_language";
   public static final String GENDER = "gender";
   public static final String BIRTH_SEX = "birth_sex";

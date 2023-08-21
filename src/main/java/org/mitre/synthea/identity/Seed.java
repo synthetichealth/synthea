@@ -183,13 +183,10 @@ public class Seed implements IdentityRecord, Serializable {
     attributes.put(Person.TELECOM, this.getPhone());
     attributes.put(Person.GENDER, this.getGender());
     attributes.put(Person.BIRTH_SEX, this.entity.getSexAtBirth());
-    
-    // TODO
-//    attributes.put(Person.SOCIOECONOMIC_CATEGORY, ???)
-//    this.entity.getSocioeconomicLevel()
   
     attributes.put(Person.RACE, this.entity.getSyntheaRace());
     attributes.put(Person.ETHNICITY, this.entity.getSyntheaEthnicity());
+    attributes.put(Person.NATIONALITY, this.entity.getEthnicity());
     
     attributes.put(Person.STATE, this.state);
     attributes.put(Person.CITY, WordUtils.capitalizeFully(this.city));

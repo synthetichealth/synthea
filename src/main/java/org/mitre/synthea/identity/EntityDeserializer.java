@@ -28,7 +28,9 @@ public class EntityDeserializer implements JsonDeserializer<Entity> {
     entity.setGender(getString.apply("gender"));
     entity.setSexAtBirth(getString.apply("sexAtBirth"));
     entity.setOmbRaceCategory(getString.apply("ombRaceCategory"));
+    entity.setEthnicity(getString.apply("ethnicity"));
     entity.setSocioeconomicLevel(getString.apply("socioeconomicLevel"));
+    entity.setHousingStatus(getString.apply("housingStatus"));
     entity.setDateOfBirth(LocalDate.parse(
         getString.apply("dateOfBirth"),
         DateTimeFormatter.ISO_LOCAL_DATE));

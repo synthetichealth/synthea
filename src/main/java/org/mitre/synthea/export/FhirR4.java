@@ -422,6 +422,18 @@ public class FhirR4 {
       patientResource.addIdentifier()
           .setSystem("http://mitre.org/variant_record_id")
           .setValue(String.valueOf((String) person.attributes.get(Person.IDENTIFIER_VARIANT_ID)));
+      
+      
+      // TODO - these should be integrated with the real socioeconomic status / homelessness modules
+      Extension housingStatusExt = new Extension(SYNTHEA_EXT + "housing-status");
+      StringType housingStatusValue = new StringType(entity.getHousingStatus());
+      housingStatusExt.setValue(housingStatusValue);
+      patientResource.addExtension(housingStatusExt);
+
+      Extension socioeconomicExt = new Extension(SYNTHEA_EXT + "socioeconomic-level");
+      StringType socioeconomicValue = new StringType(entity.getSocioeconomicLevel());
+      socioeconomicExt.setValue(socioeconomicValue);
+      patientResource.addExtension(socioeconomicExt);      
     }
 
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
@@ -514,6 +526,19 @@ public class FhirR4 {
       ethnicityTextExtension.setValue(new StringType(ethnicityDisplay));
       ethnicityExtension.addExtension(ethnicityTextExtension);
       patientResource.addExtension(ethnicityExtension);
+ 
+      Extension nationalityExtension = new Extension(
+          "http://hl7.org/fhir/StructureDefinition/patient-nationality");
+      String nationality = (String) person.attributes.get(Person.NATIONALITY);
+
+      Extension nationalityCodingExtension = new Extension("code");
+      CodeableConcept nationalityCC = new CodeableConcept();
+      Coding nationalityCoding = new Coding();
+      nationalityCoding.setCode(nationality);
+      nationalityCC.addCoding(nationalityCoding);
+      nationalityCodingExtension.setValue(nationalityCC);
+      nationalityExtension.addExtension(nationalityCodingExtension);
+      patientResource.addExtension(nationalityExtension);
     }
 
     String firstLanguage = (String) person.attributes.get(Person.FIRST_LANGUAGE);

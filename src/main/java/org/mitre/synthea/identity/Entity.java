@@ -14,6 +14,7 @@ public class Entity implements Serializable {
   private String gender;
   private String sexAtBirth;
   private String ombRaceCategory;
+  private String ethnicity;
   private String socioeconomicLevel;
   private String individualId;
   private String housingStatus;
@@ -130,10 +131,11 @@ public class Entity implements Serializable {
     case "Black/African American":
       return "black";
     case "Hispanic/Latino":
-      // TODO
-      return "white";
+      return "other";
     case "Multiple races":
       return "other";
+    case "Native Hawaiian/Pacific Islander":
+      return "hawaiian";
     case "White":
       return "white";
     default:
@@ -154,6 +156,14 @@ public class Entity implements Serializable {
 
   public void setOmbRaceCategory(String ombRaceCategory) {
     this.ombRaceCategory = ombRaceCategory;
+  }
+
+  public String getEthnicity() {
+    return ethnicity;
+  }
+
+  public void setEthnicity(String ethnicity) {
+    this.ethnicity = ethnicity;
   }
 
   public String getSocioeconomicLevel() {

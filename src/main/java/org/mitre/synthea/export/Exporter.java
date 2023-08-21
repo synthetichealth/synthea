@@ -749,7 +749,7 @@ public abstract class Exporter {
       return person.attributes.get(Person.ID) + tag + "." + extension;
     } else {
       // ensure unique filenames for now
-      return person.attributes.get(Person.NAME).toString().replace(' ', '_') + "_"
+      return person.attributes.get(Person.NAME).toString().replace(' ', '_').replaceAll("\\W+", "") + "_"
           + person.attributes.get(Person.ID) + tag + "." + extension;
     }
   }
