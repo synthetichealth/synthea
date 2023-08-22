@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -260,20 +260,29 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadCustomExporters()">loadCustomExporters</a></span>()</code></th>
+<td class="colLast">
+<div class="block">If the config setting "exporter.enable_custom_exporters" is enabled,
+ load classes implementing the <a href="PatientExporter.html" title="interface in org.mitre.synthea.export"><code>PatientExporter</code></a> or <a href="PostCompletionExporter.html" title="interface in org.mitre.synthea.export"><code>PostCompletionExporter</code></a>
+ interfaces from the classpath, via the ServiceLoader.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#overwriteFile(java.nio.file.Path,java.lang.String)">overwriteFile</a></span>&#8203;(java.nio.file.Path&nbsp;file,
              java.lang.String&nbsp;contents)</code></th>
 <td class="colLast">
 <div class="block">Overwrite a file with the given contents.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runPostCompletionExports(org.mitre.synthea.engine.Generator)">runPostCompletionExports</a></span>&#8203;(<a href="../engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a>&nbsp;generator)</code></th>
 <td class="colLast">
 <div class="block">Run any exporters that require the full dataset to be generated prior to exporting.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#runPostCompletionExports(org.mitre.synthea.engine.Generator,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">runPostCompletionExports</a></span>&#8203;(<a href="../engine/Generator.html" title="class in org.mitre.synthea.engine">Generator</a>&nbsp;generator,
                         <a href="Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a>&nbsp;options)</code></th>
@@ -324,6 +333,18 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="loadCustomExporters()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loadCustomExporters</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;loadCustomExporters()</pre>
+<div class="block">If the config setting "exporter.enable_custom_exporters" is enabled,
+ load classes implementing the <a href="PatientExporter.html" title="interface in org.mitre.synthea.export"><code>PatientExporter</code></a> or <a href="PostCompletionExporter.html" title="interface in org.mitre.synthea.export"><code>PostCompletionExporter</code></a>
+ interfaces from the classpath, via the ServiceLoader.</div>
+</li>
+</ul>
 <a id="export(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">
 <!--   -->
 </a>

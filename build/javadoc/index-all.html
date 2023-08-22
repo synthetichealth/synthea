@@ -2707,6 +2707,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Export the hospital in FHIR STU3 format.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/PostCompletionExporter.html#export(org.mitre.synthea.engine.Generator,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">export(Generator, Exporter.ExporterRuntimeOptions)</a></span> - Method in interface org.mitre.synthea.export.<a href="org/mitre/synthea/export/PostCompletionExporter.html" title="interface in org.mitre.synthea.export">PostCompletionExporter</a></dt>
+<dd>
+<div class="block">Export data based on the given Generator and options.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirGroupExporterR4.html#export(org.mitre.synthea.helpers.RandomNumberGenerator,long)">export(RandomNumberGenerator, long)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirGroupExporterR4.html" title="class in org.mitre.synthea.export">FhirGroupExporterR4</a></dt>
 <dd>
 <div class="block">Export the patient list as a FHIR Group resource.</div>
@@ -2767,6 +2771,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.html#export(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">export(Person, long, Exporter.ExporterRuntimeOptions)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.html" title="class in org.mitre.synthea.export">Exporter</a></dt>
 <dd>
 <div class="block">Export a single patient, into all the formats supported.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/PatientExporter.html#export(org.mitre.synthea.world.agents.Person,long,org.mitre.synthea.export.Exporter.ExporterRuntimeOptions)">export(Person, long, Exporter.ExporterRuntimeOptions)</a></span> - Method in interface org.mitre.synthea.export.<a href="org/mitre/synthea/export/PatientExporter.html" title="interface in org.mitre.synthea.export">PatientExporter</a></dt>
+<dd>
+<div class="block">Export the given Person object.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ClinicalNoteExporter.html#export(org.mitre.synthea.world.agents.Person,org.mitre.synthea.world.concepts.HealthRecord.Encounter)">export(Person, HealthRecord.Encounter)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ClinicalNoteExporter.html" title="class in org.mitre.synthea.export">ClinicalNoteExporter</a></dt>
 <dd>
@@ -6775,6 +6783,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Load all cost data needed by the system.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.html#loadCustomExporters()">loadCustomExporters()</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.html" title="class in org.mitre.synthea.export">Exporter</a></dt>
+<dd>
+<div class="block">If the config setting "exporter.enable_custom_exporters" is enabled,
+ load classes implementing the <a href="org/mitre/synthea/export/PatientExporter.html" title="interface in org.mitre.synthea.export"><code>PatientExporter</code></a> or <a href="org/mitre/synthea/export/PostCompletionExporter.html" title="interface in org.mitre.synthea.export"><code>PostCompletionExporter</code></a>
+ interfaces from the classpath, via the ServiceLoader.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/QualityOfLifeModule.html#loadDisabilityWeights()">loadDisabilityWeights()</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/QualityOfLifeModule.html" title="class in org.mitre.synthea.modules">QualityOfLifeModule</a></dt>
 <dd>
 <div class="block">Load the disability weights from the gbd_disability_weights.csv file.</div>
@@ -7938,6 +7952,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#PATHOLOGY">PATHOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/PatientExporter.html" title="interface in org.mitre.synthea.export"><span class="typeNameLink">PatientExporter</span></a> - Interface in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">This interface defines an exporter that will be run for every patient
+ in a simulation.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#patientOutOfPocket">patientOutOfPocket</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>
 <div class="block">otherwise paid by patient out of pocket.</div>
@@ -8234,6 +8253,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/geography/Place.html#postalCode">postalCode</a></span> - Variable in class org.mitre.synthea.world.geography.<a href="org/mitre/synthea/world/geography/Place.html" title="class in org.mitre.synthea.world.geography">Place</a></dt>
 <dd>
 <div class="block">The postal code.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/PostCompletionExporter.html" title="interface in org.mitre.synthea.export"><span class="typeNameLink">PostCompletionExporter</span></a> - Interface in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
+<dd>
+<div class="block">This interface defines an exporter that will be invoked
+ after the entire population has been generated.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/VitalSign.html#POTASSIUM">POTASSIUM</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></dt>
 <dd>&nbsp;</dd>
