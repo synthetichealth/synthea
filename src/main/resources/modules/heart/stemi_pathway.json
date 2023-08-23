@@ -1,0 +1,244 @@
+{
+  "name": "STEMI Pathway",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "STEMI"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Admission_to_Hospital": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Cardiology Consultation",
+      "reason": "STEMI"
+    },
+    "PCI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415070008,
+          "display": "Percutaneous coronary intervention (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "reason": "STEMI",
+      "direct_transition": "Anti-Plt Submodule"
+    },
+    "STEMI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cardiac_surgery_reason",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+        }
+      ],
+      "direct_transition": "Set_Chance_of_Death"
+    },
+    "Set_Chance_of_Death": {
+      "type": "SetAttribute",
+      "attribute": "chance_of_mi_death",
+      "distributed_transition": [
+        {
+          "transition": "Cardiology",
+          "distribution": 0.935
+        },
+        {
+          "transition": "Cardiac Surgery",
+          "distribution": 0.065
+        }
+      ],
+      "value": 0.052
+    },
+    "Cardiac Surgery": {
+      "type": "Simple",
+      "direct_transition": "CABG_Operation"
+    },
+    "Cardiology": {
+      "type": "Simple",
+      "direct_transition": "Admission_to_Hospital"
+    },
+    "Set_ACS_CABG_Referral": {
+      "type": "SetAttribute",
+      "attribute": "ACS_CABG_referral",
+      "direct_transition": "Terminal",
+      "value": true
+    },
+    "CABG_Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg_sequence",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Postop ICU and Ward"
+        }
+      ],
+      "direct_transition": "Set_ACS_CABG_Referral"
+    },
+    "Cardiology Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Primary PCI",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Pharmacoinvasive",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Fibrinolysis",
+          "distribution": 0.05
+        }
+      ]
+    },
+    "Primary PCI": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "AC Submodule",
+      "value": "pci"
+    },
+    "Pharmacoinvasive": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "Fibrinolytic Submodule",
+      "value": "pharmacoinvasive"
+    },
+    "Fibrinolysis": {
+      "type": "SetAttribute",
+      "attribute": "stemi_cardiology_approach",
+      "direct_transition": "Fibrinolytic Submodule",
+      "value": "fibrinolysis"
+    },
+    "AC Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_anticoagulant",
+      "conditional_transition": [
+        {
+          "transition": "Risk Assessment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stemi_cardiology_approach",
+            "operator": "==",
+            "value": "pharmacoinvasive"
+          }
+        },
+        {
+          "transition": "Anti-Plt Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stemi_cardiology_approach",
+            "operator": "==",
+            "value": "fibrinolysis"
+          }
+        },
+        {
+          "transition": "Coronary Angiography"
+        }
+      ]
+    },
+    "Fibrinolytic Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/stemi_fibrinolytic",
+      "direct_transition": "AC Submodule"
+    },
+    "Anti-Plt Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_antiplatelet",
+      "direct_transition": "Terminal"
+    },
+    "Coronary Angiography": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33367005,
+          "display": "Angiography of coronary artery (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "PCI"
+    },
+    "Risk Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225338004",
+          "display": "Risk assessment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Routine",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Rescue",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Routine": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 24,
+          "low": 2
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Coronary Angiography"
+    },
+    "Rescue": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 2,
+          "low": 0
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Coronary Angiography"
+    }
+  },
+  "gmf_version": 2
+}

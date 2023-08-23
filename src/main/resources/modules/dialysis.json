@@ -14,7 +14,20 @@
         "quantity": 3,
         "unit": "days"
       },
-      "direct_transition": "Dialysis_Encounter"
+      "conditional_transition": [
+        {
+          "transition": "CKD guard",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "<",
+            "value": 4
+          }
+        },
+        {
+          "transition": "Dialysis_Encounter"
+        }
+      ]
     },
     "Dialysis_Encounter": {
       "type": "Encounter",
@@ -55,7 +68,8 @@
         {
           "transition": "Dialysis weight record"
         }
-      ]
+      ],
+      "reason": "dialysis_reason"
     },
     "end dialysis": {
       "type": "EncounterEnd",
@@ -188,7 +202,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -200,7 +214,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -211,7 +225,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -227,7 +241,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -239,7 +253,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -251,7 +265,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -263,7 +277,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -275,7 +289,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -287,7 +301,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -434,7 +448,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "5767-9",
+              "code": "34533-0",
               "display": "Odor of Urine"
             }
           ],
@@ -735,7 +749,8 @@
         "Recommended starting dose for adult patients is 50 to 100 Units/kg 3 times weekly. Reduce or interrupt the dose if hemoglobin level approaches or exceeds 11 g/dl - Ref: Section -For Adult Patients with CKD on Dialysis (https://www.rxlist.com/epogen-drug.htm#description)"
       ],
       "assign_to_attribute": "anemia_medication",
-      "reason": "anemia"
+      "reason": "anemia",
+      "administration": true
     },
     "Epogen_Administered": {
       "type": "MedicationEnd",

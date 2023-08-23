@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomCollection;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -48,7 +48,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random random to use
    * @return the age in years
    */
-  public int pickAge(Random random) {
+  public int pickAge(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
     if (ageDistribution == null) {
       ageDistribution = buildRandomCollectionFromMap(ages);
@@ -68,7 +68,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
     // nextInt is normally exclusive of the top value,
     // so add 1 to make it inclusive
-    return random.nextInt((high - low) + 1) + low;
+    return random.randInt((high - low) + 1) + low;
   }
 
   /**
@@ -76,7 +76,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random random to use
    * @return the gender
    */
-  public String pickGender(Random random) {
+  public String pickGender(RandomNumberGenerator random) {
 
     // lazy-load in case this randomcollection isn't necessary
     if (genderDistribution == null) {
@@ -96,7 +96,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random random to use
    * @return the race
    */
-  public String pickRace(Random random) {
+  public String pickRace(RandomNumberGenerator random) {
     // lazy-load in case this random collection isn't necessary
     if (raceDistribution == null) {
       raceDistribution = buildRandomCollectionFromMap(race);
@@ -118,7 +118,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random random to use
    * @return "hispanic" or "nonhispanic"
    */
-  public String pickEthnicity(Random random) {
+  public String pickEthnicity(RandomNumberGenerator random) {
     if (ethnicityDistribution == null) {
       ethnicityDistribution = new RandomCollection();
       ethnicityDistribution.add(ethnicity, "hispanic");
@@ -136,7 +136,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random random to use
    * @return the language spoken
    */
-  public String languageFromRaceAndEthnicity(String race, String ethnicity, Random random) {
+  public String languageFromRaceAndEthnicity(String race, String ethnicity,
+      RandomNumberGenerator random) {
     if (ethnicity.equals("hispanic")) {
       RandomCollection<String> hispanicLanguageUsage = new RandomCollection<>();
       // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16006&prodType=table
@@ -235,7 +236,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * @param random the random to use
    * @return the income
    */
-  public int pickIncome(Random random) {
+  public int pickIncome(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
     if (incomeDistribution == null) {
       Map<String, Double> tempIncome = new HashMap<>(income);
@@ -259,7 +260,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
     // nextInt is normally exclusive of the top value,
     // so add 1 to make it inclusive
-    return random.nextInt((high - low) + 1) + low;
+    return random.randInt((high - low) + 1) + low;
   }
 
   /**
@@ -296,7 +297,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   /**
    * Return a random education level based on statistics.
    */
-  public String pickEducation(Random random) {
+  public String pickEducation(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
     if (educationDistribution == null) {
       educationDistribution = buildRandomCollectionFromMap(education);
@@ -308,7 +309,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   /**
    * Return a random number between the configured bounds for a specified education level.
    */
-  public double educationLevel(String level, Random random) {
+  public double educationLevel(String level, RandomNumberGenerator random) {
     double lessThanHsMin = Config.getAsDouble(
             "generate.demographics.socioeconomic.education.less_than_hs.min", 0.0);
     double lessThanHsMax = Config.getAsDouble(
@@ -328,21 +329,18 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
     switch (level) {
       case "less_than_hs":
-        return rand(random, lessThanHsMin, lessThanHsMax);
+        return random.rand(lessThanHsMin, lessThanHsMax);
       case "hs_degree":
-        return rand(random, hsDegreeMin, hsDegreeMax);
+        return random.rand(hsDegreeMin, hsDegreeMax);
       case "some_college":
-        return rand(random, someCollegeMin, someCollegeMax);
+        return random.rand(someCollegeMin, someCollegeMax);
       case "bs_degree":
-        return rand(random, bsDegreeMin, bsDegreeMax);
+        return random.rand(bsDegreeMin, bsDegreeMax);
       default:
         return 0.0;
     }
   }
 
-  private static double rand(Random r, double low, double high) {
-    return (low + ((high - low) * r.nextDouble()));
-  }
 
   /**
    * Calculate the socio-economic score for the supplied parameters.
@@ -387,7 +385,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   public static Table<String, String, Demographics> load(String state)
       throws IOException {
     String filename = Config.get("generate.demographics.default_file");
-    String csv = Utilities.readResource(filename);
+    String csv = Utilities.readResource(filename, true, true);
 
     List<? extends Map<String,String>> demographicsCsv = SimpleCSV.parse(csv);
 

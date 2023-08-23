@@ -1,0 +1,226 @@
+{
+  "name": "or_intraop",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "VAD Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Device": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "360064003",
+        "display": "Ventricular assist device (physical object)"
+      },
+      "direct_transition": "IABP_Check"
+    },
+    "IABP_Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.014286
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.985714
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "IABP Start",
+              "distribution": 0.015385
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.984615
+            }
+          ]
+        }
+      ]
+    },
+    "Assist_Device_Implantation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "232965003",
+          "display": "Implantation of ventricular assist device (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 12,
+        "high": 16,
+        "unit": "minutes"
+      },
+      "direct_transition": "Device"
+    },
+    "Intra Aortic Balloon Pump": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399217008",
+          "display": "Cardioassist by aortic balloon pump (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 8,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "IABP Stop"
+    },
+    "IABP Start": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "129113006",
+        "display": "Intra-aortic balloon pump, device (physical object)"
+      },
+      "direct_transition": "Intra Aortic Balloon Pump"
+    },
+    "IABP Stop": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "device": "IABP Start"
+    },
+    "VAD Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Assist_Device_Implantation",
+              "distribution": 0.010256
+            },
+            {
+              "transition": "IABP_Check",
+              "distribution": 0.989744
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "This submodule of Cardiac Surgery models the administration of Pressor Medications and Device Implantation during the CABG Operation."
+  ]
+}

@@ -705,7 +705,8 @@
             "name": "Monitoring"
           }
         }
-      ]
+      ],
+      "reason": "Condition_Onset_Cerebral Palsy"
     },
     "Delay_Surgical Encounter": {
       "type": "Delay",
@@ -955,7 +956,7 @@
     },
     "Surgical_Encounter1": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1308,7 +1309,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "Living_with_CP"
+      "direct_transition": "End_Cerebral_Palsy_Encounter1"
     },
     "Cerebral_Palsy_Pneumonia": {
       "type": "ConditionOnset",
@@ -1520,13 +1521,17 @@
           "distribution": 0.4
         },
         {
-          "transition": "Terminal",
+          "transition": "End Encounter and Exit",
           "distribution": 0.6000000000000001
         }
       ]
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "End Encounter and Exit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
     }
   },
   "remarks": [
@@ -1541,5 +1546,6 @@
     "Reference: AACPDM Clinical Care Pathway for Sialorrhea in Cerebral Palsy  (September 2017, AACPDM Care Pathways, for review 2020) https://www.aacpdm.org/publications/care-pathways/sialorrhea",
     "",
     ""
-  ]
+  ],
+  "gmf_version": 2
 }

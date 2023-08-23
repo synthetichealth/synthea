@@ -23,12 +23,13 @@ import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.SampledData;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mitre.synthea.FailedExportHelper;
 import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
@@ -36,18 +37,19 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRSTU3ExporterTest {
-  private boolean physStateEnabled;
+  private static boolean physStateEnabled;
 
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
@@ -58,18 +60,20 @@ public class FHIRSTU3ExporterTest {
   /**
    * Setup state for exporter test.
    */
-  @Before
-  public void setup() {
+  @BeforeClass
+  public static void setup() {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
   }
 
   /**
    * Reset state after exporter test.
    */
-  @After
-  public void tearDown() {
+  @AfterClass
+  public static void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
 
@@ -107,7 +111,7 @@ public class FHIRSTU3ExporterTest {
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
 
-    ValidationResources validationResources = new ValidationResources();
+    ValidationResources validationResources = ValidationResources.forSTU3();
 
     List<String> errors = ParallelTestingService.runInParallel((person) -> {
       List<String> validationErrors = new ArrayList<String>();
@@ -197,7 +201,7 @@ public class FHIRSTU3ExporterTest {
       }
 
       if (!validationErrors.isEmpty()) {
-        Exporter.export(person, System.currentTimeMillis());
+        FailedExportHelper.dumpInfo("FHIRSTU3", fhirJson, validationErrors, person);
       }
       return validationErrors;
     });
@@ -259,11 +263,8 @@ public class FHIRSTU3ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    Payer.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
-    }
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -323,11 +324,9 @@ public class FHIRSTU3ExporterTest {
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
 
-    Payer.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time - Utilities.convertTime("years", i);
-      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
-    }
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time + 1);
 
     Module module = TestHelper.getFixture("observation.json");
 

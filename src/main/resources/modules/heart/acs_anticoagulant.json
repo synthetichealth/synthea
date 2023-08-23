@@ -1,0 +1,183 @@
+{
+  "name": "acs_anticoagulant",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "This module uses a slightly different approach to prescribing these 4 meds. 3 of them have contraindications, but rather than create a crazy unreadable complex transition, we just loop back and try again if we pick an invalid choice. Heparin is always allowed, so there can never be an infinite loop",
+        "",
+        "Also note the display isn't used in the Active Condition logic, so it's shortened to STEMI instead of \"Acute ST segment elevation myocardial infarction (disorder)\" to make the graph cleaner"
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 401303003,
+                "display": "STEMI"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Heparin",
+              "distribution": 0.79
+            },
+            {
+              "transition": "Enoxaparin_Check",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Bivalirudin_Check",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Fondaparinux_Check",
+              "distribution": 0
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Heparin",
+              "distribution": 0.59
+            },
+            {
+              "transition": "Enoxaparin_Check",
+              "distribution": 0.1
+            },
+            {
+              "transition": "Bivalirudin_Check",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Fondaparinux_Check",
+              "distribution": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1361048,
+          "display": "heparin sodium, porcine 100 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Enoxaparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 854255,
+          "display": "enoxaparin sodium 100 MG/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Bivalirudin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1997015",
+          "display": "bivalirudin 50 ML; 5 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Fondaparinux": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "861356",
+          "display": "0.8 ML fondaparinux sodium 12.5 MG/ML Prefilled Syringe"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Enoxaparin_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 5
+          },
+          "transition": "Initial"
+        },
+        {
+          "transition": "Enoxaparin"
+        }
+      ]
+    },
+    "Bivalirudin_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "stemi_cardiology_approach",
+                "operator": "==",
+                "value": "fibrinolysis"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "stemi_cardiology_approach",
+                "operator": "==",
+                "value": "pharmacoinvasive"
+              }
+            ]
+          },
+          "transition": "Initial"
+        },
+        {
+          "transition": "Bivalirudin"
+        }
+      ]
+    },
+    "Fondaparinux_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initial",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ckd",
+            "operator": "==",
+            "value": 5
+          }
+        },
+        {
+          "transition": "Fondaparinux"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

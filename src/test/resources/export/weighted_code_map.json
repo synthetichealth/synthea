@@ -1,0 +1,14 @@
+{
+  "10509002": [
+    {
+      "code": "ABC20.9",
+      "description": "The code description",
+      "weight": "1"
+    },
+    {
+      "code": "DEF20.9",
+      "description": "The code description",
+      "weight": "10"
+    }
+  ]
+}

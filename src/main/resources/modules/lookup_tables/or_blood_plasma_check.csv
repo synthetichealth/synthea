@@ -1,0 +1,17 @@
+cardiac_surgery,operative_status,Plasma_Transfusion,Terminal
+cabg,elective,0.035714,0.964286
+cabg,emergent,0.02381,0.97619
+cabg,emergent_salvage,0.001,0.999
+cabg,urgent,0.034188,0.965812
+tavr,elective,0.009302,0.990698
+tavr,emergent,0.001,0.999
+tavr,emergent_salvage,0.001,0.999
+tavr,urgent,0.035088,0.964912
+savreplace,elective,0.067901,0.932099
+savreplace,emergent,0.666667,0.333333
+savreplace,emergent_salvage,0.001,0.999
+savreplace,urgent,0.375,0.625
+savrepair,elective,0.001,0.999
+savrepair,emergent,0.001,0.999
+savrepair,emergent_salvage,0.001,0.999
+savrepair,urgent,0.001,0.999

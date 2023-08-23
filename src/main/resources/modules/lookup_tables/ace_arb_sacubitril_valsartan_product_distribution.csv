@@ -1,0 +1,166 @@
+age,gender,state,Prescribe_Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto,Prescribe_Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto,Prescribe_Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto
+26-35,M,Alabama,0.0,0.0,1.0
+26-35,M,Alaska,0.0,0.0,1.0
+26-35,M,Arizona,0.0,0.0,1.0
+26-35,M,Arkansas,0.0,0.0,1.0
+26-35,M,California,0.0,0.0,1.0
+26-35,M,Colorado,0.0,0.0,1.0
+26-35,M,Delaware,0.0,0.0,1.0
+26-35,M,District of Columbia,0.0,0.0,1.0
+26-35,M,Florida,0.0,0.0,1.0
+26-35,M,Georgia,0.0,0.0,1.0
+26-35,M,Hawaii,0.0,0.0,1.0
+26-35,M,Idaho,0.0,0.0,1.0
+26-35,M,Kentucky,0.0,0.0,1.0
+26-35,M,Louisiana,0.0,0.0,1.0
+26-35,M,Maryland,0.0,0.0,1.0
+26-35,M,Mississippi,0.0,0.0,1.0
+26-35,M,Montana,0.0,0.0,1.0
+26-35,M,Nevada,0.0,0.0,1.0
+26-35,M,New Mexico,0.0,0.0,1.0
+26-35,M,North Carolina,0.0,0.0,1.0
+26-35,M,Oklahoma,0.0,0.0,1.0
+26-35,M,Oregon,0.0,0.0,1.0
+26-35,M,South Carolina,0.0,0.0,1.0
+26-35,M,Tennessee,0.0,0.0,1.0
+26-35,M,Texas,0.0,0.0,1.0
+26-35,M,Utah,0.0,0.0,1.0
+26-35,M,Virginia,0.0,0.0,1.0
+26-35,M,Washington,0.0,0.0,1.0
+26-35,M,West Virginia,0.0,0.0,1.0
+26-35,M,Wyoming,0.0,0.0,1.0
+36-45,M,Alabama,0.0,1.0,0.0
+36-45,M,Alaska,1.0,0.0,0.0
+36-45,M,Arizona,1.0,0.0,0.0
+36-45,M,Arkansas,0.0,1.0,0.0
+36-45,M,California,1.0,0.0,0.0
+36-45,M,Colorado,1.0,0.0,0.0
+36-45,M,Delaware,0.0,1.0,0.0
+36-45,M,District of Columbia,0.0,1.0,0.0
+36-45,M,Florida,0.0,1.0,0.0
+36-45,M,Georgia,0.0,1.0,0.0
+36-45,M,Hawaii,1.0,0.0,0.0
+36-45,M,Idaho,1.0,0.0,0.0
+36-45,M,Kentucky,0.0,1.0,0.0
+36-45,M,Louisiana,0.0,1.0,0.0
+36-45,M,Maryland,0.0,1.0,0.0
+36-45,M,Mississippi,0.0,1.0,0.0
+36-45,M,Montana,1.0,0.0,0.0
+36-45,M,Nevada,1.0,0.0,0.0
+36-45,M,New Mexico,1.0,0.0,0.0
+36-45,M,North Carolina,0.0,1.0,0.0
+36-45,M,Oklahoma,0.0,1.0,0.0
+36-45,M,Oregon,1.0,0.0,0.0
+36-45,M,South Carolina,0.0,1.0,0.0
+36-45,M,Tennessee,0.0,1.0,0.0
+36-45,M,Texas,0.0,1.0,0.0
+36-45,M,Utah,1.0,0.0,0.0
+36-45,M,Virginia,0.0,1.0,0.0
+36-45,M,Washington,1.0,0.0,0.0
+36-45,M,West Virginia,0.0,1.0,0.0
+36-45,M,Wyoming,1.0,0.0,0.0
+46-65,F,Connecticut,1.0,0.0,0.0
+46-65,F,Illinois,1.0,0.0,0.0
+46-65,F,Indiana,1.0,0.0,0.0
+46-65,F,Iowa,1.0,0.0,0.0
+46-65,F,Kansas,1.0,0.0,0.0
+46-65,F,Maine,1.0,0.0,0.0
+46-65,F,Massachusetts,1.0,0.0,0.0
+46-65,F,Michigan,1.0,0.0,0.0
+46-65,F,Minnesota,1.0,0.0,0.0
+46-65,F,Missouri,1.0,0.0,0.0
+46-65,F,Nebraska,1.0,0.0,0.0
+46-65,F,New Hampshire,1.0,0.0,0.0
+46-65,F,New Jersey,1.0,0.0,0.0
+46-65,F,New York,1.0,0.0,0.0
+46-65,F,North Dakota,1.0,0.0,0.0
+46-65,F,Ohio,1.0,0.0,0.0
+46-65,F,Pennsylvania,1.0,0.0,0.0
+46-65,F,Rhode Island,1.0,0.0,0.0
+46-65,F,South Dakota,1.0,0.0,0.0
+46-65,F,Vermont,1.0,0.0,0.0
+46-65,F,Wisconsin,1.0,0.0,0.0
+46-65,M,Alabama,0.219,0.781,0.0
+46-65,M,Arkansas,0.219,0.781,0.0
+46-65,M,Delaware,0.219,0.781,0.0
+46-65,M,District of Columbia,0.219,0.781,0.0
+46-65,M,Florida,0.219,0.781,0.0
+46-65,M,Georgia,0.219,0.781,0.0
+46-65,M,Kentucky,0.219,0.781,0.0
+46-65,M,Louisiana,0.219,0.781,0.0
+46-65,M,Maryland,0.219,0.781,0.0
+46-65,M,Mississippi,0.219,0.781,0.0
+46-65,M,North Carolina,0.219,0.781,0.0
+46-65,M,Oklahoma,0.219,0.781,0.0
+46-65,M,South Carolina,0.219,0.781,0.0
+46-65,M,Tennessee,0.219,0.781,0.0
+46-65,M,Texas,0.219,0.781,0.0
+46-65,M,Virginia,0.219,0.781,0.0
+46-65,M,West Virginia,0.219,0.781,0.0
+65-103,F,Alaska,0.0,0.0,1.0
+65-103,F,Arizona,0.0,0.0,1.0
+65-103,F,California,0.0,0.0,1.0
+65-103,F,Colorado,0.0,0.0,1.0
+65-103,F,Hawaii,0.0,0.0,1.0
+65-103,F,Idaho,0.0,0.0,1.0
+65-103,F,Illinois,0.663,0.0,0.337
+65-103,F,Indiana,0.663,0.0,0.337
+65-103,F,Iowa,0.663,0.0,0.337
+65-103,F,Kansas,0.663,0.0,0.337
+65-103,F,Michigan,0.663,0.0,0.337
+65-103,F,Minnesota,0.663,0.0,0.337
+65-103,F,Missouri,0.663,0.0,0.337
+65-103,F,Montana,0.0,0.0,1.0
+65-103,F,Nebraska,0.663,0.0,0.337
+65-103,F,Nevada,0.0,0.0,1.0
+65-103,F,New Mexico,0.0,0.0,1.0
+65-103,F,North Dakota,0.663,0.0,0.337
+65-103,F,Ohio,0.663,0.0,0.337
+65-103,F,Oregon,0.0,0.0,1.0
+65-103,F,South Dakota,0.663,0.0,0.337
+65-103,F,Utah,0.0,0.0,1.0
+65-103,F,Washington,0.0,0.0,1.0
+65-103,F,Wisconsin,0.663,0.0,0.337
+65-103,F,Wyoming,0.0,0.0,1.0
+65-103,M,Alabama,0.501,0.234,0.265
+65-103,M,Alaska,0.0,1.0,0.0
+65-103,M,Arizona,0.0,1.0,0.0
+65-103,M,Arkansas,0.501,0.234,0.265
+65-103,M,California,0.0,1.0,0.0
+65-103,M,Colorado,0.0,1.0,0.0
+65-103,M,Delaware,0.501,0.234,0.265
+65-103,M,District of Columbia,0.501,0.234,0.265
+65-103,M,Florida,0.501,0.234,0.265
+65-103,M,Georgia,0.501,0.234,0.265
+65-103,M,Hawaii,0.0,1.0,0.0
+65-103,M,Idaho,0.0,1.0,0.0
+65-103,M,Illinois,0.658,0.0,0.342
+65-103,M,Indiana,0.658,0.0,0.342
+65-103,M,Iowa,0.658,0.0,0.342
+65-103,M,Kansas,0.658,0.0,0.342
+65-103,M,Kentucky,0.501,0.234,0.265
+65-103,M,Louisiana,0.501,0.234,0.265
+65-103,M,Maryland,0.501,0.234,0.265
+65-103,M,Michigan,0.658,0.0,0.342
+65-103,M,Minnesota,0.658,0.0,0.342
+65-103,M,Mississippi,0.501,0.234,0.265
+65-103,M,Missouri,0.658,0.0,0.342
+65-103,M,Montana,0.0,1.0,0.0
+65-103,M,Nebraska,0.658,0.0,0.342
+65-103,M,Nevada,0.0,1.0,0.0
+65-103,M,New Mexico,0.0,1.0,0.0
+65-103,M,North Carolina,0.501,0.234,0.265
+65-103,M,North Dakota,0.658,0.0,0.342
+65-103,M,Ohio,0.658,0.0,0.342
+65-103,M,Oklahoma,0.501,0.234,0.265
+65-103,M,Oregon,0.0,1.0,0.0
+65-103,M,South Carolina,0.501,0.234,0.265
+65-103,M,South Dakota,0.658,0.0,0.342
+65-103,M,Tennessee,0.501,0.234,0.265
+65-103,M,Texas,0.501,0.234,0.265
+65-103,M,Utah,0.0,1.0,0.0
+65-103,M,Virginia,0.501,0.234,0.265
+65-103,M,Washington,0.0,1.0,0.0
+65-103,M,West Virginia,0.501,0.234,0.265
+65-103,M,Wisconsin,0.658,0.0,0.342
+65-103,M,Wyoming,0.0,1.0,0.0

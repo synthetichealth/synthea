@@ -23,11 +23,11 @@ public class App {
   public static void usage() {
     System.out.println("Usage: run_synthea [options] [state [city]]");
     System.out.println("Options: [-s seed] [-cs clinicianSeed] [-p populationSize]");
+    System.out.println("         [-ps singlePersonSeed]");
     System.out.println("         [-r referenceDate as YYYYMMDD]");
     System.out.println("         [-e endDate as YYYYMMDD]");
     System.out.println("         [-g gender] [-a minAge-maxAge]");
     System.out.println("         [-o overflowPopulation]");
-    System.out.println("         [-m moduleFileWildcardList]");
     System.out.println("         [-c localConfigFilePath]");
     System.out.println("         [-d localModulesDirPath]");
     System.out.println("         [-i initialPopulationSnapshotPath]");
@@ -35,7 +35,7 @@ public class App {
     System.out.println("         [-t updateTimePeriodInDays]");
     System.out.println("         [-f fixedRecordPath]");
     System.out.println("         [-k keepMatchingPatientsPath]");
-    System.out.println("         [--config* value]");
+    System.out.println("         [--config*=value]");
     System.out.println("          * any setting from src/main/resources/synthea.properties");
     System.out.println("Examples:");
     System.out.println("run_synthea Massachusetts");
@@ -45,10 +45,8 @@ public class App {
     System.out.println("run_synthea -s 987 Washington Seattle");
     System.out.println("run_synthea -s 21 -p 100 Utah \"Salt Lake City\"");
     System.out.println("run_synthea -g M -a 60-65");
-    System.out.println("run_synthea -p 10 --exporter.fhir.export true");
-    System.out.println("run_synthea -m moduleFilename" + File.pathSeparator + "anotherModule"
-        + File.pathSeparator + "module*");
-    System.out.println("run_synthea --exporter.baseDirectory \"./output_tx/\" Texas");
+    System.out.println("run_synthea -p 10 --exporter.fhir.export=true");
+    System.out.println("run_synthea --exporter.baseDirectory=\"./output_tx/\" Texas");
   }
 
   /**
@@ -77,6 +75,9 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-cs")) {
             String value = argsQ.poll();
             options.clinicianSeed = Long.parseLong(value);
+          } else if (currArg.equalsIgnoreCase("-ps")) {
+            String value = argsQ.poll();
+            options.singlePersonSeed = Long.valueOf(value);
           } else if (currArg.equalsIgnoreCase("-r")) {
             String value = argsQ.poll();
             // note that Y = "week year" and y = "year" per the formatting guidelines

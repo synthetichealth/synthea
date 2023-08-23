@@ -1,0 +1,247 @@
+{
+  "name": "Stable Ischemic Heart Disease",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_IHD"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Chance_of_IHD": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "IHD_Start",
+          "distribution": {
+            "attribute": "ihd_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_IHD",
+          "distribution": 1
+        }
+      ]
+    },
+    "IHD_Start": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cardiac_surgery_reason",
+      "target_encounter": "Diagnosis_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414545008,
+          "display": "Ischemic heart disease (disorder)"
+        }
+      ],
+      "direct_transition": "Delay_Until_Symptoms"
+    },
+    "Delay_Until_Symptoms": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Symptoms_Start",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Cardiac_Arrest",
+          "distribution": 0.0005
+        },
+        {
+          "transition": "Delay_Until_Symptoms",
+          "distribution": 0.7495
+        }
+      ],
+      "remarks": [
+        "The original Java code used sex-based annual risk of event: M = 0.042, F = 0.015",
+        "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1647098/pdf/amjph00262-0029.pdf",
+        "",
+        "Then 80% of events are MI, 20% cardiac arrest",
+        "",
+        "For now assume .03 chance annually * .2 == .006 chance annually == .0005 chance monthly (not just divided by 12 btw, the match just works that way)"
+      ]
+    },
+    "Symptoms_Start": {
+      "type": "Symptom",
+      "symptom": "Chest Pain",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Dyspnea_Symptom"
+    },
+    "Cardiac_Arrest": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410429000,
+          "display": "Cardiac arrest (disorder)"
+        }
+      ]
+    },
+    "ECG / Labs": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Stress Test",
+          "distribution": 0.99
+        },
+        {
+          "transition": "CABG",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Stress Test": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Medical_Therapy",
+          "distribution": 0.99
+        },
+        {
+          "transition": "CABG",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Medical_Therapy": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Prescribe_CHD_Meds"
+    },
+    "Symptoms_Continue": {
+      "type": "Simple",
+      "direct_transition": "CABG"
+    },
+    "CABG": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg_sequence",
+      "direct_transition": "Terminal"
+    },
+    "Diagnosis_Encounter": {
+      "type": "Encounter",
+      "reason": "IHD_Start",
+      "direct_transition": "ECG / Labs",
+      "wellness": true
+    },
+    "Prescribe_CHD_Meds": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Start_Clopidogrel",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1997,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Simvastatin",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1991,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Metoprolol",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1978,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Start_Nitroglycerin"
+        }
+      ]
+    },
+    "Start_Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "Clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Start_Simvastatin"
+    },
+    "Start_Simvastatin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 312961,
+          "display": "Simvastatin 20 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Start_Metoprolol"
+    },
+    "Start_Metoprolol": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 866412,
+          "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
+        }
+      ],
+      "direct_transition": "Start_Nitroglycerin"
+    },
+    "Start_Nitroglycerin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 705129,
+          "display": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Symptoms_Continue",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Medical_Therapy",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Dyspnea_Symptom": {
+      "type": "Symptom",
+      "symptom": "Dyspnea on exertion",
+      "cause": "",
+      "probability": 1,
+      "exact": {
+        "quantity": 1
+      },
+      "direct_transition": "Diagnosis_Encounter"
+    }
+  },
+  "gmf_version": 2
+}

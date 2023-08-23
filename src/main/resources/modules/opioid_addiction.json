@@ -180,13 +180,13 @@
     },
     "Enter_Directed_Use_Encounter1": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "emergency",
       "reason": "Enter_Directed_Use_Condition1",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183452005",
-          "display": "Encounter Inpatient"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -228,13 +228,13 @@
     },
     "Enter_Directed_Use_Encounter2": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "emergency",
       "reason": "Enter_Directed_Use_Condition2",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": "183452005",
-          "display": "Encounter Inpatient"
+          "display": "Emergency hospital admission (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_2"
@@ -265,13 +265,13 @@
     },
     "Enter_Directed_Use_Encounter3": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "emergency",
       "reason": "Enter_Directed_Use_Condition3",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183452005,
-          "display": "Encounter Inpatient"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -536,11 +536,11 @@
         },
         {
           "distribution": 0.0425,
-          "transition": "Enter_Addiction_Treatment"
+          "transition": "Drug Addiction"
         },
         {
           "distribution": 0.10375,
-          "transition": "Recovery_Management"
+          "transition": "Drug_Addiction"
         }
       ]
     },
@@ -554,7 +554,8 @@
           "display": "Drug rehabilitation and detoxification"
         }
       ],
-      "direct_transition": "Pain_Vital_4"
+      "direct_transition": "Pain_Vital_4",
+      "reason": "opioid_drug_addiction"
     },
     "End_Addiction_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -583,7 +584,7 @@
     },
     "Recovery_Management": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -591,7 +592,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "End_Recovery_Management_Encounter"
+      "direct_transition": "Recovery Rehab",
+      "reason": "opioid_drug_addiction"
     },
     "End_Recovery_Management_Encounter": {
       "type": "EncounterEnd",
@@ -637,7 +639,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -675,7 +677,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -713,7 +715,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "distributed_transition": [
@@ -728,7 +730,14 @@
       ]
     },
     "Addiction_CarePlan_Selector": {
-      "type": "Simple",
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 8
+        }
+      },
+      "unit": "hours",
       "conditional_transition": [
         {
           "condition": {
@@ -861,7 +870,64 @@
         "low": 2,
         "high": 8
       },
+      "direct_transition": "Rehab Treatment"
+    },
+    "Rehab Treatment": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 7
+        }
+      },
+      "unit": "days",
       "direct_transition": "End_Addiction_Treatment_Encounter"
+    },
+    "Recovery Rehab": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 52052004,
+          "display": "Rehabilitation therapy (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 90,
+          "low": 60
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Recovery_Management_Encounter",
+      "reason": "opioid_drug_addiction"
+    },
+    "Drug Addiction": {
+      "type": "ConditionOnset",
+      "target_encounter": "Enter_Addiction_Treatment",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6525002,
+          "display": "Dependent drug abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Enter_Addiction_Treatment",
+      "assign_to_attribute": "opioid_drug_addiction"
+    },
+    "Drug_Addiction": {
+      "type": "ConditionOnset",
+      "target_encounter": "Recovery_Management",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 6525002,
+          "display": "Dependent drug abuse (disorder)"
+        }
+      ],
+      "direct_transition": "Recovery_Management",
+      "assign_to_attribute": "opioid_drug_addiction"
     }
   },
   "gmf_version": 1

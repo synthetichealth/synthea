@@ -1,0 +1,99 @@
+{
+  "name": "intraop_meds_blood",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models common Labs, Medications, and Blood Components during operation. ",
+    "",
+    "Represented labs include: ",
+    "• Activated clotting time ",
+    "",
+    "Represented meds and blood components include: ",
+    "• Cefazolin, consistent with Society of Thoracic Surgeons antibiotic prophylaxis recommendations. ",
+    "• Heparin",
+    "• Protamine",
+    "• Blood (pRBCs)- called with submodule",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Cefazolin"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Cefazolin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1665060,
+          "display": "cefazolin 2000 MG Injection"
+        }
+      ],
+      "direct_transition": "Heparin",
+      "administration": true
+    },
+    "Heparin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1361226,
+          "display": "heparin sodium, porcine 1000 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Activated Clotting Time",
+      "administration": true,
+      "assign_to_attribute": "heparin"
+    },
+    "Protamine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1796676,
+          "display": "25 ML protamine sulfate (USP) 10 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "Blood",
+      "administration": true
+    },
+    "Blood": {
+      "type": "CallSubmodule",
+      "submodule": "heart/or_blood",
+      "direct_transition": "Terminal"
+    },
+    "Activated Clotting Time": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "s",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3184-9",
+          "display": "Activated clotting time (ACT) of Blood by Coagulation assay"
+        }
+      ],
+      "range": {
+        "low": 110,
+        "high": 500
+      },
+      "conditional_transition": [
+        {
+          "transition": "Blood",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "tavr"
+          }
+        },
+        {
+          "transition": "Protamine"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

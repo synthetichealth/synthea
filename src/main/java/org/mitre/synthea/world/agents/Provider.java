@@ -15,20 +15,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.behaviors.IProviderFinder;
-import org.mitre.synthea.world.agents.behaviors.ProviderFinderNearest;
-import org.mitre.synthea.world.agents.behaviors.ProviderFinderQuality;
-import org.mitre.synthea.world.agents.behaviors.ProviderFinderRandom;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.IProviderFinder;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearest;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearestMedicare;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.Names;
@@ -51,20 +51,18 @@ public class Provider implements QuadTreeElement, Serializable {
 
   // Provider Selection Behavior algorithm choices:
   public static final String NEAREST = "nearest";
-  public static final String QUALITY = "quality";
   public static final String RANDOM = "random";
   public static final String NETWORK = "network";
+  public static final String MEDICARE = "medicare";
 
-  // ArrayList of all providers imported
-  private static ArrayList<Provider> providerList = new ArrayList<Provider>();
+  /** Map of providers imported by UUID. */
+  private static Map<String, Provider> providerByUuid = new HashMap<String, Provider>();
   private static QuadTree providerMap = generateQuadTree();
   private static Set<String> statesLoaded = new HashSet<String>();
   private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
       Config.getAsDouble("generate.providers.maximum_search_distance", 2);
-  public static final String PROVIDER_SELECTION_BEHAVIOR =
-      Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
   private static IProviderFinder providerFinder = buildProviderFinder();
   public static final Boolean USE_HOSPITAL_AS_DEFAULT =
       Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
@@ -75,22 +73,32 @@ public class Provider implements QuadTreeElement, Serializable {
   private String locationUuid;
   public String id;
   public String npi;
+
+  public String cmsProviderNum;
+  public String cmsPin;
+  public String cmsUpin;
+  public String cmsCategory;
+  public String cmsProviderType;
+  public String cmsRegion;
+  public String cliaNumber;
+  public Integer bedCount;
+
   public String name;
   private Location location;
   public String address;
   public String city;
   public String state;
   public String zip;
+  public String fipsCountyCode;
+
   public String phone;
-  public String rawType;
   public ProviderType type;
   public String ownership;
   /** institutional (e.g. hospital) else professional (e.g. PCP) */
   public boolean institutional;
-  public int quality;
   private double revenue;
   private Point2D.Double coordinates;
-  public ArrayList<EncounterType> servicesProvided;
+  public Set<EncounterType> servicesProvided;
   @JSONSkip
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
@@ -139,7 +147,7 @@ public class Provider implements QuadTreeElement, Serializable {
     attributes = new LinkedTreeMap<>();
     revenue = 0.0;
     utilization = HashBasedTable.create();
-    servicesProvided = new ArrayList<EncounterType>();
+    servicesProvided = new HashSet<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
     coordinates = new Point2D.Double();
   }
@@ -149,12 +157,12 @@ public class Provider implements QuadTreeElement, Serializable {
     String behavior =
         Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
     switch (behavior) {
-      case QUALITY:
-        finder = new ProviderFinderQuality();
-        break;
       case RANDOM:
       case NETWORK:
         finder = new ProviderFinderRandom();
+        break;
+      case MEDICARE:
+        finder = new ProviderFinderNearestMedicare();
         break;
       case NEAREST:
       default:
@@ -224,11 +232,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * @return The number of beds, if they exist, otherwise null.
    */
   public Integer getBedCount() {
-    if (attributes.containsKey("bed_count")) {
-      return Integer.parseInt(attributes.get("bed_count").toString());
-    } else {
-      return null;
-    }
+    return bedCount;
   }
 
   /**
@@ -297,6 +301,26 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
+   * Find a provider that does not already have a healthrecord for the given person.
+   */
+  public static Provider findServiceNewProvider(Person person, EncounterType service, long time,
+      List<String> takenIds) {
+    double maxDistance = MAX_PROVIDER_SEARCH_DISTANCE;
+    double degrees = 0.125;
+    List<Provider> options = null;
+    Provider provider = null;
+    while (degrees <= maxDistance) {
+      options = findNewProvidersByLocation(person, degrees, takenIds);
+      provider = providerFinder.find(options, person, service, time);
+      if (provider != null && !takenIds.contains(provider.uuid)) {
+        return provider;
+      }
+      degrees *= 2.0;
+    }
+    return null;
+  }
+
+  /**
    * Find a service around a given point.
    * @param person The patient who requires the service.
    * @param distance in degrees
@@ -311,11 +335,23 @@ public class Provider implements QuadTreeElement, Serializable {
     return providers;
   }
 
+  private static List<Provider> findNewProvidersByLocation(Person person, double distance,
+      List<String> takenIds) {
+    List<QuadTreeElement> results = providerMap.query(person, distance);
+    List<Provider> providers = new ArrayList<Provider>();
+    for (QuadTreeElement item : results) {
+      if (!takenIds.contains(((Provider) item).uuid)) {
+        providers.add((Provider) item);
+      }
+    }
+    return providers;
+  }
+
   /**
    * Clear the list of loaded and cached providers.
    */
   public static void clear() {
-    providerList.clear();
+    providerByUuid.clear();
     statesLoaded.clear();
     providerMap = generateQuadTree();
     providerFinder = buildProviderFinder();
@@ -335,7 +371,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Load into cache the list of providers for a state.
    * @param location the state being loaded.
    */
-  public static void loadProviders(Location location, long clinicianSeed) {
+  public static void loadProviders(Location location, DefaultRandomNumberGenerator random) {
     if (!statesLoaded.contains(location.state)
         || !statesLoaded.contains(Location.getAbbreviation(location.state))
         || !statesLoaded.contains(Location.getStateName(location.state))) {
@@ -347,30 +383,30 @@ public class Provider implements QuadTreeElement, Serializable {
 
         String hospitalFile = Config.get("generate.providers.hospitals.default_file");
         loadProviders(location, hospitalFile, ProviderType.HOSPITAL, servicesProvided,
-                clinicianSeed, false);
+            random, false);
 
         String ihsHospitalFile = Config.get("generate.providers.ihs.hospitals.default_file");
         loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
-                clinicianSeed, true);
+            random, true);
 
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
-        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, clinicianSeed,
+        loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, random,
                 false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
         String primaryCareFile = Config.get("generate.providers.primarycare.default_file");
         loadProviders(location, primaryCareFile, ProviderType.PRIMARY, servicesProvided,
-                clinicianSeed, false);
+            random, false);
         String ihsPCFile = Config.get("generate.providers.ihs.primarycare.default_file");
-        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, clinicianSeed, true);
+        loadProviders(location, ihsPCFile, ProviderType.IHS, servicesProvided, random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.URGENTCARE);
         String urgentcareFile = Config.get("generate.providers.urgentcare.default_file");
         loadProviders(location, urgentcareFile, ProviderType.URGENT, servicesProvided,
-                clinicianSeed, false);
+            random, false);
 
         statesLoaded.add(location.state);
         statesLoaded.add(Location.getAbbreviation(location.state));
@@ -387,19 +423,19 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.HOME);
         String homeHealthFile = Config.get("generate.providers.homehealth.default_file");
         loadProviders(location, homeHealthFile, ProviderType.HOME_HEALTH, servicesProvided,
-                clinicianSeed, true);
+            random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.HOSPICE);
         String hospiceFile = Config.get("generate.providers.hospice.default_file");
         loadProviders(location, hospiceFile, ProviderType.HOSPICE, servicesProvided,
-                clinicianSeed, true);
+            random, true);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.SNF);
         String nursingFile = Config.get("generate.providers.nursing.default_file");
         loadProviders(location, nursingFile, ProviderType.NURSING, servicesProvided,
-                clinicianSeed, true);
+            random, true);
       } catch (IOException e) {
         System.err.println("WARNING: unable to load optional providers in: " + location.state);
       }
@@ -411,24 +447,23 @@ public class Provider implements QuadTreeElement, Serializable {
    * THIS method is for loading providers and generating clinicians with specific specialties
    *
    * @param location the state being loaded
-   * @param filename Location of the file, relative to src/main/resources
+   * @param filename Location of the file
    * @param providerType ProviderType
    * @param servicesProvided Set of services provided by these facilities
-   * @param clinicianSeed random seed for clinicians
+   * @param random Source of randomness for provider generation
    * @param optional if true the function will silently ignore a null or empty filename
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
-      ProviderType providerType, Set<EncounterType> servicesProvided, long clinicianSeed,
+      ProviderType providerType, Set<EncounterType> servicesProvided, RandomNumberGenerator random,
       boolean optional)
       throws IOException {
     if (optional && (filename == null || filename.length() == 0)) {
       return;
     }
 
-    String resource = Utilities.readResource(filename);
+    String resource = Utilities.readResource(filename, true, true);
     Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
-    Random clinicianRand = new Random(clinicianSeed);
 
     while (csv.hasNext()) {
       Map<String,String> row = csv.next();
@@ -446,7 +481,8 @@ public class Provider implements QuadTreeElement, Serializable {
             (providerType == ProviderType.HOSPITAL || providerType == ProviderType.NURSING);
         parsed.servicesProvided.addAll(servicesProvided);
 
-        if ("Yes".equals(row.remove("emergency"))) {
+        String emergency = row.remove("emergency");
+        if ("Yes".equalsIgnoreCase(emergency) || "true".equalsIgnoreCase(emergency)) {
           parsed.servicesProvided.add(EncounterType.EMERGENCY);
         }
 
@@ -457,14 +493,12 @@ public class Provider implements QuadTreeElement, Serializable {
         }
 
         parsed.location = location;
-        // String city = parsed.city;
-        // String address = parsed.address;
 
         if (row.get("hasSpecialties") == null
             || row.get("hasSpecialties").equalsIgnoreCase("false")) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
-                  clinicianSeed, clinicianRand));
+                  random));
         } else {
           for (String specialty : ClinicianSpecialty.getSpecialties()) {
             String specialtyCount = row.get(specialty);
@@ -472,23 +506,27 @@ public class Provider implements QuadTreeElement, Serializable {
                 && !specialtyCount.trim().equals("0")) {
               parsed.clinicianMap.put(specialty,
                   parsed.generateClinicianList(Integer.parseInt(row.get(specialty)), specialty,
-                      clinicianSeed, clinicianRand));
+                      random));
             }
           }
           if (row.get(ClinicianSpecialty.GENERAL_PRACTICE).equals("0")) {
             parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
                 parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
-                    clinicianSeed, clinicianRand));
+                    random));
           }
         }
 
-        providerList.add(parsed);
-        boolean inserted = providerMap.insert(parsed);
-        if (!inserted) {
-          throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
-              + parsed.name + " @ " + parsed.city);
+        if (providerByUuid.containsKey(parsed.uuid)) {
+          providerByUuid.get(parsed.uuid).merge(parsed);
         } else {
-          loaded++;
+          providerByUuid.put(parsed.uuid, parsed);
+          boolean inserted = providerMap.insert(parsed);
+          if (!inserted) {
+            throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
+                + parsed.name + " @ " + parsed.city);
+          } else {
+            loaded++;
+          }
         }
       }
     }
@@ -501,12 +539,12 @@ public class Provider implements QuadTreeElement, Serializable {
    * @return
    */
   private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty,
-      long clinicianSeed, Random clinicianRand) {
+      RandomNumberGenerator random) {
     ArrayList<Clinician> clinicians = new ArrayList<Clinician>();
     for (int i = 0; i < numClinicians; i++) {
       Clinician clinician = null;
-      clinician = generateClinician(clinicianSeed, clinicianRand,
-          Long.parseLong(loaded + "" + i));
+      clinician = generateClinician(random.getSeed(),
+          Long.parseLong(loaded + "" + i), random);
       clinician.attributes.put(Clinician.SPECIALTY, specialty);
       clinicians.add(clinician);
     }
@@ -520,22 +558,22 @@ public class Provider implements QuadTreeElement, Serializable {
    *          Seed for the random clinician
    * @return generated Clinician
    */
-  private Clinician generateClinician(long clinicianSeed, Random clinicianRand,
-      long clinicianIdentifier) {
+  private Clinician generateClinician(long clinicianSeed, long clinicianIdentifier,
+      RandomNumberGenerator random) {
     Clinician clinician = null;
     try {
       Person doc = new Person(clinicianIdentifier);
       Demographics cityDemographics = location.randomCity(doc);
       Map<String, Object> out = new HashMap<>();
 
-      String race = cityDemographics.pickRace(clinicianRand);
+      String race = cityDemographics.pickRace(random);
       out.put(Person.RACE, race);
-      String ethnicity = cityDemographics.pickEthnicity(clinicianRand);
+      String ethnicity = cityDemographics.pickEthnicity(random);
       out.put(Person.ETHNICITY, ethnicity);
       String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity,
-              clinicianRand);
+              random);
       out.put(Person.FIRST_LANGUAGE, language);
-      String gender = cityDemographics.pickGender(clinicianRand);
+      String gender = cityDemographics.pickGender(random);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
         gender = "M";
       } else {
@@ -543,7 +581,7 @@ public class Provider implements QuadTreeElement, Serializable {
       }
       out.put(Person.GENDER, gender);
 
-      clinician = new Clinician(clinicianSeed, clinicianRand, clinicianIdentifier, this);
+      clinician = new Clinician(clinicianSeed, doc, clinicianIdentifier, this);
       clinician.attributes.putAll(out);
       clinician.attributes.put(Person.ADDRESS, address);
       clinician.attributes.put(Person.CITY, city);
@@ -577,6 +615,9 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   public Clinician chooseClinicianList(String specialty, RandomNumberGenerator rand) {
     ArrayList<Clinician> clinicians = this.clinicianMap.get(specialty);
+    if (clinicians == null || clinicians.isEmpty()) {
+      clinicians = this.clinicianMap.get(ClinicianSpecialty.GENERAL_PRACTICE);
+    }
     Clinician doc = clinicians.get(rand.randInt(clinicians.size()));
     doc.incrementEncounters();
     return doc;
@@ -638,14 +679,20 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   private static Provider csvLineToProvider(Map<String,String> line) {
     Provider d = new Provider();
-    // using remove instead of get here so that we can iterate over the remaining keys later
+    // using 'remove' instead of 'get' so that we can iterate over the remaining keys later
     d.id = line.remove("id");
-    d.npi = toProviderNPI(d.id, loaded);
+    d.npi = line.remove("npi");
+    if (d.npi == null) {
+      d.npi = toProviderNPI(d.id, loaded);
+    }
+    if (d.id == null) {
+      d.id = d.npi;
+    }
     d.name = line.remove("name");
     if (d.name == null || d.name.isEmpty()) {
       d.name = d.id;
     }
-    String base = d.id + d.name;
+    String base = d.npi + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     d.locationUuid = UUID.nameUUIDFromBytes(
             new StringBuilder(base).reverse().toString().getBytes()).toString();
@@ -653,18 +700,48 @@ public class Provider implements QuadTreeElement, Serializable {
     d.city = line.remove("city");
     d.state = line.remove("state");
     d.zip = line.remove("zip");
+    d.fipsCountyCode = line.remove("fips_county");
     d.phone = line.remove("phone");
-    d.rawType = line.remove("type");
     d.ownership = line.remove("ownership");
-    try {
-      d.quality = Integer.parseInt(line.remove("quality"));
-    } catch (Exception e) {
-      // Swallow invalid format data
-      d.quality = 0;
+
+    d.cmsCategory = line.remove("category");
+    d.cmsProviderType = line.remove("provider_type_code");
+    d.cmsProviderNum = line.remove("provider_num");
+    d.cmsPin = line.remove("pin");
+    if (d.cmsPin != null && d.cmsPin.length() > 14) {
+      d.cmsPin = null; // the pin is too long and is probably garbage
+    }
+    d.cmsUpin = line.remove("upin");
+    if (d.cmsUpin != null && d.cmsUpin.length() > 12) {
+      d.cmsUpin = null; // the pin is too long and is probably garbage
+    }
+    d.cmsRegion = line.remove("region_code");
+    d.cliaNumber = line.remove("clia_lab_number");
+
+    String bedCount = line.remove("bed_count");
+    if (bedCount != null) {
+      try {
+        d.bedCount = Integer.parseInt(bedCount);
+      } catch (Exception e) {
+        // Ignore, this is an optional field.
+      }
+    }
+
+    String slat = null;
+    String slon = null;
+    if (line.containsKey("lat")) {
+      slat = line.remove("lat");
+    } else if (line.containsKey("LAT")) {
+      slat = line.remove("LAT");
+    }
+    if (line.containsKey("lon")) {
+      slon = line.remove("lon");
+    } else if (line.containsKey("LON")) {
+      slon = line.remove("LON");
     }
     try {
-      double lat = Double.parseDouble(line.remove("LAT"));
-      double lon = Double.parseDouble(line.remove("LON"));
+      double lat = Double.parseDouble(slat);
+      double lon = Double.parseDouble(slon);
       d.coordinates.setLocation(lon, lat);
     } catch (Exception e) {
       d.coordinates.setLocation(0.0, 0.0);
@@ -673,7 +750,79 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   public static List<Provider> getProviderList() {
-    return providerList;
+    return new ArrayList<Provider>(providerByUuid.values());
+  }
+
+  private void merge(Provider other) {
+    if (this.uuid == null) {
+      this.uuid = other.uuid;
+    }
+    if (this.id == null) {
+      this.id = other.id;
+    }
+    if (this.npi == null) {
+      this.npi = other.npi;
+    }
+    if (this.cmsProviderNum == null) {
+      this.cmsProviderNum = other.cmsProviderNum;
+    }
+    if (this.cmsPin == null) {
+      this.cmsPin = other.cmsPin;
+    }
+    if (this.cmsUpin == null) {
+      this.cmsUpin = other.cmsUpin;
+    }
+    if (this.cmsCategory == null) {
+      this.cmsCategory = other.cmsCategory;
+    }
+    if (this.cmsProviderType == null) {
+      this.cmsProviderType = other.cmsProviderType;
+    }
+    if (this.cmsRegion == null) {
+      this.cmsRegion = other.cmsRegion;
+    }
+    if (this.cliaNumber == null) {
+      this.cliaNumber = other.cliaNumber;
+    }
+    if (this.bedCount == null) {
+      this.bedCount = other.bedCount;
+    }
+    if (this.name == null) {
+      this.name = other.name;
+    }
+    if (this.address == null) {
+      this.address = other.address;
+    }
+    if (this.city == null) {
+      this.city = other.city;
+    }
+    if (this.state == null) {
+      this.state = other.state;
+    }
+    if (this.zip == null) {
+      this.zip = other.zip;
+    }
+    if (this.fipsCountyCode == null) {
+      this.fipsCountyCode = other.fipsCountyCode;
+    }
+    if (this.phone == null) {
+      this.phone = other.phone;
+    }
+    if (this.type == null) {
+      this.type = other.type;
+    }
+    if (this.ownership == null) {
+      this.ownership = other.ownership;
+    }
+    /*
+     * This is the most important piece of the merge function: we need to ensure that
+     * the de-duplicated provider offers all intended services.
+     */
+    if (this.servicesProvided == null) {
+      this.servicesProvided = other.servicesProvided;
+    } else {
+      this.servicesProvided.addAll(other.servicesProvided);
+    }
   }
 
   @Override
@@ -689,5 +838,4 @@ public class Provider implements QuadTreeElement, Serializable {
   public Point2D.Double getLonLat() {
     return coordinates;
   }
-
 }

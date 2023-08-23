@@ -46,7 +46,7 @@
         "high": 12,
         "unit": "months"
       },
-      "direct_transition": "Pre_Procedure_Encounter"
+      "direct_transition": "Pre_Procedure_Encounter_Reason"
     },
     "Joint_Replacement_Encounter": {
       "type": "Encounter",
@@ -80,7 +80,8 @@
         {
           "transition": "Terminal"
         }
-      ]
+      ],
+      "reason": "History of Joint Replacement"
     },
     "Knee_Replacement_Procedure": {
       "type": "Procedure",
@@ -125,7 +126,8 @@
           "display": "Stretching exercises"
         }
       ],
-      "direct_transition": "Post_Op_Prescribe_Pain_Reliever"
+      "direct_transition": "Post_Op_Prescribe_Pain_Reliever",
+      "reason": "History of Joint Replacement"
     },
     "Post_Op_Prescribe_Pain_Reliever": {
       "type": "CallSubmodule",
@@ -160,7 +162,16 @@
         "quantity": 1,
         "unit": "months"
       },
-      "direct_transition": "End_Post_Op_CarePlan"
+      "distributed_transition": [
+        {
+          "transition": "DME End",
+          "distribution": 0.99
+        },
+        {
+          "transition": "End_Post_Op_CarePlan",
+          "distribution": 0.01
+        }
+      ]
     },
     "End_Post_Op_CarePlan": {
       "type": "CarePlanEnd",
@@ -213,7 +224,7 @@
     },
     "Delay_After_Assessments": {
       "type": "Delay",
-      "direct_transition": "Joint_Replacement_Encounter",
+      "direct_transition": "History of Joint Replacement",
       "range": {
         "low": 0,
         "high": 90,
@@ -222,7 +233,7 @@
     },
     "Delay_After_Assessments_2": {
       "type": "Delay",
-      "direct_transition": "Joint_Replacement_Encounter",
+      "direct_transition": "History of Joint Replacement",
       "range": {
         "low": 0,
         "high": 180,
@@ -239,7 +250,8 @@
           "display": "Encounter for check up (procedure)"
         }
       ],
-      "direct_transition": "Functional_Status_Assessments"
+      "direct_transition": "Functional_Status_Assessments",
+      "reason": "pre_procedure_encounter_reason"
     },
     "Pre_Procedure_Encounter_End": {
       "type": "EncounterEnd",
@@ -271,7 +283,7 @@
     },
     "Post_Procedure_Encounter": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -279,7 +291,8 @@
           "display": "Follow-up visit (procedure)"
         }
       ],
-      "direct_transition": "Functional_Status_Assessments_2"
+      "direct_transition": "Functional_Status_Assessments_2",
+      "reason": "History of Joint Replacement"
     },
     "Delay_For_Post_Assessment_Hip": {
       "type": "Delay",
@@ -324,6 +337,38 @@
       "attribute": "home_health",
       "direct_transition": "Delay_For_Recovery",
       "value": true
+    },
+    "DME End": {
+      "type": "DeviceEnd",
+      "direct_transition": "End Wheelchair",
+      "referenced_by_attribute": "osteoarthritis_dme"
+    },
+    "End Wheelchair": {
+      "type": "CallSubmodule",
+      "submodule": "dme/wheelchair_end",
+      "direct_transition": "End_Post_Op_CarePlan"
+    },
+    "History of Joint Replacement": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 161679004,
+          "display": "History of artificial joint (situation)"
+        }
+      ],
+      "direct_transition": "Joint_Replacement_Encounter",
+      "target_encounter": "Joint_Replacement_Encounter"
+    },
+    "Pre_Procedure_Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "pre_procedure_encounter_reason",
+      "direct_transition": "Pre_Procedure_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 110466009,
+        "display": "Pre-surgery evaluation (procedure)"
+      }
     }
   },
   "gmf_version": 1

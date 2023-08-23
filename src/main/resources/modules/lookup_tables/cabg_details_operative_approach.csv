@@ -1,0 +1,5 @@
+operative_status,Sternotomy,Thoracotomy,Anything Else
+elective,0.978,0.018,0.004
+emergent,1,0,0
+emergent_salvage,1,0,0
+urgent,0.989,0.011,0

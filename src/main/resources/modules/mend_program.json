@@ -10,8 +10,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness_Encounter",
-      "name": "Initial"
+      "direct_transition": "Encounter_Reason"
     },
     "Wellness_Encounter": {
       "remarks": [
@@ -60,7 +59,7 @@
           "transition": "End_Not_Referred_Wellness_Encounter"
         }
       ],
-      "name": "Wellness_Encounter"
+      "reason": "mend_encounter_reason"
     },
     "Comprehensive_Multidisciplinary_Intervention_Care_Plan": {
       "type": "CarePlanStart",
@@ -69,8 +68,7 @@
         {
           "system": "SNOMED-CT",
           "code": "718361005",
-          "display": "Weight management program",
-          "value_set": ""
+          "display": "Weight management program"
         }
       ],
       "activities": [
@@ -85,8 +83,7 @@
           "display": "Increased physical activity"
         }
       ],
-      "direct_transition": "End_Wellness_Encounter",
-      "name": "Comprehensive_Multidisciplinary_Intervention_Care_Plan"
+      "direct_transition": "End_Wellness_Encounter"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -99,28 +96,24 @@
           "transition": "End_MEND_Program",
           "distribution": 0.584
         }
-      ],
-      "name": "End_Wellness_Encounter"
+      ]
     },
     "Set_MEND_Weeks": {
       "type": "SetAttribute",
       "attribute": "mend_weeks",
       "direct_transition": "Increment_MEND_Week",
-      "value": 0,
-      "name": "Set_MEND_Weeks"
+      "value": 0
     },
     "Increment_MEND_Week": {
       "type": "Counter",
       "attribute": "mend_weeks",
       "action": "increment",
-      "direct_transition": "MEND_Visits",
-      "name": "Increment_MEND_Week"
+      "direct_transition": "MEND_Visits"
     },
     "MEND_Visits": {
       "type": "CallSubmodule",
       "submodule": "weight_loss/mend_week",
-      "direct_transition": "Check_MEND_Weeks",
-      "name": "MEND_Visits"
+      "direct_transition": "Check_MEND_Weeks"
     },
     "Wait_For_Initial_MEND_Week": {
       "type": "Delay",
@@ -129,18 +122,15 @@
         "high": 21,
         "unit": "days"
       },
-      "direct_transition": "Set_MEND_Weeks",
-      "name": "Wait_For_Initial_MEND_Week"
+      "direct_transition": "Set_MEND_Weeks"
     },
     "Not_Referred": {
       "type": "Simple",
-      "direct_transition": "End_Not_Referred_Wellness_Encounter",
-      "name": "Not_Referred"
+      "direct_transition": "End_Not_Referred_Wellness_Encounter"
     },
     "End_Not_Referred_Wellness_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Initial",
-      "name": "End_Not_Referred_Wellness_Encounter"
+      "direct_transition": "Initial"
     },
     "Check_MEND_Weeks": {
       "type": "Simple",
@@ -157,12 +147,21 @@
         {
           "transition": "Increment_MEND_Week"
         }
-      ],
-      "name": "Check_MEND_Weeks"
+      ]
     },
     "End_MEND_Program": {
-      "type": "Terminal",
-      "name": "End_MEND_Program"
+      "type": "Terminal"
+    },
+    "Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "mend_encounter_reason",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 763288003,
+        "display": "Patient review (procedure)"
+      }
     }
-  }
+  },
+  "gmf_version": 2
 }

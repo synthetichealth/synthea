@@ -13,7 +13,7 @@
       <procedure classCode="PROC" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.14"/>
         <!-- Procedure activity template -->
-        <id root="${UUID?api.toString()}"/>
+        <id root="${entry.uuid}"/>
         <@codes.code_section codes=entry.codes section="procedures" counter=entry?counter />
         <text>
           <reference value="#procedures-desc-#{entry?counter}"/>

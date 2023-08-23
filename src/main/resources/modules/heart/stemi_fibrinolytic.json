@@ -1,0 +1,66 @@
+{
+  "name": "stemi_fibrinolytic",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "distributed_transition": [
+        {
+          "transition": "Reteplase",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Alteplase",
+          "distribution": 0.33
+        },
+        {
+          "transition": "Tenecteplase",
+          "distribution": 0.34
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Reteplase": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 763138,
+          "display": "reteplase 10 UNT Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Tenecteplase": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313212,
+          "display": "tenecteplase 50 MG Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "Alteplase": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1804799,
+          "display": "alteplase 100 MG Injection"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "administration": true
+    }
+  },
+  "gmf_version": 2
+}

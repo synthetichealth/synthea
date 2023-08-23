@@ -60,7 +60,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Xulane"
+      "direct_transition": "Prescribe_Xulane",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Xulane": {
       "type": "MedicationOrder",

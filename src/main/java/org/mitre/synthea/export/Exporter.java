@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,10 +25,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.input.FixedRecord;
-import org.mitre.synthea.input.FixedRecordGroup;
+import org.mitre.synthea.identity.Entity;
+import org.mitre.synthea.identity.Seed;
+import org.mitre.synthea.identity.Variant;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Claim;
@@ -54,6 +57,34 @@ public abstract class Exporter {
           new ConcurrentHashMap<Path, PrintWriter>();
 
   private static final int FILE_BUFFER_SIZE = 4 * 1024 * 1024;
+
+  private static List<PatientExporter> patientExporters;
+  private static List<PostCompletionExporter> postCompletionExporters;
+
+  /**
+   * If the config setting "exporter.enable_custom_exporters" is enabled,
+   * load classes implementing the {@link PatientExporter} or {@link PostCompletionExporter}
+   * interfaces from the classpath, via the ServiceLoader.
+   */
+  public static void loadCustomExporters() {
+    if (Config.getAsBoolean("exporter.enable_custom_exporters", false)) {
+      patientExporters = new ArrayList<>();
+      postCompletionExporters = new ArrayList<>();
+
+      ServiceLoader<PatientExporter> loader = ServiceLoader.load(PatientExporter.class);
+      for (PatientExporter instance : loader) {
+        System.out.println(instance.getClass().getCanonicalName());
+        patientExporters.add(instance);
+      }
+
+      ServiceLoader<PostCompletionExporter> loader2 =
+          ServiceLoader.load(PostCompletionExporter.class);
+      for (PostCompletionExporter instance : loader2) {
+        System.out.println(instance.getClass().getCanonicalName());
+        postCompletionExporters.add(instance);
+      }
+    }
+  }
 
   /**
    * Runtime configuration of the record exporter.
@@ -127,8 +158,10 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    * @param options Runtime exporter options
    */
-  public static void export(Person person, long stopTime, ExporterRuntimeOptions options) {
+  public static boolean export(Person person, long stopTime, ExporterRuntimeOptions options) {
+    boolean wasExported = false;
     if (options.deferExports) {
+      wasExported = true;
       deferredExports.add(new ImmutablePair<Person, Long>(person, stopTime));
     } else {
       if (options.yearsOfHistory > 0) {
@@ -141,23 +174,21 @@ public abstract class Exporter {
         int i = 0;
         for (String key : person.records.keySet()) {
           person.record = person.records.get(key);
-          // If the person fixed Records, overwrite their attributes from the fixed records.
-          if (person.attributes.get(Person.RECORD_GROUP) != null) {
-            FixedRecordGroup rg = (FixedRecordGroup) person.attributes.get(Person.RECORD_GROUP);
-            int recordToPull = i;
-            if (recordToPull >= rg.count) {
-              recordToPull = rg.count - 1;
-            }
-            FixedRecord fr = rg.records.get(recordToPull);
-            fr.totalOverwrite(person);
+          if (person.attributes.get(Person.ENTITY) != null) {
+            Entity entity = (Entity) person.attributes.get(Person.ENTITY);
+            Seed seed = entity.seedAt(person.record.lastEncounterTime());
+            Variant variant = seed.selectVariant(person);
+            person.attributes.putAll(variant.demographicAttributesForPerson());
           }
-          exportRecord(person, Integer.toString(i), stopTime, options);
+          boolean exported = exportRecord(person, Integer.toString(i), stopTime, options);
+          wasExported = wasExported || exported;
           i++;
         }
       } else {
-        exportRecord(person, "", stopTime, options);
+        wasExported = exportRecord(person, "", stopTime, options);
       }
     }
+    return wasExported;
   }
 
   /**
@@ -180,8 +211,9 @@ public abstract class Exporter {
    * @param stopTime Time at which the simulation stopped
    * @param options Generator's record queue (may be null)
    */
-  private static void exportRecord(Person person, String fileTag, long stopTime,
+  private static boolean exportRecord(Person person, String fileTag, long stopTime,
           ExporterRuntimeOptions options) {
+    boolean wasExported = true;
     if (options.terminologyService) {
       // Resolve any coded values within the record that are specified using a ValueSet URI.
       ValueSetCodeResolver valueSetCodeResolver = new ValueSetCodeResolver(person);
@@ -262,7 +294,7 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
         BB2RIFExporter exporter = BB2RIFExporter.getInstance();
-        exporter.export(person, stopTime, options.yearsOfHistory);
+        wasExported = exporter.export(person, stopTime, options.yearsOfHistory);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -315,6 +347,13 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
+
+    if (patientExporters != null && !patientExporters.isEmpty()) {
+      for (PatientExporter patientExporter : patientExporters) {
+        patientExporter.export(person, stopTime, options);
+      }
+    }
+
     if (options.isQueueEnabled()) {
       try {
         switch (options.queuedFhirVersion()) {
@@ -334,6 +373,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    return wasExported;
   }
 
   /**
@@ -354,7 +394,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  static void overwriteFile(Path file, String contents) {
+  public static void overwriteFile(Path file, String contents) {
     try {
       Files.write(file, Collections.singleton(contents), StandardOpenOption.CREATE,
               StandardOpenOption.TRUNCATE_EXISTING);
@@ -368,7 +408,7 @@ public abstract class Exporter {
    * @param file Path to the new file.
    * @param contents The contents of the file.
    */
-  static void appendToFile(Path file, String contents) {
+  public static void appendToFile(Path file, String contents) {
     PrintWriter writer = fileWriters.get(file);
 
     if (writer == null) {
@@ -430,24 +470,20 @@ public abstract class Exporter {
       deferredExports.clear();
     }
 
-    String bulk = Config.get("exporter.fhir.bulk_data");
-
-    // Before we force bulk data to be off...
     try {
-      FhirGroupExporterR4.exportAndSave(generator, generator.stop);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    Config.set("exporter.fhir.bulk_data", "false");
-    try {
-      HospitalExporterR4.export(generator, generator.stop);
+      FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     try {
-      FhirPractitionerExporterR4.export(generator, generator.stop);
+      HospitalExporterR4.export(generator.getRandomizer(), generator.stop);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    try {
+      FhirPractitionerExporterR4.export(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -475,7 +511,6 @@ public abstract class Exporter {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    Config.set("exporter.fhir.bulk_data", bulk);
 
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
@@ -483,6 +518,7 @@ public abstract class Exporter {
         exporter.exportNPIs();
         exporter.exportManifest();
         exporter.exportEndState();
+        exporter.exportMissingCodes();
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -506,6 +542,12 @@ public abstract class Exporter {
         MetadataExporter.exportMetadata(generator);
       } catch (IOException e) {
         e.printStackTrace();
+      }
+    }
+
+    if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
+      for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
+        postCompletionExporter.export(generator, options);
       }
     }
 

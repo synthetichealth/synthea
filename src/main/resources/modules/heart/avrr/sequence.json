@@ -1,0 +1,462 @@
+{
+  "name": "sequence",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "AVRR sequence."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "AV VHD Follow-up"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "AV VHD Follow-up": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "History & Physical Exam"
+    },
+    "History & Physical Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63332003,
+          "display": "History AND physical examination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Review of Imaging",
+      "reason": "vhd_diagnosis"
+    },
+    "Review of Imaging": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 452331000124102,
+          "display": "Review of imaging finding (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 20,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Operative Procedure Planned",
+      "reason": "vhd_diagnosis"
+    },
+    "Operative Procedure Planned": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183976008,
+          "display": "Operative procedure planned (situation)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 0
+        }
+      },
+      "unit": "minutes",
+      "reason": "vhd_diagnosis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "bicuspid_aortic_valve",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "AVRepair",
+              "distribution": 0.025
+            },
+            {
+              "transition": "AVReplace",
+              "distribution": 0.975
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 60234000,
+                "display": "Aortic valve regurgitation (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "AVRepair",
+              "distribution": 0.025
+            },
+            {
+              "transition": "AVReplace",
+              "distribution": 0.975
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "AVReplace"
+        }
+      ]
+    },
+    "AVReplace": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 60573004,
+                    "display": "Aortic valve stenosis (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Age",
+                "operator": "<",
+                "quantity": 65,
+                "unit": "years",
+                "value": 0
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Set AV Replace",
+              "distribution": 0.7
+            },
+            {
+              "transition": "Set TAVR",
+              "distribution": 0.3
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 60573004,
+                    "display": "Aortic valve stenosis (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Age",
+                    "operator": ">=",
+                    "quantity": 65,
+                    "unit": "years",
+                    "value": 0
+                  },
+                  {
+                    "condition_type": "Age",
+                    "operator": "<=",
+                    "quantity": 80,
+                    "unit": "years",
+                    "value": 0
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Set AV Replace",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Set TAVR",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 60234000,
+                "display": "Aortic valve regurgitation (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Set AV Replace",
+              "distribution": 0.94
+            },
+            {
+              "transition": "Set TAVR",
+              "distribution": 0.06
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Set TAVR"
+        }
+      ]
+    },
+    "AVRepair": {
+      "type": "Simple",
+      "direct_transition": "Set AV Repair"
+    },
+    "Set AV Repair": {
+      "type": "SetAttribute",
+      "attribute": "cardiac_surgery",
+      "direct_transition": "Repair Operative Status",
+      "value": "savrepair"
+    },
+    "Repair Operative Status": {
+      "type": "CallSubmodule",
+      "submodule": "heart/savrepair/operative_status",
+      "direct_transition": "Referral to surgery"
+    },
+    "Referral to surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306185001,
+          "display": "Referral to cardiac surgery service (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 15,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End AV VHD Follow-up",
+      "reason": "vhd_diagnosis"
+    },
+    "End AV VHD Follow-up": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Urgent Delay",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Non Urgent Delay"
+        }
+      ]
+    },
+    "Set TAVR": {
+      "type": "SetAttribute",
+      "attribute": "cardiac_surgery",
+      "value": "tavr",
+      "direct_transition": "Repair_Operative_Status"
+    },
+    "Set AV Replace": {
+      "type": "SetAttribute",
+      "attribute": "cardiac_surgery",
+      "value": "savreplace",
+      "direct_transition": "Replace Operative Status"
+    },
+    "Repair_Operative_Status": {
+      "type": "CallSubmodule",
+      "submodule": "heart/tavr/operative_status",
+      "direct_transition": "Referral to surgery"
+    },
+    "Replace Operative Status": {
+      "type": "CallSubmodule",
+      "submodule": "heart/savreplace/operative_status",
+      "direct_transition": "Referral to surgery"
+    },
+    "Urgent Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 1
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Referral and Preoperative Testing"
+    },
+    "Non Urgent Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Referral and Preoperative Testing"
+    },
+    "Referral and Preoperative Testing": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/referral",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "cabg_avrr",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "palliative_avrr",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "TAVR Operation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "tavr"
+          }
+        },
+        {
+          "transition": "SAVRr Operation"
+        }
+      ]
+    },
+    "SAVRr Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/savrr_operation",
+      "direct_transition": "Mortality Check"
+    },
+    "TAVR Operation": {
+      "type": "CallSubmodule",
+      "submodule": "heart/tavr/operation",
+      "direct_transition": "Mortality Check"
+    },
+    "Mortality Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Death",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "savrr_mortality",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tavr_mortality",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Post Op Check"
+        }
+      ]
+    },
+    "Post Op Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "TAVR Postop",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "tavr"
+          }
+        },
+        {
+          "transition": "SAVRr Postop"
+        }
+      ]
+    },
+    "SAVRr Postop": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/savrr_postop",
+      "direct_transition": "Terminal"
+    },
+    "TAVR Postop": {
+      "type": "CallSubmodule",
+      "submodule": "heart/tavr/postop",
+      "direct_transition": "Terminal"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "cardiac_surgery_reason"
+    }
+  },
+  "gmf_version": 2
+}

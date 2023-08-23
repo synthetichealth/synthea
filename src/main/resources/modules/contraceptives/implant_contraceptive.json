@@ -70,7 +70,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Implant_Contraceptive"
+      "direct_transition": "Prescribe_Implant_Contraceptive",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Implant_Contraceptive": {
       "type": "Simple",
@@ -147,7 +148,8 @@
           "display": "Levonorgestrel 0.00354 MG/HR Drug Implant"
         }
       ],
-      "direct_transition": "Initial_Implant"
+      "direct_transition": "Initial_Implant",
+      "administration": true
     },
     "Prescribe_Implanon": {
       "type": "MedicationOrder",
@@ -159,7 +161,8 @@
           "display": "Etonogestrel 68 MG Drug Implant"
         }
       ],
-      "direct_transition": "Initial_Implant"
+      "direct_transition": "Initial_Implant",
+      "administration": true
     },
     "Prescribe_Nexplanon": {
       "type": "MedicationOrder",
@@ -171,7 +174,8 @@
           "display": "Etonogestrel 68 MG Drug Implant"
         }
       ],
-      "direct_transition": "Initial_Implant"
+      "direct_transition": "Initial_Implant",
+      "administration": true
     },
     "Initial_Implant": {
       "type": "Procedure",

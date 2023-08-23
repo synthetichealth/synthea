@@ -340,7 +340,8 @@
             }
           ]
         }
-      ]
+      ],
+      "reason": "dermatitis"
     },
     "Early_Childhood_AD_Moderate_Observations": {
       "type": "CallSubmodule",

@@ -6,14 +6,15 @@ jobs:
     name: Java 17
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: 'zulu'
 
       - name: Gradle cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -27,7 +28,7 @@ jobs:
   
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: env.SLACK_WEBHOOK_URL
+        if: always() && env.SLACK_WEBHOOK_URL
         with:
           status: custom
           job_name: Java 17
@@ -45,26 +46,27 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   
-  check_java8:
+  check_java11:
     runs-on: ubuntu-latest
-    name: Java 8
+    name: Java 11
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: 11
+          distribution: 'zulu'
 
       - name: Gradle cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk8
+            ${{ runner.os }}-gradle-jdk11
             
       - name: Compile with Gradle
         run: ./gradlew assemble
@@ -73,15 +75,15 @@ jobs:
         run: ./gradlew check
   
       - name: Code coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
-        if: env.SLACK_WEBHOOK_URL
+        if: always() && env.SLACK_WEBHOOK_URL
         with:
           status: custom
-          job_name: Java 8
-          author_name: Java 8 Build/Test
+          job_name: Java 11
+          author_name: Java 11 Build/Test
           fields: workflow,commit,repo,author,took
           # see https://action-slack.netlify.app/usecase/02-custom for custom payload info
           custom_payload: |

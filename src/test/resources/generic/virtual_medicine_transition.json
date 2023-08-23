@@ -1,0 +1,22 @@
+{
+  "name": "Telemedicine",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "type_of_care_transition": {
+        "ambulatory": "Terminal1",
+        "telemedicine": "Terminal2",
+        "emergency": "Terminal3"
+      }
+    },
+    "Terminal1": {
+      "type": "Terminal"
+    },
+    "Terminal2": {
+      "type": "Terminal"
+    },
+    "Terminal3": {
+      "type": "Terminal"
+    }
+  }
+}

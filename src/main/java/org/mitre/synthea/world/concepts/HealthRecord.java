@@ -20,12 +20,15 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.Utilities;
+import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.world.agents.Clinician;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
@@ -46,6 +49,36 @@ public class HealthRecord implements Serializable {
    * HealthRecord.Code represents a system, code, and display value.
    */
   public static class Code implements Comparable<Code>, Serializable {
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 67 * hash + Objects.hashCode(this.system);
+      hash = 67 * hash + Objects.hashCode(this.code);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final Code other = (Code) obj;
+      if (!Objects.equals(this.code, other.code)) {
+        return false;
+      }
+      if (!Objects.equals(this.system, other.system)) {
+        return false;
+      }
+      return true;
+    }
+
     /** Code System (e.g. LOINC, RxNorm, SNOMED) identifier (typically a URI) */
     public String system;
     /** The code itself. */
@@ -81,10 +114,6 @@ public class HealthRecord implements Serializable {
       this.system = definition.get("system").getAsString();
       this.code = definition.get("code").getAsString();
       this.display = definition.get("display").getAsString();
-    }
-
-    public boolean equals(Code other) {
-      return this.system.equals(other.system) && this.code.equals(other.code);
     }
 
     public String toString() {
@@ -124,7 +153,8 @@ public class HealthRecord implements Serializable {
     /** reference to the HealthRecord this entry belongs to. */
     @JSONSkip
     HealthRecord record = HealthRecord.this;
-    public String fullUrl;
+    public final UUID uuid = record.person.randUUID();
+    public String fullUrl; // cache the fullURL used in FHIR exporters
     public String name;
     public long start;
     public long stop;
@@ -297,6 +327,54 @@ public class HealthRecord implements Serializable {
       if (prescriptionJson != null) {
         Gson gson = Utilities.getGson();
         this.prescriptionDetails = gson.fromJson(prescriptionJson, JsonObject.class);
+      }
+    }
+
+    /**
+     * Get the quantity of medication prescribed or administered.
+     * If "prescriptionDetails" was specified, the quantity is calculated based
+     * on the amount, frequency, period, and duration. If those details are not
+     * present, the default quantity for an administration is 1 and the default
+     * quantity for a prescription is 30 (daily prescription for one month).
+     * @return calculated quantity of medication, or 30 by default.
+     */
+    public long getQuantity() {
+      if (this.prescriptionDetails == null) {
+        if (this.administration) {
+          return 1; // a single administration
+        } else {
+          return 30; // daily prescription for one month
+        }
+      } else {
+        BigDecimal amount = BigDecimal.ONE;
+        BigDecimal frequency = BigDecimal.ONE;
+        BigDecimal period = BigDecimal.ONE;
+        String periodUOM = "days";
+        BigDecimal duration = BigDecimal.ONE;
+        String durationUOM = "months";
+
+        if (this.prescriptionDetails.has("dosage")) {
+          JsonObject dosage = this.prescriptionDetails.get("dosage").getAsJsonObject();
+          amount = dosage.get("amount").getAsBigDecimal();
+          frequency = dosage.get("frequency").getAsBigDecimal();
+          period = dosage.get("period").getAsBigDecimal();
+          periodUOM = dosage.get("unit").getAsString();
+        }
+        if (this.prescriptionDetails.has("duration")) {
+          JsonObject drtn = this.prescriptionDetails.get("duration").getAsJsonObject();
+          duration = drtn.get("quantity").getAsBigDecimal();
+          durationUOM = drtn.get("unit").getAsString();
+        }
+
+        // convert period into milliseconds
+        period = BigDecimal.valueOf(Utilities.convertTime(periodUOM, period.longValue()));
+        // convert duration into milliseconds
+        duration = BigDecimal.valueOf(Utilities.convertTime(durationUOM, duration.longValue()));
+
+        BigDecimal quantityPerPeriod = amount.multiply(frequency);
+        BigDecimal periodsPerDuration = duration.divide(period);
+        BigDecimal quantity =  quantityPerPeriod.multiply(periodsPerDuration);
+        return quantity.longValue();
       }
     }
   }
@@ -556,6 +634,7 @@ public class HealthRecord implements Serializable {
     public Provider provider;
     public Clinician clinician;
     public boolean ended;
+    public long endedTime;
     // Track if we renewed meds at this encounter. Used in State.java encounter state.
     public boolean chronicMedsRenewed;
     public String clinicalNote;
@@ -570,8 +649,10 @@ public class HealthRecord implements Serializable {
       if (type.equalsIgnoreCase(EncounterType.EMERGENCY.toString())) {
         // Emergency encounters should take at least an hour.
         this.stop = this.start + TimeUnit.MINUTES.toMillis(60);
-      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())) {
-        // Inpatient encounters should last at least a day (1440 minutes).
+      } else if (type.equalsIgnoreCase(EncounterType.INPATIENT.toString())
+          || type.equalsIgnoreCase(EncounterType.HOSPICE.toString())
+          || type.equalsIgnoreCase(EncounterType.SNF.toString())) {
+        // These longer encounters should last at least a day (1440 minutes).
         this.stop = this.start + TimeUnit.MINUTES.toMillis(1440);
       } else {
         // Other encounters will default to 15 minutes.
@@ -652,6 +733,63 @@ public class HealthRecord implements Serializable {
         }
       }
     }
+
+    /**
+     * End the encounter.
+     * @param time The time of the simulation.
+     */
+    public void end(long time) {
+      if (!this.ended) {
+        long endTime = this.stop;
+        // we need to find the latest time of all enclosed entries...
+        // ignoring entries that can extended beyond the end date of an encounter:
+        // - conditions, allergies, medications, careplans, devices
+        // starting with observations...
+        long max;
+        if (observations.size() > 0) {
+          max = observations.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        // reports...
+        if (reports.size() > 0) {
+          max = reports.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        // procedures...
+        if (procedures.size() > 0) {
+          max = procedures.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        // immunizations...
+        if (immunizations.size() > 0) {
+          max = immunizations.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        // imaging studies...
+        if (imagingStudies.size() > 0) {
+          max = imagingStudies.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        // supplies...
+        if (supplies.size() > 0) {
+          max = supplies.stream().map((e) -> e.stop)
+              .filter(l -> l != 0L).max(Long::compare).orElse(endTime);
+          endTime = Long.max(endTime, max);
+        }
+        if (this.stop == 0L || endTime == 0L) {
+          this.stop = time;
+        } else {
+          this.stop = Long.max(endTime, time);
+        }
+        this.ended = true;
+        this.endedTime = time;
+      }
+    }
   }
 
   public enum ReactionSeverity {
@@ -692,6 +830,8 @@ public class HealthRecord implements Serializable {
   public Map<String, Entry> present;
   /** recorded death date/time. */
   public Long death;
+  /** The person's demographics at the time of record creation. */
+  public Map<String, Object> demographicsAtRecordCreation;
 
   /**
    * Construct a health record for the supplied person.
@@ -701,6 +841,9 @@ public class HealthRecord implements Serializable {
     this.person = person;
     encounters = new ArrayList<Encounter>();
     present = new HashMap<String, Entry>();
+    if (person.attributes.get(Person.HOUSEHOLD) != null) {
+      this.demographicsAtRecordCreation = new HashMap<String,Object>(person.attributes);
+    }
   }
 
   /**
@@ -763,12 +906,17 @@ public class HealthRecord implements Serializable {
    */
   public Encounter currentEncounter(long time) {
     Encounter encounter = null;
-    if (encounters.size() >= 1) {
-      encounter = encounters.get(encounters.size() - 1);
-    } else {
-      encounter = new Encounter(time, EncounterType.WELLNESS.toString());
+    if (encounters.size() == 0) {
+      encounter = EncounterModule.createEncounter(person, time, EncounterType.WELLNESS,
+          ClinicianSpecialty.GENERAL_PRACTICE,
+          EncounterModule.WELL_CHILD_VISIT, EncounterModule.NAME);
       encounter.name = "First Wellness";
-      encounters.add(encounter);
+    }
+    for (int i = encounters.size() - 1; i >= 0; i--) {
+      encounter = encounters.get(i);
+      if (encounter.start <= time) {
+        return encounter;
+      }
     }
     return encounter;
   }
@@ -1122,17 +1270,17 @@ public class HealthRecord implements Serializable {
       Encounter encounter = encounters.get(i);
       EncounterType encounterType = EncounterType.fromString(encounter.type);
       if (encounterType == type && !encounter.ended) {
-        encounter.ended = true;
-        // Only override the stop time if it is longer than the default.
-        if (time > encounter.stop) {
-          encounter.stop = time;
-        }
-        // Update Costs/Claim infomation.
+        encounter.end(time);
+        // Update Costs/Claim information.
         encounter.determineCost();
         encounter.claim.assignCosts();
         return;
       }
     }
+  }
+
+  public long lastEncounterTime() {
+    return encounters.stream().mapToLong(e -> e.stop).max().orElse(Long.MIN_VALUE);
   }
 
   /**
@@ -1163,9 +1311,13 @@ public class HealthRecord implements Serializable {
     if (!present.containsKey(type)) {
       medication = new Medication(time, type);
       medication.chronic = chronic;
+
       Encounter encounter = currentEncounter(time);
       encounter.medications.add(medication);
-      encounter.claim.addLineItem(medication);
+      /* Do not add medications to the Encounter claim.
+       * Medications submit separate claims.
+       */
+      // encounter.claim.addLineItem(medication);
       present.put(type, medication);
     } else {
       medication = (Medication) present.get(type);
@@ -1175,6 +1327,27 @@ public class HealthRecord implements Serializable {
     if (chronic) {
       person.chronicMedications.put(type, medication);
     }
+
+    return medication;
+  }
+
+  /**
+   * Administer a medication without altering existing medications.
+   * @param time the time of the administration.
+   * @param type the type of the medication to administer.
+   * @return new medication of the specified type.
+   */
+  public Medication medicationAdministration(long time, String type) {
+    Medication medication = new Medication(time, type);
+    medication.stop = time;
+    medication.administration = true;
+
+    Encounter encounter = currentEncounter(time);
+    encounter.medications.add(medication);
+    /* Do not add medications to the Encounter claim.
+     * Medications submit separate claims.
+     */
+    // encounter.claim.addLineItem(medication);
 
     return medication;
   }
@@ -1193,9 +1366,6 @@ public class HealthRecord implements Serializable {
 
       chronicMedicationEnd(type);
 
-      // Update Costs/Claim infomation.
-      medication.determineCost();
-      medication.claim.assignCosts();
       present.remove(type);
     }
   }

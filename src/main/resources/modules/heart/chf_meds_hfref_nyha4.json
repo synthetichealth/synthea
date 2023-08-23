@@ -1,5 +1,6 @@
 {
   "name": "chf_meds_HFrEF_NYHA4",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Congestive Heart Failure Medications for HFrEF NYHA IV."
   ],
@@ -133,7 +134,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1656354,
+          "code": 1656356,
           "display": "sacubitril 97 MG / valsartan 103 MG Oral Tablet"
         }
       ],

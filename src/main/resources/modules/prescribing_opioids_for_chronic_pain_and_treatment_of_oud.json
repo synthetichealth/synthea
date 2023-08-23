@@ -85,7 +85,7 @@
         {
           "system": "SNOMED-CT",
           "code": 228557008,
-          "display": "Cognitive and behavior therapy"
+          "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
       "distributed_transition": [
@@ -290,7 +290,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -305,7 +305,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -320,7 +320,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -351,7 +351,7 @@
           "display": "Chronic low back pain (finding)"
         }
       ],
-      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+      "direct_transition": "Chronic_Pain_Reason"
     },
     "End_Initial_Chronic_Pain_Encounter": {
       "type": "EncounterEnd",
@@ -528,7 +528,7 @@
           "display": "Transformed migraine (disorder)"
         }
       ],
-      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "direct_transition": "Chronic_Pain_Reason",
       "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain"
     },
     "Condition_Migraine_2": {
@@ -563,7 +563,8 @@
           "transition": "PEG_Assessment_Score_2",
           "distribution": 0.5
         }
-      ]
+      ],
+      "reason": "Chronic_Pain_Reason"
     },
     "End_Follow_Up_Encounter_for_Chronic_Pain": {
       "type": "EncounterEnd",
@@ -613,7 +614,7 @@
           {
             "system": "SNOMED-CT",
             "code": 1831000175103,
-            "display": "Every 12 hours as needed (qualifier value)"
+            "display": "Every twelve hours as required (qualifier value)"
           }
         ],
         "refills": 3
@@ -672,7 +673,7 @@
           {
             "system": "SNOMED-CT",
             "code": 396143001,
-            "display": "Every seventy two hours as needed (qualifier value)"
+            "display": "Every seventy two hours (qualifier value)"
           }
         ],
         "refills": 3
@@ -850,7 +851,8 @@
           "display": "Patient encounter procedure (procedure)"
         }
       ],
-      "direct_transition": "CBT_Pain_Observation"
+      "direct_transition": "CBT_Pain_Observation",
+      "reason": "Chronic_Pain_Reason"
     },
     "Enter_Physical_Therapy_1": {
       "type": "Delay",
@@ -905,7 +907,8 @@
           "display": "Patient encounter procedure (procedure)"
         }
       ],
-      "direct_transition": "Physical_Therapy_1"
+      "direct_transition": "Physical_Therapy_1",
+      "reason": "Chronic_Pain_Reason"
     },
     "PT_Pain_Observation": {
       "type": "Observation",
@@ -983,7 +986,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -998,7 +1001,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -1013,7 +1016,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -1342,7 +1345,7 @@
           "display": "Pain intensity, Enjoyment of life, General activity (PEG) 3 item pain scale"
         }
       ],
-      "direct_transition": "Addiction",
+      "direct_transition": "End follow up with positive test",
       "observations": [
         {
           "category": "survey",
@@ -1351,7 +1354,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -1366,7 +1369,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -1381,7 +1384,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -1554,7 +1557,7 @@
           "display": "Drugs of abuse 5 panel - Urine by Screen method"
         }
       ],
-      "direct_transition": "Addiction",
+      "direct_transition": "End initial encounter with positive result",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 10828004,
@@ -1571,7 +1574,8 @@
           "display": "Encounter for problem (procedure)"
         }
       ],
-      "direct_transition": "PEG_Assessment_Score_1"
+      "direct_transition": "PEG_Assessment_Score_1",
+      "reason": "Chronic_Pain_Reason"
     },
     "Addiction": {
       "type": "Delay",
@@ -1687,7 +1691,7 @@
           "display": "Chronic neck pain (finding)"
         }
       ],
-      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain"
+      "direct_transition": "Chronic_Pain_Reason"
     },
     "Condition_Chronic_Neck_Pain_4": {
       "type": "ConditionOnset",
@@ -1710,7 +1714,7 @@
           "display": "Chronic low back pain (finding)"
         }
       ],
-      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "direct_transition": "Chronic_Pain_Reason",
       "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain"
     },
     "Without_Urine_Drug_Testing": {
@@ -2624,7 +2628,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1853470,
+          "code": 185347001,
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -2850,7 +2854,7 @@
             {
               "system": "LOINC",
               "code": "75893-8",
-              "display": "What number best describes your pain on average in the past week?"
+              "display": "Pain severity in the past week - 0-10 numeric rating [Reported]"
             }
           ],
           "range": {
@@ -2865,7 +2869,7 @@
             {
               "system": "LOINC",
               "code": "91145-3",
-              "display": "What number best describes how, during the past week, pain has interfered with your enjoyment of life?"
+              "display": "What number best describes how pain has interfered with your enjoyment of life during the past week"
             }
           ],
           "range": {
@@ -2880,7 +2884,7 @@
             {
               "system": "LOINC",
               "code": "91146-1",
-              "display": "What number best describes how, during the past week, pain has interfered with your general activity?"
+              "display": "What number best describes how pain has interfered with your general activity during the past week"
             }
           ],
           "range": {
@@ -3197,6 +3201,27 @@
       ],
       "reason": "Condition_OUD_2",
       "direct_transition": "End_Encounter_OUD_Treatment_Cont"
+    },
+    "End follow up with positive test": {
+      "type": "EncounterEnd",
+      "direct_transition": "Addiction"
+    },
+    "End initial encounter with positive result": {
+      "type": "EncounterEnd",
+      "direct_transition": "Addiction"
+    },
+    "Chronic_Pain_Reason": {
+      "type": "ConditionOnset",
+      "target_encounter": "Initial_Prescribing_Encounter_for_Chronic_Pain",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 82423001,
+          "display": "Chronic pain (finding)"
+        }
+      ],
+      "direct_transition": "Initial_Prescribing_Encounter_for_Chronic_Pain"
     }
-  }
+  },
+  "gmf_version": 2
 }

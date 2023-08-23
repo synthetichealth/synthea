@@ -4,6 +4,9 @@ Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to
 
 Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
 
+:wave::information_source:
+**May-June 2023 - We're interested in hearing how you use Synthea and what features are most useful to you! Please consider helping direct future effort by filling out our brief user survey: https://share.hsforms.com/1PDnYPuS6Ql6TVkUOohNqOw4m7ji**
+
 Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
 - Configuration-based statistics and demographics (defaults with Massachusetts Census data)
@@ -13,7 +16,7 @@ Currently, Synthea<sup>TM</sup> features include:
 - Primary Care Encounters, Emergency Room Encounters, and Symptom-Driven Encounters
 - Conditions, Allergies, Medications, Vaccinations, Observations/Vitals, Labs, Procedures, CarePlans
 - Formats
-  - HL7 FHIR (STU3 v3.0.1, DSTU2 v1.0.2 and R4)
+  - HL7 FHIR (R4, STU3 v3.0.1, and DSTU2 v1.0.2)
   - Bulk FHIR in ndjson format (set `exporter.fhir.bulk_data = true` to activate)
   - C-CDA (set `exporter.ccda.export = true` to activate)
   - CSV (set `exporter.csv.export = true` to activate)
@@ -27,7 +30,7 @@ These instructions are intended for those wishing to examine the Synthea source 
 ### Installation
 
 **System Requirements:**
-Synthea<sup>TM</sup> requires Java 1.8 or above.
+Synthea<sup>TM</sup> requires Java JDK 11 or newer. We strongly recommend using a Long-Term Support (LTS) release of Java, 11 or 17, as issues may occur with more recent non-LTS versions.
 
 To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
 ```
@@ -70,7 +73,6 @@ Options: [-s seed]
          [-g gender]
          [-a minAge-maxAge]
          [-o overflowPopulation]
-         [-m moduleFileWildcardList]
          [-c localConfigFilePath]
          [-d localModulesDirPath]
          [-i initialPopulationSnapshotPath]
@@ -78,7 +80,7 @@ Options: [-s seed]
          [-t updateTimePeriodInDays]
          [-f fixedRecordPath]
          [-k keepMatchingPatientsPath]
-         [--config* value]
+         [--config*=value]
           * any setting from src/main/resources/synthea.properties
 
 Examples:
@@ -89,9 +91,8 @@ run_synthea -p 1000
 run_synthea -s 987 Washington Seattle
 run_synthea -s 21 -p 100 Utah "Salt Lake City"
 run_synthea -g M -a 60-65
-run_synthea -p 10 --exporter.fhir.export true
-run_synthea -m moduleFilename:anotherModule:module*
-run_synthea --exporter.baseDirectory "./output_tx/" Texas
+run_synthea -p 10 --exporter.fhir.export=true
+run_synthea --exporter.baseDirectory="./output_tx/" Texas
 ```
 
 Some settings can be changed in `./src/main/resources/synthea.properties`.

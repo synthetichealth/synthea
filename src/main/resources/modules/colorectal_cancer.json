@@ -2,17 +2,12 @@
   "name": "Colorectal Cancer",
   "remarks": [
     "Colorectal cancer typically starts as benign polyps on the lining of the colon ",
-    "or rectum that slowly become cancerous over a period of 10-15 years. Annually ",
-    "136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S.",
-    "The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
+    "or rectum that slowly become cancerous over a period of 10-15 years. Annually 136,000 new cases are diagnosed and 51,300 people die from colorectal cancer in the U.S. The lifetime risk of developing colorectal cancer is 4.7% for men, 4.4% for women.",
     "source: http://www.cancer.org/cancer/colonandrectumcancer/detailedguide/colorectal-cancer-key-statistics",
     "Some things not modeled in this module: ",
     "1. Colorectal cancer in children. Although possible it's highly unlikely. ",
-    "2. Diabetes, obesity, and poor diet as risk factors. I could not find any ",
-    "   conclusive statistics or reports linking these to an increased incidence ",
-    "   of colorectal cancer. ",
-    "3. The progression of cancer from one stage to another. Whatever stage the patient ",
-    "   is initially diagnosed at they remain at."
+    "2. Diabetes, obesity, and poor diet as risk factors. I could not find any conclusive statistics or reports linking these to an increased incidence of colorectal cancer. ",
+    "3. The progression of cancer from one stage to another. Whatever stage the patient is initially diagnosed at they remain at."
   ],
   "states": {
     "Initial": {
@@ -102,7 +97,7 @@
         "quantity": 50,
         "unit": "years"
       },
-      "direct_transition": "Routine_Colonoscopy_Encounter"
+      "direct_transition": "Colon Cancer Screening Reason"
     },
     "Routine_Colonoscopy_Encounter": {
       "type": "Encounter",
@@ -111,10 +106,11 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Routine_Colonoscopy_Procedure"
+      "direct_transition": "Routine_Colonoscopy_Procedure",
+      "reason": "colon_cancer_screening"
     },
     "Routine_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -265,7 +261,7 @@
         {
           "system": "LOINC",
           "code": "33756-8",
-          "display": "Polyp size greatest dimension by CAP cancer protocols"
+          "display": "Polyp size greatest dimension"
         }
       ],
       "direct_transition": "Fecal_Test"
@@ -282,7 +278,7 @@
         {
           "system": "LOINC",
           "code": "33756-8",
-          "display": "Polyp size greatest dimension by CAP cancer protocols"
+          "display": "Polyp size greatest dimension"
         }
       ],
       "direct_transition": "Fecal_Test"
@@ -335,7 +331,7 @@
         {
           "system": "LOINC",
           "code": "57905-2",
-          "display": "Hemoglobin.gastrointestinal [Presence] in Stool by Immunologic method"
+          "display": "Hemoglobin.gastrointestinal.lower [Presence] in Stool by Immunoassay --1st specimen"
         }
       ],
       "direct_transition": "Adenoma_Removal"
@@ -352,7 +348,7 @@
         {
           "system": "LOINC",
           "code": "57905-2",
-          "display": "Hemoglobin.gastrointestinal [Presence] in Stool by Immunologic method"
+          "display": "Hemoglobin.gastrointestinal.lower [Presence] in Stool by Immunoassay --1st specimen"
         }
       ],
       "direct_transition": "Adenoma_Removal"
@@ -472,10 +468,11 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Followup_Colonoscopy_Procedure"
+      "direct_transition": "Followup_Colonoscopy_Procedure",
+      "reason": "colorectal_adenoma"
     },
     "Followup_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -718,10 +715,11 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
-      "direct_transition": "Diagnostic_Colonoscopy_Procedure"
+      "direct_transition": "Diagnostic_Colonoscopy_Procedure",
+      "reason": "Colorectal_Cancer_Symptom_2"
     },
     "Diagnostic_Colonoscopy_Procedure": {
       "type": "Procedure",
@@ -1210,7 +1208,15 @@
           "display": "Partial resection of colon"
         }
       ],
-      "direct_transition": "Pain_Vital_3"
+      "direct_transition": "Pain_Vital_3",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low": 30,
+          "high": 60
+        }
+      },
+      "unit": "minutes"
     },
     "Partial_Colectomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1234,7 +1240,7 @@
           "display": "Administration of intravenous fluids"
         }
       ],
-      "direct_transition": "End_Partial_Colectomy_Encounter"
+      "direct_transition": "Postoperative Care"
     },
     "End_Partial_Colectomy_Encounter": {
       "type": "EncounterEnd",
@@ -1335,7 +1341,15 @@
           "display": "Construction of diverting colostomy"
         }
       ],
-      "direct_transition": "Pain_Vital_2"
+      "direct_transition": "Pain_Vital_2",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "low": 30,
+          "high": 60
+        }
+      },
+      "unit": "minutes"
     },
     "Diverting_Colostomy_CarePlan": {
       "type": "CarePlanStart",
@@ -1359,7 +1373,7 @@
           "display": "Administration of intravenous fluids"
         }
       ],
-      "direct_transition": "End_Diverting_Colostomy_Encounter"
+      "direct_transition": "Postoperative_Care"
     },
     "End_Diverting_Colostomy_Encounter": {
       "type": "EncounterEnd",
@@ -1448,7 +1462,8 @@
           "display": "Leucovorin 100 MG Injection"
         }
       ],
-      "direct_transition": "Chemotherapy_Drugs_II"
+      "direct_transition": "Chemotherapy_Drugs_II",
+      "administration": true
     },
     "Chemotherapy_Drugs_II": {
       "type": "MedicationOrder",
@@ -1460,7 +1475,8 @@
           "display": "10 ML oxaliplatin 5 MG/ML Injection"
         }
       ],
-      "direct_transition": "Chemotherapy_Procedure"
+      "direct_transition": "Chemotherapy_Procedure",
+      "administration": true
     },
     "Chemotherapy_Procedure": {
       "type": "Procedure",
@@ -1526,7 +1542,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Colorectal_Cancer_CarePlan"
@@ -1605,7 +1621,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1617,7 +1633,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1628,7 +1644,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -1644,7 +1660,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1656,7 +1672,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1668,7 +1684,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1680,7 +1696,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1692,7 +1708,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1704,7 +1720,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -1827,7 +1843,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -2103,6 +2119,54 @@
       "attribute": "hospice_reason",
       "direct_transition": "Wait_For_Oncologist_Encounter",
       "value_attribute": "colorectal_cancer"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 5
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Partial_Colectomy_Encounter",
+      "reason": "colorectal_cancer"
+    },
+    "Postoperative_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "unit": "days",
+      "reason": "colorectal_cancer",
+      "direct_transition": "End_Diverting_Colostomy_Encounter"
+    },
+    "Colon Cancer Screening Reason": {
+      "type": "SetAttribute",
+      "attribute": "colon_cancer_screening",
+      "direct_transition": "Routine_Colonoscopy_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 275978004,
+        "display": "Screening for malignant neoplasm of colon (procedure)"
+      }
     }
   },
   "gmf_version": 1

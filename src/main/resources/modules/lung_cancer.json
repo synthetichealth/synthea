@@ -207,7 +207,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -794,9 +794,6 @@
       "type": "Encounter",
       "encounter_class": "inpatient",
       "reason": "Lung Cancer Condition",
-      "remarks": [
-        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -840,7 +837,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1734340",
+          "code": "226719",
           "display": "Etoposide 100 MG Injection"
         }
       ],
@@ -899,9 +896,6 @@
     "NSCLC Treatment Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "remarks": [
-        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -909,7 +903,8 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "Record_CMP"
+      "direct_transition": "Record_CMP",
+      "reason": "Lung Cancer Condition"
     },
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",
@@ -1018,7 +1013,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1030,7 +1025,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1041,7 +1036,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -1057,7 +1052,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1069,7 +1064,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1081,7 +1076,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1093,7 +1088,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1105,7 +1100,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1117,7 +1112,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -1250,7 +1245,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1262,7 +1257,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1273,7 +1268,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL",
@@ -1289,7 +1284,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1301,7 +1296,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1313,7 +1308,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1325,7 +1320,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1337,7 +1332,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1349,7 +1344,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -1530,7 +1525,7 @@
           ]
         }
       ],
-      "direct_transition": "End_SCLC_Treatment_Encounter"
+      "direct_transition": "Delay"
     },
     "Chest_CT": {
       "type": "ImagingStudy",
@@ -1565,7 +1560,7 @@
           ]
         }
       ],
-      "direct_transition": "End_NSCLC_Treatment_Encounter"
+      "direct_transition": "Delay_2"
     },
     "Record_Urinalysis_3": {
       "type": "DiagnosticReport",
@@ -1598,7 +1593,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "5767-9",
+              "code": "34533-0",
               "display": "Odor of Urine"
             }
           ],
@@ -1877,7 +1872,7 @@
           "codes": [
             {
               "system": "LOINC",
-              "code": "5767-9",
+              "code": "34533-0",
               "display": "Odor of Urine"
             }
           ],
@@ -2132,7 +2127,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -2302,7 +2297,7 @@
           }
         }
       ],
-      "direct_transition": "Hearing_Test"
+      "direct_transition": "Set SCLC LOS"
     },
     "Record_CBC_Panel_2": {
       "type": "DiagnosticReport",
@@ -2311,7 +2306,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -2481,7 +2476,7 @@
           }
         }
       ],
-      "direct_transition": "Hearing Test"
+      "direct_transition": "Set_NSCLC_LOS"
     },
     "Pain_Vital": {
       "type": "Observation",
@@ -2517,7 +2512,16 @@
         "low": 4,
         "high": 10
       },
-      "direct_transition": "Chest CT"
+      "distributed_transition": [
+        {
+          "transition": "Chest CT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Delay",
+          "distribution": 0.8
+        }
+      ]
     },
     "Pain_Vital_3": {
       "type": "Observation",
@@ -2535,7 +2539,16 @@
         "low": 4,
         "high": 10
       },
-      "direct_transition": "Chest_CT"
+      "distributed_transition": [
+        {
+          "transition": "Chest_CT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Delay_2",
+          "distribution": 0.8
+        }
+      ]
     },
     "Anemia_Submodule": {
       "type": "CallSubmodule",
@@ -2582,6 +2595,104 @@
       "attribute": "hospice_reason",
       "direct_transition": "Schedule Follow Up III",
       "value_attribute": "Lung Cancer"
+    },
+    "Begin SCLC Day": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "decrement",
+      "direct_transition": "Hearing_Test"
+    },
+    "Set SCLC LOS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_los",
+      "direct_transition": "Minimum of 3 days",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 3
+        }
+      }
+    },
+    "Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
+      "conditional_transition": [
+        {
+          "transition": "Begin SCLC Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_SCLC_Treatment_Encounter"
+        }
+      ]
+    },
+    "Set_NSCLC_LOS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_los",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "direct_transition": "Minimum_of_3_days"
+    },
+    "Delay_2": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
+      "conditional_transition": [
+        {
+          "transition": "Begin_NSCLC_Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_NSCLC_Treatment_Encounter"
+        }
+      ]
+    },
+    "Begin_NSCLC_Day": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "decrement",
+      "direct_transition": "Hearing Test"
+    },
+    "Minimum of 3 days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "direct_transition": "Begin SCLC Day",
+      "amount": 2
+    },
+    "Minimum_of_3_days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_NSCLC_Day"
     }
   },
   "gmf_version": 1

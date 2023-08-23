@@ -175,7 +175,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "History_of_Seizure"
@@ -203,7 +203,7 @@
         {
           "system": "SNOMED-CT",
           "code": "54550000",
-          "display": "Seizure Count Cerebral Cortex Electroencephalogram (EEG)"
+          "display": "Electroencephalogram (procedure)"
         }
       ],
       "complex_transition": [
@@ -279,7 +279,7 @@
         {
           "system": "RxNorm",
           "code": "308971",
-          "display": "Carbamazepine[Tegretol]"
+          "display": "carbamazepine 20 MG/ML Oral Suspension [Tegretol]"
         }
       ],
       "assign_to_attribute": "seizure_meds",
@@ -294,7 +294,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "Diazepam": {
       "type": "MedicationOrder",
@@ -317,7 +318,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "Clonazepam": {
       "type": "MedicationOrder",
@@ -340,7 +342,8 @@
         {
           "transition": "End_Seizure_Encounter"
         }
-      ]
+      ],
+      "reason": "Seizure_Disorder"
     },
     "End_Seizure_Encounter": {
       "type": "EncounterEnd",

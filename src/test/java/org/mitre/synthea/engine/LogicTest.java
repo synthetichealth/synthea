@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord;
@@ -33,6 +33,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.VitalSign;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 public class LogicTest {
@@ -63,8 +64,13 @@ public class LogicTest {
     person.attributes.put(Person.BIRTHDATE, 0L);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(time, Payer.noInsurance);
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    for (int i = 1; i <= Utilities.getYear(time - birthTime); i++) {
+      person.coverage.newEnrollmentPeriod(birthTime + Utilities.convertTime("years", i));
+    }
+    person.coverage.setPlanToNoInsurance(time);
 
     Path modulesFolder = Paths.get("src/test/resources/generic");
     Path logicFile = modulesFolder.resolve("logic.json");
@@ -105,6 +111,7 @@ public class LogicTest {
     LocalDateTime bday = now.minus(age, ChronoUnit.YEARS);
     long birthdate = bday.toInstant(ZoneOffset.UTC).toEpochMilli();
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
   }
 
   @Test
@@ -328,6 +335,11 @@ public class LogicTest {
     person.records = null;
   }
 
+  private void clearRecord(Person person) {
+    person.initializeDefaultHealthRecords();
+    person.releaseCurrentEncounter(0L, null);
+  }
+
   @Test
   public void test_observations() {
 
@@ -338,13 +350,13 @@ public class LogicTest {
     obs.codes.add(mmseCode);
     assertFalse(doTest("mmseObservationGt22"));
 
-    person.record = new HealthRecord(person); // clear it out
+    clearRecord(person);
 
     obs = person.record.observation(time, mmseCode.code, 29);
     obs.codes.add(mmseCode);
     assertTrue(doTest("mmseObservationGt22"));
 
-    person.record = new HealthRecord(person); // clear it out
+    clearRecord(person);
 
     HealthRecord.Code valueCodeFalse = new HealthRecord.Code("LOINC", "72107-8",
         "Other Observation Value");
@@ -353,7 +365,7 @@ public class LogicTest {
     obs.codes.add(mmseCode);
     assertFalse(doTest("ObservationEqValueCode"));
 
-    person.record = new HealthRecord(person); // clear it out
+    clearRecord(person);
 
     HealthRecord.Code valueCodeTrue = new HealthRecord.Code("LOINC", "72107-7",
         "Some Observation Value");
@@ -362,7 +374,7 @@ public class LogicTest {
     obs.codes.add(mmseCode);
     assertTrue(doTest("ObservationEqValueCode"));
 
-    person.record = new HealthRecord(person); // clear it out
+    clearRecord(person);
     assertFalse(doTest("hasDiabetesObservation"));
 
     obs = person.record.observation(time, "Blood Panel", "blah blah");
@@ -376,7 +388,7 @@ public class LogicTest {
 
   @Test
   public void test_condition_condition() {
-    person.record = new HealthRecord(person);
+    clearRecord(person);
     assertFalse(doTest("diabetesConditionTest"));
     assertFalse(doTest("alzheimersConditionTest"));
 
@@ -403,7 +415,7 @@ public class LogicTest {
 
   @Test
   public void test_allergy_condition() {
-    person.record = new HealthRecord(person);
+    clearRecord(person);
     assertFalse(doTest("penicillinAllergyTest"));
 
     HealthRecord.Code penicillinCode = new HealthRecord.Code("RxNorm", "7984",
@@ -424,7 +436,7 @@ public class LogicTest {
     HealthRecord.Code diabetesCode = new HealthRecord.Code("SNOMED-CT", "698360004",
         "Diabetes self management plan");
 
-    person.record = new HealthRecord(person);
+    clearRecord(person);
     assertFalse(doTest("diabetesCarePlanTest"));
     assertFalse(doTest("anginaCarePlanTest"));
 

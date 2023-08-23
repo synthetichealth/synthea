@@ -1,12 +1,12 @@
 {
   "name": "Skilled Nursing Facility",
   "remarks": [
-    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling."
+    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling. Length of stay statistics: https://us.milliman.com/-/media/milliman/pdfs/2021-articles/1-21-21_variation_in_snf_alos_for_medicare_beneficiaries.ashx"
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "SNF_Admission"
+      "direct_transition": "Transition_To_SNF_Reason"
     },
     "SNF_Admission": {
       "type": "Encounter",
@@ -41,61 +41,33 @@
         {
           "transition": "History_Physical_Exam"
         }
-      ]
+      ],
+      "reason": "Transition_To_SNF_Reason"
     },
     "Determine_LOS": {
-      "type": "Simple",
-      "distributed_transition": [
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 18.7
+        }
+      },
+      "conditional_transition": [
         {
-          "distribution": 0.35,
-          "transition": "SNF_1-15_Days"
+          "transition": "Max Length of Stay",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "snf_days",
+            "operator": ">",
+            "value": 100
+          }
         },
         {
-          "distribution": 0.34,
-          "transition": "SNF_16-30_Days"
-        },
-        {
-          "distribution": 0.29,
-          "transition": "SNF_31-99_Days"
-        },
-        {
-          "distribution": 0.02,
-          "transition": "SNF_100_Days"
+          "transition": "History_Physical_Exam"
         }
       ]
-    },
-    "SNF_1-15_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 15,
-        "low": 1
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_16-30_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 30,
-        "low": 16
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_31-99_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "range": {
-        "high": 99,
-        "low": 31
-      },
-      "direct_transition": "History_Physical_Exam"
-    },
-    "SNF_100_Days": {
-      "type": "SetAttribute",
-      "attribute": "snf_days",
-      "value": 100,
-      "direct_transition": "History_Physical_Exam"
     },
     "History_Physical_Exam": {
       "type": "Procedure",
@@ -117,7 +89,7 @@
           "display": "Initial patient assessment (procedure)"
         }
       ],
-      "direct_transition": "Development_of_Individualized_Care_Plan"
+      "direct_transition": "Facility_Wheelchair"
     },
     "Development_of_Individualized_Care_Plan": {
       "type": "Procedure",
@@ -152,11 +124,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.94,
+          "distribution": 0.1,
           "transition": "Physical_Therapy"
         },
         {
-          "distribution": 0.06,
+          "distribution": 0.9,
           "transition": "Occupational_Therapy_Check"
         }
       ]
@@ -181,11 +153,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.94,
+          "distribution": 0.1,
           "transition": "Occupational_Therapy"
         },
         {
-          "distribution": 0.06,
+          "distribution": 0.9,
           "transition": "Speech_Language_Therapy_Check"
         }
       ]
@@ -205,11 +177,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.43,
+          "distribution": 0.05,
           "transition": "Speech_Language_Therapy"
         },
         {
-          "distribution": 0.57,
+          "distribution": 0.95,
           "transition": "NTA_Check"
         }
       ]
@@ -220,7 +192,7 @@
         {
           "system": "SNOMED-CT",
           "code": "311555007",
-          "display": "Speech and language therapy regime (regime/therapy"
+          "display": "Speech and language therapy regime (regime/therapy)"
         }
       ],
       "direct_transition": "NTA_Check"
@@ -229,11 +201,11 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.75,
+          "distribution": 0.25,
           "transition": "Professional_Services_Care"
         },
         {
-          "distribution": 0.25,
+          "distribution": 0.75,
           "transition": "Status_Change_Check"
         }
       ]
@@ -274,7 +246,14 @@
       "direct_transition": "End_Day"
     },
     "End_Day": {
-      "type": "Simple",
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
       "conditional_transition": [
         {
           "transition": "Begin_Day",
@@ -310,14 +289,52 @@
           "display": "Discharge from skilled nursing facility (procedure)"
         }
       ],
-      "direct_transition": "End Encounter"
+      "direct_transition": "Return_Wheelchair"
     },
     "Terminal": {
       "type": "Terminal"
     },
     "End Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "End_Transition_To_SNF_Reason"
+    },
+    "Facility_Wheelchair": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 228869008,
+        "display": "Manual wheelchair (physical object)"
+      },
+      "direct_transition": "Development_of_Individualized_Care_Plan",
+      "assign_to_attribute": "snf_wheelchair"
+    },
+    "Return_Wheelchair": {
+      "type": "DeviceEnd",
+      "referenced_by_attribute": "snf_wheelchair",
+      "direct_transition": "End Encounter"
+    },
+    "Max Length of Stay": {
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "value": 100,
+      "direct_transition": "History_Physical_Exam"
+    },
+    "Transition_To_SNF_Reason": {
+      "type": "ConditionOnset",
+      "target_encounter": "SNF_Admission",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 25675004,
+          "display": "Patient transfer to skilled nursing facility (procedure)"
+        }
+      ],
+      "direct_transition": "SNF_Admission"
+    },
+    "End_Transition_To_SNF_Reason": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "condition_onset": "Transition_To_SNF_Reason"
     }
   },
   "gmf_version": 1

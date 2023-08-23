@@ -11,12 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Clinician;
+import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -148,6 +150,8 @@ public abstract class ExportHelper {
       type = "text";
     } else if (observation.value instanceof Double) {
       type = "numeric";
+    } else if (observation.value instanceof Boolean) {
+      type = "boolean";
     } else if (observation.value != null) {
       type = "text";
     }
@@ -284,6 +288,47 @@ public abstract class ExportHelper {
       return String.format("%s?identifier=%s|%s", "Practitioner",
               "http://hl7.org/fhir/sid/us-npi", clinician.npi);
     }
+  }
+
+  /**
+   * Construct a consistent UUID based on the given Person, timestamp, and a key.
+   * This method allows you to get the same UUID for a concept at a given point in time,
+   * when that concept does not map cleanly 1:1 to an object in the Synthea model.
+   * IMPORTANT: this is NOT random but attempts to minimize the likelihood of collisions.
+   */
+  public static final String buildUUID(Person person, long timestamp, String key) {
+    return buildUUID(person.getSeed(), timestamp, key);
+  }
+
+  /**
+   * Construct a consistent UUID based on the given seed, timestamp, and a key.
+   * This method allows you to get the same UUID for a concept at a given point in time,
+   * when that concept does not map cleanly 1:1 to an object in the Synthea model.
+   * IMPORTANT: this is NOT random but attempts to minimize the likelihood of collisions.
+   */
+  public static final String buildUUID(long personSeed, long timestamp, String key) {
+    long mostSigBits = personSeed;
+    long leastSigBits = timestamp;
+
+    // the UUID is just the hex encoding of a 128bit number (represented in java as 2 64bit longs)
+    // so the person seed and timestamp are enough to get us "something", but we can mix it up
+    // to enable variety using the key. to make it numeric just get the hashCode
+    int keyHash = key.hashCode();
+
+    // first add the key to each long
+    mostSigBits = mostSigBits + keyHash;
+    leastSigBits = leastSigBits + keyHash;
+
+    // because the hashCode is an int, it didn't add anything in the upper bits of the long
+    // reverse the hashCode to get the upper bits
+    mostSigBits = mostSigBits + Long.reverse(keyHash);
+    leastSigBits = leastSigBits + Long.reverse(keyHash);
+
+    // finally rotate the bits just to get a little more variance in the characters
+    mostSigBits = Long.rotateLeft(mostSigBits, keyHash);
+    leastSigBits = Long.rotateLeft(leastSigBits, keyHash);
+
+    return new UUID(mostSigBits, leastSigBits).toString();
   }
 
   /**

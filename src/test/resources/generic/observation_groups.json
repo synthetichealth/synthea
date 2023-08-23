@@ -68,7 +68,7 @@
         {
           "system": "LOINC",
           "code": "39156-5",
-          "display": "Body Mass Index"
+          "display": "Body mass index (BMI) [Ratio]"
         }
       ],
       "unit": "kg/m2",
@@ -166,7 +166,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -178,7 +178,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -190,7 +190,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -202,7 +202,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -276,7 +276,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "High Density Lipoprotein Cholesterol"
+              "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
             }
           ],
           "unit": "mg/dL"
@@ -294,7 +294,7 @@
         {
           "system": "LOINC",
           "code": "14959-1",
-          "display": "Microalbumin Creatinine Ratio"
+          "display": "Microalbumin/Creatinine [Mass Ratio] in Urine"
         }
       ],
       "unit": "mg/g",
@@ -309,7 +309,7 @@
         {
           "system": "LOINC",
           "code": "33914-3",
-          "display": "Estimated Glomerular Filtration Rate"
+          "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
         }
       ],
       "unit": "mL/min/{1.73_m2}",

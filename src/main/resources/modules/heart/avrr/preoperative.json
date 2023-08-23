@@ -1,0 +1,590 @@
+{
+  "name": "preoperative",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Preoperative Testing"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Priority 2+": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Coronary Angiography",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": ">=",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Priority 3+": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Dental Clearance",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": ">=",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Preoperative Testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110467000,
+          "display": "Pre-surgery testing (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Common Labs"
+    },
+    "Electrocardiogram (ECG)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Chest_X_Ray"
+    },
+    "Chest_X_Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Priority 2+"
+    },
+    "PFTS Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pulmonary function testing",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "copd_variant",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Doppler Check"
+        }
+      ]
+    },
+    "Pulmonary function testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23426006,
+          "display": "Measurement of respiratory function (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Doppler Check"
+    },
+    "Doppler Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Doppler ultrasonography of artery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stroke_history",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Doppler ultrasonography of artery": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 709979004,
+        "display": "Doppler ultrasonography of artery (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51345006,
+            "display": "Carotid body structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Computed tomography of head"
+    },
+    "Computed tomography of head": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 303653007,
+        "display": "Computed tomography of head (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 69536005,
+            "display": "Head structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Common Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cardiac_labs",
+      "direct_transition": "Blood Type and Cross"
+    },
+    "Blood Type and Cross": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 44608003,
+          "display": "Blood group typing (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Electrocardiogram (ECG)",
+      "remarks": [
+        "Synthea patients do not yet have blood types or Rh factors."
+      ]
+    },
+    "Coronary Angiography": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 3336700,
+          "display": "Coronary angiography (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Pick # Diseased Vessels"
+    },
+    "Pick # Diseased Vessels": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Num_Diseased_Vessels_0",
+          "distribution": 0.781
+        },
+        {
+          "transition": "Num_Diseased_Vessels_1",
+          "distribution": 0.163
+        },
+        {
+          "transition": "Num_Diseased_Vessels_2",
+          "distribution": 0.0306
+        },
+        {
+          "transition": "Num_Diseased_Vessels_3",
+          "distribution": 0.025399999999999978
+        }
+      ]
+    },
+    "Num_Diseased_Vessels_0": {
+      "type": "SetAttribute",
+      "attribute": "avrr_num_diseased_vessels",
+      "direct_transition": "Risk Calculator Scoring",
+      "value": 0
+    },
+    "Num_Diseased_Vessels_1": {
+      "type": "SetAttribute",
+      "attribute": "avrr_num_diseased_vessels",
+      "direct_transition": "Risk Calculator Scoring",
+      "value": 1
+    },
+    "Num_Diseased_Vessels_2": {
+      "type": "SetAttribute",
+      "attribute": "avrr_num_diseased_vessels",
+      "direct_transition": "Risk Calculator Scoring",
+      "value": 2
+    },
+    "Num_Diseased_Vessels_3": {
+      "type": "SetAttribute",
+      "attribute": "avrr_num_diseased_vessels",
+      "direct_transition": "Risk Calculator Scoring",
+      "value": 3
+    },
+    "Risk Calculator Scoring": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225338004,
+          "display": "Risk assessment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Surgical Risk Score Placeholder"
+    },
+    "Gait-Speed Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 252480006,
+          "display": "Simple walk test (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "NYHA Functional Classification"
+    },
+    "Dental Clearance": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 34043003,
+          "display": "Dental consultation and report (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Gait-Speed Assessment"
+    },
+    "Clinical Fragility Scale": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 763228001,
+          "display": "Assessment using Canadian Study of Health and Aging Clinical Frailty Scale (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Assessment"
+    },
+    "Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 445988008,
+          "display": "Assessment using health assessment questionnaire (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "KCCQ-12"
+    },
+    "KCCQ-12": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "number_of_observations": 0,
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "86923-0",
+          "display": "Kansas City Cardiomyopathy Questionnaire - 12 item [KCCQ-12]"
+        }
+      ],
+      "direct_transition": "PFTS Check",
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "86924-8",
+              "display": "Overall summary score [KCCQ-12]"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 100
+          }
+        }
+      ]
+    },
+    "NYHA Functional Classification": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 762998009,
+          "display": "Assessment using New York Heart Association Classification (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "NYHA_1",
+          "distribution": 0.0332
+        },
+        {
+          "transition": "NYHA_2",
+          "distribution": 0.179
+        },
+        {
+          "transition": "NYHA_3",
+          "distribution": 0.6176
+        },
+        {
+          "transition": "NYHA_4",
+          "distribution": 0.1701999999999999
+        }
+      ]
+    },
+    "Surgical Risk Score Placeholder": {
+      "type": "Simple",
+      "direct_transition": "Computed_tomography_of_chest_and_pelvis",
+      "remarks": [
+        "Placeholder for now because there is no LOINC to use for this"
+      ]
+    },
+    "NYHA_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28404-4",
+            "display": "Class I"
+          }
+        }
+      ],
+      "direct_transition": "Clinical Fragility Scale"
+    },
+    "NYHA_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28405-1",
+            "display": "Class II"
+          }
+        }
+      ],
+      "direct_transition": "Clinical Fragility Scale"
+    },
+    "NYHA_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28406-9",
+            "display": "Class III"
+          }
+        }
+      ],
+      "direct_transition": "Clinical Fragility Scale"
+    },
+    "NYHA_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "93124-6",
+          "display": "New York Heart Association Functional Classification panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "88020-3",
+              "display": "Functional capacity NYHA"
+            }
+          ],
+          "value_code": {
+            "system": "LOINC",
+            "code": "LA28407-7",
+            "display": "Class IV"
+          }
+        }
+      ],
+      "direct_transition": "Clinical Fragility Scale"
+    },
+    "Computed_tomography_of_chest_and_pelvis": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 418023006,
+        "display": "Computed tomography of chest, abdomen and pelvis (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 732167000,
+            "display": "Entire chest and abdomen and pelvis (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Priority 3+"
+    }
+  },
+  "gmf_version": 2
+}

@@ -1,0 +1,9 @@
+Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Max Out of Pocket,Medicare Supplement,Is ACA Plan,Income Based Premium,Eligibility Policy,Start Year,End Year,Priority Level,Notes
+10000,10001,Medicare Plan,*,0,0.7,60,200,999,false,false,false,MedicareEligible,0,,2,
+20000,20001,Medicaid Plan,*,0,0.8,40,300,999,false,false,false,MedicaidEligible,0,,2,
+30000,30001,Standard Dual Eligible Plan,*,0,0.9,100,500,999,false,false,false,DualEligible,0,,1,
+40000,40001,Test Private Plan 1,*,0,0,10,3300,9999,false,false,false,Generic,0,,,
+50000,50001,Test Private Plan 2,wellness,0,0.8,0,3300,9999,false,false,false,Generic,0,,,
+60000,60001,Test Income-Based Plan,*,0,0.8,0,0.5,9999,false,false,true,AlwaysIneligible,0,,,
+30000,30002,Fake time-boxed Dual Eligible Plan,*,0,0.9,100,500,9999,false,false,false,TimeBoxedDualEligible,1965,1968,1,
+60000,60002,Premium Ratio Plan,*,0,0.1,0,1000,200,false,false,false,AlwaysIneligible,,,1,

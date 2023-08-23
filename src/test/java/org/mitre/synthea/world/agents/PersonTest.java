@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +30,8 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.concepts.VitalSign;
 
 public class PersonTest {
@@ -95,16 +96,15 @@ public class PersonTest {
     opts.minAge = 50;
     opts.maxAge = 100;
     Generator generator = new Generator(opts);
-    int personSeed = 0;
-    Random randomForDemographics = new Random(personSeed);
-    Map<String, Object> demoAttributes = generator.randomDemographics(randomForDemographics);
+    RandomNumberGenerator random = new DefaultRandomNumberGenerator(0);
+    Map<String, Object> demoAttributes = generator.randomDemographics(random);
     Person original = generator.createPerson(0, demoAttributes);
 
     Person rehydrated = serializeAndDeserialize(original);
 
     // Compare the original to the serialized+deserialized version
     assertEquals(original.randInt(), rehydrated.randInt());
-    assertEquals(original.seed, rehydrated.seed);
+    assertEquals(original.getSeed(), rehydrated.getSeed());
     assertEquals(original.populationSeed, rehydrated.populationSeed);
     assertEquals(original.symptoms.keySet(), rehydrated.symptoms.keySet());
     assertEquals(
@@ -162,11 +162,13 @@ public class PersonTest {
 
   private void testAgeYears(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInYears(now));
   }
 
   private void testAgeMonths(long birthdate, long now, long expectedAge) {
     person.attributes.put(Person.BIRTHDATE, birthdate);
+    person.attributes.remove(Person.BIRTHDATE_AS_LOCALDATE);
     assertEquals(expectedAge, person.ageInMonths(now));
   }
 
@@ -533,6 +535,20 @@ public class PersonTest {
         assertEquals(fileContents.get(f - 1).get(l), fileContents.get(f).get(l));
       }
     }
+  }
+
+  @Test
+  public void testGetSymptoms() {
+    Person person = new Person(0L);
+    person.setSymptom("LifecycleModule", "life", "confusion", 0, 20, false);
+    person.setSymptom("LifecycleModule", "life", "headache", 0, 67, false);
+    person.setSymptom("LifecycleModule", "life", "irritability", 0, 8, false);
+    person.setSymptom("LifecycleModule", "life", "back pain", 0, 55, false);
+
+    // expect a sorted list of symptom names, for symptoms of severity >= 20
+    List<String> symptoms = person.getSymptoms();
+    assertEquals(3, symptoms.size());
+    assertEquals(List.of("headache", "back pain", "confusion"), symptoms);
   }
 
   @Test()

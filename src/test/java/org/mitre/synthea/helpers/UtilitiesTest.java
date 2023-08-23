@@ -8,10 +8,12 @@ import static org.junit.Assert.fail;
 
 import com.google.gson.JsonPrimitive;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.Range;
 import org.junit.Test;
@@ -248,6 +250,27 @@ public class UtilitiesTest {
       fail("Should not reach here, exception should be thrown.");
     } catch (IllegalArgumentException iae) {
       assertNotNull(iae);
+    }
+  }
+
+  @Test
+  public void testLocalDateToTimestamp() {
+    // roundtrip test for every day of year
+    for (int dayOfYear = 1; dayOfYear <= 366; dayOfYear++) {
+      // 2020 is a leap year
+      LocalDate origDate = LocalDate.ofYearDay(2020, dayOfYear);
+      long timestamp = Utilities.localDateToTimestamp(origDate);
+      LocalDate roundtrip = Utilities.timestampToLocalDate(timestamp);
+      assertEquals(origDate, roundtrip);
+    }
+
+    // 1577836800000 == Wed Jan 01 2020 00:00:00 GMT+0000 https://www.unixtimestamp.com/
+    long oneDay = Utilities.convertTime("days", 1);
+    for (int dayOfYear = 0; dayOfYear < 366; dayOfYear++) {
+      long origTimestamp = 1577836800000L + (dayOfYear * oneDay);
+      LocalDate localDate = Utilities.timestampToLocalDate(origTimestamp);
+      long roundtrip = Utilities.localDateToTimestamp(localDate);
+      assertEquals(origTimestamp, roundtrip);
     }
   }
 }

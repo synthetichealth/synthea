@@ -360,7 +360,7 @@
     },
     "Breast Cancer Encounter": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -368,7 +368,8 @@
           "display": "Encounter for symptom (procedure)"
         }
       ],
-      "direct_transition": "Mammogram"
+      "direct_transition": "Mammogram",
+      "reason": "Breast Cancer"
     },
     "MRI": {
       "type": "Procedure",
@@ -438,7 +439,7 @@
           "display": "Stage group.clinical Cancer"
         }
       ],
-      "direct_transition": "Delay for Analysis of Possible Treatments",
+      "direct_transition": "End the Initial Encounter",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 258228008,
@@ -539,7 +540,7 @@
         "code": 258224005,
         "display": "Stage 3 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage I": {
       "type": "Observation",
@@ -557,7 +558,7 @@
         "code": 258215001,
         "display": "Stage 1 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "IIIB": {
       "type": "Observation",
@@ -843,7 +844,7 @@
         "code": 258219007,
         "display": "Stage 2 (qualifier value)"
       },
-      "direct_transition": "Delay for Analysis of Possible Treatments"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage II Treatment": {
       "type": "Simple",
@@ -990,7 +991,7 @@
           "display": "Screening surveillance (regime/therapy)"
         }
       ],
-      "encounter_class": "inpatient"
+      "encounter_class": "ambulatory"
     },
     "End Mammogram Followup Visit": {
       "type": "EncounterEnd",
@@ -1058,7 +1059,7 @@
     },
     "Gynecologist Visit": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
       "codes": [
         {
@@ -1288,7 +1289,7 @@
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
-      "direct_transition": "End Initial Follow-Up Doctor Visit",
+      "direct_transition": "Follow up examination",
       "remarks": [
         "Doctor visits: At first, your follow-up doctor visits will probably be scheduled for every few months. The longer you have been free of cancer, the less often the appointments are needed. After 5 years, they are typically done about once a year.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
@@ -1308,7 +1309,7 @@
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1316,7 +1317,8 @@
           "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
-      "direct_transition": "Screening Mammogram"
+      "direct_transition": "Screening Mammogram",
+      "reason": "breast_cancer_screening_due"
     },
     "Breast Cancer Found": {
       "type": "ConditionOnset",
@@ -1390,7 +1392,7 @@
           "display": "Discussion about treatment (procedure)"
         }
       ],
-      "direct_transition": "End Meeting with Oncologist",
+      "direct_transition": "Discussion",
       "remarks": [
         "Treatment Options:",
         "https://www.cancer.net/cancer-types/breast-cancer/types-treatment"
@@ -1516,7 +1518,7 @@
     },
     "Neoadjuvant Chemo Before Surgery": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1556,7 +1558,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Epirubicin": {
       "type": "MedicationOrder",
@@ -1569,7 +1572,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Paclitaxel": {
       "type": "MedicationOrder",
@@ -1582,7 +1586,8 @@
       ],
       "direct_transition": "Neoadjuvant chemotherapy procedure",
       "assign_to_attribute": "breast_cancer_neoMed",
-      "reason": "breast_cancer_condition"
+      "reason": "breast_cancer_condition",
+      "administration": true
     },
     "Anthracyclines": {
       "type": "Simple",
@@ -1749,7 +1754,7 @@
     },
     "Start New Chemo Cycle": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "breast_cancer_condition",
       "codes": [
         {
@@ -1819,7 +1824,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.48
         },
         {
@@ -1852,7 +1857,7 @@
       },
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.69
         },
         {
@@ -1876,7 +1881,7 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Regular Mammogram Visit",
+          "transition": "Breast Cancer Screening Due",
           "distribution": 0.63
         },
         {
@@ -1911,7 +1916,7 @@
         {
           "distributions": [
             {
-              "transition": "Regular Mammogram Visit",
+              "transition": "Breast Cancer Screening Due",
               "distribution": 0.7
             },
             {
@@ -2117,6 +2122,60 @@
       "attribute": "hospice_reason",
       "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
       "value_attribute": "breast_cancer_condition"
+    },
+    "End the Initial Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay for Analysis of Possible Treatments"
+    },
+    "Discussion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223487003,
+          "display": "Discussion about options (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 45
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Meeting with Oncologist",
+      "reason": "breast_cancer_condition"
+    },
+    "Follow up examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 25656009,
+          "display": "Physical examination, complete (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 45,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "breast_cancer_condition",
+      "direct_transition": "End Initial Follow-Up Doctor Visit"
+    },
+    "Breast Cancer Screening Due": {
+      "type": "SetAttribute",
+      "attribute": "breast_cancer_screening_due",
+      "direct_transition": "Regular Mammogram Visit",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 268547008,
+        "display": "Screening for malignant neoplasm of breast (procedure)"
+      }
     }
   },
   "gmf_version": 1

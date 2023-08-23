@@ -8,21 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: 11
+          distribution: 'zulu'
 
       - name: Gradle cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-jdk8-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-jdk11-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-jdk8
+            ${{ runner.os }}-gradle-jdk11
             
       - name: Create Artifacts
         run: |
@@ -31,7 +32,7 @@ jobs:
           mv build/docs/javadoc/* output/build/javadoc
       
       - name: Delete Previous master-branch-latest Tag
-        uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           delete_release: true
           tag_name: master-branch-latest

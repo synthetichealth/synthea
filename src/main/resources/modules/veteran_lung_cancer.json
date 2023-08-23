@@ -107,7 +107,7 @@
         {
           "system": "SNOMED-CT",
           "code": "50849002",
-          "display": "Emergency Room Admission"
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Chest X-Ray"
@@ -681,9 +681,6 @@
       "type": "Encounter",
       "encounter_class": "inpatient",
       "reason": "Lung Cancer Condition",
-      "remarks": [
-        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -691,7 +688,7 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy I"
+      "direct_transition": "Set_SCLC_LOS"
     },
     "SCLC Chemotheraphy I": {
       "type": "MedicationOrder",
@@ -708,7 +705,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IB"
+      "direct_transition": "SCLC Chemotheraphy IB",
+      "administration": true
     },
     "SCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -726,11 +724,12 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1734340",
+          "code": "226719",
           "display": "Etoposide 100 MG Injection"
         }
       ],
-      "direct_transition": "SCLC Chemotheraphy IIB"
+      "direct_transition": "SCLC Chemotheraphy IIB",
+      "administration": true
     },
     "SCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
@@ -756,7 +755,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "End_SCLC_Treatment_Encounter"
+      "direct_transition": "Delay"
     },
     "End_SCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -784,9 +783,6 @@
     "NSCLC Treatment Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "remarks": [
-        "TODO: This inpatient encounter should last 5 days, not the standard 15 minutes."
-      ],
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -794,7 +790,8 @@
           "display": "Encounter for problem"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy I"
+      "direct_transition": "Set_NSCLC_LOS",
+      "reason": "Lung Cancer Condition"
     },
     "NSCLC Chemotheraphy I": {
       "type": "MedicationOrder",
@@ -812,7 +809,8 @@
           "display": "Cisplatin 50 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IB"
+      "direct_transition": "NSCLC Chemotheraphy IB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IB": {
       "type": "MedicationEnd",
@@ -834,7 +832,8 @@
           "display": "PACLitaxel 100 MG Injection"
         }
       ],
-      "direct_transition": "NSCLC Chemotheraphy IIB"
+      "direct_transition": "NSCLC Chemotheraphy IIB",
+      "administration": true
     },
     "NSCLC Chemotheraphy IIB": {
       "type": "MedicationEnd",
@@ -860,7 +859,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "direct_transition": "End_NSCLC_Treatment_Encounter"
+      "direct_transition": "Delay_2"
     },
     "End_NSCLC_Treatment_Encounter": {
       "type": "EncounterEnd",
@@ -961,6 +960,104 @@
           "distribution": 0.7
         }
       ]
+    },
+    "Set_SCLC_LOS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_los",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "direct_transition": "Minimum_of_3_days"
+    },
+    "Begin_SCLC_Day": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "decrement",
+      "direct_transition": "SCLC Chemotheraphy I"
+    },
+    "Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
+      "conditional_transition": [
+        {
+          "transition": "Begin_SCLC_Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_SCLC_Treatment_Encounter"
+        }
+      ]
+    },
+    "Set_NSCLC_LOS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_los",
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 3
+        }
+      },
+      "direct_transition": "Minimum_of_3_days_2"
+    },
+    "Begin_NSCLC_Day": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "decrement",
+      "direct_transition": "NSCLC Chemotheraphy I"
+    },
+    "Delay_2": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "days",
+      "conditional_transition": [
+        {
+          "transition": "Begin_NSCLC_Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "lung_cancer_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End_NSCLC_Treatment_Encounter"
+        }
+      ]
+    },
+    "Minimum_of_3_days": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_SCLC_Day"
+    },
+    "Minimum_of_3_days_2": {
+      "type": "Counter",
+      "attribute": "lung_cancer_los",
+      "action": "increment",
+      "amount": 2,
+      "direct_transition": "Begin_NSCLC_Day"
     }
   },
   "gmf_version": 1

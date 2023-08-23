@@ -250,6 +250,14 @@ public abstract class Logic implements Serializable {
         return observation != null;
       } else if (observation == null) {
         if (this.codes != null) {
+          // TODO - This is a band-aid to try and swallow this exception and just return false if
+          //  using split records.
+          // This issue occurs occasionally when using the split records feature -
+          // see https://github.com/synthetichealth/synthea/issues/774.
+          if (Config.getAsBoolean("exporter.split_records", false)) {
+            return false;
+          }
+          // Original exception that should be thrown:
           throw new NullPointerException("Required observation " + this.codes + " is null.");
         } else if (this.referencedByAttribute != null) {
           throw new NullPointerException("Required observation \""

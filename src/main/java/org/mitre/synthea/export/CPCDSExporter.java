@@ -234,8 +234,9 @@ public class CPCDSExporter {
     long end = 0;
 
     for (Encounter encounter : person.record.encounters) {
-      String encounterID = person.randUUID().toString();
-      UUID medRecordNumber = person.randUUID();
+      String encounterID = encounter.uuid.toString();
+      String medRecordNumber = ExportHelper.buildUUID(person, encounter.start,
+          "MedRecordNumber for Encounter" + encounterID);
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
 
 
@@ -243,8 +244,8 @@ public class CPCDSExporter {
         payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
         payerName = clean(Config.get("single_payer.name"));
       } else {
-        payerId = encounter.claim.payer.uuid.toString();
-        payerName = encounter.claim.payer.getName();
+        payerId = encounter.claim.getPayer().uuid.toString();
+        payerName = encounter.claim.getPayer().getName();
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -258,8 +259,8 @@ public class CPCDSExporter {
       if (start == 999999999999999999L) {
         start = end;
       }
-      String coverageID = coverage(person, personID, start, end, payerId, type, groupId, groupName,
-              planName, planId);
+      String coverageID = coverage(person, personID, encounterID, start, end, payerId, type,
+          groupId, groupName, planName, planId);
       claim(person, encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId,
               coverageID);
       hospital(encounter, encounterAttributes, payerName);
@@ -300,12 +301,12 @@ public class CPCDSExporter {
     } else {
       s.append(',');
     }
-    s.append(person.attributes.getOrDefault("county", "")).append(',');
+    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, "")).append(',');
 
-    s.append(person.attributes.getOrDefault("county", "")).append(',');
+    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, ""));
@@ -328,18 +329,18 @@ public class CPCDSExporter {
   /**
    * Write a single Coverage CPCDS file.
    *
-   * @param rand        Source of randomness to use when generating ids etc
    * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private String coverage(RandomNumberGenerator rand, String personID, long start, long stop,
+  private String coverage(Person person, String personID, String encounterID, long start, long stop,
           String payerId, String type, UUID groupId, String groupName, String name,
           String planId) throws IOException {
 
     StringBuilder s = new StringBuilder();
-    String coverageID = rand.randUUID().toString();
+    String coverageID = ExportHelper.buildUUID(person, start,
+        "Coverage ID for Encounter" + encounterID);
     s.append(coverageID).append(',');
     s.append(personID).append(',');
     s.append(personID).append(',');
@@ -384,7 +385,7 @@ public class CPCDSExporter {
    * @throws IOException Throws this exception
    */
   private void claim(RandomNumberGenerator rand, Encounter encounter, String personID,
-          String encounterID, UUID medRecordNumber, CPCDSAttributes attributes, String payerId,
+          String encounterID, String medRecordNumber, CPCDSAttributes attributes, String payerId,
           String coverageID) throws IOException {
 
     StringBuilder s = new StringBuilder();
@@ -402,7 +403,7 @@ public class CPCDSExporter {
         String.valueOf(dateFromTimestamp(encounter.start)),
         String.valueOf(dateFromTimestamp(encounter.stop)),
         personID.toString(),
-        medRecordNumber.toString(),
+        medRecordNumber,
         encounterID,
         "",
         "",
@@ -460,7 +461,7 @@ public class CPCDSExporter {
 
       // totals
       BigDecimal totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
-      BigDecimal coveredCost = encounter.claim.getCoveredCost();
+      BigDecimal coveredCost = encounter.claim.getTotalCoveredCost();
       BigDecimal disallowed = totalCost.subtract(coveredCost);
       BigDecimal patientPaid = Claim.ZERO_CENTS;
       BigDecimal memberReimbursement = Claim.ZERO_CENTS;
@@ -748,7 +749,7 @@ public class CPCDSExporter {
                   * dayMultiplier.get(duration.get("unit").getAsString());
         }
 
-        UUID rxRef = rand.randUUID();
+        UUID rxRef = medication.uuid;
 
         String[] serviceTypeList = { "01", "04", "06" };
         String serviceType = serviceTypeList[(int) randomLongWithBounds(0, 2)];
@@ -955,7 +956,7 @@ public class CPCDSExporter {
       s.append(clean(encounter.provider.state)).append(',');
       s.append(clean(encounter.provider.zip)).append(',');
       s.append(clean(encounter.provider.phone)).append(',');
-      s.append(clean(encounter.provider.rawType)).append(NEWLINE);
+      s.append(clean(encounter.provider.cmsProviderType)).append(NEWLINE);
 
       exportedHospitals.add(attributes.getServiceSiteNPI());
 
@@ -1043,9 +1044,9 @@ public class CPCDSExporter {
       isInpatient(encounter.type);
 
       String doctorNPI = (encounter.clinician != null
-              ? String.valueOf(encounter.clinician.identifier) : "");
+              ? String.valueOf(encounter.clinician.npi) : "");
       String hospitalNPI = (encounter.provider != null
-              ? String.valueOf(encounter.provider.id) : "");
+              ? String.valueOf(encounter.provider.npi) : "");
       String newHospitalID = String.valueOf(randomLongWithBounds(100000, 999999))
               + String.valueOf(randomLongWithBounds(100000, 999999));
       String newPractitionerID = String.valueOf(randomLongWithBounds(100000, 999999))

@@ -10,9 +10,10 @@ import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.modules.DeathModule;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.ProviderTest;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
@@ -48,14 +49,13 @@ public class ExporterTest {
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     location.assignPoint(patient, location.randomCityName(patient));
-    Provider.loadProviders(location, 1L);
+    Provider.loadProviders(location, ProviderTest.providerRandom);
     record = patient.record;
     // Ensure Person's Payer is not null.
-    Payer.loadNoInsurance();
-    for (int i = 0; i < age; i++) {
-      long yearTime = time - years(i);
-      patient.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
-    }
+    PayerManager.clear();
+    PayerManager.loadNoInsurance();
+    patient.coverage.setPlanToNoInsurance((long) patient.attributes.get(Person.BIRTHDATE));
+    patient.coverage.setPlanToNoInsurance(time);
   }
 
   @Test

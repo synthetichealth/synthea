@@ -1,0 +1,168 @@
+{
+  "name": "avrr_antithrombotic",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "AVRr antithrombic submodule."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Warfarin For Life",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mechanical_cardiac_valve_prothesis",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Therapy Check",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "aortic_valve_bioprothesis",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "cardiac_surgery",
+                "operator": "==",
+                "value": "tavr"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Warfarin For Life": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 855332,
+          "display": "warfarin sodium 5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "warfarin",
+      "chronic": true
+    },
+    "Aspirin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2563431,
+          "display": "aspirin 81 MG Oral Capsule"
+        }
+      ],
+      "chronic": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        },
+        "as_needed": true
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "tavr"
+          },
+          "distributions": [
+            {
+              "transition": "Clopidogrel",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.7
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Warfarin For Three Months": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 855332,
+          "display": "warfarin sodium 5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "warfarin",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 3
+      }
+    },
+    "Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "months"
+        },
+        "refills": 3
+      }
+    },
+    "Therapy Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Warfarin For Three Months",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Aspirin",
+          "distribution": 0.7
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

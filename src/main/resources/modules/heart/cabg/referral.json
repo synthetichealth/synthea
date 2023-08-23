@@ -1,0 +1,534 @@
+{
+  "name": "referral",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models Referral Pathways.",
+    "",
+    "The high-level flow is as follows: ",
+    "Patients have an encounter for a cardiac problem wherein they are referred to cardiology for coronary angiography. Coronary angiography is performed with post-procedural care. As a result of abnormal angiography, patients are either: ",
+    "a. Referred to the Cardiac Surgery Service (i.e., accepted for CABG surgery);",
+    "b. Referred back to the Cardiology Service (i.e., for medical or percutaneous coronary intervention management); or",
+    "c. Referred to a Service, a small joint cardiology/cardiac surgery team or large multidisciplinary heart team, with final referral to the appropriate service (cardiology vs cardiac surgery).",
+    "",
+    "Subsequently, all CABG accepted patients are referred for either outpatient preoperative evaluation or immediate surgical admission, with the care path and wait time until surgery determined by the patient’s Priority.",
+    "",
+    "In the Surgery pathway: ",
+    "Referral to Surgery = Cardiac Surgery referral",
+    "End_Referral_Consultation = Cardiac Surgery acceptance",
+    "",
+    "Note: referral pathways may vary significantly based on the institution. "
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set Consultation Count"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Diagnostic": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33367005,
+          "display": "Angiography of coronary artery (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Abnormal Findings",
+      "reason": "cardiac_surgery_reason"
+    },
+    "End Referral Consultation": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Appointment"
+    },
+    "CABG Surgery": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Abnormal Findings",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Abnormal Findings": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 274531002,
+          "display": "Abnormal findings diagnostic imaging heart+coronary circulat (finding)"
+        }
+      ],
+      "direct_transition": "Postoperative Care"
+    },
+    "Set Consultation Count": {
+      "type": "SetAttribute",
+      "attribute": "cabg_consultation_count",
+      "direct_transition": "Cardiology Consultation Encounter",
+      "value": 0
+    },
+    "Referral to Surgery": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306185001,
+          "display": "Referral to cardiac surgery service (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_consultation_count",
+            "operator": ">",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "End_Referral_Consultation"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "End_Referral_Consultation",
+              "distribution": 0.99
+            },
+            {
+              "transition": "Referral to Service",
+              "distribution": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    "Referral to Service": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306206005,
+          "display": "Referral to service (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
+      "distributed_transition": [
+        {
+          "transition": "Referral to Surgery",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Repeat Referral",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Repeat Referral": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183519002,
+          "display": "Referral to cardiology service (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "reason": "Abnormal Findings",
+      "direct_transition": "End Referral Consultation"
+    },
+    "Wait for Appointment": {
+      "type": "Delay",
+      "direct_transition": "Count",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      }
+    },
+    "Count": {
+      "type": "Counter",
+      "attribute": "cabg_consultation_count",
+      "action": "increment",
+      "direct_transition": "Cardiology Consultation Encounter"
+    },
+    "End_Referral_Consultation": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Priority 1 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Priority 2 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority 3 Next Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority 4 Next_Encounter"
+        }
+      ]
+    },
+    "Priority 1 Next Encounter": {
+      "type": "Delay",
+      "direct_transition": "Set Immediate Admission",
+      "range": {
+        "low": 0,
+        "high": 48,
+        "unit": "hours"
+      }
+    },
+    "Priority 2 Next Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Preoperative Outpatient",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Set Immediate Admission",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Priority 3 Next Encounter": {
+      "type": "Delay",
+      "direct_transition": "Preoperative Outpatient",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      }
+    },
+    "Priority 4 Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 21,
+        "high": 45,
+        "unit": "days"
+      },
+      "direct_transition": "Preoperative Outpatient"
+    },
+    "Immediate Surgical Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "Abnormal Findings",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Preoperative Testing"
+    },
+    "Preoperative Outpatient": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Abnormal Findings",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Set_Immediate_Admission_False"
+    },
+    "Preoperative Testing": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/preoperative",
+      "direct_transition": "Treatment_Plan"
+    },
+    "End Preoperative": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Priority_2_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority_3_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority_4_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ]
+    },
+    "Set Immediate Admission": {
+      "type": "SetAttribute",
+      "attribute": "cabg_immediate_admission",
+      "direct_transition": "Immediate Surgical Admission",
+      "value": true
+    },
+    "Priority_2_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Priority_3_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 7,
+        "high": 21,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Priority_4_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 21,
+        "high": 45,
+        "unit": "days"
+      },
+      "direct_transition": "CABG Surgery"
+    },
+    "Cardiology Consultation Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "cardiac_surgery_reason",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Repeat_Referrals",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_consultation_count",
+            "operator": ">=",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Cardiology Consultation"
+        }
+      ]
+    },
+    "Cardiology Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Diagnostic",
+      "reason": "cardiac_surgery_reason"
+    },
+    "Postoperative Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736169004,
+          "display": "Post anesthesia care management (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 4,
+        "unit": "hours"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_consultation_count",
+            "operator": ">",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "Referral to Surgery"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Referral to Surgery",
+              "distribution": 0.35
+            },
+            {
+              "transition": "Referral to Service",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Repeat Referral",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ],
+      "reason": "Abnormal Findings"
+    },
+    "Repeat_Referrals": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Repeat Referral Medical Care",
+          "distribution": 0.02
+        },
+        {
+          "transition": "Repeat Referral PCI",
+          "distribution": 0.98
+        }
+      ]
+    },
+    "Repeat Referral PCI": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415070008,
+          "display": "Percutaneous coronary intervention (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 90,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "assign_to_attribute": "repeat_referral_pci",
+      "direct_transition": "Terminal",
+      "reason": "Abnormal Findings"
+    },
+    "Repeat Referral Medical Care": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 781087000,
+          "display": "Medical care (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "reason": "Abnormal Findings",
+      "assign_to_attribute": "repeat_referral_medical"
+    },
+    "Treatment_Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709138001,
+          "display": "Notification of treatment plan (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Scheduling_Procedure"
+    },
+    "Scheduling_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410538000,
+          "display": "Scheduling (procedure)"
+        }
+      ],
+      "reason": "Abnormal Findings",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_immediate_admission",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Preoperative"
+        }
+      ]
+    },
+    "Set_Immediate_Admission_False": {
+      "type": "SetAttribute",
+      "attribute": "cabg_immediate_admission",
+      "direct_transition": "Preoperative Testing",
+      "value": false
+    }
+  },
+  "gmf_version": 2
+}

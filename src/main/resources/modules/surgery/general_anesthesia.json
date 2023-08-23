@@ -16,7 +16,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Antiemetic"
+      "direct_transition": "Anesthesia Submodule"
     },
     "Terminal": {
       "type": "Terminal"
@@ -46,11 +46,6 @@
           "display": "Intubation"
         }
       ],
-      "duration": {
-        "low": 5,
-        "high": 10,
-        "unit": "minutes"
-      },
       "direct_transition": "Volatile_Anesthetic"
     },
     "Midazolam": {
@@ -226,7 +221,7 @@
         {
           "system": "RxNorm",
           "code": 542347,
-          "display": "Isoflurane 999 MG/ML Inhalant Solution"
+          "display": "isoflurane 99.9 % Inhalation Solution"
         }
       ],
       "direct_transition": "Isoflurane_End",
@@ -273,7 +268,7 @@
         {
           "system": "RxNorm",
           "code": 200243,
-          "display": "sevoflurane 1000 MG/ML Inhalant Solution"
+          "display": "sevoflurane 1000 MG/ML Inhalation Solution"
         }
       ],
       "direct_transition": "Sevoflurane_End",
@@ -343,6 +338,25 @@
       "type": "MedicationEnd",
       "direct_transition": "Terminal",
       "medication_order": "Sufentanil"
+    },
+    "Anesthesia Submodule": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410770002,
+          "display": "Administration of anesthesia for procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 61.7256546,
+          "standardDeviation": 14.82022284
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Antiemetic"
     }
   },
   "gmf_version": 1

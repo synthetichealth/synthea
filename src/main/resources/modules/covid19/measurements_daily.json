@@ -17,7 +17,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+          "display": "CBC panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -590,7 +590,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "vital_sign": "EGFR"
@@ -804,7 +804,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
             }
           ],
           "range": {
@@ -913,7 +913,7 @@
         {
           "system": "LOINC",
           "code": "19994-3",
-          "display": "Oxygen/Inspired gas setting [Volume Fraction] Ventilator"
+          "display": "Oxygen/Total gas setting [Volume Fraction] Ventilator"
         }
       ],
       "direct_transition": "Terminal",

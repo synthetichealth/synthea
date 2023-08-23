@@ -1,0 +1,481 @@
+{
+  "name": "postop",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models Postoperative ICU and Ward Care."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check Alive"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "CABG_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 397821002,
+          "display": "Patient transfer to intensive care unit (procedure)"
+        }
+      ],
+      "reason": "cabg_history",
+      "conditional_transition": [
+        {
+          "transition": "Reexploration procedure",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_reexploration_procedure",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "cabg_icu_los set in outcomes"
+        }
+      ]
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission to Ward"
+    },
+    "Check Alive": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "CABG_Postop"
+        }
+      ]
+    },
+    "Deceased": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Begin Day": {
+      "type": "Counter",
+      "attribute": "cabg_icu_los",
+      "action": "decrement",
+      "direct_transition": "ICU Labs"
+    },
+    "End Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Begin Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_icu_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Discharge to Ward"
+        }
+      ]
+    },
+    "Ventilation Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Ventilation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Ventilator Reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Extubation"
+        }
+      ]
+    },
+    "Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "26763009",
+          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+        }
+      ],
+      "reason": "Ventilator Reason",
+      "direct_transition": "End Ventilation",
+      "duration": {
+        "low": 4,
+        "high": 6,
+        "unit": "hours"
+      }
+    },
+    "Extubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271280005",
+          "display": "Removal of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "Begin Day"
+    },
+    "End Ventilation": {
+      "type": "ConditionEnd",
+      "direct_transition": "Extubation",
+      "referenced_by_attribute": "Ventilator Reason"
+    },
+    "ICU Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/labs_common",
+      "direct_transition": "Electrocardiogram_ECG"
+    },
+    "ICU Meds": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/icu_meds_devices",
+      "direct_transition": "Half Day"
+    },
+    "Discharge to Ward": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306706006,
+          "display": "Discharge to ward (procedure)"
+        }
+      ],
+      "direct_transition": "Discharge",
+      "reason": "cagb_history"
+    },
+    "Admission to Ward": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305342007,
+          "display": "Admission to ward (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "cabg_icu_los set in outcomes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cabg_prolonged_los",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {}
+      ],
+      "direct_transition": "Education",
+      "reason": "cabg_history"
+    },
+    "Walking Exercise Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 302761001,
+          "display": "Walking exercise test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Stair Climbing Test",
+      "reason": "cabg_history"
+    },
+    "Stair Climbing Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 252482003,
+          "display": "Stair-climbing test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Discharge from Hospital",
+      "reason": "cabg_history"
+    },
+    "Discharge to Home": {
+      "type": "EncounterEnd",
+      "direct_transition": "Post Discharge Outcomes",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Discharge to Facility": {
+      "type": "EncounterEnd",
+      "direct_transition": "Post Discharge Outcomes",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "04",
+        "display": "Discharged/transferred to a facility that provides custodial or supportive care"
+      }
+    },
+    "Post Discharge Outcomes": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Readmission to Ward",
+          "distribution": 0.106
+        },
+        {
+          "transition": "Dying After Discharge",
+          "distribution": 0.0065
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8875
+        }
+      ]
+    },
+    "Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 243063003,
+          "display": "Postoperative procedure education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Walking Exercise Test",
+      "reason": "cabg_history"
+    },
+    "Discharge from Hospital": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308283009,
+          "display": "Discharge from hospital (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "cabg_history",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.85
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.15
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.833333
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.166667
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.916667
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.083333
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.852991
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.14700899999999995
+            }
+          ]
+        }
+      ]
+    },
+    "Readmission to Ward": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      },
+      "direct_transition": "Admission to Ward"
+    },
+    "Electrocardiogram_ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 40,
+        "high": 50,
+        "unit": "minutes"
+      },
+      "direct_transition": "Chest_X_Ray"
+    },
+    "Chest_X_Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Blood"
+    },
+    "Half Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "direct_transition": "Repeat_ICU_Labs"
+    },
+    "Repeat_ICU_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/labs_common",
+      "direct_transition": "End Day"
+    },
+    "Dying After Discharge": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "cabg_icu_los set in outcomes": {
+      "type": "Simple",
+      "direct_transition": "Ventilation Check"
+    },
+    "Reexploration procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 122460008,
+          "display": "Reexploration procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 180,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "cabg_icu_los set in outcomes",
+      "reason": "cabg_history"
+    },
+    "Blood": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/postop_blood",
+      "direct_transition": "ICU Meds"
+    }
+  },
+  "gmf_version": 2
+}

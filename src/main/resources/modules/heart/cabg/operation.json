@@ -1,0 +1,392 @@
+{
+  "name": "operation",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models the CABG Operation.",
+    " ",
+    "On pump = Conventional CABG procedure performed with the use of cardiopulmonary bypass (CBP) and median sternotomy.",
+    "",
+    "Off-pump = CABG procedure performed without use of cardiopulmonary bypass (CBG); is inclusive of procedures with median sternotomy and procedures without median sternotomy (e.g., minimally invasive, robotic).",
+    "",
+    "This submodule does not model intraoperative conversion from off‐pump to on‐pump CABG.",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "OR Labs and Meds"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Emergency_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Off_Pump_CABG_Emergency",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Off_Pump_CABG"
+        }
+      ]
+    },
+    "History_of_CABG": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "cabg_history",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399261000,
+          "display": "History of coronary artery bypass grafting (situation)"
+        }
+      ],
+      "direct_transition": "Surgery Documentation"
+    },
+    "Finish_Surgery": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Arterial Line Insertion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392247006,
+          "display": "Insertion of catheter into artery (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 6,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Administer Anesthesia"
+    },
+    "Administer Anesthesia": {
+      "type": "CallSubmodule",
+      "submodule": "surgery/general_anesthesia",
+      "direct_transition": "Pulmonary Catheterization"
+    },
+    "Pulmonary Catheterization": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 65677008,
+          "display": "Pulmonary catheterization with Swan-Ganz catheter (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 6,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Prep Patient"
+    },
+    "Prep Patient": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223495004,
+          "display": "Preparation of patient for procedure (regime/therapy)"
+        }
+      ],
+      "duration": {
+        "low": 6,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "On Pump",
+          "distribution": 0.59
+        },
+        {
+          "transition": "Off Pump",
+          "distribution": 0.41
+        }
+      ]
+    },
+    "Cannulation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 42825003,
+          "display": "Cannulation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "CPB"
+    },
+    "On Pump": {
+      "type": "SetAttribute",
+      "attribute": "cabg_pump",
+      "direct_transition": "Cannulation",
+      "value": true
+    },
+    "Off Pump": {
+      "type": "SetAttribute",
+      "attribute": "cabg_pump",
+      "direct_transition": "Call CABG_Details Off Pump",
+      "value": false
+    },
+    "CPB": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63697000,
+          "display": "Cardiopulmonary bypass operation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Placement of Aortic Cross Clamp"
+    },
+    "Placement of Aortic Cross Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301882004,
+          "display": "Placement of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Induced cardioplegia"
+    },
+    "Induced cardioplegia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 8290005,
+          "display": "Induced cardioplegia (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Call CABG_Details On Pump"
+    },
+    "Removal of Aortic Cross Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301884003,
+          "display": "Removal of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Vascular Cannula Removal"
+    },
+    "Vascular Cannula Removal": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233553003,
+          "display": "Vascular cannula removal (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "History_of_CABG"
+    },
+    "Emergency Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "On_Pump_Emergency_CABG",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "operative_status",
+                "operator": "==",
+                "value": "emergent_salvage"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "On Pump CABG"
+        }
+      ]
+    },
+    "On Pump CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 225.5941604,
+          "standardDeviation": 44.75276942
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Intraop Devices",
+      "reason": "cardiac_surgery_reason"
+    },
+    "Surgery Documentation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23745001,
+          "display": "Documentation procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 8,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Finish_Surgery"
+    },
+    "OR Labs and Meds": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/or_labs_meds",
+      "direct_transition": "Arterial Line Insertion"
+    },
+    "Intraop_Devices": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/or_intraop",
+      "direct_transition": "History_of_CABG"
+    },
+    "Intraop Devices": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/or_intraop",
+      "direct_transition": "Removal of Aortic Cross Clamp"
+    },
+    "Call CABG_Details On Pump": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/details",
+      "direct_transition": "Emergency Check"
+    },
+    "Call CABG_Details Off Pump": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/details",
+      "direct_transition": "Emergency_Check"
+    },
+    "On_Pump_Emergency_CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232717009,
+          "display": "Coronary artery bypass grafting (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 225.5941604,
+          "standardDeviation": 44.75276942
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop Devices"
+    },
+    "Off_Pump_CABG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 418824004,
+          "display": "Off-pump coronary artery bypass (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 207.7606126,
+          "standardDeviation": 42.15508108
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop_Devices"
+    },
+    "Off_Pump_CABG_Emergency": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 414088005,
+          "display": "Emergency coronary artery bypass graft (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 207.7606126,
+          "standardDeviation": 42.15508108
+        }
+      },
+      "unit": "minutes",
+      "reason": "cardiac_surgery_reason",
+      "direct_transition": "Intraop_Devices"
+    }
+  },
+  "gmf_version": 2
+}

@@ -12,6 +12,7 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -33,8 +34,7 @@ public class JSONExporter {
    * @return a lot of JSON in a String
    */
   public static String export(Person person) {
-    Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
+    GsonBuilder builder = new GsonBuilder()
         .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
         .addSerializationExclusionStrategy(new SyntheaExclusionStrategy())
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
@@ -42,7 +42,11 @@ public class JSONExporter {
             new PersonSerializer(!Config.getAsBoolean("exporter.json.include_module_history")))
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
         .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
-        .create();
+        .registerTypeHierarchyAdapter(LocalDate.class, new LocalDateSerializer());
+    if (Config.getAsBoolean("exporter.pretty_print", true)) {
+      builder.setPrettyPrinting();
+    }
+    Gson gson = builder.create();
     return gson.toJson(person);
   }
 
@@ -56,6 +60,17 @@ public class JSONExporter {
       payerOut.add("name", new JsonPrimitive(src.getName()));
       payerOut.add("uuid", new JsonPrimitive(src.uuid));
       return payerOut;
+    }
+  }
+
+  /**
+   * Custom serialization for LocalDates as Java 17 does not allow Gson to automatically serialize
+   * them.
+   */
+  public static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+    @Override
+    public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString());
     }
   }
 
@@ -76,9 +91,10 @@ public class JSONExporter {
     @Override
     public JsonElement serialize(Person src, Type typeOfSrc, JsonSerializationContext context) {
       JsonObject personOut = new JsonObject();
-      personOut.add("seed", new JsonPrimitive(src.seed));
+      personOut.add("seed", new JsonPrimitive(src.getSeed()));
       personOut.add("lastUpdated", new JsonPrimitive(src.lastUpdated));
       personOut.add("coverage", context.serialize(src.coverage));
+      personOut.add("symptoms", context.serialize(src.getExpressedSymptoms()));
       JsonObject attributes = new JsonObject();
       src.attributes.forEach((key, value) -> {
         boolean keepEntry = true;

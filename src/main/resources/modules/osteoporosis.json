@@ -134,7 +134,7 @@
         "low": 0,
         "high": 10
       },
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Osteoporosis_Encounter_Reason"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
@@ -156,7 +156,8 @@
         {
           "transition": "Osteoporosis_Workup"
         }
-      ]
+      ],
+      "reason": "osteoporosis_encounter_reason"
     },
     "Osteoporosis_Workup": {
       "type": "Procedure",
@@ -176,7 +177,7 @@
         {
           "system": "LOINC",
           "code": "38265-5",
-          "display": "DXA [T-score] Bone density"
+          "display": "DXA Radius and Ulna [T-score] Bone density"
         }
       ],
       "range": {
@@ -227,7 +228,9 @@
           "display": "Alendronic acid 10 MG Oral Tablet"
         }
       ],
-      "direct_transition": "End_Diagnosis_Encounter"
+      "direct_transition": "End_Diagnosis_Encounter",
+      "chronic": true,
+      "reason": "Diagnose_Osteoporosis"
     },
     "Terminal": {
       "type": "Terminal"
@@ -235,6 +238,16 @@
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal"
+    },
+    "Osteoporosis_Encounter_Reason": {
+      "type": "SetAttribute",
+      "attribute": "osteoporosis_encounter_reason",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 313423004,
+        "display": "At risk of osteoporosis (finding)"
+      }
     }
   },
   "gmf_version": 1

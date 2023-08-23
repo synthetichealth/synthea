@@ -1,0 +1,359 @@
+{
+  "name": "SAVRr_Operation",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Intraop Care"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Intraop Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133900002,
+          "display": "Intraoperative care (regime/therapy)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "OR Labs and Meds"
+    },
+    "OR Labs and Meds": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/intraop_meds_blood",
+      "direct_transition": "Arterial_Line_Insertion"
+    },
+    "Administer Anesthesia": {
+      "type": "CallSubmodule",
+      "submodule": "surgery/general_anesthesia",
+      "direct_transition": "Incision"
+    },
+    "Incision": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 34896006,
+          "display": "Incision (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Cannulation"
+    },
+    "Cannulation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 42825003,
+          "display": "Cannulation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "CPB"
+    },
+    "CPB": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 63697000,
+          "display": "Cardiopulmonary bypass operation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Placement_of_Aortic_Cross_Clamp"
+    },
+    "Placement_of_Aortic_Cross_Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301882004,
+          "display": "Placement of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Induced_cardioplegia"
+    },
+    "Induced_cardioplegia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 8290005,
+          "display": "Induced cardioplegia (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Device Type",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          }
+        },
+        {
+          "transition": "AV Repair Procedure"
+        }
+      ]
+    },
+    "Removal_of_Aortic_Cross_Clamp": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 301884003,
+          "display": "Removal of aortic cross clamp (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Transesophageal Echo​"
+    },
+    "Vascular_Cannula_Removal": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233553003,
+          "display": "Vascular cannula removal (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 6,
+        "unit": "minutes"
+      },
+      "direct_transition": "Dressing"
+    },
+    "Arterial_Line_Insertion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 392247006,
+          "display": "Insertion of catheter into artery (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 6,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Administer Anesthesia"
+    },
+    "Device Type": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Mechanical",
+          "distribution": 0.22
+        },
+        {
+          "transition": "Bioprosthetic",
+          "distribution": 0.77
+        },
+        {
+          "transition": "Other Device Type",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Mechanical": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 705991002,
+        "display": "Mechanical cardiac valve prosthesis (physical object)"
+      },
+      "direct_transition": "AV Replacement Procedure",
+      "assign_to_attribute": "mechanical_cardiac_valve_prothesis"
+    },
+    "Bioprosthetic": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 860577005,
+        "display": "Aortic valve bioprosthesis (physical object)"
+      },
+      "direct_transition": "AV Replacement Procedure",
+      "assign_to_attribute": "aortic_valve_bioprothesis"
+    },
+    "Other Device Type": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 706449001,
+        "display": "Valve (physical object)"
+      },
+      "direct_transition": "AV Replacement Procedure"
+    },
+    "AV Replacement Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 26212005,
+          "display": "Replacement of aortic valve (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 204.2608696,
+          "standardDeviation": 56.52241546
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Removal_of_Aortic_Cross_Clamp",
+      "reason": "cardiac_surgery_reason"
+    },
+    "AV Repair Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1155885007,
+          "display": "Repair of aortic valve (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 240,
+          "low": 120
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Removal_of_Aortic_Cross_Clamp"
+    },
+    "Dressing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 58828004,
+          "display": "Application of dressing, sterile (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "OR_Exit"
+    },
+    "OR_Exit": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 37729005,
+          "display": "Patient transfer, in-hospital (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "AV Replacement History",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          }
+        },
+        {
+          "transition": "AV Repair History"
+        }
+      ]
+    },
+    "Finish_Surgery": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "AV Replacement History": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1231000119100,
+          "display": "History of aortic valve replacement (situation)"
+        }
+      ],
+      "direct_transition": "Finish_Surgery",
+      "assign_to_attribute": "savrr_history"
+    },
+    "AV Repair History": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 119481000119105,
+          "display": "History of aortic valve repair (situation)"
+        }
+      ],
+      "direct_transition": "Finish_Surgery",
+      "assign_to_attribute": "savrr_history"
+    },
+    "Transesophageal Echo​": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 105376000,
+        "display": "Transesophageal echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 80891009,
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Vascular_Cannula_Removal"
+    }
+  },
+  "gmf_version": 2
+}

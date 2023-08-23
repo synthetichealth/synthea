@@ -96,24 +96,8 @@
       "direct_transition": "Terminal"
     },
     "Female_Contraceptive_Use": {
-      "type": "Simple",
-      "remarks": [
-        "======================================================================",
-        " FEMALE CONTRACEPTIVE USE                                             ",
-        "======================================================================",
-        "Female use of contraceptives is recomputed 3 times in a patient's life, ",
-        "once for each major reproductive age bracket: ",
-        "1. Young (teen/20's) contraceptive users, age 14 - 24 ",
-        "2. Mid-age contraceptive users, age 25 - 34 ",
-        "3. Mature contraceptive users, age 35+ (limited by menopause at age 50) ",
-        "Combined with sexual_activity, this yields a full range of contraceptive ",
-        "users and outcomes, from those who never use contraceptives (and who likely ",
-        "have several children as a result), to lifetime contraceptive users with ",
-        "no children.",
-        "Whenever a woman becomes pregnancy her current contraceptive method is stopped. ",
-        "After the pregnancy terminates, she is re-routed here to re-up her contraceptive ",
-        "(or not)."
-      ],
+      "type": "SetAttribute",
+      "attribute": "contraception_care_reason",
       "conditional_transition": [
         {
           "condition": {
@@ -145,7 +129,29 @@
         {
           "transition": "Terminal"
         }
-      ]
+      ],
+      "remarks": [
+        "======================================================================",
+        " FEMALE CONTRACEPTIVE USE                                             ",
+        "======================================================================",
+        "Female use of contraceptives is recomputed 3 times in a patient's life, ",
+        "once for each major reproductive age bracket: ",
+        "1. Young (teen/20's) contraceptive users, age 14 - 24 ",
+        "2. Mid-age contraceptive users, age 25 - 34 ",
+        "3. Mature contraceptive users, age 35+ (limited by menopause at age 50) ",
+        "Combined with sexual_activity, this yields a full range of contraceptive ",
+        "users and outcomes, from those who never use contraceptives (and who likely ",
+        "have several children as a result), to lifetime contraceptive users with ",
+        "no children.",
+        "Whenever a woman becomes pregnancy her current contraceptive method is stopped. ",
+        "After the pregnancy terminates, she is re-routed here to re-up her contraceptive ",
+        "(or not)."
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 389095005,
+        "display": "Contraception care (regime/therapy)"
+      }
     },
     "Young_Contraceptive_Use": {
       "type": "Simple",

@@ -1,0 +1,1377 @@
+{
+    "name": "Beta Blocker",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE BETA BLOCKER",
+        "======================================================================",
+        "",
+        "This submodule prescribes a medication based on population data.",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'beta_blocker'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    RxNav: https://mor.nlm.nih.gov/RxNav/",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    FDA: https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "",
+        "Made with (</>) by the CodeRx Medication Diversification Tool (MDT)",
+        "",
+        "MDT settings for this submodule:",
+        "{",
+        "    \"module\": {",
+        "        \"name\": null,",
+        "        \"assign_to_attribute\": null,",
+        "        \"reason\": null,",
+        "        \"as_needed\": false,",
+        "        \"chronic\": false,",
+        "        \"refills\": 0",
+        "    },",
+        "    \"rxclass\": {",
+        "        \"include\": [",
+        "            {",
+        "                \"class_id\": \"N0000175556\",",
+        "                \"relationship\": \"has_EPC\"",
+        "            }",
+        "        ],",
+        "        \"exclude\": null",
+        "    },",
+        "    \"rxcui\": {",
+        "        \"include\": null,",
+        "        \"exclude\": null",
+        "    },",
+        "    \"ingredient_tty_filter\": null,",
+        "    \"dose_form_filter\": null,",
+        "    \"meps\": {",
+        "        \"age_ranges\": null,",
+        "        \"demographic_distribution_flags\": {",
+        "            \"age\": true,",
+        "            \"gender\": true,",
+        "            \"state\": true",
+        "        }",
+        "    },",
+        "    \"state_prefix\": \"Prescribe_\",",
+        "    \"ingredient_distribution_suffix\": \"_ingredient_distribution\",",
+        "    \"product_distribution_suffix\": \"_product_distribution\",",
+        "    \"default_age_ranges\": [",
+        "        \"0-3\",",
+        "        \"4-7\",",
+        "        \"8-11\",",
+        "        \"12-17\",",
+        "        \"18-25\",",
+        "        \"26-35\",",
+        "        \"36-45\",",
+        "        \"46-65\",",
+        "        \"65-103\"",
+        "    ]",
+        "}"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "beta_blocker",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 15.3% ] Atenolol",
+                "2. [ 1.3% ] Bisoprolol",
+                "3. [ 1.1% ] Bisoprolol_Hydrochlorothiazide",
+                "4. [ 16.8% ] Carvedilol",
+                "5. [ 2.5% ] Labetalol",
+                "6. [ 53.9% ] Metoprolol",
+                "7. [ 2.2% ] Nebivolol",
+                "8. [ 6.7% ] Propranolol"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Atenolol",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bisoprolol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bisoprolol_Hydrochlorothiazide",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Labetalol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Metoprolol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nebivolol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Atenolol": {
+            "name": "Prescribe_Atenolol",
+            "remarks": [
+                "======================================================================",
+                " ATENOLOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 9.9% ] Atenolol_100_Mg_Oral_Tablet",
+                "2. [ 46.1% ] Atenolol_25_Mg_Oral_Tablet",
+                "3. [ 44.0% ] Atenolol_50_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Atenolol_100_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atenolol_50_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atenolol_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_atenolol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Bisoprolol": {
+            "name": "Prescribe_Bisoprolol",
+            "remarks": [
+                "======================================================================",
+                " BISOPROLOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 28.9% ] Bisoprolol_Fumarate_10_Mg_Oral_Tablet",
+                "2. [ 71.1% ] Bisoprolol_Fumarate_5_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Bisoprolol_Fumarate_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_bisoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bisoprolol_Fumarate_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_bisoprolol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Bisoprolol_Hydrochlorothiazide": {
+            "name": "Prescribe_Bisoprolol_Hydrochlorothiazide",
+            "remarks": [
+                "======================================================================",
+                " BISOPROLOL_HYDROCHLOROTHIAZIDE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 27.3% ] Bisoprolol_Fumarate_10_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+                "2. [ 42.2% ] Bisoprolol_Fumarate_2_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+                "3. [ 30.5% ] Bisoprolol_Fumarate_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Bisoprolol_Fumarate_10_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bisoprolol_Fumarate_2_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Bisoprolol_Fumarate_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_bisoprolol_hydrochlorothiazide_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Carvedilol": {
+            "name": "Prescribe_Carvedilol",
+            "remarks": [
+                "======================================================================",
+                " CARVEDILOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 0.3% ] 24_Hr_Carvedilol_Phosphate_10_Mg_Extended_Release_Oral_Capsule",
+                "2. [ 0.0% ] 24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule",
+                "3. [ 0.3% ] 24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule_Coreg",
+                "4. [ 25.0% ] Carvedilol_12_5_Mg_Oral_Tablet",
+                "5. [ 0.2% ] Carvedilol_12_5_Mg_Oral_Tablet_Coreg",
+                "6. [ 27.4% ] Carvedilol_25_Mg_Oral_Tablet",
+                "7. [ 0.1% ] Carvedilol_25_Mg_Oral_Tablet_Coreg",
+                "8. [ 21.8% ] Carvedilol_3_125_Mg_Oral_Tablet",
+                "9. [ 24.8% ] Carvedilol_6_25_Mg_Oral_Tablet",
+                "10. [ 0.0% ] Carvedilol_6_25_Mg_Oral_Tablet_Coreg"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_10_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_3_125_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet_Coreg",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule_Coreg",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet_Coreg",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Carvedilol_25_Mg_Oral_Tablet_Coreg",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_carvedilol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Labetalol": {
+            "name": "Prescribe_Labetalol",
+            "remarks": [
+                "======================================================================",
+                " LABETALOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 46.4% ] Labetalol_Hydrochloride_100_Mg_Oral_Tablet",
+                "2. [ 35.4% ] Labetalol_Hydrochloride_200_Mg_Oral_Tablet",
+                "3. [ 18.2% ] Labetalol_Hydrochloride_300_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Labetalol_Hydrochloride_100_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Labetalol_Hydrochloride_200_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Labetalol_Hydrochloride_300_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_labetalol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Metoprolol": {
+            "name": "Prescribe_Metoprolol",
+            "remarks": [
+                "======================================================================",
+                " METOPROLOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 12.3% ] 24_Hr_Metoprolol_Succinate_100_Mg_Extended_Release_Oral_Tablet",
+                "2. [ 1.8% ] 24_Hr_Metoprolol_Succinate_200_Mg_Extended_Release_Oral_Tablet",
+                "3. [ 18.7% ] 24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet",
+                "4. [ 0.6% ] 24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet_Toprol",
+                "5. [ 19.3% ] 24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet",
+                "6. [ 0.3% ] 24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet_Toprol",
+                "7. [ 0.0% ] 5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Cartridge",
+                "8. [ 0.0% ] 5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Injection",
+                "9. [ 4.5% ] Metoprolol_Tartrate_100_Mg_Oral_Tablet",
+                "10. [ 24.1% ] Metoprolol_Tartrate_25_Mg_Oral_Tablet",
+                "11. [ 18.3% ] Metoprolol_Tartrate_50_Mg_Oral_Tablet",
+                "12. [ 0.1% ] Metoprolol_Tartrate_50_Mg_Oral_Tablet_Lopressor"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_100_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Metoprolol_Tartrate_100_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Metoprolol_Tartrate_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_200_Mg_Extended_Release_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet_Toprol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet_Toprol",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet_Lopressor",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Cartridge",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Injection",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_metoprolol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Nebivolol": {
+            "name": "Prescribe_Nebivolol",
+            "remarks": [
+                "======================================================================",
+                " NEBIVOLOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 40.7% ] Nebivolol_10_Mg_Oral_Tablet_Bystolic",
+                "2. [ 11.2% ] Nebivolol_20_Mg_Oral_Tablet_Bystolic",
+                "3. [ 2.2% ] Nebivolol_2_5_Mg_Oral_Tablet_Bystolic",
+                "4. [ 45.8% ] Nebivolol_5_Mg_Oral_Tablet_Bystolic"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Nebivolol_10_Mg_Oral_Tablet_Bystolic",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nebivolol_20_Mg_Oral_Tablet_Bystolic",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nebivolol_2_5_Mg_Oral_Tablet_Bystolic",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nebivolol_5_Mg_Oral_Tablet_Bystolic",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_nebivolol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Propranolol": {
+            "name": "Prescribe_Propranolol",
+            "remarks": [
+                "======================================================================",
+                " PROPRANOLOL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 3.2% ] 24_Hr_Propranolol_Hydrochloride_120_Mg_Extended_Release_Oral_Capsule",
+                "2. [ 4.5% ] 24_Hr_Propranolol_Hydrochloride_160_Mg_Extended_Release_Oral_Capsule",
+                "3. [ 15.0% ] 24_Hr_Propranolol_Hydrochloride_60_Mg_Extended_Release_Oral_Capsule",
+                "4. [ 6.3% ] 24_Hr_Propranolol_Hydrochloride_80_Mg_Extended_Release_Oral_Capsule",
+                "5. [ 19.6% ] Propranolol_Hydrochloride_10_Mg_Oral_Tablet",
+                "6. [ 26.2% ] Propranolol_Hydrochloride_20_Mg_Oral_Tablet",
+                "7. [ 19.7% ] Propranolol_Hydrochloride_40_Mg_Oral_Tablet",
+                "8. [ 1.6% ] Propranolol_Hydrochloride_60_Mg_Oral_Tablet",
+                "9. [ 3.9% ] Propranolol_Hydrochloride_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_120_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_60_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_80_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol_Hydrochloride_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_24_Hr_Propranolol_Hydrochloride_160_Mg_Extended_Release_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol_Hydrochloride_10_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol_Hydrochloride_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol_Hydrochloride_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Propranolol_Hydrochloride_60_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "beta_blocker_propranolol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_24_Hr_Carvedilol_Phosphate_10_Mg_Extended_Release_Oral_Capsule": {
+            "remarks": [
+                "======================================================================",
+                " BEGIN MEDICATION ORDER STATES                                        ",
+                "======================================================================"
+            ],
+            "name": "Prescribe_24_Hr_Carvedilol_Phosphate_10_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "860510",
+                    "display": "24 HR carvedilol phosphate 10 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "860516",
+                    "display": "24 HR carvedilol phosphate 20 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule_Coreg": {
+            "name": "Prescribe_24_Hr_Carvedilol_Phosphate_20_Mg_Extended_Release_Oral_Capsule_Coreg",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "860518",
+                    "display": "24 HR carvedilol phosphate 20 MG Extended Release Oral Capsule [Coreg]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_100_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_100_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866412",
+                    "display": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_200_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_200_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866419",
+                    "display": "24 HR metoprolol succinate 200 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866427",
+                    "display": "24 HR metoprolol succinate 25 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet_Toprol": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_25_Mg_Extended_Release_Oral_Tablet_Toprol",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866429",
+                    "display": "24 HR metoprolol succinate 25 MG Extended Release Oral Tablet [Toprol]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866436",
+                    "display": "24 HR metoprolol succinate 50 MG Extended Release Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet_Toprol": {
+            "name": "Prescribe_24_Hr_Metoprolol_Succinate_50_Mg_Extended_Release_Oral_Tablet_Toprol",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866438",
+                    "display": "24 HR metoprolol succinate 50 MG Extended Release Oral Tablet [Toprol]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Propranolol_Hydrochloride_120_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_24_Hr_Propranolol_Hydrochloride_120_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856460",
+                    "display": "24 HR propranolol hydrochloride 120 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Propranolol_Hydrochloride_160_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_24_Hr_Propranolol_Hydrochloride_160_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856481",
+                    "display": "24 HR propranolol hydrochloride 160 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Propranolol_Hydrochloride_60_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_24_Hr_Propranolol_Hydrochloride_60_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856535",
+                    "display": "24 HR propranolol hydrochloride 60 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_24_Hr_Propranolol_Hydrochloride_80_Mg_Extended_Release_Oral_Capsule": {
+            "name": "Prescribe_24_Hr_Propranolol_Hydrochloride_80_Mg_Extended_Release_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856569",
+                    "display": "24 HR propranolol hydrochloride 80 MG Extended Release Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Cartridge": {
+            "name": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Cartridge",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1744259",
+                    "display": "5 ML metoprolol tartrate 1 MG/ML Cartridge"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Injection": {
+            "name": "Prescribe_5_Ml_Metoprolol_Tartrate_1_Mg_Ml_Injection",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866508",
+                    "display": "5 ML metoprolol tartrate 1 MG/ML Injection"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atenolol_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atenolol_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197379",
+                    "display": "atenolol 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atenolol_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atenolol_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197380",
+                    "display": "atenolol 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atenolol_50_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atenolol_50_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197381",
+                    "display": "atenolol 50 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Bisoprolol_Fumarate_10_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Bisoprolol_Fumarate_10_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854908",
+                    "display": "bisoprolol fumarate 10 MG / hydrochlorothiazide 6.25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Bisoprolol_Fumarate_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Bisoprolol_Fumarate_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854901",
+                    "display": "bisoprolol fumarate 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Bisoprolol_Fumarate_2_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Bisoprolol_Fumarate_2_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854916",
+                    "display": "bisoprolol fumarate 2.5 MG / hydrochlorothiazide 6.25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Bisoprolol_Fumarate_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Bisoprolol_Fumarate_5_Mg_Hydrochlorothiazide_6_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854919",
+                    "display": "bisoprolol fumarate 5 MG / hydrochlorothiazide 6.25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Bisoprolol_Fumarate_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Bisoprolol_Fumarate_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "854905",
+                    "display": "bisoprolol fumarate 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200032",
+                    "display": "carvedilol 12.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet_Coreg": {
+            "name": "Prescribe_Carvedilol_12_5_Mg_Oral_Tablet_Coreg",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "212389",
+                    "display": "carvedilol 12.5 MG Oral Tablet [Coreg]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Carvedilol_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200033",
+                    "display": "carvedilol 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_25_Mg_Oral_Tablet_Coreg": {
+            "name": "Prescribe_Carvedilol_25_Mg_Oral_Tablet_Coreg",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "212390",
+                    "display": "carvedilol 25 MG Oral Tablet [Coreg]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_3_125_Mg_Oral_Tablet": {
+            "name": "Prescribe_Carvedilol_3_125_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "686924",
+                    "display": "carvedilol 3.125 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200031",
+                    "display": "carvedilol 6.25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet_Coreg": {
+            "name": "Prescribe_Carvedilol_6_25_Mg_Oral_Tablet_Coreg",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "212388",
+                    "display": "carvedilol 6.25 MG Oral Tablet [Coreg]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Labetalol_Hydrochloride_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Labetalol_Hydrochloride_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896758",
+                    "display": "labetalol hydrochloride 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Labetalol_Hydrochloride_200_Mg_Oral_Tablet": {
+            "name": "Prescribe_Labetalol_Hydrochloride_200_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896762",
+                    "display": "labetalol hydrochloride 200 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Labetalol_Hydrochloride_300_Mg_Oral_Tablet": {
+            "name": "Prescribe_Labetalol_Hydrochloride_300_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "896766",
+                    "display": "labetalol hydrochloride 300 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Metoprolol_Tartrate_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Metoprolol_Tartrate_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866511",
+                    "display": "metoprolol tartrate 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Metoprolol_Tartrate_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Metoprolol_Tartrate_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866924",
+                    "display": "metoprolol tartrate 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet": {
+            "name": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866514",
+                    "display": "metoprolol tartrate 50 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet_Lopressor": {
+            "name": "Prescribe_Metoprolol_Tartrate_50_Mg_Oral_Tablet_Lopressor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "866516",
+                    "display": "metoprolol tartrate 50 MG Oral Tablet [Lopressor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Nebivolol_10_Mg_Oral_Tablet_Bystolic": {
+            "name": "Prescribe_Nebivolol_10_Mg_Oral_Tablet_Bystolic",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "751616",
+                    "display": "nebivolol 10 MG Oral Tablet [Bystolic]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Nebivolol_2_5_Mg_Oral_Tablet_Bystolic": {
+            "name": "Prescribe_Nebivolol_2_5_Mg_Oral_Tablet_Bystolic",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "751620",
+                    "display": "nebivolol 2.5 MG Oral Tablet [Bystolic]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Nebivolol_20_Mg_Oral_Tablet_Bystolic": {
+            "name": "Prescribe_Nebivolol_20_Mg_Oral_Tablet_Bystolic",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "827075",
+                    "display": "nebivolol 20 MG Oral Tablet [Bystolic]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Nebivolol_5_Mg_Oral_Tablet_Bystolic": {
+            "name": "Prescribe_Nebivolol_5_Mg_Oral_Tablet_Bystolic",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "751623",
+                    "display": "nebivolol 5 MG Oral Tablet [Bystolic]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Propranolol_Hydrochloride_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Propranolol_Hydrochloride_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856448",
+                    "display": "propranolol hydrochloride 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Propranolol_Hydrochloride_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Propranolol_Hydrochloride_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856457",
+                    "display": "propranolol hydrochloride 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Propranolol_Hydrochloride_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Propranolol_Hydrochloride_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856519",
+                    "display": "propranolol hydrochloride 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Propranolol_Hydrochloride_60_Mg_Oral_Tablet": {
+            "name": "Prescribe_Propranolol_Hydrochloride_60_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856556",
+                    "display": "propranolol hydrochloride 60 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Propranolol_Hydrochloride_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Propranolol_Hydrochloride_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "beta_blocker",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "856578",
+                    "display": "propranolol hydrochloride 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        }
+    }
+}

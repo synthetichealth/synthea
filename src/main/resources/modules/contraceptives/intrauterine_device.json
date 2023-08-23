@@ -73,7 +73,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_IUD"
+      "direct_transition": "Prescribe_IUD",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_IUD": {
       "type": "Simple",
@@ -253,7 +254,8 @@
           "display": "Mirena 52 MG Intrauterine System"
         }
       ],
-      "direct_transition": "End_Consultation_Encounter"
+      "direct_transition": "End_Consultation_Encounter",
+      "administration": true
     },
     "Prescribe_Liletta": {
       "type": "MedicationOrder",
@@ -265,7 +267,8 @@
           "display": "Liletta 52 MG Intrauterine System"
         }
       ],
-      "direct_transition": "End_Consultation_Encounter"
+      "direct_transition": "End_Consultation_Encounter",
+      "administration": true
     },
     "Prescribe_Kyleena": {
       "type": "MedicationOrder",
@@ -277,7 +280,8 @@
           "display": "Kyleena 19.5 MG Intrauterine System"
         }
       ],
-      "direct_transition": "End_Consultation_Encounter"
+      "direct_transition": "End_Consultation_Encounter",
+      "administration": true
     },
     "End_Consultation_Encounter": {
       "type": "EncounterEnd",
@@ -302,7 +306,8 @@
           "display": "Patient encounter procedure"
         }
       ],
-      "direct_transition": "IUD_Insertion"
+      "direct_transition": "IUD_Insertion",
+      "reason": "contraception_care_reason"
     },
     "IUD_Insertion": {
       "type": "Procedure",

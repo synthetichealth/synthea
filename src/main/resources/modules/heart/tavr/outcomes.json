@@ -1,0 +1,922 @@
+{
+  "name": "outcomes",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "TAVR outcomes based on operative status."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Mortality is set in postop"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Check_Acute renal failure on dialysis": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.006977
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.993023
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.999
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute renal failure on dialysis",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check_Acute respiratory insufficiency",
+              "distribution": 0.999
+            }
+          ]
+        }
+      ]
+    },
+    "Check_Acute respiratory insufficiency": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.004651
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.995349
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Acute respiratory insufficiency",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.999
+            }
+          ]
+        }
+      ]
+    },
+    "Reexploration procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 232816009,
+          "display": "Aortic valve and adjacent structure operations (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 261554009,
+          "display": "Reoperation (qualifier value)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 72.6,
+          "standardDeviation": 28.6
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Check postop pacemaker",
+      "reason": "tavr_history"
+    },
+    "Acute renal failure on dialysis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 129721000119106,
+          "display": "Acute renal failure on dialysis (disorder)"
+        }
+      ],
+      "direct_transition": "End renal failure with dialysis"
+    },
+    "Acute respiratory insufficiency": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 111282000,
+          "display": "Acute respiratory insufficiency (disorder)"
+        }
+      ],
+      "direct_transition": "End insufficiency"
+    },
+    "Check Postop RBC Transfusion": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "RBC Transfusion",
+              "distribution": 0.048837
+            },
+            {
+              "transition": "Check applicability",
+              "distribution": 0.9511630000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "RBC Transfusion",
+              "distribution": 0.333333
+            },
+            {
+              "transition": "Check applicability",
+              "distribution": 0.666667
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "RBC Transfusion",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check applicability",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "RBC Transfusion",
+              "distribution": 0.070175
+            },
+            {
+              "transition": "Check applicability",
+              "distribution": 0.929825
+            }
+          ]
+        }
+      ]
+    },
+    "Mortality is set in postop": {
+      "type": "Simple",
+      "direct_transition": "Check Postop RBC Transfusion"
+    },
+    "RBC Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 116863004,
+          "display": "Transfusion of red blood cells (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Check applicability",
+      "reason": "tavr_history"
+    },
+    "Check Reop procedure": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check postop pacemaker",
+              "distribution": 0.9999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check postop pacemaker",
+              "distribution": 0.9999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check postop pacemaker",
+              "distribution": 0.9999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Reexploration procedure",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check postop pacemaker",
+              "distribution": 0.9999
+            }
+          ]
+        }
+      ]
+    },
+    "Check postop pacemaker": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postop Pacemaker",
+              "distribution": 0.044186
+            },
+            {
+              "transition": "Check postop bleeding",
+              "distribution": 0.9558139999999999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postop Pacemaker",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Check postop bleeding",
+              "distribution": 0.8333330000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postop Pacemaker",
+              "distribution": 0.0001
+            },
+            {
+              "transition": "Check postop bleeding",
+              "distribution": 0.9999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postop Pacemaker",
+              "distribution": 0.087719
+            },
+            {
+              "transition": "Check postop bleeding",
+              "distribution": 0.912281
+            }
+          ]
+        }
+      ]
+    },
+    "Postop Pacemaker": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 233174007,
+          "display": "Cardiac pacemaker procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "The Pacemaker",
+      "reason": "tavr_history"
+    },
+    "The Pacemaker": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 14106009,
+        "display": "Cardiac pacemaker, device (physical object)"
+      },
+      "direct_transition": "Check postop bleeding",
+      "assign_to_attribute": "pacemaker"
+    },
+    "Check postop bleeding": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Bleeding",
+              "distribution": 0.006977
+            },
+            {
+              "transition": "Check postop myocardial infarction",
+              "distribution": 0.993023
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Bleeding",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop myocardial infarction",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Bleeding",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop myocardial infarction",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Bleeding",
+              "distribution": 0.017544
+            },
+            {
+              "transition": "Check postop myocardial infarction",
+              "distribution": 0.982456
+            }
+          ]
+        }
+      ]
+    },
+    "Bleeding": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 278365007,
+          "display": "Anticoagulant-induced bleeding (disorder)"
+        }
+      ],
+      "direct_transition": "End Bleeding"
+    },
+    "Check postop myocardial infarction": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_myocardial_infarction",
+              "distribution": 0.002326
+            },
+            {
+              "transition": "Check postop stroke",
+              "distribution": 0.997674
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_myocardial_infarction",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop stroke",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_myocardial_infarction",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop stroke",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_myocardial_infarction",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop stroke",
+              "distribution": 0.999
+            }
+          ]
+        }
+      ]
+    },
+    "Postoperative_myocardial_infarction": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 129574000,
+          "display": "Postoperative myocardial infarction (disorder)"
+        }
+      ],
+      "direct_transition": "End MI"
+    },
+    "Check postop stroke": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.006977
+            },
+            {
+              "transition": "Check postop renal failure",
+              "distribution": 0.993023
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop renal failure",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop renal failure",
+              "distribution": 0.999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Stroke",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check postop renal failure",
+              "distribution": 0.999
+            }
+          ]
+        }
+      ]
+    },
+    "Stroke": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 457551000124104,
+          "display": "Acute cerebrovascular accident (disorder)"
+        }
+      ],
+      "direct_transition": "End Stroke"
+    },
+    "Check postop renal failure": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_renal_failure",
+              "distribution": 0.006977
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.993023
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_renal_failure",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_renal_failure",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Postoperative_renal_failure",
+              "distribution": 0.017544
+            },
+            {
+              "transition": "Check_Acute renal failure on dialysis",
+              "distribution": 0.982456
+            }
+          ]
+        }
+      ]
+    },
+    "Postoperative_renal_failure": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 275408006,
+          "display": "Postoperative renal failure (disorder)"
+        }
+      ],
+      "direct_transition": "End renal failure"
+    },
+    "End Bleeding": {
+      "type": "ConditionEnd",
+      "direct_transition": "Check postop myocardial infarction",
+      "condition_onset": "Bleeding"
+    },
+    "End MI": {
+      "type": "ConditionEnd",
+      "direct_transition": "Check postop stroke",
+      "condition_onset": "Postoperative_myocardial_infarction"
+    },
+    "End Stroke": {
+      "type": "ConditionEnd",
+      "direct_transition": "Check postop renal failure",
+      "condition_onset": "Stroke"
+    },
+    "End renal failure": {
+      "type": "ConditionEnd",
+      "direct_transition": "Check_Acute renal failure on dialysis",
+      "condition_onset": "Postoperative_renal_failure"
+    },
+    "End renal failure with dialysis": {
+      "type": "ConditionEnd",
+      "direct_transition": "Check_Acute respiratory insufficiency",
+      "condition_onset": "Acute renal failure on dialysis"
+    },
+    "End insufficiency": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "condition_onset": "Acute respiratory insufficiency"
+    },
+    "Check applicability": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "tavr_mortality",
+                    "operator": "is nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "tavr_mortality",
+                    "operator": "==",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tavr_icu_los",
+                "operator": "is nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Check Reop procedure"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

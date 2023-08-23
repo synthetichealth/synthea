@@ -3,11 +3,22 @@
  * can be found at https://docs.gradle.org/6.5/userguide/java_plugin.html
  */
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+  }
+}
+apply plugin: "com.github.johnrengelman.shadow"
+
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '11'
 
 apply plugin: 'application'
 apply plugin: 'eclipse'
@@ -15,7 +26,6 @@ apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -41,75 +51,87 @@ jacoco {
 
 dependencies {
   // This dependency is found on compile classpath of this component and consumers.
-  implementation 'com.google.code.gson:gson:2.8.7'
-  implementation 'com.jayway.jsonpath:json-path:2.4.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:5.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:5.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:5.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:5.7.0'
-  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:5.7.0'
+  implementation 'com.google.code.gson:gson:2.9.0'
+  implementation 'com.jayway.jsonpath:json-path:2.7.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-structures-r4:6.1.0'
+  implementation 'ca.uhn.hapi.fhir:hapi-fhir-client:6.1.0'
   // C-CDA export uses Apache FreeMarker templates
-  implementation 'org.freemarker:freemarker:2.3.26-incubating'
+  implementation 'org.freemarker:freemarker:2.3.31'
 
   // google guava for some data structures
-  implementation 'com.google.guava:guava:30.0-jre'
-  implementation 'guru.nidi:graphviz-java:0.2.4'
+  implementation 'com.google.guava:guava:31.1-jre'
+  implementation 'guru.nidi:graphviz-java:0.18.1'
+  // JavaScript engine included for graphviz. It gets used
+  // if someone does not have graphviz installed in their environment
+  implementation 'org.graalvm.js:js:22.2.0'
   // CSV Stuff
-  implementation 'org.apache.commons:commons-csv:1.5'
-  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.8.8'
-  implementation 'org.yaml:snakeyaml:1.27'
+  implementation 'org.apache.commons:commons-csv:1.9.0'
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.4'
+  implementation 'org.yaml:snakeyaml:1.32'
   implementation 'org.apache.commons:commons-math3:3.6.1'
-  implementation 'org.apache.commons:commons-text:1.2'
-  implementation 'commons-validator:commons-validator:1.4.0'
+  implementation 'org.apache.commons:commons-text:1.9'
+  implementation 'commons-validator:commons-validator:1.7'
 
-  implementation 'org.opencds.cqf:cql-engine:1.3.12'
-  implementation 'info.cqframework:cql:1.3.17'
-  implementation 'info.cqframework:model:1.3.17'
-  implementation 'info.cqframework:cql-to-elm:1.3.17'
-  
-  implementation 'org.springframework:spring-web:5.2.7.RELEASE'
+  implementation 'org.opencds.cqf.cql:engine.jackson:2.0.0'
+  implementation 'org.opencds.cqf.cql:engine:2.0.0'
+  implementation 'info.cqframework:cql:2.1.0'
+  implementation 'info.cqframework:model:2.1.0'
+  implementation 'info.cqframework:cql-to-elm:2.1.0'
+  implementation 'info.cqframework:model-jackson:2.1.0'
+  implementation 'info.cqframework:elm-jackson:2.1.0'
+
+  implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
-  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+  implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
   implementation 'javax.activation:javax.activation-api:1.2.0'
 
   // get rid of SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
   // if we switch to a real logging framework we may want to switch this
-  implementation "org.slf4j:slf4j-api:1.7.9"
+  implementation "org.slf4j:slf4j-api:2.0.0"
   //implementation "org.slf4j:slf4j-nop:1.7.9" // SLF4J seems to already be provided by org.apache.logging.log4j
-  
-  // ensure transitive dependencies do not use vulnerable log4j 
+
+  // ensure transitive dependencies do not use vulnerable log4j
   implementation "org.apache.logging.log4j:log4j-core", {
         version {
             strictly '2.17.0'
         }
     }
-  
+
   // Physiology simulation dependencies
   implementation files('lib/sbscl/SimulationCoreLibrary_v1.5_slim.jar')
-  implementation 'org.sbml.jsbml:jsbml:1.5', {
+  implementation 'org.sbml.jsbml:jsbml:1.6.1', {
       exclude group:'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+      exclude group:'junit', module: 'junit'
   }
   implementation 'org.apache.commons:commons-math:2.2'
-  
+
   // JfreeChart for drawing physiology charts
-  implementation 'org.jfree:jfreechart:1.5.0'
+  implementation 'org.jfree:jfreechart:1.5.3'
+
+  implementation fileTree(dir: 'lib/custom', include: '*.jar')
 
   // Use JUnit test framework
-  testImplementation 'junit:junit:4.12'
-  testImplementation fileTree(dir: 'lib/mdhtruntime/mdht', include: '*.jar')
-  testImplementation fileTree(dir: 'lib/mdhtruntime/non-mdht', include: '*.jar')
-  testImplementation 'org.mockito:mockito-core:2.19.0'
-  testImplementation 'org.powermock:powermock-module-junit4:1.7.1'
-  testImplementation 'org.powermock:powermock-api-mockito2:1.7.1'
-  testImplementation 'com.github.tomakehurst:wiremock-jre8:2.26.3'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:5.7.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:5.7.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:5.7.0'
-  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:5.7.0'
+  testImplementation('junit:junit') {
+    version {
+      strictly '4.13.2'
+    }
+  }
+  testImplementation 'org.mockito:mockito-core:4.7.0'
+  testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
+  testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
+  testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.2'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation:6.1.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-r4:6.1.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:6.1.0'
+  testImplementation 'ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu2:6.1.0'
   testImplementation 'com.helger:ph-schematron:5.6.5'
-  testImplementation 'com.helger:ph-commons:9.5.4'
+  testImplementation 'com.helger:ph-commons:9.5.5'
+  testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
 }
 
 // Provide more descriptive test failure output
@@ -123,7 +145,7 @@ test {
   }
   maxHeapSize = "6144m"
   jacoco {
-    excludes = ["org.hl7.*", "com.google.*"]
+    includes = ["org.mitre.*"]
   }
 }
 
@@ -158,26 +180,55 @@ task graphviz(type: JavaExec) {
   mainClass = "Graphviz"
 }
 
-task uberJar(type: Jar) {
-    def versionFile = new File("$projectDir/src/main/resources/version.txt")
-    def versionText = "N/A"
-    if (versionFile.exists()) {
-      versionText = versionFile.text.trim()
-    }
-    manifest {
-        attributes(
-            'Main-Class'     : 'App',
-            'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-            'Build-Version'  : versionText,
-            'Created-By'     : "Gradle ${gradle.gradleVersion}",
-            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
-        )
-    }
-    archiveBaseName = 'synthea-with-dependencies'
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-    duplicatesStrategy = 'warn'
+task rifMinimize(type: JavaExec) {
+  group 'Application'
+  description 'Filter exported RIF files to produce minimal set that covers all claim types'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFMinimizer"
+}
+
+task rif2CCW(type: JavaExec) {
+  group 'Application'
+  description 'Convert exported RIF files from BB2 format to CCW format'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIF2CCW"
+}
+
+if (project.hasProperty("args")) {
+    ext.cmdLineArgs = project.getProperty("args")
+} else {
+    ext.cmdLineArgs = ""
+}
+task rifBeneSplit(type: JavaExec) {
+  group 'Application'
+  description 'Split original 3  RIF file bene export into one file per year'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.export.rif.tools.BB2RIFBeneSplitter"
+  args cmdLineArgs.split()
+}
+
+shadowJar {
+  def versionFile = new File("$projectDir/src/main/resources/version.txt")
+  def versionText = "N/A"
+  if (versionFile.exists()) {
+    versionText = versionFile.text.trim()
+  }
+  transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)
+  archiveClassifier.set('with-dependencies')
+  archiveVersion.set('')
+  manifest {
+    attributes(
+      'Main-Class'     : 'App',
+      'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+      'Build-Version'  : versionText,
+      'Created-By'     : "Gradle ${gradle.gradleVersion}",
+      'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+      'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+    )
+  }
+}
+
+task uberJar() {
 }
 
 task concepts(type: JavaExec) {
@@ -251,6 +302,7 @@ task versionTxt() {
 
 compileJava.dependsOn versionTxt
 uberJar.dependsOn versionTxt
+uberJar.dependsOn shadowJar
 
 task cleanOutput {
   doLast {
@@ -275,12 +327,12 @@ run {
 }
 
 task sourceJar(type: Jar) {
-    classifier "sources"
+    archiveClassifier = "sources"
     from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier "javadoc"
+    archiveClassifier = "javadoc"
     from javadoc.destinationDir
 }
 
@@ -291,7 +343,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.1.0-SNAPSHOT'
+def mavenVersion = '3.2.2-SNAPSHOT'
 
 publishing {
     publications {
@@ -299,7 +351,7 @@ publishing {
             groupId mavenGroup
             version mavenVersion
             from components.java
-            
+
             artifact(sourceJar) {
                 classifier = 'sources'
             }
@@ -341,7 +393,7 @@ publishing {
                 def user = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
                 def pw = project.hasProperty('sonatypePassword') ? sonatypePassword : ''
                 username user
-                password pw 
+                password pw
             }
         }
     }

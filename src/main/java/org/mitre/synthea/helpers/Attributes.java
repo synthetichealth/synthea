@@ -13,7 +13,6 @@ import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.Rasterizer;
 import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Link;
@@ -40,6 +39,8 @@ import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+import org.mitre.synthea.modules.calculators.ASCVD;
+import org.mitre.synthea.modules.calculators.Framingham;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
 import org.mitre.synthea.world.agents.Person;
 
@@ -147,6 +148,8 @@ public class Attributes {
     });
 
     CardiovascularDiseaseModule.inventoryAttributes(attributes);
+    Framingham.inventoryAttributes(attributes);
+    ASCVD.inventoryAttributes(attributes);
     DeathModule.inventoryAttributes(attributes);
     EncounterModule.inventoryAttributes(attributes);
     HealthInsuranceModule.inventoryAttributes(attributes);
@@ -449,7 +452,7 @@ public class Attributes {
 
     File graphFile = new File("./output/" + filename + ".png");
     try {
-      Graphviz.fromGraph(graph).rasterizer(Rasterizer.BATIK).render(Format.PNG).toFile(graphFile);
+      Graphviz.fromGraph(graph).render(Format.PNG).toFile(graphFile);
     } catch (IOException e) {
       e.printStackTrace();
     }

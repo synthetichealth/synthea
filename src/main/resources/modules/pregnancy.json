@@ -348,7 +348,7 @@
         {
           "system": "SNOMED-CT",
           "code": "44608003",
-          "display": "Blood typing, RH typing"
+          "display": "Blood group typing (procedure)"
         }
       ],
       "direct_transition": "Hemoglobin_Test"
@@ -360,7 +360,7 @@
         {
           "system": "SNOMED-CT",
           "code": "104091002",
-          "display": "Hemoglobin / Hematocrit / Platelet count"
+          "display": "Hemogram, automated, with RBC, WBC, Hgb, Hct, Indices, Platelet count, and manual WBC differential"
         }
       ],
       "direct_transition": "Hep_B_Surface_Antigen"
@@ -408,7 +408,7 @@
         {
           "system": "SNOMED-CT",
           "code": "165829005",
-          "display": "Gonorrhea infection test"
+          "display": "Gonorrhea infection titer test (procedure)"
         }
       ],
       "direct_transition": "Syphilis_Test"
@@ -420,7 +420,7 @@
         {
           "system": "SNOMED-CT",
           "code": "269828009",
-          "display": "Syphilis infection test"
+          "display": "Syphilis infectious titer test (procedure)"
         }
       ],
       "direct_transition": "Urine_Culture"
@@ -468,7 +468,7 @@
         {
           "system": "SNOMED-CT",
           "code": "104375008",
-          "display": "Hepatitis C antibody test"
+          "display": "Hepatitis C antibody, confirmatory test"
         }
       ],
       "direct_transition": "Rubella_Screen"
@@ -504,7 +504,7 @@
         {
           "system": "SNOMED-CT",
           "code": "28163009",
-          "display": "Skin test for tuberculosis"
+          "display": "Skin test for tuberculosis, Tine test (procedure)"
         }
       ],
       "direct_transition": "Urine_Protein_Test"
@@ -528,7 +528,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5880005",
-          "display": "Physical examination of mother"
+          "display": "Physical examination procedure (procedure)"
         }
       ],
       "direct_transition": "End_Prenatal_Initial_Visit"
@@ -631,7 +631,7 @@
         {
           "system": "SNOMED-CT",
           "code": "443529005",
-          "display": "Screening for chromosomal aneuploidy in prenatal amniotic fluid"
+          "display": "Detection of chromosomal aneuploidy in prenatal amniotic fluid specimen using fluorescence in situ hybridization screening technique (procedure)"
         }
       ],
       "direct_transition": "End_Week_12_Visit"
@@ -695,7 +695,7 @@
         {
           "system": "SNOMED-CT",
           "code": "275833003",
-          "display": "Alpha-fetoprotein test"
+          "display": "AFP test - antenatal"
         }
       ],
       "direct_transition": "Week_16_Fundal_Height"
@@ -879,7 +879,7 @@
         {
           "system": "SNOMED-CT",
           "code": "51116004",
-          "display": "RhD passive immunization"
+          "display": "Passive immunization (procedure)"
         }
       ],
       "direct_transition": "Second_Hemoglobin_Test"
@@ -891,7 +891,7 @@
         {
           "system": "SNOMED-CT",
           "code": "104091002",
-          "display": "Hemoglobin / Hematocrit / Platelet count"
+          "display": "Hemogram, automated, with RBC, WBC, Hgb, Hct, Indices, Platelet count, and manual WBC differential"
         }
       ],
       "direct_transition": "Tdap_Vaccine"
@@ -903,7 +903,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399014008",
-          "display": "Vaccination for diphtheria, pertussis, and tetanus"
+          "display": "Administration of diphtheria, pertussis, and tetanus vaccine"
         }
       ],
       "direct_transition": "Glucose_Screen"
@@ -1097,7 +1097,7 @@
         {
           "system": "SNOMED-CT",
           "code": "118001005",
-          "display": "Streptococcus pneumoniae group B antigen test"
+          "display": "Streptococcus pneumoniae group B antigen assay"
         }
       ],
       "direct_transition": "Week_36_Fundal_Height"
@@ -1662,7 +1662,6 @@
         " MISCARRIAGES                                                         ",
         "======================================================================"
       ],
-      "target_encounter": "Prenatal_Initial_Visit",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1682,13 +1681,13 @@
         },
         {
           "distribution": 0.115,
-          "transition": "End_Initial_Visit_Towards_Ectopic_Pregnancy"
+          "transition": "Ectopic_Pregnancy"
         }
       ]
     },
     "End_Initial_Visit_Towards_Ectopic_Pregnancy": {
       "type": "EncounterEnd",
-      "direct_transition": "Ectopic_Pregnancy"
+      "direct_transition": "Wait_For_Ectopic_Pregnancy_Encounter"
     },
     "Miscarriage_In_Second_Trimester": {
       "type": "ConditionOnset",
@@ -1718,12 +1717,11 @@
     },
     "Early_Uknown_Complication": {
       "type": "ConditionOnset",
-      "target_encounter": "Prenatal_Initial_Visit",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": "156073000",
-          "display": "Fetus with unknown complication"
+          "display": "Complete miscarriage (disorder)"
         }
       ],
       "assign_to_attribute": "fatal_pregnancy_complication",
@@ -1731,7 +1729,6 @@
     },
     "Blighted_Ovum": {
       "type": "ConditionOnset",
-      "target_encounter": "Prenatal_Initial_Visit",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1741,19 +1738,6 @@
       ],
       "assign_to_attribute": "fatal_pregnancy_complication",
       "direct_transition": "End_Miscarriage_Encounter"
-    },
-    "Ectopic_Pregnancy": {
-      "type": "ConditionOnset",
-      "target_encounter": "Prenatal_Initial_Visit",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "79586000",
-          "display": "Tubal pregnancy"
-        }
-      ],
-      "assign_to_attribute": "fatal_pregnancy_complication",
-      "direct_transition": "Wait_For_Ectopic_Pregnancy_Encounter"
     },
     "Wait_For_Ectopic_Pregnancy_Encounter": {
       "type": "Delay",
@@ -1767,7 +1751,6 @@
     "Ectopic_Pregnancy_Encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "Ectopic_Pregnancy",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1788,11 +1771,11 @@
           "distribution": 0.5,
           "transition": "Ectopic_Pregnancy_Surgery_Procedure"
         }
-      ]
+      ],
+      "reason": "Ectopic_Pregnancy"
     },
     "Methotrexate_Injection": {
       "type": "Procedure",
-      "reason": "Ectopic_Pregnancy",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1800,11 +1783,11 @@
           "display": "Methotrexate injection into tubal pregnancy"
         }
       ],
-      "direct_transition": "End_Miscarriage_Encounter"
+      "direct_transition": "Length of Stay",
+      "reason": "Ectopic_Pregnancy"
     },
     "Ectopic_Pregnancy_Surgery_Procedure": {
       "type": "Procedure",
-      "reason": "Ectopic_Pregnancy",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1812,7 +1795,8 @@
           "display": "Excision of fallopian tube and surgical removal of ectopic pregnancy"
         }
       ],
-      "direct_transition": "End_Miscarriage_Encounter"
+      "direct_transition": "Length of Stay",
+      "reason": "Ectopic_Pregnancy"
     },
     "Late_Fetal_Chromosomal_Anomaly": {
       "type": "ConditionOnset",
@@ -1903,7 +1887,7 @@
         {
           "system": "SNOMED-CT",
           "code": "51116004",
-          "display": "RhD passive immunization"
+          "display": "Passive immunization (procedure)"
         }
       ],
       "direct_transition": "Physical_Exam_Post_Miscarriage"
@@ -1915,14 +1899,14 @@
         {
           "system": "SNOMED-CT",
           "code": "5880005",
-          "display": "Physical examination"
+          "display": "Physical examination procedure (procedure)"
         }
       ],
       "direct_transition": "Depression_Screening_Post_Miscarriage"
     },
     "Depression_Screening_Post_Miscarriage": {
       "type": "Procedure",
-      "reason": "Become_Pregnant",
+      "reason": "fatal_pregnancy_complication",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -2038,7 +2022,7 @@
         {
           "system": "SNOMED-CT",
           "code": "51116004",
-          "display": "RhD passive immunization"
+          "display": "Passive immunization (procedure)"
         }
       ],
       "direct_transition": "Pregnancy_Termination_Care"
@@ -2062,7 +2046,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5880005",
-          "display": "Physical exam following abortion"
+          "display": "Physical examination procedure (procedure)"
         }
       ],
       "direct_transition": "Depression_Screening_Post_Abortion"
@@ -2209,7 +2193,7 @@
         {
           "system": "SNOMED-CT",
           "code": "51116004",
-          "display": "RhD passive immunization"
+          "display": "Passive immunization (procedure)"
         }
       ],
       "direct_transition": "Physical_Exam_Post_Birth"
@@ -2221,7 +2205,7 @@
         {
           "system": "SNOMED-CT",
           "code": "5880005",
-          "display": "Physical examination following birth"
+          "display": "Physical examination procedure (procedure)"
         }
       ],
       "direct_transition": "Depression_Screening_Post_Birth"
@@ -2312,6 +2296,36 @@
       "attribute": "anemia_pregnancy",
       "value": 0,
       "direct_transition": "Unset_Pregnant_Attribute"
+    },
+    "Length of Stay": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 133899007,
+          "display": "Postoperative care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "parameters": {
+          "mean": 2.5
+        }
+      },
+      "unit": "days",
+      "direct_transition": "End_Miscarriage_Encounter"
+    },
+    "Ectopic_Pregnancy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "79586000",
+          "display": "Tubal pregnancy"
+        }
+      ],
+      "assign_to_attribute": "fatal_pregnancy_complication",
+      "direct_transition": "End_Initial_Visit_Towards_Ectopic_Pregnancy"
     }
   },
   "gmf_version": 1

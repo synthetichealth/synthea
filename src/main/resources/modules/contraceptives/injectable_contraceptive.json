@@ -69,7 +69,8 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Prescribe_Injectable_Contraceptive"
+      "direct_transition": "Prescribe_Injectable_Contraceptive",
+      "reason": "contraception_care_reason"
     },
     "Prescribe_Injectable_Contraceptive": {
       "type": "Simple",
@@ -116,7 +117,8 @@
           "display": "1 ML medroxyprogesterone acetate 150 MG/ML Injection"
         }
       ],
-      "direct_transition": "Initial_Injection_By_Physician"
+      "direct_transition": "Initial_Injection_By_Physician",
+      "administration": true
     },
     "Prescribe_Depo_SubQ": {
       "type": "MedicationOrder",
@@ -128,7 +130,8 @@
           "display": "1 ML medroxyPROGESTERone acetate 150 MG/ML Injection"
         }
       ],
-      "direct_transition": "Initial_Injection_By_Physician"
+      "direct_transition": "Initial_Injection_By_Physician",
+      "administration": true
     },
     "Initial_Injection_By_Physician": {
       "type": "Procedure",

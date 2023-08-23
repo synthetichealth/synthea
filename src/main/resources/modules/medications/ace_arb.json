@@ -1,0 +1,2049 @@
+{
+    "name": "Ace Arb",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE ACE ARB",
+        "======================================================================",
+        "",
+        "This submodule prescribes a medication based on population data.",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'ace_arb'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    RxNav: https://mor.nlm.nih.gov/RxNav/",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    FDA: https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "",
+        "Made with (</>) by the CodeRx Medication Diversification Tool (MDT)",
+        "",
+        "MDT settings for this submodule:",
+        "{",
+        "    \"module\": {",
+        "        \"name\": null,",
+        "        \"assign_to_attribute\": null,",
+        "        \"reason\": null,",
+        "        \"as_needed\": false,",
+        "        \"chronic\": false,",
+        "        \"refills\": 0",
+        "    },",
+        "    \"rxclass\": {",
+        "        \"include\": [",
+        "            {",
+        "                \"class_id\": \"C09A\",",
+        "                \"relationship\": \"ATC\"",
+        "            },",
+        "            {",
+        "                \"class_id\": \"C09C\",",
+        "                \"relationship\": \"ATC\"",
+        "            }",
+        "        ],",
+        "        \"exclude\": null",
+        "    },",
+        "    \"rxcui\": {",
+        "        \"include\": null,",
+        "        \"exclude\": null",
+        "    },",
+        "    \"ingredient_tty_filter\": null,",
+        "    \"dose_form_filter\": null,",
+        "    \"meps\": {",
+        "        \"age_ranges\": null,",
+        "        \"demographic_distribution_flags\": {",
+        "            \"age\": true,",
+        "            \"gender\": true,",
+        "            \"state\": true",
+        "        }",
+        "    },",
+        "    \"state_prefix\": \"Prescribe_\",",
+        "    \"ingredient_distribution_suffix\": \"_ingredient_distribution\",",
+        "    \"product_distribution_suffix\": \"_product_distribution\",",
+        "    \"default_age_ranges\": [",
+        "        \"0-3\",",
+        "        \"4-7\",",
+        "        \"8-11\",",
+        "        \"12-17\",",
+        "        \"18-25\",",
+        "        \"26-35\",",
+        "        \"36-45\",",
+        "        \"46-65\",",
+        "        \"65-103\"",
+        "    ]",
+        "}"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "ace_arb",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 1.7% ] Amlodipine_Benazepril",
+                "2. [ 2.6% ] Benazepril",
+                "3. [ 0.5% ] Benazepril_Hydrochlorothiazide",
+                "4. [ 2.3% ] Enalapril",
+                "5. [ 7.0% ] Hydrochlorothiazide_Lisinopril",
+                "6. [ 6.4% ] Hydrochlorothiazide_Losartan",
+                "7. [ 1.6% ] Hydrochlorothiazide_Valsartan",
+                "8. [ 2.0% ] Irbesartan",
+                "9. [ 43.3% ] Lisinopril",
+                "10. [ 24.5% ] Losartan",
+                "11. [ 0.6% ] Quinapril",
+                "12. [ 2.0% ] Ramipril",
+                "13. [ 0.6% ] Sacubitril_Valsartan",
+                "14. [ 0.7% ] Telmisartan",
+                "15. [ 4.1% ] Valsartan"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Amlodipine_Benazepril",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochlorothiazide",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Enalapril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_Lisinopril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_Losartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_Valsartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Irbesartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Losartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Quinapril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ramipril",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Sacubitril_Valsartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Telmisartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Valsartan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amlodipine_Benazepril": {
+            "name": "Prescribe_Amlodipine_Benazepril",
+            "remarks": [
+                "======================================================================",
+                " AMLODIPINE_BENAZEPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 23.1% ] Amlodipine_10_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+                "2. [ 19.3% ] Amlodipine_10_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
+                "3. [ 6.0% ] Amlodipine_2_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+                "4. [ 18.3% ] Amlodipine_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+                "5. [ 28.8% ] Amlodipine_5_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+                "6. [ 4.4% ] Amlodipine_5_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Amlodipine_2_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Benazepril": {
+            "name": "Prescribe_Benazepril",
+            "remarks": [
+                "======================================================================",
+                " BENAZEPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 18.8% ] Benazepril_Hydrochloride_10_Mg_Oral_Tablet",
+                "2. [ 42.0% ] Benazepril_Hydrochloride_20_Mg_Oral_Tablet",
+                "3. [ 29.4% ] Benazepril_Hydrochloride_40_Mg_Oral_Tablet",
+                "4. [ 9.7% ] Benazepril_Hydrochloride_5_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Benazepril_Hydrochlorothiazide": {
+            "name": "Prescribe_Benazepril_Hydrochlorothiazide",
+            "remarks": [
+                "======================================================================",
+                " BENAZEPRIL_HYDROCHLOROTHIAZIDE MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 23.0% ] Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+                "2. [ 34.5% ] Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+                "3. [ 42.6% ] Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Enalapril": {
+            "name": "Prescribe_Enalapril",
+            "remarks": [
+                "======================================================================",
+                " ENALAPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 37.4% ] Enalapril_Maleate_10_Mg_Oral_Tablet",
+                "2. [ 0.3% ] Enalapril_Maleate_1_Mg_Ml_Oral_Solution_Epaned",
+                "3. [ 37.4% ] Enalapril_Maleate_20_Mg_Oral_Tablet",
+                "4. [ 12.3% ] Enalapril_Maleate_2_5_Mg_Oral_Tablet",
+                "5. [ 12.7% ] Enalapril_Maleate_5_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Enalapril_Maleate_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Enalapril_Maleate_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Enalapril_Maleate_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Enalapril_Maleate_2_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Enalapril_Maleate_1_Mg_Ml_Oral_Solution_Epaned",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Hydrochlorothiazide_Lisinopril": {
+            "name": "Prescribe_Hydrochlorothiazide_Lisinopril",
+            "remarks": [
+                "======================================================================",
+                " HYDROCHLOROTHIAZIDE_LISINOPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 31.2% ] Hydrochlorothiazide_12_5_Mg_Lisinopril_10_Mg_Oral_Tablet",
+                "2. [ 35.9% ] Hydrochlorothiazide_12_5_Mg_Lisinopril_20_Mg_Oral_Tablet",
+                "3. [ 32.9% ] Hydrochlorothiazide_25_Mg_Lisinopril_20_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Lisinopril_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Hydrochlorothiazide_Losartan": {
+            "name": "Prescribe_Hydrochlorothiazide_Losartan",
+            "remarks": [
+                "======================================================================",
+                " HYDROCHLOROTHIAZIDE_LOSARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 16.5% ] Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+                "2. [ 0.2% ] Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
+                "3. [ 32.7% ] Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet",
+                "4. [ 0.3% ] Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet_Hyzaar",
+                "5. [ 49.5% ] Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+                "6. [ 0.8% ] Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet_Hyzaar",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Hydrochlorothiazide_Valsartan": {
+            "name": "Prescribe_Hydrochlorothiazide_Valsartan",
+            "remarks": [
+                "======================================================================",
+                " HYDROCHLOROTHIAZIDE_VALSARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 29.1% ] Hydrochlorothiazide_12_5_Mg_Valsartan_160_Mg_Oral_Tablet",
+                "2. [ 4.5% ] Hydrochlorothiazide_12_5_Mg_Valsartan_320_Mg_Oral_Tablet",
+                "3. [ 15.5% ] Hydrochlorothiazide_12_5_Mg_Valsartan_80_Mg_Oral_Tablet",
+                "4. [ 23.7% ] Hydrochlorothiazide_25_Mg_Valsartan_160_Mg_Oral_Tablet",
+                "5. [ 27.2% ] Hydrochlorothiazide_25_Mg_Valsartan_320_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_160_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_160_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_320_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_320_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Irbesartan": {
+            "name": "Prescribe_Irbesartan",
+            "remarks": [
+                "======================================================================",
+                " IRBESARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 42.4% ] Irbesartan_150_Mg_Oral_Tablet",
+                "2. [ 45.4% ] Irbesartan_300_Mg_Oral_Tablet",
+                "3. [ 12.1% ] Irbesartan_75_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Irbesartan_150_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Irbesartan_300_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Irbesartan_75_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Lisinopril": {
+            "name": "Prescribe_Lisinopril",
+            "remarks": [
+                "======================================================================",
+                " LISINOPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 30.3% ] Lisinopril_10_Mg_Oral_Tablet",
+                "2. [ 0.1% ] Lisinopril_1_Mg_Ml_Oral_Solution_Qbrelis",
+                "3. [ 27.3% ] Lisinopril_20_Mg_Oral_Tablet",
+                "4. [ 7.1% ] Lisinopril_2_5_Mg_Oral_Tablet",
+                "5. [ 1.5% ] Lisinopril_30_Mg_Oral_Tablet",
+                "6. [ 18.3% ] Lisinopril_40_Mg_Oral_Tablet",
+                "7. [ 15.3% ] Lisinopril_5_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Lisinopril_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_30_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_2_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lisinopril_1_Mg_Ml_Oral_Solution_Qbrelis",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Losartan": {
+            "name": "Prescribe_Losartan",
+            "remarks": [
+                "======================================================================",
+                " LOSARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 41.1% ] Losartan_Potassium_100_Mg_Oral_Tablet",
+                "2. [ 20.8% ] Losartan_Potassium_25_Mg_Oral_Tablet",
+                "3. [ 0.0% ] Losartan_Potassium_25_Mg_Oral_Tablet_Cozaar",
+                "4. [ 38.0% ] Losartan_Potassium_50_Mg_Oral_Tablet",
+                "5. [ 0.1% ] Losartan_Potassium_50_Mg_Oral_Tablet_Cozaar"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Losartan_Potassium_100_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet_Cozaar",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet_Cozaar",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Quinapril": {
+            "name": "Prescribe_Quinapril",
+            "remarks": [
+                "======================================================================",
+                " QUINAPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 14.1% ] Quinapril_10_Mg_Oral_Tablet",
+                "2. [ 18.6% ] Quinapril_20_Mg_Oral_Tablet",
+                "3. [ 63.3% ] Quinapril_40_Mg_Oral_Tablet",
+                "4. [ 4.0% ] Quinapril_5_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Quinapril_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Quinapril_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Quinapril_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Quinapril_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Ramipril": {
+            "name": "Prescribe_Ramipril",
+            "remarks": [
+                "======================================================================",
+                " RAMIPRIL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 47.7% ] Ramipril_10_Mg_Oral_Capsule",
+                "2. [ 3.8% ] Ramipril_1_25_Mg_Oral_Capsule",
+                "3. [ 19.3% ] Ramipril_2_5_Mg_Oral_Capsule",
+                "4. [ 29.2% ] Ramipril_5_Mg_Oral_Capsule"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Ramipril_10_Mg_Oral_Capsule",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ramipril_2_5_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ramipril_5_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ramipril_1_25_Mg_Oral_Capsule",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Sacubitril_Valsartan": {
+            "name": "Prescribe_Sacubitril_Valsartan",
+            "remarks": [
+                "======================================================================",
+                " SACUBITRIL_VALSARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 50.0% ] Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto",
+                "2. [ 23.3% ] Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto",
+                "3. [ 26.6% ] Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Telmisartan": {
+            "name": "Prescribe_Telmisartan",
+            "remarks": [
+                "======================================================================",
+                " TELMISARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 3.9% ] Telmisartan_20_Mg_Oral_Tablet",
+                "2. [ 0.3% ] Telmisartan_20_Mg_Oral_Tablet_Micardis",
+                "3. [ 26.6% ] Telmisartan_40_Mg_Oral_Tablet",
+                "4. [ 53.9% ] Telmisartan_80_Mg_Oral_Tablet",
+                "5. [ 15.3% ] Telmisartan_80_Mg_Oral_Tablet_Micardis"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Telmisartan_20_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Telmisartan_20_Mg_Oral_Tablet_Micardis",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Telmisartan_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Telmisartan_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Telmisartan_80_Mg_Oral_Tablet_Micardis",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Valsartan": {
+            "name": "Prescribe_Valsartan",
+            "remarks": [
+                "======================================================================",
+                " VALSARTAN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 34.7% ] Valsartan_160_Mg_Oral_Tablet",
+                "2. [ 27.7% ] Valsartan_320_Mg_Oral_Tablet",
+                "3. [ 1.9% ] Valsartan_320_Mg_Oral_Tablet_Diovan",
+                "4. [ 3.3% ] Valsartan_40_Mg_Oral_Tablet",
+                "5. [ 32.4% ] Valsartan_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Valsartan_160_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Valsartan_320_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Valsartan_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Valsartan_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Valsartan_320_Mg_Oral_Tablet_Diovan",
+                    "default_probability": "0",
+                    "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule": {
+            "remarks": [
+                "======================================================================",
+                " BEGIN MEDICATION ORDER STATES                                        ",
+                "======================================================================"
+            ],
+            "name": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898342",
+                    "display": "amlodipine 10 MG / benazepril hydrochloride 20 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898346",
+                    "display": "amlodipine 10 MG / benazepril hydrochloride 40 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amlodipine_2_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amlodipine_2_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898350",
+                    "display": "amlodipine 2.5 MG / benazepril hydrochloride 10 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898353",
+                    "display": "amlodipine 5 MG / benazepril hydrochloride 10 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898356",
+                    "display": "amlodipine 5 MG / benazepril hydrochloride 20 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule": {
+            "name": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898359",
+                    "display": "amlodipine 5 MG / benazepril hydrochloride 40 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898362",
+                    "display": "benazepril hydrochloride 10 MG / hydrochlorothiazide 12.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898687",
+                    "display": "benazepril hydrochloride 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898367",
+                    "display": "benazepril hydrochloride 20 MG / hydrochlorothiazide 12.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898372",
+                    "display": "benazepril hydrochloride 20 MG / hydrochlorothiazide 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898690",
+                    "display": "benazepril hydrochloride 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898719",
+                    "display": "benazepril hydrochloride 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Benazepril_Hydrochloride_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Benazepril_Hydrochloride_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "898723",
+                    "display": "benazepril hydrochloride 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Enalapril_Maleate_1_Mg_Ml_Oral_Solution_Epaned": {
+            "name": "Prescribe_Enalapril_Maleate_1_Mg_Ml_Oral_Solution_Epaned",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1435630",
+                    "display": "enalapril maleate 1 MG/ML Oral Solution [Epaned]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Enalapril_Maleate_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Enalapril_Maleate_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "858817",
+                    "display": "enalapril maleate 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Enalapril_Maleate_2_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Enalapril_Maleate_2_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "858804",
+                    "display": "enalapril maleate 2.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Enalapril_Maleate_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Enalapril_Maleate_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "858810",
+                    "display": "enalapril maleate 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Enalapril_Maleate_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Enalapril_Maleate_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "858813",
+                    "display": "enalapril maleate 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197885",
+                    "display": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197886",
+                    "display": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979464",
+                    "display": "hydrochlorothiazide 12.5 MG / losartan potassium 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979466",
+                    "display": "hydrochlorothiazide 12.5 MG / losartan potassium 100 MG Oral Tablet [Hyzaar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979468",
+                    "display": "hydrochlorothiazide 12.5 MG / losartan potassium 50 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet_Hyzaar": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet_Hyzaar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979470",
+                    "display": "hydrochlorothiazide 12.5 MG / losartan potassium 50 MG Oral Tablet [Hyzaar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_160_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_160_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200285",
+                    "display": "hydrochlorothiazide 12.5 MG / valsartan 160 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_320_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_320_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "636042",
+                    "display": "hydrochlorothiazide 12.5 MG / valsartan 320 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200284",
+                    "display": "hydrochlorothiazide 12.5 MG / valsartan 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_25_Mg_Lisinopril_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_25_Mg_Lisinopril_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197887",
+                    "display": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979471",
+                    "display": "hydrochlorothiazide 25 MG / losartan potassium 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar": {
+            "name": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979473",
+                    "display": "hydrochlorothiazide 25 MG / losartan potassium 100 MG Oral Tablet [Hyzaar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_160_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_160_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349353",
+                    "display": "hydrochlorothiazide 25 MG / valsartan 160 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_320_Mg_Oral_Tablet": {
+            "name": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_320_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "636045",
+                    "display": "hydrochlorothiazide 25 MG / valsartan 320 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Irbesartan_150_Mg_Oral_Tablet": {
+            "name": "Prescribe_Irbesartan_150_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200095",
+                    "display": "irbesartan 150 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Irbesartan_300_Mg_Oral_Tablet": {
+            "name": "Prescribe_Irbesartan_300_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200096",
+                    "display": "irbesartan 300 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Irbesartan_75_Mg_Oral_Tablet": {
+            "name": "Prescribe_Irbesartan_75_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200094",
+                    "display": "irbesartan 75 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_1_Mg_Ml_Oral_Solution_Qbrelis": {
+            "name": "Prescribe_Lisinopril_1_Mg_Ml_Oral_Solution_Qbrelis",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1806890",
+                    "display": "lisinopril 1 MG/ML Oral Solution [Qbrelis]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "314076",
+                    "display": "lisinopril 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_2_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_2_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "311353",
+                    "display": "lisinopril 2.5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "314077",
+                    "display": "lisinopril 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_30_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_30_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "205326",
+                    "display": "lisinopril 30 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197884",
+                    "display": "lisinopril 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lisinopril_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lisinopril_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "311354",
+                    "display": "lisinopril 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Losartan_Potassium_100_Mg_Oral_Tablet": {
+            "name": "Prescribe_Losartan_Potassium_100_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979480",
+                    "display": "losartan potassium 100 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet": {
+            "name": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979485",
+                    "display": "losartan potassium 25 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet_Cozaar": {
+            "name": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet_Cozaar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979487",
+                    "display": "losartan potassium 25 MG Oral Tablet [Cozaar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet": {
+            "name": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979492",
+                    "display": "losartan potassium 50 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet_Cozaar": {
+            "name": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet_Cozaar",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "979494",
+                    "display": "losartan potassium 50 MG Oral Tablet [Cozaar]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Quinapril_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Quinapril_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312748",
+                    "display": "quinapril 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Quinapril_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Quinapril_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312749",
+                    "display": "quinapril 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Quinapril_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Quinapril_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "314203",
+                    "display": "quinapril 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Quinapril_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Quinapril_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312750",
+                    "display": "quinapril 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ramipril_1_25_Mg_Oral_Capsule": {
+            "name": "Prescribe_Ramipril_1_25_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "845488",
+                    "display": "ramipril 1.25 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ramipril_10_Mg_Oral_Capsule": {
+            "name": "Prescribe_Ramipril_10_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "261962",
+                    "display": "ramipril 10 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ramipril_2_5_Mg_Oral_Capsule": {
+            "name": "Prescribe_Ramipril_2_5_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198188",
+                    "display": "ramipril 2.5 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ramipril_5_Mg_Oral_Capsule": {
+            "name": "Prescribe_Ramipril_5_Mg_Oral_Capsule",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198189",
+                    "display": "ramipril 5 MG Oral Capsule"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto": {
+            "name": "Prescribe_Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1656346",
+                    "display": "sacubitril 24 MG / valsartan 26 MG Oral Tablet [Entresto]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto": {
+            "name": "Prescribe_Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1656351",
+                    "display": "sacubitril 49 MG / valsartan 51 MG Oral Tablet [Entresto]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto": {
+            "name": "Prescribe_Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1656356",
+                    "display": "sacubitril 97 MG / valsartan 103 MG Oral Tablet [Entresto]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Telmisartan_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Telmisartan_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "282755",
+                    "display": "telmisartan 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Telmisartan_20_Mg_Oral_Tablet_Micardis": {
+            "name": "Prescribe_Telmisartan_20_Mg_Oral_Tablet_Micardis",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "284531",
+                    "display": "telmisartan 20 MG Oral Tablet [Micardis]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Telmisartan_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Telmisartan_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "205304",
+                    "display": "telmisartan 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Telmisartan_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Telmisartan_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "205305",
+                    "display": "telmisartan 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Telmisartan_80_Mg_Oral_Tablet_Micardis": {
+            "name": "Prescribe_Telmisartan_80_Mg_Oral_Tablet_Micardis",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "213432",
+                    "display": "telmisartan 80 MG Oral Tablet [Micardis]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Valsartan_160_Mg_Oral_Tablet": {
+            "name": "Prescribe_Valsartan_160_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349201",
+                    "display": "valsartan 160 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Valsartan_320_Mg_Oral_Tablet": {
+            "name": "Prescribe_Valsartan_320_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349200",
+                    "display": "valsartan 320 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Valsartan_320_Mg_Oral_Tablet_Diovan": {
+            "name": "Prescribe_Valsartan_320_Mg_Oral_Tablet_Diovan",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "352001",
+                    "display": "valsartan 320 MG Oral Tablet [Diovan]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Valsartan_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Valsartan_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349483",
+                    "display": "valsartan 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Valsartan_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Valsartan_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "ace_arb",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "349199",
+                    "display": "valsartan 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        }
+    }
+}

@@ -144,11 +144,16 @@ public class Costs {
       return 0.0;
     }
 
-    String code = entry.codes.get(0).code;
+    String code = entry.codes.get(0).code;;
     // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
       baseCost = costs.get(code).chooseCost(person);
+      if (entry instanceof HealthRecord.Medication) {
+        // baseCost for medications is PER UNIT, so need to multiply by quantity
+        HealthRecord.Medication rx = (HealthRecord.Medication) entry;
+        baseCost = baseCost * rx.getQuantity();
+      }
     } else {
       baseCost = defaultCost;
     }
@@ -170,7 +175,7 @@ public class Costs {
    */
   private static Map<String, CostData> parseCsvToMap(String filename) {
     try {
-      String rawData = Utilities.readResource(filename);
+      String rawData = Utilities.readResourceAndStripBOM(filename);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, CostData> costMap = new HashMap<>();
@@ -203,7 +208,7 @@ public class Costs {
 
   private static Map<String, Double> parseAdjustmentFactors(String resource) {
     try {
-      String rawData = Utilities.readResource(resource);
+      String rawData = Utilities.readResourceAndStripBOM(resource);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, Double> costMap = new HashMap<>();
@@ -227,7 +232,7 @@ public class Costs {
 
   private static Map<String, Double> parseEncounterAdjustmentFactors(String resource) {
     try {
-      String rawData = Utilities.readResource(resource);
+      String rawData = Utilities.readResourceAndStripBOM(resource);
       List<LinkedHashMap<String, String>> lines = SimpleCSV.parse(rawData);
 
       Map<String, Double> costMap = new HashMap<>();
@@ -289,7 +294,7 @@ public class Costs {
    * Selection of individual prices based on this cost data should be done using
    * the chooseCost method.
    */
-  private static class CostData {
+  protected static class CostData {
     private double min;
     private double mode;
     private double max;

@@ -1,0 +1,440 @@
+{
+  "name": "referral",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "AVRr Referral"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "VHD Referral Consultation"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "VHD Referral Consultation": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Liaising with referral source",
+      "reason": "vhd_diagnosis"
+    },
+    "Liaising with referral source": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709010006,
+          "display": "Liaising with referral source (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Medical Records Review",
+      "reason": "vhd_diagnosis"
+    },
+    "Medical Records Review": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 312853008,
+          "display": "Medical records review (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Care Plan Coordination",
+      "reason": "vhd_diagnosis"
+    },
+    "Care Plan Coordination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 711069006,
+          "display": "Coordination of care plan (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "AVRr Care Plan",
+      "reason": "vhd_diagnosis"
+    },
+    "AVRr Care Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 734163000,
+          "display": "Care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "End_VHD_Referral_Consultation",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 266753000,
+          "display": "Referral for laboratory tests (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 308461008,
+          "display": "Referral to radiology service (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 183835003,
+          "display": "Refer for angiogram (procedure)"
+        }
+      ],
+      "assign_to_attribute": "avrr_careplan",
+      "reason": "vhd_diagnosis"
+    },
+    "Priority_1_Next_Encounter": {
+      "type": "Delay",
+      "direct_transition": "Set_Immediate_Admission",
+      "range": {
+        "low": 0,
+        "high": 48,
+        "unit": "hours"
+      }
+    },
+    "Priority_2_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Set_Immediate_Admission"
+    },
+    "Priority_3_Next_Encounter": {
+      "type": "Delay",
+      "direct_transition": "Preoperative_Outpatient",
+      "range": {
+        "low": 7,
+        "high": 15,
+        "unit": "days"
+      }
+    },
+    "Priority_4_Next_Encounter": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 30,
+        "unit": "days"
+      },
+      "direct_transition": "Preoperative_Outpatient"
+    },
+    "Set_Immediate_Admission": {
+      "type": "SetAttribute",
+      "attribute": "avrr_immediate_admission",
+      "direct_transition": "Immediate_Surgical_Admission",
+      "value": true
+    },
+    "Immediate_Surgical_Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "AVRr Preop",
+      "reason": "vhd_diagnosis"
+    },
+    "Preoperative_Outpatient": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Set_Immediate_Admission_False",
+      "reason": "vhd_diagnosis"
+    },
+    "Set_Immediate_Admission_False": {
+      "type": "SetAttribute",
+      "attribute": "cabg_immediate_admission",
+      "direct_transition": "AVRr Preop",
+      "value": false
+    },
+    "AVRr Preop": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/preoperative",
+      "direct_transition": "Heart Team"
+    },
+    "Heart Team": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 312384001,
+          "display": "Multidisciplinary assessment (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Heart Team Conference",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Treatment Plan",
+          "distribution": 0.8
+        }
+      ],
+      "reason": "vhd_diagnosis"
+    },
+    "Heart Team Conference": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 384682003,
+          "display": "Multidisciplinary care conference (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Treatment Plan",
+      "reason": "vhd_diagnosis"
+    },
+    "Treatment Plan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 709138001,
+          "display": "Notification of treatment plan (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Scheduling",
+          "distribution": 0.9
+        },
+        {
+          "transition": "Patient referral",
+          "distribution": 0.1
+        }
+      ],
+      "reason": "vhd_diagnosis"
+    },
+    "Scheduling": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410538000,
+          "display": "Scheduling (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "avrr_immediate_admission",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End Preoperative"
+        }
+      ],
+      "reason": "vhd_diagnosis"
+    },
+    "Patient referral": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 3457005,
+          "display": "Patient referral (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "CABG_AVRr",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Palliative Care",
+          "distribution": 0.4
+        }
+      ],
+      "reason": "vhd_diagnosis"
+    },
+    "End Preoperative": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Priority_2_Next_Encounter_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority_3_Next_Encounter_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority_4_Next_Encounter_2"
+        }
+      ]
+    },
+    "Priority_2_Next_Encounter_2": {
+      "type": "Delay",
+      "range": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Valve Surgery"
+    },
+    "Valve Surgery": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "vhd_diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 32485007,
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Priority_3_Next_Encounter_2": {
+      "type": "Delay",
+      "direct_transition": "Valve Surgery",
+      "range": {
+        "low": 7,
+        "high": 15,
+        "unit": "days"
+      }
+    },
+    "Priority_4_Next_Encounter_2": {
+      "type": "Delay",
+      "range": {
+        "low": 15,
+        "high": 30,
+        "unit": "days"
+      },
+      "direct_transition": "Valve Surgery"
+    },
+    "CABG_AVRr": {
+      "type": "SetAttribute",
+      "attribute": "cabg_avrr",
+      "direct_transition": "End Preoperative Encounter",
+      "value": true
+    },
+    "Palliative Care": {
+      "type": "SetAttribute",
+      "attribute": "palliative_avrr",
+      "direct_transition": "Palliative Referral",
+      "value": true
+    },
+    "End Preoperative Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Expected Survival": {
+      "type": "Death",
+      "direct_transition": "End Preoperative Encounter",
+      "range": {
+        "low": 3,
+        "high": 6,
+        "unit": "months"
+      }
+    },
+    "Hospice Admission": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "direct_transition": "Expected Survival",
+      "value": true,
+      "remarks": [
+        "Setting the value \"hospice\" = true will get picked up in the hospice module, once these are linked"
+      ]
+    },
+    "Palliative Referral": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306237005,
+          "display": "Referral to palliative care service (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "distributed_transition": [
+        {
+          "transition": "Hospice Admission",
+          "distribution": 0.4
+        },
+        {
+          "transition": "End Preoperative Encounter",
+          "distribution": 0.6
+        }
+      ],
+      "reason": "vhd_diagnosis"
+    },
+    "End_VHD_Referral_Consultation": {
+      "type": "EncounterEnd",
+      "conditional_transition": [
+        {
+          "transition": "Priority_1_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Priority_2_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority_3_Next_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority_4_Next_Encounter"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

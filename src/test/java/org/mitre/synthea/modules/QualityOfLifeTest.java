@@ -8,10 +8,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.TestHelper;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 
 //test calculate, conditionsInYear, weight
@@ -29,13 +32,17 @@ public class QualityOfLifeTest {
   public void init() {
     // Create Person
     person = new Person(0);
+    Provider provider = TestHelper.buildMockProvider();
+    for (EncounterType type : EncounterType.values()) {
+      person.setProvider(type, provider);
+    }
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.INCOME, 1000000);
 
     // Ensure Person's payer is not null
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(0L, Payer.noInsurance);
-    person.coverage.setPayerAtTime(TimeUnit.DAYS.toMillis((long) (365.25 * 10)), Payer.noInsurance);
+    PayerManager.loadNoInsurance();
+    person.coverage.setPlanToNoInsurance(0L);
+    person.coverage.setPlanToNoInsurance(TimeUnit.DAYS.toMillis((long) (365.25 * 10) + 1));
 
     // Diabetes - code = 44054006;  dw = 0.031, 0.049, 0.072
     // ADD      - code = 192127007; dw = 0.028, 0.045, 0.066
@@ -86,7 +93,7 @@ public class QualityOfLifeTest {
 
     double dalyLiving = qol[0];
     double qalyLiving = qol[1];
-    // All care was recieved so the person recieves least QOL impact.
+    // All care was received so the person receives least QOL impact.
     assertEquals(true, (dalyLiving > 1.2 && dalyLiving < 1.3));
     assertEquals(true, (qalyLiving > 33 && qalyLiving < 34));
   }
@@ -100,7 +107,7 @@ public class QualityOfLifeTest {
 
     double dalyDeceased = qol[0];
     double qalyDeceased = qol[1];
-    // All care was recieved so the person recieves least QOL impact.
+    // All care was received so the person receives least QOL impact.
     assertEquals(true, (dalyDeceased > 53 && dalyDeceased < 54));
     assertEquals(true, (qalyDeceased > 33 && qalyDeceased < 34));
   }

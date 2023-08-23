@@ -20,7 +20,7 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 public class LocationTest {
-
+  private static String locationDoesNotExist = "The Lost City of Atlantis";
   private static String testState = null;
   private static String testTown = null;
   private static Location location = null;
@@ -59,6 +59,41 @@ public class LocationTest {
   }
 
   @Test
+  public void testLocationWithoutZipCode() {
+    Assert.assertFalse(location.getPopulation(locationDoesNotExist) > 0);
+    List<String> zipcodes = location.getZipCodes(locationDoesNotExist);
+    Assert.assertTrue(zipcodes.size() == 1);
+    Assert.assertTrue(zipcodes.contains("00000"));
+  }
+
+  @Test
+  public void testLocationWithFipsCode() {
+    Assert.assertTrue(location.getPopulation(testTown) > 0);
+    List<String> zipcodes = location.getZipCodes(testTown);
+    Assert.assertFalse(Location.getFipsCodeByZipCode(zipcodes.get(0)).isEmpty());
+  }
+
+  @Test
+  public void testLocationWithoutFipsCode() {
+    List<String> zipcodes = location.getZipCodes(locationDoesNotExist);
+    Assert.assertTrue(zipcodes.size() == 1);
+    Assert.assertTrue(zipcodes.contains("00000"));
+    Assert.assertTrue(Location.getFipsCodeByZipCode(zipcodes.get(0)).isEmpty());
+  }
+
+  @Test
+  public void testAssignPointPersonWithLocationThatDoesNotExist() {
+    Person p = new Person(1);
+    String zipcode = location.getZipCode(locationDoesNotExist, p);
+    p.attributes.put(Person.ZIP, zipcode);
+    location.assignPoint(p, locationDoesNotExist);
+    Point2D.Double coord = (Point2D.Double) p.attributes.get(Person.COORDINATE);
+    Assert.assertNotNull(coord);
+    Assert.assertNotNull(coord.x);
+    Assert.assertNotNull(coord.y);
+  }
+
+  @Test
   public void testTimezone() {
     String tz = Location.getTimezoneByState(testState);
     Assert.assertNotNull(tz);
@@ -67,11 +102,11 @@ public class LocationTest {
   @Test
   public void testAllDemographicsHaveLocations() throws Exception {
     String demoFileContents =
-        Utilities.readResource(Config.get("generate.demographics.default_file"));
+        Utilities.readResource(Config.get("generate.demographics.default_file"), true, true);
     List<LinkedHashMap<String, String>> demographics = SimpleCSV.parse(demoFileContents);
 
     String zipFileContents =
-        Utilities.readResource(Config.get("generate.geography.zipcodes.default_file"));
+        Utilities.readResource(Config.get("generate.geography.zipcodes.default_file"), true, true);
     List<LinkedHashMap<String, String>> zips = SimpleCSV.parse(zipFileContents);
 
     // parse all the locations from the zip codes and put them in a a set.

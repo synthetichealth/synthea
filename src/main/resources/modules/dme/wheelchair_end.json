@@ -1,0 +1,26 @@
+{
+  "name": "wheelchair_end",
+  "remarks": [
+    "Submodule to stop wheelchair and accessory devices."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "End Wheelchair"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "End Wheelchair": {
+      "type": "DeviceEnd",
+      "direct_transition": "End Accessory",
+      "referenced_by_attribute": "wheelchair"
+    },
+    "End Accessory": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "wheelchair_accessory"
+    }
+  },
+  "gmf_version": 2
+}

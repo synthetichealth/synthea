@@ -1,0 +1,763 @@
+{
+  "name": "preoperative",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models Preoperative Testing. The tests completed depend on the schedule priority of the patient and time available before surgery. Labs and imaging are as follows: ",
+    "",
+    "# Priority 1+ =  Common Labs",
+    "- CBC",
+    "- CMP",
+    "- Magnesium",
+    "- Phosphorus",
+    "- PT/INR",
+    "- PTT",
+    "- ABG",
+    "- Type and Cross",
+    "",
+    "# Priority 2+ = All Priority 1 labs +",
+    "- Troponin",
+    "- TSH",
+    "- A1c",
+    "- UA",
+    "- NtPro-BNP if Heart Failure",
+    "- ECG",
+    "- CXR",
+    "- Transthoracic echo",
+    "- PFTS if COPD",
+    "- Carotid doppler if Peripheral artery disease and/or h/o stroke",
+    "- Head CT if h/o stroke",
+    "",
+    "# Priority 3+ = All Priority 1 and 2 Labs/Images +",
+    "- Lipid Panel",
+    "",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Preoperative Testing"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Priority 2+": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "High_Sensitivity_Cardiac_Troponin_I",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": ">=",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Priority 3+": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Preoperative Testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 110467000,
+          "display": "Pre-surgery testing (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Common Labs"
+    },
+    "High_Sensitivity_Cardiac_Troponin_I": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89577-1",
+          "display": "Troponin I.cardiac panel - Serum or Plasma by High sensitivity method"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "pg/mL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "89579-7",
+              "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 0.04
+          }
+        }
+      ],
+      "direct_transition": "TSH_panel_result"
+    },
+    "TSH_panel_result": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "m[IU]/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "3016-3",
+          "display": "Thyrotropin [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 5
+      },
+      "direct_transition": "Record_HA1C"
+    },
+    "Record_HA1C": {
+      "type": "Observation",
+      "vital_sign": "Blood Glucose",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "unit": "%",
+      "conditional_transition": [
+        {
+          "transition": "Urinalysis Abnormal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetes",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Urinalysis"
+        }
+      ]
+    },
+    "NTproBNP_lab_workup": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "pg/mL",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "33762-6",
+          "display": "NT-proBNP"
+        }
+      ],
+      "range": {
+        "low": 200,
+        "high": 2000
+      },
+      "direct_transition": "Imaging"
+    },
+    "Imaging": {
+      "type": "Simple",
+      "direct_transition": "Electrocardiogram (ECG)"
+    },
+    "Echocardiography": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 40701008,
+        "display": "Echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 80891009,
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Report_workup_imaging"
+    },
+    "Report_workup_imaging": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "55405-5",
+          "display": "Heart failure tracking panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "%",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "range": {
+            "low": 30,
+            "high": 49
+          }
+        }
+      ],
+      "direct_transition": "PFTS Check"
+    },
+    "Electrocardiogram (ECG)": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Chest_X_Ray"
+    },
+    "Chest_X_Ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Echocardiography"
+    },
+    "PFTS Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pulmonary function testing",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "copd_variant",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Doppler Check"
+        }
+      ]
+    },
+    "Pulmonary function testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 23426006,
+          "display": "Measurement of respiratory function (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 90,
+        "unit": "minutes"
+      },
+      "direct_transition": "Doppler Check"
+    },
+    "Doppler Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Doppler ultrasonography of artery",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "stroke_history",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Priority 3+"
+        }
+      ]
+    },
+    "Doppler ultrasonography of artery": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 709979004,
+        "display": "Doppler ultrasonography of artery (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51345006,
+            "display": "Carotid body structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Ultrasound Multiframe Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Computed tomography of head"
+    },
+    "Computed tomography of head": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 303653007,
+        "display": "Computed tomography of head (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 69536005,
+            "display": "Head structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Image Storage",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Priority 3+"
+    },
+    "Urinalysis": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24356-8",
+          "display": "Urinalysis complete panel - Urine"
+        },
+        {
+          "system": "LOINC",
+          "code": "24357-6",
+          "display": "Urinalysis macro (dipstick) panel - Urine"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "25428-4",
+              "display": "Glucose [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5770-3",
+              "display": "Bilirubin.total [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{SG}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.005,
+            "high": 1.025
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "[pH]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 4.5,
+            "high": 8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20454-5",
+              "display": "Protein [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        }
+      ],
+      "direct_transition": "Check CHF"
+    },
+    "Urinalysis Abnormal": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24356-8",
+          "display": "Urinalysis complete panel - Urine"
+        },
+        {
+          "system": "LOINC",
+          "code": "24357-6",
+          "display": "Urinalysis macro (dipstick) panel - Urine"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "25428-4",
+              "display": "Glucose [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5770-3",
+              "display": "Bilirubin.total [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{SG}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.005,
+            "high": 1.025
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "[pH]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 4.5,
+            "high": 8
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20454-5",
+              "display": "Protein [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 1
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{presence}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
+            }
+          ],
+          "exact": {
+            "quantity": 0
+          }
+        }
+      ],
+      "direct_transition": "Check CHF"
+    },
+    "Check CHF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "NTproBNP_lab_workup",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "chf",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Imaging"
+        }
+      ]
+    },
+    "Common Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cabg/labs_common",
+      "direct_transition": "Blood Type and Cross"
+    },
+    "Blood Type and Cross": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 44608003,
+          "display": "Blood group typing (procedure)"
+        }
+      ],
+      "unit": "minutes",
+      "direct_transition": "Redo_Check",
+      "remarks": [
+        "Synthea patients do not yet have blood types or Rh factors."
+      ]
+    },
+    "Assign_Redo_Attribute": {
+      "type": "SetAttribute",
+      "attribute": "cabg_redo",
+      "direct_transition": "Priority 2+",
+      "value": true
+    },
+    "Redo_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Assign_Redo_Attribute",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 399261000,
+                "display": "History of coronary artery bypass grafting (situation)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Priority 2+"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

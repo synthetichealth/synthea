@@ -148,7 +148,7 @@ public class CDWExporter {
   /**
    * Charset for specifying the character set of the output files.
    */
-  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
+  private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
@@ -668,6 +668,10 @@ public class CDWExporter {
     if (marital != null) {
       if (marital.equals("M")) {
         s.append(",Married");
+      } else if (marital.equals("W")) {
+        s.append(",Widowed");
+      } else if (marital.equals("D")) {
+        s.append(",Divorced");
       } else {
         marital = "N";
         s.append(",Never Married");

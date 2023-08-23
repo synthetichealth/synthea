@@ -1,0 +1,45 @@
+{
+  "name": "vaccine_test",
+  "remarks": [
+    "Vaccine unit test."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Encounter"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Vaccine"
+    },
+    "Vaccine": {
+      "type": "Vaccine",
+      "series": 1,
+      "codes": [
+        {
+          "system": "CVX",
+          "code": "123",
+          "display": "CVX Vaccine Code"
+        }
+      ],
+      "direct_transition": "EncounterEnd"
+    },
+    "EncounterEnd": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

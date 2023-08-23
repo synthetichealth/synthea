@@ -207,7 +207,7 @@
         {
           "system": "SNOMED-CT",
           "code": "228557008",
-          "display": "Cognitive and behavioral therapy"
+          "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
       "duration": {

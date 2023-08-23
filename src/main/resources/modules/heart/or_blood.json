@@ -1,0 +1,137 @@
+{
+  "name": "or_blood",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Anemia Check"
+    },
+    "Anemia Check": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "RBC",
+          "default_probability": 0.11,
+          "lookup_table_name": "or_blood_anemia_check.csv"
+        },
+        {
+          "transition": "Platelet_Check",
+          "default_probability": 0.89,
+          "lookup_table_name": "or_blood_anemia_check.csv"
+        }
+      ]
+    },
+    "RBC": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 71493000,
+          "display": "Transfusion of packed red blood cells (procedure)"
+        }
+      ],
+      "direct_transition": "RBC Supply"
+    },
+    "RBC Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 2,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 431069006,
+            "display": "Packed red blood cells (product)"
+          }
+        }
+      ],
+      "direct_transition": "Platelet_Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Platelet Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 126261006,
+            "display": "Human platelets, pooled (product)"
+          }
+        }
+      ],
+      "direct_transition": "Plasma_Check"
+    },
+    "Plasma Supply": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": 346447007,
+            "display": "Fresh frozen plasma (product)"
+          }
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Platelet_Check": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Platelet_Transfusion",
+          "default_probability": 0.1,
+          "lookup_table_name": "or_blood_platelet_check.csv"
+        },
+        {
+          "transition": "Plasma_Check",
+          "default_probability": 0.9,
+          "lookup_table_name": "or_blood_platelet_check.csv"
+        }
+      ]
+    },
+    "Platelet_Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 12719002,
+          "display": "Platelet transfusion (procedure)"
+        }
+      ],
+      "direct_transition": "Platelet Supply"
+    },
+    "Plasma_Check": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Plasma_Transfusion",
+          "default_probability": 0.13,
+          "lookup_table_name": "or_blood_plasma_check.csv"
+        },
+        {
+          "transition": "Terminal",
+          "default_probability": 0.87,
+          "lookup_table_name": "or_blood_plasma_check.csv"
+        }
+      ]
+    },
+    "Plasma_Transfusion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 116861002,
+          "display": "Transfusion of fresh frozen plasma (procedure)"
+        }
+      ],
+      "direct_transition": "Plasma Supply"
+    }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "This submodule of Cardiac Surgery models the administration of Blood Products during various surgical procedures."
+  ]
+}

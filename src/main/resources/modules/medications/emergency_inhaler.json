@@ -1,0 +1,432 @@
+{
+    "name": "Emergency Inhaler",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE EMERGENCY INHALER",
+        "======================================================================",
+        "",
+        "This submodule prescribes a medication based on population data.",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'emergency_inhaler'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    RxNav: https://mor.nlm.nih.gov/RxNav/",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    FDA: https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "",
+        "Made with (</>) by the CodeRx Medication Diversification Tool (MDT)",
+        "",
+        "MDT settings for this submodule:",
+        "{",
+        "    \"module\": {",
+        "        \"name\": null,",
+        "        \"assign_to_attribute\": null,",
+        "        \"reason\": \"asthma_condition\",",
+        "        \"as_needed\": true,",
+        "        \"chronic\": true,",
+        "        \"refills\": 0",
+        "    },",
+        "    \"rxclass\": {",
+        "        \"include\": null,",
+        "        \"exclude\": null",
+        "    },",
+        "    \"rxcui\": {",
+        "        \"include\": [",
+        "            \"435\",",
+        "            \"237159\"",
+        "        ],",
+        "        \"exclude\": null",
+        "    },",
+        "    \"ingredient_tty_filter\": \"IN\",",
+        "    \"dose_form_filter\": [",
+        "        \"Metered Dose Inhaler\",",
+        "        \"Inhalation Solution\"",
+        "    ],",
+        "    \"meps\": {",
+        "        \"age_ranges\": [",
+        "            \"0-5\",",
+        "            \"6-103\"",
+        "        ],",
+        "        \"demographic_distribution_flags\": {",
+        "            \"age\": true,",
+        "            \"gender\": false,",
+        "            \"state\": false",
+        "        }",
+        "    },",
+        "    \"state_prefix\": \"Prescribe_\",",
+        "    \"ingredient_distribution_suffix\": \"_ingredient_distribution\",",
+        "    \"product_distribution_suffix\": \"_product_distribution\",",
+        "    \"default_age_ranges\": [",
+        "        \"0-3\",",
+        "        \"4-7\",",
+        "        \"8-11\",",
+        "        \"12-17\",",
+        "        \"18-25\",",
+        "        \"26-35\",",
+        "        \"36-45\",",
+        "        \"46-65\",",
+        "        \"65-103\"",
+        "    ]",
+        "}"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "emergency_inhaler",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 98.0% ] Albuterol",
+                "2. [ 2.0% ] Levalbuterol"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Albuterol",
+                    "default_probability": "1",
+                    "lookup_table_name": "emergency_inhaler_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levalbuterol",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Albuterol": {
+            "name": "Prescribe_Albuterol",
+            "remarks": [
+                "======================================================================",
+                " ALBUTEROL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 0.9% ] Albuterol_0_21_Mg_Ml_Inhalation_Solution",
+                "2. [ 1.5% ] Albuterol_0_417_Mg_Ml_Inhalation_Solution",
+                "3. [ 26.1% ] Albuterol_0_83_Mg_Ml_Inhalation_Solution",
+                "4. [ 0.4% ] Albuterol_5_Mg_Ml_Inhalation_Solution",
+                "5. [ 2.1% ] Nda020503_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proventil",
+                "6. [ 34.3% ] Nda020983_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+                "7. [ 0.2% ] Nda020983_60_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+                "8. [ 34.6% ] Nda021457_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proair"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Albuterol_0_21_Mg_Ml_Inhalation_Solution",
+                    "default_probability": "1",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Albuterol_0_417_Mg_Ml_Inhalation_Solution",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Albuterol_0_83_Mg_Ml_Inhalation_Solution",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Albuterol_5_Mg_Ml_Inhalation_Solution",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nda020503_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proventil",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nda020983_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nda021457_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proair",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Nda020983_60_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Levalbuterol": {
+            "name": "Prescribe_Levalbuterol",
+            "remarks": [
+                "======================================================================",
+                " LEVALBUTEROL MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 32.8% ] 200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler",
+                "2. [ 20.0% ] 200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler_Xopenex",
+                "3. [ 47.2% ] Levalbuterol_0_417_Mg_Ml_Inhalation_Solution"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler",
+                    "default_probability": "1",
+                    "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler_Xopenex",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Levalbuterol_0_417_Mg_Ml_Inhalation_Solution",
+                    "default_probability": "0",
+                    "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler": {
+            "remarks": [
+                "======================================================================",
+                " BEGIN MEDICATION ORDER STATES                                        ",
+                "======================================================================"
+            ],
+            "name": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "745791",
+                    "display": "200 ACTUAT levalbuterol 0.045 MG/ACTUAT Metered Dose Inhaler"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler_Xopenex": {
+            "name": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler_Xopenex",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "746466",
+                    "display": "200 ACTUAT levalbuterol 0.045 MG/ACTUAT Metered Dose Inhaler [Xopenex]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Nda020503_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proventil": {
+            "name": "Prescribe_Nda020503_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proventil",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "746763",
+                    "display": "NDA020503 200 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler [Proventil]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Nda020983_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin": {
+            "name": "Prescribe_Nda020983_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859088",
+                    "display": "NDA020983 200 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler [Ventolin]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Nda020983_60_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin": {
+            "name": "Prescribe_Nda020983_60_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "801095",
+                    "display": "NDA020983 60 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler [Ventolin]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Nda021457_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proair": {
+            "name": "Prescribe_Nda021457_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proair",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "745752",
+                    "display": "NDA021457 200 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler [ProAir]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Albuterol_0_21_Mg_Ml_Inhalation_Solution": {
+            "name": "Prescribe_Albuterol_0_21_Mg_Ml_Inhalation_Solution",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "351137",
+                    "display": "albuterol 0.21 MG/ML Inhalation Solution"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Albuterol_0_417_Mg_Ml_Inhalation_Solution": {
+            "name": "Prescribe_Albuterol_0_417_Mg_Ml_Inhalation_Solution",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "351136",
+                    "display": "albuterol 0.417 MG/ML Inhalation Solution"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Albuterol_0_83_Mg_Ml_Inhalation_Solution": {
+            "name": "Prescribe_Albuterol_0_83_Mg_Ml_Inhalation_Solution",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "630208",
+                    "display": "albuterol 0.83 MG/ML Inhalation Solution"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Albuterol_5_Mg_Ml_Inhalation_Solution": {
+            "name": "Prescribe_Albuterol_5_Mg_Ml_Inhalation_Solution",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "245314",
+                    "display": "albuterol 5 MG/ML Inhalation Solution"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        },
+        "Prescribe_Levalbuterol_0_417_Mg_Ml_Inhalation_Solution": {
+            "name": "Prescribe_Levalbuterol_0_417_Mg_Ml_Inhalation_Solution",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "emergency_inhaler",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "242754",
+                    "display": "levalbuterol 0.417 MG/ML Inhalation Solution"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": true
+            },
+            "direct_transition": "Terminal",
+            "chronic": true,
+            "reason": "asthma_condition"
+        }
+    }
+}

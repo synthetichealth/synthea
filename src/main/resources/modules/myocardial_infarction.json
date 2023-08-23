@@ -1,0 +1,331 @@
+{
+  "name": "Myocardial Infarction",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_MI"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "History of MI": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399211009,
+          "display": "History of myocardial infarction (situation)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Death",
+          "distribution": {
+            "attribute": "chance_of_mi_death",
+            "default": 0.3
+          }
+        },
+        {
+          "transition": "End_Encounter",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "STEMI": {
+      "type": "CallSubmodule",
+      "submodule": "heart/stemi_pathway",
+      "direct_transition": "Check_CABG_Referral"
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Chance_of_Recurrent_MI"
+    },
+    "Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "cardiac_surgery_reason"
+    },
+    "Chance_of_MI": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "MI_Onset",
+          "distribution": {
+            "attribute": "mi_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_MI",
+          "distribution": 1
+        }
+      ]
+    },
+    "Cardiac_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 710839006,
+          "display": "Assessment of cardiac status using monitoring device (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 2,
+        "high": 2,
+        "unit": "minutes"
+      },
+      "direct_transition": "ECG"
+    },
+    "Lab test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 15220000,
+          "display": "Laboratory test (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Cardiac_Labs"
+    },
+    "TTE": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 433236007,
+          "display": "Transthoracic echocardiography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Discharge_Medications"
+    },
+    "Discharge_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736372004,
+          "display": "Discharge care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "End_MI_Onset"
+    },
+    "Chance_of_Recurrent_MI": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 1
+        },
+        {
+          "transition": "MI_Onset",
+          "distribution": 1
+        }
+      ]
+    },
+    "NSTEACS": {
+      "type": "CallSubmodule",
+      "submodule": "heart/nsteacs_pathway",
+      "direct_transition": "Check_CABG_Referral"
+    },
+    "Chest_XRay": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 399208008,
+          "display": "Plain chest X-ray (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 10,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Diagnostic_Assessment"
+    },
+    "Emergency_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "MI_Onset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 50849002,
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "direct_transition": "Cardiac_Assessment"
+    },
+    "Pre-Hospital Death": {
+      "type": "Death",
+      "direct_transition": "Terminal",
+      "remarks": [
+        "assume for now all pre-hospital deaths are STEMI"
+      ],
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 401303003,
+          "display": "Acute ST segment elevation myocardial infarction (disorder)"
+        }
+      ]
+    },
+    "Check_CABG_Referral": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Reset_CABG_Referral_Flag",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ACS_CABG_referral",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "TTE"
+        }
+      ]
+    },
+    "Discharge_Medications": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_discharge_meds",
+      "direct_transition": "Discharge_Care_Plan"
+    },
+    "Reset_CABG_Referral_Flag": {
+      "type": "SetAttribute",
+      "attribute": "ACS_CABG_referral",
+      "direct_transition": "End_MI_Onset",
+      "remarks": [
+        "Reset the referral flag, so that just in case the patient winds up going through this pathway a second time, the attribute will be set as appropriate"
+      ]
+    },
+    "ACS_Arrival_Meds": {
+      "type": "CallSubmodule",
+      "submodule": "heart/acs_arrival_medications",
+      "direct_transition": "Lab test"
+    },
+    "Cardiac_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "heart/cardiac_labs",
+      "direct_transition": "HS Troponin-I 0hr"
+    },
+    "HS Troponin-I 0hr": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "ng/L",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "89579-7",
+          "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+        }
+      ],
+      "direct_transition": "Chest_XRay",
+      "range": {
+        "low": 0,
+        "high": 120
+      },
+      "remarks": [
+        "    Normal range: below 0.04 ng/ml",
+        "    Probable heart attack: above 0.40 ng/ml",
+        "https://testguide.labmed.uw.edu/public/view/TROPIG",
+        " ",
+        "Note this is used in the NSTEACS pathway to decide between NSTEMI and UA"
+      ]
+    },
+    "Diagnostic_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 165197003,
+          "display": "Diagnostic assessment (procedure)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "NSTEACS",
+          "distribution": 0.6
+        },
+        {
+          "transition": "STEMI",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "distributed_transition": [
+        {
+          "transition": "NSTEACS",
+          "distribution": 0.6
+        },
+        {
+          "transition": "STEMI",
+          "distribution": 0.4
+        }
+      ],
+      "direct_transition": "ACS_Arrival_Meds"
+    },
+    "MI_Onset": {
+      "type": "ConditionOnset",
+      "target_encounter": "Emergency_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 22298006,
+          "display": "Myocardial infarction (disorder)"
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Emergency_Encounter",
+          "distribution": 0.7999999999999999
+        },
+        {
+          "transition": "Pre-Hospital Death",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "End_MI_Onset": {
+      "type": "ConditionEnd",
+      "direct_transition": "History of MI",
+      "condition_onset": "MI_Onset"
+    }
+  },
+  "gmf_version": 2
+}

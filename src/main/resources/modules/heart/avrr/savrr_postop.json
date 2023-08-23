@@ -1,0 +1,891 @@
+{
+  "name": "savrr_postop",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models Postoperative ICU and Ward Care."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Set_Mortality"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Admission to Ward"
+    },
+    "Check Alive": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Deceased",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "savrr_mortality",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set_ICU_LOS"
+        }
+      ]
+    },
+    "Deceased": {
+      "type": "Death",
+      "direct_transition": "Terminal"
+    },
+    "Begin Day": {
+      "type": "Counter",
+      "attribute": "savrr_icu_los",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "transition": "ICU_ECG",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "savrr_ico_los",
+            "operator": "<=",
+            "value": 1
+          }
+        },
+        {
+          "transition": "ICU Labs"
+        }
+      ]
+    },
+    "End Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "conditional_transition": [
+        {
+          "transition": "Begin Day",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "savrr_icu_los",
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "End ICU Care Plan"
+        }
+      ]
+    },
+    "Ventilation Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Ventilation",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Ventilator Reason",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Extubation"
+        }
+      ]
+    },
+    "Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "26763009",
+          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+        }
+      ],
+      "reason": "Ventilator Reason",
+      "direct_transition": "End Ventilation",
+      "duration": {
+        "low": 4,
+        "high": 6,
+        "unit": "hours"
+      }
+    },
+    "Extubation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "271280005",
+          "display": "Removal of endotracheal tube (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 40,
+        "unit": "minutes"
+      },
+      "direct_transition": "ICU_Care_Plan"
+    },
+    "End Ventilation": {
+      "type": "ConditionEnd",
+      "direct_transition": "Extubation",
+      "referenced_by_attribute": "Ventilator Reason"
+    },
+    "ICU Labs": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/hospital_basic_labs",
+      "direct_transition": "Half Day"
+    },
+    "Discharge to Ward": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 306706006,
+          "display": "Discharge to ward (procedure)"
+        }
+      ],
+      "direct_transition": "Discharge",
+      "reason": "savrr_history"
+    },
+    "Admission to Ward": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305342007,
+          "display": "Admission to ward (procedure)"
+        }
+      ],
+      "direct_transition": "Antithrombic",
+      "reason": "savrr_history"
+    },
+    "Discharge to Home": {
+      "type": "EncounterEnd",
+      "direct_transition": "No SNF",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      }
+    },
+    "Discharge to Facility": {
+      "type": "EncounterEnd",
+      "direct_transition": "SNF",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "04",
+        "display": "Discharged/transferred to a facility that provides custodial or supportive care"
+      }
+    },
+    "Post Discharge Outcomes": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          },
+          "distributions": [
+            {
+              "transition": "Dying After Discharge",
+              "distribution": 0.01442
+            },
+            {
+              "transition": "SNF Check",
+              "distribution": 0.98558
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savrepair"
+          },
+          "distributions": [
+            {
+              "transition": "Dying After Discharge",
+              "distribution": 0.01
+            },
+            {
+              "transition": "SNF Check",
+              "distribution": 0.99
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Dying After Discharge",
+              "distribution": 0.01
+            },
+            {
+              "transition": "SNF Check",
+              "distribution": 0.99
+            }
+          ]
+        }
+      ]
+    },
+    "Discharge from Hospital": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 308283009,
+          "display": "Discharge from hospital (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "reason": "savrr_history",
+      "conditional_transition": [
+        {
+          "transition": "SAVReplace Dispo",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          }
+        },
+        {
+          "transition": "SAVRepair Dispo"
+        }
+      ]
+    },
+    "Half Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 12,
+        "unit": "hours"
+      },
+      "direct_transition": "Repeat_ICU_Labs"
+    },
+    "Repeat_ICU_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/hospital_basic_labs",
+      "direct_transition": "End Day"
+    },
+    "Dying After Discharge": {
+      "type": "Death",
+      "direct_transition": "SNF Check",
+      "range": {
+        "low": 1,
+        "high": 30,
+        "unit": "days"
+      }
+    },
+    "ICU_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 735321000,
+          "display": "Surgical inpatient care plan (record artifact)"
+        }
+      ],
+      "reason": "savrr_history",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736767005,
+          "display": "Perioperative care management (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 182810003,
+          "display": "Intensive care monitoring (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 410207002,
+          "display": "Respiratory care management (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 387760006,
+          "display": "Infusion care (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 370771002,
+          "display": "Maintenance of invasive device (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 15220000,
+          "display": "Laboratory test (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 385949008,
+          "display": "Dressing change management (procedure)"
+        }
+      ],
+      "direct_transition": "Begin Day"
+    },
+    "ICU_ECG": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 268400002,
+          "display": "12 lead electrocardiogram (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 20
+        }
+      },
+      "unit": "minutes",
+      "reason": "savrr_history",
+      "direct_transition": "Chest_X_Ray_2"
+    },
+    "Chest_X_Ray_2": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 399208008,
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CR",
+            "display": "Computed Radiography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage – for Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Transthoracic_Echo"
+    },
+    "Transthoracic_Echo": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 433236007,
+        "display": "Transthoracic echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 80891009,
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Heart structure (body structure)",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.3.1",
+                "display": "Ultrasound Multiframe Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "ICU Labs"
+    },
+    "End ICU Care Plan": {
+      "type": "CarePlanEnd",
+      "direct_transition": "Discharge to Ward",
+      "careplan": "ICU_Care_Plan"
+    },
+    "PostOp_Care_Plan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736372004,
+          "display": "Discharge care plan (record artifact)"
+        }
+      ],
+      "direct_transition": "Discharge from Hospital",
+      "reason": "savrr_history",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": 736767005,
+          "display": "Perioperative care management (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 48428001,
+          "display": "Cardiovascular monitoring (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 718451004,
+          "display": "Management of vascular system care (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 370864003,
+          "display": "Activity care (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 22972009,
+          "display": "Advance diet as tolerated (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 405784000,
+          "display": "Pharmacological assessment (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 385949008,
+          "display": "Dressing change management (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 311401005,
+          "display": "Patient education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": 1156892006,
+          "display": "Scheduling of follow up appointment (procedure)"
+        }
+      ]
+    },
+    "Antithrombic": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/antithrombotic",
+      "direct_transition": "Hospital Labs"
+    },
+    "Hospital Labs": {
+      "type": "CallSubmodule",
+      "submodule": "encounter/hospital_basic_labs",
+      "direct_transition": "PostOp_Care_Plan"
+    },
+    "SAVReplace Dispo": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.944
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.05600000000000016
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.833
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.16700000000000004
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.833
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.16700000000000004
+            }
+          ],
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          }
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Discharge to Home",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Discharge to Facility",
+              "distribution": 0.2
+            }
+          ]
+        }
+      ]
+    },
+    "SAVRepair Dispo": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Discharge to Home",
+          "distribution": 0.93
+        },
+        {
+          "transition": "Discharge to Facility",
+          "distribution": 0.07
+        }
+      ]
+    },
+    "SNF Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Call_SNF_Submodule",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "postop_snf",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Call_SNF_Submodule": {
+      "type": "Simple",
+      "remarks": [
+        "TODO"
+      ],
+      "direct_transition": "Terminal"
+    },
+    "SNF": {
+      "type": "SetAttribute",
+      "attribute": "postop_snf",
+      "direct_transition": "Post Discharge Outcomes",
+      "value": true
+    },
+    "No SNF": {
+      "type": "SetAttribute",
+      "attribute": "postop_snf",
+      "direct_transition": "Post Discharge Outcomes",
+      "value": false
+    },
+    "Set_Mortality": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Replace Mortality",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savreplace"
+          }
+        },
+        {
+          "transition": "Repair Mortality",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cardiac_surgery",
+            "operator": "==",
+            "value": "savrepair"
+          }
+        }
+      ]
+    },
+    "Mortality": {
+      "type": "SetAttribute",
+      "attribute": "savrr_mortality",
+      "value": true,
+      "direct_transition": "Check Alive"
+    },
+    "Replace Mortality": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.006173
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.993827
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.001
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.025
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.975
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Mortality",
+              "distribution": 0.01442
+            },
+            {
+              "transition": "Check Alive",
+              "distribution": 0.98558
+            }
+          ]
+        }
+      ]
+    },
+    "Repair Mortality": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Mortality",
+          "distribution": 0.001
+        },
+        {
+          "transition": "Check Alive",
+          "distribution": 0.9990000000000001
+        }
+      ]
+    },
+    "SAVRr_Postop": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 305351004,
+          "display": "Admission to intensive care unit (procedure)"
+        }
+      ],
+      "reason": "savrr_history",
+      "direct_transition": "Set_ICU_Outcomes"
+    },
+    "Set_ICU_Outcomes": {
+      "type": "CallSubmodule",
+      "submodule": "heart/avrr/outcomes",
+      "direct_transition": "Ventilation Check"
+    },
+    "Short_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savrr_icu_los",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 1
+        }
+      },
+      "direct_transition": "SAVRr_Postop"
+    },
+    "Medium_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savrr_icu_los",
+      "distribution": {
+        "kind": "EXACT",
+        "round": false,
+        "parameters": {
+          "value": 2
+        }
+      },
+      "direct_transition": "SAVRr_Postop"
+    },
+    "Long_Stay": {
+      "type": "SetAttribute",
+      "attribute": "savrr_icu_los",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 7,
+          "low": 3
+        }
+      },
+      "direct_transition": "SAVRr_Postop"
+    },
+    "Set_ICU_LOS": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "elective"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.438272
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.308642
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.2530859999999999
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.666666
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "emergent_salvage"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.166667
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.666666
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "operative_status",
+            "operator": "==",
+            "value": "urgent"
+          },
+          "distributions": [
+            {
+              "transition": "Short_Stay",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Medium_Stay",
+              "distribution": 0.3
+            },
+            {
+              "transition": "Long_Stay",
+              "distribution": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

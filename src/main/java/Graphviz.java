@@ -5,13 +5,13 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Records;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Rasterizer;
+import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.Node;
 
@@ -20,16 +20,20 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Utilities;
-
 
 public class Graphviz {
   private static final String NEWLINE = "\\l";
@@ -67,7 +71,7 @@ public class Graphviz {
           JsonObject module = loadFile(t, inputPath);
           String relativePath = Module.relativePath(t, inputPath);
           generateJsonModuleGraph(module, outputFolder, relativePath);
-        } catch (IOException e) {
+        } catch (IOException | GraphvizException e) {
           e.printStackTrace();
         }
       });
@@ -80,14 +84,14 @@ public class Graphviz {
     System.out.format("Loading %s\n", path.toString());
     String moduleRelativePath = modulesFolder.getParent().relativize(path).toString();
     JsonReader reader = new JsonReader(new StringReader(
-             Utilities.readResource(moduleRelativePath)));
+             Utilities.readResourceOrPath(moduleRelativePath)));
     JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
     reader.close();
     return object;
   }
 
   private static void generateJsonModuleGraph(JsonObject module, File outputFolder,
-      String relativePath) throws IOException {
+      String relativePath) throws IOException, GraphvizException {
     // TODO -- a lot of this uses immutable objects. refactor to use mutable ones
     Graph g = Factory.graph().directed();
 
@@ -105,7 +109,7 @@ public class Graphviz {
       String type = state.get("type").getAsString();
 
       if (type.equals("Initial") || type.equals("Terminal")) {
-        node = node.with(Color.BLACK.fill()).with(Style.ROUNDED.and(Style.FILLED))
+        node = node.with(Color.BLACK.fill()).with(Style.combine(Style.ROUNDED, Style.FILLED))
             .with(Color.WHITE.font());
       }
 
@@ -272,7 +276,7 @@ public class Graphviz {
 
     File outputFile = outputFolder.toPath().resolve(relativePath + ".png").toFile();
     outputFile.mkdirs();
-    guru.nidi.graphviz.engine.Graphviz.fromGraph(g).rasterizer(Rasterizer.BATIK)
+    guru.nidi.graphviz.engine.Graphviz.fromGraph(g)
         .render(Format.PNG).toFile(outputFile);
   }
 
@@ -629,8 +633,23 @@ public class Graphviz {
       case "Race":
         return "race is " + logic.get("race").getAsString() + NEWLINE;
       case "Date":
-        return "Year is \\" + logic.get("operator").getAsString() + " "
-            + logic.get("year").getAsString() + NEWLINE;
+        if (logic.has("year")) {
+          return "Year is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("year").getAsString() + NEWLINE;
+        } else if (logic.has("month")) {
+          return "Month is \\" + logic.get("operator").getAsString() + " "
+              + logic.get("month").getAsString() + NEWLINE;
+        } else if (logic.has("date")) {
+          JsonObject date = logic.get("date").getAsJsonObject();
+          ZonedDateTime testDate = ZonedDateTime.of(date.get("year").getAsInt(),
+              date.get("month").getAsInt() - 1, date.get("day").getAsInt(),
+              date.get("hour").getAsInt(), date.get("minute").getAsInt(),
+              date.get("second").getAsInt(), date.get("millisecond").getAsInt(),
+              ZoneId.of("UTC"));
+          return "Date is \\" + logic.get("operator").getAsString() + " "
+              + testDate.format(DateTimeFormatter.ISO_DATE_TIME) + NEWLINE;
+        }
+        return "Date is \\" + logic.get("operator").getAsString() + " X";
       case "Symptom":
         return "Symptom: " + logic.get("symptom").getAsString() + " \\"
             + logic.get("operator").getAsString() + " " + logic.get("value").getAsString()

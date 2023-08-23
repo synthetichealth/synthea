@@ -11,7 +11,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Distribution implements Serializable {
   public enum Kind {
-    EXACT, GAUSSIAN, UNIFORM
+    EXACT, GAUSSIAN, UNIFORM, EXPONENTIAL
   }
 
   public Kind kind;
@@ -35,6 +35,23 @@ public class Distribution implements Serializable {
       case GAUSSIAN:
         value = (this.parameters.get("standardDeviation") * person.randGaussian())
             + this.parameters.get("mean");
+        if (this.parameters.containsKey("min")) {
+          double min = this.parameters.get("min");
+          if (value < min) {
+            value = min;
+          }
+        }
+        if (this.parameters.containsKey("max")) {
+          double max = this.parameters.get("max");
+          if (value > max) {
+            value = max;
+          }
+        }
+        break;
+      case EXPONENTIAL:
+        double average = this.parameters.get("mean");
+        double lambda = (1.0d / average);
+        value = 1.0d + Math.log(1.0d - person.rand()) / (-1.0d * lambda);
         break;
       default:
         value = -1;
@@ -62,6 +79,8 @@ public class Distribution implements Serializable {
       case GAUSSIAN:
         return this.parameters.containsKey("mean")
             && this.parameters.containsKey("standardDeviation");
+      case EXPONENTIAL:
+        return this.parameters.containsKey("mean");
       default:
         return false;
     }

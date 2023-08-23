@@ -37,11 +37,14 @@ public class JSONExporterTest {
       JsonElement parsedPerson = JsonParser.parseString(personJson);
       JsonObject attributes = parsedPerson.getAsJsonObject()
           .get("attributes").getAsJsonObject();
+      assertTrue(parsedPerson.getAsJsonObject().has("symptoms"));
       String gender = attributes.get("gender").getAsString();
       assertEquals(person.attributes.get(Person.GENDER), gender);
       if (moduleExport) {
         attributes.keySet().forEach((attributeName) -> {
-          if (attributeName.endsWith("Module")) {
+          if (!attributeName.startsWith("active_wellness_encounter")
+              && attributeName.endsWith("Module")) {
+            Object obj = attributes.get(attributeName);
             attributes.get(attributeName).getAsJsonArray().forEach((stateElement) -> {
               if (stateElement.getAsJsonObject().get("state_name") == null) {
                 validationErrors.add(String.format("Module %s does not have a state name in "

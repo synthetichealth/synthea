@@ -1,0 +1,1069 @@
+{
+    "name": "Statin",
+    "remarks": [
+        "======================================================================",
+        "  SUBMODULE STATIN",
+        "======================================================================",
+        "",
+        "This submodule prescribes a medication based on population data.",
+        "",
+        "IT IS UP TO THE CALLING MODULE TO END THIS MEDICATION BY ATTRIBUTE.",
+        "All medications prescribed in this module are assigned to the attribute",
+        "'statin'.",
+        "",
+        "Reference links:",
+        "    RxClass: https://mor.nlm.nih.gov/RxClass/",
+        "    RxNorm: https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "    RxNav: https://mor.nlm.nih.gov/RxNav/",
+        "    MEPS: https://meps.ahrq.gov/mepsweb/data_stats/MEPS_topics.jsp?topicid=46Z-1",
+        "    FDA: https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "",
+        "Made with (</>) by the CodeRx Medication Diversification Tool (MDT)",
+        "",
+        "MDT settings for this submodule:",
+        "{",
+        "    \"module\": {",
+        "        \"name\": null,",
+        "        \"assign_to_attribute\": null,",
+        "        \"reason\": null,",
+        "        \"as_needed\": false,",
+        "        \"chronic\": false,",
+        "        \"refills\": 0",
+        "    },",
+        "    \"rxclass\": {",
+        "        \"include\": [",
+        "            {",
+        "                \"class_id\": \"C10AA\",",
+        "                \"relationship\": \"ATC\"",
+        "            }",
+        "        ],",
+        "        \"exclude\": null",
+        "    },",
+        "    \"rxcui\": {",
+        "        \"include\": null,",
+        "        \"exclude\": null",
+        "    },",
+        "    \"ingredient_tty_filter\": null,",
+        "    \"dose_form_filter\": null,",
+        "    \"meps\": {",
+        "        \"age_ranges\": null,",
+        "        \"demographic_distribution_flags\": {",
+        "            \"age\": true,",
+        "            \"gender\": true,",
+        "            \"state\": true",
+        "        }",
+        "    },",
+        "    \"state_prefix\": \"Prescribe_\",",
+        "    \"ingredient_distribution_suffix\": \"_ingredient_distribution\",",
+        "    \"product_distribution_suffix\": \"_product_distribution\",",
+        "    \"default_age_ranges\": [",
+        "        \"0-3\",",
+        "        \"4-7\",",
+        "        \"8-11\",",
+        "        \"12-17\",",
+        "        \"18-25\",",
+        "        \"26-35\",",
+        "        \"36-45\",",
+        "        \"46-65\",",
+        "        \"65-103\"",
+        "    ]",
+        "}"
+    ],
+    "gmf_version": 2,
+    "states": {
+        "Initial": {
+            "type": "Initial",
+            "conditional_transition": [
+                {
+                    "condition": {
+                        "condition_type": "Attribute",
+                        "attribute": "statin",
+                        "operator": "is nil"
+                    },
+                    "transition": "Prescribe_Ingredient"
+                },
+                {
+                    "transition": "Terminal"
+                }
+            ]
+        },
+        "Terminal": {
+            "type": "Terminal"
+        },
+        "Prescribe_Ingredient": {
+            "name": "Prescribe_Ingredient",
+            "remarks": [
+                "======================================================================",
+                " MEDICATION INGREDIENT TABLE TRANSITION                               ",
+                "======================================================================",
+                "Ingredients in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 49.9% ] Atorvastatin",
+                "2. [ 0.5% ] Ezetimibe_Simvastatin",
+                "3. [ 4.3% ] Lovastatin",
+                "4. [ 0.6% ] Pitavastatin",
+                "5. [ 11.6% ] Pravastatin",
+                "6. [ 11.1% ] Rosuvastatin",
+                "7. [ 22.0% ] Simvastatin"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Atorvastatin",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ezetimibe_Simvastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lovastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pitavastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pravastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Simvastatin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ingredient_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Atorvastatin": {
+            "name": "Prescribe_Atorvastatin",
+            "remarks": [
+                "======================================================================",
+                " ATORVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 22.5% ] Atorvastatin_10_Mg_Oral_Tablet",
+                "2. [ 0.6% ] Atorvastatin_10_Mg_Oral_Tablet_Lipitor",
+                "3. [ 30.1% ] Atorvastatin_20_Mg_Oral_Tablet",
+                "4. [ 33.4% ] Atorvastatin_40_Mg_Oral_Tablet",
+                "5. [ 0.8% ] Atorvastatin_40_Mg_Oral_Tablet_Lipitor",
+                "6. [ 12.5% ] Atorvastatin_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atorvastatin_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atorvastatin_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet_Lipitor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet_Lipitor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_atorvastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Ezetimibe_Simvastatin": {
+            "name": "Prescribe_Ezetimibe_Simvastatin",
+            "remarks": [
+                "======================================================================",
+                " EZETIMIBE_SIMVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 28.5% ] Ezetimibe_10_Mg_Simvastatin_20_Mg_Oral_Tablet",
+                "2. [ 49.5% ] Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet",
+                "3. [ 10.8% ] Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet_Vytorin",
+                "4. [ 11.2% ] Ezetimibe_10_Mg_Simvastatin_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_20_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet_Vytorin",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_ezetimibe_simvastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Lovastatin": {
+            "name": "Prescribe_Lovastatin",
+            "remarks": [
+                "======================================================================",
+                " LOVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 8.5% ] Lovastatin_10_Mg_Oral_Tablet",
+                "2. [ 46.9% ] Lovastatin_20_Mg_Oral_Tablet",
+                "3. [ 44.7% ] Lovastatin_40_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Lovastatin_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lovastatin_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Lovastatin_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_lovastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Pitavastatin": {
+            "name": "Prescribe_Pitavastatin",
+            "remarks": [
+                "======================================================================",
+                " PITAVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 9.9% ] Pitavastatin_Calcium_1_Mg_Oral_Tablet_Livalo",
+                "2. [ 67.7% ] Pitavastatin_Calcium_2_Mg_Oral_Tablet_Livalo",
+                "3. [ 22.3% ] Pitavastatin_Calcium_4_Mg_Oral_Tablet_Livalo"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Pitavastatin_Calcium_1_Mg_Oral_Tablet_Livalo",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pitavastatin_Calcium_2_Mg_Oral_Tablet_Livalo",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pitavastatin_Calcium_4_Mg_Oral_Tablet_Livalo",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pitavastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Pravastatin": {
+            "name": "Prescribe_Pravastatin",
+            "remarks": [
+                "======================================================================",
+                " PRAVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 6.1% ] Pravastatin_Sodium_10_Mg_Oral_Tablet",
+                "2. [ 32.7% ] Pravastatin_Sodium_20_Mg_Oral_Tablet",
+                "3. [ 49.5% ] Pravastatin_Sodium_40_Mg_Oral_Tablet",
+                "4. [ 0.3% ] Pravastatin_Sodium_40_Mg_Oral_Tablet_Pravachol",
+                "5. [ 11.4% ] Pravastatin_Sodium_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Pravastatin_Sodium_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pravastatin_Sodium_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pravastatin_Sodium_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet_Pravachol",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_pravastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Rosuvastatin": {
+            "name": "Prescribe_Rosuvastatin",
+            "remarks": [
+                "======================================================================",
+                " ROSUVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 31.2% ] Rosuvastatin_Calcium_10_Mg_Oral_Tablet",
+                "2. [ 3.6% ] Rosuvastatin_Calcium_10_Mg_Oral_Tablet_Crestor",
+                "3. [ 27.2% ] Rosuvastatin_Calcium_20_Mg_Oral_Tablet",
+                "4. [ 2.2% ] Rosuvastatin_Calcium_20_Mg_Oral_Tablet_Crestor",
+                "5. [ 16.6% ] Rosuvastatin_Calcium_40_Mg_Oral_Tablet",
+                "6. [ 0.8% ] Rosuvastatin_Calcium_40_Mg_Oral_Tablet_Crestor",
+                "7. [ 18.1% ] Rosuvastatin_Calcium_5_Mg_Oral_Tablet",
+                "8. [ 0.4% ] Rosuvastatin_Calcium_5_Mg_Oral_Tablet_Crestor"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet_Crestor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet_Crestor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet_Crestor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet_Crestor",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_rosuvastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Simvastatin": {
+            "name": "Prescribe_Simvastatin",
+            "remarks": [
+                "======================================================================",
+                " SIMVASTATIN MEDICATION PRODUCT TABLE TRANSITION  ",
+                "======================================================================",
+                "Products in lookup table:",
+                "#  [ % pop ] Name",
+                "-- --------- ----",
+                "1. [ 15.1% ] Simvastatin_10_Mg_Oral_Tablet",
+                "2. [ 41.7% ] Simvastatin_20_Mg_Oral_Tablet",
+                "3. [ 39.0% ] Simvastatin_40_Mg_Oral_Tablet",
+                "4. [ 0.9% ] Simvastatin_5_Mg_Oral_Tablet",
+                "5. [ 3.4% ] Simvastatin_80_Mg_Oral_Tablet"
+            ],
+            "type": "Simple",
+            "lookup_table_transition": [
+                {
+                    "transition": "Prescribe_Simvastatin_10_Mg_Oral_Tablet",
+                    "default_probability": "1",
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Simvastatin_40_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Simvastatin_20_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Simvastatin_80_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
+                },
+                {
+                    "transition": "Prescribe_Simvastatin_5_Mg_Oral_Tablet",
+                    "default_probability": "0",
+                    "lookup_table_name": "statin_simvastatin_product_distribution.csv"
+                }
+            ]
+        },
+        "Prescribe_Atorvastatin_10_Mg_Oral_Tablet": {
+            "remarks": [
+                "======================================================================",
+                " BEGIN MEDICATION ORDER STATES                                        ",
+                "======================================================================"
+            ],
+            "name": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617312",
+                    "display": "atorvastatin 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atorvastatin_10_Mg_Oral_Tablet_Lipitor": {
+            "name": "Prescribe_Atorvastatin_10_Mg_Oral_Tablet_Lipitor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617314",
+                    "display": "atorvastatin 10 MG Oral Tablet [Lipitor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atorvastatin_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atorvastatin_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617310",
+                    "display": "atorvastatin 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atorvastatin_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617311",
+                    "display": "atorvastatin 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atorvastatin_40_Mg_Oral_Tablet_Lipitor": {
+            "name": "Prescribe_Atorvastatin_40_Mg_Oral_Tablet_Lipitor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "617320",
+                    "display": "atorvastatin 40 MG Oral Tablet [Lipitor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Atorvastatin_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Atorvastatin_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "259255",
+                    "display": "atorvastatin 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ezetimibe_10_Mg_Simvastatin_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ezetimibe_10_Mg_Simvastatin_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "476349",
+                    "display": "ezetimibe 10 MG / simvastatin 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "476350",
+                    "display": "ezetimibe 10 MG / simvastatin 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet_Vytorin": {
+            "name": "Prescribe_Ezetimibe_10_Mg_Simvastatin_40_Mg_Oral_Tablet_Vytorin",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "1245441",
+                    "display": "ezetimibe 10 MG / simvastatin 40 MG Oral Tablet [Vytorin]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Ezetimibe_10_Mg_Simvastatin_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Ezetimibe_10_Mg_Simvastatin_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "476351",
+                    "display": "ezetimibe 10 MG / simvastatin 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lovastatin_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lovastatin_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197903",
+                    "display": "lovastatin 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lovastatin_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lovastatin_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197904",
+                    "display": "lovastatin 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Lovastatin_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Lovastatin_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "197905",
+                    "display": "lovastatin 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pitavastatin_Calcium_1_Mg_Oral_Tablet_Livalo": {
+            "name": "Prescribe_Pitavastatin_Calcium_1_Mg_Oral_Tablet_Livalo",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "861646",
+                    "display": "pitavastatin calcium 1 MG Oral Tablet [Livalo]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pitavastatin_Calcium_2_Mg_Oral_Tablet_Livalo": {
+            "name": "Prescribe_Pitavastatin_Calcium_2_Mg_Oral_Tablet_Livalo",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "861650",
+                    "display": "pitavastatin calcium 2 MG Oral Tablet [Livalo]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pitavastatin_Calcium_4_Mg_Oral_Tablet_Livalo": {
+            "name": "Prescribe_Pitavastatin_Calcium_4_Mg_Oral_Tablet_Livalo",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "861654",
+                    "display": "pitavastatin calcium 4 MG Oral Tablet [Livalo]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pravastatin_Sodium_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Pravastatin_Sodium_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "904458",
+                    "display": "pravastatin sodium 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pravastatin_Sodium_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Pravastatin_Sodium_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "904467",
+                    "display": "pravastatin sodium 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "904475",
+                    "display": "pravastatin sodium 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet_Pravachol": {
+            "name": "Prescribe_Pravastatin_Sodium_40_Mg_Oral_Tablet_Pravachol",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "904477",
+                    "display": "pravastatin sodium 40 MG Oral Tablet [Pravachol]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Pravastatin_Sodium_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Pravastatin_Sodium_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "904481",
+                    "display": "pravastatin sodium 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859747",
+                    "display": "rosuvastatin calcium 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet_Crestor": {
+            "name": "Prescribe_Rosuvastatin_Calcium_10_Mg_Oral_Tablet_Crestor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859749",
+                    "display": "rosuvastatin calcium 10 MG Oral Tablet [Crestor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859751",
+                    "display": "rosuvastatin calcium 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet_Crestor": {
+            "name": "Prescribe_Rosuvastatin_Calcium_20_Mg_Oral_Tablet_Crestor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859753",
+                    "display": "rosuvastatin calcium 20 MG Oral Tablet [Crestor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859419",
+                    "display": "rosuvastatin calcium 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet_Crestor": {
+            "name": "Prescribe_Rosuvastatin_Calcium_40_Mg_Oral_Tablet_Crestor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859421",
+                    "display": "rosuvastatin calcium 40 MG Oral Tablet [Crestor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859424",
+                    "display": "rosuvastatin calcium 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet_Crestor": {
+            "name": "Prescribe_Rosuvastatin_Calcium_5_Mg_Oral_Tablet_Crestor",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "859426",
+                    "display": "rosuvastatin calcium 5 MG Oral Tablet [Crestor]"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Simvastatin_10_Mg_Oral_Tablet": {
+            "name": "Prescribe_Simvastatin_10_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "314231",
+                    "display": "simvastatin 10 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Simvastatin_20_Mg_Oral_Tablet": {
+            "name": "Prescribe_Simvastatin_20_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312961",
+                    "display": "simvastatin 20 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Simvastatin_40_Mg_Oral_Tablet": {
+            "name": "Prescribe_Simvastatin_40_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "198211",
+                    "display": "simvastatin 40 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Simvastatin_5_Mg_Oral_Tablet": {
+            "name": "Prescribe_Simvastatin_5_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "312962",
+                    "display": "simvastatin 5 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        },
+        "Prescribe_Simvastatin_80_Mg_Oral_Tablet": {
+            "name": "Prescribe_Simvastatin_80_Mg_Oral_Tablet",
+            "type": "MedicationOrder",
+            "assign_to_attribute": "statin",
+            "codes": [
+                {
+                    "system": "RxNorm",
+                    "code": "200345",
+                    "display": "simvastatin 80 MG Oral Tablet"
+                }
+            ],
+            "prescription": {
+                "refills": 0,
+                "as_needed": false
+            },
+            "direct_transition": "Terminal",
+            "chronic": false
+        }
+    }
+}

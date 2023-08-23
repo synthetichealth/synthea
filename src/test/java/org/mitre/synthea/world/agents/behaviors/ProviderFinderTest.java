@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.Provider.ProviderType;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderNearest;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderRandom;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 public class ProviderFinderTest {
@@ -32,7 +34,6 @@ public class ProviderFinderTest {
       Provider provider = new Provider();
       provider.id = i + "";
       provider.getLonLat().setLocation(i, i);
-      provider.quality = i;
       provider.servicesProvided.add(EncounterType.WELLNESS);
       providers.add(provider);
     }
@@ -94,41 +95,6 @@ public class ProviderFinderTest {
   @Test
   public void testNoNearest() {
     ProviderFinderNearest finder = new ProviderFinderNearest();
-    List<Provider> options = new ArrayList<Provider>();
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
-    Assert.assertNull(provider);
-  }
-
-  @Test
-  public void testQuality() {
-    ProviderFinderQuality finder = new ProviderFinderQuality();
-    Provider provider = finder.find(providers, person, EncounterType.WELLNESS, null, 0L);
-    Assert.assertNotNull(provider);
-    Assert.assertEquals("3", provider.id);
-  }
-
-  @Test
-  public void testAnyQuality() {
-    ProviderFinderQuality finder = new ProviderFinderQuality();
-    Provider provider = finder.find(providers, person, null, null, 0L);
-    Assert.assertNotNull(provider);
-    Assert.assertEquals("3", provider.id);
-  }
-
-  @Test
-  public void testManyQuality() {
-    ProviderFinderQuality finder = new ProviderFinderQuality();
-    List<Provider> options = new ArrayList<Provider>();
-    options.addAll(providers);
-    options.addAll(providers);
-    Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
-    Assert.assertNotNull(provider);
-    Assert.assertEquals("3", provider.id);
-  }
-
-  @Test
-  public void testNoQuality() {
-    ProviderFinderQuality finder = new ProviderFinderQuality();
     List<Provider> options = new ArrayList<Provider>();
     Provider provider = finder.find(options, person, EncounterType.WELLNESS, null, 0L);
     Assert.assertNull(provider);

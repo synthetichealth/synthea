@@ -1,0 +1,289 @@
+{
+  "name": "ART Sequence",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "pregnant",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Year Check"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "1987 to 1994": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_1987_1994",
+      "direct_transition": "Set 1987"
+    },
+    "1995_to_1996": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_1995_1996",
+      "direct_transition": "Set 1995"
+    },
+    "1997_to_2002": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_1997_2002",
+      "direct_transition": "Set 1997"
+    },
+    "2003_to_2005": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_2003_2005",
+      "direct_transition": "Set 2003"
+    },
+    "2006_to_2014": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_2006_2014",
+      "direct_transition": "Set 2006"
+    },
+    "2015+": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/art_sequence_2015",
+      "direct_transition": "Set 2015"
+    },
+    "Year Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Check 2015",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2015,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check 2006",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2006,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check 2003",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 2003,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check 1997",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1997,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check 1995",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1995,
+            "value": 0
+          }
+        },
+        {
+          "transition": "1987 to 1994",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1987,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Set Zero"
+        }
+      ]
+    },
+    "Set 1995": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 1995
+    },
+    "Stop All 1995": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/stop_all_art_meds",
+      "direct_transition": "1995_to_1996"
+    },
+    "Check 1995": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": ">=",
+            "value": 1995
+          }
+        },
+        {
+          "transition": "Stop All 1995"
+        }
+      ]
+    },
+    "Check 2015": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": "is nil"
+          },
+          "distributions": [],
+          "transition": "Stop All 2015"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": ">=",
+            "value": 2015
+          },
+          "distributions": [],
+          "transition": "Terminal"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.5,
+              "transition": "Stop All 2015"
+            },
+            {
+              "distribution": 0.5,
+              "transition": "Terminal"
+            }
+          ]
+        }
+      ]
+    },
+    "Stop All 2015": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/stop_all_art_meds",
+      "direct_transition": "2015+"
+    },
+    "Set 2015": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 2015
+    },
+    "Check 2006": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": ">=",
+            "value": 2006
+          }
+        },
+        {
+          "transition": "Stop All 2006"
+        }
+      ]
+    },
+    "Stop All 2006": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/stop_all_art_meds",
+      "direct_transition": "2006_to_2014"
+    },
+    "Set 2006": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 2006
+    },
+    "Check 2003": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": ">=",
+            "value": 2003
+          }
+        },
+        {
+          "transition": "Stop All 2003"
+        }
+      ]
+    },
+    "Stop All 2003": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/stop_all_art_meds",
+      "direct_transition": "2003_to_2005"
+    },
+    "Set 2003": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 2003
+    },
+    "Check 1997": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "art_year",
+            "operator": ">=",
+            "value": 1997
+          }
+        },
+        {
+          "transition": "Stop All 1997"
+        }
+      ]
+    },
+    "Stop All 1997": {
+      "type": "CallSubmodule",
+      "submodule": "hiv/stop_all_art_meds",
+      "direct_transition": "1997_to_2002"
+    },
+    "Set 1997": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 1997
+    },
+    "Set 1987": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 1987
+    },
+    "Set Zero": {
+      "type": "SetAttribute",
+      "attribute": "art_year",
+      "direct_transition": "Terminal",
+      "value": 0
+    }
+  },
+  "gmf_version": 2
+}

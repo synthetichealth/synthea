@@ -1,0 +1,151 @@
+{
+  "name": "acs_arrival_medications",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Aspirin_Rates"
+    },
+    "Oxygen": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 371908008,
+          "display": "Oxygen administration by mask (procedure)"
+        }
+      ],
+      "direct_transition": "NTG_Rates"
+    },
+    "Nitroglycerin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198039,
+          "display": "nitroglycerin 0.4 MG Sublingual Tablet"
+        }
+      ],
+      "direct_transition": "Morphine_Rates",
+      "administration": true
+    },
+    "Morphine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1728805,
+          "display": "2 ML morphine sulfate 1 MG/ML Injection"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Terminal"
+    },
+    "Aspirin_Once": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 212033,
+          "display": "aspirin 325 MG Oral Tablet"
+        }
+      ],
+      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 4,
+          "frequency": 1,
+          "period": 1,
+          "unit": "hours"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "Oxygen_Rates"
+    },
+    "Aspirin_Rates": {
+      "type": "Simple",
+      "remarks": ["TODO: fix to Active Allergy after merging"],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1191,
+                "display": "Aspirin"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Oxygen_Rates",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Aspirin_Once",
+              "distribution": 0.99
+            },
+            {
+              "transition": "Oxygen_Rates",
+              "distribution": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    "Oxygen_Rates": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Oxygen",
+          "distribution": 0.925
+        },
+        {
+          "transition": "NTG_Rates",
+          "distribution": 0.075
+        }
+      ]
+    },
+    "NTG_Rates": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Nitroglycerin",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Morphine_Rates",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Morphine_Rates": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Morphine",
+          "distribution": 0.55
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.45
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

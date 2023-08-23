@@ -1,0 +1,193 @@
+{
+  "name": "Atrial Fibrillation",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Chance_of_AFib"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Chance_of_AFib": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "distributed_transition": [
+        {
+          "transition": "Diagnosis",
+          "distribution": {
+            "attribute": "atrial_fibrillation_risk",
+            "default": 0
+          }
+        },
+        {
+          "transition": "Chance_of_AFib",
+          "distribution": 1
+        }
+      ]
+    },
+    "Diagnosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 49436004,
+          "display": "Atrial fibrillation (disorder)"
+        }
+      ],
+      "direct_transition": "Next Wellness Visit",
+      "target_encounter": "Next Wellness Visit",
+      "assign_to_attribute": "atrial_fibrillation"
+    },
+    "Next Wellness Visit": {
+      "type": "Encounter",
+      "reason": "Diagnosis",
+      "telemedicine_possibility": "none",
+      "wellness": true,
+      "conditional_transition": [
+        {
+          "transition": "Verapamil",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1981,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Warfarin",
+          "condition": {
+            "condition_type": "Date",
+            "operator": ">=",
+            "year": 1954,
+            "value": 0
+          }
+        },
+        {
+          "transition": "Procedure Check"
+        }
+      ]
+    },
+    "Warfarin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 855332,
+          "display": "Warfarin Sodium 5 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Digoxin",
+      "reason": "Diagnosis",
+      "chronic": true
+    },
+    "Verapamil": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 897685,
+          "display": "verapamil hydrochloride 80 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Warfarin",
+      "reason": "Diagnosis",
+      "chronic": true
+    },
+    "Digoxin": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197604,
+          "display": "Digoxin 0.125 MG Oral Tablet"
+        }
+      ],
+      "reason": "Diagnosis",
+      "chronic": true,
+      "direct_transition": "Procedure Check"
+    },
+    "Procedure Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Catheter Ablation",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Electrical Cardioversion",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Catheter Ablation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 18286008,
+          "display": "Catheter ablation of tissue of heart (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Diagnosis",
+      "distributed_transition": [
+        {
+          "transition": "Pacemaker",
+          "distribution": 0.1
+        },
+        {
+          "transition": "End Encounter",
+          "distribution": 0.9
+        }
+      ]
+    },
+    "Electrical Cardioversion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 180325003,
+          "display": "Direct current cardioversion (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Encounter",
+      "reason": "Diagnosis"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Pacemaker": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 706004007,
+        "display": "Implantable cardiac pacemaker (physical object)"
+      },
+      "direct_transition": "End Encounter"
+    }
+  },
+  "gmf_version": 2
+}

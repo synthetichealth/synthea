@@ -1,0 +1,157 @@
+{
+  "name": "alt_access",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "TAVR Valve Sheath Access"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "TAVR Valve Sheath Access": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Transapical",
+          "distribution": 0.07
+        },
+        {
+          "transition": "Transaxillary",
+          "distribution": 0.23
+        },
+        {
+          "transition": "Transaortic",
+          "distribution": 0.12
+        },
+        {
+          "transition": "Subclavian",
+          "distribution": 0.35
+        },
+        {
+          "transition": "Transcarotid",
+          "distribution": 0.22
+        },
+        {
+          "transition": "Other",
+          "distribution": 0.01
+        }
+      ]
+    },
+    "Transapical": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 715998004,
+        "display": "Transapical approach (qualifier value)"
+      }
+    },
+    "Transaxillary": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 416896004,
+        "display": "Axillary approach (qualifier value)"
+      }
+    },
+    "Transaortic": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 261051005,
+        "display": "Aortic (qualifier value)"
+      }
+    },
+    "Subclavian": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 303578004,
+        "display": "Subclavicular approach (qualifier value)"
+      }
+    },
+    "Transcarotid": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 260582008,
+        "display": "SNOMED Code"
+      }
+    },
+    "Other": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29554-3",
+          "display": "Procedure Narrative"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 74964007,
+        "display": "Other (qualifier value)"
+      },
+      "remarks": [
+        "Transiliac/ Transeptal"
+      ]
+    }
+  },
+  "gmf_version": 2
+}

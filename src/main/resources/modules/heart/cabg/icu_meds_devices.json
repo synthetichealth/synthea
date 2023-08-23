@@ -1,0 +1,87 @@
+{
+  "name": "icu_meds_devices",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "This submodule of Cardiac Surgery models ICU Medications and Devices. "
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "VAD Check"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Device": {
+      "type": "DeviceEnd",
+      "direct_transition": "IABP_Check",
+      "device": "Assist_Device_Used"
+    },
+    "IABP_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "IABP Start",
+          "distribution": 0.005434782608696
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.994565217391304
+        }
+      ]
+    },
+    "Intra Aortic Balloon Pump": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "399217008",
+          "display": "Cardioassist by aortic balloon pump (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "IABP Stop"
+    },
+    "IABP Start": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "129113006",
+        "display": "Intra-aortic balloon pump, device (physical object)"
+      },
+      "direct_transition": "Intra Aortic Balloon Pump"
+    },
+    "IABP Stop": {
+      "type": "DeviceEnd",
+      "direct_transition": "Terminal",
+      "device": "IABP Start"
+    },
+    "Assist_Device_Used": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 360064003,
+        "display": "Ventricular assist device (physical object)"
+      },
+      "direct_transition": "Device"
+    },
+    "VAD Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Assist_Device_Used",
+          "distribution": 0.005434782608696
+        },
+        {
+          "transition": "IABP_Check",
+          "distribution": 0.994565217391304
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

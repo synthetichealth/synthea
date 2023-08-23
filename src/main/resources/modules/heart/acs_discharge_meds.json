@@ -1,0 +1,321 @@
+{
+  "name": "acs_discharge_meds",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Aspirin Check"
+    },
+    "Aspirin Check": {
+      "type": "Simple",
+      "remarks": ["TODO: fix to Active Allergy after merging"],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 1191,
+                    "display": "Aspirin"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 243670,
+                    "display": "aspirin 81 MG Oral Tablet"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "BB Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Aspirin_Daily",
+              "distribution": 0.98
+            },
+            {
+              "transition": "BB Check",
+              "distribution": 0.02
+            }
+          ]
+        }
+      ]
+    },
+    "BB Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "beta_blocker",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "Statin Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "BB Submodule",
+              "distribution": 0.975
+            },
+            {
+              "transition": "Statin Check",
+              "distribution": 0.025
+            }
+          ]
+        }
+      ]
+    },
+    "Statin Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "statin",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "ACE-ARB Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Statin Submodule",
+              "distribution": 0.984
+            },
+            {
+              "transition": "ACE-ARB Check",
+              "distribution": 0.016
+            }
+          ]
+        }
+      ]
+    },
+    "ACE-ARB Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "ace_arb",
+            "operator": "is not nil"
+          },
+          "distributions": [
+            {
+              "transition": "P2Y12 Check",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "ACE-ARB Submodule",
+              "distribution": 0.9
+            },
+            {
+              "transition": "P2Y12 Check",
+              "distribution": 0.1
+            }
+          ]
+        }
+      ]
+    },
+    "P2Y12 Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "P2Y12 Not filled",
+          "distribution": 0.125
+        },
+        {
+          "transition": "P2Y12",
+          "distribution": 0.875
+        }
+      ]
+    },
+    "Aspirin_Daily": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 243670,
+          "display": "aspirin 81 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "BB Check"
+    },
+    "BB Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "medications/beta_blocker",
+      "direct_transition": "Statin Check"
+    },
+    "Statin Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "medications/statin",
+      "direct_transition": "ACE-ARB Check"
+    },
+    "ACE-ARB Submodule": {
+      "type": "CallSubmodule",
+      "submodule": "medications/ace_arb",
+      "direct_transition": "P2Y12 Check"
+    },
+    "P2Y12 Not filled": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "70006-2",
+          "display": "Medication management note"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 702566000,
+        "display": "Suspected non-compliance of drug therapy (situation)"
+      },
+      "conditional_transition": [
+        {
+          "transition": "End_Prior_Antiplatelet",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "acs_antiplatelet",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "P2Y12": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "acs_antiplatelet",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Ticagrelor",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1116635,
+                "display": "ticagrelor 90 MG Oral Tablet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Clopidogrel",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 749196,
+                "display": "clopidogrel 300 MG Oral Tablet"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Prasugrel",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 855812,
+                "display": "prasugrel 10 MG Oral Tablet"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Prasugrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 855812,
+          "display": "prasugrel 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Prior_Antiplatelet"
+    },
+    "Clopidogrel": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309362,
+          "display": "clopidogrel 75 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Prior_Antiplatelet"
+    },
+    "Ticagrelor": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1116635,
+          "display": "ticagrelor 90 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Prior_Antiplatelet"
+    },
+    "End_Prior_Antiplatelet": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "referenced_by_attribute": "acs_antiplatelet",
+      "remarks": [
+        "End the acs_antiplatelet here, so that we can use the Active Medication logic to pick the same one in the previous steps",
+        ""
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

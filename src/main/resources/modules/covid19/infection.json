@@ -11,7 +11,7 @@
     "Encounter for Test": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "Suspected COVID",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -94,7 +94,7 @@
           "display": "Suspected COVID-19"
         }
       ],
-      "direct_transition": "Apply Face Mask to Patient"
+      "direct_transition": "Encounter for Test"
     },
     "Admission": {
       "type": "CallSubmodule",
@@ -436,7 +436,7 @@
     "Determine Risk": {
       "submodule": "covid19/determine_risk",
       "type": "CallSubmodule",
-      "direct_transition": "Encounter for Test",
+      "direct_transition": "Suspected COVID",
       "remarks": [
         "Assess patient comorbidities and set attribute (covid19_risk):",
         "  - (high) if patient has comorbidity impacting risks",
@@ -584,7 +584,7 @@
         {
           "system": "LOINC",
           "code": "80381-7",
-          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+          "display": "Influenza virus A and B Ag panel - Upper respiratory specimen by Rapid immunoassay"
         }
       ],
       "observations": [
@@ -595,7 +595,7 @@
             {
               "system": "LOINC",
               "code": "80382-5",
-              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus A Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -611,7 +611,7 @@
             {
               "system": "LOINC",
               "code": "80383-3",
-              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus B Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -629,7 +629,7 @@
         {
           "system": "LOINC",
           "code": "80381-7",
-          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+          "display": "Influenza virus A and B Ag panel - Upper respiratory specimen by Rapid immunoassay"
         }
       ],
       "observations": [
@@ -640,7 +640,7 @@
             {
               "system": "LOINC",
               "code": "80382-5",
-              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus A Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -656,7 +656,7 @@
             {
               "system": "LOINC",
               "code": "80383-3",
-              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus B Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -674,7 +674,7 @@
         {
           "system": "LOINC",
           "code": "80381-7",
-          "display": "Influenza virus A and B Ag panel - Nasopharynx by Rapid immunoassay"
+          "display": "Influenza virus A and B Ag panel - Upper respiratory specimen by Rapid immunoassay"
         }
       ],
       "observations": [
@@ -685,7 +685,7 @@
             {
               "system": "LOINC",
               "code": "80382-5",
-              "display": "Influenza virus A Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus A Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -701,7 +701,7 @@
             {
               "system": "LOINC",
               "code": "80383-3",
-              "display": "Influenza virus B Ag [Presence] in Nasopharynx by Rapid immunoassay"
+              "display": "Influenza virus B Ag [Presence] in Upper respiratory specimen by Rapid immunoassay"
             }
           ],
           "value_code": {
@@ -1249,7 +1249,7 @@
     "Record Vitals": {
       "type": "CallSubmodule",
       "submodule": "covid19/measurements_vitals",
-      "direct_transition": "Suspected COVID"
+      "direct_transition": "Apply Face Mask to Patient"
     }
   },
   "gmf_version": 1

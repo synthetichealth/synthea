@@ -7,8 +7,10 @@ import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -16,6 +18,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
+import org.mitre.synthea.world.geography.Location;
 import org.mockito.Mockito;
 
 public class DeathModuleTest {
@@ -44,8 +47,10 @@ public class DeathModuleTest {
 
     long birthTime = time - Utilities.convertTime("years", 35);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    Payer.loadNoInsurance();
-    person.coverage.setPayerAtTime(time, Payer.noInsurance);
+    String testStateDefault = Config.get("test_state.default", "Massachusetts");
+    PayerManager.loadPayers(new Location(testStateDefault, null));
+    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
+    person.coverage.setPlanToNoInsurance(time);
   }
 
   @Test

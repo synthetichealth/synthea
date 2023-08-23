@@ -1,0 +1,5 @@
+operative_status,Graft_No_1,Graft_No_2,Graft_No_3,Graft_No_4,Graft_No_5,Graft_No_6
+elective,0.035,0.294,0.483,0.160,0.029,0.000
+emergent,0.037,0.287,0.537,0.120,0.019,0.000
+emergent_salvage,0.000,0.333,0.667,0.000,0.000,0.000
+urgent,0.013,0.249,0.504,0.203,0.029,0.001

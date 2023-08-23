@@ -1,5 +1,6 @@
 {
   "name": "Congestive Heart Failure",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "states": {
     "Initial": {
       "type": "Initial",
@@ -73,12 +74,12 @@
         {
           "system": "SNOMED-CT",
           "code": 183063000,
-          "display": "low salt diet education"
+          "display": "Low salt diet education"
         },
         {
           "system": "SNOMED-CT",
           "code": 183301007,
-          "display": "physical exercise"
+          "display": "Physical exercises (regime/therapy)"
         }
       ]
     },
@@ -420,12 +421,12 @@
         {
           "system": "SNOMED-CT",
           "code": 183063000,
-          "display": "low salt diet education"
+          "display": "Low salt diet education"
         },
         {
           "system": "SNOMED-CT",
           "code": 183301007,
-          "display": "physical exercise"
+          "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -480,7 +481,7 @@
         {
           "system": "LOINC",
           "code": "55405-5",
-          "display": "Heartfailure Tracking Panel"
+          "display": "Heart failure tracking panel"
         }
       ],
       "observations": [
@@ -509,7 +510,14 @@
       "type": "SetAttribute",
       "attribute": "inpatient-los",
       "direct_transition": "Inpatient CarePlan",
-      "value": 0
+      "value": 0,
+      "distribution": {
+        "kind": "EXPONENTIAL",
+        "round": true,
+        "parameters": {
+          "mean": 5.8
+        }
+      }
     },
     "Reset inpatient count": {
       "type": "SetAttribute",
@@ -537,29 +545,20 @@
     "Inpatient Discharge decision": {
       "type": "Counter",
       "attribute": "inpatient-los",
-      "action": "increment",
-      "complex_transition": [
+      "action": "decrement",
+      "conditional_transition": [
         {
+          "transition": "Inpatient daily routine",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "inpatient-los",
-            "operator": ">=",
-            "value": 5
-          },
-          "distributions": [
-            {
-              "transition": "Inpatient Discharge",
-              "distribution": 0.8
-            },
-            {
-              "transition": "Inpatient daily routine",
-              "distribution": 0.19999999999999996
-            }
-          ]
+            "operator": ">",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Inpatient Discharge"
         }
-      ],
-      "remarks": [
-        "Model the ALOS (5.8) through an increased likelihood of a discharge after 5 days."
       ]
     },
     "Inpatient Death decision": {
@@ -633,7 +632,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood Pressure"
+          "display": "Blood pressure panel with all children optional"
         }
       ],
       "direct_transition": "End self-measurement",
@@ -1203,7 +1202,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic Metabolic Panel"
+          "display": "Basic metabolic panel - Blood"
         }
       ],
       "observations": [
@@ -1214,7 +1213,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1226,7 +1225,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1238,7 +1237,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1250,7 +1249,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Blood"
             }
           ],
           "unit": "mg/dL"
@@ -1262,7 +1261,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1274,7 +1273,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1286,7 +1285,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1298,7 +1297,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Blood"
             }
           ],
           "unit": "mmol/L"
@@ -1705,7 +1704,7 @@
         {
           "system": "LOINC",
           "code": "55405-5",
-          "display": "Heartfailure Tracking Panel"
+          "display": "Heart failure tracking panel"
         }
       ],
       "observations": [

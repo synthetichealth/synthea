@@ -1,20 +1,20 @@
 CODE,MIN,MODE,MAX,COMMENTS
 312617,2,7,25,predniSONE 5 MG Oral Tablet
-1870230,150,350,530,NDA020800 0.3 ML Epinephrine 1 MG/ML Auto-Injector
+1870230,2.47,7.20,18.25,NDA020800 0.3 ML Epinephrine 1 MG/ML Auto-Injector
 895994,6,20,60,120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler -- note that brand name Flovent HFA ranges from 130 - 500
 2123111,0.72,62.31,1174.83,NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhale
 1091392,20,90,250,"Methylphenidate Hydrochloride 20 MG Oral Tablet -- note high variability on this one, I see 20-250, avg is ~90"
-608139,100,300,700,atomoxetine 100 MG Oral Capsule
+608139,2.11,4.22,8.44,atomoxetine 100 MG Oral Capsule
 1043400,4,8,12,Acetaminophen 21.7 MG/ML / Dextromethorphan Hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution - OTC cough syrup
 313782,3,7,12,Acetaminophen 325 MG Oral Tablet - OTC
 1803932,5.5,10,100,"Leucovorin 100 MG Injection -- note some major outliers of 50s and 1 of 900+, but mostly < 10"
 1736776,2000,2500,3500,10 ML oxaliplatin 5 MG/ML Injection -- note few instances in data
 1366343,300,600,800,Levonorgestrel 0.00354 MG/HR Drug Implant -- using 365 from https://www.washingtonpost.com/archive/lifestyle/wellness/1993/11/16/the-price-of-norplant/fc4fb471-7b53-4b87-9abb-bad368b88042/ adjusted to 2018 dollars
-389221,300,600,800, Etonogestrel 68 MG Drug Implant-- assuming the same cost for all 3 implants
+389221,25.75,51.5,103,Etonogestrel 68 MG Drug Implant
 1000126,20,55,715,1 ML medroxyprogesterone acetate 150 MG/ML Injection - est https://clearhealthcosts.com/blog/2014/05/much-depo-provera-cost-draft/
-807283,800,1000,1494,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
+807283,19.63,21.92,24.17,"Mirena 52 MG Intrauterine System -- all 3 IUDs estimated at 1000, based on http://time.com/4985605/iud-birth-control-health-insurance/"
 1605257,800,1000,1494,Liletta 52 MG Intrauterine System
-1856546,800,1000,1494,Kyleena 19.5 MG Intrauterine System
+1856546,21.96,22.05,22.14,Kyleena 19.5 MG Intrauterine System
 748962,15,35,50,Camila 28 Day Pack -- all pills est at 15-50 based on https://money.usnews.com/money/blogs/alpha-consumer/2012/03/05/the-real-cost-of-birth-control
 831533,15,35,50,Errin 28 Day Pack
 757594,15,35,50,Jolivette 28 Day Pack
@@ -30,29 +30,29 @@ CODE,MIN,MODE,MAX,COMMENTS
 1534809,15,35,50,168 HR Ethinyl Estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System - same source as pills
 1367439,15,40,50,NuvaRing 0.12/0.015 MG per 24HR 21 Day Vaginal Ring - est from https://www.plannedparenthood.org/learn/birth-control/birth-control-vaginal-ring-nuvaring/how-do-i-get-nuvaring
 896209,6,20,60,60 ACTUAT Fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler
-310436,20,110,350,Galantamine 4 MG Oral Tablet
+310436,0.11,1.67,6.70,Galantamine 4 MG Oral Tablet
 997223,2,250,630,Donepezil hydrochloride 10 MG Oral Tablet
 313185,1280,1350,1447,Tacrine 10 MG Oral Capsule -- using yearly cost from https://webcache.googleusercontent.com/search?q=cache:tEYxPDcg0UoJ:https://www.thepharmaletter.com/article/cognex-approved-for-alzheimer-s-in-usa+&cd=12&hl=en&ct=clnk&gl=us&client=firefox-b-1
-1599803,400,450,600,24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule -- https://www.drugs.com/price-guide/namzaric
+1599803,10.03,20.06,40.12,24 HR Donepezil hydrochloride 10 MG / Memantine hydrochloride 28 MG Extended Release Oral Capsule -- https://www.drugs.com/price-guide/namzaric
 996740,33,275,900,Memantine hydrochloride 2 MG/ML Oral Solution
 1100184,1.19,19.76,1417.21,Donepezil hydrochloride 23 MG Oral Tablet
 106258,3,7,12,Hydrocortisone 10 MG/ML Topical Cream - OTC
 308971,2,35,500,Carbamazepine[Tegretol] -- note fairly high variability
-197591,0.24,9.77,3120.45,Diazepam 5 MG Oral Tablet
-204892,0.11,9.36,1097.62,clonazePAM 0.25 MG Oral Tablet
+197591,0.145,0.29,0.58,Diazepam 5 MG Oral Tablet
+204892,0.11,0.61,1.22,clonazePAM 0.25 MG Oral Tablet
 198014,3,8,30,Naproxen 500 MG Oral Tablet
-483438,40,300,1200,pregabalin 100 MG Oral Capsule
-596926,32,200,750,duloxetine 20 MG Delayed Release Oral Capsule
-833135,36.12,306.20,930.26,Milnacipran hydrochloride 100 MG Oral Tablet
+483438,0.45,0.9,1.8,pregabalin 100 MG Oral Capsule
+596926,0.12,0.84,2.14,duloxetine 20 MG Delayed Release Oral Capsule
+833135,4.16,8.32,16.64,Milnacipran hydrochloride 100 MG Oral Tablet
 1049635,1.39,45.37,5767.86,Acetaminophen 325 MG / oxyCODONE Hydrochloride 2.5 MG Oral Tablet
-197541,7,219.82,1186.61,Colchicine 0.6 MG Oral Tablet
+197541,2.93,5.87,11.74,Colchicine 0.6 MG Oral Tablet
 197319,2,10,35,Allopurinol 100 MG Oral Tablet
 1736854,400,445,500,Cisplatin 50 MG Injection -- https://www.mskcc.org/sites/default/files/node/25097/documents/drug-prices-table-bach-center-health-policy-and-outcomes-v2.pdf
 1734340,150,200,250,Etoposide 100 MG Injection -- https://www.drugs.com/price-guide/etoposide
-583214,6000,6500,6800,PACLitaxel 100 MG Injection -- few instances in data set
+583214,1.79,3.59,7.18,PACLitaxel 100 MG Injection
 849574,6,8,11,Naproxen sodium 220 MG Oral Tablet - OTC
-312615,0.74,8.12,6882.55,predniSONE 20 MG Oral Tablet
-241834,17.05,177.41,913.68,cycloSPORIN modified 100 MG Oral Capsule
+312615,0.19,0.38,0.76,predniSONE 20 MG Oral Tablet
+241834,1.06,6.00,16.27,cycloSPORIN modified 100 MG Oral Capsule
 105078,0.01,7,43,Penicillin G 375 MG/ML Injectable Solution
 789980,11,175,350,Ampicillin 100 MG/ML Injectable Solution
 1652673,8.8,60,733,Doxycycline Monohydrate 50 MG Oral Tablet
@@ -62,9 +62,9 @@ CODE,MIN,MODE,MAX,COMMENTS
 309045,40,55,66,Cefaclor 250 MG Oral Capsule
 309043,40,55,66,12 HR Cefaclor 500 MG Extended Release Oral Tablet
 309097,9.5,35,273,Cefuroxime 250 MG Oral Tablet
-861467,5,40,137,Meperidine Hydrochloride 50 MG Oral Tablet -- note a couple major outliers
-1049221,2.83,800,2258,Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet
-857005,2.36,50,500,Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet
+861467,0.40,1.24,2.64,Meperidine Hydrochloride 50 MG Oral Tablet -- note a couple major outliers
+1049221,0.26,0.26,0.26,Acetaminophen 325 MG / oxyCODONE Hydrochloride 5 MG Oral Tablet
+857005,0.05,0.43,1.34,Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet
 1049630,4,5,12,diphenhydrAMINE Hydrochloride 25 MG Oral Tablet - OTC [Benadryl]
 477045,4,5,10,Chlorpheniramine Maleate 2 MG/ML Oral Solution - otc [Chlor-Timeton] - see otc_antihistamine
 1363309,4,5,10,Chlorpheniramine Maleate 4 MG Oral Tablet - otc
@@ -78,40 +78,37 @@ CODE,MIN,MODE,MAX,COMMENTS
 1014678,15,19,25,cetirizine hydrochloride 10 MG Oral Tablet - OTC [zyrtec]
 243670,4,6.5,12,Aspirin 81 MG Oral Tablet - OTC
 313820,3,4,8,Acetaminophen 160 MG Chewable Tablet - OTC
-313782,4,5,10,Acetaminophen 325 MG Oral Tablet - OTC
 198405,1.11,7,45,Ibuprofen 100 MG Oral Tablet
 310965,1.11,8,45,Ibuprofen 200 MG Oral Tablet
-849574,3,8,30,Naproxen sodium 220 MG Oral Tablet
-1049683,3,200,2700,oxyCODONE Hydrochloride 10 MG Oral Tablet
-864718,2.75,18,350,Methadone Hydrochloride 5 MG Oral Tablet
-860975,0.01,12,600,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet
+1049683,0.19,0.49,0.80,oxyCODONE Hydrochloride 10 MG Oral Tablet
+864718,0.15,0.2,0.4,Methadone Hydrochloride 5 MG Oral Tablet
+860975,0.01,0.25,4.32,24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet
 897122,200,600,1600,3 ML liraglutide 6 MG/ML Pen Injector -- note: I see 2-pak and 3-pak
 1373463,75,400,885,canagliflozin 100 MG Oral Tablet
-106892,25,250,1000,insulin human  isophane 70 UNT/ML / Regular Insulin  Human 30 UNT/ML Injectable Suspension [Humulin]
-865098,75,350,1800,Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]
-856987,1.11,21.28,2424.04,Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet
-1860154,3,200,2700,Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet
-1049221,2.83,800,2258,Acetaminophen 325 MG / Oxycodone Hydrochloride 5 MG Oral Tablet -- see other percocet above
-904419,2.55,110,303,Alendronic acid 10 MG Oral Tablet -- SEE ALENDRONATE SODIUM
-105585,1.13,51.66,539.60,Methotrexate 2.5 MG Oral Tablet
+106892,8.30,16.61,33.22,insulin human isophane 70 UNT/ML / Regular Insulin Human 30 UNT/ML Injectable Suspension [Humulin]
+865098,15.465,30.93,61.86,Insulin Lispro 100 UNT/ML Injectable Solution [Humalog]
+856987,0.06,1.38,8.15,Acetaminophen 300 MG / HYDROcodone Bitartrate 5 MG Oral Tablet
+1860154,3,4.89,8.06,Abuse-Deterrent 12 HR Oxycodone Hydrochloride 15 MG Extended Release Oral Tablet
+904419,0.03,0.34,1.54,Alendronic acid 10 MG Oral Tablet -- SEE ALENDRONATE SODIUM
+105585,0.88,1.92,2.13,Methotrexate 2.5 MG Oral Tablet
 562251,3,16,153,Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet -- see AMOX TR-POTASSIUM CLAVULANATE
 834061,0.01,7,43,Penicillin V Potassium 250 MG Oral Tablet
 834102,0.01,7,43,Penicillin V Potassium 500 MG Oral Tablet
-311989,72,602,3785,Nitrofurantoin 5 MG/ML Oral Suspension-- note few examples
+311989,0.55,11.44,30.09,Nitrofurantoin 5 MG/ML Oral Suspension-- note few examples
 1094107,6.75,22,65,Phenazopyridine hydrochloride 100 MG Oral Tablet
 311995,3,40,146,NITROFURANTOIN MACROCRYSTALS 50 MG Oral Capsule
 309362,3,26,150,Clopidogrel 75 MG Oral Tablet
 197361,1.29,9,93,Amlodipine 5 MG Oral Tablet -- using AMLODIPINE BESYLATE
 834357,2.5,25,360,3 ML Amiodarone hydrocholoride 50 MG/ML Prefilled Syringe
-705129,8.5,20,400,Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray
+705129,1.01,6.05,66.30,Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray
 1190795,7.45,20,40,Atropine Sulfate 1 MG/ML Injectable Solution
 897718,2,30,285,Verapamil Hydrochloride 40 MG
 312961,2,10,55,Simvastatin 20 MG Oral Tablet
 1660014,1,5,5,1 ML Epinephrine 1 MG/ML Injection -- https://www.cbsnews.com/news/cheaper-epipen-alternative-may-carry-risks/
 197604,4,45,150,Digoxin 0.125 MG Oral Tablet
-259255,1,24,600,Atorvastatin 80 MG Oral Tablet
+259255,0.01,0.41,2.12,Atorvastatin 80 MG Oral Tablet
 1804799,6000,6400,6800,"Alteplase 100 MG Injection -- not found in data, used https://www.managedcaremag.com/news/cost-clot-busting-drug-alteplase-outpaces-reimbursement"
-855332,1.5,15,250,Warfarin Sodium 5 MG Oral Tablet
+855332,0.01,0.37,1.37,Warfarin Sodium 5 MG Oral Tablet
 833036,15,65,150,"Captopril 25 MG Oral Tablet -- high variability, ranges 15-150, avg ~65"
 1114085,6.45,6.45,6.45,100 ML zoledronic acid 0.04 MG/ML Injection - https://data.medicaid.gov/Drug-Pricing-and-Payment/NADAC-National-Average-Drug-Acquisition-Cost-/a4y5-998d
 1116758,64.76,232.4,302,chloroquine phosphate 500 MG Oral Tablet - https://www.goodrx.com/aralen?kw=price&utm_source=bing&utm_medium=cpc&utm_term=aralen|p&utm_campaign=aralen&utm_content=Ad-Group_General&msclkid=b1c17c16e7cf11ec047d232b92825621

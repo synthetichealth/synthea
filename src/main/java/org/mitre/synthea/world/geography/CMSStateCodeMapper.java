@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -14,11 +16,12 @@ import org.mitre.synthea.helpers.Utilities;
  */
 public class CMSStateCodeMapper {
 
-  private final HashMap<String, String> providerStateCodes;
+  private final Map<String, String> providerStateCodes;
   private Map<String, String> stateToAbbrev = this.buildStateAbbrevTable();
   private final Map<String, String> abbrevToState;
-  private final HashMap<String, String> ssaTable;
-  private final HashMap<String, String> fipsTable;
+  private final Map<String, String> ssaTable;
+  private final Map<String, Map<String, String>> ssaStateCountyNameCountyCode;
+  private final Map<String, String> fipsTable;
 
   /**
    * Create a new instance.
@@ -32,6 +35,7 @@ public class CMSStateCodeMapper {
       this.abbrevToState.put(entry.getValue(), entry.getKey());
     }
     this.ssaTable = buildSSATable();
+    this.ssaStateCountyNameCountyCode = buildCountyNameLookup();
     this.fipsTable = buildFipsTable();
   }
 
@@ -199,7 +203,7 @@ public class CMSStateCodeMapper {
     providerStateCode.put("Wisconsin", "52");
     providerStateCode.put("Wyoming", "53");
     providerStateCode.put("Africa", "54");
-    providerStateCode.put("California", "55");
+    providerStateCode.put("Asia", "55");
     providerStateCode.put("Canada & Islands", "56");
     providerStateCode.put("Central America and West Indies", "57");
     providerStateCode.put("Europe", "58");
@@ -215,15 +219,37 @@ public class CMSStateCodeMapper {
   }
 
   /**
-   * Get the SSA county code for a given zipcode. Will eventually use countyname, but wanted
-   * to use a unique key
+   * Get the SSA county code for a given zipcode.
    * @param zipcode the ZIP
-   * @return
+   * @return The SSA county code.
    */
   public String zipToCountyCode(String zipcode) {
-    // TODO: fix this. Currently hard-coding default because required field, but will
-    // eventually add name-based matching as fallback
-    return ssaTable.getOrDefault(zipcode, "22090");
+    return ssaTable.get(zipcode);
+  }
+
+  /**
+   * Get the SSA county code for a given state and county.
+   * @param state The abbreviation of the state.
+   * @param countyName The name of the county.
+   * @return The SSA county code.
+   */
+  public String stateCountyNameToCountyCode(String state, String countyName,
+      RandomNumberGenerator rand) {
+    String ssaCounty = null;
+    String abbrv = stateToAbbrev.get(state);
+    Map<String, String> stateData = ssaStateCountyNameCountyCode.get(abbrv);
+    String key = countyName.toUpperCase().replace(" COUNTY", "");
+    if (stateData != null) {
+      ssaCounty = stateData.get(key);
+      if (ssaCounty == null) {
+        // TODO ideally, we'd search by Lat/Lon and pick the closest county
+        // instead, we pick a random county within the state
+        int index = rand.randInt(stateData.keySet().size());
+        key = (String) stateData.keySet().toArray()[index];
+        ssaCounty = stateData.get(key);
+      }
+    }
+    return ssaCounty;
   }
 
   private HashMap<String, String> buildSSATable() {
@@ -244,6 +270,31 @@ public class CMSStateCodeMapper {
       ssaTable.put(zipcode, ssaCode);
     }
     return ssaTable;
+  }
+
+
+  private Map<String, Map<String, String>> buildCountyNameLookup() {
+    Map<String, Map<String, String>> results = new HashMap<String, Map<String, String>>();
+    List<LinkedHashMap<String, String>> csvData;
+    try {
+      String csv = Utilities.readResourceAndStripBOM("geography/fipscodes.csv");
+      csvData = SimpleCSV.parse(csv);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    for (LinkedHashMap<String, String> row : csvData) {
+      String state = row.get("state");
+      if (!results.containsKey(state)) {
+        results.put(state, new HashMap<String, String>());
+      }
+      Map<String, String> stateData = results.get(state);
+      String county = row.get("county");
+      if (!stateData.containsKey(county)) {
+        String ssaCode = row.get("ssacounty");
+        stateData.put(county, ssaCode);
+      }
+    }
+    return results;
   }
 
   /**

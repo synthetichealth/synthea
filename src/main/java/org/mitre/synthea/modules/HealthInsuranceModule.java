@@ -7,9 +7,9 @@ import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.Payer;
+import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.agents.behaviors.IPayerFinder;
+import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 public class HealthInsuranceModule extends Module {
 
@@ -19,21 +19,15 @@ public class HealthInsuranceModule extends Module {
       .get("generate.insurance.mandate.year", "2006")));
   public static double mandateOccupation =
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
-  public static double medicaidLevel = 1.33
-          * Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 11000);
-  public static String MEDICARE =
-      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-  public static String MEDICAID =
-      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-  public static String DUAL_ELIGIBLE =
-      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
-  public static String INSURANCE_STATUS = "insurance_status";
+  public static double povertyLevel =
+          Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 17550);
 
   /**
    * HealthInsuranceModule constructor.
    */
   public HealthInsuranceModule() {}
 
+  @Override
   public Module clone() {
     return this;
   }
@@ -52,48 +46,14 @@ public class HealthInsuranceModule extends Module {
       return true;
     }
 
-    // If the payerHistory at the current age is null, they must get insurance for the new year.
-    // Note: This means the person will check to change insurance yearly, just after their
-    // birthday.
-    Payer payerAtTime = person.coverage.getPayerAtTime(time);
-    if (payerAtTime == null) {
-      // Update their last payer with person's QOLS for that year.
-      Payer lastPayer = person.coverage.getLastPayer();
-      if (lastPayer != null) {
-        lastPayer.addQols(person.getQolsForYear(Utilities.getYear(time) - 1));
-      }
-      // Determine the insurance for this person at this time.
-      Payer newPayer = determineInsurance(person, time);
-      Payer secondaryPayer = Payer.noInsurance;
-
-      // If the payer is Medicare, they may buy supplemental insurance.
-      if (Payer.getGovernmentPayer(MEDICARE) == newPayer && (person.rand() <= 0.8)) {
-        // Buy supplemental insurance if it is affordable
-        secondaryPayer = Payer.findPayer(person, null, time);
-      }
-
-      // Set this new payer at the current time for the person.
-      person.coverage.setPayerAtTime(time, newPayer, secondaryPayer);
-
-      // Update the new Payer's customer statistics.
-      newPayer.incrementCustomers(person);
-      if (Payer.noInsurance != secondaryPayer) {
-        secondaryPayer.incrementCustomers(person);
-      }
-
-      // Set insurance attribute for module access
-      String insuranceStatus = null;
-      if (newPayer == Payer.noInsurance) {
-        insuranceStatus = "none";
-      } else if (Payer.getGovernmentPayers().contains(newPayer)) {
-        insuranceStatus = "medicare"; // default to medicare when government payer
-        if (newPayer.getName().equalsIgnoreCase("Medicaid")) {
-          insuranceStatus = "medicaid";
-        }
-      } else {
-        insuranceStatus = "private";
-      }
-      person.attributes.put(INSURANCE_STATUS, insuranceStatus);
+    // Enroll patients in new insurance for the year if a new enrollment period is reached.
+    // Note: This means the person will check to change insurance yearly, within one timestep
+    // after their birthday.
+    if (person.coverage.newEnrollmentPeriod(time)) {
+      // Update their last plan's payer with person's QOLS for that year.
+      person.coverage.updateLastPayerQols(person.getQolsForYear(Utilities.getYear(time) - 1));
+      // Update the insurance for this person at this time.
+      this.updateInsurance(person, time);
     }
 
     // Checks if person has paid their premium this month. If not, they pay it.
@@ -110,31 +70,22 @@ public class HealthInsuranceModule extends Module {
    * @param time   the current time to consider
    * @return the insurance that this person gets
    */
-  private Payer determineInsurance(Person person, long time) {
-    // Government payers
-    Payer medicare = Payer.getGovernmentPayer(MEDICARE);
-    Payer medicaid = Payer.getGovernmentPayer(MEDICAID);
-    Payer dualPayer = Payer.getGovernmentPayer(DUAL_ELIGIBLE);
-
-    Payer payerAtTime = person.coverage.getPayerAtTime(time);
-
-    // If Medicare/Medicaid will accept this person, then it takes priority.
-    if (medicare != null && medicaid != null
-        && medicare.accepts(person, time)
-        && medicaid.accepts(person, time)) {
-      return dualPayer;
-    } else if (medicare != null && medicare.accepts(person, time)) {
-      return medicare;
-    } else if (medicaid != null && medicaid.accepts(person, time)) {
-      return medicaid;
-    } else if (payerAtTime != null
-        && IPayerFinder.meetsBasicRequirements(payerAtTime, person, null, time)) {
-      // People will keep their previous year's insurance if they can.
-      return payerAtTime;
-    } else {
-      // Randomly choose one of the remaining private payers.
-      // Returns no_insurance if a person cannot afford any of them.
-      return Payer.findPayer(person, null, time);
+  private void updateInsurance(Person person, long time) {
+    InsurancePlan newPlan = PayerManager.findPlan(person, null, time);
+    InsurancePlan secondaryPlan = PayerManager.getNoInsurancePlan();
+    // If the payer is Medicare, they may buy supplemental insurance.
+    if (newPlan.mayPurchaseSupplement() && (person.rand() <= 0.9)) {
+      // 9 out of 10 Medicare patients have supplemental insurance, buy some if affordable.
+      // https://www.kff.org/medicare/issue-brief/a-snapshot-of-sources-of-coverage-among-medicare-beneficiaries-in-2018/
+      secondaryPlan = PayerManager.findMedicareSupplement(person, null, time);
+    }
+    // Set the person's new plan(s).
+    person.coverage.setPlanAtTime(time, newPlan, secondaryPlan);
+    // Update the new Payer's customer statistics.
+    String personId = (String) person.attributes.get(Person.ID);
+    newPlan.incrementCustomers(personId);
+    if (!secondaryPlan.isNoInsurance()) {
+      secondaryPlan.incrementCustomers(personId);
     }
   }
 

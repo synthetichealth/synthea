@@ -1,0 +1,51 @@
+{
+  "resourceType": "ValueSet",
+  "id": "2.16.840.1.113762.1.4.1",
+  "meta": {
+    "versionId": "5",
+    "lastUpdated": "2015-03-31T01:00:01.000-04:00",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/shareablevalueset", "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm" ]
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-author",
+    "valueString": "MD Partners Author"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-keyWord",
+    "valueString": "CCDAr21"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/resource-lastReviewDate",
+    "valueDate": "2022-12-15"
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+    "valueDate": "2015-03-31"
+  } ],
+  "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1",
+  "version": "20150331",
+  "name": "ONC Administrative Sex",
+  "title": "changed from HL7 v2.5 code system to HL7 V3 code system to align with HL7 V3 artifact requirements. Non-gender identity concepts, such as Unknown are also removed because V3 artifacts are to use the Null Attribute for those concepts.",
+  "status": "active",
+  "experimental": false,
+  "date": "2015-03-31T01:00:01-04:00",
+  "publisher": "ONC",
+  "description": "changed from HL7 v2.5 code system to HL7 V3 code system to align with HL7 V3 artifact requirements. Non-gender identity concepts, such as Unknown are also removed because V3 artifacts are to use the Null Attribute for those concepts.",
+  "jurisdiction": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+      "valueString": "UNKNOWN"
+    } ]
+  } ],
+  "purpose": "(Clinical Focus: Gender identity restricted to only Male and Female used in administrative situations requiring a restriction to these two categories.),(Data Element Scope: Gender),(Inclusion Criteria: Male and Female only.),(Exclusion Criteria: Any gender identity that is not male or female.)",
+  "compose": {
+    "include": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender",
+      "version": "2022-11",
+      "concept": [ {
+        "code": "F",
+        "display": "Female"
+      }, {
+        "code": "M",
+        "display": "Male"
+      } ]
+    } ]
+  }
+}

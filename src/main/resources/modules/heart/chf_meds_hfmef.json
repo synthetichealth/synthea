@@ -1,5 +1,6 @@
 {
   "name": "chf_meds_HFmEF",
+  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "Congestive Heart Failure Medications for HFmEF."
   ],
@@ -236,7 +237,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1656354,
+          "code": 1656356,
           "display": "sacubitril 97 MG / valsartan 103 MG Oral Tablet"
         }
       ],

@@ -377,8 +377,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
-          "display": "Emergency Room Admission"
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "remarks": [
@@ -611,7 +611,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "direct_transition": "End_Postoperative_Follow-up",
@@ -624,7 +624,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for 'check-up'"
+          "display": "Encounter for check up"
         }
       ],
       "reason": "Open_Cholecystectomy",
@@ -661,7 +661,8 @@
           "display": "Sodium Chloride 9 MG/ML Injectable Solution"
         }
       ],
-      "direct_transition": "Antiemetic"
+      "direct_transition": "Antiemetic",
+      "administration": false
     },
     "Antiemetic": {
       "type": "MedicationOrder",
@@ -676,7 +677,8 @@
       "remarks": [
         "Based on the safety and efficacy of ondansetron, it may be used as a first-line agent for relief of nausea or vomiting for most patient populations in the ED.",
         "https://www.ncbi.nlm.nih.gov/pubmed/20022195"
-      ]
+      ],
+      "administration": true
     },
     "Morphine": {
       "type": "MedicationOrder",
@@ -687,7 +689,8 @@
           "display": "1 ML Morphine Sulfate 5 MG/ML Injection"
         }
       ],
-      "direct_transition": "Delay_for_Surgical_Appointment"
+      "direct_transition": "Delay_for_Surgical_Appointment",
+      "administration": true
     },
     "Gall_Bladder_Imaging": {
       "type": "ImagingStudy",
@@ -736,8 +739,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
-          "display": "Postoperative care"
+          "code": 736372004,
+          "display": "Discharge care plan (record artifact)"
         }
       ],
       "direct_transition": "Prescribe_Opioids",
@@ -835,7 +838,7 @@
             {
               "system": "LOINC",
               "code": "2345-7",
-              "display": "Glucose"
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Glucose"
@@ -847,7 +850,7 @@
             {
               "system": "LOINC",
               "code": "3094-0",
-              "display": "Urea Nitrogen"
+              "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Urea Nitrogen"
@@ -859,7 +862,7 @@
             {
               "system": "LOINC",
               "code": "2160-0",
-              "display": "Creatinine"
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Creatinine"
@@ -871,7 +874,7 @@
             {
               "system": "LOINC",
               "code": "17861-6",
-              "display": "Calcium"
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Calcium"
@@ -883,7 +886,7 @@
             {
               "system": "LOINC",
               "code": "2951-2",
-              "display": "Sodium"
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Sodium"
@@ -895,7 +898,7 @@
             {
               "system": "LOINC",
               "code": "2823-3",
-              "display": "Potassium"
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Potassium"
@@ -907,7 +910,7 @@
             {
               "system": "LOINC",
               "code": "2075-0",
-              "display": "Chloride"
+              "display": "Chloride [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Chloride"
@@ -919,7 +922,7 @@
             {
               "system": "LOINC",
               "code": "2028-9",
-              "display": "Carbon Dioxide"
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
             }
           ],
           "vital_sign": "Carbon Dioxide"
@@ -1020,12 +1023,12 @@
       "observations": [
         {
           "category": "laboratory",
-          "unit": "K/uL",
+          "unit": "10*3/uL",
           "codes": [
             {
               "system": "LOINC",
               "code": "26464-8",
-              "display": "White Blood Cell (Elevated)"
+              "display": "Leukocytes [#/volume] in Blood"
             }
           ],
           "range": {
@@ -1040,7 +1043,7 @@
             {
               "system": "LOINC",
               "code": "26453-1",
-              "display": "Red Blood Cell"
+              "display": "Erythrocytes [#/volume] in Blood"
             }
           ],
           "range": {
@@ -1190,7 +1193,8 @@
       "remarks": [
         "Assuming the patient is not allergic to Penicillin, piperacillin is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
-      ]
+      ],
+      "administration": true
     },
     "Cefotaxime": {
       "type": "MedicationOrder",
@@ -1205,7 +1209,8 @@
         "For patients allergic to penicillin, a 3rd-gen cephalosporin-based antibiotic is recommended for acute cholecystitis:",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2784497/"
       ],
-      "direct_transition": "Cefotaxime_End"
+      "direct_transition": "Cefotaxime_End",
+      "administration": true
     },
     "Anesthesia": {
       "type": "CallSubmodule",
@@ -1310,7 +1315,8 @@
           "display": "1 ML heparin sodium, porcine 5000 UNT/ML Injection"
         }
       ],
-      "direct_transition": "Heparin_End"
+      "direct_transition": "Heparin_End",
+      "administration": true
     },
     "Gallstones_Removed": {
       "type": "ConditionEnd",

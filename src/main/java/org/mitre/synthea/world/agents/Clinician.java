@@ -4,10 +4,10 @@ import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Clinician implements Serializable, QuadTreeElement {
@@ -35,8 +35,6 @@ public class Clinician implements Serializable, QuadTreeElement {
   public static final String ZIP = "zip";
   public static final String LOCATION = "location";
 
-
-  public final Random random;
   public final long identifier;
   public final String uuid;
   public final String npi;
@@ -44,6 +42,7 @@ public class Clinician implements Serializable, QuadTreeElement {
   private ArrayList<String> servicesProvided;
   private Provider organization;
   private int encounters;
+  private int procedures;
   public long populationSeed;
 
   /**
@@ -53,12 +52,12 @@ public class Clinician implements Serializable, QuadTreeElement {
    * @param identifier The clinician's organizational unique identifier.
    * @param organization The organization this clinician belongs to. May be null.
    */
-  public Clinician(long clinicianSeed, Random clinicianRand,
+  public Clinician(long clinicianSeed, RandomNumberGenerator clinicianRand,
       long identifier, Provider organization) {
     String base = clinicianSeed + ":" + identifier + ":"
-        + organization.id + ":" + clinicianRand.nextLong();
+        + ((organization == null) ? identifier : organization.npi)
+        + ":" + clinicianRand.randLong();
     this.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
-    this.random = clinicianRand;
     this.identifier = identifier;
     this.npi = toClinicianNPI(this.identifier);
     this.organization = organization;
@@ -100,10 +99,6 @@ public class Clinician implements Serializable, QuadTreeElement {
     return prefix + " " + name;
   }
 
-  public double rand() {
-    return random.nextDouble();
-  }
-
   public Map<String, Object> getAttributes() {
     return attributes;
   }
@@ -128,19 +123,29 @@ public class Clinician implements Serializable, QuadTreeElement {
     return encounters;
   }
 
-  public int randInt(int bound) {
-    return random.nextInt(bound);
+  /**
+   * Increment the number of procedures performed by this Clinician.
+   * @return The incremented number of procedures.
+   */
+  public synchronized int incrementProcedures() {
+    return procedures++;
+  }
+
+  /**
+   * Get the number of procedures performed by this Clinician.
+   * @return The number of procedures.
+   */
+  public int getProcedureCount() {
+    return procedures;
   }
 
   @Override
   public double getX() {
-    // TODO Auto-generated method stub
     return getLonLat().getX();
   }
 
   @Override
   public double getY() {
-    // TODO Auto-generated method stub
     return getLonLat().getY();
   }
 

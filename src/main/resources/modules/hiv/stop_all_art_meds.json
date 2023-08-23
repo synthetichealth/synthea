@@ -1,0 +1,335 @@
+{
+  "name": "Stop All ART Meds",
+  "remarks": [
+    "Stop all ART medications."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "3TC"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "ZDV": {
+      "type": "MedicationEnd",
+      "direct_transition": "d4T",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 199663,
+          "display": "zidovudine 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "ddI": {
+      "type": "MedicationEnd",
+      "direct_transition": "r",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 284988,
+          "display": "didanosine 400 MG Delayed Release Oral Capsule"
+        }
+      ]
+    },
+    "ddC": {
+      "type": "MedicationEnd",
+      "direct_transition": "ddI",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313760,
+          "display": "zalcitabine 0.75 MG Oral Tablet"
+        }
+      ]
+    },
+    "d4T": {
+      "type": "MedicationEnd",
+      "direct_transition": "ddC",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313110,
+          "display": "stavudine 40 MG Oral Capsule"
+        }
+      ]
+    },
+    "3TC": {
+      "type": "MedicationEnd",
+      "direct_transition": "3TC+TDF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349491,
+          "display": "lamivudine 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "3TC+ZDV": {
+      "type": "MedicationEnd",
+      "direct_transition": "ATV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 200082,
+          "display": "lamivudine 150 MG / zidovudine 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "IDV": {
+      "type": "MedicationEnd",
+      "direct_transition": "LPV/r",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 310988,
+          "display": "indinavir 400 MG Oral Capsule"
+        }
+      ]
+    },
+    "SQV": {
+      "type": "MedicationEnd",
+      "direct_transition": "TDF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 859863,
+          "display": "saquinavir mesylate 500 MG Oral Tablet"
+        }
+      ]
+    },
+    "r": {
+      "type": "MedicationEnd",
+      "direct_transition": "Terminal",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 317150,
+          "display": "ritonavir 100 MG Oral Capsule"
+        }
+      ]
+    },
+    "RTV": {
+      "type": "MedicationEnd",
+      "direct_transition": "SQV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 317150,
+          "display": "ritonavir 100 MG Oral Capsule"
+        }
+      ]
+    },
+    "NEL": {
+      "type": "MedicationEnd",
+      "direct_transition": "RAL",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 403978,
+          "display": "nelfinavir 625 MG Oral Tablet"
+        }
+      ]
+    },
+    "EFV": {
+      "type": "MedicationEnd",
+      "direct_transition": "EFV+FTC+TDF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349477,
+          "display": "efavirenz 600 MG Oral Tablet"
+        }
+      ]
+    },
+    "LPV/r": {
+      "type": "MedicationEnd",
+      "direct_transition": "NEL",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 597730,
+          "display": "lopinavir 200 MG / ritonavir 50 MG Oral Tablet"
+        }
+      ]
+    },
+    "TDF": {
+      "type": "MedicationEnd",
+      "direct_transition": "ZDV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 349251,
+          "display": "tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "FTC": {
+      "type": "MedicationEnd",
+      "direct_transition": "FTC+RPV+TDF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 403875,
+          "display": "emtricitabine 200 MG Oral Capsule"
+        }
+      ]
+    },
+    "FTC+TDF": {
+      "type": "MedicationEnd",
+      "direct_transition": "IDV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 476556,
+          "display": "emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "FTC+RPV+TDF": {
+      "type": "MedicationEnd",
+      "direct_transition": "FTC+TAF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1147334,
+          "display": "emtricitabine 200 MG / rilpivirine 25 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "EFV+FTC+TDF": {
+      "type": "MedicationEnd",
+      "direct_transition": "EVG+cobi+FTC+TAF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 643066,
+          "display": "efavirenz 600 MG / emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "EVG+cobi+TDF+FTC": {
+      "type": "MedicationEnd",
+      "direct_transition": "FPV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1306292,
+          "display": "cobicistat 150 MG / elvitegravir 150 MG / emtricitabine 200 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "RAL": {
+      "type": "MedicationEnd",
+      "direct_transition": "RTV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 744842,
+          "display": "raltegravir 400 MG Oral Tablet"
+        }
+      ]
+    },
+    "DTG": {
+      "type": "MedicationEnd",
+      "direct_transition": "DTG+3TC",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1433873,
+          "display": "dolutegravir 50 MG Oral Tablet"
+        }
+      ]
+    },
+    "FPV": {
+      "type": "MedicationEnd",
+      "direct_transition": "FTC",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 402109,
+          "display": "fosamprenavir 700 MG Oral Tablet"
+        }
+      ]
+    },
+    "ATV": {
+      "type": "MedicationEnd",
+      "direct_transition": "BIC+TAF+FTC",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 664741,
+          "display": "atazanavir 300 MG Oral Capsule"
+        }
+      ]
+    },
+    "DRV": {
+      "type": "MedicationEnd",
+      "direct_transition": "DTG",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1359269,
+          "display": "darunavir 800 MG Oral Tablet"
+        }
+      ]
+    },
+    "3TC+TDF": {
+      "type": "MedicationEnd",
+      "direct_transition": "3TC+ZDV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2003249,
+          "display": "lamivudine 300 MG / tenofovir disoproxil fumarate 300 MG Oral Tablet"
+        }
+      ]
+    },
+    "FTC+TAF": {
+      "type": "MedicationEnd",
+      "direct_transition": "FTC+TDF",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1747691,
+          "display": "emtricitabine 200 MG / tenofovir alafenamide 25 MG Oral Table"
+        }
+      ]
+    },
+    "BIC+TAF+FTC": {
+      "type": "MedicationEnd",
+      "direct_transition": "DRV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1999667,
+          "display": "bictegravir 50 MG / emtricitabine 200 MG / tenofovir alafenamide 25 MG Oral Tablet"
+        }
+      ]
+    },
+    "EVG+cobi+FTC+TAF": {
+      "type": "MedicationEnd",
+      "direct_transition": "EVG+cobi+TDF+FTC",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1721613,
+          "display": "cobicistat 150 MG / elvitegravir 150 MG / emtricitabine 200 MG / tenofovir alafenamide 10 MG Oral Tablet"
+        }
+      ]
+    },
+    "DTG+3TC": {
+      "type": "MedicationEnd",
+      "direct_transition": "EFV",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 2122519,
+          "display": "dolutegravir 50 MG / lamivudine 300 MG Oral Tablet"
+        }
+      ]
+    }
+  },
+  "gmf_version": 2
+}

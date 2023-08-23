@@ -1,0 +1,26 @@
+﻿condition_name,attribute,codes
+Burn Injury,burn_injury,403192003
+Chronic obstructive bronchitis (disorder),copd_variant,185086009
+Pulmonary emphysema (disorder),copd_variant,87433001
+Cystic Fibrosis,Cystic_Fibrosis,190905008
+Chronic congestive heart failure (disorder),chf,88805009
+Gastrointenstinal Hemorage,,83628005|307296008|25349007|68162000
+Atopic dermatitis,dermatitis,24079001
+Idiopathic atrophic hypothyroidism,hypothyroidism,83664006
+Breast Cancer,breast_cancer_condition,254837009
+Colorectal Cancer,colorectal_cancer,93761005|109838007|363406005|94260004
+Lung Cancer Condition,Lung Cancer Condition,424132000|425048006|422968005|423121009|67811000119102|67821000119109|67831000119107|67841000119103
+Prostate Cancer,prostate_cancer,126906006
+Amputations due to Diabetic Neuropathy,Diagnose_Neuropathy,161621004|161622006|429280009|698423002
+Blindness due to Diabetic Retinopathy,blindness,60951000119105|97331000119101|1501000119109
+Sleep Apnea,sleep_apnea,73430006|39898005
+Fibromyalgia,fibromyalgia,95417003|203082005
+Alzheimer's disease (disorder),,26929004|230265002
+Major depression disorder,mdd,370143000
+Brain Injury,mTBI,275272006|127295002
+Cerebral Palsy,,128188000|110359009
+Paralyzed (spinal cord injury),,1734006
+Epilepsy,seizure,128613002|84757009
+Acute myeloid leukemia  disease (disorder),,91861009
+Spina Bifida,,76916001|414667000|414564002|230745008
+PTSD,ptsd,47505003
