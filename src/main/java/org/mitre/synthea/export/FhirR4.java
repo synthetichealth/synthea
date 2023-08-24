@@ -24,13 +24,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.AllergyIntolerance;
+import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCriticality;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
-import org.hl7.fhir.r4.model.BooleanType;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
@@ -40,7 +37,6 @@ import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityDetailComponent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityStatus;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanIntent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanStatus;
-import org.hl7.fhir.r4.model.CareTeam;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamParticipantComponent;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamStatus;
 import org.hl7.fhir.r4.model.Claim.ClaimStatus;
@@ -49,88 +45,45 @@ import org.hl7.fhir.r4.model.Claim.InsuranceComponent;
 import org.hl7.fhir.r4.model.Claim.ItemComponent;
 import org.hl7.fhir.r4.model.Claim.ProcedureComponent;
 import org.hl7.fhir.r4.model.Claim.SupportingInformationComponent;
-import org.hl7.fhir.r4.model.CodeType;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
-import org.hl7.fhir.r4.model.Coverage;
 import org.hl7.fhir.r4.model.Coverage.CoverageStatus;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.DecimalType;
-import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Device.DeviceNameType;
 import org.hl7.fhir.r4.model.Device.FHIRDeviceStatus;
-import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
-import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
-import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus;
-import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.Use;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Goal.GoalLifecycleStatus;
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
-import org.hl7.fhir.r4.model.Immunization;
-import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
-import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Media.MediaStatus;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
-import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
-import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestStatus;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Money;
-import org.hl7.fhir.r4.model.Narrative;
 import org.hl7.fhir.r4.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Observation.ObservationStatus;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.ContactComponent;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
-import org.hl7.fhir.r4.model.Period;
-import org.hl7.fhir.r4.model.PositiveIntType;
-import org.hl7.fhir.r4.model.Practitioner;
-import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
-import org.hl7.fhir.r4.model.Property;
-import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
-import org.hl7.fhir.r4.model.Quantity;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ServiceRequest;
-import org.hl7.fhir.r4.model.SimpleQuantity;
-import org.hl7.fhir.r4.model.StringType;
-import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
-import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
-import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
 import org.hl7.fhir.utilities.xhtml.NodeType;
@@ -524,7 +477,71 @@ public class FhirR4 {
                                                            BundleEntryComponent encounterEntry) {
 
     org.hl7.fhir.r4.model.Appointment apptResource = new org.hl7.fhir.r4.model.Appointment();
-    apptResource.setId("appt_id");
+    apptResource.setId("appt:" + encounter.uuid.toString());
+
+    // convert participant
+    org.hl7.fhir.r4.model.Encounter encounterResource =
+            (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    //status
+    apptResource.setStatus(Appointment.AppointmentStatus.FULFILLED);
+
+    // appt type
+
+    CodeableConcept aTypeCC = new CodeableConcept();
+    aTypeCC.setText("Appt Type");
+    Coding apptTypeCoding = aTypeCC.addCoding().setCode("apptType")
+            .setDisplay("Appt Type display").setSystem("appt Type System");
+
+    apptResource.setAppointmentType(aTypeCC);
+
+    // serviceCategory
+    List<org.hl7.fhir.r4.model.CodeableConcept> categories = new ArrayList<>();
+    CodeableConcept cc = new CodeableConcept();
+    cc.setText("category 1");
+    Coding serviceCatCoding = cc.addCoding();
+    serviceCatCoding.setDisplay("cat 1 display");
+    serviceCatCoding.setSystem("cat 1 system");
+    serviceCatCoding.setCode("cat1");
+
+    categories.add(cc);
+    apptResource.setServiceCategory(categories);
+
+    // serviceType
+    List<org.hl7.fhir.r4.model.CodeableConcept> types = new ArrayList<>();
+    CodeableConcept stcc = new CodeableConcept();
+    stcc.setText("type 1");
+    Coding serviceTypesCoding = stcc.addCoding();
+    serviceTypesCoding.setDisplay("type 1 display");
+    serviceTypesCoding.setSystem("type 1 system");
+    serviceTypesCoding.setCode("type1");
+
+    types.add(stcc);
+    apptResource.setServiceType(types);
+
+
+    // add all participants
+    List<Appointment.AppointmentParticipantComponent> aPList = new ArrayList<>();
+    for (org.hl7.fhir.r4.model.Encounter.EncounterParticipantComponent eParticipant : encounterResource.getParticipant()) {
+      Appointment.AppointmentParticipantComponent aProvider = new Appointment.AppointmentParticipantComponent();
+      // Add provider
+      aProvider.setPeriod(eParticipant.getPeriod());
+      aProvider.setActor(eParticipant.getIndividual());
+
+      aPList.add(aProvider);
+
+
+      // Add location
+      Appointment.AppointmentParticipantComponent aLoc = new Appointment.AppointmentParticipantComponent();
+      aLoc.setActor(encounterResource.getLocation().get(0).getLocation());
+      aPList.add(aLoc);
+
+
+
+    }
+    apptResource.setParticipant(aPList);
+
+
     return newEntry(bundle, apptResource, apptResource.getId());
 
   }
