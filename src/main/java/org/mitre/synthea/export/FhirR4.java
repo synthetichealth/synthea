@@ -505,6 +505,11 @@ public class FhirR4 {
               encounterClaim, encounter, encounter.claim);
         }
       }
+
+      // add appointment to every encounter as well
+      if (shouldExport(org.hl7.fhir.r4.model.Appointment.class)) {
+        BundleEntryComponent apptEncounter = encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
+      }
     }
 
     if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
@@ -512,6 +517,16 @@ public class FhirR4 {
       provenance(bundle, person, stopTime);
     }
     return bundle;
+  }
+
+  private static BundleEntryComponent encounterAppointment(Person person, BundleEntryComponent personEntry,
+                                                           Bundle bundle, Encounter encounter,
+                                                           BundleEntryComponent encounterEntry) {
+
+    org.hl7.fhir.r4.model.Appointment apptResource = new org.hl7.fhir.r4.model.Appointment();
+    apptResource.setId("appt_id");
+    return newEntry(bundle, apptResource, apptResource.getId());
+
   }
 
   /**
