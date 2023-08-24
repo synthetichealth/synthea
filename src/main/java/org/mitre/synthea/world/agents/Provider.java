@@ -311,7 +311,7 @@ public class Provider implements QuadTreeElement, Serializable {
     Provider provider = null;
     while (degrees <= maxDistance) {
       options = findNewProvidersByLocation(person, degrees, takenIds);
-      provider = providerFinder.find(options, person, service, time);
+      provider = providerFinder.find(options, person, service, null, time);
       if (provider != null && !takenIds.contains(provider.uuid)) {
         return provider;
       }

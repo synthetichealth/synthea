@@ -34,7 +34,7 @@ public class CostsTest {
     person = new Person(System.currentTimeMillis());
     Provider provider = TestHelper.buildMockProvider();
     for (EncounterType type : EncounterType.values()) {
-      person.setProvider(type, provider);
+      person.preferredProviders.forceRelationship(type, null, provider);
     }
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);

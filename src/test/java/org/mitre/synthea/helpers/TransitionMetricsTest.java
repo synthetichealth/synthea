@@ -22,6 +22,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mockito.Mockito;
 
 public class TransitionMetricsTest {
 
@@ -38,8 +39,8 @@ public class TransitionMetricsTest {
     person.attributes.put(Person.RACE, "black");
     person.attributes.put(Person.ETHNICITY, "nonhispanic");
     person.attributes.put(Person.GENDER, "F");
-    person.setProvider(EncounterType.WELLNESS, mockProvider);
-    person.setProvider(EncounterType.AMBULATORY, mockProvider);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, mockProvider);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, mockProvider);
     long time = System.currentTimeMillis();
     LifecycleModule.birth(person, time);
     PayerManager.loadNoInsurance();

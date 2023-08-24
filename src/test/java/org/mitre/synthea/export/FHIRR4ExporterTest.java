@@ -50,6 +50,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
+import org.mockito.Mockito;
 
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
@@ -305,10 +306,10 @@ public class FHIRR4ExporterTest {
     ArrayList<Clinician> docs = new ArrayList<Clinician>();
     docs.add(doc);
     stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
-    person.setProvider(EncounterType.AMBULATORY, stub);
-    person.setProvider(EncounterType.WELLNESS, stub);
-    person.setProvider(EncounterType.EMERGENCY, stub);
-    person.setProvider(EncounterType.INPATIENT, stub);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, stub);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, stub);
+    person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, stub);
+    person.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, stub);
 
     Long time = System.currentTimeMillis();
     int age = 35;
@@ -423,10 +424,10 @@ public class FHIRR4ExporterTest {
     ArrayList<Clinician> docs = new ArrayList<Clinician>();
     docs.add(doc);
     stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
-    p.setProvider(EncounterType.AMBULATORY, stub);
-    p.setProvider(EncounterType.WELLNESS, stub);
-    p.setProvider(EncounterType.EMERGENCY, stub);
-    p.setProvider(EncounterType.INPATIENT, stub);
+    p.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, stub);
     p.record.provider = stub;
 
     HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);
@@ -487,10 +488,10 @@ public class FHIRR4ExporterTest {
     ArrayList<Clinician> docs = new ArrayList<Clinician>();
     docs.add(doc);
     stub.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE, docs);
-    p.setProvider(EncounterType.AMBULATORY, stub);
-    p.setProvider(EncounterType.WELLNESS, stub);
-    p.setProvider(EncounterType.EMERGENCY, stub);
-    p.setProvider(EncounterType.INPATIENT, stub);
+    p.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, stub);
+    p.preferredProviders.forceRelationship(EncounterType.INPATIENT, null, stub);
     p.record.provider = stub;
 
     HealthRecord.Encounter e = p.record.encounterStart(0, EncounterType.WELLNESS);

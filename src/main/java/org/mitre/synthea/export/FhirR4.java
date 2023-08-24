@@ -2176,7 +2176,7 @@ public class FhirR4 {
     }
 
     if (clinician == null && providerOrganization == null) {
-      providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+      providerOrganization = person.getProvider(EncounterType.WELLNESS, null, stopTime);
       clinician =
           providerOrganization.chooseClinicianList(ClinicianSpecialty.GENERAL_PRACTICE, person);
     } else if (clinician == null || providerOrganization == null) {
@@ -2186,7 +2186,7 @@ public class FhirR4 {
       } else if (clinician != null && providerOrganization == null) {
         providerOrganization = clinician.getOrganization();
         if (providerOrganization == null) {
-          providerOrganization = person.getProvider(EncounterType.WELLNESS, stopTime);
+          providerOrganization = person.getProvider(EncounterType.WELLNESS, null, stopTime);
         }
       }
     }

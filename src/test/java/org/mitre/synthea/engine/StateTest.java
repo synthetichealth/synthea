@@ -2340,10 +2340,10 @@ public class StateTest {
 
     State encounterState = module.getState("Encounter");
     assertTrue(encounterState.process(person, time));
-    Encounter encounter = person.getCurrentEncounter(module);
+    Encounter encounter = person.record.currentEncounter(time);
     assertEquals("Special-UUID", encounter.provider.getResourceID());
   }
-}
+
   @Test
   public void testVaccine() throws Exception {
     Module module = TestHelper.getFixture("vaccine.json");

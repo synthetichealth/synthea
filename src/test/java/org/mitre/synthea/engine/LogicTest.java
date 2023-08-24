@@ -61,7 +61,8 @@ public class LogicTest {
     mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-Emergency");
     person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, mock);
-    person.attributes.put(Person.BIRTHDATE, 0L);
+    long birthTime = 0L;
+    person.attributes.put(Person.BIRTHDATE, birthTime);
     time = System.currentTimeMillis();
     // Ensure Person's Payer is not null.
     String testStateDefault = Config.get("test_state.default", "Massachusetts");
