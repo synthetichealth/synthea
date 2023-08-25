@@ -2444,8 +2444,10 @@ public class FhirR4 {
             text.append(instructionCode.display).append('\n');
             dosage.addAdditionalInstruction(mapCodeToCodeableConcept(instructionCode, SNOMED_URI));
           }
-          text.deleteCharAt(text.length() - 1); // delete the last newline char
-          dosage.setText(text.toString());
+          if (text.length() > 0) {
+            text.deleteCharAt(text.length() - 1); // delete the last newline char
+            dosage.setText(text.toString());
+          }
         }
       }
 
