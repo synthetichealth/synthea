@@ -540,6 +540,11 @@ public class FhirR4 {
       aLoc.setStatus(Appointment.ParticipationStatus.ACCEPTED);
       aPList.add(aLoc);
 
+      //Add patient
+      Appointment.AppointmentParticipantComponent aPatient = new Appointment.AppointmentParticipantComponent();
+      aPatient.setActor(encounterResource.getSubject());
+      aPatient.setStatus(Appointment.ParticipationStatus.ACCEPTED);
+      aPList.add(aPatient);
 
 
     }
