@@ -114,6 +114,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
 
+import static com.oracle.truffle.js.builtins.math.MathBuiltins.Math.random;
+
 public class FhirR4 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
   // per-application, not per-record
@@ -477,14 +479,14 @@ public class FhirR4 {
                                                            BundleEntryComponent encounterEntry) {
 
     org.hl7.fhir.r4.model.Appointment apptResource = new org.hl7.fhir.r4.model.Appointment();
-    apptResource.setId("appt:" + encounter.uuid.toString());
+    apptResource.setId(String.valueOf(UUID.randomUUID()));
 
     // convert participant
     org.hl7.fhir.r4.model.Encounter encounterResource =
             (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
 
     //status
-    apptResource.setStatus(Appointment.AppointmentStatus.FULFILLED);
+    apptResource.setStatus(Appointment.AppointmentStatus.PROPOSED);
 
     // appt type
 
@@ -527,6 +529,7 @@ public class FhirR4 {
       // Add provider
       aProvider.setPeriod(eParticipant.getPeriod());
       aProvider.setActor(eParticipant.getIndividual());
+      aProvider.setStatus(Appointment.ParticipationStatus.ACCEPTED);
 
       aPList.add(aProvider);
 
@@ -534,6 +537,7 @@ public class FhirR4 {
       // Add location
       Appointment.AppointmentParticipantComponent aLoc = new Appointment.AppointmentParticipantComponent();
       aLoc.setActor(encounterResource.getLocation().get(0).getLocation());
+      aLoc.setStatus(Appointment.ParticipationStatus.ACCEPTED);
       aPList.add(aLoc);
 
 
