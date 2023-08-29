@@ -85,6 +85,11 @@ public abstract class RIFExporter {
     return isVA || isIHSCenter;
   }
 
+  /**
+   * Get the types of claim for the supplied encounter.
+   * @param encounter the encounter
+   * @return the applicable types of claim
+   */
   public static Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
     Set<ClaimType> types = new HashSet<>();
     boolean isSNF = encounter.type.equals(HealthRecord.EncounterType.SNF.toString());

@@ -348,7 +348,8 @@ public abstract class Exporter {
       writeNewFile(outFilePath, consolidatedNotes);
     }
 
-    if (patientExporters != null && !patientExporters.isEmpty()) {
+    if (Config.getAsBoolean("exporter.clinical_note.export", true)
+            && patientExporters != null && !patientExporters.isEmpty()) {
       for (PatientExporter patientExporter : patientExporters) {
         patientExporter.export(person, stopTime, options);
       }
