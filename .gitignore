@@ -6,6 +6,7 @@
 /nbproject/**
 /build/**
 bin/**
+lib/custom/*.jar
 
 /.gradle/
 /bin/
