@@ -29,7 +29,7 @@ public class BeneficiaryExporter extends RIFExporter {
           Config.getAsLong("exporter.bfd.bene_id_start", -1));
   public static final AtomicReference<HICN> nextHicn = new AtomicReference<>(
           HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
-  protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
+  public static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   // https://aspe.hhs.gov/sites/default/files/documents/f81aafbba0b331c71c6e8bc66512e25d/medicare-beneficiary-enrollment-ib.pdf
   private static final double PART_B_ENROLLEE_PERCENT = 92.5;

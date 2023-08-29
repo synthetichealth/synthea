@@ -36,7 +36,7 @@ public abstract class RIFExporter {
           Config.getAsLong("exporter.bfd.clm_grp_id_start", -1));
   protected static final String BB2_BENE_ID = "BB2_BENE_ID";
   protected static final String BB2_HIC_ID = "BB2_HIC_ID";
-  protected static final String BB2_MBI = "BB2_MBI";
+  public static final String BB2_MBI = "BB2_MBI";
   protected static final String COVERAGE_START_DATE = "BB2_COVERAGE_START_DATE";
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
@@ -66,7 +66,7 @@ public abstract class RIFExporter {
     return dateFormat.format(new Date(time));
   }
 
-  enum ClaimType {
+  public enum ClaimType {
     CARRIER,
     OUTPATIENT,
     INPATIENT,
@@ -85,7 +85,7 @@ public abstract class RIFExporter {
     return isVA || isIHSCenter;
   }
 
-  static Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
+  public static Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
     Set<ClaimType> types = new HashSet<>();
     boolean isSNF = encounter.type.equals(HealthRecord.EncounterType.SNF.toString());
     boolean isHome = encounter.type.equals(HealthRecord.EncounterType.HOME.toString());
