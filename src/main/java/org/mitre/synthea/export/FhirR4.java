@@ -529,6 +529,14 @@ public class FhirR4 {
     types.add(stcc);
     apptResource.setServiceType(types);
 
+    //adding a custom extension
+    List<Extension> extnList = new ArrayList<>();
+    Coding extnCoding = new Coding().setCode("extn code 1").setDisplay("extn display code");
+    extnList.add(new Extension()
+            .setUrl("http://fhir.league.com/r4/LeagueCareServiceBookings/StructureDefinition/custom-extension")
+            .setValue(new StringType("custom-exn-val")));
+    apptResource.setExtension(extnList);
+
 
     // add all participants
     List<Appointment.AppointmentParticipantComponent> aPList = new ArrayList<>();
