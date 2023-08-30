@@ -348,7 +348,7 @@ public abstract class Exporter {
       writeNewFile(outFilePath, consolidatedNotes);
     }
 
-    if (Config.getAsBoolean("exporter.clinical_note.export", true)
+    if (Config.getAsBoolean("exporter.custom.export", true)
             && patientExporters != null && !patientExporters.isEmpty()) {
       for (PatientExporter patientExporter : patientExporters) {
         patientExporter.export(person, stopTime, options);
@@ -546,7 +546,8 @@ public abstract class Exporter {
       }
     }
 
-    if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
+    if (Config.getAsBoolean("exporter.custom.export", true)
+            && postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
       for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
         postCompletionExporter.export(generator, options);
       }
