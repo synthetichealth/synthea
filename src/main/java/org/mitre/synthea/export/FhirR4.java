@@ -488,6 +488,14 @@ public class FhirR4 {
     //status
     apptResource.setStatus(Appointment.AppointmentStatus.PROPOSED);
 
+    // identifier
+    List<Identifier> identifierList = new ArrayList<>();
+    identifierList.add(new Identifier()
+            .setSystem("http://fhir.league.com/r4/LeagueUserProfiles/NamingSystem/league-user-id")
+            .setValue((String) person.attributes.get(Person.ID)));
+
+    apptResource.setIdentifier(identifierList);
+
     // appt type
 
     CodeableConcept aTypeCC = new CodeableConcept();
@@ -546,8 +554,8 @@ public class FhirR4 {
       aPatient.setStatus(Appointment.ParticipationStatus.ACCEPTED);
       aPList.add(aPatient);
 
-
     }
+
     apptResource.setParticipant(aPList);
 
 
