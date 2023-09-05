@@ -21,6 +21,7 @@ lib/custom/*.jar
 src/main/resources/version.txt
 
 # don't commit the code maps
+src/main/resources/export/cdt_code_map.json
 src/main/resources/export/condition_code_map.json
 src/main/resources/export/medication_code_map.json
 src/main/resources/export/drg_code_map.json
