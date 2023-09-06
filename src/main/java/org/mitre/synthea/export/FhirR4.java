@@ -463,7 +463,7 @@ public class FhirR4 {
 
       // add appointment to every encounter as well
       if (shouldExport(org.hl7.fhir.r4.model.Appointment.class)) {
-        BundleEntryComponent apptEncounter = encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
+        encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
       }
     }
 
