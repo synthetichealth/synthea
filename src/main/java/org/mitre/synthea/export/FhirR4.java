@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -113,8 +115,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
-
-import static com.oracle.truffle.js.builtins.math.MathBuiltins.Math.random;
+import org.opencds.cqf.cql.engine.runtime.DateTime;
 
 public class FhirR4 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -358,6 +359,11 @@ public class FhirR4 {
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
 
+    if (shouldExport(Consent.class)) {
+      consentByPerson(person, bundle, personEntry,"");
+      consentByPerson(person, bundle, personEntry,"gina");
+    }
+
     for (Encounter encounter : person.record.encounters) {
       BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
 
@@ -463,7 +469,7 @@ public class FhirR4 {
 
       // add appointment to every encounter as well
       if (shouldExport(org.hl7.fhir.r4.model.Appointment.class)) {
-        BundleEntryComponent apptEncounter = encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
+        encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
       }
     }
 
@@ -473,6 +479,74 @@ public class FhirR4 {
     }
     return bundle;
   }
+
+  private static BundleEntryComponent consentByPerson(Person person, Bundle bundle, BundleEntryComponent personEntry, String type) {
+    org.hl7.fhir.r4.model.Consent consent = new Consent();
+
+    consent.setPatient(new Reference()
+            .setReference(personEntry.getFullUrl())
+            .setDisplay(person.attributes
+                    .get(Person.FIRST_NAME).toString()
+                    +
+                    person.attributes.get(Person.LAST_NAME).toString()));
+    List<CodeableConcept> codingList = new ArrayList<>();
+//    set category
+    if (type.equals(new String(""))) {
+        CodeableConcept termsAndConditionsCC = new CodeableConcept();
+        termsAndConditionsCC.addCoding().setCode("terms_and_conditions")
+                .setDisplay("Terms and Conditions")
+                .setSystem("terms and conditions");
+        codingList.add(termsAndConditionsCC);
+    } else {
+      CodeableConcept ginaCC = new CodeableConcept();
+      ginaCC.addCoding().setCode("gina")
+              .setDisplay("GINA")
+              .setSystem("gina");
+      codingList.add(ginaCC);
+    }
+
+
+    consent.setCategory(codingList);
+
+    // status set
+    consent.setStatus(Consent.ConsentState.ACTIVE);
+
+    // date time
+    consent.setDateTime(Date.from(Instant.now()));
+
+    consent.setId(String.valueOf(UUID.randomUUID()));
+    if (type.equals(new String(""))) {
+      consent.setProvision(new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT));
+    } else {
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime end = now.plusDays(365);
+
+
+
+      consent.setProvision(new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT)
+              .setPeriod(
+                      new Period()
+                      .setStart(java.sql.Timestamp.valueOf(now))
+                      .setEnd(java.sql.Timestamp.valueOf(end))
+              )
+      );
+    }
+
+    // adding scope
+    CodeableConcept scopeCC = new CodeableConcept();
+    scopeCC.addCoding().setCode("active");
+    consent.setScope(scopeCC);
+
+    // policy rule Codeable Concept addition
+    CodeableConcept policyRuleCC =  new CodeableConcept();
+    policyRuleCC.addCoding().setCode("policy rule").setDisplay("Policy Rule");
+    consent.setPolicyRule(policyRuleCC);
+
+
+
+    return newEntry(bundle, consent, consent.getId());
+  }
+
 
   private static BundleEntryComponent encounterAppointment(Person person, BundleEntryComponent personEntry,
                                                            Bundle bundle, Encounter encounter,
