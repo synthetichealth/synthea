@@ -31,9 +31,11 @@ import org.mitre.synthea.identity.Seed;
 import org.mitre.synthea.identity.Variant;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
@@ -727,6 +729,15 @@ public abstract class Exporter {
       folders.add(id.substring(0, 3));
     }
 
+    if (person != null && person.hasMultipleRecords
+        && Config.getAsBoolean("exporter.split_records.subfolders_by_provider")) {
+      // person.record has already been set to a single split record
+      Provider providerOrganization = person.record.provider;
+      // TODO: can this be null?
+      String providerId = providerOrganization.getResourceID();
+      folders.add(providerId);
+    }
+    
     String baseDirectory = Config.get("exporter.baseDirectory");
 
     File f = Paths.get(baseDirectory, folders.toArray(new String[0])).toFile();

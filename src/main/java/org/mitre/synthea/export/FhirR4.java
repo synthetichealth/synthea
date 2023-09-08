@@ -2,7 +2,9 @@ package org.mitre.synthea.export;
 
 import ca.uhn.fhir.context.FhirContext;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +130,6 @@ import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
 import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
-import org.hl7.fhir.r4.model.codesystems.LocationPhysicalType;
 import org.hl7.fhir.utilities.xhtml.NodeType;
 import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
@@ -533,8 +535,8 @@ public class FhirR4 {
 
       Extension nationalityCodingExtension = new Extension("code");
       CodeableConcept nationalityCC = new CodeableConcept();
-      Coding nationalityCoding = new Coding();
-      nationalityCoding.setCode(nationality);
+      Coding nationalityCoding = nationalityToCoding(nationality);
+
       nationalityCC.addCoding(nationalityCoding);
       nationalityCodingExtension.setValue(nationalityCC);
       nationalityExtension.addExtension(nationalityCodingExtension);
@@ -720,6 +722,57 @@ public class FhirR4 {
     return newEntry(bundle, patientResource, (String) person.attributes.get(Person.ID));
   }
 
+  private static final BiMap<String, String> NATIONALITY_CODES = createNationalityCodeMap();
+  
+  private static BiMap<String, String> createNationalityCodeMap() {
+    try {
+      String nationalityCodeData = Utilities.readResourceAndStripBOM("geography/nationalities.csv");
+      Iterator<LinkedHashMap<String,String>> lines =  SimpleCSV.parseLineByLine(nationalityCodeData);
+      
+      BiMap<String, String> codeMap = HashBiMap.create();
+      
+      while (lines.hasNext()) {
+        LinkedHashMap<String,String> line = lines.next();
+        codeMap.put(line.get("code").toUpperCase(), line.get("display").toLowerCase());
+      }
+      return codeMap;
+      
+    } catch (Exception e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+  
+  public static Coding nationalityToCoding(String nationality) {
+    Coding nationalityCoding = new Coding();
+    if (nationality == null) {
+      nationalityCoding.setCode("00");
+      nationalityCoding.setDisplay("Unknown");
+    } else if (nationality.length() == 2) {
+      // "B5", "E5", etc
+      nationalityCoding.setCode(nationality.toUpperCase());
+      
+      String display = NATIONALITY_CODES.get(nationality.toUpperCase());
+      if (display != null) {
+        nationalityCoding.setDisplay(display);
+      }
+    } else {
+      // "English"
+      nationalityCoding.setDisplay(nationality);
+
+      String code = NATIONALITY_CODES.inverse().get(nationality);
+
+      if (code == null) {
+        code = NATIONALITY_CODES.inverse().get(nationality.toLowerCase());
+      }
+
+      if (code != null) {
+        nationalityCoding.setCode(code.toUpperCase());
+      }
+    }
+
+    return nationalityCoding;
+  }
+  
   /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
