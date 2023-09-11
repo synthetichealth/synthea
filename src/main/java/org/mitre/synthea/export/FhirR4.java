@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -473,7 +477,9 @@ public class FhirR4 {
       }
 
       if (shouldExport(org.hl7.fhir.r4.model.Consent.class)) {
-        consentByEncounter(person, bundle,personEntry,encounter, encounterEntry);
+
+          consentByEncounter(person, bundle,personEntry,encounter, encounterEntry);
+
       }
     }
 
@@ -566,11 +572,19 @@ public class FhirR4 {
                     +
                     person.attributes.get(Person.LAST_NAME).toString()));
 
+    //filter out practitioner
+    org.hl7.fhir.r4.model.Encounter.EncounterParticipantComponent practitioner
+            = encounterResource.getParticipant().get(0);
+
     List<CodeableConcept> codingList = new ArrayList<>();
     CodeableConcept encounterCC = new CodeableConcept();
-    encounterCC.addCoding().setCode("encounter:" + encounterResource.getId())
-            .setDisplay("encounter:" + encounterResource.getId())
-            .setSystem("encounter:" + encounterResource.getId());
+
+    String consentCode = "encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference();
+    String CodeInSha256Hex = DigestUtils.sha256Hex(consentCode);
+    encounterCC.addCoding()
+            .setCode(CodeInSha256Hex)
+            .setDisplay("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference())
+            .setSystem("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference());
     codingList.add(encounterCC);
     consent.setCategory(codingList);
 
