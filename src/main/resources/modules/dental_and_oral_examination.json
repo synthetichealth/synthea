@@ -576,7 +576,8 @@
         {
           "condition": {
             "condition_type": "PriorState",
-            "name": "Extraction of tooth"
+            "name": "Extraction of tooth",
+            "since": "Dental Encounter"
           },
           "distributions": [
             {
