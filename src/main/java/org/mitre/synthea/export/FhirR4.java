@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
@@ -115,7 +116,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
-import org.opencds.cqf.cql.engine.runtime.DateTime;
+
 
 public class FhirR4 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -471,6 +472,12 @@ public class FhirR4 {
       if (shouldExport(org.hl7.fhir.r4.model.Appointment.class)) {
         encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
       }
+
+      if (shouldExport(org.hl7.fhir.r4.model.Consent.class)) {
+
+          consentByEncounter(person, bundle,personEntry,encounter, encounterEntry);
+
+      }
     }
 
     if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
@@ -504,7 +511,6 @@ public class FhirR4 {
               .setSystem("gina");
       codingList.add(ginaCC);
     }
-
 
     consent.setCategory(codingList);
 
@@ -547,6 +553,63 @@ public class FhirR4 {
     return newEntry(bundle, consent, consent.getId());
   }
 
+  private static BundleEntryComponent consentByEncounter(Person person, Bundle bundle,
+                                                         BundleEntryComponent personEntry, Encounter encounter,
+                                                         BundleEntryComponent encounterEntry) {
+    org.hl7.fhir.r4.model.Consent consent = new Consent();
+
+    // convert participant
+    org.hl7.fhir.r4.model.Encounter encounterResource =
+            (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    consent.setPatient(new Reference()
+            .setReference(personEntry.getFullUrl())
+            .setDisplay(person.attributes
+                    .get(Person.FIRST_NAME).toString()
+                    +
+                    person.attributes.get(Person.LAST_NAME).toString()));
+
+    //filter out practitioner
+    org.hl7.fhir.r4.model.Encounter.EncounterParticipantComponent practitioner
+            = encounterResource.getParticipant().get(0);
+
+    List<CodeableConcept> codingList = new ArrayList<>();
+    CodeableConcept encounterCC = new CodeableConcept();
+
+    String consentCode = "encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference();
+    String CodeInSha256Hex = DigestUtils.sha256Hex(consentCode);
+    encounterCC.addCoding()
+            .setCode(CodeInSha256Hex)
+            .setDisplay("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference())
+            .setSystem("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference());
+    codingList.add(encounterCC);
+    consent.setCategory(codingList);
+
+    // status set
+    consent.setStatus(Consent.ConsentState.ACTIVE);
+
+    // date time
+    consent.setDateTime(Date.from(Instant.now()));
+
+    consent.setId(String.valueOf(UUID.randomUUID()));
+
+    consent.setProvision(
+            new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT)
+    );
+
+    // adding scope
+    CodeableConcept scopeCC = new CodeableConcept();
+    scopeCC.addCoding().setCode("active");
+    consent.setScope(scopeCC);
+
+    // policy rule Codeable Concept addition
+    CodeableConcept policyRuleCC =  new CodeableConcept();
+    policyRuleCC.addCoding().setCode("policy rule").setDisplay("Policy Rule");
+    consent.setPolicyRule(policyRuleCC);
+
+    return newEntry(bundle, consent, consent.getId());
+
+  }
 
   private static BundleEntryComponent encounterAppointment(Person person, BundleEntryComponent personEntry,
                                                            Bundle bundle, Encounter encounter,
