@@ -612,9 +612,26 @@ public class FhirR4 {
     //adding a custom extension
     List<Extension> extnList = new ArrayList<>();
     Coding extnCoding = new Coding().setCode("extn code 1").setDisplay("extn display code");
+    // searchable extension string
     extnList.add(new Extension()
             .setUrl("http://example.com/fhir/extensions#appointment-id-token")
-            .setValue(new Identifier().setValue(CodeInSha256Hex))
+            .setValue(new StringType(CodeInSha256Hex))
+
+    );
+
+    // identifier extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueIdentifier")
+            .setValue(new Identifier()
+                    .setValue("value-identifier")
+                    .setSystem("http://example.com/token-system")
+                    .setUse(IdentifierUse.OFFICIAL))
+    );
+
+    // bool extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueBoolean")
+            .setValue(new BooleanType().setValue(true))
     );
     consent.setExtension(extnList);
 
