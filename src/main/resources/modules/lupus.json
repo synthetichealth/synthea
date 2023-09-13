@@ -312,7 +312,16 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "Corticosteroid_Treatment"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Corticosteroid_Treatment",
+          "distribution": 0.99
+        }
+      ]
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -329,6 +338,12 @@
           "transition": "Corticosteroid_Treatment"
         }
       ]
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Corticosteroid_Treatment",
+      "value": true
     }
   },
   "gmf_version": 1
