@@ -576,12 +576,13 @@ public class FhirR4 {
     List<CodeableConcept> codingList = new ArrayList<>();
     CodeableConcept encounterCC = new CodeableConcept();
 
+    // say we want appointment id and practitioner ref to generate a hash
     String consentCode = "encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference();
     String CodeInSha256Hex = DigestUtils.sha256Hex(consentCode);
     encounterCC.addCoding()
-            .setCode(CodeInSha256Hex)
-            .setDisplay("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference())
-            .setSystem("encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference());
+            .setCode("appointment-booking")
+            .setDisplay("Appointment Booking")
+            .setSystem("url/coding-system-consents");
     codingList.add(encounterCC);
     consent.setCategory(codingList);
 
@@ -606,6 +607,33 @@ public class FhirR4 {
     CodeableConcept policyRuleCC =  new CodeableConcept();
     policyRuleCC.addCoding().setCode("policy rule").setDisplay("Policy Rule");
     consent.setPolicyRule(policyRuleCC);
+
+
+    //adding a custom extension
+    List<Extension> extnList = new ArrayList<>();
+    Coding extnCoding = new Coding().setCode("extn code 1").setDisplay("extn display code");
+    // searchable extension string
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-id-token")
+            .setValue(new StringType(CodeInSha256Hex))
+
+    );
+
+    // identifier extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueIdentifier")
+            .setValue(new Identifier()
+                    .setValue("value-identifier")
+                    .setSystem("http://example.com/token-system")
+                    .setUse(IdentifierUse.OFFICIAL))
+    );
+
+    // bool extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueBoolean")
+            .setValue(new BooleanType().setValue(true))
+    );
+    consent.setExtension(extnList);
 
     return newEntry(bundle, consent, consent.getId());
 
