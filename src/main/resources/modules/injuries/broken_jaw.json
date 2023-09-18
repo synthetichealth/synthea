@@ -569,7 +569,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 439101000124101,
+          "code": "439101000124101",
           "display": "Easy to chew diet (regime/therapy)"
         }
       ]

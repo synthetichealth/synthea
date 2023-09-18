@@ -391,8 +391,20 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Gingivitis?",
-      "reason": "Infection of tooth"
+      "reason": "Infection of tooth",
+      "conditional_transition": [
+        {
+          "transition": "Initialize Missing Teeth",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "missing_teeth",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Increase Missing Teeth"
+        }
+      ]
     },
     "Administer Fluoride?": {
       "type": "Simple",
@@ -1028,6 +1040,18 @@
           "display": "Gingivitis (disorder)"
         }
       ]
+    },
+    "Initialize Missing Teeth": {
+      "type": "SetAttribute",
+      "attribute": "missing_teeth",
+      "direct_transition": "Increase Missing Teeth",
+      "value": 0
+    },
+    "Increase Missing Teeth": {
+      "type": "Counter",
+      "attribute": "missing_teeth",
+      "action": "increment",
+      "direct_transition": "Gingivitis?"
     }
   },
   "gmf_version": 2
