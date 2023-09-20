@@ -359,6 +359,8 @@ public class FhirR4 {
     }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
+    // create one root careplan up top
+    BundleEntryComponent rootCarePlanEntry = rootCarePlan(person,personEntry,bundle);
 
     if (shouldExport(Consent.class)) {
       consentByPerson(person, bundle, personEntry,"");
@@ -433,15 +435,22 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.CarePlan.class)) {
         final boolean shouldExportCareTeam = shouldExport(CareTeam.class);
+
         for (CarePlan careplan : encounter.careplans) {
           BundleEntryComponent careTeamEntry = null;
 
           if (shouldExportCareTeam) {
             careTeamEntry = careTeam(person, personEntry, bundle, encounterEntry, careplan);
           }
-          carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
-                  careplan);
+          BundleEntryComponent carePlanEntry = carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
+                  careplan, rootCarePlanEntry);
+
+          BundleEntryComponent carePlanChild1 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child1");
+          BundleEntryComponent carePlanChild2 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child2");
+          BundleEntryComponent carePlanChild3 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child3");
+
         }
+
       }
 
       if (shouldExport(org.hl7.fhir.r4.model.ImagingStudy.class)) {
@@ -479,6 +488,8 @@ public class FhirR4 {
 
       }
     }
+
+
 
     if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
       // Add Provenance to the Bundle
@@ -2922,6 +2933,51 @@ public class FhirR4 {
     }
   }
 
+  private static BundleEntryComponent rootCarePlan(Person person,
+                                                   BundleEntryComponent personEntry, Bundle bundle) {
+
+    org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
+    careplanResource.setIntent(CarePlanIntent.PLAN);
+    careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    careplanResource.setStatus(CarePlanStatus.ACTIVE);
+
+    careplanResource.addCategory(mapCodeToCodeableConcept(
+            new Code("http://hl7.org/fhir/us/core/CodeSystem/careplan-category", "root-assess-plan",
+                    null), null));
+
+
+    return newEntry(bundle, careplanResource,  String.valueOf(UUID.randomUUID()));
+  }
+
+  private static BundleEntryComponent childCarePlan(Person person,
+                                                    BundleEntryComponent personEntry, Bundle bundle,
+                                                    BundleEntryComponent parentCarePlan,
+                                                    BundleEntryComponent rootCarePlan,
+                                                    String childCode) {
+
+    org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
+    careplanResource.setIntent(CarePlanIntent.PROPOSAL);
+    careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    careplanResource.addCategory(mapCodeToCodeableConcept(
+            new Code("http://hl7.org/fhir/us/core/CodeSystem/careplan-category", childCode +"-assess-plan",
+                    null), null));
+
+    careplanResource.setStatus(CarePlanStatus.COMPLETED);
+
+    List<Reference> partOfCarePlans = new ArrayList<>();
+    partOfCarePlans.add(new Reference(parentCarePlan.getFullUrl()));
+    careplanResource.setPartOf(partOfCarePlans);
+
+    List<Reference> basedOfCarePlans = new ArrayList<>();
+    basedOfCarePlans.add(new Reference(rootCarePlan.getFullUrl()));
+
+    careplanResource.setBasedOn(basedOfCarePlans);
+
+
+    return newEntry(bundle, careplanResource, String.valueOf(UUID.randomUUID()));
+  }
   /**
    * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
    *
@@ -2935,7 +2991,7 @@ public class FhirR4 {
    */
   private static BundleEntryComponent carePlan(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
-          Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan) {
+          Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan, BundleEntryComponent rootCarePlanEntry) {
     org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
 
     if (USE_US_CORE_IG) {
@@ -3030,6 +3086,12 @@ public class FhirR4 {
 
     careplanResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(narrative)));
+
+    // set basedon
+    List<Reference> basedOnRefs = new ArrayList<>();
+    basedOnRefs.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    careplanResource.setBasedOn(basedOnRefs);
+    careplanResource.setPartOf(basedOnRefs);
 
     return newEntry(bundle, careplanResource, carePlan.uuid.toString());
   }
