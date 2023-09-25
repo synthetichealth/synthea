@@ -449,6 +449,8 @@ public class FhirR4 {
           BundleEntryComponent carePlanChild2 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child2");
           BundleEntryComponent carePlanChild3 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child3");
 
+          //create a task and reverse link to root careplan
+          task(person,personEntry,bundle, rootCarePlanEntry);
         }
 
       }
@@ -2977,6 +2979,29 @@ public class FhirR4 {
 
 
     return newEntry(bundle, careplanResource, String.valueOf(UUID.randomUUID()));
+  }
+
+  private static BundleEntryComponent task(Person person,
+                                           BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent rootCarePlanEntry) {
+
+    org.hl7.fhir.r4.model.Task taskResource = new Task();
+
+    // add status
+    taskResource.setStatus(Task.TaskStatus.ACCEPTED);
+
+    //add intent
+    taskResource.setIntent(Task.TaskIntent.PLAN);
+
+    // add priority
+    taskResource.setPriority(Task.TaskPriority.ROUTINE);
+
+    // add references to root care plan
+    List<Reference> basedOnReferences = new ArrayList<>();
+    basedOnReferences.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    taskResource.setBasedOn(basedOnReferences);
+
+    return newEntry(bundle, taskResource, String.valueOf(UUID.randomUUID()));
   }
   /**
    * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
