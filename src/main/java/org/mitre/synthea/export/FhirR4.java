@@ -509,10 +509,13 @@ public class FhirR4 {
     org.hl7.fhir.r4.model.QuestionnaireResponse qrResource = new QuestionnaireResponse();
     org.hl7.fhir.r4.model.Encounter encounter = (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
 
+    // add status
     qrResource.setStatus(QuestionnaireResponse.QuestionnaireResponseStatus.COMPLETED);
 
+    // connect to an encounter
     qrResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
+    // add answers and text for the collected consent
     List<QuestionnaireResponse.QuestionnaireResponseItemComponent> items = new ArrayList<>();
     List<QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent> answers = new ArrayList<>();
     answers.add(
@@ -524,8 +527,9 @@ public class FhirR4 {
                     .setAnswer(answers).setLinkId("1.0").setText("Do u consent to this chat?")
     );
     qrResource.setItem(items);
+
+    // set subject (aka patient)
     qrResource.setSubject(encounter.getSubject());
-    qrResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
     return newEntry(bundle, qrResource, String.valueOf(UUID.randomUUID()));
 
