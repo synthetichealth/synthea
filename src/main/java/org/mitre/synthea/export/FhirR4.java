@@ -489,7 +489,9 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.Consent.class)) {
 
-          consentByEncounter(person, bundle,personEntry,encounter, encounterEntry);
+          BundleEntryComponent qr = questionnaireResponse(bundle, encounterEntry);
+          consentByEncounter(person, bundle,personEntry,encounter, encounterEntry, qr);
+
 
       }
     }
@@ -501,6 +503,32 @@ public class FhirR4 {
       provenance(bundle, person, stopTime);
     }
     return bundle;
+  }
+
+  private static BundleEntryComponent questionnaireResponse(Bundle bundle, BundleEntryComponent encounterEntry) {
+    org.hl7.fhir.r4.model.QuestionnaireResponse qrResource = new QuestionnaireResponse();
+    org.hl7.fhir.r4.model.Encounter encounter = (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    qrResource.setStatus(QuestionnaireResponse.QuestionnaireResponseStatus.COMPLETED);
+
+    qrResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+
+    List<QuestionnaireResponse.QuestionnaireResponseItemComponent> items = new ArrayList<>();
+    List<QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent> answers = new ArrayList<>();
+    answers.add(
+            new QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent()
+                    .setValue(new BooleanType(true))
+    );
+    items.add(
+            new QuestionnaireResponse.QuestionnaireResponseItemComponent()
+                    .setAnswer(answers).setLinkId("1.0").setText("Do u consent to this chat?")
+    );
+    qrResource.setItem(items);
+    qrResource.setSubject(encounter.getSubject());
+    qrResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+
+    return newEntry(bundle, qrResource, String.valueOf(UUID.randomUUID()));
+
   }
 
   private static BundleEntryComponent consentByPerson(Person person, Bundle bundle, BundleEntryComponent personEntry, String type) {
@@ -571,7 +599,8 @@ public class FhirR4 {
 
   private static BundleEntryComponent consentByEncounter(Person person, Bundle bundle,
                                                          BundleEntryComponent personEntry, Encounter encounter,
-                                                         BundleEntryComponent encounterEntry) {
+                                                         BundleEntryComponent encounterEntry,
+                                                         BundleEntryComponent questionnaireResponseEntry) {
     org.hl7.fhir.r4.model.Consent consent = new Consent();
 
     // convert participant
@@ -601,6 +630,9 @@ public class FhirR4 {
             .setSystem("url/coding-system-consents");
     codingList.add(encounterCC);
     consent.setCategory(codingList);
+
+    // set source as questionnaireResponse
+    consent.setSource(new Reference(questionnaireResponseEntry.getFullUrl()));
 
     // status set
     consent.setStatus(Consent.ConsentState.ACTIVE);
