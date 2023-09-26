@@ -451,6 +451,9 @@ public class FhirR4 {
 
           //create a task and reverse link to root careplan
           task(person,personEntry,bundle, rootCarePlanEntry);
+
+          //create a service request and reversse link to root care plan
+          serviceRequest(person, personEntry, bundle, rootCarePlanEntry);
         }
 
       }
@@ -3001,19 +3004,49 @@ public class FhirR4 {
     basedOnReferences.add(new Reference(rootCarePlanEntry.getFullUrl()));
     taskResource.setBasedOn(basedOnReferences);
 
+    // set owner
+    taskResource.setOwner(new Reference(personEntry.getFullUrl()));
+
+
     return newEntry(bundle, taskResource, String.valueOf(UUID.randomUUID()));
   }
-  /**
-   * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
-   *
-   * @param person         The Person
-   * @param personEntry    The Entry for the Person
-   * @param bundle         Bundle to add the CarePlan to
-   * @param encounterEntry Current Encounter entry
-   * @param provider       The current provider
-   * @param carePlan       The CarePlan to map to FHIR and add to the bundle
-   * @return The added Entry
-   */
+
+  private static BundleEntryComponent serviceRequest(Person person,
+                                           BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent rootCarePlanEntry) {
+    org.hl7.fhir.r4.model.ServiceRequest serviceRequestResource = new ServiceRequest();
+
+    // set status
+    serviceRequestResource.setStatus(ServiceRequest.ServiceRequestStatus.ACTIVE);
+
+    // set priority
+    serviceRequestResource.setPriority(ServiceRequest.ServiceRequestPriority.ROUTINE);
+
+    // set intent
+    serviceRequestResource.setIntent(ServiceRequest.ServiceRequestIntent.PLAN);
+
+    // add references to root care plan
+    List<Reference> basedOnReferences = new ArrayList<>();
+    basedOnReferences.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    serviceRequestResource.setBasedOn(basedOnReferences);
+
+    // set subject
+    serviceRequestResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+
+    return newEntry(bundle, serviceRequestResource, String.valueOf(UUID.randomUUID()));
+  }
+    /**
+     * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
+     *
+     * @param person         The Person
+     * @param personEntry    The Entry for the Person
+     * @param bundle         Bundle to add the CarePlan to
+     * @param encounterEntry Current Encounter entry
+     * @param provider       The current provider
+     * @param carePlan       The CarePlan to map to FHIR and add to the bundle
+     * @return The added Entry
+     */
   private static BundleEntryComponent carePlan(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan, BundleEntryComponent rootCarePlanEntry) {
