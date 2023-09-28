@@ -22,16 +22,24 @@ public class RifIdentifierTest {
   public void testMBI() {
     MBI mbi = new MBI(MBI.MIN_MBI);
     assertEquals("1S00A00AA00", mbi.toString());
-    mbi = new MBI(MBI.MAX_MBI);
+    mbi = new MBI(MBI.MAX_FAKE_MBI);
     assertEquals("9SY9YY9YY99", mbi.toString());
     mbi = MBI.parse("1S00A00AA00");
     assertEquals("1S00A00AA00", mbi.toString());
+    mbi = mbi.next();
+    assertEquals("1S00A00AA01", mbi.toString());
     mbi = MBI.parse("1S00-A00-AA00");
     assertEquals("1S00A00AA00", mbi.toString());
     mbi = MBI.parse("9SY9YY9YY99");
     assertEquals("9SY9YY9YY99", mbi.toString());
     mbi = MBI.parse("9SY9-YY9-YY99");
     assertEquals("9SY9YY9YY99", mbi.toString());
+    mbi = new MBI(MBI.MAX_REAL_MBI, false);
+    assertEquals("9YY9YY9YY99", mbi.toString());
+    mbi = MBI.parse("1A00A00AA00");
+    assertEquals("1A00A00AA00", mbi.toString());
+    mbi = mbi.next();
+    assertEquals("1A00A00AA01", mbi.toString());
   }
 
 }
