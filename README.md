@@ -2,10 +2,7 @@
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
-Read our [wiki](https://github.com/synthetichealth/synthea/wiki) for more information.
-
-:wave::information_source:
-**May-June 2023 - We're interested in hearing how you use Synthea and what features are most useful to you! Please consider helping direct future effort by filling out our brief user survey: https://share.hsforms.com/1PDnYPuS6Ql6TVkUOohNqOw4m7ji**
+Read our [wiki](https://github.com/synthetichealth/synthea/wiki) and [Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions) for more information.
 
 Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
@@ -45,7 +42,7 @@ cd synthea
 The default properties file values can be found at `src/main/resources/synthea.properties`.
 By default, synthea does not generate CCDA, CPCDA, CSV, or Bulk FHIR (ndjson). You'll need to
 adjust this file to activate these features.  See the [wiki](https://github.com/synthetichealth/synthea/wiki)
-for more details.
+for more details, or use our [guided customizer tool](https://synthetichealth.github.io/spt/#/customizer).
 
 
 
@@ -114,7 +111,7 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 
 # License
 
-Copyright 2017-2022 The MITRE Corporation
+Copyright 2017-2023 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
