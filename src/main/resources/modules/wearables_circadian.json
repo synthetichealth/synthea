@@ -5,6 +5,7 @@
     "", 
     "References",
     "https://www.ncbi.nlm.nih.gov/books/NBK519507/",
+    "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/",
     "", 
     "Known model limitations:",
     "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test.  Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
@@ -45,23 +46,23 @@
       "distributed_transition": [
         {
           "transition": "Age_20-29",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_30-39",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_40-49",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_50-59",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_60-74",
-          "distribution": 0.21
+          "distribution": 0.20
         }
       ]
     },
@@ -73,23 +74,23 @@
       "distributed_transition": [
         {
           "transition": "Age_20-29",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_30-39",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_40-49",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_50-59",
-          "distribution": 0.21
+          "distribution": 0.20
         },
         {
           "transition": "Age_60-74",
-          "distribution": 0.21
+          "distribution": 0.20
         }
       ]
     },
