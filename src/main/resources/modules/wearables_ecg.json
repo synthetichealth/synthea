@@ -272,6 +272,13 @@
       "type": "Symptom",
       "symptom": "Stiffness",
       "cause": "Sedentary_Lifestyle",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 271587009,
+          "display": "Stiffness (finding)"
+        }
+      ],
       "direct_transition": "Sedentary_Symptom1_Ends"
     },
     "Sedentary_Symptom1_Ends": {

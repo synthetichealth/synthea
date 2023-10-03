@@ -212,6 +212,13 @@
       "type": "Symptom",
       "symptom": "Cramps",
       "cause": "Endometriosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 431416001,
+          "display": "Menstrual cramp (finding)"
+        }
+      ],
       "direct_transition": "Menstrual_Cramps_Symptom_Ends"
     },
     "Menstrual_Cramps_Symptom_Ends": {

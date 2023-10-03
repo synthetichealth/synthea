@@ -246,6 +246,13 @@
       "type": "Symptom",
       "symptom": "Snoring",
       "cause": "Sleep_Apnea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 72863001,
+          "display": "Snoring (finding)"
+        }
+      ],
       "direct_transition": "Snoring_Ends"
     },
     "Snoring_Ends": {

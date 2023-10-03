@@ -262,6 +262,13 @@
       "type": "Symptom",
       "symptom": "Insomnia",
       "cause": "Sleep_Apnea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 193462001,
+          "display": "Insomnia (disorder)"
+        }
+      ],
       "direct_transition": "Insomia_Symptom_Ends"
     },
     "Insomia_Symptom_Ends": {
