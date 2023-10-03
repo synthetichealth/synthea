@@ -219,7 +219,7 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "Monitor_CPAP",
-      "assign_to_attribute": "cpap_data_iwatch"
+      "assign_to_attribute": "o2_data_iwatch"
     },
     "Monitor_CPAP": {
       "type": "Device",
@@ -229,7 +229,7 @@
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
       "direct_transition": "Sleep_Study_Baseline",
-      "assign_to_attribute": "snf_cpap"
+      "assign_to_attribute": "o2_data_cpap"
     },
 
 
