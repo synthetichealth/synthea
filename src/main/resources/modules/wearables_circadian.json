@@ -54,31 +54,31 @@
           "distribution": 0.2074
         },
         {
-          "transition": "Age_20-29",
+          "transition": "Age_20_29",
           "distribution": 0.2194
         },
         {
-          "transition": "Age_30-39",
+          "transition": "Age_30_39",
           "distribution": 0.2244
         },
         {
-          "transition": "Age_40-49",
+          "transition": "Age_40_49",
           "distribution": 0.2039
         },
         {
-          "transition": "Age_50-59",
+          "transition": "Age_50_59",
           "distribution": 0.2097
         },
         {
-          "transition": "Age_60-69",
+          "transition": "Age_60_69",
           "distribution": 0.2058
         },
         {
-          "transition": "Age_70-79",
+          "transition": "Age_70_79",
           "distribution": 0.1407
         },
         {
-          "transition": "Age_80-99",
+          "transition": "Age_80_99",
           "distribution": 0.0803
         }
       ]
@@ -99,54 +99,54 @@
           "distribution": 0.2178
         },
         {
-          "transition": "Age_20-29",
+          "transition": "Age_20_29",
           "distribution": 0.2295
         },
         {
-          "transition": "Age_30-39",
+          "transition": "Age_30_39",
           "distribution": 0.2314
         },
         {
-          "transition": "Age_40-49",
+          "transition": "Age_40_49",
           "distribution": 0.2066
         },
         {
-          "transition": "Age_50-59",
+          "transition": "Age_50_59",
           "distribution": 0.2080
         },
         {
-          "transition": "Age_60-69",
+          "transition": "Age_60_69",
           "distribution": 0.1927
         },
         {
-          "transition": "Age_70-79",
+          "transition": "Age_70_79",
           "distribution": 0.1195
         },
         {
-          "transition": "Age_80-99",
+          "transition": "Age_80_99",
           "distribution": 0.0511
         }
       ]
     },
-    "Age_0-9": {
+    "Age_0_9": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 13,
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      }
+    },
+    "Age_10_19": {
+      "type": "Delay",
+      "direct_transition": "Sleep_Apnea_Risk",
+      "range": {
+        "low": 10,
         "high": 19,
         "unit": "years"
       }
     },
-    "Age_10-19": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 13,
-        "high": 19,
-        "unit": "years"
-      }
-    },
-    "Age_20-29": {
+    "Age_20_29": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
@@ -155,7 +155,7 @@
         "unit": "years"
       }
     },
-    "Age_30-39": {
+    "Age_30_39": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
@@ -164,7 +164,7 @@
         "unit": "years"
       }
     },
-    "Age_40-49": {
+    "Age_40_49": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
@@ -173,39 +173,39 @@
         "unit": "years"
       }
     },
-    "Age_50-59": {
+    "Age_50_59": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 40,
-        "high": 49,
+        "low": 50,
+        "high": 59,
         "unit": "years"
       }
     },
-    "Age_60-69": {
+    "Age_60_69": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 40,
-        "high": 49,
+        "low": 60,
+        "high": 69,
         "unit": "years"
       }
     },
-    "Age_70-79": {
+    "Age_70_79": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 40,
-        "high": 49,
+        "low": 70,
+        "high": 79,
         "unit": "years"
       }
     },
-    "Age_80-99": {
+    "Age_80_99": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 40,
-        "high": 49,
+        "low": 80,
+        "high": 99,
         "unit": "years"
       }
     },
