@@ -15,6 +15,9 @@
     "Physical Activity and Health: A Report of the Surgeon General", 
     "https://www.cdc.gov/nccdphp/sgr/adults.htm", 
     "", 
+    "Prevalence of Sedentary Behavior in Older Adults: A Systematic Review", 
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3881132/",     
+    "", 
     "Known model limitations:",
     "- This module is Apple centric, and may not model biomarkers found in Garmin devices, Fitbits, and other wearables (yet).",
     "- Most biomarkers are still modeled with Markov chains, and not yet connected to the Biomodel partial differential equation models.",
@@ -191,14 +194,7 @@
       "type": "Symptom",
       "symptom": "Stiffness",
       "cause": "Sedentary_Lifestyle",
-      "direct_transition": "Sedentary_Symptom1_Ends",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 271587009,
-          "display": "Stiffness (finding)"
-        }
-      ]
+      "direct_transition": "Sedentary_Symptom1_Ends"
     },
     "Sedentary_Symptom1_Ends": {
       "type": "Symptom",
