@@ -41,58 +41,110 @@
     "Female": {
       "type": "Simple",
       "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/"
+        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
+        "https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/"
       ],
       "distributed_transition": [
         {
+          "transition": "Age_0_9",
+          "distribution": 0.1884
+        },
+        {
+          "transition": "Age_10_19",
+          "distribution": 0.2074
+        },
+        {
           "transition": "Age_20-29",
-          "distribution": 0.20
+          "distribution": 0.2194
         },
         {
           "transition": "Age_30-39",
-          "distribution": 0.20
+          "distribution": 0.2244
         },
         {
           "transition": "Age_40-49",
-          "distribution": 0.20
+          "distribution": 0.2039
         },
         {
           "transition": "Age_50-59",
-          "distribution": 0.20
+          "distribution": 0.2097
         },
         {
-          "transition": "Age_60-74",
-          "distribution": 0.20
+          "transition": "Age_60-69",
+          "distribution": 0.2058
+        },
+        {
+          "transition": "Age_70-79",
+          "distribution": 0.1407
+        },
+        {
+          "transition": "Age_80-99",
+          "distribution": 0.0803
         }
       ]
     },
     "Male": {
       "type": "Simple",
       "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/"
+        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
+        "https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/"
       ],
       "distributed_transition": [
         {
+          "transition": "Age_0_9",
+          "distribution": 0.1971
+        },
+        {
+          "transition": "Age_10_19",
+          "distribution": 0.2178
+        },
+        {
           "transition": "Age_20-29",
-          "distribution": 0.20
+          "distribution": 0.2295
         },
         {
           "transition": "Age_30-39",
-          "distribution": 0.20
+          "distribution": 0.2314
         },
         {
           "transition": "Age_40-49",
-          "distribution": 0.20
+          "distribution": 0.2066
         },
         {
           "transition": "Age_50-59",
-          "distribution": 0.20
+          "distribution": 0.2080
         },
         {
-          "transition": "Age_60-74",
-          "distribution": 0.20
+          "transition": "Age_60-69",
+          "distribution": 0.1927
+        },
+        {
+          "transition": "Age_70-79",
+          "distribution": 0.1195
+        },
+        {
+          "transition": "Age_80-99",
+          "distribution": 0.0511
         }
       ]
+    },
+    "Age_0-9": {
+      "type": "Delay",
+      "direct_transition": "Sleep_Apnea_Risk",
+      "range": {
+        "low": 13,
+        "high": 19,
+        "unit": "years"
+      }
+    },
+    "Age_10-19": {
+      "type": "Delay",
+      "direct_transition": "Sleep_Apnea_Risk",
+      "range": {
+        "low": 13,
+        "high": 19,
+        "unit": "years"
+      }
     },
     "Age_20-29": {
       "type": "Delay",
@@ -125,17 +177,35 @@
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 50,
-        "high": 59,
+        "low": 40,
+        "high": 49,
         "unit": "years"
       }
     },
-    "Age_60-74": {
+    "Age_60-69": {
       "type": "Delay",
       "direct_transition": "Sleep_Apnea_Risk",
       "range": {
-        "low": 60,
-        "high": 74,
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_70-79": {
+      "type": "Delay",
+      "direct_transition": "Sleep_Apnea_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_80-99": {
+      "type": "Delay",
+      "direct_transition": "Sleep_Apnea_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
         "unit": "years"
       }
     },

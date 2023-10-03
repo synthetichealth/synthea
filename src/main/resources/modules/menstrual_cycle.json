@@ -40,24 +40,53 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Age_13-19",
-          "distribution": 0.10
+          "transition": "Age_0_9",
+          "distribution": 0.1884
+        },
+        {
+          "transition": "Age_10_19",
+          "distribution": 0.2074
         },
         {
           "transition": "Age_20-29",
-          "distribution": 0.20
+          "distribution": 0.2194
         },
         {
           "transition": "Age_30-39",
-          "distribution": 0.35
+          "distribution": 0.2244
         },
         {
           "transition": "Age_40-49",
-          "distribution": 0.35
+          "distribution": 0.2039
+        },
+        {
+          "transition": "Age_50-59",
+          "distribution": 0.2097
+        },
+        {
+          "transition": "Age_60-69",
+          "distribution": 0.2058
+        },
+        {
+          "transition": "Age_70-79",
+          "distribution": 0.1407
+        },
+        {
+          "transition": "Age_80-99",
+          "distribution": 0.0803
         }
       ]
     },
-    "Age_13-19": {
+    "Age_0-9": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis_Risk",
+      "range": {
+        "low": 13,
+        "high": 19,
+        "unit": "years"
+      }
+    },
+    "Age_10-19": {
       "type": "Delay",
       "direct_transition": "Endometriosis_Risk",
       "range": {
@@ -85,6 +114,42 @@
       }
     },
     "Age_40-49": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_50-59": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_60-69": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_70-79": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis_Risk",
+      "range": {
+        "low": 40,
+        "high": 49,
+        "unit": "years"
+      }
+    },
+    "Age_80-99": {
       "type": "Delay",
       "direct_transition": "Endometriosis_Risk",
       "range": {
