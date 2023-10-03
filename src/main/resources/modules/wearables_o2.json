@@ -219,7 +219,7 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "Monitor_CPAP",
-      "assign_to_attribute": "snf_iwatch"
+      "assign_to_attribute": "cpap_data_iwatch"
     },
     "Monitor_CPAP": {
       "type": "Device",

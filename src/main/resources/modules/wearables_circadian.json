@@ -220,7 +220,7 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "SleepStudy_Baseline",
-      "assign_to_attribute": "snf_iwatch"
+      "assign_to_attribute": "sleep_data_iwatch"
     },
 
     "SleepStudy_Baseline_Encounter_End": {
