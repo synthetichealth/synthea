@@ -107,7 +107,7 @@
     },
     "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Risk",
       "range": {
         "low": 20,
         "high": 29,
@@ -116,7 +116,7 @@
     },
     "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Risk",
       "range": {
         "low": 30,
         "high": 39,
@@ -125,7 +125,7 @@
     },
     "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Risk",
       "range": {
         "low": 40,
         "high": 49,
@@ -134,7 +134,7 @@
     },
     "Age_50-59": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Risk",
       "range": {
         "low": 50,
         "high": 59,
@@ -143,7 +143,7 @@
     },
     "Age_60-74": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Risk",
       "range": {
         "low": 60,
         "high": 74,
@@ -151,6 +151,20 @@
       }
     },
 
+
+    "Sedentary_Risk": {
+      "type": "ConditionOnset",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.75
+        },
+        {
+          "transition": "Sedentary_Lifestyle",
+          "distribution": 0.25
+        }
+      ]
+    },
 
     "Sedentary_Lifestyle": {
       "type": "ConditionOnset",
@@ -173,11 +187,7 @@
         },
         {
           "transition": "Symptom_Onset_Delay",
-          "distribution": 0.79
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.01
+          "distribution": 0.8
         }
       ]
     },

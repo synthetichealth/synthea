@@ -59,7 +59,7 @@
     },
     "Age_13-19": {
       "type": "Delay",
-      "direct_transition": "Endometriosis",
+      "direct_transition": "Endometriosis_Risk",
       "range": {
         "low": 13,
         "high": 19,
@@ -68,7 +68,7 @@
     },
     "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Endometriosis",
+      "direct_transition": "Endometriosis_Risk",
       "range": {
         "low": 20,
         "high": 29,
@@ -77,7 +77,7 @@
     },
     "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Endometriosis",
+      "direct_transition": "Endometriosis_Risk",
       "range": {
         "low": 30,
         "high": 39,
@@ -86,7 +86,7 @@
     },
     "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Endometriosis",
+      "direct_transition": "Endometriosis_Risk",
       "range": {
         "low": 40,
         "high": 49,
@@ -94,6 +94,19 @@
       }
     },
 
+    "Endometriosis_Risk": {
+      "type": "ConditionOnset",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.89
+        },
+        {
+          "transition": "Endometriosis",
+          "distribution": 0.11
+        }
+      ]
+    },
 
     "Endometriosis": {
       "type": "ConditionOnset",

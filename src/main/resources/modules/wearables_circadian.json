@@ -96,7 +96,7 @@
     },
     "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 20,
         "high": 29,
@@ -105,7 +105,7 @@
     },
     "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 30,
         "high": 39,
@@ -114,7 +114,7 @@
     },
     "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 40,
         "high": 49,
@@ -123,7 +123,7 @@
     },
     "Age_50-59": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 50,
         "high": 59,
@@ -132,7 +132,7 @@
     },
     "Age_60-74": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 60,
         "high": 74,
@@ -140,6 +140,19 @@
       }
     },
 
+    "Sleep_Apnea_Risk": {
+      "type": "ConditionOnset",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.9338
+        },
+        {
+          "transition": "Sleep_Apnea",
+          "distribution": 0.0662
+        }
+      ]
+    },
 
     "Sleep_Apnea": {
       "type": "ConditionOnset",
@@ -152,8 +165,8 @@
         }
       ],
       "remarks": [
-        "More than 60% of US adults do not engage in recommended amount of physical activity.  25% of adults are not physically active at all.",
-        "https://www.cdc.gov/nccdphp/sgr/adults.htm#:~:text=More%20than%2060%20percent%20of,Women%20than%20men."
+        "Sleep apnea is prevalent in as many as 18 million Americans alone. This statistic denotes that approximately 1 in every 15 Americans, or 6.62% of the total American population have a case of sleep apnea.",
+        "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/#:~:text=Sleep%20apnea%20is%20prevalent%20in,a%20case%20of%20sleep%20apnea."
       ],
       "distributed_transition": [
         {
@@ -162,11 +175,7 @@
         },
         {
           "transition": "Symptom_Onset_Delay",
-          "distribution": 0.79
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.01
+          "distribution": 0.8
         }
       ]
     },

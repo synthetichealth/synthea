@@ -95,7 +95,7 @@
     },
     "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 20,
         "high": 29,
@@ -104,7 +104,7 @@
     },
     "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 30,
         "high": 39,
@@ -113,7 +113,7 @@
     },
     "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 40,
         "high": 49,
@@ -122,7 +122,7 @@
     },
     "Age_50-59": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 50,
         "high": 59,
@@ -131,7 +131,7 @@
     },
     "Age_60-74": {
       "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Risk",
       "range": {
         "low": 60,
         "high": 74,
@@ -139,6 +139,19 @@
       }
     },
 
+    "Sleep_Apnea_Risk": {
+      "type": "ConditionOnset",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.9338
+        },
+        {
+          "transition": "Sleep_Apnea",
+          "distribution": 0.0662
+        }
+      ]
+    },
 
     "Sleep_Apnea": {
       "type": "ConditionOnset",
@@ -161,11 +174,7 @@
         },
         {
           "transition": "Symptom_Onset_Delay",
-          "distribution": 0.79
-        },
-        {
-          "transition": "Terminal",
-          "distribution": 0.01
+          "distribution": 0.8
         }
       ]
     },
