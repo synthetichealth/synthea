@@ -35,7 +35,7 @@ public abstract class RIFExporter {
   protected static final AtomicLong nextClaimGroupId = new AtomicLong(
           Config.getAsLong("exporter.bfd.clm_grp_id_start", -1));
   protected static final String BB2_BENE_ID = "BB2_BENE_ID";
-  protected static final String BB2_HIC_ID = "BB2_HIC_ID";
+  public static final String BB2_HIC_ID = "BB2_HIC_ID";
   public static final String BB2_MBI = "BB2_MBI";
   public static final String COVERAGE_START_DATE = "BB2_COVERAGE_START_DATE";
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();

@@ -10,12 +10,20 @@ public class RifIdentifierTest {
   public void testHICN() {
     HICN hicn = new HICN(HICN.MIN_HICN);
     assertEquals("T00000000A", hicn.toString());
-    hicn = new HICN(HICN.MAX_HICN);
+    hicn = new HICN(HICN.MAX_FAKE_HICN);
     assertEquals("T99999999A", hicn.toString());
     hicn = HICN.parse("T01001001A");
     assertEquals("T01001001A", hicn.toString());
+    hicn = hicn.next();
+    assertEquals("T01001002A", hicn.toString());
     hicn = HICN.parse("T99999999A");
     assertEquals("T99999999A", hicn.toString());
+    hicn = new HICN(HICN.MAX_REAL_HICN, false);
+    assertEquals("999999999A", hicn.toString());
+    hicn = HICN.parse("199999999A");
+    assertEquals("199999999A", hicn.toString());
+    hicn = hicn.next();
+    assertEquals("200000000A", hicn.toString());
   }
 
   @Test
