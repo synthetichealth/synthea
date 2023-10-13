@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -781,12 +783,21 @@ public class FhirR4 {
 
     }
 
+    //start and end
+    LocalDateTime start = LocalDateTime.now().minusHours((long) (Math.random() * (10)));
+    LocalDateTime end = start.plusHours(1);
+
+    apptResource.setStart(java.sql.Timestamp.valueOf(start));
+    apptResource.setEnd(java.sql.Timestamp.valueOf(end));
+
     apptResource.setParticipant(aPList);
 
 
     return newEntry(bundle, apptResource, apptResource.getId());
 
   }
+
+
 
   /**
    * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
