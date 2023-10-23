@@ -58,7 +58,8 @@ public class GrowthChartTest {
   @Test
   public void testGrowthChartLookupMax() throws Exception {
     double height = LifecycleModule.lookupGrowthChart("height", "M", 20, 1.0);
-    assertEquals(94.95447906, height, 0.01);
+    // Max value is now capped to the 99.5th percentile.
+    assertEquals(93.1240785326071, height, 0.01);
   }
 
   @Test
