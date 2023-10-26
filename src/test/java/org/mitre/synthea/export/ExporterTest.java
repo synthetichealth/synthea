@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
@@ -257,4 +258,24 @@ public class ExporterTest {
     assertEquals("something_permanent", record.encounters.get(0).claim.items.get(0).entry.type);
   }
 
+  @Test
+  public void testExportFilterShouldNotKeepOldStuffWhenActiveOfSameType() {
+    // create old encounters with the same repeated condition, ended
+    long oneWeek = Utilities.convertTime("weeks", 1);
+    for (int i = 0 ; i < 3 ; i++) {
+      record.encounterStart(time - years(10 - i), EncounterType.EMERGENCY);
+      record.conditionStart(time - years(10 - i), "viral_sinusitis");
+      record.conditionEnd(time - years(10 - i) + oneWeek, "viral_sinusitis");
+    }
+
+    // create a recent encounter with the same condition, still active
+    record.encounterStart(time - oneWeek, EncounterType.EMERGENCY);
+    record.conditionStart(time - oneWeek, "viral_sinusitis");
+    
+    Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
+
+    assertEquals(1, filtered.record.encounters.size());
+    assertEquals(1, filtered.record.encounters.get(0).conditions.size());
+    assertEquals("viral_sinusitis", filtered.record.encounters.get(0).conditions.get(0).type);
+  }
 }
