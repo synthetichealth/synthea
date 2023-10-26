@@ -123,7 +123,10 @@ public final class LifecycleModule extends Module {
     calculateFallRisk(person, time);
     person.attributes.put(Person.DISABLED, isDisabled(person, time));
     if (person.ageInYears(time) >= 18) {
-      ((Employment) person.attributes.get(Person.EMPLOYMENT_MODEL)).checkEmployment(person, time);
+    	Object personAsObject = person.attributes.get(Person.EMPLOYMENT_MODEL);
+    	if (personAsObject != null) {
+    		((Employment) personAsObject).checkEmployment(person, time);
+    	}
     }
     death(person, time);
 
