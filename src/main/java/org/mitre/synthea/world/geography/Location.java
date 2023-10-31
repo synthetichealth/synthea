@@ -389,7 +389,7 @@ public class Location implements Serializable {
    */
   public void setSocialDeterminants(Person person) {
     String county = (String) person.attributes.get(Person.COUNTY);
-    if (county == null) {
+    if (county == null || !socialDeterminantsOfHealth.containsKey(county)) {
       county = "AVERAGE";
     }
     Map<String, Double> sdoh = socialDeterminantsOfHealth.get(county);
