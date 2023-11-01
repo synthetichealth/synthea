@@ -2,252 +2,25 @@
   "name": "Wearables_Circadian",
   "remarks": [
     "The regulation of sleep is processed by the homeostatic physiology of the circadian rhythm, the sleep/wake cycle. Circadian rhythm is the 24-hour internal clock in our brain that regulates cycles of alertness and sleepiness by responding to light changes in our environment. ",
-    "", 
+    "",
     "References",
     "https://www.ncbi.nlm.nih.gov/books/NBK519507/",
     "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/",
-    "", 
+    "",
     "Known model limitations:",
     "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test.  Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
     "This model can be interected with another function (i.e. a line), to produce a sleep/wake cycle.  Additional information on how to do this is provided in the Wiki.",
-    "This model me be useful in generating cyclical daily habits, such as taking medicaitons in the morning, exercising at certain times of the day, and so forth.  Please see the Wiki for additional details." 
+    "This model me be useful in generating cyclical daily habits, such as taking medicaitons in the morning, exercising at certain times of the day, and so forth.  Please see the Wiki for additional details."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "Male",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
+      "name": "Initial",
+      "direct_transition": "Sleep Apnea Guard"
     },
     "Terminal": {
-      "type": "Terminal"
-    },
-    "Female": {
-      "type": "Simple",
-      "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
-        "https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/"
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Age_0_9",
-          "distribution": 0.1884
-        },
-        {
-          "transition": "Age_10_19",
-          "distribution": 0.2074
-        },
-        {
-          "transition": "Age_20_29",
-          "distribution": 0.2194
-        },
-        {
-          "transition": "Age_30_39",
-          "distribution": 0.2244
-        },
-        {
-          "transition": "Age_40_49",
-          "distribution": 0.2039
-        },
-        {
-          "transition": "Age_50_59",
-          "distribution": 0.2097
-        },
-        {
-          "transition": "Age_60_69",
-          "distribution": 0.2058
-        },
-        {
-          "transition": "Age_70_79",
-          "distribution": 0.1407
-        },
-        {
-          "transition": "Age_80_99",
-          "distribution": 0.0803
-        }
-      ]
-    },
-    "Male": {
-      "type": "Simple",
-      "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
-        "https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/"
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Age_0_9",
-          "distribution": 0.1971
-        },
-        {
-          "transition": "Age_10_19",
-          "distribution": 0.2178
-        },
-        {
-          "transition": "Age_20_29",
-          "distribution": 0.2295
-        },
-        {
-          "transition": "Age_30_39",
-          "distribution": 0.2314
-        },
-        {
-          "transition": "Age_40_49",
-          "distribution": 0.2066
-        },
-        {
-          "transition": "Age_50_59",
-          "distribution": 0.2080
-        },
-        {
-          "transition": "Age_60_69",
-          "distribution": 0.1927
-        },
-        {
-          "transition": "Age_70_79",
-          "distribution": 0.1195
-        },
-        {
-          "transition": "Age_80_99",
-          "distribution": 0.0511
-        }
-      ]
-    },
-    "Age_0_9": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 0,
-        "high": 9,
-        "unit": "years"
-      }
-    },
-    "Age_10_19": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 10,
-        "high": 19,
-        "unit": "years"
-      }
-    },
-    "Age_20_29": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 20,
-        "high": 29,
-        "unit": "years"
-      }
-    },
-    "Age_30_39": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 30,
-        "high": 39,
-        "unit": "years"
-      }
-    },
-    "Age_40_49": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 40,
-        "high": 49,
-        "unit": "years"
-      }
-    },
-    "Age_50_59": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 50,
-        "high": 59,
-        "unit": "years"
-      }
-    },
-    "Age_60_69": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 60,
-        "high": 69,
-        "unit": "years"
-      }
-    },
-    "Age_70_79": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 70,
-        "high": 79,
-        "unit": "years"
-      }
-    },
-    "Age_80_99": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea_Risk",
-      "range": {
-        "low": 80,
-        "high": 99,
-        "unit": "years"
-      }
-    },
-
-    "Sleep_Apnea_Risk": {
-      "type": "ConditionOnset",
-      "distributed_transition": [
-        {
-          "transition": "Terminal",
-          "distribution": 0.9338
-        },
-        {
-          "transition": "Sleep_Apnea",
-          "distribution": 0.0662
-        }
-      ]
-    },
-
-    "Sleep_Apnea": {
-      "type": "ConditionOnset",
-      "target_encounter": "SleepStudy_Baseline_Encounter",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 73430006,
-          "display": "Sleep apnea (disorder)"
-        }
-      ],
-      "remarks": [
-        "Sleep apnea is prevalent in as many as 18 million Americans alone. This statistic denotes that approximately 1 in every 15 Americans, or 6.62% of the total American population have a case of sleep apnea.",
-        "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/#:~:text=Sleep%20apnea%20is%20prevalent%20in,a%20case%20of%20sleep%20apnea."
-      ],
-      "distributed_transition": [
-        {
-          "transition": "SleepStudy_Baseline_Encounter",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Symptom_Onset_Delay",
-          "distribution": 0.8
-        }
-      ]
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Symptom_Onset_Delay": {
       "type": "Delay",
@@ -256,7 +29,8 @@
         "low": 1,
         "high": 5,
         "unit": "years"
-      }
+      },
+      "name": "Symptom_Onset_Delay"
     },
     "Insomia_Symptom": {
       "type": "Symptom",
@@ -266,24 +40,26 @@
         {
           "system": "SNOMED-CT",
           "code": 193462001,
-          "display": "Insomnia (disorder)"
+          "display": "Insomnia (disorder)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Insomia_Symptom_Ends"
+      "direct_transition": "Insomia_Symptom_Ends",
+      "name": "Insomia_Symptom"
     },
     "Insomia_Symptom_Ends": {
       "type": "Symptom",
       "symptom": "Insomnia",
       "cause": "Sleep_Apnea",
-      "direct_transition": "Physical_Activity_Resumes"
+      "direct_transition": "Physical_Activity_Resumes",
+      "name": "Insomia_Symptom_Ends"
     },
-
     "Physical_Activity_Resumes": {
       "type": "ConditionEnd",
-      "condition_onset": "Sleep_Apnea",
-      "direct_transition": "Terminal"
+      "condition_onset": "Sleep Apnea Guard",
+      "direct_transition": "Terminal",
+      "name": "Physical_Activity_Resumes"
     },
-
     "SleepStudy_Baseline_Encounter": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -292,12 +68,13 @@
         {
           "system": "SNOMED-CT",
           "code": 60554003,
-          "display": "Polysomnography (procedure)"
+          "display": "Polysomnography (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Monitor_iWatch"
+      "direct_transition": "Monitor_iWatch",
+      "name": "SleepStudy_Baseline_Encounter"
     },
-
     "Monitor_iWatch": {
       "type": "Device",
       "code": {
@@ -306,9 +83,9 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "SleepStudy_Baseline",
-      "assign_to_attribute": "sleep_data_iwatch"
+      "assign_to_attribute": "sleep_data_iwatch",
+      "name": "Monitor_iWatch"
     },
-
     "SleepStudy_Baseline_Encounter_End": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal",
@@ -316,17 +93,17 @@
         "system": "NUBC",
         "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
-      }
+      },
+      "name": "SleepStudy_Baseline_Encounter_End"
     },
-
-
     "SleepStudy_Baseline": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": 60554003,
-          "display": "Polysomnography (procedure)"
+          "display": "Polysomnography (procedure)",
+          "value_set": ""
         }
       ],
       "duration": {
@@ -334,7 +111,8 @@
         "high": 10,
         "unit": "minutes"
       },
-      "direct_transition": "SleepMonitor_Sim"
+      "direct_transition": "SleepMonitor_Sim",
+      "name": "SleepStudy_Baseline"
     },
     "SleepMonitor_Sim": {
       "type": "Physiology",
@@ -357,7 +135,8 @@
         }
       ],
       "direct_transition": "SleepMonitor_Data",
-      "alt_direct_transition": "SleepAnalysis"
+      "alt_direct_transition": "SleepAnalysis",
+      "name": "SleepMonitor_Sim"
     },
     "SleepMonitor_Data": {
       "type": "Observation",
@@ -367,7 +146,8 @@
         {
           "system": "SNOMED-CT",
           "code": 60554003,
-          "display": "Polysomnography (procedure)"
+          "display": "Polysomnography (procedure)",
+          "value_set": ""
         }
       ],
       "sampled_data": {
@@ -375,7 +155,8 @@
           "sleep_monitor_data"
         ]
       },
-      "direct_transition": "SleepMonitor_Chart"
+      "direct_transition": "SleepMonitor_Chart",
+      "name": "SleepMonitor_Data"
     },
     "SleepMonitor_Chart": {
       "type": "Observation",
@@ -385,7 +166,8 @@
         {
           "system": "SNOMED-CT",
           "code": 60554003,
-          "display": "Polysomnography (procedure)"
+          "display": "Polysomnography (procedure)",
+          "value_set": ""
         }
       ],
       "attachment": {
@@ -402,12 +184,14 @@
           ]
         }
       },
-      "direct_transition": "Clear_SleepMonitor_result"
+      "direct_transition": "Clear_SleepMonitor_result",
+      "name": "SleepMonitor_Chart"
     },
     "Clear_SleepMonitor_result": {
       "type": "SetAttribute",
       "attribute": "sleep_monitor_data",
-      "direct_transition": "SleepAnalysis"
+      "direct_transition": "SleepAnalysis",
+      "name": "Clear_SleepMonitor_result"
     },
     "SleepAnalysis": {
       "type": "Observation",
@@ -415,12 +199,42 @@
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "93832-4",
-          "display" : "Sleep duration."
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration.",
+          "value_set": ""
         }
       ],
-      "direct_transition": "SleepStudy_Baseline_Encounter_End"
+      "direct_transition": "SleepStudy_Baseline_Encounter_End",
+      "name": "SleepAnalysis"
+    },
+    "Sleep Apnea Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Active Condition",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": 73430006,
+            "display": "Sleep apnea"
+          }
+        ]
+      },
+      "distributed_transition": [
+        {
+          "transition": "SleepStudy_Baseline_Encounter",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.8
+        }
+      ],
+      "remarks": [
+        "Sleep apnea is prevalent in as many as 18 million Americans alone. This statistic denotes that approximately 1 in every 15 Americans, or 6.62% of the total American population have a case of sleep apnea.",
+        "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/#:~:text=Sleep%20apnea%20is%20prevalent%20in,a%20case%20of%20sleep%20apnea."
+      ],
+      "name": "Sleep Apnea Guard"
     }
   },
   "gmf_version": 1

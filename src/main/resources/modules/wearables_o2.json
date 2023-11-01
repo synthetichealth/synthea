@@ -6,7 +6,7 @@
     "References",
     "https://www.cpap.com/blog/sleep-apnea-statistics/",
     "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/",
-    "", 
+    "",
     "Known model limitations:",
     "Physiology model reports arterial oxygnation (PO2ART) over a 60 second (1 min) interval.  Wearable devices that monitor sleep typically provide summary statistics, such as '5hrs 30min of sleep last night'.  Physiology model may need to be sampled multiple times for a sleep study observation.    ",
     ""
@@ -14,224 +14,12 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "Male",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "M"
-          }
-        },
-        {
-          "transition": "Terminal"
-        }
-      ]
+      "name": "Initial",
+      "direct_transition": "Sleep Apnea Guard"
     },
     "Terminal": {
-      "type": "Terminal"
-    },
-    "Female": {
-      "type": "Simple",
-      "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/"
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Age_0_9",
-          "distribution": 0.1884
-        },
-        {
-          "transition": "Age_10_19",
-          "distribution": 0.2074
-        },
-        {
-          "transition": "Age_20_29",
-          "distribution": 0.2194
-        },
-        {
-          "transition": "Age_30_39",
-          "distribution": 0.2244
-        },
-        {
-          "transition": "Age_40_49",
-          "distribution": 0.2039
-        },
-        {
-          "transition": "Age_50_59",
-          "distribution": 0.2097
-        },
-        {
-          "transition": "Age_60_69",
-          "distribution": 0.2058
-        },
-        {
-          "transition": "Age_70_79",
-          "distribution": 0.1407
-        },
-        {
-          "transition": "Age_80_99",
-          "distribution": 0.0803
-        }
-      ]
-    },
-    "Male": {
-      "type": "Simple",
-      "remarks": [
-        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/"
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Age_0_9",
-          "distribution": 0.1971
-        },
-        {
-          "transition": "Age_10_19",
-          "distribution": 0.2178
-        },
-
-        {
-          "transition": "Age_20_29",
-          "distribution": 0.2295
-        },
-        {
-          "transition": "Age_30_39",
-          "distribution": 0.2314
-        },
-        {
-          "transition": "Age_40_49",
-          "distribution": 0.2066
-        },
-        {
-          "transition": "Age_50_59",
-          "distribution": 0.2080
-        },
-        {
-          "transition": "Age_60_69",
-          "distribution": 0.1927
-        },
-        {
-          "transition": "Age_70_79",
-          "distribution": 0.1195
-        },
-        {
-          "transition": "Age_80_99",
-          "distribution": 0.0511
-        }
-      ]
-    },
-    "Age_0_9": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 0,
-        "high": 9,
-        "unit": "years"
-      }
-    },
-    "Age_10_19": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 10,
-        "high": 19,
-        "unit": "years"
-      }
-    },
-    "Age_20_29": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 20,
-        "high": 29,
-        "unit": "years"
-      }
-    },
-    "Age_30_39": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 30,
-        "high": 39,
-        "unit": "years"
-      }
-    },
-    "Age_40_49": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 40,
-        "high": 49,
-        "unit": "years"
-      }
-    },
-    "Age_50_59": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 50,
-        "high": 59,
-        "unit": "years"
-      }
-    },
-    "Age_60_69": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 60,
-        "high": 69,
-        "unit": "years"
-      }
-    },
-    "Age_70_79": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 70,
-        "high": 79,
-        "unit": "years"
-      }
-    },
-    "Age_80_99": {
-      "type": "Delay",
-      "direct_transition": "Sleep_Apnea",
-      "range": {
-        "low": 80,
-        "high": 99,
-        "unit": "years"
-      }
-    },
-
-    "Sleep_Apnea": {
-      "type": "ConditionOnset",
-      "target_encounter": "Wellness_Baseline_Encounter",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 73430006,
-          "display": "Sleep apnea (disorder)"
-        }
-      ],
-      "remarks": [
-        "More than 60% of US adults do not engage in recommended amount of physical activity.  25% of adults are not physically active at all.",
-        "https://www.cdc.gov/nccdphp/sgr/adults.htm#:~:text=More%20than%2060%20percent%20of,Women%20than%20men."
-      ],
-      "distributed_transition": [
-        {
-          "transition": "Wellness_Baseline_Encounter",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Symptom_Onset_Delay",
-          "distribution": 0.8
-        }
-      ]
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Symptom_Onset_Delay": {
       "type": "Delay",
@@ -240,7 +28,8 @@
         "low": 1,
         "high": 5,
         "unit": "years"
-      }
+      },
+      "name": "Symptom_Onset_Delay"
     },
     "Snoring": {
       "type": "Symptom",
@@ -250,24 +39,25 @@
         {
           "system": "SNOMED-CT",
           "code": 72863001,
-          "display": "Snoring (finding)"
+          "display": "Snoring (finding)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Snoring_Ends"
+      "direct_transition": "Snoring_Ends",
+      "name": "Snoring"
     },
     "Snoring_Ends": {
       "type": "Symptom",
       "symptom": "Snoring",
       "cause": "Sleep_Apnea",
-      "direct_transition": "Sleep_Apnea_Resolved"
+      "direct_transition": "Sleep_Apnea_Resolved",
+      "name": "Snoring_Ends"
     },
-
     "Sleep_Apnea_Resolved": {
       "type": "ConditionEnd",
-      "condition_onset": "Sleep_Apnea",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "Sleep_Apnea_Resolved"
     },
-
     "Wellness_Baseline_Encounter": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -276,12 +66,13 @@
         {
           "system": "SNOMED-CT",
           "code": 225385005,
-          "display": "Behavioral assessment (procedure)"
+          "display": "Behavioral assessment (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Monitor_iWatch"
+      "direct_transition": "Monitor_iWatch",
+      "name": "Wellness_Baseline_Encounter"
     },
-
     "Monitor_iWatch": {
       "type": "Device",
       "code": {
@@ -290,7 +81,8 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "Monitor_CPAP",
-      "assign_to_attribute": "o2_data_iwatch"
+      "assign_to_attribute": "o2_data_iwatch",
+      "name": "Monitor_iWatch"
     },
     "Monitor_CPAP": {
       "type": "Device",
@@ -300,10 +92,9 @@
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
       "direct_transition": "Sleep_Study_Baseline",
-      "assign_to_attribute": "o2_data_cpap"
+      "assign_to_attribute": "o2_data_cpap",
+      "name": "Monitor_CPAP"
     },
-
-
     "Wellness_Baseline_Encounter_End": {
       "type": "EncounterEnd",
       "direct_transition": "Terminal",
@@ -311,9 +102,9 @@
         "system": "NUBC",
         "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
-      }
+      },
+      "name": "Wellness_Baseline_Encounter_End"
     },
-
     "Sleep_Study_Baseline": {
       "type": "Observation",
       "category": "exam",
@@ -322,20 +113,21 @@
         {
           "system": "SNOMED-CT",
           "code": "410189008",
-          "display": "Taking patient vitals signs education (procedure)"
+          "display": "Taking patient vitals signs education (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "CPAP_Baseline"
+      "direct_transition": "CPAP_Baseline",
+      "name": "Sleep_Study_Baseline"
     },
-
-
     "CPAP_Baseline": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": 47545007,
-          "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)"
+          "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)",
+          "value_set": ""
         }
       ],
       "duration": {
@@ -343,7 +135,8 @@
         "high": 10,
         "unit": "minutes"
       },
-      "direct_transition": "CPAP_Sim"
+      "direct_transition": "CPAP_Sim",
+      "name": "CPAP_Baseline"
     },
     "CPAP_Sim": {
       "type": "Physiology",
@@ -366,7 +159,8 @@
         }
       ],
       "direct_transition": "CPAP_Data",
-      "alt_direct_transition": "Clear_CPAP_result"
+      "alt_direct_transition": "Clear_CPAP_result",
+      "name": "CPAP_Sim"
     },
     "CPAP_Data": {
       "type": "Observation",
@@ -376,7 +170,8 @@
         {
           "system": "http://loinc.org",
           "code": "2703-7",
-          "display": "Oxygen [Partial pressure] in Arterial blood"
+          "display": "Oxygen [Partial pressure] in Arterial blood",
+          "value_set": ""
         }
       ],
       "sampled_data": {
@@ -384,7 +179,8 @@
           "o2_result"
         ]
       },
-      "direct_transition": "CPAP_Chart"
+      "direct_transition": "CPAP_Chart",
+      "name": "CPAP_Data"
     },
     "CPAP_Chart": {
       "type": "Observation",
@@ -394,7 +190,8 @@
         {
           "system": "http://loinc.org",
           "code": "2703-7",
-          "display": "Oxygen [Partial pressure] in Arterial blood"
+          "display": "Oxygen [Partial pressure] in Arterial blood",
+          "value_set": ""
         }
       ],
       "attachment": {
@@ -412,12 +209,14 @@
           ]
         }
       },
-      "direct_transition": "Clear_CPAP_result"
+      "direct_transition": "Clear_CPAP_result",
+      "name": "CPAP_Chart"
     },
     "Clear_CPAP_result": {
       "type": "SetAttribute",
       "attribute": "o2_result",
-      "direct_transition": "SleepAnalysis"
+      "direct_transition": "SleepAnalysis",
+      "name": "Clear_CPAP_result"
     },
     "SleepAnalysis": {
       "type": "Observation",
@@ -425,12 +224,38 @@
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "93832-4",
-          "display" : "Sleep duration."
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration.",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Wellness_Baseline_Encounter_End"
+      "direct_transition": "Wellness_Baseline_Encounter_End",
+      "name": "SleepAnalysis"
+    },
+    "Sleep Apnea Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Active Condition",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": 73430006,
+            "display": "Sleep apnea"
+          }
+        ]
+      },
+      "name": "Sleep Apnea Guard",
+      "distributed_transition": [
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Wellness_Baseline_Encounter",
+          "distribution": 0.2
+        }
+      ]
     }
   },
   "gmf_version": 1
