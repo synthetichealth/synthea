@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
-import org.apache.commons.lang3.time.FastDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -13,6 +12,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
@@ -174,7 +174,8 @@ public abstract class ExportHelper {
    * @return Iso8601 date time format.
    */
   private static final FastDateFormat iso() {
-    FastDateFormat f = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"));
+    FastDateFormat f = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'",
+        TimeZone.getTimeZone("UTC"));
     return f;
   }
 
