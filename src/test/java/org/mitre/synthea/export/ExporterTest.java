@@ -262,7 +262,7 @@ public class ExporterTest {
   public void testExportFilterShouldNotKeepOldStuffWhenActiveOfSameType() {
     // create old encounters with the same repeated condition, ended
     long oneWeek = Utilities.convertTime("weeks", 1);
-    for (int i = 0 ; i < 3 ; i++) {
+    for (int i = 0; i < 3; i++) {
       record.encounterStart(time - years(10 - i), EncounterType.EMERGENCY);
       record.conditionStart(time - years(10 - i), "viral_sinusitis");
       record.conditionEnd(time - years(10 - i) + oneWeek, "viral_sinusitis");
@@ -271,7 +271,7 @@ public class ExporterTest {
     // create a recent encounter with the same condition, still active
     record.encounterStart(time - oneWeek, EncounterType.EMERGENCY);
     record.conditionStart(time - oneWeek, "viral_sinusitis");
-    
+
     Person filtered = Exporter.filterForExport(patient, yearsToKeep, endTime);
 
     assertEquals(1, filtered.record.encounters.size());
