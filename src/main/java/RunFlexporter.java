@@ -132,9 +132,17 @@ public class RunFlexporter {
 
     IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(true);
 
-    if (sourceFhir.isDirectory()) {
+    handleFile(sourceFhir, mapping, parser);
+  }
 
-      // TODO
+  private static void handleFile(File sourceFhir, Mapping mapping, IParser parser)
+      throws IOException {
+    if (sourceFhir.isDirectory()) {
+      for (File subfile : sourceFhir.listFiles()) {
+        if (subfile.isDirectory() || subfile.getName().endsWith(".json")) {
+          handleFile(subfile, mapping, parser);
+        }
+      }
 
     } else {
       String fhirJson = new String(Files.readAllBytes(sourceFhir.toPath()));
