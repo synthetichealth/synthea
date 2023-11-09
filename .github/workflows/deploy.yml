@@ -92,7 +92,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.PUSH_SAMPLE_DATA_SSH_KEY }}
         with:
           source-directory: 'samples'
-          destination-github-username: 'dehall'
+          destination-github-username: 'synthetichealth'
           destination-repository-name: 'synthea-sample-data'
           target-directory: 'downloads/latest'
           target-branch: main
