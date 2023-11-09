@@ -62,8 +62,8 @@ public class GrowthChartEntry implements Serializable {
    */
   public double lookUp(double percentile) {
     double percentileToUse = percentile;
-    if (percentile > 0.995) {
-      percentileToUse = 0.995;
+    if (percentile > MAX_PERCENTILE) {
+      percentileToUse = MAX_PERCENTILE;
     }
     double z = GrowthChart.calculateZScore(percentileToUse);
     if (this.lboxCox == 0) {
