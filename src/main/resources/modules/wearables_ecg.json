@@ -11,10 +11,10 @@
     "",
     "About one-in-five Americans use a smart watch or fitness tracker",
     "https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/",
-    "", 
-    "Physical Activity and Health: A Report of the Surgeon General", 
-    "https://www.cdc.gov/nccdphp/sgr/adults.htm", 
-    "", 
+    "",
+    "Physical Activity and Health: A Report of the Surgeon General",
+    "https://www.cdc.gov/nccdphp/sgr/adults.htm",
+    "",
     "Known model limitations:",
     "- This module is Apple centric, and may not model biomarkers found in Garmin devices, Fitbits, and other wearables (yet).",
     "- Most biomarkers are still modeled with Markov chains, and not yet connected to the Biomodel partial differential equation models.",
@@ -41,10 +41,12 @@
         {
           "transition": "Terminal"
         }
-      ]
+      ],
+      "name": "Initial"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Female": {
       "type": "Simple",
@@ -53,26 +55,43 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Age_20-29",
-          "distribution": 0.20
+          "transition": "Age_0_9",
+          "distribution": 0.1884
         },
         {
-          "transition": "Age_30-39",
-          "distribution": 0.20
+          "transition": "Age_10_19",
+          "distribution": 0.2074
         },
         {
-          "transition": "Age_40-49",
-          "distribution": 0.20
+          "transition": "Age_20_29",
+          "distribution": 0.2194
         },
         {
-          "transition": "Age_50-59",
-          "distribution": 0.20
+          "transition": "Age_30_39",
+          "distribution": 0.2244
         },
         {
-          "transition": "Age_60-74",
-          "distribution": 0.20
+          "transition": "Age_40_49",
+          "distribution": 0.2039
+        },
+        {
+          "transition": "Age_50_59",
+          "distribution": 0.2097
+        },
+        {
+          "transition": "Age_60_69",
+          "distribution": 0.2058
+        },
+        {
+          "transition": "Age_70_79",
+          "distribution": 0.1407
+        },
+        {
+          "transition": "Age_80_99",
+          "distribution": 0.0803
         }
-      ]
+      ],
+      "name": "Female"
     },
     "Male": {
       "type": "Simple",
@@ -81,74 +100,156 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Age_20-29",
-          "distribution": 0.20
+          "transition": "Age_0_9",
+          "distribution": 0.1971
         },
         {
-          "transition": "Age_30-39",
-          "distribution": 0.20
+          "transition": "Age_10_19",
+          "distribution": 0.2178
         },
         {
-          "transition": "Age_40-49",
-          "distribution": 0.20
+          "transition": "Age_20_29",
+          "distribution": 0.2295
         },
         {
-          "transition": "Age_50-59",
-          "distribution": 0.20
+          "transition": "Age_30_39",
+          "distribution": 0.2314
         },
         {
-          "transition": "Age_60-74",
-          "distribution": 0.20
+          "transition": "Age_40_49",
+          "distribution": 0.2066
+        },
+        {
+          "transition": "Age_50_59",
+          "distribution": 0.208
+        },
+        {
+          "transition": "Age_60_69",
+          "distribution": 0.1927
+        },
+        {
+          "transition": "Age_70_79",
+          "distribution": 0.1195
+        },
+        {
+          "transition": "Age_80_99",
+          "distribution": 0.0511
         }
-      ]
+      ],
+      "name": "Male"
     },
-    "Age_20-29": {
+    "Age_0_9": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Job",
+      "range": {
+        "low": 0,
+        "high": 9,
+        "unit": "years"
+      },
+      "name": "Age_0_9"
+    },
+    "Age_10_19": {
+      "type": "Delay",
+      "direct_transition": "Sedentary_Job",
+      "range": {
+        "low": 10,
+        "high": 19,
+        "unit": "years"
+      },
+      "name": "Age_10_19"
+    },
+    "Age_20_29": {
+      "type": "Delay",
+      "direct_transition": "Sedentary_Job",
       "range": {
         "low": 20,
         "high": 29,
         "unit": "years"
-      }
+      },
+      "name": "Age_20_29"
     },
-    "Age_30-39": {
+    "Age_30_39": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Job",
       "range": {
         "low": 30,
         "high": 39,
         "unit": "years"
-      }
+      },
+      "name": "Age_30_39"
     },
-    "Age_40-49": {
+    "Age_40_49": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Job",
       "range": {
         "low": 40,
         "high": 49,
         "unit": "years"
-      }
+      },
+      "name": "Age_40_49"
     },
-    "Age_50-59": {
+    "Age_50_59": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Job",
       "range": {
         "low": 50,
         "high": 59,
         "unit": "years"
-      }
+      },
+      "name": "Age_50_59"
     },
-    "Age_60-74": {
+    "Age_60_69": {
       "type": "Delay",
-      "direct_transition": "Sedentary_Lifestyle",
+      "direct_transition": "Sedentary_Job",
       "range": {
         "low": 60,
-        "high": 74,
+        "high": 69,
         "unit": "years"
-      }
+      },
+      "name": "Age_60_69"
     },
-
-
+    "Age_70_79": {
+      "type": "Delay",
+      "direct_transition": "Sedentary_Job",
+      "range": {
+        "low": 70,
+        "high": 79,
+        "unit": "years"
+      },
+      "name": "Age_70_79"
+    },
+    "Age_80_99": {
+      "type": "Delay",
+      "direct_transition": "Sedentary_Job",
+      "range": {
+        "low": 80,
+        "high": 99,
+        "unit": "years"
+      },
+      "name": "Age_80_99"
+    },
+    "Sedentary_Job": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160923008,
+          "display": "Sedentary job (finding)",
+          "value_set": ""
+        }
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Sedentary_Job_End",
+          "distribution": 0.75
+        },
+        {
+          "transition": "Sedentary_Lifestyle",
+          "distribution": 0.25
+        }
+      ],
+      "name": "Sedentary_Job"
+    },
     "Sedentary_Lifestyle": {
       "type": "ConditionOnset",
       "target_encounter": "Wellness_Baseline_Encounter",
@@ -156,7 +257,8 @@
         {
           "system": "SNOMED-CT",
           "code": 415510005,
-          "display": "Sedentary lifestyle (finding)"
+          "display": "Sedentary lifestyle (finding)",
+          "value_set": ""
         }
       ],
       "remarks": [
@@ -173,10 +275,11 @@
           "distribution": 0.79
         },
         {
-          "transition": "Terminal",
+          "transition": "Sedentary_Lifestyle_End",
           "distribution": 0.01
         }
-      ]
+      ],
+      "name": "Sedentary_Lifestyle"
     },
     "Symptom_Onset_Delay": {
       "type": "Delay",
@@ -185,7 +288,8 @@
         "low": 1,
         "high": 5,
         "unit": "years"
-      }
+      },
+      "name": "Symptom_Onset_Delay"
     },
     "Sedentary_Symptom1": {
       "type": "Symptom",
@@ -196,23 +300,25 @@
         {
           "system": "SNOMED-CT",
           "code": 271587009,
-          "display": "Stiffness (finding)"
+          "display": "Stiffness (finding)",
+          "value_set": ""
         }
-      ]
+      ],
+      "name": "Sedentary_Symptom1"
     },
     "Sedentary_Symptom1_Ends": {
       "type": "Symptom",
       "symptom": "Stiffness",
       "cause": "Sedentary_Lifestyle",
-      "direct_transition": "Physical_Activity_Resumes"
+      "direct_transition": "Physical_Activity_Resumes",
+      "name": "Sedentary_Symptom1_Ends"
     },
-
     "Physical_Activity_Resumes": {
       "type": "ConditionEnd",
       "condition_onset": "Sedentary_Lifestyle",
-      "direct_transition": "Terminal"
+      "direct_transition": "Sedentary_Lifestyle_End",
+      "name": "Physical_Activity_Resumes"
     },
-
     "Wellness_Baseline_Encounter": {
       "type": "Encounter",
       "encounter_class": "emergency",
@@ -221,12 +327,13 @@
         {
           "system": "SNOMED-CT",
           "code": 225385005,
-          "display": "Behavioral assessment (procedure)"
+          "display": "Behavioral assessment (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Monitor_iWatch"
+      "direct_transition": "Monitor_iWatch",
+      "name": "Wellness_Baseline_Encounter"
     },
-
     "Monitor_iWatch": {
       "type": "Device",
       "code": {
@@ -235,19 +342,19 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "Fitness_Baseline",
-      "assign_to_attribute": "snf_iwatch"
+      "assign_to_attribute": "snf_iwatch",
+      "name": "Monitor_iWatch"
     },
-
     "Wellness_Baseline_Encounter_End": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal",
+      "direct_transition": "Sedentary_Lifestyle_End",
       "discharge_disposition": {
         "system": "NUBC",
         "code": "01",
         "display": "Discharged to home care or self care (routine discharge)"
-      }
+      },
+      "name": "Wellness_Baseline_Encounter_End"
     },
-
     "Fitness_Baseline": {
       "type": "Observation",
       "category": "exam",
@@ -256,42 +363,42 @@
         {
           "system": "SNOMED-CT",
           "code": "410189008",
-          "display": "Taking patient vitals signs education (procedure)"
+          "display": "Taking patient vitals signs education (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Cycling_Baseline_Distance"
+      "direct_transition": "Cycling_Baseline_Distance",
+      "name": "Fitness_Baseline"
     },
-
-
-
-
     "Cycling_Baseline_Distance": {
       "type": "Observation",
       "category": "exam",
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "93818-3",
-          "display" : "Cycling distance unspecified time"
+          "system": "http://loinc.org",
+          "code": "93818-3",
+          "display": "Cycling distance unspecified time",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Running_Baseline_StepCount"
+      "direct_transition": "Running_Baseline_StepCount",
+      "name": "Cycling_Baseline_Distance"
     },
-
-
     "Running_Baseline_StepCount": {
       "type": "Observation",
       "category": "exam",
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "55423-8",
-          "display" : "Number of steps in unspecified time Pedometer"
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Number of steps in unspecified time Pedometer",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Running_Baseline_Distance"
+      "direct_transition": "Running_Baseline_Distance",
+      "name": "Running_Baseline_StepCount"
     },
     "Running_Baseline_Distance": {
       "type": "Observation",
@@ -299,26 +406,29 @@
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "55430-3",
-          "display" : "Walking distance unspecified time Pedometer"
+          "system": "http://loinc.org",
+          "code": "55430-3",
+          "display": "Walking distance unspecified time Pedometer",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Running_Baseline_DoubleSupport_Percentage"
+      "direct_transition": "Running_Baseline_DoubleSupport_Percentage",
+      "name": "Running_Baseline_Distance"
     },
-
     "Running_Baseline_DoubleSupport_Percentage": {
       "type": "Observation",
       "category": "exam",
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "93015-6",
-          "display" : "Gait and turn and tandem gait assessment"
+          "system": "http://loinc.org",
+          "code": "93015-6",
+          "display": "Gait and turn and tandem gait assessment",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Running_Baseline_WalkingSpeed"
+      "direct_transition": "Running_Baseline_WalkingSpeed",
+      "name": "Running_Baseline_DoubleSupport_Percentage"
     },
     "Running_Baseline_WalkingSpeed": {
       "type": "Observation",
@@ -326,37 +436,38 @@
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "41957-2",
-          "display" : "Walking speed 24 hour mean Calculated"
+          "system": "http://loinc.org",
+          "code": "41957-2",
+          "display": "Walking speed 24 hour mean Calculated",
+          "value_set": ""
         }
       ],
-      "direct_transition": "FlightsClimbed_Baseline"
+      "direct_transition": "FlightsClimbed_Baseline",
+      "name": "Running_Baseline_WalkingSpeed"
     },
-
     "FlightsClimbed_Baseline": {
       "type": "Observation",
       "category": "exam",
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "100304-5",
-          "display" : "Flights climbed [#] Reporting Period"
+          "system": "http://loinc.org",
+          "code": "100304-5",
+          "display": "Flights climbed [#] Reporting Period",
+          "value_set": ""
         }
       ],
-      "direct_transition": "ECG_Baseline"
+      "direct_transition": "ECG_Baseline",
+      "name": "FlightsClimbed_Baseline"
     },
-
-
-
     "ECG_Baseline": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
         }
       ],
       "duration": {
@@ -364,7 +475,8 @@
         "high": 10,
         "unit": "minutes"
       },
-      "direct_transition": "ECG_Sim"
+      "direct_transition": "ECG_Sim",
+      "name": "ECG_Baseline"
     },
     "ECG_Sim": {
       "type": "Physiology",
@@ -387,7 +499,8 @@
         }
       ],
       "direct_transition": "ECG_Data",
-      "alt_direct_transition": "Clear_ECG_result"
+      "alt_direct_transition": "Clear_ECG_result",
+      "name": "ECG_Sim"
     },
     "ECG_Data": {
       "type": "Observation",
@@ -397,7 +510,8 @@
         {
           "system": "SNOMED-CT",
           "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
         }
       ],
       "sampled_data": {
@@ -405,7 +519,8 @@
           "ecg_result"
         ]
       },
-      "direct_transition": "ECG_Chart"
+      "direct_transition": "ECG_Chart",
+      "name": "ECG_Data"
     },
     "ECG_Chart": {
       "type": "Observation",
@@ -415,7 +530,8 @@
         {
           "system": "SNOMED-CT",
           "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
         }
       ],
       "attachment": {
@@ -432,12 +548,14 @@
           ]
         }
       },
-      "direct_transition": "Clear_ECG_result"
+      "direct_transition": "Clear_ECG_result",
+      "name": "ECG_Chart"
     },
     "Clear_ECG_result": {
       "type": "SetAttribute",
       "attribute": "ecg_result",
-      "direct_transition": "SleepAnalysis"
+      "direct_transition": "SleepAnalysis",
+      "name": "Clear_ECG_result"
     },
     "SleepAnalysis": {
       "type": "Observation",
@@ -445,12 +563,40 @@
       "unit": "",
       "codes": [
         {
-          "system" : "http://loinc.org",
-          "code" : "93832-4",
-          "display" : "Sleep duration."
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration.",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Wellness_Baseline_Encounter_End"
+      "direct_transition": "Wellness_Baseline_Encounter_End",
+      "name": "SleepAnalysis"
+    },
+    "Sedentary_Lifestyle_End": {
+      "type": "ConditionEnd",
+      "name": "Sedentary_Lifestyle_End",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 415510005,
+          "display": "Sedentary Lifestyle",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Sedentary_Job_End"
+    },
+    "Sedentary_Job_End": {
+      "type": "ConditionEnd",
+      "direct_transition": "Terminal",
+      "name": "Sedentary_Job_End",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 160923008,
+          "display": "Sedentary job",
+          "value_set": ""
+        }
+      ]
     }
   },
   "gmf_version": 1
