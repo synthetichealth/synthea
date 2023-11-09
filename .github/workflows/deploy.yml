@@ -30,6 +30,7 @@ jobs:
           ./gradlew uberJar javadoc graphviz
           mkdir -p output/build/javadoc
           mv build/docs/javadoc/* output/build/javadoc
+          ./generate_samples.sh
       
       - name: Delete Previous master-branch-latest Tag
         uses: dev-drprasad/delete-tag-and-release@v0.2.1
@@ -84,6 +85,17 @@ jobs:
           user_email: 'jwalonoski@mitre.org'
           commit_message: rebuild graphs, javadoc and binary distribution at
           # note the commit SHA is appended automatically
+
+      - name: Push samples to sample repo
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.PUSH_SAMPLE_DATA_SSH_KEY }}
+        with:
+          source-directory: 'samples'
+          destination-github-username: 'dehall'
+          destination-repository-name: 'synthea-sample-data'
+          target-directory: 'downloads/latest'
+          target-branch: main
 
       - name: Slack Notification on Failure
         uses: 8398a7/action-slack@v3
