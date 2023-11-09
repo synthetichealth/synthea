@@ -1,5 +1,5 @@
 {
-  "name": "Wearables",
+  "name": "Wearables - ECG Device",
   "remarks": [
     "Wearable devices are routinely used for fitness activities, compliance monitoring, and remote patient monitoring workflows (such as post-surgical stepdown).  This module simulates the use of an iWatch werable, and adds FHIR Observation resources corresponding to common biomarkers tracked by the iWatch (step count, step distance, flights climbed, standing time, etc).",
     "It uses the Pew Research Center data estimating 20% of the population wears a smartwatch.  With mortality effects and demographic age brackets, this works out to approximately 10% of the Synthea patient's generated having wearables data.",
