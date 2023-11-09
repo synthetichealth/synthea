@@ -199,7 +199,7 @@
       "Clear_SleepMonitor_result": {
         "type": "SetAttribute",
         "attribute": "sleep_monitor_data",
-        "direct_transition": "SleepAnalysis",
+        "direct_transition": "SleepStudy_Baseline_Encounter_End",
         "name": "Clear_SleepMonitor_result"
       },
       "SleepAnalysis": {
