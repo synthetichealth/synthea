@@ -40,138 +40,60 @@
       ],
       "distributed_transition": [
         {
-          "transition": "Age_0_9",
-          "distribution": 0.1884
+          "transition": "Age_13-19",
+          "distribution": 0.10
         },
         {
-          "transition": "Age_10_19",
-          "distribution": 0.2074
+          "transition": "Age_20-29",
+          "distribution": 0.20
         },
         {
-          "transition": "Age_20_29",
-          "distribution": 0.2194
+          "transition": "Age_30-39",
+          "distribution": 0.35
         },
         {
-          "transition": "Age_30_39",
-          "distribution": 0.2244
-        },
-        {
-          "transition": "Age_40_49",
-          "distribution": 0.2039
-        },
-        {
-          "transition": "Age_50_59",
-          "distribution": 0.2097
-        },
-        {
-          "transition": "Age_60_69",
-          "distribution": 0.2058
-        },
-        {
-          "transition": "Age_70_79",
-          "distribution": 0.1407
-        },
-        {
-          "transition": "Age_80_99",
-          "distribution": 0.0803
+          "transition": "Age_40-49",
+          "distribution": 0.35
         }
       ]
     },
-    "Age_0_9": {
+    "Age_13-19": {
       "type": "Delay",
-      "direct_transition": "Terminal",
+      "direct_transition": "Endometriosis",
       "range": {
-        "low": 0,
-        "high": 9,
-        "unit": "years"
-      }
-    },
-    "Age_10_19": {
-      "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
-      "range": {
-        "low": 10,
+        "low": 13,
         "high": 19,
         "unit": "years"
       }
     },
-    "Age_20_29": {
+    "Age_20-29": {
       "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
+      "direct_transition": "Endometriosis",
       "range": {
         "low": 20,
         "high": 29,
         "unit": "years"
       }
     },
-    "Age_30_39": {
+    "Age_30-39": {
       "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
+      "direct_transition": "Endometriosis",
       "range": {
         "low": 30,
         "high": 39,
         "unit": "years"
       }
     },
-    "Age_40_49": {
+    "Age_40-49": {
       "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
+      "direct_transition": "Endometriosis",
       "range": {
         "low": 40,
         "high": 49,
         "unit": "years"
       }
     },
-    "Age_50_59": {
-      "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
-      "range": {
-        "low": 50,
-        "high": 59,
-        "unit": "years"
-      }
-    },
-    "Age_60_69": {
-      "type": "Delay",
-      "direct_transition": "Endometriosis_Risk",
-      "range": {
-        "low": 60,
-        "high": 69,
-        "unit": "years"
-      }
-    },
-    "Age_70_79": {
-      "type": "Delay",
-      "direct_transition": "Terminal",
-      "range": {
-        "low": 70,
-        "high": 79,
-        "unit": "years"
-      }
-    },
-    "Age_80_99": {
-      "type": "Delay",
-      "direct_transition": "Terminal",
-      "range": {
-        "low": 80,
-        "high": 99,
-        "unit": "years"
-      }
-    },
 
-    "Endometriosis_Risk": {
-      "type": "ConditionOnset",
-      "distributed_transition": [
-        {
-          "transition": "Terminal",
-          "distribution": 0.89
-        },
-        {
-          "transition": "Endometriosis",
-          "distribution": 0.11
-        }
-      ]
-    },
 
     "Endometriosis": {
       "type": "ConditionOnset",
@@ -212,14 +134,14 @@
       "type": "Symptom",
       "symptom": "Cramps",
       "cause": "Endometriosis",
+      "direct_transition": "Menstrual_Cramps_Symptom_Ends",
       "codes": [
         {
           "system": "SNOMED-CT",
           "code": 431416001,
           "display": "Menstrual cramp (finding)"
         }
-      ],
-      "direct_transition": "Menstrual_Cramps_Symptom_Ends"
+      ]
     },
     "Menstrual_Cramps_Symptom_Ends": {
       "type": "Symptom",
@@ -283,7 +205,12 @@
       "step_size": 1,
       "sim_duration": 28,
       "lead_time": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "from_exp":  "#{BMI}",
+          "to": "mass"
+        }
+      ],
       "outputs": [
         {
           "from_list": "E2",
