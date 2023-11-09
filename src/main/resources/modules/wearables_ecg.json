@@ -342,7 +342,7 @@
         "display": "Monitor, device (physical object)"
       },
       "direct_transition": "Fitness_Baseline",
-      "assign_to_attribute": "snf_iwatch",
+      "assign_to_attribute": "ecg_iwatch",
       "name": "Monitor_iWatch"
     },
     "Wellness_Baseline_Encounter_End": {

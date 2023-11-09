@@ -205,12 +205,7 @@
       "step_size": 1,
       "sim_duration": 28,
       "lead_time": 0,
-      "inputs": [
-        {
-          "from_exp":  "#{BMI}",
-          "to": "mass"
-        }
-      ],
+      "inputs": [],
       "outputs": [
         {
           "from_list": "E2",
