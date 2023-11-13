@@ -18,6 +18,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.Employment;
 
 public class LocationTest {
   private static String locationDoesNotExist = "The Lost City of Atlantis";
@@ -238,5 +239,23 @@ public class LocationTest {
     location.setSocialDeterminants(person);
     int attributeCountAfter = person.attributes.keySet().size();
     Assert.assertTrue(attributeCountAfter > attributeCountBefore);
+    Assert.assertNotNull(person.attributes.get(Person.EMPLOYMENT_MODEL));
+
+    Person middlesexPerson = new Person(0L);
+    person.attributes.put(Person.COUNTY, "Middlesex County");
+    attributeCountBefore = middlesexPerson.attributes.keySet().size();
+    location.setSocialDeterminants(middlesexPerson);
+    attributeCountAfter = middlesexPerson.attributes.keySet().size();
+    Assert.assertTrue(attributeCountAfter > attributeCountBefore);
+    Assert.assertNotNull(middlesexPerson.attributes.get(Person.EMPLOYMENT_MODEL));
+
+    Person nowherePerson = new Person(0L);
+    person.attributes.put(Person.COUNTY, "Nowhere County");
+    attributeCountBefore = nowherePerson.attributes.keySet().size();
+    location.setSocialDeterminants(nowherePerson);
+    attributeCountAfter = nowherePerson.attributes.keySet().size();
+    Assert.assertTrue(attributeCountAfter > attributeCountBefore);
+    Assert.assertNotNull(nowherePerson.attributes.get(Person.EMPLOYMENT_MODEL));
+
   }
 }

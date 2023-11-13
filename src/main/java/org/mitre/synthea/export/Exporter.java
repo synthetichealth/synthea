@@ -598,25 +598,15 @@ public abstract class Exporter {
 
     long cutoffDate = endTime - Utilities.convertTime("years", yearsToKeep);
     Predicate<HealthRecord.Entry> notFutureDated = e -> e.start <= endTime;
+    Predicate<HealthRecord.Entry> entryIsActive = e -> e.stop == 0L || e.stop > cutoffDate;
 
     for (Encounter encounter : record.encounters) {
       List<Claim.ClaimEntry> claimItems = encounter.claim.items;
-      // keep conditions if still active, regardless of start date
-      Predicate<HealthRecord.Entry> conditionActive = c -> record.conditionActive(c.type);
-      // or if the condition was active at any point since the cutoff date
-      Predicate<HealthRecord.Entry> activeWithinCutoff = c -> c.stop != 0L && c.stop > cutoffDate;
-      Predicate<HealthRecord.Entry> keepCondition = conditionActive.or(activeWithinCutoff);
-      filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, keepCondition);
+      // keep a condition if it was active at any point since the cutoff date
+      filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, entryIsActive);
 
       // allergies are essentially the same as conditions
-      // But we need to redefine all of the predicates, because we are talking about Allergies as
-      // opposed to Entries... You would think that it would work... but generics are hard
-      Predicate<HealthRecord.Allergy> allergyActive = c -> record.allergyActive(c.type);
-      // or if the condition was active at any point since the cutoff date
-      Predicate<HealthRecord.Allergy> allergyActiveWithinCutoff =
-          c -> c.stop != 0L && c.stop > cutoffDate;
-      Predicate<HealthRecord.Allergy> keepAllergy = allergyActive.or(allergyActiveWithinCutoff);
-      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepAllergy);
+      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, entryIsActive);
 
       // some of the "future death" logic could potentially add a future-dated death certificate
       Predicate<Observation> isCauseOfDeath =
@@ -633,14 +623,12 @@ public abstract class Exporter {
       filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
       // keep medications if still active, regardless of start date
-      filterEntries(encounter.medications, claimItems, cutoffDate, endTime,
-          med -> record.medicationActive(med.type));
+      filterEntries(encounter.medications, claimItems, cutoffDate, endTime, entryIsActive);
 
       filterEntries(encounter.immunizations, claimItems, cutoffDate, endTime, null);
 
       // keep careplans if they are still active, regardless of start date
-      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime,
-          cp -> record.careplanActive(cp.type));
+      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime, entryIsActive);
     }
 
     // if ANY of these are not empty, the encounter is not empty
@@ -675,7 +663,7 @@ public abstract class Exporter {
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
       List<Claim.ClaimEntry> claimItems, long cutoffDate,
-      long endTime, Predicate<E> keepFunction) {
+      long endTime, Predicate<? super E> keepFunction) {
 
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method
