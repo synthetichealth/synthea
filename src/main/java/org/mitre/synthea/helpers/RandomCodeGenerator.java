@@ -1,16 +1,14 @@
 package org.mitre.synthea.helpers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ca.uhn.fhir.parser.IParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -20,9 +18,14 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ValueSet.ConceptReferenceComponent;
+import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetComposeComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetExpansionComponent;
+import org.hl7.fhir.r4.model.ValueSet.ValueSetExpansionContainsComponent;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Generates random codes based upon ValueSet URIs, with the help of a FHIR
@@ -36,8 +39,7 @@ public abstract class RandomCodeGenerator {
 
   public static String expandBaseUrl = Config.get("generate.terminology_service_url")
       + "/ValueSet/$expand?url=";
-  private static final Logger logger = LoggerFactory.getLogger(RandomCodeGenerator.class);
-  public static Map<String, List<Object>> codeListCache = new HashMap<>();
+  public static Map<String, List<Code>> codeListCache = new HashMap<>();
   public static List<Code> selectedCodes = new ArrayList<>();
   private static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
   private static OkHttpClient client = new OkHttpClient();
@@ -53,12 +55,11 @@ public abstract class RandomCodeGenerator {
    */
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
-      Map<String, String> codeMap = getCodeAsMap(valueSetUri, seed);
-      if (codeMap == null) {
+      Code newCode = getCode(valueSetUri, seed);
+      if (newCode == null) {
         return code;
       }
-      validateCode(codeMap);
-      Code newCode = new Code(codeMap.get("system"), codeMap.get("code"), codeMap.get("display"));
+      validateCode(newCode);
       selectedCodes.add(newCode);
       return newCode;
     }
@@ -66,23 +67,22 @@ public abstract class RandomCodeGenerator {
   }
 
   /**
-   * Gets a random code from the expansion of a ValueSet, represented as a Map.
+   * Gets a random code from the expansion of a ValueSet.
    *
    * @param valueSetUri
    *          the URI of the ValueSet
    * @param seed
    *          a random seed to ensure reproducibility of this result
-   * @return the randomly selected code as a Map of Strings
+   * @return the randomly selected code
    */
-  @SuppressWarnings("unchecked")
-  public static Map<String, String> getCodeAsMap(String valueSetUri, long seed) {
+  public static Code getCode(String valueSetUri, long seed) {
     if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
-      List<Object> codes = codeListCache.get(valueSetUri);
+      List<Code> codes = codeListCache.get(valueSetUri);
       int randomIndex = new Random(seed).nextInt(codes.size());
-      Map<String, String> codeMap = (Map<String, String>) codes.get(randomIndex);
-      validateCode(codeMap);
-      return codeMap;
+      Code code = codes.get(randomIndex);
+      validateCode(code);
+      return code;
     }
     return null;
   }
@@ -94,37 +94,12 @@ public abstract class RandomCodeGenerator {
    * @param valueSetUri URI of the ValueSet to check the code for
    * @return true if the code is in the given valueset
    */
-  @SuppressWarnings("unchecked")
   // TODO: this does not belong here, but this class is where the code cache is
   public static boolean codeInValueSet(Code code, String valueSetUri) {
     if (urlValidator.isValid(valueSetUri)) {
       expandValueSet(valueSetUri);
-
-      // TODO: there has to be a better way to do this
-      Map<String,String> codeAsMap = new HashMap<>();
-      codeAsMap.put("system", code.system);
-      codeAsMap.put("code", code.code);
-      codeAsMap.put("display", code.display);
-
-      List<Object> cachedCodeList = codeListCache.get(valueSetUri);
-
-      // this will only return true if everything is exactly identical
-      // ie, it will not match if display is different
-      if (cachedCodeList.contains(codeAsMap)) {
-        return true;
-      }
-
-      // iterate through all the codes to see if it contains the system/code combo
-      // TODO: pick better data structures that support this
-
-      for (Object cachedCodeObj : cachedCodeList) {
-        Map<String,String> cachedCode = (Map<String,String>)cachedCodeObj;
-
-        if (cachedCode.get("system").equals(code.system)
-            && cachedCode.get("code").equals(code.code)) {
-          return true;
-        }
-      }
+      List<Code> cachedCodeList = codeListCache.get(valueSetUri);
+      return cachedCodeList.contains(code);
     }
     // TODO??
     return false;
@@ -137,25 +112,19 @@ public abstract class RandomCodeGenerator {
               .url(expandBaseUrl + valueSetUri)
               .header("Content-Type", "application/json")
               .build();
-      Map<String, Object> valueSet = null;
       try {
         Response response = client.newCall(request).execute();
-        ObjectMapper objectMapper = new ObjectMapper();
         ResponseBody body = response.body();
         if (body != null) {
-          valueSet = objectMapper.readValue(body.byteStream(),
-                  new TypeReference<Map<String, Object>>() {
-            });
+          IParser parser = FhirR4.getContext().newJsonParser();
+          ValueSet valueSet = (ValueSet) parser.parseResource(body.charStream());
+          loadValueSet(valueSetUri, valueSet);
         } else {
           throw new RuntimeException("Value Set Expansion contained no body");
         }
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException("JsonProcessingException while parsing valueSet response");
       } catch (IOException e) {
         throw new RuntimeException("Issue when expanding the value set", e);
       }
-
-      loadValueSet(valueSetUri, valueSet);
     }
   }
 
@@ -164,47 +133,35 @@ public abstract class RandomCodeGenerator {
    * @param valueSetUri URI to reference this value set
    * @param valueSet Parsed JSON representation of FHIR valueset
    */
-  @SuppressWarnings("unchecked")
-  public static void loadValueSet(String valueSetUri, Map<String, Object> valueSet) {
+  public static void loadValueSet(String valueSetUri, ValueSet valueSet) {
     if (valueSetUri == null) {
-      valueSetUri = (String)valueSet.get("url");
+      valueSetUri = valueSet.getUrl();
     }
 
     if (valueSetUri != null && !codeListCache.containsKey(valueSetUri)) {
-      Map<String, Object> expansion = (Map<String, Object>) valueSet.get("expansion");
-      if (expansion != null) {
+      if (valueSet.hasExpansion()) {
+        ValueSetExpansionComponent expansion = valueSet.getExpansion();
+
         validateExpansion(expansion);
-        codeListCache.put(valueSetUri, (List<Object>) expansion.get("contains"));
+        List<ValueSetExpansionContainsComponent> contains = expansion.getContains();
+        List<Code> containsCodes = contains.stream()
+            .map(c -> new Code(c.getSystem(), c.getCode(), c.getDisplay()))
+            .collect(Collectors.toList());
+        codeListCache.put(valueSetUri, containsCodes);
 
-      } else {
-        Map<String, Object> compose  = (Map<String, Object>) valueSet.get("compose");
+      } else if (valueSet.hasCompose()) {
+        List<Code> codes = new ArrayList<>();
+        ValueSetComposeComponent compose = valueSet.getCompose();
+        List<ConceptSetComponent> includeList = compose.getInclude();
 
-        if (compose == null) {
-          throw new RuntimeException("ValueSet does not contain compose or expansion");
-        }
+        for (ConceptSetComponent include : includeList) {
+          String system = include.getSystem();
 
-        // TODO: why is this List<Object> instead of something more specific?
-        // we know the contents are Map<String,String>
-        List<Object> codes = new ArrayList<>();
+          List<ConceptReferenceComponent> conceptList = include.getConcept();
 
-        List<Map<String, Object>> includeList = (List<Map<String, Object>>) compose.get("include");
-
-        for (Map<String, Object> include : includeList) {
-          String system = (String)include.get("system");
-
-          List<Map<String, Object>> conceptList =
-              (List<Map<String, Object>>) include.get("concept");
-
-          for (Map<String, Object> concept : conceptList) {
-            Map<String,String> codeAsMap = new HashMap<>();
-            codeAsMap.put("system", system);
-            codeAsMap.put("code", (String)concept.get("code"));
-            codeAsMap.put("display", (String)concept.get("display"));
-
-            codes.add(codeAsMap);
+          for (ConceptReferenceComponent concept : conceptList) {
+            codes.add(new Code(system, concept.getCode(), concept.getDisplay()));
           }
-
-
         }
 
         if (codes.isEmpty()) {
@@ -212,24 +169,24 @@ public abstract class RandomCodeGenerator {
         }
 
         codeListCache.put(valueSetUri, codes);
-
-
+      } else {
+        throw new RuntimeException("ValueSet does not contain compose or expansion");
       }
       System.out.println("Loaded " + valueSetUri);
     }
   }
 
-  private static void validateExpansion(@Nonnull Map<String, Object> expansion) {
-    if (!expansion.containsKey("contains")
-        || ((Collection) expansion.get("contains")).isEmpty()) {
+  private static void validateExpansion(@Nonnull ValueSetExpansionComponent expansion) {
+    if (expansion.getContains() == null
+        || expansion.getContains().isEmpty()) {
       throw new RuntimeException("ValueSet expansion does not contain any codes");
-    } else if (!expansion.containsKey("total")) {
+    } else if (expansion.getTotal() == 0) {
       throw new RuntimeException("No total element in ValueSet expand result");
     }
   }
 
-  private static void validateCode(Map<String, String> code) {
-    if (StringUtils.isAnyEmpty(code.get("system"), code.get("code"), code.get("display"))) {
+  private static void validateCode(Code code) {
+    if (StringUtils.isAnyEmpty(code.system, code.code, code.display)) {
       throw new RuntimeException(
           "ValueSet contains element does not contain system, code and display");
     }

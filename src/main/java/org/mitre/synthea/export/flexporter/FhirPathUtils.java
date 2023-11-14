@@ -166,7 +166,7 @@ public abstract class FhirPathUtils {
 
   /**
    * Helper function to convert FHIRPath evaluation results into a boolean.
-   * FHIRPath.evaluate returns a List<Base> which is matching pieces of resources.
+   * FHIRPath.evaluate returns a {@code List<Base>} which is matching pieces of resources.
    * This will return false if the list is empty, or if everything in the list is falsy.
    */
   static boolean isTruthy(List<Base> result) {

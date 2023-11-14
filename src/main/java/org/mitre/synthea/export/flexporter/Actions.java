@@ -35,9 +35,15 @@ import org.mitre.synthea.export.flexporter.FieldWrapper.DateFieldWrapper;
 import org.mitre.synthea.export.flexporter.FieldWrapper.ReferenceFieldWrapper;
 import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
-// For now
-@SuppressWarnings("unchecked")
+/**
+ * The Actions class represents the set of all actions the Flexporter can perform.
+ * The entry point is the applyMapping function which invokes the appropriate method.
+ * Unlike the State class where each state type is a subclass, this uses a method
+ * to represent each action. At some point it may be refactored to be more like State.
+ */
+@SuppressWarnings("unchecked") // For now
 public abstract class Actions {
 
   /**
@@ -767,8 +773,12 @@ public abstract class Actions {
   }
 
   private static Map<String, String> randomCode(String valueSetUrl) {
-    Map<String, String> codeAsMap = RandomCodeGenerator.getCodeAsMap(valueSetUrl,
+    Code code = RandomCodeGenerator.getCode(valueSetUrl,
         (int) (Math.random() * Integer.MAX_VALUE));
+    Map<String, String> codeAsMap = Map.of(
+         "system", code.system,
+         "code", code.code,
+         "display", code.display);
     return codeAsMap;
   }
 }

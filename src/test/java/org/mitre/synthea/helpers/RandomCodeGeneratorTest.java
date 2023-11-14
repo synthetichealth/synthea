@@ -1,6 +1,9 @@
 package org.mitre.synthea.helpers;
 
+import static org.junit.Assert.assertThrows;
 import static org.mitre.synthea.TestHelper.SNOMED_URI;
+
+import ca.uhn.fhir.parser.DataFormatException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,14 +110,10 @@ public class RandomCodeGeneratorTest {
   public void throwsWhenInvalidResponse() throws IOException {
     prepareServer("noExpansion.ValueSet.json", true);
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("JsonProcessingException while parsing valueSet response",
-              e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a JsonProcessingException exception");
+    assertThrows(
+        DataFormatException.class,
+        () -> RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code)
+    );
   }
 
 

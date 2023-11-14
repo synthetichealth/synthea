@@ -38,7 +38,7 @@ import org.mitre.synthea.export.FhirR4;
  *  -- swapped constructors, pass in a FhirContext to avoid recreating it for each resource
  *  -- add support for extensions on primitives
  *  -- more advanced java generics
- *      (some functions now take in Class&lt;? extends T&gt; instead of just T)
+ *      (some functions now take in {@code Class<? extends T>} instead of just T)
  *  -- reformatted per Synthea style guidelines
  *
  *  <p>Original:
@@ -93,8 +93,8 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
   /**
    * Setter for the FHIRPath mapping Map instance.
    *
-   * @param mapping Map&lt;String, Object&gt; a mapping of FHIRPath to objects that will be used to
-   *        create a Resource.
+   * @param mapping {@code Map<String, Object>} a mapping of FHIRPath to objects
+   *     that will be used to create a Resource.
    */
   public void setMapping(Map<String, Object> mapping) {
     this.pathMapping = mapping;
@@ -121,7 +121,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * Prepares the internal state prior to generating a FHIR Resource. Called once upon generation at
    * the start.
    *
-   * @param resourceClass Class&lt;T&gt; The class of the Resource that shall be created (an empty
+   * @param resourceClass {@code Class<T>} The class of the Resource that shall be created (an empty
    *        Resource will be created in this method).
    */
   @SuppressWarnings("unchecked")
@@ -154,7 +154,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * The generation method that yields a new instance of class `resourceClass` with every value set
    * in the FHIRPath mapping.
    *
-   * @param resourceClass Class&lt;T&gt; The class of the Resource that shall be created.
+   * @param resourceClass {@code Class<T>} The class of the Resource that shall be created.
    * @return T a new FHIR Resource instance of class `resourceClass`.
    */
   public T generateResource(Class<? extends T> resourceClass) {
@@ -631,7 +631,7 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
    * Creates a list all FHIRPaths from the mapping ordered by paths with where equals, where
    * unequals and the rest.
    *
-   * @return List&lt;String&gt; a List of FHIRPaths ordered by the type.
+   * @return {@code List<String>} a List of FHIRPaths ordered by the type.
    */
   private List<String> sortedPaths() {
     List<String> whereEquals = new ArrayList<String>();

@@ -199,16 +199,8 @@ public class RunFlexporter {
         }
 
         if (resource instanceof ValueSet) {
-          // TODO: fix RandomCodeGenerator to work with HAPI objects
-          // because this is silly
-
-          ObjectMapper objectMapper = new ObjectMapper();
-
-          Map<String, Object> valueSet = objectMapper.readValue(fhirJson,
-              new TypeReference<Map<String, Object>>() {
-              });
           try {
-            RandomCodeGenerator.loadValueSet(null, valueSet);
+            RandomCodeGenerator.loadValueSet(null, (ValueSet)resource);
           } catch (Exception e) {
             System.err.println("WARNING: Unable to load ValueSet " + artifact.getAbsolutePath());
             e.printStackTrace();
