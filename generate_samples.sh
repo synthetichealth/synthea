@@ -1,8 +1,8 @@
 #!/bin/bash
-# This script generates 1000 sample patients in the most common output formats
+# This script generates 100 sample patients in the most common output formats
 # and zips them up by type in the ./samples/ subdirectory
 
-./run_synthea -p 1000 \
+./run_synthea -p 100 \
   --exporter.ccda.export=true \
   --exporter.fhir.export=true \
   --exporter.fhir_stu3.export=true \
