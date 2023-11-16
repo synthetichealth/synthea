@@ -1,0 +1,65 @@
+{
+  "name": "test_hha",
+  "remarks": [
+    "Test module."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait until 65"
+    },
+    "Wait until 65": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 65,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Schedule Visit"
+    },
+    "Home Health Visit": {
+      "type": "Encounter",
+      "encounter_class": "home",
+      "reason": "",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 439708006,
+          "display": "Home visit (procedure)"
+        }
+      ],
+      "direct_transition": "Nursing_Care"
+    },
+    "Nursing_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410401003",
+          "display": "Nursing care/supplementary surveillance (regime/therapy)"
+        }
+      ],
+      "direct_transition": "End Visit"
+    },
+    "End Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Schedule Visit"
+    },
+    "Schedule Visit": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 52,
+          "low": 26
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "Home Health Visit"
+    }
+  },
+  "gmf_version": 2
+}

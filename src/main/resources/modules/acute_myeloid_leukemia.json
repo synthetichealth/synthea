@@ -64,8 +64,7 @@
         "duration": {
           "quantity": 1,
           "unit": "days"
-        },
-        "instructions": []
+        }
       },
       "direct_transition": "Absolute_Neutrophil_Count_ANC"
     },

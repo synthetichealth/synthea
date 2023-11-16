@@ -339,12 +339,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34043003,
-          "display": "Dental consultation and report (procedure)"
+          "code": 772071006,
+          "display": "Referral to dentist (procedure)"
         }
       ],
       "unit": "minutes",
-      "direct_transition": "Gait-Speed Assessment"
+      "direct_transition": "Initiate_Dental_Cleaning"
     },
     "Clinical Fragility Scale": {
       "type": "Procedure",
@@ -584,6 +584,12 @@
         }
       ],
       "direct_transition": "Priority 3+"
+    },
+    "Initiate_Dental_Cleaning": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "value_attribute": "vhd_diagnosis",
+      "direct_transition": "Gait-Speed Assessment"
     }
   },
   "gmf_version": 2
