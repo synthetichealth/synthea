@@ -444,7 +444,7 @@
             },
             {
               "transition": "Ambulatory Encounter",
-              "distribution": 1
+              "distribution": 0.9
             }
           ]
         }
