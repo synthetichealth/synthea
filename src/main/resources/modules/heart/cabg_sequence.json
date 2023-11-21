@@ -163,7 +163,7 @@
     },
     "Referral and Preoperative Testing": {
       "type": "CallSubmodule",
-      "submodule": "heart/cabg/referral",
+      "submodule": "heart/cabg/cabg_referral",
       "conditional_transition": [
         {
           "transition": "End Last Encounter",
