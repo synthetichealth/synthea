@@ -55,12 +55,12 @@ public class LogicTest {
     Provider mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-Provider");
     for (EncounterType type : EncounterType.values()) {
-      person.setProvider(type, mock);
+      person.preferredProviders.forceRelationship(type, null, mock);
     }
 
     mock = Mockito.mock(Provider.class);
     Mockito.when(mock.getResourceID()).thenReturn("Mock-Emergency");
-    person.setProvider(EncounterType.EMERGENCY, mock);
+    person.preferredProviders.forceRelationship(EncounterType.EMERGENCY, null, mock);
     long birthTime = 0L;
     person.attributes.put(Person.BIRTHDATE, birthTime);
     time = System.currentTimeMillis();

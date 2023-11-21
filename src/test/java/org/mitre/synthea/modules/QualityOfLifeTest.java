@@ -34,7 +34,7 @@ public class QualityOfLifeTest {
     person = new Person(0);
     Provider provider = TestHelper.buildMockProvider();
     for (EncounterType type : EncounterType.values()) {
-      person.setProvider(type, provider);
+      person.preferredProviders.forceRelationship(type, null, provider);
     }
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.INCOME, 1000000);

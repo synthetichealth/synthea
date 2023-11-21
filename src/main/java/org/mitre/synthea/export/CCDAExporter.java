@@ -13,6 +13,7 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
@@ -138,7 +139,7 @@ public class CCDAExporter {
     person.attributes.put("ethnicity_display_lookup",
         RaceAndEthnicity.LOOK_UP_CDC_ETHNICITY_DISPLAY);
 
-    if (person.attributes.get(Person.PREFERREDYPROVIDER + "wellness") == null) {
+    if (person.preferredProviders.getWellnessProvider() == null) {
       // This person does not have a preferred provider. This happens for veterans at age 20 due to
       // the provider reset and they don't have a provider until their next wellness visit. There
       // may be other cases. This ensures the preferred provider is there for the CCDA template
@@ -148,7 +149,8 @@ public class CCDAExporter {
         encounter = person.record.encounters.get(person.record.encounters.size() - 1);
       }
       if (encounter != null) {
-        person.attributes.put(Person.PREFERREDYPROVIDER + "wellness", encounter.provider);
+        person.preferredProviders.forceRelationship(HealthRecord.EncounterType.WELLNESS, null,
+            encounter.provider);
       } else {
         throw new IllegalStateException(String.format("Unable to export to CCDA because "
             + "person %s %s has no preferred provider.",
@@ -156,6 +158,8 @@ public class CCDAExporter {
             person.attributes.get(Person.LAST_NAME)));
       }
     }
+
+    person.attributes.put("wellness_provider", person.preferredProviders.getWellnessProvider());
 
     StringWriter writer = new StringWriter();
     try {

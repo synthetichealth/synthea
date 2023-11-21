@@ -39,7 +39,7 @@ public class HealthRecordTest {
 
   private void setProvider(Person person) {
     for (EncounterType type : EncounterType.values()) {
-      person.setProvider(type, provider);
+      person.preferredProviders.forceRelationship(type, null, provider);
     }
   }
 

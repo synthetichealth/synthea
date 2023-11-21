@@ -835,6 +835,7 @@ public abstract class State implements Cloneable, Serializable {
     private List<Code> codes;
     private String reason;
     private String telemedicinePossibility;
+    private String specialty;
 
     @Override
     public Encounter clone() {
@@ -1008,7 +1009,7 @@ public abstract class State implements Cloneable, Serializable {
         Provider medicationProvider = person.getCurrentProvider(module.name);
         if (medicationProvider == null) {
           // no provider associated with encounter or medication order
-          medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
+          medicationProvider = person.getProvider(EncounterType.WELLNESS, null, time);
         }
         int year = Utilities.getYear(time);
         medicationProvider.incrementPrescriptions(year);
@@ -1386,7 +1387,7 @@ public abstract class State implements Cloneable, Serializable {
       Provider medicationProvider = person.getCurrentProvider(module.name);
       if (medicationProvider == null) {
         // no provider associated with encounter or medication order
-        medicationProvider = person.getProvider(EncounterType.WELLNESS, time);
+        medicationProvider = person.getProvider(EncounterType.WELLNESS, null, time);
       }
 
       int year = Utilities.getYear(time);
@@ -1641,7 +1642,7 @@ public abstract class State implements Cloneable, Serializable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.WELLNESS, time);
+        provider = person.getProvider(EncounterType.WELLNESS, null, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementProcedures(year);
@@ -1957,7 +1958,7 @@ public abstract class State implements Cloneable, Serializable {
       if (person.getCurrentProvider(module.name) != null) {
         provider = person.getCurrentProvider(module.name);
       } else { // no provider associated with encounter or procedure
-        provider = person.getProvider(EncounterType.WELLNESS, time);
+        provider = person.getProvider(EncounterType.WELLNESS, null, time);
       }
       int year = Utilities.getYear(time);
       provider.incrementLabs(year);

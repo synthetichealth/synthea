@@ -22,6 +22,7 @@ import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
+import org.mockito.Mockito;
 
 public class TransitionMetricsTest {
 
@@ -38,8 +39,8 @@ public class TransitionMetricsTest {
     person.attributes.put(Person.RACE, "black");
     person.attributes.put(Person.ETHNICITY, "nonhispanic");
     person.attributes.put(Person.GENDER, "F");
-    person.setProvider(EncounterType.WELLNESS, mockProvider);
-    person.setProvider(EncounterType.AMBULATORY, mockProvider);
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, mockProvider);
+    person.preferredProviders.forceRelationship(EncounterType.AMBULATORY, null, mockProvider);
     long time = System.currentTimeMillis();
     LifecycleModule.birth(person, time);
     PayerManager.loadNoInsurance();
@@ -81,8 +82,8 @@ public class TransitionMetricsTest {
       // seeds chosen by experimentation, to ensure we hit "Pre_Examplitis" at least once
       person = new Person(seed);
       person.attributes.put(Person.GENDER, "M");
-      person.setProvider(EncounterType.WELLNESS, mockProvider);
-      person.setProvider(EncounterType.AMBULATORY, mockProvider);
+      person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+          Mockito.mock(Provider.class));
       time = System.currentTimeMillis();
       person.attributes.put(Person.BIRTHDATE, time);
       person.coverage.setPlanToNoInsurance(time);

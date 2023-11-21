@@ -1,5 +1,7 @@
 package org.mitre.synthea.world.concepts;
 
+import java.util.Arrays;
+
 /**
  * ClinicianSpecialty is an enumeration of Clinical Specialties that a
  * Clinician can possess. Each of the values (e.g. "ADDICTION MEDICINE")
@@ -131,6 +133,15 @@ public class ClinicianSpecialty {
       "UROLOGY", "VASCULAR SURGERY"};
 
     return specialtyList;
+  }
+
+  /**
+   * Checks whether the provided speciality is in the list of clinical specialties.
+   * @param specialty to check
+   * @return true if it is in the list, false otherwise
+   */
+  public static boolean validateSpecialty(String specialty) {
+    return Arrays.asList(getSpecialties()).contains(specialty);
   }
 
   /**

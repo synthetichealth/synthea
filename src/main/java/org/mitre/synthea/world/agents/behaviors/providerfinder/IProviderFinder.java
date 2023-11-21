@@ -15,8 +15,10 @@ public interface IProviderFinder {
    * @param providers The list of eligible providers.
    * @param person The patient who requires the service.
    * @param service The service required. For example, EncounterType.AMBULATORY.
+   * @param specialty The specialty required. For example, ClinicianSpecialty.INFECTIOUS_DISEASE
    * @param time The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
-  public Provider find(List<Provider> providers, Person person, EncounterType service, long time);
+  Provider find(List<Provider> providers, Person person, EncounterType service, String specialty,
+                long time);
 }

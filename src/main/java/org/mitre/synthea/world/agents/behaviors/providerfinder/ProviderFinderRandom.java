@@ -10,7 +10,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 public class ProviderFinderRandom implements IProviderFinder {
 
   @Override
-  public Provider find(List<Provider> providers, Person person, EncounterType service, long time) {
+  public Provider find(List<Provider> providers, Person person, EncounterType service,
+                       String specialty, long time) {
     List<Provider> options = new ArrayList<Provider>();
 
     for (Provider provider : providers) {

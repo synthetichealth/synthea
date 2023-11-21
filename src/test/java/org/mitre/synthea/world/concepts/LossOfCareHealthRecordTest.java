@@ -40,20 +40,20 @@ public class LossOfCareHealthRecordTest {
     TestHelper.loadTestProperties();
     String testState = Config.get("test_state.default", "Massachusetts");
     Config.set("generate.payers.insurance_companies.default_file",
-        "generic/payers/test_payers.csv");
+            "generic/payers/test_payers.csv");
     Config.set("generate.payers.insurance_plans.default_file",
-        "generic/payers/test_plans.csv");
+            "generic/payers/test_plans.csv");
     Config.set("generate.payers.loss_of_care", "true");
     Config.set("generate.payers.insurance_plans.eligibilities_file",
-        "generic/payers/test_insurance_eligibilities.csv");
+            "generic/payers/test_insurance_eligibilities.csv");
     Config.set("lifecycle.death_by_loss_of_care", "true");
     // Load in the .csv list of Payers for MA.
     PayerManager.loadPayers(new Location(testState, null));
     // Load test payers.
     Set<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
-        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
+            .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toSet());
     Payer testPrivatePayer = privatePayers.stream().filter(payer ->
-        payer.getName().equals("Test Private Payer 1")).iterator().next();
+            payer.getName().equals("Test Private Payer 1")).iterator().next();
     testPrivatePlan = testPrivatePayer.getPlans().iterator().next();
   }
 
@@ -78,7 +78,7 @@ public class LossOfCareHealthRecordTest {
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, time);
     person.coverage.setPlanToNoInsurance(time);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of encounter
     person.attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
@@ -111,7 +111,7 @@ public class LossOfCareHealthRecordTest {
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.INCOME, 1);
     person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
-    person.setProvider(EncounterType.INPATIENT, new Provider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Determine income
 
@@ -169,7 +169,7 @@ public class LossOfCareHealthRecordTest {
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.OCCUPATION_LEVEL, 0.0);
     person.coverage.setPlanAtTime(time, testPrivatePlan, PayerManager.getNoInsurancePlan());
-    person.setProvider(EncounterType.WELLNESS, new Provider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
     // Set person's income to be $1 lower than the cost of 8 monthly premiums.
     person.attributes.put(Person.INCOME, testPrivatePlan.getMonthlyPremium(0)
@@ -209,7 +209,7 @@ public class LossOfCareHealthRecordTest {
     // Set person's income to be $1 lower than the cost of an encounter.
     person.attributes.put(Person.INCOME, (int) defaultEncounterCost - 1);
     person.coverage.setPlanToNoInsurance(time);
-    person.setProvider(EncounterType.WELLNESS, new Provider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null, new Provider());
     Code code = new Code("SNOMED-CT","705129","Fake Code");
 
     // First encounter of current year is uncovered but affordable.

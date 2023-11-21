@@ -273,7 +273,8 @@ public class PayerTest {
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
     // Above Medicaid Income Level.
     person.attributes.put(Person.INCOME, (int) medicaidLevel * 100);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     // Process health insurance prior to condition start to prevent null pointer.
     healthInsModule.process(person, time);
     person.record.conditionStart(time, "254837009");

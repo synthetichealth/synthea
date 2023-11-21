@@ -32,6 +32,7 @@ import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.geography.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -126,11 +127,11 @@ public class CCDAExporterTest {
     TestHelper.exportOff();
     Config.set("exporter.ccda.export", "true");
     Optional<Person> personWithWellnessProvider = Arrays.stream(people).filter((person -> {
-      return person.attributes.get(Person.PREFERREDYPROVIDER + "wellness") != null;
+      return person.preferredProviders.getWellnessProvider() != null;
     })).findFirst();
     if (personWithWellnessProvider.isPresent()) {
       Person toExport = personWithWellnessProvider.get();
-      toExport.attributes.remove(Person.PREFERREDYPROVIDER + "wellness");
+      toExport.preferredProviders.resetRelationship(HealthRecord.EncounterType.WELLNESS, null);
       String ccdaXml = CCDAExporter.export(toExport, System.currentTimeMillis());
       InputStream inputStream = IOUtils.toInputStream(ccdaXml, "UTF-8");
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

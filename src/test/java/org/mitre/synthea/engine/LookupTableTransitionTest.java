@@ -301,7 +301,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "F");
@@ -331,7 +332,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "F");
@@ -361,7 +363,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "M");
@@ -391,7 +394,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "irish");
     person.attributes.put(Person.GENDER, "M");
@@ -419,7 +423,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "irish");
     person.attributes.put(Person.GENDER, "F");
@@ -449,7 +454,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "italian");
     person.attributes.put(Person.GENDER, "M");
@@ -479,7 +485,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "italian");
     person.attributes.put(Person.GENDER, "F");
@@ -511,7 +518,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     // 'spanish' is not accounted for in lookuptabltitis.csv.
     person.attributes.put(Person.ETHNICITY, "spanish");
@@ -544,7 +552,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.ETHNICITY, "english");
     person.attributes.put(Person.GENDER, "F");
@@ -573,7 +582,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
@@ -596,7 +606,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");
@@ -619,7 +630,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "New Hampshire");
@@ -642,7 +654,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.STATE, "Massachusetts");
@@ -665,7 +678,8 @@ public class LookupTableTransitionTest {
 
     // Create the person with the preset attributes.
     Person person = new Person(0L);
-    person.setProvider(EncounterType.WELLNESS, TestHelper.buildMockProvider());
+    person.preferredProviders.forceRelationship(EncounterType.WELLNESS, null,
+            TestHelper.buildMockProvider());
     person.attributes.put(Person.BIRTHDATE, 0L);
     person.attributes.put(Person.GENDER, "F");
     person.attributes.put(Person.STATE, "Massachusetts");

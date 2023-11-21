@@ -33,7 +33,7 @@ public class C19ImmunizationModuleTest {
     person.attributes.put(Person.BIRTHDATE, birthday);
     Provider provider = TestHelper.buildMockProvider();
     for (EncounterType type : EncounterType.values()) {
-      person.setProvider(type, provider);
+      person.preferredProviders.forceRelationship(type, null, provider);
     }
     return person;
   }
@@ -85,20 +85,20 @@ public class C19ImmunizationModuleTest {
     person.attributes.put(C19ImmunizationModule.C19_VACCINE, C19Vaccine.EUASet.PFIZER);
     person.coverage.setPlanAtTime((long) person.attributes.get(Person.BIRTHDATE),
         PayerManager.getAllPayers().stream().filter(payer -> payer.getName()
-        .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
-        .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
+          .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
+          .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
     for (int i = 1; i <= 43; i++) {
       person.coverage.newEnrollmentPeriod(birthday + Utilities.convertTime("years", i));
     }
     person.coverage.setPlanAtTime(decemberFifteenth,
         PayerManager.getAllPayers().stream().filter(payer -> payer.getName()
-        .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
-        .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
+            .equals(PayerManager.MEDICARE)).collect(Collectors.toSet()).iterator().next()
+          .getGovernmentPayerPlan(), PayerManager.getNoInsurancePlan());
     C19ImmunizationModule.vaccinate(person, decemberFifteenth, 1);
     assertEquals(1, person.record.encounters.size());
     assertEquals(1, person.record.encounters.get(0).immunizations.size());
     Map<String, List<Long>> immunizationHistory =
-        (Map<String, List<Long>>) person.attributes.get(Immunizations.IMMUNIZATIONS);
+            (Map<String, List<Long>>) person.attributes.get(Immunizations.IMMUNIZATIONS);
     long shotTime = immunizationHistory.get(C19ImmunizationModule.C19_PERSON_ATTRS_KEY).get(0);
     assertEquals(decemberFifteenth, shotTime);
   }
