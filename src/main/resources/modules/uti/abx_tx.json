@@ -406,8 +406,8 @@
       "prescription": {
         "dosage": {
           "amount": 1,
-          "frequency": 1,
-          "period": 2,
+          "frequency": 2,
+          "period": 1,
           "unit": "days"
         },
         "duration": {
