@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.parser.IParser;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,10 +20,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.flexporter.Actions;
+import org.mitre.synthea.export.flexporter.FhirPathUtils;
+import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
+import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
@@ -97,6 +101,7 @@ public abstract class Exporter {
         !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
+    private List<Mapping> flexporterMappings;
 
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
@@ -111,6 +116,7 @@ public abstract class Exporter {
       terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
+      flexporterMappings = init.flexporterMappings;
     }
 
     /**
@@ -147,6 +153,19 @@ public abstract class Exporter {
      */
     public boolean isRecordQueueEmpty() {
       return recordQueue == null || recordQueue.size() == 0;
+    }
+
+    /**
+     * Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.
+     * Multiple mappings may be added and will be processed in order.
+     * @param mapping Flexporter mapping to add to list
+     */
+    public void addFlexporterMapping(Mapping mapping) {
+      if (this.flexporterMappings == null) {
+        this.flexporterMappings = new ArrayList<>();
+      }
+
+      this.flexporterMappings.add(mapping);
     }
   }
 
@@ -256,9 +275,26 @@ public abstract class Exporter {
     }
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
+      org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+
+      if (options.flexporterMappings != null) {
+        FlexporterJavascriptContext fjContext = null;
+
+        for (Mapping mapping : options.flexporterMappings) {
+          if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability, mapping.variables)) {
+            if (fjContext == null) {
+              // only set this the first time it is actually used
+              // TODO: figure out how to silence the truffle warnings
+              fjContext = new FlexporterJavascriptContext();
+            }
+            bundle = Actions.applyMapping(bundle, mapping, person, fjContext);
+          }
+        }
+      }
+
+      IParser parser = FhirR4.getContext().newJsonParser();
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
-        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
+        parser.setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -266,7 +302,8 @@ public abstract class Exporter {
           appendToFile(outFilePath, entryJson);
         }
       } else {
-        String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
+        parser.setPrettyPrint(true);
+        String bundleJson = parser.encodeResourceToString(bundle);
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }

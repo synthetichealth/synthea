@@ -9,6 +9,8 @@ import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -56,6 +58,7 @@ public class App {
    */
   public static void main(String[] args) throws Exception {
     Generator.GeneratorOptions options = new Generator.GeneratorOptions();
+    Exporter.ExporterRuntimeOptions exportOptions = new Exporter.ExporterRuntimeOptions();
 
     boolean validArgs = true;
     boolean overrideFutureDateError = false;
@@ -199,6 +202,25 @@ public class App {
               throw new FileNotFoundException(String.format(
                   "Specified keep-patients file (%s) does not exist", value));
             }
+          } else if (currArg.equals("-fm")) {
+            String value = argsQ.poll();
+            File flexporterMappingFile = new File(value);
+            if (flexporterMappingFile.exists()) {
+              Mapping mapping = Mapping.parseMapping(flexporterMappingFile);
+              exportOptions.addFlexporterMapping(mapping);
+            } else {
+              throw new FileNotFoundException(String.format(
+                  "Specified flexporter mapping file (%s) does not exist", value));
+            }
+          } else if (currArg.equals("-ig")) {
+            String value = argsQ.poll();
+            File igFile = new File(value);
+            if (igFile.exists()) {
+              RunFlexporter.loadIG(igFile);
+            } else {
+              throw new FileNotFoundException(String.format(
+                  "Specified IG directory (%s) does not exist", value));
+            }
           } else if (currArg.startsWith("--")) {
             String configSetting;
             String value;
@@ -230,7 +252,7 @@ public class App {
     }
 
     if (validArgs && validateConfig(options, overrideFutureDateError)) {
-      Generator generator = new Generator(options);
+      Generator generator = new Generator(options, exportOptions);
       generator.run();
     }
   }
