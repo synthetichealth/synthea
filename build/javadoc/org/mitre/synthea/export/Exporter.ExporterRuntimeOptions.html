@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -220,12 +220,19 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addFlexporterMapping(org.mitre.synthea.export.flexporter.Mapping)">addFlexporterMapping</a></span>&#8203;(<a href="flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a>&nbsp;mapping)</code></th>
+<td class="colLast">
+<div class="block">Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableQueue(org.mitre.synthea.export.Exporter.SupportedFhirVersion)">enableQueue</a></span>&#8203;(<a href="Exporter.SupportedFhirVersion.html" title="enum in org.mitre.synthea.export">Exporter.SupportedFhirVersion</a>&nbsp;version)</code></th>
 <td class="colLast">
 <div class="block">Enables a blocking queue to which FHIR patient records will be written.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNextRecord()">getNextRecord</a></span>()</code></th>
 <td class="colLast">
@@ -233,19 +240,19 @@ extends java.lang.Object</pre>
  or blocks until next record becomes available.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isQueueEnabled()">isQueueEnabled</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isRecordQueueEmpty()">isRecordQueueEmpty</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns true if record queue is empty or null.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="Exporter.SupportedFhirVersion.html" title="enum in org.mitre.synthea.export">Exporter.SupportedFhirVersion</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#queuedFhirVersion()">queuedFhirVersion</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -392,11 +399,26 @@ extends java.lang.Object</pre>
 <a id="isRecordQueueEmpty()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>isRecordQueueEmpty</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isRecordQueueEmpty()</pre>
 <div class="block">Returns true if record queue is empty or null. Otherwise returns false.</div>
+</li>
+</ul>
+<a id="addFlexporterMapping(org.mitre.synthea.export.flexporter.Mapping)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>addFlexporterMapping</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addFlexporterMapping&#8203;(<a href="flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a>&nbsp;mapping)</pre>
+<div class="block">Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.
+ Multiple mappings may be added and will be processed in order.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mapping</code> - Flexporter mapping to add to list</dd>
+</dl>
 </li>
 </ul>
 </li>

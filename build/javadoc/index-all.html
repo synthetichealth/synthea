@@ -112,6 +112,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns whether a plan will accept the given patient at this
  time using the plan eligibility criteria.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#actions">actions</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>
+<div class="block">Each action is a <code>Map&gt;String,?&gt;</code>.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">Actions</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>
+<div class="block">The Actions class represents the set of all actions the Flexporter can perform.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#%3Cinit%3E()">Actions()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomSource.html#activate()">activate()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomSource.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomSource</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/EncounterModule.html#ACTIVE_EMERGENCY_ENCOUNTER">ACTIVE_EMERGENCY_ENCOUNTER</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/EncounterModule.html" title="class in org.mitre.synthea.modules">EncounterModule</a></dt>
@@ -176,6 +186,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Adds a new key/fact combination to the table
  and returns the ID.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html#addFlexporterMapping(org.mitre.synthea.export.flexporter.Mapping)">addFlexporterMapping(Mapping)</a></span> - Method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.ExporterRuntimeOptions.html" title="class in org.mitre.synthea.export">Exporter.ExporterRuntimeOptions</a></dt>
+<dd>
+<div class="block">Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Names.html#addHash(java.lang.String)">addHash(String)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Names.html" title="class in org.mitre.synthea.world.concepts">Names</a></dt>
 <dd>
@@ -443,6 +457,43 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.html#appendToFile(java.nio.file.Path,java.lang.String)">appendToFile(Path, String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.html" title="class in org.mitre.synthea.export">Exporter</a></dt>
 <dd>
 <div class="block">Append contents to the end of a file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#applicability">applicability</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#appliesToBundle(org.hl7.fhir.r4.model.Bundle,java.lang.String)">appliesToBundle(Bundle, String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#appliesToBundle(org.hl7.fhir.r4.model.Bundle,java.lang.String,java.util.Map)">appliesToBundle(Bundle, String, Map&lt;String, Object&gt;)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#appliesToResource(org.hl7.fhir.r4.model.Resource,java.lang.String)">appliesToResource(Resource, String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#apply(java.lang.String,java.lang.String)">apply(String, String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>
+<div class="block">Apply the selected Value Transform on the given value.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#applyAction(org.hl7.fhir.r4.model.Bundle,java.util.Map,org.mitre.synthea.world.agents.Person,org.mitre.synthea.export.flexporter.FlexporterJavascriptContext)">applyAction(Bundle, Map&lt;String, Object&gt;, Person, FlexporterJavascriptContext)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Apply the given single Action to the provided Bundle.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#applyFunctionToBundle(java.lang.String)">applyFunctionToBundle(String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Applies a function to the working Bundle.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#applyFunctionToResources(java.lang.String,java.lang.String)">applyFunctionToResources(String, String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Applies a function to each resource within the Bundle.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#applyMapping(org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.export.flexporter.Mapping,org.mitre.synthea.world.agents.Person,org.mitre.synthea.export.flexporter.FlexporterJavascriptContext)">applyMapping(Bundle, Mapping, Person, FlexporterJavascriptContext)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Apply the given Mapping to the provided Bundle.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#applyProfile(org.hl7.fhir.r4.model.Resource,java.lang.String)">applyProfile(Resource, String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Helper function to add a single profile URL to a resource,
+ and set the Meta if not already set.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#applyProfiles(org.hl7.fhir.r4.model.Bundle,java.util.List)">applyProfiles(Bundle, List&lt;Map&lt;String, String&gt;&gt;)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Apply a profile to resources matching certain rules.</div>
 </dd>
 <dt><a href="org/mitre/synthea/modules/calculators/ASCVD.html" title="class in org.mitre.synthea.modules.calculators"><span class="typeNameLink">ASCVD</span></a> - Class in <a href="org/mitre/synthea/modules/calculators/package-summary.html">org.mitre.synthea.modules.calculators</a></dt>
 <dd>&nbsp;</dd>
@@ -1659,6 +1710,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Create a new code.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#codeInValueSet(org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String)">codeInValueSet(HealthRecord.Code, String)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
+<dd>
+<div class="block">Check whether the given code is in the given ValueSet.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#codeListCache">codeListCache</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#codes">codes</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
@@ -2010,6 +2065,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Create a new person and update them until Generator.stop or
  they die, whichever comes sooner.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#createResource(org.hl7.fhir.r4.model.Bundle,java.util.List,org.mitre.synthea.world.agents.Person,org.mitre.synthea.export.flexporter.FlexporterJavascriptContext)">createResource(Bundle, List&lt;Map&lt;String, Object&gt;&gt;, Person, FlexporterJavascriptContext)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Create new resources to add to the Bundle, either a single resource or a resource based on
+ other instances of existing resources.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/VitalSign.html#CREATININE">CREATININE</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Attachment.html#creation">creation</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Attachment.html" title="class in org.mitre.synthea.engine">Components.Attachment</a></dt>
@@ -2093,6 +2153,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#CURRENTPROVIDER">CURRENTPROVIDER</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">CustomFHIRPathResourceGeneratorR4</span></a>&lt;<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="type parameter in CustomFHIRPathResourceGeneratorR4">T</a> extends org.hl7.fhir.r4.model.Resource&gt; - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>
+<div class="block">This class can be used to generate resources using FHIRPath expressions.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#%3Cinit%3E()">CustomFHIRPathResourceGeneratorR4()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">Default constructor, needs a call to `setMapping` later on in order to generate any
+ Resources.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter"><span class="typeNameLink">CustomFHIRPathResourceGeneratorR4.PathType</span></a> - Enum in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>
+<div class="block">A simple enum to diffirentiate between types of FHIRPaths in the special use case of generating
+ FHIR Resources.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/calculators/Framingham.html#cvd10Year(org.mitre.synthea.world.agents.Person,long,boolean)">cvd10Year(Person, long, boolean)</a></span> - Static method in class org.mitre.synthea.modules.calculators.<a href="org/mitre/synthea/modules/calculators/Framingham.html" title="class in org.mitre.synthea.modules.calculators">Framingham</a></dt>
 <dd>
 <div class="block">Calculates a patient's risk of cardiovascular disease,
@@ -2117,6 +2191,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Logic.Date.html#%3Cinit%3E()">Date()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Logic.Date.html" title="class in org.mitre.synthea.engine">Logic.Date</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19VaccineAgeDistributions.html#DATE_COLUMN_HEADER">DATE_COLUMN_HEADER</a></span> - Static variable in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19VaccineAgeDistributions.html" title="class in org.mitre.synthea.modules.covid">C19VaccineAgeDistributions</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#DATE_FIELDS">DATE_FIELDS</a></span> - Static variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html#%3Cinit%3E(java.lang.Class,java.lang.String)">DateFieldWrapper(Class&lt;? extends Resource&gt;, String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.DateFieldWrapper</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html#%3Cinit%3E(java.lang.String)">DateFieldWrapper(String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.DateFieldWrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ExportHelper.html#dateFromTimestamp(long)">dateFromTimestamp(long)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ExportHelper.html" title="class in org.mitre.synthea.export">ExportHelper</a></dt>
 <dd>
@@ -2215,6 +2295,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.Delayable.html#%3Cinit%3E()">Delayable()</a></span> - Constructor for class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.Delayable.html" title="class in org.mitre.synthea.engine">State.Delayable</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#deleteResources(org.hl7.fhir.r4.model.Bundle,java.util.List)">deleteResources(Bundle, List&lt;String&gt;)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Filter the Bundle by removing selected resources.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Seed.html#demographicAttributesForPerson()">demographicAttributesForPerson()</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity">Seed</a></dt>
 <dd>
 <div class="block">Returns the attributes the Synthea Generator usually fills in for a person.</div>
@@ -2646,6 +2730,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Evaluates the expression with parameters derived from the given Person object.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#evaluateBundle(org.hl7.fhir.r4.model.Bundle,java.lang.String,boolean)">evaluateBundle(Bundle, String, boolean)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>
+<div class="block">Execute the given FHIRPath against the given Bundle and return the results.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#evaluateBundle(org.hl7.fhir.r4.model.Bundle,java.lang.String,java.util.Map,boolean)">evaluateBundle(Bundle, String, Map&lt;String, Object&gt;, boolean)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>
+<div class="block">Execute the given FHIRPath against the given Bundle and return the results.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ExpressionProcessor.html#evaluateFromSimResults(org.simulator.math.odes.MultiTable,double)">evaluateFromSimResults(MultiTable, double)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ExpressionProcessor.html" title="class in org.mitre.synthea.helpers">ExpressionProcessor</a></dt>
 <dd>
 <div class="block">Evaluates the provided expression given the simulation results.</div>
@@ -2654,6 +2746,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Evaluates the expression with the given numeric parameters, returning the result
  as a BigDecimal.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#evaluateResource(org.hl7.fhir.r4.model.Resource,java.lang.String)">evaluateResource(Resource, String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>
+<div class="block">Execute the given FHIRPath against the given resource and return the results.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.LegacyStateWithUnitlessRV.html#exact">exact</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.LegacyStateWithUnitlessRV.html" title="class in org.mitre.synthea.engine">State.LegacyStateWithUnitlessRV</a></dt>
 <dd>&nbsp;</dd>
@@ -2674,6 +2770,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/HealthRecordEditors.html#executeAll(org.mitre.synthea.world.agents.Person,org.mitre.synthea.world.concepts.HealthRecord,long,long)">executeAll(Person, HealthRecord, long, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/HealthRecordEditors.html" title="class in org.mitre.synthea.engine">HealthRecordEditors</a></dt>
 <dd>
 <div class="block">Runs all of the registered implementations of HealthRecordEditor.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#executeScript(java.util.List,org.hl7.fhir.r4.model.Bundle,org.mitre.synthea.export.flexporter.FlexporterJavascriptContext)">executeScript(List&lt;Map&lt;String, String&gt;&gt;, Bundle, FlexporterJavascriptContext)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Execute scripts against the given Bundle.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#exited">exited</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
 <dd>&nbsp;</dd>
@@ -2937,6 +3037,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirGroupExporterR4.html#%3Cinit%3E()">FhirGroupExporterR4()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirGroupExporterR4.html" title="class in org.mitre.synthea.export">FhirGroupExporterR4</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">FhirPathUtils</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html#%3Cinit%3E()">FhirPathUtils()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FhirPathUtils.html" title="class in org.mitre.synthea.export.flexporter">FhirPathUtils</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/FhirPractitionerExporterDstu2.html" title="class in org.mitre.synthea.export"><span class="typeNameLink">FhirPractitionerExporterDstu2</span></a> - Class in <a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirPractitionerExporterDstu2.html#%3Cinit%3E()">FhirPractitionerExporterDstu2()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirPractitionerExporterDstu2.html" title="class in org.mitre.synthea.export">FhirPractitionerExporterDstu2</a></dt>
@@ -3006,6 +3110,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.OUTPATIENT.html#FI_ORIG_CLM_CNTL_NUM">FI_ORIG_CLM_CNTL_NUM</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.OUTPATIENT.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.OUTPATIENT</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.SNF.html#FI_ORIG_CLM_CNTL_NUM">FI_ORIG_CLM_CNTL_NUM</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.SNF.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.SNF</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">FieldWrapper</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#%3Cinit%3E(java.lang.Class,java.lang.String)">FieldWrapper(Class&lt;? extends Resource&gt;, String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>
+<div class="block">Create a FieldWrapper for the field on the given resource type defined by the given path.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#%3Cinit%3E(java.lang.String)">FieldWrapper(String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>
+<div class="block">Create a FieldWrapper for the field defined by the given path.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">FieldWrapper.DateFieldWrapper</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>
+<div class="block">DateFieldWrapper is used to represent a field on a resource representing a date and/or time.</div>
+</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">FieldWrapper.ReferenceFieldWrapper</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.html#filename(org.mitre.synthea.world.agents.Person,java.lang.String,java.lang.String)">filename(Person, String, String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.html" title="class in org.mitre.synthea.export">Exporter</a></dt>
 <dd>
@@ -3150,6 +3270,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html#fixedRecordPath">fixedRecordPath</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">FlexporterJavascriptContext</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#%3Cinit%3E()">FlexporterJavascriptContext()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Default constructor for a Javascript Context.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.ComplexTransition.html#follow(org.mitre.synthea.world.agents.Person,long)">follow(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.ComplexTransition.html" title="class in org.mitre.synthea.engine">Transition.ComplexTransition</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Transition.ConditionalTransition.html#follow(org.mitre.synthea.world.agents.Person,long)">follow(Person, long)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Transition.ConditionalTransition.html" title="class in org.mitre.synthea.engine">Transition.ConditionalTransition</a></dt>
@@ -3281,6 +3407,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Generate a random Person, from the given seed.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#generateResource(java.lang.Class)">generateResource(Class&lt;? extends T&gt;)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">The generation method that yields a new instance of class `resourceClass` with every value set
+ in the FHIRPath mapping.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#generateResource(java.lang.String)">generateResource(String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">The generation method that yields a new instance of the given resourceType
+ with every value set in the FHIRPath mapping.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.html#generateSeverity(org.mitre.synthea.world.agents.Person)">generateSeverity(Person)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.html" title="class in org.mitre.synthea.engine">ReactionProbabilities</a></dt>
 <dd>
 <div class="block">Generate a severity for the reaction of an allergy or intolerance.</div>
@@ -3365,6 +3501,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Variant.html#getAddressLines()">getAddressLines()</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity">Variant</a></dt>
 <dd>
 <div class="block">Gets the address lines for the variant.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#getAll(org.hl7.fhir.r4.model.Resource)">getAll(Resource)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>
+<div class="block">Get the values from the field this FieldWrapper represents from the given resource.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/CardiovascularDiseaseModule.html#getAllCodes()">getAllCodes()</a></span> - Static method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/CardiovascularDiseaseModule.html" title="class in org.mitre.synthea.modules">CardiovascularDiseaseModule</a></dt>
 <dd>
@@ -3470,6 +3610,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Get a list of claim entries for procedures with mappable codes and medication administrations.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#getBundle()">getBundle()</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Get the current working Bundle as a JSON string.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html#getCause()">getCause()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/LateAdopterModel.html#getChanceOfGettingShot()">getChanceOfGettingShot()</a></span> - Method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/LateAdopterModel.html" title="class in org.mitre.synthea.modules.covid">LateAdopterModel</a></dt>
@@ -3494,6 +3638,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html#getCode()">getCode()</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html" title="class in org.mitre.synthea.export.rif">ConsolidatedClaimLines.ConsolidatedClaimLine</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#getCode(java.lang.String,long)">getCode(String, long)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
+<dd>
+<div class="block">Gets a random code from the expansion of a ValueSet.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#getCode(java.lang.String,long,org.mitre.synthea.world.concepts.HealthRecord.Code)">getCode(String, long, HealthRecord.Code)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
 <dd>
 <div class="block">Gets a random code from the expansion of a ValueSet.</div>
@@ -4166,6 +4314,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/EntityManager.html#getRecords()">getRecords()</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/EntityManager.html" title="class in org.mitre.synthea.identity">EntityManager</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html#getReference(org.hl7.fhir.r4.model.Resource)">getReference(Resource)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.ReferenceFieldWrapper</a></dt>
+<dd>
+<div class="block">Get a single reference from the field this FieldWrapper represents on the given resource,
+ as a string.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html#getReferences(org.hl7.fhir.r4.model.Resource)">getReferences(Resource)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.ReferenceFieldWrapper</a></dt>
+<dd>
+<div class="block">Get all references from the field this FieldWrapper represents on the given resource,
+ as a list of strings.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#getResource()">getResource()</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">Getter for a generated Resource.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#getResourceID()">getResourceID()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>
 <div class="block">Get the Clinician's UUID.</div>
@@ -4214,6 +4376,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#getSimDuration()">getSimDuration()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#getSingle(org.hl7.fhir.r4.model.Resource)">getSingle(Resource)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>
+<div class="block">Get a single value from the field this FieldWrapper represents from the given resource.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/IdentityRecord.html#getSocialSecurityNumber()">getSocialSecurityNumber()</a></span> - Method in interface org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/IdentityRecord.html" title="interface in org.mitre.synthea.identity">IdentityRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Seed.html#getSocialSecurityNumber()">getSocialSecurityNumber()</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity">Seed</a></dt>
@@ -4323,6 +4489,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/TelemedicineConfig.html#getTelemedicineStartTime()">getTelemedicineStartTime()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/TelemedicineConfig.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/TelemedicineConfig.html#getTelemedTypicalEmergency()">getTelemedTypicalEmergency()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/TelemedicineConfig.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#getter">getter</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html#getTime()">getTime()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ExpressedSymptom.SymptomInfo.html" title="class in org.mitre.synthea.engine">ExpressedSymptom.SymptomInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -6767,6 +6935,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Loads all PhysiologyValueGenerators defined in the given generator configuration subdirectory.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#loadBundle(java.lang.String)">loadBundle(String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Load a Bundle as the JS context's working bundle.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/GrowthChart.html#loadCharts()">loadCharts()</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/GrowthChart.html" title="class in org.mitre.synthea.world.concepts">GrowthChart</a></dt>
 <dd>
 <div class="block">Load all of the charts in the cdc_growth_charts.json file</div>
@@ -6797,9 +6969,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Load the NHANES samples from resources into an EnumeratedDistribution.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#loadFile(java.lang.String)">loadFile(String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Load the JS file referenced by the given file path into the JS context.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#loadFile(java.nio.file.Path,boolean,java.util.Properties,boolean)">loadFile(Path, boolean, Properties, boolean)</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>
 <div class="block">Loads the module defined from the file at the given path.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html#loadFunction(java.lang.String)">loadFunction(String)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FlexporterJavascriptContext.html" title="class in org.mitre.synthea.export.flexporter">FlexporterJavascriptContext</a></dt>
+<dd>
+<div class="block">Load a JS function from string.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/PayerManager.html#loadNoInsurance()">loadNoInsurance()</a></span> - Static method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/PayerManager.html" title="class in org.mitre.synthea.world.agents">PayerManager</a></dt>
 <dd>
@@ -6829,6 +7009,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Load the JSON file that has a map of age ranges to percentage of that age range that has been
  vaccinated.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#loadValueSet(java.lang.String,org.hl7.fhir.r4.model.ValueSet)">loadValueSet(String, ValueSet)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
+<dd>
+<div class="block">Load the given value set into our cache.</div>
 </dd>
 <dt><a href="org/mitre/synthea/identity/LocalDateDeserializer.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">LocalDateDeserializer</span></a> - Class in <a href="org/mitre/synthea/identity/package-summary.html">org.mitre.synthea.identity</a></dt>
 <dd>&nbsp;</dd>
@@ -7061,6 +7245,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Main method, not to be invoked directly: should always be called via gradle task `overrides`.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="RunFlexporter.html#main(java.lang.String%5B%5D)">main(String[])</a></span> - Static method in class <a href="RunFlexporter.html" title="class in &lt;Unnamed&gt;">RunFlexporter</a></dt>
+<dd>
+<div class="block">Main method.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#mainEntry">mainEntry</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/WeightLossModule.html#maintainBMIPercentile(org.mitre.synthea.world.agents.Person,long)">maintainBMIPercentile(Person, long)</a></span> - Method in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/WeightLossModule.html" title="class in org.mitre.synthea.modules">WeightLossModule</a></dt>
@@ -7091,6 +7279,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html#manufacturer">manufacturer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html#manufactureTime">manufactureTime</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">Mapping</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#%3Cinit%3E()">Mapping()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#MARITAL_STATUS">MARITAL_STATUS</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
@@ -7394,6 +7586,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#name">name</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/State.html#name">name</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/State.html" title="class in org.mitre.synthea.engine">State</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#name">name</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#name">name</a></span> - Variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>&nbsp;</dd>
@@ -7775,6 +7969,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/package-summary.html">org.mitre.synthea.export</a> - package org.mitre.synthea.export</dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a> - package org.mitre.synthea.export.flexporter</dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/rif/package-summary.html">org.mitre.synthea.export.rif</a> - package org.mitre.synthea.export.rif</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/rif/enrollment/package-summary.html">org.mitre.synthea.export.rif.enrollment</a> - package org.mitre.synthea.export.rif.enrollment</dt>
@@ -7921,6 +8117,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Parse the data from the given CSV file into an Iterator of Maps, where the key is the
  column name.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#parseMapping(java.io.File)">parseMapping(File)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>
+<div class="block">Read the provided file into a Mapping.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#parseSimpleDate(java.lang.String)">parseSimpleDate(String)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>&nbsp;</dd>
@@ -9268,6 +9468,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Record all appropriate state transition information from the given person.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#REFERENCE_FIELDS">REFERENCE_FIELDS</a></span> - Static variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html#%3Cinit%3E(java.lang.Class,java.lang.String)">ReferenceFieldWrapper(Class&lt;? extends Resource&gt;, String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.ReferenceFieldWrapper</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html#%3Cinit%3E(java.lang.String)">ReferenceFieldWrapper(String)</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.ReferenceFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.ReferenceFieldWrapper</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html#referenceTime">referenceTime</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></dt>
 <dd>
 <div class="block">Reference Time when to start Synthea.</div>
@@ -9566,6 +9772,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Run the state.</div>
 </dd>
+<dt><a href="RunFlexporter.html" title="class in &lt;Unnamed&gt;"><span class="typeNameLink">RunFlexporter</span></a> - Class in <a href="package-summary.html">&lt;Unnamed&gt;</a></dt>
+<dd>
+<div class="block">Entrypoint for the "Flexporter" when run as a standalone gradle task.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="RunFlexporter.html#%3Cinit%3E()">RunFlexporter()</a></span> - Constructor for class <a href="RunFlexporter.html" title="class in &lt;Unnamed&gt;">RunFlexporter</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.html#runPostCompletionExports(org.mitre.synthea.engine.Generator)">runPostCompletionExports(Generator)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.html" title="class in org.mitre.synthea.export">Exporter</a></dt>
 <dd>
 <div class="block">Run any exporters that require the full dataset to be generated prior to exporting.</div>
@@ -9677,6 +9889,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Manually set a property.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#set(org.hl7.fhir.r4.model.Resource,org.hl7.fhir.instance.model.api.IBase)">set(Resource, IBase)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>
+<div class="block">Set the given value for the field this FieldWrapper represents on the given resource.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Seed.html#setAddressLines(java.util.List)">setAddressLines(List&lt;String&gt;)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity">Seed</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Variant.html#setAddressLines(java.util.List)">setAddressLines(List&lt;String&gt;)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity">Variant</a></dt>
@@ -9751,6 +9967,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Variant.html#setFamilyName(java.lang.String)">setFamilyName(String)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity">Variant</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#setField(T,java.lang.String,java.lang.Object)">setField(T, String, Object)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">Helper function to set a single value on a resource.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html#setFilename(java.lang.String)">setFilename(String)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/IoMapper.html#setFrom(java.lang.String)">setFrom(String)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></dt>
@@ -9798,6 +10018,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html#setLevel(java.lang.String)">setLevel(String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/ReactionProbabilities.SeverityProbability.html" title="class in org.mitre.synthea.engine">ReactionProbabilities.SeverityProbability</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#setMapping(java.util.Map)">setMapping(Map&lt;String, Object&gt;)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">Setter for the FHIRPath mapping Map instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html#setModel(java.lang.String)">setModel(String)</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html" title="class in org.mitre.synthea.engine">PhysiologySimulator.SimConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#setModel(java.lang.String)">setModel(String)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
@@ -9859,6 +10083,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/EntityManager.html#setRecords(java.util.List)">setRecords(List&lt;Entity&gt;)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/EntityManager.html" title="class in org.mitre.synthea.identity">EntityManager</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html#setResource(T)">setResource(T)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.html" title="class in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4</a></dt>
+<dd>
+<div class="block">Sets the resource to apply FHIRPath changes to.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html#setSecondaryPlan(org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan)">setSecondaryPlan(InsurancePlan)</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Variant.html#setSeed(org.mitre.synthea.identity.Seed)">setSeed(Seed)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity">Variant</a></dt>
@@ -9906,6 +10134,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Updating the method for accounting of the time on which
  the symptom is set.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.html#setter">setter</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19Vaccine.html#setTimeBetweenDoses(long)">setTimeBetweenDoses(long)</a></span> - Method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19Vaccine.html" title="class in org.mitre.synthea.modules.covid">C19Vaccine</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html#setTitle(java.lang.String)">setTitle(String)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.ChartConfig.html" title="class in org.mitre.synthea.helpers">ChartRenderer.ChartConfig</a></dt>
@@ -9934,6 +10164,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/TimeSeriesData.html#setValues(java.util.List)">setValues(List&lt;Double&gt;)</a></span> - Method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/TimeSeriesData.html" title="class in org.mitre.synthea.helpers">TimeSeriesData</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Actions.html#setValues(org.hl7.fhir.r4.model.Bundle,java.util.List,org.mitre.synthea.world.agents.Person,org.mitre.synthea.export.flexporter.FlexporterJavascriptContext)">setValues(Bundle, List&lt;Map&lt;String, Object&gt;&gt;, Person, FlexporterJavascriptContext)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Actions.html" title="class in org.mitre.synthea.export.flexporter">Actions</a></dt>
+<dd>
+<div class="block">Set values on existing resources within the Bundle, based on rules.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/IoMapper.html#setVariance(double)">setVariance(double)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Variant.html#setVariantId(java.lang.String)">setVariantId(String)</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity">Variant</a></dt>
@@ -9962,6 +10196,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#SEXUAL_ORIENTATION">SEXUAL_ORIENTATION</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html#shift(org.hl7.fhir.r4.model.Resource,java.time.temporal.TemporalAmount)">shift(Resource, TemporalAmount)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.DateFieldWrapper</a></dt>
+<dd>
+<div class="block">Shift the value of the field represented by this FieldWrapper by the given amount.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html#%3Cinit%3E()">ShortPayerSerializer()</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/JSONExporter.ShortPayerSerializer.html" title="class in org.mitre.synthea.export">JSONExporter.ShortPayerSerializer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Telemedicine.html#shouldEncounterBeVirtual(org.mitre.synthea.world.agents.Person,long)">shouldEncounterBeVirtual(Person, long)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Telemedicine.html" title="class in org.mitre.synthea.helpers">Telemedicine</a></dt>
@@ -10535,10 +10773,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">A title for this image.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#toDate(java.lang.String)">toDate(String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>
+<div class="block">Convert the given date/time string into a Date.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#toDateTime(java.lang.String)">toDateTime(String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>
+<div class="block">Convert the given date/time string into a DateTime.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/TelemedicineConfig.TelemedicineProbabilities.html#toEnumeratedDistribution()">toEnumeratedDistribution()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/TelemedicineConfig.TelemedicineProbabilities.html" title="class in org.mitre.synthea.world.concepts">TelemedicineConfig.TelemedicineProbabilities</a></dt>
 <dd>
 <div class="block">Turn the configuration information into an actual EnumeratedDistribution which can be used
  to select transitions.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#toInstant(java.lang.String)">toInstant(String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>
+<div class="block">Convert the given date/time string into an Instant.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/IoMapper.html#toModelInputs(org.mitre.synthea.world.agents.Person,long,java.util.Map)">toModelInputs(Person, long, Map&lt;String, Double&gt;)</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/IoMapper.html" title="class in org.mitre.synthea.helpers.physiology">IoMapper</a></dt>
 <dd>
@@ -10594,6 +10844,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.html#totals">totals</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.html" title="class in org.mitre.synthea.world.concepts">Claim</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#toTime(java.lang.String)">toTime(String)</a></span> - Static method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>
+<div class="block">Convert the given date/time string into a Time.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/Seed.html#toVariant()">toVariant()</a></span> - Method in class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/Seed.html" title="class in org.mitre.synthea.identity">Seed</a></dt>
 <dd>
 <div class="block">Wrap the Seed in a Variant.</div>
@@ -10898,6 +11152,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ValueGenerator.html#%3Cinit%3E(org.mitre.synthea.world.agents.Person)">ValueGenerator(Person)</a></span> - Constructor for class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ValueGenerator.html" title="class in org.mitre.synthea.helpers">ValueGenerator</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html#valueInRange(org.hl7.fhir.r4.model.Resource,java.time.LocalDateTime,java.time.LocalDateTime)">valueInRange(Resource, LocalDateTime, LocalDateTime)</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/FieldWrapper.DateFieldWrapper.html" title="class in org.mitre.synthea.export.flexporter">FieldWrapper.DateFieldWrapper</a></dt>
+<dd>
+<div class="block">Tests if the value of the field represented by this FieldWrapper is in the given range.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Distribution.Kind.html#valueOf(java.lang.String)">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
@@ -10915,6 +11173,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html#valueOf(java.lang.String)">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html" title="enum in org.mitre.synthea.export">Exporter.SupportedFhirVersion</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html#valueOf(java.lang.String)">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4.PathType</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
@@ -11023,6 +11285,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html#values()">values()</a></span> - Static method in enum org.mitre.synthea.export.<a href="org/mitre/synthea/export/Exporter.SupportedFhirVersion.html" title="enum in org.mitre.synthea.export">Exporter.SupportedFhirVersion</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html#values()">values()</a></span> - Static method in enum org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4.PathType</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum type, in
 the order they are declared.</div>
@@ -11144,6 +11411,12 @@ the order they are declared.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/ValueSetCodeResolver.html#%3Cinit%3E(org.mitre.synthea.world.agents.Person)">ValueSetCodeResolver(Person)</a></span> - Constructor for class org.mitre.synthea.export.<a href="org/mitre/synthea/export/ValueSetCodeResolver.html" title="class in org.mitre.synthea.export">ValueSetCodeResolver</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">ValueTransforms</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/ValueTransforms.html#%3Cinit%3E()">ValueTransforms()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/ValueTransforms.html" title="class in org.mitre.synthea.export.flexporter">ValueTransforms</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#variables">variables</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/identity/Variant.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">Variant</span></a> - Class in <a href="org/mitre/synthea/identity/package-summary.html">org.mitre.synthea.identity</a></dt>
 <dd>
 <div class="block">A representation of demographic information for a person.</div>
@@ -11231,6 +11504,10 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#WELLNESS">WELLNESS</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html#WHERE_EQUALS">WHERE_EQUALS</a></span> - org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4.PathType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html#WHERE_UNEQUALS">WHERE_UNEQUALS</a></span> - org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4.PathType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Attachment.html#width">width</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Attachment.html" title="class in org.mitre.synthea.engine">Components.Attachment</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/LateAdopterModel.html#willGetShot(org.mitre.synthea.world.agents.Person,long)">willGetShot(Person, long)</a></span> - Method in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/LateAdopterModel.html" title="class in org.mitre.synthea.modules.covid">LateAdopterModel</a></dt>
@@ -11241,6 +11518,8 @@ the order they are declared.</div>
 <dd>
 <div class="block">Determines whether a person will start weight management.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html#WITHOUT_WHERE">WITHOUT_WHERE</a></span> - org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/CustomFHIRPathResourceGeneratorR4.PathType.html" title="enum in org.mitre.synthea.export.flexporter">CustomFHIRPathResourceGeneratorR4.PathType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Attributes.Inventory.html#write">write</a></span> - Variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Attributes.Inventory.html" title="class in org.mitre.synthea.helpers">Attributes.Inventory</a></dt>
 <dd>
 <div class="block">Key: Module Name, Values: State names that write to this attribute.</div>

@@ -2,6 +2,7 @@ unnamed package
 org.mitre.synthea.editors
 org.mitre.synthea.engine
 org.mitre.synthea.export
+org.mitre.synthea.export.flexporter
 org.mitre.synthea.export.rif
 org.mitre.synthea.export.rif.enrollment
 org.mitre.synthea.export.rif.identifiers
