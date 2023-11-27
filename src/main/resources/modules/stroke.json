@@ -1,6 +1,6 @@
 {
   "name": "Stroke",
-  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
+  "specialty": "Cardiovascular Disease (Cardiology)",
   "remarks": [
     "This module is not intended to model clinical workflow, it is intended to funnel eligible patients into heart surgery."
   ],

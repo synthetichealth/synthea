@@ -2335,7 +2335,7 @@ public class StateTest {
     Provider mock = Mockito.mock(Provider.class, withSettings().serializable());
     Mockito.when(mock.getResourceID()).thenReturn("Special-UUID");
     person.preferredProviders.forceRelationship(EncounterType.AMBULATORY,
-        ClinicianSpecialty.CARDIOLOGY, mock);
+        ClinicianSpecialty.CARDIOVASCULAR_DISEASE, mock);
     Module module = TestHelper.getFixture("ahd_with_cardiology.json");
 
     State encounterState = module.getState("Encounter");

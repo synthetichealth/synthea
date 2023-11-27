@@ -494,8 +494,9 @@ public class Provider implements QuadTreeElement, Serializable {
 
         parsed.location = location;
 
-        if (row.get("hasSpecialties") == null
-            || row.get("hasSpecialties").equalsIgnoreCase("false")) {
+        String aSpecialty = ClinicianSpecialty.getSpecialties()[0];
+
+        if (row.get(aSpecialty) == null) {
           parsed.clinicianMap.put(ClinicianSpecialty.GENERAL_PRACTICE,
               parsed.generateClinicianList(1, ClinicianSpecialty.GENERAL_PRACTICE,
                   random));
