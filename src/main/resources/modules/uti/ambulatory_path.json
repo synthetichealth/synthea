@@ -1,8 +1,5 @@
 {
   "name": "UTI_Ambulatory",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",

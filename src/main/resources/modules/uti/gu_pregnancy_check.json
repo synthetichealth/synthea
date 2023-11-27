@@ -1,8 +1,5 @@
 {
   "name": "GU_Pregnancy_Check",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",

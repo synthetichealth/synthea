@@ -1,8 +1,5 @@
 {
   "name": "UTI_ED_Path",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",

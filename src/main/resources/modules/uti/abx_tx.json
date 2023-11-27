@@ -1,8 +1,5 @@
 {
   "name": "Abx_Tx",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",

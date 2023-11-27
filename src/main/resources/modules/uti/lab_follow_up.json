@@ -1,8 +1,5 @@
 {
   "name": "UTI_Lab_Follow_Up",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",

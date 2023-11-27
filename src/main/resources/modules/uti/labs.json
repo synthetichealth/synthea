@@ -1,8 +1,5 @@
 {
   "name": "UTI_Labs",
-  "remarks": [
-    "A blank module"
-  ],
   "states": {
     "Initial": {
       "type": "Initial",
