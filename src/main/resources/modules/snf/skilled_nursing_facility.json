@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Transition_To_SNF_Reason"
+      "direct_transition": "SNF_Admission"
     },
     "SNF_Admission": {
       "type": "Encounter",
@@ -41,8 +41,7 @@
         {
           "transition": "History_Physical_Exam"
         }
-      ],
-      "reason": "Transition_To_SNF_Reason"
+      ]
     },
     "Determine_LOS": {
       "type": "SetAttribute",
@@ -296,7 +295,7 @@
     },
     "End Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "End_Transition_To_SNF_Reason"
+      "direct_transition": "Terminal"
     },
     "Facility_Wheelchair": {
       "type": "Device",
@@ -318,23 +317,6 @@
       "attribute": "snf_days",
       "value": 100,
       "direct_transition": "History_Physical_Exam"
-    },
-    "Transition_To_SNF_Reason": {
-      "type": "ConditionOnset",
-      "target_encounter": "SNF_Admission",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 25675004,
-          "display": "Patient transfer to skilled nursing facility (procedure)"
-        }
-      ],
-      "direct_transition": "SNF_Admission"
-    },
-    "End_Transition_To_SNF_Reason": {
-      "type": "ConditionEnd",
-      "direct_transition": "Terminal",
-      "condition_onset": "Transition_To_SNF_Reason"
     }
   },
   "gmf_version": 1
