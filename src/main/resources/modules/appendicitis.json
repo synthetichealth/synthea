@@ -309,8 +309,7 @@
         "Avg operative time is ~55 minutes",
         "https://www.ncbi.nlm.nih.gov/pubmed/17658102"
       ],
-      "direct_transition": "Appendicitis_Symptom1_Ends",
-      "name": "Appendectomy"
+      "direct_transition": "End_Appendicitis"
     },
     "Appendicitis_Symptom1_Ends": {
       "type": "Symptom",
@@ -407,8 +406,28 @@
     },
     "Transfer_To_Inpatient": {
       "type": "EncounterEnd",
-      "direct_transition": "Appendectomy_Encounter",
-      "name": "Transfer_To_Inpatient"
+      "direct_transition": "Appendectomy_Encounter"
+    },
+    "End_Appendicitis": {
+      "type": "ConditionEnd",
+      "condition_onset": "Appendicitis",
+      "conditional_transition": [
+        {
+          "transition": "End_Rupture",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Rupture"
+          }
+        },
+        {
+          "transition": "Appendicitis_Symptom1_Ends"
+        }
+      ]
+    },
+    "End_Rupture": {
+      "type": "ConditionEnd",
+      "direct_transition": "Appendicitis_Symptom1_Ends",
+      "condition_onset": "Rupture"
     }
   },
   "gmf_version": 1
