@@ -20,7 +20,7 @@
           "display": "Pneumonia (disorder)"
         }
       ],
-      "direct_transition": "End Mild Respiratory Distress"
+      "direct_transition": "End Hypoxemia"
     },
     "End ARDS": {
       "type": "ConditionEnd",
@@ -150,6 +150,17 @@
         }
       ],
       "direct_transition": "End Heart Failure"
+    },
+    "End Hypoxemia": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Mild Respiratory Distress",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 389087006,
+          "display": "Hypoxemia (disorder)"
+        }
+      ]
     }
   },
   "gmf_version": 1
