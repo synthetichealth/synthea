@@ -1,0 +1,139 @@
+{
+  "name": "UTI_ED_Eval",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "UTI_ED_Bundle",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "UTI_ED_Bundle": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ed_bundle",
+      "name": "UTI_ED_Bundle",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 45816000,
+                    "display": "Pyelonephritis"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Hospital admission"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Positive_BldCx",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "Hospital admission"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "transition": "Hospital admission",
+              "distribution": 0.15
+            },
+            {
+              "transition": "Antibiotic therapy",
+              "distribution": 0.85
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Hospital admission",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "esi",
+            "operator": "<=",
+            "value": 2
+          }
+        },
+        {
+          "distributions": [],
+          "transition": "Antibiotic therapy"
+        }
+      ]
+    },
+    "Antibiotic therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 281789004,
+          "display": "Antibiotic therapy (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI_Abx",
+      "name": "Antibiotic therapy"
+    },
+    "UTI_Abx": {
+      "type": "CallSubmodule",
+      "submodule": "uti/abx_tx",
+      "direct_transition": "Patient discharge",
+      "name": "UTI_Abx"
+    },
+    "Patient discharge": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 58000006,
+          "display": "Patient discharge (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Terminal",
+      "name": "Patient discharge"
+    },
+    "Hospital admission": {
+      "type": "Simple",
+      "direct_transition": "Antibiotic therapy",
+      "name": "Hospital admission"
+    }
+  },
+  "gmf_version": 2
+}

@@ -1,0 +1,1077 @@
+{
+  "name": "Abx_Tx",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Male": {
+      "type": "Simple",
+      "name": "Male",
+      "conditional_transition": [
+        {
+          "transition": "Male with Pyelo",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 45816000,
+                "display": "Pyelonephritis"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Male with Cystitis",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 307426000,
+                "display": "Acute infective cystitis (disorder)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Female": {
+      "type": "Simple",
+      "name": "Female",
+      "conditional_transition": [
+        {
+          "transition": "Pregnant Female with Cystitis",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "GU_pregnancy_check",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnancy",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Female_with_Cystitis",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 307426000,
+                "display": "Acute infective cystitis (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Female with Pyelo",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 45816000,
+                "display": "Pyelonephritis"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Male with Pyelo": {
+      "type": "Simple",
+      "name": "Male with Pyelo",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "7984",
+                    "display": "Penicillin V"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10831,
+                    "display": "Sulfamethoxazole / Trimethoprim"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Cipro_500 7 day",
+              "distribution": 0.55
+            },
+            {
+              "transition": "Cepha 10 day",
+              "distribution": 0.24
+            },
+            {
+              "transition": "Cefpo 200",
+              "distribution": 0.20999999999999996
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Sulfa 10 day",
+              "distribution": 0.05
+            },
+            {
+              "transition": "AmxClav 875, 10 day",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Cipro_500 7 day",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Cepha 5 day",
+              "distribution": 0.22
+            },
+            {
+              "transition": "Cefpo 200",
+              "distribution": 0.18
+            }
+          ]
+        }
+      ]
+    },
+    "Male with Cystitis": {
+      "type": "Simple",
+      "name": "Male with Cystitis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "7984",
+                    "display": "Penicillin V"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10831,
+                    "display": "Sulfamethoxazole / Trimethoprim"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Cepha 7 day",
+              "distribution": 0.1667
+            },
+            {
+              "transition": "Cipro 500, 5 day",
+              "distribution": 0.8332999999999999
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Nitro 7 day",
+              "distribution": 0.08
+            },
+            {
+              "transition": "Sulfa 7 day",
+              "distribution": 0.21
+            },
+            {
+              "transition": "AmxClav 875, 7 day",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Cepha 7 day",
+              "distribution": 0.11
+            },
+            {
+              "transition": "Cipro 500, 5 day",
+              "distribution": 0.55
+            }
+          ]
+        }
+      ]
+    },
+    "Nitro 5 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1648755,
+          "display": "nitrofurantoin, macrocrystals 25 MG / nitrofurantoin, monohydrate 75 MG Oral Capsule",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "direct_transition": "ED Check",
+      "name": "Nitro 5 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 5,
+          "unit": "days"
+        }
+      }
+    },
+    "Nitro 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1648756,
+          "display": "nitrofurantoin, macrocrystals 25 MG / nitrofurantoin, monohydrate 75 MG Oral Capsule",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Nitro 7 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Fosfo": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 808917,
+          "display": "fosfomycin 3000 MG Powder",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Fosfo",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "assign_to_attribute": "UTI_Tx",
+      "direct_transition": "ED Check"
+    },
+    "Sulfa 3 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198335,
+          "display": "sulfamethoxazole 800 MG / trimethoprim 160 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Sulfa 3 day",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 3,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check",
+      "assign_to_attribute": "UTI_Tx"
+    },
+    "Sulfa 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198335,
+          "display": "sulfamethoxazole 800 MG / trimethoprim 160 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Sulfa 7 day",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check",
+      "assign_to_attribute": "UTI_Tx"
+    },
+    "Sulfa 10 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 198335,
+          "display": "sulfamethoxazole 800 MG / trimethoprim 160 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Sulfa 10 day",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check",
+      "assign_to_attribute": "UTI_Tx"
+    },
+    "AmxClav 500, 5 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 617296,
+          "display": "amoxicillin 500 MG / clavulanate 125 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "AmxClav 500, 5 day",
+      "assign_to_attribute": "UTI_Tx",
+      "direct_transition": "ED Check"
+    },
+    "AmxClav 875, 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 562508,
+          "display": "amoxicillin 875 MG / clavulanate 125 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "AmxClav 875, 7 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "AmxClav 875, 10 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 562508,
+          "display": "amoxicillin 875 MG / clavulanate 125 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "AmxClav 875, 10 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Amox 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 308192,
+          "display": "amoxicillin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Amox 7 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 3,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cepha 5 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197454,
+          "display": "cephalexin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cepha 5 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 5,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cepha 10 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197454,
+          "display": "cephalexin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cepha 10 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cepha 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197454,
+          "display": "cephalexin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cepha 7 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 4,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cipro 250, 3 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 197511,
+          "display": "ciprofloxacin 250 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cipro 250, 3 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 2,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 3,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cipro 500, 5 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309309,
+          "display": "ciprofloxacin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cipro 500, 5 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 5,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cipro_500 7 day": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309309,
+          "display": "ciprofloxacin 500 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cipro_500 7 day",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 7,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cefpo 100": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309076,
+          "display": "cefpodoxime 100 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cefpo 100",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 5,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Cefpo 200": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 309078,
+          "display": "cefpodoxime 200 MG Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Cefpo 200",
+      "assign_to_attribute": "UTI_Tx",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 2,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 10,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "ED Check"
+    },
+    "Ceftriaxone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1665021,
+          "display": "ceftriaxone 1000 MG Injection",
+          "value_set": ""
+        }
+      ],
+      "reason": "uti",
+      "name": "Ceftriaxone",
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
+      "direct_transition": "Terminal",
+      "administration": true
+    },
+    "ED Check": {
+      "type": "Simple",
+      "name": "ED Check",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "UTI_ED",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 45816000,
+                    "display": "Pyelonephritis"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "ED and Pyelo",
+              "distribution": 0.75
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.25
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Female_with_Cystitis": {
+      "type": "Simple",
+      "name": "Female_with_Cystitis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "7984",
+                    "display": "Penicillin V"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10831,
+                    "display": "Sulfamethoxazole / Trimethoprim"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Fosfo",
+              "distribution": 0.075
+            },
+            {
+              "transition": "Cepha 5 day",
+              "distribution": 0.475
+            },
+            {
+              "transition": "Cipro 250, 3 day",
+              "distribution": 0.4500000000000002
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Nitro 5 day",
+              "distribution": 0.4
+            },
+            {
+              "transition": "Fosfo",
+              "distribution": 0.03
+            },
+            {
+              "transition": "Sulfa 3 day",
+              "distribution": 0.12
+            },
+            {
+              "transition": "AmxClav 500, 5 day",
+              "distribution": 0.08
+            },
+            {
+              "transition": "Cepha 5 day",
+              "distribution": 0.19
+            },
+            {
+              "transition": "Cipro 250, 3 day",
+              "distribution": 0.17999999999999994
+            }
+          ]
+        }
+      ]
+    },
+    "Pregnant Female with Cystitis": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "7984",
+                    "display": "Penicillin V"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10831,
+                    "display": "Sulfamethoxazole / Trimethoprim"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Cepha 7 day",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Cefpo 100",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Nitro 5 day",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Amox 7 day",
+              "distribution": 0.12
+            },
+            {
+              "transition": "AmxClav 875, 7 day",
+              "distribution": 0.26
+            },
+            {
+              "transition": "Cepha 7 day",
+              "distribution": 0.26
+            },
+            {
+              "transition": "Cefpo 100",
+              "distribution": 0.26
+            },
+            {
+              "transition": "Sulfa 3 day",
+              "distribution": 0.05
+            }
+          ]
+        }
+      ],
+      "name": "Pregnant Female with Cystitis"
+    },
+    "Female with Pyelo": {
+      "type": "Simple",
+      "name": "Female with Pyelo",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">=",
+                "value": 4
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": "7984",
+                    "display": "Penicillin V"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Allergy",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 10831,
+                    "display": "Sulfamethoxazole / Trimethoprim"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Cipro 500, 5 day",
+              "distribution": 0.231
+            },
+            {
+              "transition": "Cepha 10 day",
+              "distribution": 0.41
+            },
+            {
+              "transition": "Cefpo 200",
+              "distribution": 0.359
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Sulfa 10 day",
+              "distribution": 0.1
+            },
+            {
+              "transition": "AmxClav 875, 10 day",
+              "distribution": 0.12
+            },
+            {
+              "transition": "Cipro_500 7 day",
+              "distribution": 0.18
+            },
+            {
+              "transition": "Cepha 10 day",
+              "distribution": 0.32
+            },
+            {
+              "transition": "Cefpo 200",
+              "distribution": 0.28
+            }
+          ]
+        }
+      ]
+    },
+    "ED and Pyelo": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 197511,
+                    "display": "Cipro 250"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Medication",
+                "codes": [
+                  {
+                    "system": "RxNorm",
+                    "code": 309309,
+                    "display": "Cipro 500"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Ceftriaxone"
+        }
+      ],
+      "name": "ED and Pyelo"
+    }
+  },
+  "gmf_version": 2
+}

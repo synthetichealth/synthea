@@ -1,0 +1,685 @@
+{
+  "name": "UTI_Labs",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Collection",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Collection": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 57617002,
+          "display": "Urine specimen collection (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "name": "Collection",
+      "conditional_transition": [
+        {
+          "transition": "Dipstick",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_ambulatory",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Urinalysis Micro"
+        }
+      ]
+    },
+    "Dipstick": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 167226008,
+          "display": "Urine dipstick test (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Record_Urinalysis",
+      "name": "Dipstick"
+    },
+    "Record_Urinalysis": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24357-6",
+          "display": "Urinalysis macro (dipstick) panel - Urine",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5792-7",
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 0,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167287002,
+            "display": "Urine ketone test negative (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.005,
+            "high": 1.03
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pH",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5804-0",
+              "display": "Protein [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 14
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 314137006,
+            "display": "Urine nitrite positive (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167300001,
+            "display": "Urine blood test = + (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 394712000,
+            "display": "Urine leukocyte test = + (finding)"
+          }
+        }
+      ],
+      "name": "Record_Urinalysis",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 45816000,
+                "display": "Pyelonephritis"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Urine Culture",
+              "distribution": 0.95
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.05
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 307426000,
+                "display": "Acute infective cystitis (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Urine Culture",
+              "distribution": 0.55
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.44999999999999996
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Urinalysis Micro": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 441550005,
+          "display": "Urinalysis with reflex to microscopy and culture (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Record_Urinalysis_Micro",
+      "name": "Urinalysis Micro"
+    },
+    "Record_Urinalysis_Micro": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24357-6",
+          "display": "Urinalysis macro (dipstick) panel - Urine",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5792-7",
+              "display": "Glucose [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "unit": "mg/dL",
+          "range": {
+            "low": 0,
+            "high": 15
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2514-8",
+              "display": "Ketones [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167287002,
+            "display": "Urine ketone test negative (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5811-5",
+              "display": "Specific gravity of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 1.005,
+            "high": 1.03
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "pH",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5803-2",
+              "display": "pH of Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 5,
+            "high": 7
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "mg/dL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5804-0",
+              "display": "Protein [Mass/volume] in Urine by Test strip"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 14
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5802-4",
+              "display": "Nitrite [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 314137006,
+            "display": "Urine nitrite positive (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5794-3",
+              "display": "Hemoglobin [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167300001,
+            "display": "Urine blood test = + (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5799-2",
+              "display": "Leukocyte esterase [Presence] in Urine by Test strip"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 394712000,
+            "display": "Urine leukocyte test = + (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "/[HPF]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5821-4",
+              "display": "WBCs"
+            }
+          ],
+          "range": {
+            "low": 11,
+            "high": 50
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "/[HPF]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "13945-1",
+              "display": "RBCs"
+            }
+          ],
+          "range": {
+            "low": 1,
+            "high": 3
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "/[HPF]",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5787-7",
+              "display": "Epithelial Cells"
+            }
+          ],
+          "range": {
+            "low": 0,
+            "high": 4
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "24124-0",
+              "display": "Casts"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 167336003,
+            "display": "Urine microscopy: no casts (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8247-9",
+              "display": "Mucus Threads"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 276409005,
+            "display": "Mucus in urine (finding)"
+          }
+        },
+        {
+          "category": "laboratory",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "5769-5",
+              "display": "Bacteria"
+            }
+          ],
+          "value_code": {
+            "system": "SNOMED-CT",
+            "code": 365691004,
+            "display": "Finding of presence of bacteria (finding)"
+          }
+        }
+      ],
+      "name": "Record_Urinalysis_Micro",
+      "direct_transition": "Urine Culture Result"
+    },
+    "Urine Culture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 117010004,
+          "display": "Urine culture (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Urine Culture Result",
+      "name": "Urine Culture",
+      "assign_to_attribute": "UTI_Lab_Send_Out"
+    },
+    "Urine Culture Result": {
+      "type": "Simple",
+      "name": "Urine Culture Result",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "UTI_Ambulatory",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "UTI_Tx",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "No Growth",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "E Coli",
+              "distribution": 0.76
+            },
+            {
+              "transition": "Klebsiella",
+              "distribution": 0.09
+            },
+            {
+              "transition": "Enterococcus",
+              "distribution": 0.05
+            },
+            {
+              "transition": "Proteus",
+              "distribution": 0.04
+            },
+            {
+              "transition": "Pseudomonas",
+              "distribution": 0.02
+            },
+            {
+              "transition": "Klebsiella oxytoca",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Citrobacter",
+              "distribution": 0.01
+            },
+            {
+              "transition": "Staphylococcus",
+              "distribution": 0.01
+            }
+          ]
+        }
+      ]
+    },
+    "E Coli": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "E Coli",
+      "value": "Greater than 100,000 colony forming units per mL Escherichia coli"
+    },
+    "Klebsiella": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Klebsiella",
+      "value": "Greater than 100,000 colony forming units per mL Klebsiella pneumoniae"
+    },
+    "Enterococcus": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Enterococcus",
+      "value": "Greater than 100,000 colony forming units per mL Enterococcus faecalis"
+    },
+    "Proteus": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Proteus",
+      "value": "Greater than 100,000 colony forming units per mL Proteus mirabilis"
+    },
+    "Pseudomonas": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Pseudomonas",
+      "value": "Greater than 100,000 colony forming units per mL Pseudomonas aeruginosa"
+    },
+    "Klebsiella oxytoca": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Klebsiella oxytoca",
+      "value": "Greater than 100,000 colony forming units per mL Klebsiella oxytoca"
+    },
+    "Citrobacter": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Citrobacter",
+      "value": "Greater than 100,000 colony forming units per mL Citrobacter freundii complex"
+    },
+    "Staphylococcus": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Observe Bacteria",
+      "name": "Staphylococcus",
+      "value": "Greater than 100,000 colony forming units per mL Staphylococcus aureus"
+    },
+    "No Growth": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "630-4",
+          "display": "Bacteria identified in Urine by Culture",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "No Growth",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 264868006,
+        "display": "No growth (qualifier value)"
+      }
+    },
+    "Observe Bacteria": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "630-4",
+          "display": "Bacteria identified in Urine by Culture",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Observe Bacteria",
+      "attribute": "UTI_Bacteria"
+    }
+  },
+  "gmf_version": 2
+}

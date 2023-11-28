@@ -2,6 +2,7 @@ package org.mitre.synthea.world.concepts;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import org.mitre.synthea.helpers.Utilities;
  * in the simulation and their insurance. Some insurance types, or lack thereof will have higher
  * utilization of the emergency department.
  */
-public class TelemedicineConfig {
+public class TelemedicineConfig implements Serializable {
   public static final String AMBULATORY = "ambulatory";
   public static final String EMERGENCY = "emergency";
   public static final String TELEMEDICINE = "telemedicine";

@@ -1,0 +1,239 @@
+{
+  "name": "UTI_Ambulatory",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "direct_transition": "UTI Diagnosis"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Evaluation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 183444007,
+          "display": "Referral for further care (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 30,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "name": "Evaluation",
+      "direct_transition": "End Ambulatory Encounter",
+      "assign_to_attribute": "UTI_Care_Referral"
+    },
+    "Exam": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 67879005,
+          "display": "History and physical examination, limited (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "minutes",
+      "name": "Exam",
+      "direct_transition": "Risk Check"
+    },
+    "UTI_Ambulatory_Eval": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ambulatory_eval",
+      "name": "UTI_Ambulatory_Eval",
+      "direct_transition": "End Ambulatory Encounter"
+    },
+    "Risk Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnancy",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 45816000,
+                    "display": "Pyelonephritis"
+                  }
+                ]
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "Evaluation"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.1,
+              "transition": "Evaluation"
+            },
+            {
+              "transition": "UTI_Ambulatory_Eval",
+              "distribution": 0.9
+            }
+          ]
+        }
+      ],
+      "name": "Risk Check"
+    },
+    "End Ambulatory Encounter": {
+      "type": "EncounterEnd",
+      "name": "End Ambulatory Encounter",
+      "conditional_transition": [
+        {
+          "transition": "Delay 24 to 48 hours",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Lab_SendOut",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Delay 0 to 48 hours",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Care_Referral",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Delay 24 to 48 hours": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 24
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Telephone Encounter",
+      "name": "Delay 24 to 48 hours"
+    },
+    "Delay 0 to 48 hours": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 0
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Emergency Follow-up",
+      "name": "Delay 0 to 48 hours"
+    },
+    "Telephone Encounter": {
+      "type": "Encounter",
+      "encounter_class": "virtual",
+      "reason": "",
+      "telemedicine_possibility": "always",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "UTI_Lab_FollowUp",
+      "name": "Telephone Encounter"
+    },
+    "UTI_Lab_FollowUp": {
+      "type": "CallSubmodule",
+      "submodule": "uti/lab_follow_up",
+      "direct_transition": "End Telephone Encounter",
+      "name": "UTI_Lab_FollowUp"
+    },
+    "End Telephone Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "name": "End Telephone Encounter"
+    },
+    "Emergency Follow-up": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Set UTI_ED",
+      "name": "Emergency Follow-up"
+    },
+    "UTI_ED_Eval": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ed_eval",
+      "direct_transition": "End ED Follow-up",
+      "name": "UTI_ED_Eval"
+    },
+    "End ED Follow-up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "name": "End ED Follow-up"
+    },
+    "Set UTI_ED": {
+      "type": "SetAttribute",
+      "attribute": "UTI_ED",
+      "direct_transition": "UTI_ED_Eval",
+      "name": "Set UTI_ED",
+      "value": true
+    },
+    "UTI Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "uti",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom",
+          "value_set": ""
+        }
+      ],
+      "name": "UTI Diagnosis",
+      "direct_transition": "UTI_HPI"
+    },
+    "UTI_HPI": {
+      "type": "CallSubmodule",
+      "submodule": "uti/hpi",
+      "direct_transition": "Exam",
+      "name": "UTI_HPI"
+    }
+  },
+  "gmf_version": 2
+}
