@@ -18,8 +18,7 @@
         }
       ],
       "direct_transition": "Referral_Home_Health_Care",
-      "encounter_class": "urgentcare",
-      "reason": "Transition_To_Home"
+      "encounter_class": "urgentcare"
     },
     "Referral_Home_Health_Care": {
       "type": "Procedure",
@@ -64,8 +63,7 @@
         }
       ],
       "direct_transition": "Initial_Patient_Assessment",
-      "encounter_class": "home",
-      "reason": "Transition_To_Home"
+      "encounter_class": "home"
     },
     "Initial_Patient_Assessment": {
       "type": "Procedure",
@@ -125,8 +123,7 @@
         }
       ],
       "direct_transition": "Begin_Visit",
-      "encounter_class": "home",
-      "reason": "Transition_To_Home"
+      "encounter_class": "home"
     },
     "Begin_Visit": {
       "type": "Counter",
@@ -225,7 +222,7 @@
           "display": "Patient discharge (procedure)"
         }
       ],
-      "direct_transition": "End_Transition_To_Home"
+      "direct_transition": "Last Visit"
     },
     "Nursing_Care": {
       "type": "Procedure",
@@ -352,30 +349,13 @@
           }
         ]
       },
-      "direct_transition": "Transition_To_Home"
+      "direct_transition": "Face_to_Face_Encounter"
     },
     "Reset Home Health": {
       "type": "SetAttribute",
       "attribute": "home_health",
       "direct_transition": "Wait Until Home Health",
       "value": false
-    },
-    "Transition_To_Home": {
-      "type": "ConditionOnset",
-      "target_encounter": "Face_to_Face_Encounter",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 1871000124103,
-          "display": "Transition from acute care to home-health care (finding)"
-        }
-      ],
-      "direct_transition": "Face_to_Face_Encounter"
-    },
-    "End_Transition_To_Home": {
-      "type": "ConditionEnd",
-      "direct_transition": "Last Visit",
-      "condition_onset": "Transition_To_Home"
     }
   },
   "gmf_version": 1
