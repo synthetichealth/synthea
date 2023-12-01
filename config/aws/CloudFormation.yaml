@@ -1,0 +1,161 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Sets up an Synthea on Amazon EC2 Instance
+
+Parameters:
+  InstanceType:
+    Type: String
+    Description: Instance type for Synth. Default is t2.micro.
+    AllowedValues:
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - m4.16xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - r4.large
+      - r4.xlarge
+      - r4.2xlarge
+      - r4.4xlarge
+      - r4.8xlarge
+      - r4.16xlarge
+      - g2.2xlarge
+      - g2.8xlarge
+      - p2.xlarge
+      - p2.8xlarge
+      - p2.16xlarge
+      - g3.4xlarge
+      - g3.8xlarge
+      - g3.16xlarge
+    ConstraintDescription: Valid instance type in the t23 m4, c4, r4, g2, p2, and g3 families
+    Default: t3.large
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC this server will reside in
+  MyIp:
+    Type: String
+    Description: Provide your Public IP (you can find your ip address by visiting - https://whatismyipaddress.com/)
+    Default: 0.0.0.0/0
+  KeyPair:
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Description: Amazon EC2 Key Pair
+  SubnetId:
+    Type: "AWS::EC2::Subnet::Id"
+    Description: Subnet ID your instance will launch in. 
+  
+Resources:
+  SyntheOutPutS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join 
+        - '-'
+        - - synthea-output
+          - !Ref 'AWS::AccountId'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  SyntheaInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Path: /
+      Roles: 
+       - !Ref SyntheaRole
+
+  SyntheaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies: 
+        - PolicyName: "S3InlinePolicy"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action: ["s3:ListBucket","s3:GetObject","s3:PutObject","s3:DeleteObject"]
+                Resource:
+                  - "arn:aws:s3:::synthea-output*"
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+              
+
+  SyntheaEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Synthea Security Group
+      VpcId: !Ref VpcId
+ 
+  SecurityGroupIngressMySSH:
+    Type: AWS::EC2::SecurityGroupIngress    
+    Properties:
+        Description: "Allow SSH connections from MyIp"
+        GroupId: !Ref SyntheaEC2SecurityGroup
+        CidrIp: !Sub "${MyIp}"
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+ 
+  SyntheaNetworkInterface:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId: !Ref SubnetId
+      Description: Interface for the Connection
+      GroupSet:
+      - !Ref SyntheaEC2SecurityGroup
+      SourceDestCheck: true
+
+  SyntheaEC2Instance:
+    Type: AWS::EC2::Instance
+    Metadata:
+      'AWS::CloudFormation::Init':
+        config:
+          files:
+            /tmp/test.txt:
+              content: Hello world!
+              mode: '000755'
+              owner: root
+              group: root  
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPair
+      IamInstanceProfile: !Ref SyntheaInstanceProfile
+      NetworkInterfaces:
+        - NetworkInterfaceId: !Ref SyntheaNetworkInterface
+          DeviceIndex: 0
+      Tags:
+      - Key: Name
+        Value: Synthea
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          cd /home/ec2-user/
+          sudo yum -y install java-17-amazon-corretto-headless
+          wget https://github.com/synthetichealth/synthea/releases/download/master-branch-latest/synthea-with-dependencies.jar
+          
+Outputs:
+  PublicIp: 
+    Value: !GetAtt SyntheaEC2Instance.PublicIp

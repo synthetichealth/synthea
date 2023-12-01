@@ -1,0 +1,55 @@
+{
+  "name": "UTI_ED_Path",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "UTI Diagnosis",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "UTI Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185345009,
+          "display": "Encounter for symptom",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Set_UTI_ED",
+      "name": "UTI Diagnosis",
+      "reason": "uti"
+    },
+    "Set_UTI_ED": {
+      "type": "SetAttribute",
+      "attribute": "UTI_ED",
+      "name": "Set_UTI_ED",
+      "value": true,
+      "direct_transition": "UTI_HPI"
+    },
+    "UTI_ED_Eval": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ed_eval",
+      "name": "UTI_ED_Eval",
+      "direct_transition": "End_ED_Follow_up"
+    },
+    "End_ED_Follow_up": {
+      "type": "EncounterEnd",
+      "name": "End_ED_Follow_up",
+      "direct_transition": "Terminal"
+    },
+    "UTI_HPI": {
+      "type": "CallSubmodule",
+      "submodule": "uti/hpi",
+      "name": "UTI_HPI",
+      "direct_transition": "UTI_ED_Eval"
+    }
+  },
+  "gmf_version": 2
+}

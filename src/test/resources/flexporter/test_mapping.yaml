@@ -1,0 +1,203 @@
+---
+# name is just a friendly name for this mapping
+name: Random Testing
+
+# applicability determines whether this mapping applies to a given file.
+# for now the assumption is 1 file = 1 synthea patient bundle.
+applicability: true
+
+actions:
+ - name: Apply Profiles
+   # v1: define specific profiles and an applicability statement on when to apply them
+   # v1.1: allow specifying a field from the profile to key off of (ex. mCode TNMPrimaryTumorCategory.code)
+   # maybe v2 will automatically infer?
+   # some of the challenges to keep in mind:
+   #  - what if the resource doesn't conform to the profile yet? 
+   #    we should make sure we can take other actions before applying profiles, 
+   #    or manually specify where to apply profiles so that we can apply other fixes based on profile later.
+   profiles:
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient
+     applicability: Patient
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter
+     applicability: Encounter
+
+
+
+ - name: testSetValues
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.birthDate
+           value: !!str "1987-06-05"
+
+
+ - name: testSetValues_getField
+   set_values:
+     - applicability: Immunization
+       fields:
+         - location: Immunization.recorded
+           value: $getField([Immunization.occurrence])
+           # TODO: occurrence is a choice type,
+           # it would be nice to put "occurrenceDateTime" here
+           # since that's what's actually in the JSON
+           # but that doesn't seem to work with HAPI's FhirPath
+
+
+ - name: testSetValues_getField_diff_applicability
+   set_values:
+     - applicability: Procedure.performed.ofType(Period)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed.start])
+     - applicability: Procedure.performed.ofType(dateTime)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed])
+
+ - name: testSetValues_overwrite
+   set_values:
+     - applicability: Observation
+       fields:
+         - location: Observation.effectiveInstant
+           value: $getField([Observation.effective])
+     #     - location: Observation.referenceRange.text
+     #       value: sample reference range text
+     #     - location: Observation.valueString
+     #       value: string value here
+     #     - location: Observation.derivedFrom.reference
+     #       value: $findRef([Observation]) 
+
+
+
+ - name: testSetValues_transform
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.birthDate.extension.where(url='http://hl7.org/fhir/StructureDefinition/patient-birthTime').valueDateTime
+           value: $getField([Patient.birthDate])
+           transform: toDateTime
+
+
+
+ - name: testSetValues_object
+   set_values:
+     - applicability: Patient
+       fields:
+         - location: Patient.maritalStatus.coding
+           value:
+               system: http://snomedct.io
+               code: "36629006"
+               display: "Legally married (finding)"
+
+
+
+ - name: testCreateResources_createSingle
+   create_resource: 
+     - resourceType: ServiceRequest
+       profiles:
+         - http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest
+       fields:
+         - location: ServiceRequest.status
+           value: active
+         - location: ServiceRequest.subject.reference
+           value: $findRef([Patient])
+
+
+
+ - name: testCreateResources_createBasedOn
+   create_resource: 
+     - resourceType: ServiceRequest
+       based_on: 
+         resource: Procedure
+       fields:
+         - location: ServiceRequest.intent
+           value: plan
+         - location: ServiceRequest.encounter.reference
+           value: $getField([Procedure.encounter.reference])
+         - location: ServiceRequest.subject.reference
+           value: $findRef([Patient])
+         - location: ServiceRequest.code
+           value: $getField([Procedure.code])
+
+         # this works if the VS is loaded but otherwise tries to make a network lookup
+         # so disable for now
+         # - location: ServiceRequest.code.coding
+         #   value: $randomCode([http://hl7.org/fhir/us/mcode/ValueSet/mcode-laterality-vs])
+
+       # TODO: is "writeback" the best term here?
+       writeback:
+         - location: Procedure.basedOn.reference
+           value: $setRef([ServiceRequest])
+
+ - name: testCreateResources_createBasedOnState
+   create_resource: 
+     - resourceType: MedicationRequest
+       based_on: 
+         module: Sinusitis
+         state: Prescribe_Alternative_Antibiotic
+       profiles:
+         - http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested
+       fields:
+         - location: MedicationRequest.doNotPerform
+           value: "true"
+         - location: MedicationRequest.status
+           value: completed
+         - location: MedicationRequest.intent
+           value: order
+         # - location: MedicationRequest.encounter.reference
+         #   value: $getField([Procedure.encounter.reference])
+         - location: MedicationRequest.subject.reference
+           value: $findRef([Patient])
+         # - location: MedicationRequest.medicationCodeableConcept
+         #   value: $getField([Procedure.code])
+         - location: MedicationRequest.authoredOn
+           value: $getField([State.entered])
+
+ - name: testCreateResources_getAttribute
+   create_resource: 
+     - resourceType: Patient
+       fields:
+         - location: Patient.name.text
+           value: $getAttribute([name])
+         - location: Patient.name.given
+           value: $getAttribute([first_name])
+         - location: Patient.name.family
+           value: $getAttribute([last_name])
+
+ - name: testExecuteScript
+   execute_script:
+     - apply_to: bundle
+       function_name: apply
+       function: |
+          function apply(bundle) {
+            bundle['entry'][0]['resource']['meta'] = {profile: ['http://example.com/dummy-profile']}
+          }
+     - apply_to: resource
+       function_name: apply2
+       resource_type: Patient
+       function: |
+         function apply2(resource, bundle) {
+           resource.birthDate = '2022-02-22';
+         }
+
+ - name: testShiftDates
+   shift_dates: P-1Y
+   # P[n]Y[n]M[n]DT[n]H[n]M[n]S
+
+ - name: testDateFilter
+   min_date: !!str "2000-01-01T00:00:00"
+   max_date: !!str "2000-12-31T23:59:59"
+
+ - name: testKeepResources
+   keep_resources:
+     - Patient
+     - Encounter
+     - Condition
+
+ - name: testDeleteResources
+   delete_resources:
+     - Provenance
+
+ - name: testDeleteResourcesCascade
+   delete_resources:
+     - Patient

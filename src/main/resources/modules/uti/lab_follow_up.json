@@ -1,0 +1,168 @@
+{
+  "name": "UTI_Lab_Follow_Up",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Inform Patient",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Inform Patient": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 165355002,
+          "display": "Patient informed - test result (situation)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Lab Finding Education",
+      "name": "Inform Patient"
+    },
+    "Lab Finding Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 410299006,
+          "display": "Lab findings education, guidance, and counseling (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Discussion",
+      "name": "Lab Finding Education"
+    },
+    "Discussion": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 223484005,
+          "display": "Discussion about treatment (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "name": "Discussion",
+      "conditional_transition": [
+        {
+          "transition": "Evaluate Abx Response",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "UTI_Tx",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Prescribe Abx"
+        }
+      ]
+    },
+    "Prescribe Abx": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 33633005,
+          "display": "Prescription of drug (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI Abx Tx Sub",
+      "name": "Prescribe Abx"
+    },
+    "UTI Abx Tx Sub": {
+      "type": "CallSubmodule",
+      "submodule": "uti/abx_tx",
+      "direct_transition": "Terminal",
+      "name": "UTI Abx Tx Sub"
+    },
+    "Evaluate Abx Response": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225953001,
+          "display": "Evaluating response to treatment (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "name": "Evaluate Abx Response",
+      "distributed_transition": [
+        {
+          "transition": "Stop UTI Abx",
+          "distribution": 0.14
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.8599999999999999
+        }
+      ]
+    },
+    "Stop UTI Abx": {
+      "type": "MedicationEnd",
+      "direct_transition": "Change Treatment",
+      "name": "Stop UTI Abx",
+      "referenced_by_attribute": "UTI_Tx"
+    },
+    "Change Treatment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 445528004,
+          "display": "Treatment changed (situation)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI Abx Tx Sub",
+      "name": "Change Treatment"
+    }
+  },
+  "gmf_version": 2
+}

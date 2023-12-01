@@ -27,6 +27,9 @@ jobs:
             
       - name: Create Artifacts
         run: |
+          ./generate_samples.sh
+          # delete uncompressed output, sample zips are in ./samples/
+          rm -rf output/
           ./gradlew uberJar javadoc graphviz
           mkdir -p output/build/javadoc
           mv build/docs/javadoc/* output/build/javadoc
@@ -84,6 +87,17 @@ jobs:
           user_email: 'jwalonoski@mitre.org'
           commit_message: rebuild graphs, javadoc and binary distribution at
           # note the commit SHA is appended automatically
+
+      - name: Push samples to sample repo
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.PUSH_SAMPLE_DATA_SSH_KEY }}
+        with:
+          source-directory: 'samples'
+          destination-github-username: 'synthetichealth'
+          destination-repository-name: 'synthea-sample-data'
+          target-directory: 'downloads/latest'
+          target-branch: main
 
       - name: Slack Notification on Failure
         uses: 8398a7/action-slack@v3

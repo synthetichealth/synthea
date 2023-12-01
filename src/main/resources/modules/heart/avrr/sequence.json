@@ -351,7 +351,7 @@
     },
     "Referral and Preoperative Testing": {
       "type": "CallSubmodule",
-      "submodule": "heart/avrr/referral",
+      "submodule": "heart/avrr/avrr_referral",
       "conditional_transition": [
         {
           "transition": "Terminal",
