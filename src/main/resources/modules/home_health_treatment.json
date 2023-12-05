@@ -352,13 +352,40 @@
           }
         ]
       },
-      "direct_transition": "Face_to_Face_Encounter"
+      "conditional_transition": [
+        {
+          "transition": "Default_Home_Health_Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "home_health_reason",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Face_to_Face_Encounter"
+        }
+      ]
     },
     "Reset Home Health": {
       "type": "SetAttribute",
       "attribute": "home_health",
-      "direct_transition": "Wait Until Home Health",
+      "direct_transition": "Reset Home Health Reason",
       "value": false
+    },
+    "Default_Home_Health_Reason": {
+      "type": "SetAttribute",
+      "attribute": "home_health_reason",
+      "direct_transition": "Face_to_Face_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "1871000124103",
+        "display": "Transition from acute care to home-health care (finding)"
+      }
+    },
+    "Reset Home Health Reason": {
+      "type": "SetAttribute",
+      "attribute": "home_health_reason",
+      "direct_transition": "Wait Until Home Health"
     }
   },
   "gmf_version": 1

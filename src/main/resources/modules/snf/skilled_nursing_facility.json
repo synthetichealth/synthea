@@ -308,7 +308,7 @@
     },
     "End Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Clear SNF Reason"
     },
     "Facility_Wheelchair": {
       "type": "Device",
@@ -340,6 +340,11 @@
         "code": "25675004",
         "display": "Patient transfer to skilled nursing facility (procedure)"
       }
+    },
+    "Clear SNF Reason": {
+      "type": "SetAttribute",
+      "attribute": "snf_reason",
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 1
