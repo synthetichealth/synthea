@@ -394,6 +394,10 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
+        },{
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }
       ],
       "distribution": {
@@ -455,6 +459,10 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
+        },{
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }
       ],
       "distribution": {
@@ -583,6 +591,10 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
+        },{
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }
       ],
       "distribution": {
@@ -690,6 +702,10 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
+        },{
+          "system": "LOINC",
+          "code": "59408-5",
+          "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
         }
       ],
       "distribution": {
