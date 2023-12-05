@@ -6,7 +6,19 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Transition_To_SNF_Reason"
+      "conditional_transition": [
+        {
+          "transition": "Transition_To_SNF_Reason",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "snf_reason",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "SNF_Admission"
+        }
+      ]
     },
     "SNF_Admission": {
       "type": "Encounter",
