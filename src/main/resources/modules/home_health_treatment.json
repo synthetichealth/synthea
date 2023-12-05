@@ -18,7 +18,8 @@
         }
       ],
       "direct_transition": "Referral_Home_Health_Care",
-      "encounter_class": "urgentcare"
+      "encounter_class": "urgentcare",
+      "reason": "home_health_reason"
     },
     "Referral_Home_Health_Care": {
       "type": "Procedure",
@@ -63,7 +64,8 @@
         }
       ],
       "direct_transition": "Initial_Patient_Assessment",
-      "encounter_class": "home"
+      "encounter_class": "home",
+      "reason": "home_health_reason"
     },
     "Initial_Patient_Assessment": {
       "type": "Procedure",
@@ -123,7 +125,8 @@
         }
       ],
       "direct_transition": "Begin_Visit",
-      "encounter_class": "home"
+      "encounter_class": "home",
+      "reason": "home_health_reason"
     },
     "Begin_Visit": {
       "type": "Counter",

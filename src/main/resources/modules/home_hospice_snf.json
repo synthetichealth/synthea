@@ -431,7 +431,7 @@
       "type": "SetAttribute",
       "attribute": "home_health",
       "value": true,
-      "direct_transition": "Wait for Next Decade"
+      "direct_transition": "Set Home Health Reason"
     },
     "Wait for Next Decade": {
       "type": "Simple",
@@ -776,6 +776,16 @@
       "attribute": "hospice_reason",
       "value_attribute": "colorectal_cancer",
       "direct_transition": "Initiate Hospice"
+    },
+    "Set Home Health Reason": {
+      "type": "SetAttribute",
+      "attribute": "home_health_reason",
+      "direct_transition": "Wait for Next Decade",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "1871000124103",
+        "display": "Transition from acute care to home-health care (finding)"
+      }
     }
   },
   "gmf_version": 1

@@ -6,7 +6,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "SNF_Admission"
+      "direct_transition": "Transition_To_SNF_Reason"
     },
     "SNF_Admission": {
       "type": "Encounter",
@@ -41,7 +41,8 @@
         {
           "transition": "History_Physical_Exam"
         }
-      ]
+      ],
+      "reason": "snf_reason"
     },
     "Determine_LOS": {
       "type": "SetAttribute",
@@ -317,6 +318,16 @@
       "attribute": "snf_days",
       "value": 100,
       "direct_transition": "History_Physical_Exam"
+    },
+    "Transition_To_SNF_Reason": {
+      "type": "SetAttribute",
+      "attribute": "snf_reason",
+      "direct_transition": "SNF_Admission",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "25675004",
+        "display": "Patient transfer to skilled nursing facility (procedure)"
+      }
     }
   },
   "gmf_version": 1
