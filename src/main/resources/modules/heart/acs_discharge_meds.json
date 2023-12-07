@@ -11,14 +11,13 @@
     },
     "Aspirin Check": {
       "type": "Simple",
-      "remarks": ["TODO: fix to Active Allergy after merging"],
       "complex_transition": [
         {
           "condition": {
             "condition_type": "Or",
             "conditions": [
               {
-                "condition_type": "Active Condition",
+                "condition_type": "Active Allergy",
                 "codes": [
                   {
                     "system": "RxNorm",
@@ -41,7 +40,7 @@
           },
           "distributions": [
             {
-              "transition": "BB Check",
+              "transition": "No_Aspirin",
               "distribution": 1
             }
           ]
@@ -53,7 +52,7 @@
               "distribution": 0.98
             },
             {
-              "transition": "BB Check",
+              "transition": "No_Aspirin",
               "distribution": 0.02
             }
           ]
@@ -315,6 +314,10 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "No_Aspirin": {
+      "type": "Simple",
+      "direct_transition": "BB Check"
     }
   },
   "gmf_version": 2

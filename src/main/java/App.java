@@ -208,6 +208,8 @@ public class App {
             if (flexporterMappingFile.exists()) {
               Mapping mapping = Mapping.parseMapping(flexporterMappingFile);
               exportOptions.addFlexporterMapping(mapping);
+              // disable the graalVM warning when FlexporterJavascriptContext is instantiated
+              System.getProperties().setProperty("polyglot.engine.WarnInterpreterOnly", "false");
             } else {
               throw new FileNotFoundException(String.format(
                   "Specified flexporter mapping file (%s) does not exist", value));

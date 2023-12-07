@@ -1,6 +1,6 @@
 ---
 # name is just a friendly name for this mapping
-name: QI Core Minimal
+name: QI Core With "Not Done" Instances
 
 # applicability determines whether this mapping applies to a given file.
 # for now the assumption is 1 file = 1 synthea patient bundle.
@@ -63,3 +63,43 @@ actions:
        fields:
          - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
            value: $getField([Procedure.performed])
+
+ - name: QICore NotDone Instances
+   create_resource:
+     - resourceType: MedicationRequest
+       based_on: 
+         module: Myocardial Infarction
+         # note the module has to be a top-level module,
+         # but the state can be a state name from a submodule
+         state: No_Aspirin
+       fields:
+         - location: MedicationRequest.meta.profile
+           value: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested
+         - location: MedicationRequest.doNotPerform
+           value: "true"
+         - location: MedicationRequest.status
+           value: completed
+         - location: MedicationRequest.intent
+           value: order
+         - location: MedicationRequest.subject.reference
+           value: $findRef([Patient])
+         - location: MedicationRequest.authoredOn
+           value: $getField([State.entered]) 
+           # State.entered refers to the start of the based_on state
+         - location: MedicationRequest.requester.reference
+           value: $getField([Encounter.participant.individual.reference])
+         - location: MedicationRequest.reasonCode.coding
+           value:
+               system: http://snomedct.io
+               code: "183966005"
+               display: "Drug treatment not indicated (situation)"
+         - location: MedicationRequest.medicationCodeableConcept.extension
+           value:
+               url: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneValueSet
+               valueCanonical: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.196.11.1211
+               # VS is "Aspirin and Other Antiplatelets"
+
+  
+
+
+
