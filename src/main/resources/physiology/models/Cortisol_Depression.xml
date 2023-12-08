@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="MDD_Model" name="Major Depressive Disorder Model">
+    <listOfCompartments>
+      <compartment id="CNS" name="Central Nervous System" constant="true"/>
+      <compartment id="HPA_Axis" name="Hypothalamic-Pituitary-Adrenal Axis" constant="true"/>
+    </listOfCompartments>
+
+    <listOfSpecies>
+      <species id="Cortisol" compartment="HPA_Axis" initialAmount="1" constant="false"/>
+      <species id="HPA_Hormone_Glands" compartment="HPA_Axis" initialAmount="1" constant="false"/>
+      <species id="Neurotransmitters" compartment="CNS" initialAmount="1" constant="false"/>
+      <species id="Stress_Indicators" compartment="CNS" initialAmount="1" constant="false"/>
+    </listOfSpecies>
+
+    <listOfReactions>
+      <!-- Reactions would be defined here with kinetic laws. -->
+      <!-- Example: -->
+      <!-- <reaction id="Cortisol_Production" ...> -->
+      <!-- Kinetic laws and other details depend on the specific dynamics and interactions in the model. -->
+
+
+      <!-- Adrenal_Gland_Activity -->
+      <!-- dA_dt = a5*A*(x2 - 1) -->
+
+      <reaction id="Adrenal_Gland_Activity">
+        <listOfReactants>
+            <speciesReference species="A" stoichiometry="1"/>
+            <speciesReference species="x2" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+            <speciesReference species="A" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <apply>
+                    <times/>
+                    <ci> a5 </ci>
+                    <ci> A </ci>
+                    <apply>
+                        <minus/>
+                        <ci> x2 </ci>
+                        <cn type="integer"> 1 </cn>
+                    </apply>
+                </apply>
+            </math>
+        </kineticLaw>
+      </reaction>
+
+
+      <!-- Pituitary_Gland_Activity -->
+      <!-- dP_dt = a6*P*(x1_tot - 1) -->
+
+        <reaction id="Pituitary_Gland_Activity">
+            <listOfReactants>
+                <speciesReference species="P" stoichiometry="1"/>
+                <speciesReference species="x1_tot" stoichiometry="1"/>
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="P" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <times/>
+                        <ci> a6 </ci>
+                        <ci> P </ci>
+                        <apply>
+                            <minus/>
+                            <ci> x1_tot </ci>
+                            <cn type="integer"> 1 </cn>
+                        </apply>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+
+      <!-- Hippocampal_Activity -->
+      <!-- dh_dt = a7*(1*D_t/step(x3,T) - h) -->
+
+        <reaction id="Hippocampal_Activity">
+            <listOfReactants>
+                <speciesReference species="h" stoichiometry="1"/>
+                <speciesReference species="x3" stoichiometry="1"/>
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="h" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci> a7 </ci>
+                            <apply>
+                                <divide/>
+                                <cn type="integer"> 1 </cn>
+                                <apply>
+                                    <ci> step_function </ci>
+                                    <ci> x3 </ci>
+                                    <ci> T </ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <ci> h </ci>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+
+      <!-- dx1_internal_dt = a1*(u_t/(h*MR(x3)*GR(x3)) - x1_internal) -->
+
+        <reaction id="CRH_Internal_Dynamics">
+            <listOfReactants>
+                <speciesReference species="x1_internal" stoichiometry="1"/>
+                <speciesReference species="u_t" stoichiometry="1"/> <!-- Assuming u_t is a species -->
+                <speciesReference species="h" stoichiometry="1"/>
+                <speciesReference species="x3" stoichiometry="1"/>
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="x1_internal" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci> a1 </ci>
+                            <apply>
+                                <divide/>
+                                <ci> u_t </ci>
+                                <apply>
+                                    <times/>
+                                    <ci> h </ci>
+                                    <ci> MR_function </ci>
+                                    <ci> x3 </ci>
+                                    <ci> GR_function </ci>
+                                    <ci> x3 </ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <ci> x1_internal </ci>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+
+        <!-- dx1_internal_dt = a1*(u_t/(h*MR(x3)*GR(x3)) - x1_internal) -->
+
+        <reaction id="CRH_External_Dynamics">
+            <listOfReactants>
+                <speciesReference species="x1_external" stoichiometry="1"/>
+                <speciesReference species="x1_dose" stoichiometry="1"/> <!-- Assuming x1_dose is a species or input function -->
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="x1_external" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci> a1_ext </ci>
+                            <apply>
+                                <minus/>
+                                <ci> x1_dose </ci>
+                                <ci> x1_external </ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+        <!-- dx2_dt = a2*(x1_tot*P/GR(x3) - x2) -->
+
+        <reaction id="CRH_to_ACTH_Dynamics">
+            <listOfReactants>
+                <speciesReference species="x2" stoichiometry="1"/>
+                <speciesReference species="x1_tot" stoichiometry="1"/>
+                <speciesReference species="P" stoichiometry="1"/>
+                <speciesReference species="x3" stoichiometry="1"/> <!-- For GR function -->
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="x2" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci> a2 </ci>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <times/>
+                                    <ci> x1_tot </ci>
+                                    <ci> P </ci>
+                                </apply>
+                                <ci> GR_function </ci>
+                                <ci> x3 </ci>
+                            </apply>
+                        </apply>
+                        <ci> x2 </ci>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+        <!-- dx3_dt = a3*(x2*A - x3) -->
+
+        <reaction id="ACTH_to_Cortisol_Dynamics">
+            <listOfReactants>
+                <speciesReference species="x3" stoichiometry="1"/>
+                <speciesReference species="x2" stoichiometry="1"/>
+                <speciesReference species="A" stoichiometry="1"/>
+            </listOfReactants>
+            <listOfProducts>
+                <speciesReference species="x3" stoichiometry="1"/>
+            </listOfProducts>
+            <kineticLaw>
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <times/>
+                            <ci> a3 </ci>
+                            <apply>
+                                <times/>
+                                <ci> x2 </ci>
+                                <ci> A </ci>
+                            </apply>
+                        </apply>
+                        <ci> x3 </ci>
+                    </apply>
+                </math>
+            </kineticLaw>
+        </reaction>
+
+
+    </listOfReactions>
+  </model>
+</sbml>
