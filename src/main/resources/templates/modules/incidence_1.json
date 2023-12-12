@@ -1,0 +1,150 @@
+{
+  "name": "Incidence 1",
+  "remarks": [
+    "This template demonstrates an incidence-based approach for modeling condition onset in Synthea."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "No_Infection"
+    },
+    "No_Infection": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 3,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.02010556,
+              "transition": "Gets_Ear_Infection"
+            },
+            {
+              "distribution": 0.97989444,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 6,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0131625,
+              "transition": "Gets_Ear_Infection"
+            },
+            {
+              "distribution": 0.9868375,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.0007444,
+              "transition": "Gets_Ear_Infection"
+            },
+            {
+              "distribution": 0.99925556,
+              "transition": "No_Infection"
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 18,
+            "unit": "years"
+          },
+          "distributions": [
+            {
+              "distribution": 0.00020833,
+              "transition": "Gets_Ear_Infection"
+            },
+            {
+              "distribution": 0.99979167,
+              "transition": "No_Infection"
+            }
+          ]
+        }
+      ]
+    },
+    "Gets_Ear_Infection": {
+      "type": "ConditionOnset",
+      "target_encounter": "Ear_Infection_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "65363002",
+          "display": "Otitis media"
+        }
+      ],
+      "direct_transition": "Ear_Infection_Encounter"
+    },
+    "Ear_Infection_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "reason": "Gets_Ear_Infection",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185345009",
+          "display": "Encounter for symptom"
+        }
+      ],
+      "direct_transition": "Ear_Infection_Prescribed_OTC_Painkiller"
+    },
+    "Ear_Infection_Prescribed_OTC_Painkiller": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "RxNorm Code"
+        }
+      ],
+      "direct_transition": "End_Encounter"
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "New_State"
+    },
+    "New_State": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "New_State_2"
+    },
+    "New_State_2": {
+      "type": "MedicationEnd",
+      "direct_transition": "No_Infection",
+      "medication_order": "Ear_Infection_Prescribed_OTC_Painkiller"
+    }
+  },
+  "gmf_version": 1
+}

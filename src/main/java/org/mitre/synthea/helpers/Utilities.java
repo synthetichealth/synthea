@@ -10,16 +10,20 @@ import com.google.gson.JsonPrimitive;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.spi.FileSystemProvider;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -637,5 +641,30 @@ public class Utilities {
       input.remove(key);
     });
     return input;
+  }
+
+  /**
+   * Enable reading the given URI from within a JAR file.
+   * For example, for command-line args which may refer to internal or external paths.
+   * Note that it's not always possible to know when a user-provided path
+   * is within a JAR file, so this method should be called if it is possible the
+   * path refers to an internal location.
+   * @param uri URI to be accessed
+   */
+  public static void fixPathFromJar(URI uri) throws IOException {
+    // this function is a hack to enable reading modules from within a JAR file
+    // see https://stackoverflow.com/a/48298758
+    if ("jar".equals(uri.getScheme())) {
+      for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
+        if (provider.getScheme().equalsIgnoreCase("jar")) {
+          try {
+            provider.getFileSystem(uri);
+          } catch (FileSystemNotFoundException e) {
+            // in this case we need to initialize it first:
+            provider.newFileSystem(uri, Collections.emptyMap());
+          }
+        }
+      }
+    }
   }
 }

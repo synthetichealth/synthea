@@ -141,7 +141,7 @@ public class Generator {
      *  value of -1 will evolve the population to the current system time. */
     public int daysToTravelForward = -1;
     /** Path to a module defining which patients should be kept and exported. */
-    public File keepPatientsModulePath;
+    public Path keepPatientsModulePath;
   }
 
   /**
@@ -278,8 +278,8 @@ public class Generator {
 
     if (options.keepPatientsModulePath != null) {
       try {
-        Path path = options.keepPatientsModulePath.toPath().toAbsolutePath();
-        this.keepPatientsModule = Module.loadFile(path, false, null, true);
+        this.keepPatientsModule =
+            Module.loadFile(options.keepPatientsModulePath, false, null, true);
       } catch (Exception e) {
         throw new ExceptionInInitializerError(e);
       }

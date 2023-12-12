@@ -16,11 +16,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,7 +100,7 @@ public class Module implements Cloneable, Serializable {
    */
   public static Path getModulesPath() throws URISyntaxException, IOException {
     URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
-    fixPathFromJar(modulesURI);
+    Utilities.fixPathFromJar(modulesURI);
     return Paths.get(modulesURI);
   }
 
@@ -164,23 +162,6 @@ public class Module implements Cloneable, Serializable {
     System.out.format("Scanned %d local modules and %d local submodules.\n",
                       modules.size() - (originalModuleCount + submoduleCount),
                       submoduleCount);
-  }
-
-  private static void fixPathFromJar(URI uri) throws IOException {
-    // this function is a hack to enable reading modules from within a JAR file
-    // see https://stackoverflow.com/a/48298758
-    if ("jar".equals(uri.getScheme())) {
-      for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
-        if (provider.getScheme().equalsIgnoreCase("jar")) {
-          try {
-            provider.getFileSystem(uri);
-          } catch (FileSystemNotFoundException e) {
-            // in this case we need to initialize it first:
-            provider.newFileSystem(uri, Collections.emptyMap());
-          }
-        }
-      }
-    }
   }
 
   /**
