@@ -651,7 +651,7 @@ public class Utilities {
    * path refers to an internal location.
    * @param uri URI to be accessed
    */
-  public static void fixPathFromJar(URI uri) throws IOException {
+  public static void enableReadingURIFromJar(URI uri) throws IOException {
     // this function is a hack to enable reading modules from within a JAR file
     // see https://stackoverflow.com/a/48298758
     if ("jar".equals(uri.getScheme())) {

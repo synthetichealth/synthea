@@ -100,7 +100,7 @@ public class Module implements Cloneable, Serializable {
    */
   public static Path getModulesPath() throws URISyntaxException, IOException {
     URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
-    Utilities.fixPathFromJar(modulesURI);
+    Utilities.enableReadingURIFromJar(modulesURI);
     return Paths.get(modulesURI);
   }
 

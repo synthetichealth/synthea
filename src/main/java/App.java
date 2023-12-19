@@ -206,7 +206,7 @@ public class App {
             } else {
               // look inside the src/main/resources/keep_modules folder
               URI keepModulesURI = App.class.getClassLoader().getResource("keep_modules").toURI();
-              Utilities.fixPathFromJar(keepModulesURI);
+              Utilities.enableReadingURIFromJar(keepModulesURI);
               Path possibleLocation = Paths.get(keepModulesURI).resolve(value);
               if (Files.exists(possibleLocation)) {
                 options.keepPatientsModulePath = possibleLocation;
