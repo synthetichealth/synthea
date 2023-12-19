@@ -1,0 +1,196 @@
+{
+  "name": "Incidence 2",
+  "remarks": [
+    "This template demonstrates an incidence-based approach for modeling condition onset in Synthea."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "remarks": [
+        "Initial impl == direct translation of ruby module"
+      ],
+      "direct_transition": "Age_Guard"
+    },
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Set_Yearly_Risk"
+    },
+    "Set_Yearly_Risk": {
+      "type": "Simple",
+      "remarks": [
+        "By age 55 years, cumulative incidence of hypertension was 75.5% in black men, 75.7% in black women, 54.5% in white men, and 40.0% in white women -- https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007988",
+        "",
+        "",
+        "Cumulative Incidence  = 1 - e(-IR x D)",
+        "e^(-IRxD) = 1 - CI",
+        "-IR x D = ln(1-CI)",
+        "IR = -ln(1-CI)/D",
+        "",
+        "Assuming 0% at age 18, and per the chart the increase is roughly linear, use the following yearly incidence rates:",
+        "",
+        "",
+        "black men - 3.8%",
+        "black women - 3.8%",
+        "white men - 2.1%",
+        "white women - 1.4%",
+        "others - 2.5% (just a value in the middle, no source)"
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Black",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "White",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Others"
+        }
+      ]
+    },
+    "Chance_of_Hypertension": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "distributions": [
+            {
+              "transition": "Onset_Hypertension",
+              "distribution": {
+                "attribute": "risk_of_hypertension",
+                "default": 0.05
+              }
+            },
+            {
+              "transition": "Wait_till_next_year",
+              "distribution": 0.95
+            }
+          ]
+        }
+      ],
+      "remarks": [
+        "Use the risk set above, but also check if some other module may have set hypertension == true"
+      ]
+    },
+    "Wait_till_next_year": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Chance_of_Hypertension"
+    },
+    "Onset_Hypertension": {
+      "type": "SetAttribute",
+      "attribute": "hypertension",
+      "value": true,
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Black": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Black_Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Black_Male"
+        }
+      ]
+    },
+    "White": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White_Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "White_Male"
+        }
+      ]
+    },
+    "Others": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.025
+    },
+    "Black_Female": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.038
+    },
+    "Black_Male": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.038
+    },
+    "White_Male": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.021
+    },
+    "White_Female": {
+      "type": "SetAttribute",
+      "attribute": "risk_of_hypertension",
+      "direct_transition": "Chance_of_Hypertension",
+      "value": 0.014
+    },
+    "Diagnose_Hypertension": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 59621000,
+          "display": "Essential hypertension (disorder)"
+        }
+      ],
+      "assign_to_attribute": "hypertension_dx",
+      "direct_transition": "Terminal"
+    },
+    "Wellness_Encounter": {
+      "type": "Encounter",
+      "reason": "hypertension_screening_reason",
+      "direct_transition": "Diagnose_Hypertension",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "encounter_class": "ambulatory",
+      "telemedicine_possibility": "none"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

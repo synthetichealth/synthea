@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -195,12 +199,21 @@ public class App {
             }
           } else if (currArg.equals("-k")) {
             String value = argsQ.poll();
+            // first check if it's an absolute path, or path relative to .
             File keepPatientsModule = new File(value);
             if (keepPatientsModule.exists()) {
-              options.keepPatientsModulePath = keepPatientsModule;
+              options.keepPatientsModulePath = keepPatientsModule.toPath();
             } else {
-              throw new FileNotFoundException(String.format(
-                  "Specified keep-patients file (%s) does not exist", value));
+              // look inside the src/main/resources/keep_modules folder
+              URI keepModulesURI = App.class.getClassLoader().getResource("keep_modules").toURI();
+              Utilities.enableReadingURIFromJar(keepModulesURI);
+              Path possibleLocation = Paths.get(keepModulesURI).resolve(value);
+              if (Files.exists(possibleLocation)) {
+                options.keepPatientsModulePath = possibleLocation;
+              } else {
+                throw new FileNotFoundException(String.format(
+                    "Specified keep-patients file (%s) does not exist", value));
+              }
             }
           } else if (currArg.equals("-fm")) {
             String value = argsQ.poll();

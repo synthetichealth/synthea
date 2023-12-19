@@ -10,7 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -358,7 +358,7 @@ public class GeneratorTest {
     opts.minAge = 35;
     opts.maxAge = 75;
     opts.ageSpecified = true;
-    opts.keepPatientsModulePath = new File("src/test/resources/keep_patients_module/keep.json");
+    opts.keepPatientsModulePath = Path.of("src/test/resources/keep_patients_module/keep.json");
     // keep module checks that patients have attribute diabetes == true
 
     Generator generator = new Generator(opts);
