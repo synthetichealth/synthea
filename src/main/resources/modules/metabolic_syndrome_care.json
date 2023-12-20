@@ -288,7 +288,18 @@
       "remarks": [
         "setting prediabetes as severity 0 makes some things easier"
       ],
-      "direct_transition": "Diagnose_Prediabetes"
+      "conditional_transition": [
+        {
+          "transition": "Check_CarePlan",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Diagnose_Diabetes"
+          }
+        },
+        {
+          "transition": "Diagnose_Prediabetes"
+        }
+      ]
     },
     "Diagnose_Prediabetes": {
       "type": "ConditionOnset",

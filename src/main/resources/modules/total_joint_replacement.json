@@ -335,8 +335,27 @@
     "Home Health Visits": {
       "type": "SetAttribute",
       "attribute": "home_health",
-      "direct_transition": "Delay_For_Recovery",
-      "value": true
+      "value": true,
+      "conditional_transition": [
+        {
+          "transition": "Home Health Reason Knee",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "knee"
+          }
+        },
+        {
+          "transition": "Home Health Reason Hip",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "joint_replacement",
+            "operator": "==",
+            "value": "hip"
+          }
+        }
+      ]
     },
     "DME End": {
       "type": "DeviceEnd",
@@ -368,6 +387,26 @@
         "system": "SNOMED-CT",
         "code": 110466009,
         "display": "Pre-surgery evaluation (procedure)"
+      }
+    },
+    "Home Health Reason Knee": {
+      "type": "SetAttribute",
+      "attribute": "home_health_reason",
+      "direct_transition": "Delay_For_Recovery",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "609588000",
+        "display": "Total knee replacement"
+      }
+    },
+    "Home Health Reason Hip": {
+      "type": "SetAttribute",
+      "attribute": "home_health_reason",
+      "direct_transition": "Delay_For_Recovery",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "52734007",
+        "display": "Total replacement of hip"
       }
     }
   },
