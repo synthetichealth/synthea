@@ -1178,7 +1178,7 @@
           "display": "Ibuprofen 100 MG Oral Tablet"
         },
         {
-          "system": "SNOMED-CT",
+          "system": "RxNorm",
           "code": 310965,
           "display": "Ibuprofen 200 MG Oral Tablet"
         }

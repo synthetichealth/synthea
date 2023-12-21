@@ -122,9 +122,9 @@
       "direct_transition": "Terminal",
       "name": "Negative Result",
       "value_code": {
-        "system": "LOINC",
+        "system": "SNOMED-CT",
         "code": 260385009,
-        "display": "Negative"
+        "display": "Negative (qualifier value)"
       }
     },
     "Positive Result": {
@@ -141,9 +141,9 @@
       ],
       "name": "Positive Result",
       "value_code": {
-        "system": "LOINC",
+        "system": "SNOMED-CT",
         "code": 10828004,
-        "display": "Positive"
+        "display": "Positive (qualifier value)"
       },
       "direct_transition": "Terminal"
     }

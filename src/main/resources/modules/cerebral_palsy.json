@@ -555,7 +555,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 7227006,
+          "code": 47227006,
           "display": "Excision of submandibular gland (procedure)"
         }
       ],
@@ -929,7 +929,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 143975,
+          "code": 1437975,
           "display": "glycopyrrolate 1.5 MG Oral Tablet [Glycate]"
         }
       ],
