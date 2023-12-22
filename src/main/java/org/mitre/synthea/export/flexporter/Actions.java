@@ -3,7 +3,9 @@ package org.mitre.synthea.export.flexporter;
 import ca.uhn.fhir.parser.IParser;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +30,7 @@ import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
@@ -269,9 +272,13 @@ public abstract class Actions {
             period.setEndElement(new DateTimeType(new Date(exited)));
           }
           dummyEncounter.setPeriod(period);
-          // TODO: figure out what encounter, if any, was active at this time
-          // and set the dummy.partOf as a reference to it
-          // dummyEncounter.setPartOf(new Reference("urn:uuid:" + enc.uuid.toString()));
+
+          Encounter encounterAtThatState = findEncounterAtState(instance, bundle);
+          if (encounterAtThatState != null) {
+            dummyEncounter.setPartOf(new Reference("urn:uuid:" + encounterAtThatState.getId()));
+            dummyEncounter.setParticipant(encounterAtThatState.getParticipant());
+            // TODO: copy any other fields over?
+          }
 
           basedOnResources.add(dummyEncounter);
         }
@@ -328,6 +335,7 @@ public abstract class Actions {
         BundleEntryComponent newEntry = bundle.addEntry();
 
         newEntry.setResource(createdResource);
+        newEntry.setFullUrl("urn:uuid:" + createdResource.getId());
 
         if (bundle.getType().equals(BundleType.TRANSACTION)) {
           BundleEntryRequestComponent request = newEntry.getRequest();
@@ -349,6 +357,59 @@ public abstract class Actions {
         }
       }
     }
+  }
+
+  /**
+   * Helper method to find the Encounter that was active as of the given State.
+   * If the state type is Encounter, returns the Encounter it started.
+   * May return null if there was no Encounter active when the state was hit,
+   * or may return surprising results if the encounter was active in a different module.
+   */
+  private static Encounter findEncounterAtState(State state, Bundle bundle) {
+    Encounter encounterAtThatState = null;
+
+    if (state instanceof State.Encounter) {
+      String uuid = state.entry.uuid.toString();
+      for (BundleEntryComponent entry : bundle.getEntry())  {
+        Resource r = entry.getResource();
+        if (r instanceof Encounter && r.getId().equals(uuid)) {
+          encounterAtThatState = (Encounter) r;
+          break;
+        }
+      }
+
+    } else if (state.entered != null) {
+      LocalDateTime stateEntered =
+          Instant.ofEpochMilli(state.entered).atOffset(ZoneOffset.UTC).toLocalDateTime();
+
+      for (BundleEntryComponent entry : bundle.getEntry())  {
+        Resource r = entry.getResource();
+        if (r instanceof Encounter) {
+          Encounter currEnc = (Encounter)r;
+          Period period = currEnc.getPeriod();
+          Date startDt = period.getStart();
+          LocalDateTime encStart = startDt.toInstant().atOffset(ZoneOffset.UTC).toLocalDateTime();
+
+          Date endDt = period.getEnd();
+
+          if (endDt == null) {
+            // the Encounter is still open
+            if (stateEntered.isAfter(encStart) || stateEntered.isEqual(encStart)) {
+              encounterAtThatState = (Encounter) r;
+              break;
+            }
+          } else {
+            LocalDateTime encEnd = endDt.toInstant().atOffset(ZoneOffset.UTC).toLocalDateTime();
+            if ((stateEntered.isAfter(encStart) || stateEntered.isEqual(encStart))
+                && (stateEntered.isBefore(encEnd) || stateEntered.isEqual(encEnd))) {
+              encounterAtThatState = (Encounter) r;
+              break;
+            }
+          }
+        }
+      }
+    }
+    return encounterAtThatState;
   }
 
 
