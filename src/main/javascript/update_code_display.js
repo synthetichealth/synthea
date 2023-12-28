@@ -40,6 +40,13 @@ const PLACEHOLDER_CODES = ['999999',
   "99999-10", "99999-11",
   'X9999-0', 'X9999-1', 'X9999-2'];
 
+const CODE_SYSTEM_URIS = {
+ 'SNOMED-CT': 'http://snomed.info/sct',
+ 'LOINC': 'http://loinc.org',
+ 'RxNorm': 'http://www.nlm.nih.gov/research/umls/rxnorm',
+ 'CVX': 'http://hl7.org/fhir/sid/cvx'
+};
+
 if (fs.existsSync('./code_dictionary.json')) {
   const rawJSON = fs.readFileSync('./code_dictionary.json');
   const loadedDictionary = JSON.parse(rawJSON);
@@ -47,15 +54,27 @@ if (fs.existsSync('./code_dictionary.json')) {
   console.log("Using previously saved ./code_dictionary.json")
 } else {
   processFiles(moduleDir, moduleDirPath, inventoryAllCodes);
+  // the Sets used in the inventory don't stringify properly,
+  // so this replacer function turns them into arrays
+  // https://stackoverflow.com/a/46491780
+  const jsonifySets = (_key, value) => (value instanceof Set ? [...value] : value);
+  fs.writeFileSync('./code_inventory.json', JSON.stringify(codeInventory, jsonifySets, 2));
+  console.log("Saved ./code_inventory.json")
+
   buildDictionary();
   fs.writeFileSync('./code_dictionary.json', JSON.stringify(codeDictionary, null, 2));
   console.log("Saved ./code_dictionary.json")
-  // re-open to re-iterate through
+
+  // re-open the module dir to re-iterate through it
   moduleDir = fs.opendirSync(moduleDirPath);
 }
 
 processFiles(moduleDir, moduleDirPath, checkAndUpdateAllCodes);
 
+/**
+ * Process all the module files in the given directory
+ * by applying the given function to each path.
+ */
 function processFiles(dirEntry, parentPath, fileFunction) {
   let fileInFolder = dirEntry.readSync();
   while (fileInFolder != null) {
@@ -72,7 +91,7 @@ function processFiles(dirEntry, parentPath, fileFunction) {
 }
 
 function inventoryAllCodes(moduleJSONPath) {
-  console.log(moduleJSONPath);
+  console.log(`Inventorying ${moduleJSONPath}`);
   const rawJSON = fs.readFileSync(moduleJSONPath);
   let module = JSON.parse(rawJSON);
   
@@ -80,7 +99,7 @@ function inventoryAllCodes(moduleJSONPath) {
 }
 
 function checkAndUpdateAllCodes(moduleJSONPath) {
-  console.log(moduleJSONPath);
+  console.log(`Checking and updating ${moduleJSONPath}`);
   const rawJSON = fs.readFileSync(moduleJSONPath);
   let module = JSON.parse(rawJSON);
   
@@ -138,83 +157,59 @@ function buildDictionary() {
     if (!codeDictionary[system]) {
       codeDictionary[system] = {};
     }
+    let systemUri = CODE_SYSTEM_URIS[system];
+    if (!systemUri) {
+      systemUri = system;
+      console.log(`Unexpected code system ${system} may not be supported by tx.fhir.org`);
+    }
+    // http://hl7.org/fhir/R4/terminology-service.html#validation
+    const requestUrl = `http://tx.fhir.org/r4/CodeSystem/$validate-code?system=${systemUri}&code=${code}&display=${display}`
 
-    const body = requestBody(codeObj);
-    const VALIDATE_CODE_HEADERS = {
-      "Content-Type": "application/fhir+json",
-      "Accept": "application/fhir+json"
-    };
-    const res = fetch(
-        'http://tx.fhir.org/r4/CodeSystem/$validate-code?',
-        { 
-          method: 'POST', 
-          body: JSON.stringify(body, null, 2), 
-          headers: VALIDATE_CODE_HEADERS 
-        }).json();
+    const res = fetch(requestUrl, { headers: { "Accept": "application/fhir+json" } }).json();
 
     const displayParam = res.parameter.find(p => p.name === 'display');
     const success = res.parameter.find(p => p.name === 'result').valueBoolean;
-    if (success) {
-      // the current display may or may not be the singular best,
-      // but it is one of the allowed values.
-      // the "display" param contains the official best value
-      const bestDisplay = displayParam.valueString;
 
-      if (codeInventory[system][code].has(bestDisplay)) {
-        // we use the best display somewhere already, stick to it
-        codeDictionary[system][code] = bestDisplay;
-      } else {
-        // standardize to the current display
-        codeDictionary[system][code] = display;
-      }
+    if (displayParam) {
+      // the "display" param of the response contains a preferred code.
+      // NOTE: in the case of SNOMED, the returned code is preferred but
+      // not necessarily the "fully specified name".
+      // eg, it may return "Aspirin" instead of "Aspirin (substance)"
+      const aPreferredDisplay = displayParam.valueString;
+
+      // success indicates whether the provided code was allowed
+      const currentDisplay = success ? display : null;
+
+      const bestDisplay = selectBestCode(system, codeInventory[system][code], aPreferredDisplay, currentDisplay);
+      codeDictionary[system][code] = bestDisplay;
     } else {
-      if (displayParam) {
-        // the code is valid but the display is not allowed
-        // update the code to use the given display and
-        // store the given display going forward
-        codeDictionary[system][code] = displayParam.valueString;
-      } else {
-        handleErrorOrExit(body, res);
-      }
+      handleErrorOrExit(requestUrl, res);
     }
   }
 }
 
-/**
- * Construct the request body to validate the given code.
- */
-function requestBody(codeObj) {
-  const coding = JSON.parse(JSON.stringify(codeObj)); // simple copy
-  coding.code = coding.code.toString();
-  switch (coding.system) {
-  case 'SNOMED-CT':
-    coding.system = 'http://snomed.info/sct';
-    break;
-  case 'LOINC':
-    coding.system = 'http://loinc.org';
-    break;
-  case 'RxNorm':
-    coding.system = 'http://www.nlm.nih.gov/research/umls/rxnorm';
-    break;
-  case 'CVX':
-    coding.system = 'http://hl7.org/fhir/sid/cvx';
-    break;
-
-  default:
-    console.log(`Unexpected code system ${coding.system} may not be supported by tx.fhir.org`);
-  }
-  return {
-    "resourceType": "Parameters",
-    "parameter": [
-      {
-        "name": "coding",
-        "valueCoding": coding
-      },
-      {
-        "name": "default-to-latest-version",
-        "valueBoolean": true
+function selectBestCode(system, inventory, aPreferredDisplay, currentDisplay) {
+  if (system === 'SNOMED-CT' && !aPreferredDisplay.endsWith(")")) {
+    // if the preferred code that the server returned doesn't have the semantic tag
+    // then do some special logic
+    for (const option of inventory) {
+      // if we already use the preferred display with a snomed semantic tag, use that.
+      // some codes aren't regex safe
+      const regexSafeDisplay = display.replaceAll('+', '\\+').replaceAll('(', '\\(').replaceAll(')', '\\)');
+      if (option.match(new RegExp(`^${regexSafeDisplay} \\([a-z\\+/ ]+\\)$`, 'i'))) {
+        return option;
       }
-    ]
+    }
+  }
+
+  if (inventory.has(aPreferredDisplay)) {
+    // we use the preferred display somewhere already, stick to it
+    return aPreferredDisplay;
+  } else if (currentDisplay) {
+    // standardize to this current display to reduce changes
+    return currentDisplay;
+  } else {
+    return aPreferredDisplay;
   }
 }
 
@@ -231,11 +226,21 @@ function checkAndUpdateCode(codeObj) {
     return;
   }
 
+  const bestDisplay = codeDictionary[system][code];
+
+  if (system === 'SNOMED-CT') {
+    const regexSafeDisplay = display.replaceAll('+', '\\+').replaceAll('(', '\\(').replaceAll(')', '\\)');
+    if (bestDisplay.match(new RegExp(`^${regexSafeDisplay} \\([a-z\\+/ ]+\\)$`, 'i'))) {
+      // don't update just to add the snomed semantic tag 
+      return;
+    }
+  }
+
   // capitalization doesn't appear to matter, so only update a code
   // if it differs in more than just caps
-  if (codeDictionary[system][code].toLowerCase() != display.toLowerCase()) {
-    console.log(`Updating "${display}" -> "${codeDictionary[system][code]}"`)
-    codeObj.display = codeDictionary[system][code];
+  if (bestDisplay.toLowerCase() != display.toLowerCase()) {
+    console.log(`Updating "${display}" -> "${bestDisplay}"`)
+    codeObj.display = bestDisplay;
   }
 }
 
@@ -244,7 +249,7 @@ function checkAndUpdateCode(codeObj) {
  * "Unknown code" errors are expected so just print those out to the log.
  * Anything else, print the request and response then exit.
  */
-function handleErrorOrExit(body, res) {
+function handleErrorOrExit(requestUrl, res) {
   const messageParam = res.parameter.find(p => p.name === 'message');
   if (messageParam) {
     const message = messageParam.valueString;
@@ -257,8 +262,8 @@ function handleErrorOrExit(body, res) {
   }
   // something else went wrong. print message and stop
   console.log("Error occurred.")
-  console.log("Request body:")
-  console.log(JSON.stringify(body, null, 2));
+  console.log("Request URL:")
+  console.log(requestUrl);
   console.log("\nResponse:")
   console.log(JSON.stringify(res, null, 2));
   process.exit(1);
