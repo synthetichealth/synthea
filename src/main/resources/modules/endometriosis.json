@@ -94,29 +94,6 @@
       },
       "name": "Symptom_Onset_Delay"
     },
-    "Menstrual_Cramps_Symptom": {
-      "type": "Symptom",
-      "cause": "Endometriosis",
-      "distributed_transition": [
-        {
-          "transition": "Endometriosis_End",
-          "distribution": 0.05
-        },
-        {
-          "distribution": 0.95,
-          "transition": "Obgyn_Encounter"
-        }
-      ],
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 431416001,
-          "display": "Menstrual cramp (finding)",
-          "value_set": ""
-        }
-      ],
-      "name": "Menstrual_Cramps_Symptom"
-    },
     "Endometriosis_End": {
       "type": "ConditionEnd",
       "condition_onset": "Endometriosis",
@@ -274,6 +251,29 @@
           "code": 413575009,
           "display": "Substance with aromatase inhibitor mechanism of action (substance)",
           "value_set": ""
+        }
+      ]
+    },
+    "Menstrual_Cramps_Symptom": {
+      "type": "Symptom",
+      "symptom": "Menstrual Cramps",
+      "cause": "",
+      "probability": 0.8,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "name": "New_State",
+      "distributed_transition": [
+        {
+          "transition": "Obgyn_Encounter",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Endometriosis_End",
+          "distribution": 0.05
         }
       ]
     }
