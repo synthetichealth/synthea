@@ -84,6 +84,7 @@ dependencies {
   implementation 'info.cqframework:elm-jackson:2.1.0'
 
   implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+  implementation 'org.reflections:reflections:0.10.2'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
