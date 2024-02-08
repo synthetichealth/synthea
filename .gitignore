@@ -1,3 +1,4 @@
+*.idea
 **/.DS_Store
 .classpath
 .project
@@ -11,8 +12,8 @@ bin/**
 /bin/
 
 /failed_exports/
-/output/
 /out/
+/output/
 
 **/*.log
 
