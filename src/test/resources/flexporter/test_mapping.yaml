@@ -90,6 +90,88 @@ actions:
                display: "Legally married (finding)"
 
 
+ - name: testSetValues_where
+   set_values:
+     - applicability: Encounter 
+       fields: 
+         - location: Encounter.serviceType.coding.where(code='229')
+           value: 
+             system: http://terminology.hl7.org/CodeSystem/service-type
+         - location: Encounter.serviceType.coding.where(code='355')
+           value: 
+             system: http://terminology.hl7.org/CodeSystem/service-type
+
+
+ - name: testSetValues_indexed
+   set_values:
+     - applicability: Encounter 
+       fields: 
+         - location: Encounter.serviceType.coding[0]
+           value: 
+             system: http://terminology.hl7.org/CodeSystem/service-type
+             code: "229"
+         - location: Encounter.serviceType.coding[1]
+           value: 
+             system: http://terminology.hl7.org/CodeSystem/service-type
+             code: "355"
+
+
+ - name: testSetValues_list
+   set_values:
+     - applicability: Encounter 
+       fields: 
+         - location: Encounter.serviceType.coding
+           value:
+             - system: http://terminology.hl7.org/CodeSystem/service-type
+               code: "229"
+             - system: http://terminology.hl7.org/CodeSystem/service-type
+               code: "355"
+
+               
+ - name: testSetValues_deeplyNested
+   set_values:
+     - applicability: Observation 
+       fields: 
+         - location: Observation.code.coding
+           value: 
+             system: http://loinc.org
+             code: "85354-9"
+             display: "Blood pressure panel with all children optional"
+         - location: Observation.code.text
+           value: "Blood pressure systolic & diastolic"
+         - location: Observation.component[0].code.coding[0]
+           value: 
+             system: http://loinc.org
+             code: "8480-6"
+             display: "Systolic blood pressure"
+         - location: Observation.component[0].code.coding[1]
+           value: 
+             system: "http://snomed.info/sct"
+             code: "271649006"
+             display: "Systolic blood pressure"
+         - location: Observation.component[0].code.coding[2]
+           value: 
+             system: "http://acme.org/devices/clinical-codes"
+             code: "bp-s"
+             display: "Systolic Blood pressure"
+         - location: Observation.component[0].valueQuantity
+           value:
+             value: 107
+             unit: "mmHg"
+             system: "http://unitsofmeasure.org"
+             code: "mm[Hg]"
+         - location: Observation.component[1].code.coding
+           value: 
+             system: http://loinc.org
+             code: "8462-4"
+             display: "Diastolic blood pressure"
+         - location: Observation.component[1].valueQuantity
+           value: 
+             value: 60
+             unit: "mmHg"
+             system: "http://unitsofmeasure.org"
+             code: "mm[Hg]"
+
 
  - name: testCreateResources_createSingle
    create_resource: 
