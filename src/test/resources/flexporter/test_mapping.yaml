@@ -127,7 +127,28 @@ actions:
              - system: http://terminology.hl7.org/CodeSystem/service-type
                code: "355"
 
-               
+
+ - name: testSetValues_listOfPrimitives
+   set_values:
+     - applicability: PractitionerRole
+       fields:
+         - location: PractitionerRole.availableTime.daysOfWeek
+           value:
+             - "wed"
+             - "thu"
+             - "fri"
+     - applicability: Claim
+       fields:
+         - location:  Claim.item.diagnosisSequence
+           value:
+             - 1
+             - 1
+             - 2
+             - 3
+             - 5
+             - 8
+
+
  - name: testSetValues_deeplyNested
    set_values:
      - applicability: Observation 

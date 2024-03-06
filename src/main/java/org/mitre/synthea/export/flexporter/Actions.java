@@ -10,9 +10,9 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -417,7 +417,8 @@ public abstract class Actions {
       Bundle sourceBundle, Resource sourceResource, Person person,
       FlexporterJavascriptContext fjContext) {
 
-    Map<String, Object> fhirPathMapping = new HashMap<>();
+    // linked hashmap to ensure lists are kept in order. could also use something like a treemap
+    Map<String, Object> fhirPathMapping = new LinkedHashMap<>();
 
     for (Map<String, Object> field : fields) {
       String location = (String)field.get("location");

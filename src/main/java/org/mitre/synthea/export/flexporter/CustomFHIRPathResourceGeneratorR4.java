@@ -519,11 +519,9 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
 
         nextTier.nodes.add(containedNodes.get(index));
       }
-
-    } else if (nextTier.nodeDefinition instanceof RuntimePrimitiveDatatypeDefinition) {
-      // TODO: is this possible or necessary?
-      // review handlePrimitiveNode()
     }
+    // else if (nextTier.nodeDefinition instanceof RuntimePrimitiveDatatypeDefinition) {
+    // from testing this seems to not be necessary
 
     // push the created nextTier to the nodeStack
     this.nodeStack.push(nextTier);

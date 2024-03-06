@@ -27,11 +27,13 @@ import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.Claim;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Enumeration;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Immunization;
@@ -40,6 +42,9 @@ import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.PositiveIntType;
+import org.hl7.fhir.r4.model.PractitionerRole;
+import org.hl7.fhir.r4.model.PractitionerRole.DaysOfWeek;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
@@ -350,6 +355,40 @@ public class ActionsTest {
     }
     assertTrue(seen229);
     assertTrue(seen355);
+  }
+
+  @Test
+  public void testSetValues_listOfPrimitives() {
+    Map<String, Object> action = getActionByName("testSetValues_listOfPrimitives");
+
+    PractitionerRole pr = new PractitionerRole();
+    Claim c = new Claim();
+    Bundle b = new Bundle();
+    b.addEntry().setResource(pr);
+    b.addEntry().setResource(c);
+
+    Actions.applyAction(b, action, null, null);
+
+    assertEquals(1, pr.getAvailableTime().size());
+
+    List<Enumeration<DaysOfWeek>> daysOfWeek = pr.getAvailableTimeFirstRep().getDaysOfWeek();
+    assertEquals(3, daysOfWeek.size());
+
+    assertEquals(DaysOfWeek.WED, daysOfWeek.get(0).getValue());
+    assertEquals(DaysOfWeek.THU, daysOfWeek.get(1).getValue());
+    assertEquals(DaysOfWeek.FRI, daysOfWeek.get(2).getValue());
+
+    assertEquals(1, c.getItem().size());
+    Claim.ItemComponent item = c.getItemFirstRep();
+
+    List<PositiveIntType> diagnosisSequence = item.getDiagnosisSequence();
+    assertEquals(6, diagnosisSequence.size());
+    assertEquals(1, diagnosisSequence.get(0).getValue().intValue());
+    assertEquals(1, diagnosisSequence.get(1).getValue().intValue());
+    assertEquals(2, diagnosisSequence.get(2).getValue().intValue());
+    assertEquals(3, diagnosisSequence.get(3).getValue().intValue());
+    assertEquals(5, diagnosisSequence.get(4).getValue().intValue());
+    assertEquals(8, diagnosisSequence.get(5).getValue().intValue());
   }
 
   @Test
