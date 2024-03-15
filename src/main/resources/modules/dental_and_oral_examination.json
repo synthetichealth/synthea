@@ -14,7 +14,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait for Dental Referral"
+      "direct_transition": "Pause for Override"
     },
     "Dental surgical procedure": {
       "type": "Procedure",
@@ -1052,6 +1052,37 @@
       "attribute": "missing_teeth",
       "action": "increment",
       "direct_transition": "Gingivitis?"
+    },
+    "Pause for Override": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Check for Override"
+    },
+    "Check for Override": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_module_override",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Dental Referral"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
     }
   },
   "gmf_version": 2

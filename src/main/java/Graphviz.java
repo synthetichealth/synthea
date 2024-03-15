@@ -47,18 +47,20 @@ public class Graphviz {
   public static void main(String[] args) throws URISyntaxException, IOException {
     File folder = Exporter.getOutputFolder("graphviz", null);
 
-    Path inputPath = null;
+    List<Path> inputPaths = new ArrayList<Path>();
     if (args != null && args.length > 0) {
       File file = new File(args[0]);
-      inputPath = file.toPath();
+      inputPaths.add(file.toPath());
     } else {
-      inputPath = Module.getModulesPath();
+      inputPaths = Module.getModulePaths();
     }
 
     System.out.println("Rendering graphs to `" + folder.getAbsolutePath() + "`...");
 
     long start = System.currentTimeMillis();
-    generateJsonModuleGraphs(inputPath, folder);
+    for (Path path : inputPaths) {
+      generateJsonModuleGraphs(path, folder);
+    }
 
     System.out.println("Completed in " + (System.currentTimeMillis() - start) + " ms.");
   }

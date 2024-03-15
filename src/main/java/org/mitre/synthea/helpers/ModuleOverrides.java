@@ -176,7 +176,7 @@ public class ModuleOverrides {
 
       for (String field : jo.keySet()) {
         // note: spaces have to be escaped in properties file key
-        String safeFieldName = field.replace(" ", "\\ ");
+        String safeFieldName = field.replace(" ", "\\ ").replace(":", "\\:");
         JsonElement fieldValue = jo.get(field);
         parameters.addAll(handleElement(path + "['" + safeFieldName + "']", field, fieldValue));
       }

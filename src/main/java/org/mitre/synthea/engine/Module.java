@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
@@ -24,6 +25,7 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +82,10 @@ public class Module implements Cloneable, Serializable {
     Properties moduleOverrides = getModuleOverrides();
 
     try {
-      Path modulesPath = getModulesPath();
-      submoduleCount = walkModuleTree(modulesPath, retVal, moduleOverrides, false);
+      List<Path> modulePaths = getModulePaths();
+      for (Path path : modulePaths) {
+        submoduleCount += walkModuleTree(path, retVal, moduleOverrides, false);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -100,10 +104,15 @@ public class Module implements Cloneable, Serializable {
    * @throws URISyntaxException if something goes wrong
    * @throws IOException if something goes wrong
    */
-  public static Path getModulesPath() throws URISyntaxException, IOException {
-    URI modulesURI = Module.class.getClassLoader().getResource("modules").toURI();
-    fixPathFromJar(modulesURI);
-    return Paths.get(modulesURI);
+  public static List<Path> getModulePaths() throws URISyntaxException, IOException {
+    List<Path> paths = new ArrayList<Path>();
+    Enumeration<URL> moduleURLs = Module.class.getClassLoader().getResources("modules");
+    while (moduleURLs.hasMoreElements()) {
+      URI uri = moduleURLs.nextElement().toURI();
+      fixPathFromJar(uri);
+      paths.add(Paths.get(uri));
+    }
+    return paths;
   }
 
   private static Properties getModuleOverrides() {

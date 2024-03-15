@@ -219,6 +219,7 @@ public abstract class ExportHelper {
   private static final String RXNORM_URI = "http://www.nlm.nih.gov/research/umls/rxnorm";
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_29.html";
+  private static final String CDT_URI = "http://www.ada.org/cdt";
 
   /**
    * Translate the system name (e.g. SNOMED-CT) into the official
@@ -237,6 +238,8 @@ public abstract class ExportHelper {
       system = CVX_URI;
     } else if (system.equals("DICOM-DCM")) {
       system = DICOM_DCM_URI;
+    } else if (system.equals("CDT")) {
+      system = CDT_URI;
     }
     return system;
   }
@@ -259,6 +262,8 @@ public abstract class ExportHelper {
         return "CVX";
       case DICOM_DCM_URI:
         return "DICOM-DCM";
+      case CDT_URI:
+        return "CDT";
       default:
         return "Unknown";
     }

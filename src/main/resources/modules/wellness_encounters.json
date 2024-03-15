@@ -1043,18 +1043,19 @@
     },
     "Dental Referral?": {
       "type": "Simple",
-      "distributed_transition": [
+      "conditional_transition": [
         {
-          "transition": "Gingivitis",
-          "distribution": 0.25
+          "transition": "Pediatric Dentist",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 6,
+            "unit": "years",
+            "value": 0
+          }
         },
         {
-          "transition": "Go see a Dentist",
-          "distribution": 0.25
-        },
-        {
-          "transition": "End_Of_Wellness_Encounter",
-          "distribution": 0.5
+          "transition": "Refer to Dentist"
         }
       ]
     },
@@ -1111,6 +1112,51 @@
       "unit": "minutes",
       "direct_transition": "End_Of_Wellness_Encounter",
       "assign_to_attribute": "dental_referral"
+    },
+    "Refer to Dentist": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Gingivitis",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Go see a Dentist",
+          "distribution": 0.25
+        },
+        {
+          "transition": "End_Of_Wellness_Encounter",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Pediatric Dentist": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 2,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "End_Of_Wellness_Encounter"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Go see a Dentist",
+              "distribution": 0.25
+            },
+            {
+              "transition": "End_Of_Wellness_Encounter",
+              "distribution": 0.75
+            }
+          ]
+        }
+      ]
     }
   },
   "gmf_version": 1
