@@ -148,6 +148,8 @@ public class ModuleOverrides {
     }
 
     try {
+      moduleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
+
       String moduleRelativePath = modulesPath.getParent().relativize(modulePath).toString();
       JsonReader reader = new JsonReader(new StringReader(
                Utilities.readResource(moduleRelativePath)));
