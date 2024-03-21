@@ -152,7 +152,7 @@ function inventoryCode(codeObj) {
 
 function buildDictionary() {
   for (const codeObj of allCodes) {
-    let { system, code, display } = codeObj;
+    let { system, code, display, version } = codeObj;
     code = code.toString();
     if (!codeDictionary[system]) {
       codeDictionary[system] = {};
@@ -163,8 +163,10 @@ function buildDictionary() {
       console.log(`Unexpected code system ${system} may not be supported by tx.fhir.org`);
     }
     // http://hl7.org/fhir/R4/terminology-service.html#validation
-    const requestUrl = `http://tx.fhir.org/r4/CodeSystem/$validate-code?system=${systemUri}&code=${code}&display=${display}`
-
+    let requestUrl = `http://tx.fhir.org/r4/CodeSystem/$validate-code?system=${systemUri}&code=${code}&display=${display}`
+    if (version) {
+      requestUrl += `&version=${version}`
+    }
     const res = fetch(requestUrl, { headers: { "Accept": "application/fhir+json" } }).json();
 
     const displayParam = res.parameter.find(p => p.name === 'display');
@@ -195,7 +197,7 @@ function selectBestCode(system, inventory, aPreferredDisplay, currentDisplay) {
     for (const option of inventory) {
       // if we already use the preferred display with a snomed semantic tag, use that.
       // some codes aren't regex safe
-      const regexSafeDisplay = display.replaceAll('+', '\\+').replaceAll('(', '\\(').replaceAll(')', '\\)');
+      const regexSafeDisplay = aPreferredDisplay.replaceAll('+', '\\+').replaceAll('(', '\\(').replaceAll(')', '\\)');
       if (option.match(new RegExp(`^${regexSafeDisplay} \\([a-z\\+/ ]+\\)$`, 'i'))) {
         return option;
       }
@@ -255,7 +257,7 @@ function handleErrorOrExit(requestUrl, res) {
     const message = messageParam.valueString;
 
     if (message.startsWith("Unable to find code ") 
-      || message.startsWith("Unknown Code '")) {
+      || message.startsWith("Unknown code '")) {
       console.log(message);
       return;
     }

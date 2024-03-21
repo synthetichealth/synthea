@@ -1229,7 +1229,7 @@
           "system": "SNOMED-CT",
           "code": 5251000175109,
           "display": "Received certificate of high school equivalency (finding)",
-          "value_set": ""
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "direct_transition": "Q11",

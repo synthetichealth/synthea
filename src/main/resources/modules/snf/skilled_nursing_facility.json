@@ -27,7 +27,8 @@
         {
           "system": "SNOMED-CT",
           "code": "449411000124106",
-          "display": "Admission to skilled nursing facility (procedure)"
+          "display": "Admission to skilled nursing facility (procedure)",
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "conditional_transition": [
@@ -298,7 +299,8 @@
         {
           "system": "SNOMED-CT",
           "code": "449381000124108",
-          "display": "Discharge from skilled nursing facility (procedure)"
+          "display": "Discharge from skilled nursing facility (procedure)",
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "direct_transition": "Return_Wheelchair"
