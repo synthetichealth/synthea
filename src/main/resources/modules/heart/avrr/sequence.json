@@ -51,7 +51,8 @@
         {
           "system": "SNOMED-CT",
           "code": 452331000124102,
-          "display": "Review of imaging finding (procedure)"
+          "display": "Review of imaging finding (procedure)",
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "distribution": {

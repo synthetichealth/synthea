@@ -430,11 +430,6 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "231181000000100",
-          "display": "Delivery of rehabilitation for spinal cord injury"
-        },
-        {
-          "system": "SNOMED-CT",
           "code": "77476009",
           "display": "Application of back brace"
         }

@@ -2662,6 +2662,7 @@ public class FhirStu3 {
     } else {
       coding.setSystem(from.system);
     }
+    coding.setVersion(from.version); // may be null
 
     to.addCoding(coding);
 
