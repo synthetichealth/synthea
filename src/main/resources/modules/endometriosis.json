@@ -1,0 +1,282 @@
+{
+  "name": "Endometriosis",
+  "remarks": [
+    "The reproductive system of a female, unlike men, shows regular cyclic changes that teleologically may be regarded as periodic preparation for pregnancy and fertilization. In primates and humans, the cycle is a menstrual cycle, and its most conspicuous feature is the periodic vaginal bleeding that occurs with the shedding of uterine mucose (menstruation). The length of the cycle is notoriously variable, but an average figure is 28 days from the start of one menstrual period to the start of the next. By common usage, the days of the cycle are identified by number starting with the first day of menstruation. It begins at puberty, ranging from the ages of 10 to 16, and ends at menopause at an average age of 51.  -Thiyagarajan, Basit, Jeanmonod 2022",
+    "",
+    "References",
+    "https://www.ncbi.nlm.nih.gov/books/NBK500020/",
+    "https://www.womenshealth.gov/a-z-topics/endometriosis",
+    "Roblitz2013_Menstrual_Cycle.pdf",
+    "https://www.womenshealth.gov/a-z-topics/endometriosis",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4921342",
+    "",
+    "Known model limitations:",
+    "This model is significantly more complex than other models included in Synthea, with nearly 10x more parameters than the circadian cycle.",
+    "Currently, only Estradiol output levels are mapped to output data.",
+    "This model generates continuous data over a 28 cycle, which would not be recorded in any known clinical test.  Rather, laboratory tests would typically involve a blood draw, and a discrite value at a single point in time.",
+    "Details for writing intersection functions to extract a single value are explianed in greater detail in the Synthea Wiki."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ],
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "remarks": [
+        "About one-in-five Americans use a smart watch or fitness tracker.  \n https://www.pewresearch.org/short-reads/2020/01/09/about-one-in-five-americans-use-a-smart-watch-or-fitness-tracker/"
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Age_15-44",
+          "distribution": 0.11
+        },
+        {
+          "distribution": 0.89,
+          "transition": "Terminal"
+        }
+      ],
+      "name": "Female"
+    },
+    "Endometriosis": {
+      "type": "ConditionOnset",
+      "target_encounter": "Obgyn_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 129103003,
+          "display": "Endometriosis (disorder)",
+          "value_set": ""
+        }
+      ],
+      "remarks": [
+        ""
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Obgyn_Encounter",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.79
+        },
+        {
+          "transition": "Endometriosis_End",
+          "distribution": 0.01
+        }
+      ],
+      "name": "Endometriosis"
+    },
+    "Symptom_Onset_Delay": {
+      "type": "Delay",
+      "direct_transition": "Menstrual_Cramps_Symptom",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "years"
+      },
+      "name": "Symptom_Onset_Delay"
+    },
+    "Endometriosis_End": {
+      "type": "ConditionEnd",
+      "condition_onset": "Endometriosis",
+      "direct_transition": "Terminal",
+      "name": "Endometriosis_End"
+    },
+    "Obgyn_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "Blood Draw",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185221008,
+          "display": "Seen in gynecology clinic (finding)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Blood Draw",
+      "name": "Obgyn_Encounter"
+    },
+    "Obgyn_Encounter_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Aromatase Inhibitor",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "name": "Obgyn_Encounter_End"
+    },
+    "Endocrinology_Sim": {
+      "type": "Physiology",
+      "model": "Roblitz2013_Menstrual_Cycle.xml",
+      "solver": "dormand_prince_54",
+      "step_size": 1,
+      "sim_duration": 28,
+      "lead_time": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "from_list": "E2",
+          "to": "endocrinology_data",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "HormonePanel",
+      "alt_direct_transition": "Clear_endocrinology_data",
+      "name": "Endocrinology_Sim"
+    },
+    "HormonePanel": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "2243-4",
+          "display": "Estradiol (E2) [Mass/volume] in Serum or Plasma",
+          "value_set": ""
+        }
+      ],
+      "sampled_data": {
+        "attributes": [
+          "endocrinology_data"
+        ]
+      },
+      "direct_transition": "HormonePanel_Chart",
+      "name": "HormonePanel"
+    },
+    "HormonePanel_Chart": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "2243-4",
+          "display": "Estradiol (E2) [Mass/volume] in Serum or Plasma",
+          "value_set": ""
+        }
+      ],
+      "attachment": {
+        "chart": {
+          "type": "line",
+          "title": "Estradiol (E2) [Mass/volume] in Serum or Plasma",
+          "axis_attribute_x": "time",
+          "axis_attribute_y": "IU/L",
+          "width": 400,
+          "height": 200,
+          "series": [
+            {
+              "attribute": "endocrinology_data"
+            }
+          ]
+        }
+      },
+      "direct_transition": "Clear_endocrinology_data",
+      "name": "HormonePanel_Chart"
+    },
+    "Clear_endocrinology_data": {
+      "type": "SetAttribute",
+      "attribute": "endocrinology_data",
+      "direct_transition": "Prescribe Aromatase Inhibitor",
+      "name": "Clear_endocrinology_data"
+    },
+    "Blood Draw": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 396540005,
+          "display": "Phlebotomy (procedure)",
+          "value_set": ""
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "Endocrinology_Sim",
+      "name": "Blood Draw"
+    },
+    "Age_15-44": {
+      "type": "Delay",
+      "direct_transition": "Endometriosis",
+      "range": {
+        "low": 13,
+        "high": 19,
+        "unit": "years"
+      },
+      "name": "Age_15-44"
+    },
+    "Prescribe Aromatase Inhibitor": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 72965,
+          "display": "letrozole",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Obgyn_Encounter_End",
+      "name": "Prescribe Aromatase Inhibitor"
+    },
+    "Aromatase Inhibitor": {
+      "type": "MedicationEnd",
+      "direct_transition": "Endometriosis_End",
+      "name": "Aromatase Inhibitor",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 413575009,
+          "display": "Substance with aromatase inhibitor mechanism of action (substance)",
+          "value_set": ""
+        }
+      ]
+    },
+    "Menstrual_Cramps_Symptom": {
+      "type": "Symptom",
+      "symptom": "Menstrual Cramps",
+      "cause": "",
+      "probability": 0.8,
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "name": "New_State",
+      "distributed_transition": [
+        {
+          "transition": "Obgyn_Encounter",
+          "distribution": 0.95
+        },
+        {
+          "transition": "Endometriosis_End",
+          "distribution": 0.05
+        }
+      ]
+    }
+  },
+  "gmf_version": 1
+}
