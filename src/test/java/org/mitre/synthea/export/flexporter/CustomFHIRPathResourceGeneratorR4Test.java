@@ -15,7 +15,6 @@ import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mitre.synthea.export.FhirR4;
 
@@ -70,19 +69,12 @@ public class CustomFHIRPathResourceGeneratorR4Test {
     assertEquals("Bob", given.get(1).getValueAsString());
   }
 
-
-  @Ignore
   @Test
   public void testArray2() {
     Map<String, Object> fhirPathMapping = new HashMap<>();
 
     fhirPathMapping.put("Patient.name[0].given", "Billy");
     fhirPathMapping.put("Patient.name[1].given", "Bob");
-
-    // TODO: for some reason Patient.name.given[0] and given[1] work as expected (2 name strings in
-    // the 'given' array)
-    // but Patient.name[0].given and .name[1].given do not (same result, expected was 2 HumanName
-    // objects in the name array)
 
     Patient patient = createPatient(fhirPathMapping);
 

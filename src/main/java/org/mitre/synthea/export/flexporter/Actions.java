@@ -10,9 +10,9 @@ import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -417,7 +417,8 @@ public abstract class Actions {
       Bundle sourceBundle, Resource sourceResource, Person person,
       FlexporterJavascriptContext fjContext) {
 
-    Map<String, Object> fhirPathMapping = new HashMap<>();
+    // linked hashmap to ensure lists are kept in order. could also use something like a treemap
+    Map<String, Object> fhirPathMapping = new LinkedHashMap<>();
 
     for (Map<String, Object> field : fields) {
       String location = (String)field.get("location");
@@ -458,6 +459,10 @@ public abstract class Actions {
 
         populateFhirPathMapping(fhirPathMapping, location, valueMap);
 
+      } else if (valueDef instanceof List<?>) {
+        List<Object> valueList = (List<Object>) valueDef;
+
+        populateFhirPathMapping(fhirPathMapping, location, valueList);
       } else {
         // unexpected type here - is it even possible to get anything else?
         String type = valueDef == null ? "null" : valueDef.getClass().toGenericString();
@@ -478,11 +483,37 @@ public abstract class Actions {
 
       if (value instanceof String) {
         fhirPathMapping.put(path, value);
+      } else if (value instanceof Number) {
+        fhirPathMapping.put(path, value.toString());
       } else if (value instanceof Map<?,?>) {
         populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
+      } else if (value instanceof List<?>) {
+        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value);
       } else if (value != null) {
         System.err
-            .println("Unexpected class found in populateFhirPathMapping -- " + value.getClass());
+            .println("Unexpected class found in populateFhirPathMapping[map]: " + value.getClass());
+      }
+    }
+  }
+
+  private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath,
+      List<Object> valueList) {
+    for (int i = 0; i < valueList.size(); i++) {
+      Object value = valueList.get(i);
+
+      String path = basePath + "[" + i + "]";
+
+      if (value instanceof String) {
+        fhirPathMapping.put(path, value);
+      } else if (value instanceof Number) {
+        fhirPathMapping.put(path, value.toString());
+      } else if (value instanceof Map<?,?>) {
+        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
+      } else if (value instanceof List<?>) {
+        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value);
+      } else if (value != null) {
+        System.err
+            .println("Unexpected class found in populateFhirPathMapping[list]:" + value.getClass());
       }
     }
   }

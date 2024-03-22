@@ -3,6 +3,7 @@ package org.mitre.synthea.export.flexporter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import ca.uhn.fhir.parser.IParser;
 
@@ -26,9 +27,13 @@ import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.Claim;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Enumeration;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Immunization;
@@ -37,7 +42,11 @@ import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.PositiveIntType;
+import org.hl7.fhir.r4.model.PractitionerRole;
+import org.hl7.fhir.r4.model.PractitionerRole.DaysOfWeek;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
@@ -295,6 +304,168 @@ public class ActionsTest {
   }
 
   @Test
+  public void testSetValues_where() {
+    testSetValues_encounter_common("testSetValues_where");
+  }
+
+  @Test
+  public void testSetValues_indexed() {
+    testSetValues_encounter_common("testSetValues_indexed");
+  }
+
+  @Test
+  public void testSetValues_list() {
+    testSetValues_encounter_common("testSetValues_list");
+  }
+
+  void testSetValues_encounter_common(String actionName) {
+    Map<String, Object> action = getActionByName(actionName);
+
+    Encounter e = new Encounter();
+    Bundle b = new Bundle();
+    b.addEntry().setResource(e);
+
+    Actions.applyAction(b, action, null, null);
+
+    assertNotNull(e.getServiceType());
+
+    CodeableConcept serviceType = e.getServiceType();
+    List<Coding> codings = serviceType.getCoding();
+    assertNotNull(codings);
+    assertEquals(2, codings.size());
+
+    boolean seen229 = false;
+    boolean seen355 = false;
+    for (Coding coding : codings) {
+      assertEquals("http://terminology.hl7.org/CodeSystem/service-type", coding.getSystem());
+      String code = coding.getCode();
+      if (code.equals("229")) {
+        if (seen229) {
+          fail("Code 229 seen multiple times in " + actionName);
+        }
+        seen229 = true;
+      } else if (code.equals("355")) {
+        if (seen355) {
+          fail("Code 355 seen multiple times in " + actionName);
+        }
+        seen355 = true;
+      } else {
+        fail("Unexpected code found in " + actionName + ": " + code);
+      }
+    }
+    assertTrue(seen229);
+    assertTrue(seen355);
+  }
+
+  @Test
+  public void testSetValues_listOfPrimitives() {
+    Map<String, Object> action = getActionByName("testSetValues_listOfPrimitives");
+
+    PractitionerRole pr = new PractitionerRole();
+    Claim c = new Claim();
+    Bundle b = new Bundle();
+    b.addEntry().setResource(pr);
+    b.addEntry().setResource(c);
+
+    Actions.applyAction(b, action, null, null);
+
+    assertEquals(1, pr.getAvailableTime().size());
+
+    List<Enumeration<DaysOfWeek>> daysOfWeek = pr.getAvailableTimeFirstRep().getDaysOfWeek();
+    assertEquals(3, daysOfWeek.size());
+
+    assertEquals(DaysOfWeek.WED, daysOfWeek.get(0).getValue());
+    assertEquals(DaysOfWeek.THU, daysOfWeek.get(1).getValue());
+    assertEquals(DaysOfWeek.FRI, daysOfWeek.get(2).getValue());
+
+    assertEquals(1, c.getItem().size());
+    Claim.ItemComponent item = c.getItemFirstRep();
+
+    List<PositiveIntType> diagnosisSequence = item.getDiagnosisSequence();
+    assertEquals(6, diagnosisSequence.size());
+    assertEquals(1, diagnosisSequence.get(0).getValue().intValue());
+    assertEquals(1, diagnosisSequence.get(1).getValue().intValue());
+    assertEquals(2, diagnosisSequence.get(2).getValue().intValue());
+    assertEquals(3, diagnosisSequence.get(3).getValue().intValue());
+    assertEquals(5, diagnosisSequence.get(4).getValue().intValue());
+    assertEquals(8, diagnosisSequence.get(5).getValue().intValue());
+  }
+
+  @Test
+  public void testSetValues_deeplyNested() {
+    Map<String, Object> action = getActionByName("testSetValues_deeplyNested");
+
+    Observation o = new Observation();
+    Bundle b = new Bundle();
+    b.addEntry().setResource(o);
+
+    Actions.applyAction(b, action, null, null);
+
+    CodeableConcept code = o.getCode();
+    assertNotNull(code);
+    assertEquals(1, code.getCoding().size());
+    Coding coding = code.getCodingFirstRep();
+
+    assertEquals("http://loinc.org", coding.getSystem());
+    assertEquals("85354-9", coding.getCode());
+    assertEquals("Blood pressure panel with all children optional", coding.getDisplay());
+
+    assertEquals("Blood pressure systolic & diastolic", code.getText());
+
+    assertEquals(2, o.getComponent().size());
+
+    Observation.ObservationComponentComponent systolic = o.getComponent().get(0);
+
+    code = systolic.getCode();
+    assertNotNull(code);
+    assertEquals(3, code.getCoding().size());
+
+    coding = code.getCoding().get(0);
+
+    assertEquals("http://loinc.org", coding.getSystem());
+    assertEquals("8480-6", coding.getCode());
+    assertEquals("Systolic blood pressure", coding.getDisplay());
+
+    coding = code.getCoding().get(1);
+
+    assertEquals("http://snomed.info/sct", coding.getSystem());
+    assertEquals("271649006", coding.getCode());
+    assertEquals("Systolic blood pressure", coding.getDisplay());
+
+    coding = code.getCoding().get(2);
+
+    assertEquals("http://acme.org/devices/clinical-codes", coding.getSystem());
+    assertEquals("bp-s", coding.getCode());
+    assertEquals("Systolic Blood pressure", coding.getDisplay());
+
+
+    Quantity q = systolic.getValueQuantity();
+
+    assertEquals(107, q.getValue().intValue());
+    assertEquals("mmHg", q.getUnit());
+    assertEquals("http://unitsofmeasure.org", q.getSystem());
+    assertEquals("mm[Hg]", q.getCode());
+
+    Observation.ObservationComponentComponent diastolic = o.getComponent().get(1);
+    code = diastolic.getCode();
+    assertNotNull(code);
+    assertEquals(1, code.getCoding().size());
+
+    coding = code.getCoding().get(0);
+
+    assertEquals("http://loinc.org", coding.getSystem());
+    assertEquals("8462-4", coding.getCode());
+    assertEquals("Diastolic blood pressure", coding.getDisplay());
+
+    q = diastolic.getValueQuantity();
+
+    assertEquals(60, q.getValue().intValue());
+    assertEquals("mmHg", q.getUnit());
+    assertEquals("http://unitsofmeasure.org", q.getSystem());
+    assertEquals("mm[Hg]", q.getCode());
+  }
+
+  @Test
   public void testKeepResources() throws Exception {
     Bundle b = loadFixtureBundle("sample_complete_patient.json");
 
@@ -358,7 +529,6 @@ public class ActionsTest {
     Actions.applyAction(b, action, null, null);
 
     System.out.println(b.getEntry().size());
-
   }
 
   @Test
