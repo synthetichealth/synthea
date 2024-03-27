@@ -30,6 +30,7 @@ public class JSONExporterTest {
       List<String> validationErrors = new ArrayList<>();
       TestHelper.exportOff();
       Config.set("exporter.json.export", "true");
+      Config.set("exporter.ndjson.export", "true");
       boolean moduleExport = person.randBoolean();
       Config.set("exporter.json.include_module_history", String.valueOf(moduleExport));
       String personJson = JSONExporter.export(person);

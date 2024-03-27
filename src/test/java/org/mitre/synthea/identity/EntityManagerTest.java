@@ -71,6 +71,7 @@ public class EntityManagerTest {
     TestHelper.exportOff();
     Config.set("exporter.fhir.export", "true");
     Config.set("exporter.json.export", "true");
+    Config.set("exporter.ndjson.export", "true");
     Generator.DEFAULT_STATE = "North Carolina";
     Path baseDirectory = tempFolder.newFolder().toPath();
     Config.set("exporter.baseDirectory", baseDirectory.toString());
