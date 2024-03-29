@@ -36,6 +36,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
@@ -246,6 +247,30 @@ public class Module implements Cloneable, Serializable {
   }
 
   /**
+   * Get the list of ModuleSuppliers.
+   * @return a list of ModuleSuppliers. Submodules are included.
+   */
+  public static List<ModuleSupplier> getModuleSuppliers() {
+    return getModuleSuppliers(p -> true);
+  }
+
+  /**
+   * Get a list of ModuleSuppliers, given a path predicate. No other filtering applies,
+   * so this list could include both core and submodules.
+   * @param predicate A predicate to filter a module based on path.
+   * @return A list of ModuleSuppliers.
+   */
+  public static List<ModuleSupplier> getModuleSuppliers(Predicate<String> predicate) {
+    List<ModuleSupplier> list = new ArrayList<ModuleSupplier>();
+    modules.forEach((k, v) -> {
+      if (predicate.test(v.path)) {
+        list.add(v);
+      }
+    });
+    return list;
+  }
+
+  /**
    * Get a module by path.
    * @param path
    *          : the relative path of the module, without the root or ".json" file extension. For
@@ -379,8 +404,12 @@ public class Module implements Cloneable, Serializable {
     }
     if (!person.attributes.containsKey(historyKey)) {
       person.history = new LinkedList<State>();
-      person.history.add(initialState());
+      State initial = initialState();
+      person.history.add(initial);
       person.attributes.put(historyKey, person.history);
+      /* TODO - determining whether or not this the first time a person has
+         entered a submodule is currently not easily computed, so we use `true` below. */
+      TransitionMetrics.getMetric(historyKey, initial.name).enter(true);
     }
     person.history = (List<State>) person.attributes.get(historyKey);
     State current = person.history.get(0);
@@ -390,11 +419,15 @@ public class Module implements Cloneable, Serializable {
     // probably more than one state
     String nextStateName = null;
     while (current.run(person, time, terminateOnDeath)) {
+      Long entered = current.entered;
       Long exited = current.exited;
+      Long duration = (exited - entered);
       nextStateName = current.transition(person, time);
-      // System.out.println(" Transitioning to " + nextStateName);
+      boolean firstTime = !person.hadPriorState(nextStateName);
+      TransitionMetrics.getMetric(historyKey, current.name).exit(nextStateName, duration);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
+      TransitionMetrics.getMetric(historyKey, nextStateName).enter(firstTime);
       if (exited != null && exited < time) {
         // stop if the patient died in the meantime...
         if (terminateOnDeath && !person.alive(exited)) {
