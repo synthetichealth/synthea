@@ -36,6 +36,34 @@ public abstract class TransitionMetrics {
   private static final Table<String, String, Metric> metrics =
       Tables.synchronizedTable(HashBasedTable.create());
 
+  public static boolean enabled =
+      Config.getAsBoolean("generate.track_detailed_transition_metrics", false);
+
+  /**
+   * Track entering a state within a given module.
+   * @param module The name of the module.
+   * @param state The name of the state.
+   * @param firstTime Whether or not this state was previously entered.
+   */
+  public static void enter(String module, String state, boolean firstTime) {
+    if (enabled) {
+      getMetric(module, state).enter(firstTime);
+    }
+  }
+
+  /**
+   * Track exiting a state and the resulting destination.
+   * @param module The name of the module.
+   * @param state The name of the state.
+   * @param destination Target state that was transitioned to.
+   * @param duration The time in milliseconds spent within the state.
+   */
+  public static void exit(String module, String state, String destination, long duration) {
+    if (enabled) {
+      getMetric(module, state).exit(destination, duration);
+    }
+  }
+
   /**
    * Get the Metric object for the given State in the given Module.
    *
@@ -43,7 +71,7 @@ public abstract class TransitionMetrics {
    * @param stateName Name of the state
    * @return Metric object
    */
-  public static Metric getMetric(String moduleName, String stateName) {
+  static Metric getMetric(String moduleName, String stateName) {
     Metric metric = metrics.get(moduleName, stateName);
 
     if (metric == null) {
@@ -79,7 +107,7 @@ public abstract class TransitionMetrics {
     System.out.println("Saving metrics for " + metrics.rowKeySet().size() + " modules.");
 
     String baseDir = Config.get("exporter.baseDirectory", "./output/");
-    String statsDir = "statistics";
+    String statsDir = "metrics";
     Path output = Paths.get(baseDir, statsDir);
     output.toFile().mkdirs();
 
@@ -145,7 +173,8 @@ public abstract class TransitionMetrics {
     /**
      * Helper function to increment the count for a destination state.
      *
-     * @param destination Target state that was transitioned to
+     * @param destination Target state that was transitioned to.
+     * @param duration The time in milliseconds spent within the state.
      */
     public void exit(String destination, long duration) {
 
