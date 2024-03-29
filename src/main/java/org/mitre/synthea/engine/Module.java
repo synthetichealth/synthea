@@ -409,7 +409,7 @@ public class Module implements Cloneable, Serializable {
       person.attributes.put(historyKey, person.history);
       /* TODO - determining whether or not this the first time a person has
          entered a submodule is currently not easily computed, so we use `true` below. */
-      TransitionMetrics.getMetric(historyKey, initial.name).enter(true);
+      TransitionMetrics.enter(historyKey, initial.name, true);
     }
     person.history = (List<State>) person.attributes.get(historyKey);
     State current = person.history.get(0);
@@ -424,10 +424,10 @@ public class Module implements Cloneable, Serializable {
       Long duration = (exited - entered);
       nextStateName = current.transition(person, time);
       boolean firstTime = !person.hadPriorState(nextStateName);
-      TransitionMetrics.getMetric(historyKey, current.name).exit(nextStateName, duration);
+      TransitionMetrics.exit(historyKey, current.name, nextStateName, duration);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
-      TransitionMetrics.getMetric(historyKey, nextStateName).enter(firstTime);
+      TransitionMetrics.enter(historyKey, nextStateName, firstTime);
       if (exited != null && exited < time) {
         // stop if the patient died in the meantime...
         if (terminateOnDeath && !person.alive(exited)) {

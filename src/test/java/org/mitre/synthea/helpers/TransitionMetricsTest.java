@@ -30,6 +30,7 @@ public class TransitionMetricsTest {
 
   @Test
   public void testExampleModule() throws Exception {
+    TransitionMetrics.enabled = true;
     TransitionMetrics.clear();
 
     Provider mockProvider = TestHelper.buildMockProvider();
@@ -96,6 +97,7 @@ public class TransitionMetricsTest {
     m = TransitionMetrics.getMetric(example.name, "Terminal");
     assertEquals(3, m.entered.get());
     assertEquals(3, m.current.get());
+    TransitionMetrics.enabled = false;
   }
 
   private long run(Person person, Module singleModule, long start) {
