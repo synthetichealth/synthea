@@ -20,6 +20,7 @@ import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.hapi.ctx.HapiWorkerContext;
 import org.hl7.fhir.r4.model.ExpressionNode;
 import org.hl7.fhir.r4.model.ExpressionNode.Kind;
+import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.utils.FHIRPathEngine;
 import org.mitre.synthea.export.FhirR4;
@@ -383,6 +384,10 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
       case Where:
         this.handleWhereFunctionNode(fhirPath);
         break;
+      case Item:
+        // eg, array indexing
+        this.handleIndexFunctionNode(fhirPath);
+        break;
       // case Aggregate:
       // case Alias:
       // case AliasAs:
@@ -421,7 +426,6 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
       // case Intersect:
       // case Is:
       // case IsDistinct:
-      // case Item:
       // case Last:
       // case Length:
       // case Lower:
@@ -459,6 +463,68 @@ public class CustomFHIRPathResourceGeneratorR4<T extends Resource> {
       default:
         // TODO: unimplemented, what to do?
     }
+  }
+
+  private void handleIndexFunctionNode(ExpressionNode fhirPath) {
+    // treat this tier as the same as the parent,
+    // eg, the tier for Resource.field[0] is just the parent at Resource.field
+    // since that's where the child definitions are
+
+    GenerationTier parentTier = this.nodeStack.peek();
+    GenerationTier parentsParentTier = this.nodeStack.get(this.nodeStack.size() - 2);
+    GenerationTier nextTier = new GenerationTier();
+    // get the name of the FHIRPath for the next tier
+    nextTier.fhirPathName = parentTier.fhirPathName;
+    // get the child definition from the parent nodePefinition
+    nextTier.childDefinition = parentTier.childDefinition;
+    // create a nodeDefinition for the next tier
+    nextTier.nodeDefinition = parentTier.nodeDefinition;
+
+    int index = ((IntegerType)fhirPath.getParameters().get(0).getConstant()).getValue();
+
+    if (nextTier.nodeDefinition instanceof RuntimeCompositeDatatypeDefinition) {
+      RuntimeCompositeDatatypeDefinition compositeTarget =
+          (RuntimeCompositeDatatypeDefinition) nextTier.nodeDefinition;
+
+      // this could get wonky if, ex, someone sets only item 6 in an otherwise empty list,
+      // but we'll allow it
+
+      for (IBase nodeElement : parentsParentTier.nodes) {
+        List<IBase> containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
+
+        while (containedNodes.size() <= index) {
+          ICompositeType compositeNode = compositeTarget
+              .newInstance(parentTier.childDefinition.getInstanceConstructorArguments());
+          parentTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
+          parentTier.nodes.add(compositeNode);
+          containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
+        }
+
+        nextTier.nodes.add(containedNodes.get(index));
+      }
+    } else if (nextTier.nodeDefinition instanceof RuntimeResourceBlockDefinition) {
+      RuntimeResourceBlockDefinition compositeTarget =
+          (RuntimeResourceBlockDefinition) nextTier.nodeDefinition;
+
+      for (IBase nodeElement : parentsParentTier.nodes) {
+        List<IBase> containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
+
+        while (containedNodes.size() <= index) {
+          IBase compositeNode = compositeTarget
+              .newInstance(nextTier.childDefinition.getInstanceConstructorArguments());
+          parentTier.childDefinition.getMutator().addValue(nodeElement, compositeNode);
+          parentTier.nodes.add(compositeNode);
+          containedNodes = nextTier.childDefinition.getAccessor().getValues(nodeElement);
+        }
+
+        nextTier.nodes.add(containedNodes.get(index));
+      }
+    }
+    // else if (nextTier.nodeDefinition instanceof RuntimePrimitiveDatatypeDefinition) {
+    // from testing this seems to not be necessary
+
+    // push the created nextTier to the nodeStack
+    this.nodeStack.push(nextTier);
   }
 
   /**
