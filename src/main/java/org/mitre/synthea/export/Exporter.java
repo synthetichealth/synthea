@@ -31,6 +31,7 @@ import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.identity.Seed;
@@ -580,6 +581,10 @@ public abstract class Exporter {
       } catch (IOException e) {
         e.printStackTrace();
       }
+    }
+
+    if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
+      TransitionMetrics.exportMetrics();
     }
 
     if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {

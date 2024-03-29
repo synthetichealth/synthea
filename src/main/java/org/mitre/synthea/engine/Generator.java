@@ -32,7 +32,6 @@ import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
-import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.identity.EntityManager;
@@ -77,7 +76,6 @@ public class Generator {
   private boolean onlyVeterans;
   private Module keepPatientsModule;
   private Long maxAttemptsToKeepPatient;
-  public TransitionMetrics metrics;
   public static String DEFAULT_STATE = "Massachusetts";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   public static EntityManager entityManager;
@@ -261,10 +259,6 @@ public class Generator {
     stats.put("alive", new AtomicInteger(0));
     stats.put("dead", new AtomicInteger(0));
 
-    if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
-      this.metrics = new TransitionMetrics();
-    }
-
     // initialize hospitals
     Provider.loadProviders(location, this.clinicianRandom);
     // Initialize Payers
@@ -416,10 +410,6 @@ public class Generator {
             stats.get("alive").get(), stats.get("dead").get());
     System.out.printf("RNG=%d\n", this.populationRandom.getCount());
     System.out.printf("Clinician RNG=%d\n", this.clinicianRandom.getCount());
-
-    if (this.metrics != null) {
-      metrics.printStats(totalGeneratedPopulation.get(), Module.getModules(getModulePredicate()));
-    }
   }
 
   /**
@@ -931,10 +921,6 @@ public class Generator {
 
     if (internalStore != null) {
       internalStore.add(person);
-    }
-
-    if (this.metrics != null) {
-      metrics.recordStats(person, finishTime, Module.getModules(modulePredicate));
     }
 
     if (!this.logLevel.equals("none")) {
