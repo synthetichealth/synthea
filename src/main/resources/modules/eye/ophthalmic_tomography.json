@@ -1,0 +1,243 @@
+{
+  "name": "ophthalmic_tomography",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "OCT_Imaging"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "OCT_Imaging": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "700070005",
+        "display": "Optical coherence tomography of retina (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "181171005",
+            "display": "Entire retina (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "OPT",
+            "display": "Ophthalmic Tomography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.77.1.5.4",
+                "display": "Ophthalmic Tomography Image"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Quantitative_Report",
+      "remarks": [
+        "Body site \"entire retina\" has child codes for left/right eye; sibling codes for other parts",
+        "",
+        "DICOM notes: https://www.dicomstandard.org/News-dir/ftsup/docs/sups/sup110.pdf"
+      ]
+    },
+    "Quantitative_Report": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57119-0",
+          "display": "Optical coherence tomography panel"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57108-3",
+              "display": "Macular grid.center point thickness by OCT"
+            }
+          ],
+          "attribute": "oct_center_point_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57109-1",
+              "display": "Macular grid.center subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_center_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57110-9",
+              "display": "Macular grid.inner superior subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_inner_superior_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57111-7",
+              "display": "Macular grid.inner nasal subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_inner_nasal_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57112-5",
+              "display": "Macular grid.inner inferior subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_inner_inferior_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57113-3",
+              "display": "Macular grid.inner temporal subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_inner_temporal_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57114-1",
+              "display": "Macular grid.outer superior subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_outer_superior_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57115-8",
+              "display": "Macular grid.outer nasal subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_outer_nasal_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57116-6",
+              "display": "Macular grid.outer inferior subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_outer_inferior_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "um",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57117-4",
+              "display": "Macular grid.outer temporal subfield thickness by OCT"
+            }
+          ],
+          "attribute": "oct_outer_temporal_subfield_thickness"
+        },
+        {
+          "category": "laboratory",
+          "unit": "uL",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "57118-2",
+              "display": "Macular grid.total volume by OCT"
+            }
+          ],
+          "attribute": "oct_total_volume"
+        }
+      ],
+      "direct_transition": "Qualitative_Report",
+      "remarks": [
+        "https://build.fhir.org/ig/HL7/fhir-eyecare-ig/StructureDefinition-diagnostic-report-oct-macula.html"
+      ]
+    },
+    "Qualitative_Report": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "87674-8",
+          "display": "Optical coherence tomography study"
+        }
+      ],
+      "observations": [
+        {
+          "category": "imaging",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "79819-9",
+              "display": "Study observation Left retina by OCT"
+            }
+          ],
+          "attribute": "oct_findings_left"
+        },
+        {
+          "category": "imaging",
+          "unit": "{nominal}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "79818-1",
+              "display": "Study observation Right retina by OCT"
+            }
+          ],
+          "attribute": "oct_findings_right"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Note different codes for Left/Right",
+        "Answer list at https://loinc.org/79818-1/"
+      ]
+    }
+  },
+  "gmf_version": 2
+}

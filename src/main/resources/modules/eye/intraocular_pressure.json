@@ -1,0 +1,125 @@
+{
+  "name": "Intraocular Pressure",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "IOP_Test"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "IOP_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "252832004",
+          "display": "Intraocular pressure test (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "IOP_Results"
+    },
+    "IOP_Results": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "mm[Hg]",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "41633001",
+          "display": "Intraocular pressure (observable entity)"
+        },
+        {
+          "system": "LOINC",
+          "code": "56844-4",
+          "display": "Intraocular pressure of Eye"
+        }
+      ],
+      "direct_transition": "High IOP Meds",
+      "remarks": [
+        "Note code 1 is actually SNOMED"
+      ],
+      "attribute": "intraocular_pressure"
+    },
+    "Timolol": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1923432,
+          "display": "dorzolamide 20 MG/ML / timolol 5 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "eye_pressure_med"
+    },
+    "Brimonidine": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 861204,
+          "display": "brimonidine tartrate 1 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "assign_to_attribute": "eye_pressure_med"
+    },
+    "High IOP Meds": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "intraocular_pressure",
+            "operator": ">",
+            "value": 21
+          },
+          "distributions": [
+            {
+              "transition": "Timolol",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Brimonidine",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "eye_pressure_med",
+            "operator": "is not nil"
+          },
+          "distributions": [],
+          "transition": "End IOP Med"
+        },
+        {
+          "distributions": [],
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "End IOP Med": {
+      "type": "MedicationEnd",
+      "direct_transition": "Clear out med attribute"
+    },
+    "Clear out med attribute": {
+      "type": "SetAttribute",
+      "attribute": "eye_pressure_med",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

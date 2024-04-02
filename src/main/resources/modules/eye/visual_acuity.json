@@ -1,0 +1,97 @@
+{
+  "name": "Visual Acuity",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "blindness",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "VA_Test"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "VA_Test": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 16830007,
+          "display": "Visual acuity testing (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "VA_Results_Left"
+    },
+    "VA_Results_Left": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "logmar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 413077008,
+          "display": "LogMAR visual acuity left eye (observable entity)"
+        },
+        {
+          "system": "LOINC",
+          "code": "98498-9",
+          "display": "Visual acuity uncorrected Left eye"
+        }
+      ],
+      "direct_transition": "VA_Results_Right",
+      "remarks": [
+        "Note code 1 is SNOMED per eyes-on-fhir IG",
+        "Snellen was chosen from the valueset based on personal experience",
+        "",
+        "LOINC has options for left/right, corrrected/uncorrected, near/far: https://loinc.org/98497-1/"
+      ],
+      "attribute": "visual_acuity_logmar"
+    },
+    "VA_Results_Right": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "logmar",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 413078003,
+          "display": "LogMAR visual acuity right eye (observable entity)"
+        },
+        {
+          "system": "LOINC",
+          "code": "98499-7",
+          "display": "Visual acuity uncorrected Right eye"
+        }
+      ],
+      "direct_transition": "Terminal",
+      "remarks": [
+        "Note code 1 is SNOMED per eyes-on-fhir IG",
+        "Snellen was chosen from the valueset based on personal experience",
+        "",
+        "LOINC has options for left/right, corrrected/uncorrected, near/far: https://loinc.org/98497-1/"
+      ],
+      "attribute": "visual_acuity_logmar"
+    }
+  },
+  "gmf_version": 2
+}

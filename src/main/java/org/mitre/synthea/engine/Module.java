@@ -43,6 +43,8 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
+import org.mitre.synthea.modules.OphthalmicNoteModule;
+import org.mitre.synthea.modules.OphthalmicProgressionModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
@@ -78,6 +80,10 @@ public class Module implements Cloneable, Serializable {
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
     retVal.put("COVID-19 Immunization Module", new ModuleSupplier(new C19ImmunizationModule()));
 
+    retVal.put("OphthalmicProgression", new ModuleSupplier(new OphthalmicProgressionModule()));
+    retVal.put("OphthalmicNote", new ModuleSupplier(new OphthalmicNoteModule()));
+    
+    
     Properties moduleOverrides = getModuleOverrides();
 
     try {

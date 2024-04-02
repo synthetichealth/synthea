@@ -1,0 +1,34 @@
+---
+name: Eyes on FHIR
+
+# applicability determines whether this mapping applies to a given file.
+# for now the assumption is 1 file = 1 synthea patient bundle.
+applicability: true
+
+actions:
+ - name: Apply Profiles
+   profiles:
+   - profile: http://hl7.org/fhir/uv/eyecare/StructureDefinition/observation-iop
+     applicability: Observation.code.coding.where($this.code = '41633001')
+   - profile: http://hl7.org/fhir/uv/eyecare/StructureDefinition/observation-visual-acuity
+     applicability: Observation.code.coding.where($this.code = '422673001')
+   - profile: http://hl7.org/fhir/uv/eyecare/StructureDefinition/diagnostic-report-oct-macula
+     applicability: DiagnosticReport.code.coding.where($this.code = '57119-0')
+
+ - name: Set Missing Values
+   set_values:
+     - applicability: Observation.code.coding.where($this.code = '422673001')
+       fields:
+         - location: Observation.method.coding
+           value:
+               system: http://snomed.info/sct
+               code: "400914004"
+               display: "Early Treatment of Diabetic Retinopathy Study visual acuity chart (physical object)"
+     - applicability: DiagnosticReport.code.coding.where($this.code = '57119-0')
+       fields:
+         - location: DiagnosticReport.category.coding
+           value:
+               system: http://snomed.info/sct
+               code: "394594003"
+               display: "Ophthalmology (qualifier value)"
+

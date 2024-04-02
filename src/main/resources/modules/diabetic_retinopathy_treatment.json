@@ -1,0 +1,613 @@
+{
+  "name": "Diabetic Retinopathy Treatment",
+  "remarks": [
+    "A blank module"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Guard_for_Diabetes_Diagnosis"
+    },
+    "Guard_for_Diabetes_Diagnosis": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Active Condition",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": 44054006,
+            "display": "Diabetes mellitus type 2 (disorder)"
+          }
+        ]
+      },
+      "distributed_transition": [
+        {
+          "transition": "Delay_before_first_encounter",
+          "distribution": 0.75
+        },
+        {
+          "transition": "Guard_for_Vision_Impact",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Delay_before_first_encounter": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 5,
+          "low": 1
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "Initial_Ophthalmic_Encounter"
+    },
+    "Check_Visual_Acuity": {
+      "type": "CallSubmodule",
+      "submodule": "eye/visual_acuity",
+      "direct_transition": "Check_IOP"
+    },
+    "Slit-lamp biomicroscopy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 55468007,
+          "display": "Ocular slit lamp examination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dilation"
+    },
+    "Check_IOP": {
+      "type": "CallSubmodule",
+      "submodule": "eye/intraocular_pressure",
+      "direct_transition": "Slit-lamp biomicroscopy"
+    },
+    "Patient history": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 84100007,
+          "display": "History taking (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Progress_DR_Vitals"
+    },
+    "Gonioscopy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 389153003,
+          "display": "Indirect gonioscopy (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Fundoscopy"
+    },
+    "Examination of the peripheral retina and vitreous": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 722161008,
+          "display": "Diabetic retinal eye exam (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 5,
+          "low": 2
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Consider_OCT"
+    },
+    "Consider_Panretinal_Laser": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Panretinal Laser"
+          },
+          "distributions": [],
+          "transition": "Consider_Grid_Laser"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Numbing_Drops_Panretinal_Laser"
+            },
+            {
+              "transition": "Consider_Grid_Laser",
+              "distribution": 0.15
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 3
+          },
+          "distributions": [
+            {
+              "distribution": 0.25,
+              "transition": "Numbing_Drops_Panretinal_Laser"
+            },
+            {
+              "transition": "Consider_Grid_Laser",
+              "distribution": 0.75
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Consider_Grid_Laser"
+        }
+      ]
+    },
+    "Consider_Grid_Laser": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Grid_Laser",
+            "within": {
+              "quantity": 1,
+              "unit": "years"
+            }
+          },
+          "distributions": [],
+          "transition": "Consider_AntiVEGF_Therapy"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "macular_edema",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Numbing_Drops_Grid_Laser"
+            },
+            {
+              "transition": "Consider_AntiVEGF_Therapy",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Consider_AntiVEGF_Therapy"
+        }
+      ]
+    },
+    "Consider_AntiVEGF_Therapy": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [],
+          "transition": "Numbing_Drops_AntiVEGF_Injection"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "diabetic_retinopathy_stage",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "macular_edema",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.85,
+              "transition": "Numbing_Drops_AntiVEGF_Injection"
+            },
+            {
+              "transition": "Capture_Notes",
+              "distribution": 0.15
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Capture_Notes"
+        }
+      ]
+    },
+    "Schedule_Followup": {
+      "type": "Simple",
+      "lookup_table_transition": [
+        {
+          "transition": "Followup_2-4Months",
+          "default_probability": 0,
+          "lookup_table_name": "diabetic_retinopathy_followup.csv"
+        },
+        {
+          "transition": "Followup_3-6Months",
+          "default_probability": 0,
+          "lookup_table_name": "diabetic_retinopathy_followup.csv"
+        },
+        {
+          "transition": "Followup_6-12Months",
+          "default_probability": 0,
+          "lookup_table_name": "diabetic_retinopathy_followup.csv"
+        },
+        {
+          "transition": "Followup_Yearly",
+          "default_probability": 1,
+          "lookup_table_name": "diabetic_retinopathy_followup.csv"
+        },
+        {
+          "transition": "Followup_Monthly",
+          "default_probability": 0,
+          "lookup_table_name": "diabetic_retinopathy_followup.csv"
+        }
+      ]
+    },
+    "Followup_Yearly": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 13,
+          "low": 11
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Subsequent_Ophthalmic_Encounters"
+    },
+    "Followup_Monthly": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Subsequent_Ophthalmic_Encounters"
+    },
+    "Followup_6-12Months": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 12,
+          "low": 6
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Subsequent_Ophthalmic_Encounters"
+    },
+    "Followup_3-6Months": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 6,
+          "low": 3
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Subsequent_Ophthalmic_Encounters"
+    },
+    "Followup_2-4Months": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 4,
+          "low": 2
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Subsequent_Ophthalmic_Encounters"
+    },
+    "Make_Diagnoses": {
+      "type": "CallSubmodule",
+      "submodule": "metabolic_syndrome/diabetic_retinopathy_diagnoses",
+      "direct_transition": "Consider_Panretinal_Laser"
+    },
+    "Consider_OCT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "OCT",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 1551000119108,
+                    "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 1501000119109,
+                    "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Make_Diagnoses"
+        }
+      ]
+    },
+    "OCT": {
+      "type": "CallSubmodule",
+      "submodule": "eye/ophthalmic_tomography",
+      "direct_transition": "Make_Diagnoses"
+    },
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Schedule_Followup"
+    },
+    "Panretinal Laser": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 389153003,
+          "display": "Pan retinal photocoagulation for diabetes (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Capture_Notes"
+    },
+    "Grid_Laser": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 397539000,
+          "display": "Grid retinal photocoagulation (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Capture_Notes"
+    },
+    "Progress_DR_Vitals": {
+      "type": "CallSubmodule",
+      "submodule": "OphthalmicProgression",
+      "direct_transition": "Check_Visual_Acuity"
+    },
+    "AntiVEGF_Therapy_Med": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1657066,
+          "display": "4 ML bevacizumab 25 MG/ML Injection"
+        }
+      ],
+      "direct_transition": "AntiVEGF_Therapy_Procedure",
+      "administration": true
+    },
+    "AntiVEGF_Therapy_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1004045004,
+          "display": "Intravitreal injection of anti-vascular endothelial growth factor (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Capture_Notes"
+    },
+    "Numbing_Drops_Panretinal_Laser": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1191013,
+          "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "Panretinal Laser",
+      "administration": true
+    },
+    "Numbing_Drops_Grid_Laser": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1191013,
+          "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "Grid_Laser",
+      "administration": true
+    },
+    "Numbing_Drops_AntiVEGF_Injection": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1191013,
+          "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "AntiVEGF_Therapy_Med",
+      "administration": true
+    },
+    "Dilation": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 313521,
+          "display": "tropicamide 5 MG/ML Ophthalmic Solution"
+        }
+      ],
+      "direct_transition": "Gonioscopy"
+    },
+    "Guard_for_Vision_Impact": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "diabetic_retinopathy_stage",
+        "operator": "==",
+        "value": 3
+      },
+      "direct_transition": "Initial_Ophthalmic_Encounter",
+      "remarks": [
+        "Intended to represent patients who don't seek treatment until there are significant vision impacts"
+      ]
+    },
+    "Fundoscopy": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 314971001,
+        "display": "Camera fundoscopy (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": 181171005,
+            "display": "Entire retina (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "OP",
+            "display": "Ophthalmic Photography"
+          },
+          "instances": [
+            {
+              "title": "Title of this image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.77.1.5.1",
+                "display": "Ophthalmic Photography 8 Bit Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Examination of the peripheral retina and vitreous",
+      "remarks": [
+        "DICOM notes: https://www.dicomstandard.org/News-dir/ftsup/docs/sups/sup91.pdf"
+      ]
+    },
+    "Capture_Notes": {
+      "type": "CallSubmodule",
+      "submodule": "OphthalmicNote",
+      "direct_transition": "End_Encounter"
+    },
+    "Initial_Ophthalmic_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185387006,
+          "display": "New patient consultation (procedure)"
+        }
+      ],
+      "direct_transition": "Patient history"
+    },
+    "Subsequent_Ophthalmic_Encounters": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 185349003,
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Progress_DR_Vitals"
+    }
+  },
+  "gmf_version": 2
+}

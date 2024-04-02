@@ -1,0 +1,11 @@
+﻿diabetic_retinopathy_stage,macular_edema,Followup_Yearly,Followup_6-12Months,Followup_3-6Months,Followup_2-4Months,Followup_Monthly
+0,false,1,0,0,0,0
+0,true,1,0,0,0,0
+1,false,1,0,0,0,0
+1,true,0,0,1,0,0
+2,false,0,1,0,0,0
+2,true,0,0,1,0,0
+3,false,0,0,1,0,0
+3,true,0,0,0,1,0
+4,false,0,0,0,1,0
+4,true,0,0,0,0,1
