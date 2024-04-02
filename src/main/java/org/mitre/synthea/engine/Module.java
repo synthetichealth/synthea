@@ -82,8 +82,7 @@ public class Module implements Cloneable, Serializable {
 
     retVal.put("OphthalmicProgression", new ModuleSupplier(new OphthalmicProgressionModule()));
     retVal.put("OphthalmicNote", new ModuleSupplier(new OphthalmicNoteModule()));
-    
-    
+
     Properties moduleOverrides = getModuleOverrides();
 
     try {
