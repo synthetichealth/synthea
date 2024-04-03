@@ -85,6 +85,7 @@ dependencies {
 
   implementation 'com.squareup.okhttp3:okhttp:4.10.0'
   implementation 'org.reflections:reflections:0.10.2'
+  implementation 'net.lingala.zip4j:zip4j:2.11.5'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
