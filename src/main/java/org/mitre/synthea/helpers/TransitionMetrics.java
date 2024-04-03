@@ -111,12 +111,8 @@ public abstract class TransitionMetrics {
     Path output = Paths.get(baseDir, statsDir);
     output.toFile().mkdirs();
 
-    List<ModuleSupplier> suppliers = Module.getModuleSuppliers();
+    List<ModuleSupplier> suppliers = Module.getModuleSuppliers(p -> !p.core);
     for (ModuleSupplier supplier : suppliers) {
-      if (supplier.core) {
-        // Java module
-        continue;
-      }
       // System.out.println("Saving statistics: " + supplier.path);
 
       Map<String, Metric> moduleMetrics = metrics.row(supplier.get().name);
