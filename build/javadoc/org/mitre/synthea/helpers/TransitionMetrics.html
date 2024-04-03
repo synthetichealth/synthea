@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10,"i3":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":9,"i1":9,"i2":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -89,13 +89,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -131,7 +131,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>public class <span class="typeNameLabel">TransitionMetrics</span>
+<pre>public abstract class <span class="typeNameLabel">TransitionMetrics</span>
 extends java.lang.Object</pre>
 <div class="block">Class to track state and transition metrics from the modules.
  At the end of the simulation this class can print out debugging statistics
@@ -170,6 +170,29 @@ extends java.lang.Object</pre>
 </li>
 </ul>
 </section>
+<!-- =========== FIELD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enabled">enabled</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section>
 <ul class="blockList">
@@ -199,42 +222,36 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#durationOf(long)">durationOf</a></span>&#8203;(long&nbsp;time)</code></th>
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enter(java.lang.String,java.lang.String,boolean)">enter</a></span>&#8203;(java.lang.String&nbsp;module,
+     java.lang.String&nbsp;state,
+     boolean&nbsp;firstTime)</code></th>
 <td class="colLast">
-<div class="block">Helper function to convert a # of milliseconds into a human-readable string.</div>
+<div class="block">Track entering a state within a given module.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="TransitionMetrics.Metric.html" title="class in org.mitre.synthea.helpers">TransitionMetrics.Metric</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMetric(java.lang.String,java.lang.String)">getMetric</a></span>&#8203;(java.lang.String&nbsp;moduleName,
-         java.lang.String&nbsp;stateName)</code></th>
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exit(java.lang.String,java.lang.String,java.lang.String,long)">exit</a></span>&#8203;(java.lang.String&nbsp;module,
+    java.lang.String&nbsp;state,
+    java.lang.String&nbsp;destination,
+    long&nbsp;duration)</code></th>
 <td class="colLast">
-<div class="block">Get the Metric object for the given State in the given Module.</div>
+<div class="block">Track exiting a state and the resulting destination.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#printStats(int,java.util.Collection)">printStats</a></span>&#8203;(int&nbsp;totalPopulation,
-          java.util.Collection&lt;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&gt;&nbsp;modules)</code></th>
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exportMetrics()">exportMetrics</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Print the statistics that have been gathered.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordStats(org.mitre.synthea.world.agents.Person,long,java.util.Collection)">recordStats</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-           long&nbsp;simulationEnd,
-           java.util.Collection&lt;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&gt;&nbsp;modules)</code></th>
-<td class="colLast">
-<div class="block">Record all appropriate state transition information from the given person.</div>
+<div class="block">Exports the metrics as JSON in the exporter base directory.</div>
 </td>
 </tr>
 </table>
@@ -254,6 +271,25 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="enabled">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>enabled</h4>
+<pre>public static&nbsp;boolean enabled</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section>
 <ul class="blockList">
@@ -280,76 +316,52 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="recordStats(org.mitre.synthea.world.agents.Person,long,java.util.Collection)">
+<a id="enter(java.lang.String,java.lang.String,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>recordStats</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;recordStats&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
-                        long&nbsp;simulationEnd,
-                        java.util.Collection&lt;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&gt;&nbsp;modules)</pre>
-<div class="block">Record all appropriate state transition information from the given person.</div>
+<h4>enter</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;enter&#8203;(java.lang.String&nbsp;module,
+                         java.lang.String&nbsp;state,
+                         boolean&nbsp;firstTime)</pre>
+<div class="block">Track entering a state within a given module.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>person</code> - Person that went through the modules</dd>
-<dd><code>simulationEnd</code> - Date the simulation ended</dd>
-<dd><code>modules</code> - The collection of modules to record stats for</dd>
+<dd><code>module</code> - The name of the module.</dd>
+<dd><code>state</code> - The name of the state.</dd>
+<dd><code>firstTime</code> - Whether or not this state was previously entered.</dd>
 </dl>
 </li>
 </ul>
-<a id="getMetric(java.lang.String,java.lang.String)">
+<a id="exit(java.lang.String,java.lang.String,java.lang.String,long)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getMetric</h4>
-<pre class="methodSignature">public&nbsp;<a href="TransitionMetrics.Metric.html" title="class in org.mitre.synthea.helpers">TransitionMetrics.Metric</a>&nbsp;getMetric&#8203;(java.lang.String&nbsp;moduleName,
-                                          java.lang.String&nbsp;stateName)</pre>
-<div class="block">Get the Metric object for the given State in the given Module.</div>
+<h4>exit</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;exit&#8203;(java.lang.String&nbsp;module,
+                        java.lang.String&nbsp;state,
+                        java.lang.String&nbsp;destination,
+                        long&nbsp;duration)</pre>
+<div class="block">Track exiting a state and the resulting destination.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>moduleName</code> - Name of the module</dd>
-<dd><code>stateName</code> - Name of the state</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Metric object</dd>
+<dd><code>module</code> - The name of the module.</dd>
+<dd><code>state</code> - The name of the state.</dd>
+<dd><code>destination</code> - Target state that was transitioned to.</dd>
+<dd><code>duration</code> - The time in milliseconds spent within the state.</dd>
 </dl>
 </li>
 </ul>
-<a id="printStats(int,java.util.Collection)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>printStats</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;printStats&#8203;(int&nbsp;totalPopulation,
-                       java.util.Collection&lt;<a href="../engine/Module.html" title="class in org.mitre.synthea.engine">Module</a>&gt;&nbsp;modules)</pre>
-<div class="block">Print the statistics that have been gathered.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>totalPopulation</code> - The total population that was simulated.</dd>
-<dd><code>modules</code> - The collection of modules to display stats for</dd>
-</dl>
-</li>
-</ul>
-<a id="durationOf(long)">
+<a id="exportMetrics()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>durationOf</h4>
-<pre class="methodSignature">public static&nbsp;java.lang.String&nbsp;durationOf&#8203;(long&nbsp;time)</pre>
-<div class="block">Helper function to convert a # of milliseconds into a human-readable string. Results are not
- necessarily precise, and are intended for general understanding only. The resulting format is
- not specified and may change at any time.
- Ex. duration(14*30*24*60*60*1000) may indicate a result of "14 months", "1 year and 2 months",
- "1.17 years", etc.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>time</code> - time duration in ms</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Human readable description of the time</dd>
-</dl>
+<h4>exportMetrics</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;exportMetrics()</pre>
+<div class="block">Exports the metrics as JSON in the exporter base directory.</div>
 </li>
 </ul>
 </li>
@@ -404,13 +416,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

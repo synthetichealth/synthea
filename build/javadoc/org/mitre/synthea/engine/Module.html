@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":9};
+var data = {"i0":9,"i1":10,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":10,"i10":10,"i11":9,"i12":10,"i13":10,"i14":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -335,20 +335,34 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>static java.util.List&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getModuleSuppliers()">getModuleSuppliers</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get the list of ModuleSuppliers.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static java.util.List&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getModuleSuppliers(java.util.function.Predicate)">getModuleSuppliers</a></span>&#8203;(java.util.function.Predicate&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;&nbsp;predicate)</code></th>
+<td class="colLast">
+<div class="block">Get a list of ModuleSuppliers, given a path predicate.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="State.html" title="class in org.mitre.synthea.engine">State</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getState(java.lang.String)">getState</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">
 <div class="block">Get a state by name.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.util.Collection&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStateNames()">getStateNames</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get a collection of the names of all the states this Module contains.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static <a href="Module.html" title="class in org.mitre.synthea.engine">Module</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadFile(java.nio.file.Path,boolean,java.util.Properties,boolean)">loadFile</a></span>&#8203;(java.nio.file.Path&nbsp;path,
         boolean&nbsp;submodule,
@@ -358,7 +372,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="block">Loads the module defined from the file at the given path.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#process(org.mitre.synthea.world.agents.Person,long)">process</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
        long&nbsp;time)</code></th>
@@ -366,7 +380,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#process(org.mitre.synthea.world.agents.Person,long,boolean)">process</a></span>&#8203;(<a href="../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
        long&nbsp;time,
@@ -375,7 +389,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="block">Process this Module with the given Person at the specified time within the simulation.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#relativePath(java.nio.file.Path,java.nio.file.Path)">relativePath</a></span>&#8203;(java.nio.file.Path&nbsp;filePath,
             java.nio.file.Path&nbsp;modulesFolder)</code></th>
@@ -637,6 +651,37 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a list of top-level modules, only including core modules and those allowed by the
      supplied predicate. Submodules are loaded, but not included.</dd>
+</dl>
+</li>
+</ul>
+<a id="getModuleSuppliers()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModuleSuppliers</h4>
+<pre class="methodSignature">public static&nbsp;java.util.List&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;&nbsp;getModuleSuppliers()</pre>
+<div class="block">Get the list of ModuleSuppliers.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a list of ModuleSuppliers. Submodules are included.</dd>
+</dl>
+</li>
+</ul>
+<a id="getModuleSuppliers(java.util.function.Predicate)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModuleSuppliers</h4>
+<pre class="methodSignature">public static&nbsp;java.util.List&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;&nbsp;getModuleSuppliers&#8203;(java.util.function.Predicate&lt;<a href="Module.ModuleSupplier.html" title="class in org.mitre.synthea.engine">Module.ModuleSupplier</a>&gt;&nbsp;predicate)</pre>
+<div class="block">Get a list of ModuleSuppliers, given a path predicate. No other filtering applies,
+ so this list could include both core and submodules.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>predicate</code> - A predicate to filter a module based on path.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list of ModuleSuppliers.</dd>
 </dl>
 </li>
 </ul>
