@@ -260,10 +260,10 @@ public class Module implements Cloneable, Serializable {
    * @param predicate A predicate to filter a module based on path.
    * @return A list of ModuleSuppliers.
    */
-  public static List<ModuleSupplier> getModuleSuppliers(Predicate<String> predicate) {
+  public static List<ModuleSupplier> getModuleSuppliers(Predicate<ModuleSupplier> predicate) {
     List<ModuleSupplier> list = new ArrayList<ModuleSupplier>();
     modules.forEach((k, v) -> {
-      if (predicate.test(v.path)) {
+      if (predicate.test(v)) {
         list.add(v);
       }
     });
