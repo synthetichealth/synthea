@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -9,6 +13,8 @@ import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
+import org.mitre.synthea.export.Exporter;
+import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 
@@ -56,6 +62,7 @@ public class App {
    */
   public static void main(String[] args) throws Exception {
     Generator.GeneratorOptions options = new Generator.GeneratorOptions();
+    Exporter.ExporterRuntimeOptions exportOptions = new Exporter.ExporterRuntimeOptions();
 
     boolean validArgs = true;
     boolean overrideFutureDateError = false;
@@ -192,12 +199,42 @@ public class App {
             }
           } else if (currArg.equals("-k")) {
             String value = argsQ.poll();
+            // first check if it's an absolute path, or path relative to .
             File keepPatientsModule = new File(value);
             if (keepPatientsModule.exists()) {
-              options.keepPatientsModulePath = keepPatientsModule;
+              options.keepPatientsModulePath = keepPatientsModule.toPath();
+            } else {
+              // look inside the src/main/resources/keep_modules folder
+              URI keepModulesURI = App.class.getClassLoader().getResource("keep_modules").toURI();
+              Utilities.enableReadingURIFromJar(keepModulesURI);
+              Path possibleLocation = Paths.get(keepModulesURI).resolve(value);
+              if (Files.exists(possibleLocation)) {
+                options.keepPatientsModulePath = possibleLocation;
+              } else {
+                throw new FileNotFoundException(String.format(
+                    "Specified keep-patients file (%s) does not exist", value));
+              }
+            }
+          } else if (currArg.equals("-fm")) {
+            String value = argsQ.poll();
+            File flexporterMappingFile = new File(value);
+            if (flexporterMappingFile.exists()) {
+              Mapping mapping = Mapping.parseMapping(flexporterMappingFile);
+              exportOptions.addFlexporterMapping(mapping);
+              // disable the graalVM warning when FlexporterJavascriptContext is instantiated
+              System.getProperties().setProperty("polyglot.engine.WarnInterpreterOnly", "false");
             } else {
               throw new FileNotFoundException(String.format(
-                  "Specified keep-patients file (%s) does not exist", value));
+                  "Specified flexporter mapping file (%s) does not exist", value));
+            }
+          } else if (currArg.equals("-ig")) {
+            String value = argsQ.poll();
+            File igFile = new File(value);
+            if (igFile.exists()) {
+              RunFlexporter.loadIG(igFile);
+            } else {
+              throw new FileNotFoundException(String.format(
+                  "Specified IG directory (%s) does not exist", value));
             }
           } else if (currArg.startsWith("--")) {
             String configSetting;
@@ -230,7 +267,7 @@ public class App {
     }
 
     if (validArgs && validateConfig(options, overrideFutureDateError)) {
-      Generator generator = new Generator(options);
+      Generator generator = new Generator(options, exportOptions);
       generator.run();
     }
   }

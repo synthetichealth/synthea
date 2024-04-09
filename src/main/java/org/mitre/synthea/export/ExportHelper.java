@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -13,6 +12,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
@@ -162,20 +162,20 @@ public abstract class ExportHelper {
   /**
    * Year-Month-Day date format.
    */
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd");
 
   /**
    * Iso8601 date time format.
    */
-  private static final SimpleDateFormat ISO_DATE_FORMAT = iso();
+  private static final FastDateFormat ISO_DATE_FORMAT = iso();
 
   /**
-   * Create a SimpleDateFormat for iso8601.
+   * Create a FastDateFormat for iso8601.
    * @return Iso8601 date time format.
    */
-  private static final SimpleDateFormat iso() {
-    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    f.setTimeZone(TimeZone.getTimeZone("UTC"));
+  private static final FastDateFormat iso() {
+    FastDateFormat f = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'",
+        TimeZone.getTimeZone("UTC"));
     return f;
   }
 
@@ -183,20 +183,14 @@ public abstract class ExportHelper {
    * Get a date string in the format YYYY-MM-DD from the given time stamp.
    */
   public static String dateFromTimestamp(long time) {
-    synchronized (DATE_FORMAT) {
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
-      return DATE_FORMAT.format(new Date(time));
-    }
+    return DATE_FORMAT.format(new Date(time));
   }
 
   /**
    * Get an iso8601 string for the given time stamp.
    */
   public static String iso8601Timestamp(long time) {
-    synchronized (ISO_DATE_FORMAT) {
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
-      return ISO_DATE_FORMAT.format(new Date(time));
-    }
+    return ISO_DATE_FORMAT.format(new Date(time));
   }
 
   /**

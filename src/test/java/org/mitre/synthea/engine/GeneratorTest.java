@@ -1,7 +1,6 @@
 package org.mitre.synthea.engine;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,17 +66,6 @@ public class GeneratorTest {
     numberOfPeople = 3;
     Config.set("generate.default_population", Integer.toString(numberOfPeople));
     generator = new Generator();
-    generator.run();
-    assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
-  }
-
-  @Test
-  public void testGenerateWithMetrics() throws Exception {
-    int numberOfPeople = 1;
-    Config.set("generate.track_detailed_transition_metrics", "true");
-    Generator generator = new Generator(numberOfPeople, 0L, 1L);
-    Config.set("generate.track_detailed_transition_metrics", "false");
-    assertNotNull(generator.metrics);
     generator.run();
     assertEquals(numberOfPeople, generator.stats.get("alive").longValue());
   }
@@ -358,7 +346,7 @@ public class GeneratorTest {
     opts.minAge = 35;
     opts.maxAge = 75;
     opts.ageSpecified = true;
-    opts.keepPatientsModulePath = new File("src/test/resources/keep_patients_module/keep.json");
+    opts.keepPatientsModulePath = Path.of("src/test/resources/keep_patients_module/keep.json");
     // keep module checks that patients have attribute diabetes == true
 
     Generator generator = new Generator(opts);

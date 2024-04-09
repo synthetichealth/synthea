@@ -1919,11 +1919,11 @@
     "Miscarriage_Fatal_Pregnancy_Complication_Ends": {
       "type": "ConditionEnd",
       "referenced_by_attribute": "fatal_pregnancy_complication",
-      "direct_transition": "End_Miscarriage_Followup_Encounter"
+      "direct_transition": "History_of_Miscarriage"
     },
     "End_Miscarriage_Followup_Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Miscarriage_Ends"
+      "direct_transition": "End_Miscarriage_Condition"
     },
     "Wait_For_Induced_Abortion": {
       "type": "Delay",
@@ -2129,24 +2129,6 @@
         }
       ]
     },
-    "Miscarriage_Ends": {
-      "type": "ConditionEnd",
-      "condition_onset": "Become_Pregnant",
-      "conditional_transition": [
-        {
-          "transition": "Anemia_End_2",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "anemia_pregnancy",
-            "operator": "==",
-            "value": 1
-          }
-        },
-        {
-          "transition": "Unset_Pregnant_Attribute"
-        }
-      ]
-    },
     "Abortion_Ends": {
       "type": "ConditionEnd",
       "condition_onset": "Become_Pregnant",
@@ -2326,6 +2308,40 @@
       ],
       "assign_to_attribute": "fatal_pregnancy_complication",
       "direct_transition": "End_Initial_Visit_Towards_Ectopic_Pregnancy"
+    },
+    "Miscarriage_Ends_Pregnancy": {
+      "type": "ConditionEnd",
+      "condition_onset": "Become_Pregnant",
+      "conditional_transition": [
+        {
+          "transition": "Anemia_End_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anemia_pregnancy",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Unset_Pregnant_Attribute"
+        }
+      ]
+    },
+    "End_Miscarriage_Condition": {
+      "type": "ConditionEnd",
+      "direct_transition": "Miscarriage_Ends_Pregnancy",
+      "referenced_by_attribute": "miscarriage"
+    },
+    "History_of_Miscarriage": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 161744009,
+          "display": "Past pregnancy history of miscarriage (situation)"
+        }
+      ],
+      "direct_transition": "End_Miscarriage_Followup_Encounter"
     }
   },
   "gmf_version": 1

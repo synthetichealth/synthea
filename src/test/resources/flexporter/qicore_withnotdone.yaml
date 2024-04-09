@@ -1,0 +1,105 @@
+---
+# name is just a friendly name for this mapping
+name: QI Core With "Not Done" Instances
+
+# applicability determines whether this mapping applies to a given file.
+# for now the assumption is 1 file = 1 synthea patient bundle.
+applicability: true
+
+actions:
+ - name: Apply Profiles
+   # v1: define specific profiles and an applicability statement on when to apply them
+   # v1.1: allow specifying a field from the profile to key off of (ex. mCode TNMPrimaryTumorCategory.code)
+   # maybe v2 will automatically infer?
+   # some of the challenges to keep in mind:
+   #  - what if the resource doesn't conform to the profile yet? 
+   #    we should make sure we can take other actions before applying profiles, 
+   #    or manually specify where to apply profiles so that we can apply other fixes based on profile later.
+   profiles:
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient
+     applicability: Patient
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter
+     applicability: Encounter
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition-encounter-diagnosis
+     applicability: Condition
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation
+     applicability: Observation
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure
+     applicability: Procedure
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest
+     applicability: MedicationRequest
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunization
+     applicability: Immunization
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careplan
+     applicability: CarePlan
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy
+     applicability: ImagingStudy
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-device
+     applicability: Device
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitioner
+     applicability: Practitioner
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-allergyintolerance
+     applicability: AllergyIntolerance
+   - profile: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-claim
+     applicability: Claim
+
+
+ - name: Set Missing Values
+   set_values:
+     - applicability: Immunization
+       fields:
+         - location: Immunization.recorded
+           value: $getField([Immunization.occurrence])
+           # TODO: occurrence is a choice type,
+           # it would be nice to put "occurrenceDateTime" here
+           # since that's what's actually in the JSON
+           # but that doesn't seem to work with HAPI's FhirPath
+
+     - applicability: Procedure.performed.ofType(Period)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed.start])
+     - applicability: Procedure.performed.ofType(dateTime)
+       fields:
+         - location: Procedure.extension.where(url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded').valueDateTime
+           value: $getField([Procedure.performed])
+
+ - name: QICore NotDone Instances
+   create_resource:
+     - resourceType: MedicationRequest
+       based_on: 
+         module: Myocardial Infarction
+         # note the module has to be a top-level module,
+         # but the state can be a state name from a submodule
+         state: No_Aspirin
+       fields:
+         - location: MedicationRequest.meta.profile
+           value: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested
+         - location: MedicationRequest.doNotPerform
+           value: "true"
+         - location: MedicationRequest.status
+           value: completed
+         - location: MedicationRequest.intent
+           value: order
+         - location: MedicationRequest.subject.reference
+           value: $findRef([Patient])
+         - location: MedicationRequest.authoredOn
+           value: $getField([State.entered]) 
+           # State.entered refers to the start of the based_on state
+         - location: MedicationRequest.requester.reference
+           value: $getField([Encounter.participant.individual.reference])
+         - location: MedicationRequest.reasonCode.coding
+           value:
+               system: http://snomedct.io
+               code: "183966005"
+               display: "Drug treatment not indicated (situation)"
+         - location: MedicationRequest.medicationCodeableConcept.extension
+           value:
+               url: http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneValueSet
+               valueCanonical: http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.196.11.1211
+               # VS is "Aspirin and Other Antiplatelets"
+
+  
+
+
+

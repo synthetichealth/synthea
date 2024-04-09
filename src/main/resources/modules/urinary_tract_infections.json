@@ -18,19 +18,240 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "remarks": [
-        "======================================================================",
-        " INCIDENCE                                                            ",
-        "======================================================================",
-        "https://www.kidney.org/sites/default/files/uti.pdf:",
-        " ''One in five women will have at least one UTI in her lifetime.      ",
-        "   Nearly 20 percent of women who have a UTI will have another,       ",
-        "   and 30 percent of those will have yet another. Of this last        ",
-        "   group, 80 percent will have recurrences.''                         ",
-        "https://www.betterhealth.vic.gov.au/health/conditionsandtreatments/urinary-tract-infections-uti:",
-        " ''Around one in two women and one in 20 men will get a UTI in their lifetime'' "
+      "direct_transition": "Wait Unit 15",
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Wait Unit 15": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 15,
+        "unit": "years",
+        "value": 0
+      },
+      "direct_transition": "Urinary Tract Infection",
+      "name": "Wait Unit 15"
+    },
+    "Urinary Tract Infection": {
+      "type": "Simple",
+      "name": "Urinary Tract Infection",
+      "lookup_table_transition": [
+        {
+          "transition": "Cystitis",
+          "default_probability": 0.1,
+          "lookup_table_name": "uti.csv"
+        },
+        {
+          "transition": "Pyelonephritis",
+          "default_probability": 0.1,
+          "lookup_table_name": "uti.csv"
+        },
+        {
+          "transition": "Wait_for_UTI",
+          "default_probability": 0.8,
+          "lookup_table_name": "uti.csv"
+        }
+      ]
+    },
+    "Cystitis": {
+      "type": "ConditionOnset",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 307426000,
+          "display": "Acute infective cystitis (disorder)",
+          "value_set": ""
+        }
       ],
+      "direct_transition": "Care Pathways",
+      "name": "Cystitis",
+      "assign_to_attribute": "uti"
+    },
+    "Pyelonephritis": {
+      "type": "ConditionOnset",
+      "target_encounter": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 45816000,
+          "display": "Pyelonephritis",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Care Pathways",
+      "name": "Pyelonephritis",
+      "assign_to_attribute": "uti"
+    },
+    "Care Pathways": {
+      "type": "Simple",
+      "name": "Care Pathways",
+      "type_of_care_transition": {
+        "ambulatory": "Ambulatory",
+        "emergency": "ED",
+        "telemedicine": "Telemedicine"
+      }
+    },
+    "Wait_for_UTI": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 12,
+          "low": 0
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Urinary Tract Infection",
+      "name": "Wait_for_UTI"
+    },
+    "Telemedicine": {
+      "type": "Simple",
+      "direct_transition": "UTI Telemed Sub",
+      "name": "Telemedicine"
+    },
+    "Ambulatory": {
+      "type": "Simple",
+      "direct_transition": "UTI Ambulatory Sub",
+      "name": "Ambulatory"
+    },
+    "ED": {
+      "type": "Simple",
+      "direct_transition": "UTI ED Sub",
+      "name": "ED"
+    },
+    "UTI Telemed Sub": {
+      "type": "CallSubmodule",
+      "submodule": "uti/telemed_path",
+      "direct_transition": "Time Delay",
+      "name": "UTI Telemed Sub"
+    },
+    "UTI Ambulatory Sub": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ambulatory_path",
+      "direct_transition": "Time Delay",
+      "name": "UTI Ambulatory Sub"
+    },
+    "UTI ED Sub": {
+      "type": "CallSubmodule",
+      "submodule": "uti/ed_path",
+      "direct_transition": "Time Delay",
+      "name": "UTI ED Sub"
+    },
+    "Time Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 48,
+          "low": 0
+        }
+      },
+      "unit": "hours",
+      "direct_transition": "Clear ESI",
+      "name": "Time Delay"
+    },
+    "End UTI Tx": {
+      "type": "MedicationEnd",
+      "name": "End UTI Tx",
+      "referenced_by_attribute": "UTI_Tx",
+      "distributed_transition": [
+        {
+          "transition": "End UTI",
+          "distribution": 0.86
+        },
+        {
+          "transition": "Care Pathways",
+          "distribution": 0.14
+        }
+      ]
+    },
+    "Clear ESI": {
+      "type": "SetAttribute",
+      "attribute": "esi",
+      "direct_transition": "Clear BldCx",
+      "name": "Clear ESI"
+    },
+    "Clear BldCx": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Positive_BldCx",
+      "direct_transition": "Clear UTI ED",
+      "name": "Clear BldCx"
+    },
+    "Clear UTI ED": {
+      "type": "SetAttribute",
+      "attribute": "UTI_ED",
+      "direct_transition": "Clear UTI_Care_Referral",
+      "name": "Clear UTI ED"
+    },
+    "Clear UTI_Care_Referral": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Care_Referral",
+      "direct_transition": "Clear UTI_Lab_SendOut",
+      "name": "Clear UTI_Care_Referral"
+    },
+    "Clear UTI_Lab_SendOut": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Lab_SendOut",
+      "direct_transition": "Clear GU_Pregnancy_Check",
+      "name": "Clear UTI_Lab_SendOut"
+    },
+    "Clear GU_Pregnancy_Check": {
+      "type": "SetAttribute",
+      "attribute": "GU_Pregnancy_Check",
+      "direct_transition": "Clear UTI_Labs",
+      "name": "Clear GU_Pregnancy_Check"
+    },
+    "Clear UTI_Labs": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Labs",
+      "direct_transition": "Clear UTI_Bacteria",
+      "name": "Clear UTI_Labs"
+    },
+    "Clear UTI_Bacteria": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Bacteria",
+      "direct_transition": "Clear UTI_Telemed",
+      "name": "Clear UTI_Bacteria"
+    },
+    "Clear UTI_Telemed": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Telemed",
+      "direct_transition": "Clear UTI_Ambulatory",
+      "name": "Clear UTI_Telemed"
+    },
+    "Clear UTI_Ambulatory": {
+      "type": "SetAttribute",
+      "attribute": "UTI_Ambulatory",
+      "direct_transition": "End UTI Tx",
+      "name": "Clear UTI_Ambulatory"
+    },
+    "End UTI": {
+      "type": "ConditionEnd",
+      "name": "End UTI",
+      "referenced_by_attribute": "uti",
       "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "Recurrence Delay",
+              "distribution": 0.096
+            },
+            {
+              "transition": "Terminal",
+              "distribution": 0.9039999999999999
+            }
+          ]
+        },
         {
           "condition": {
             "condition_type": "Gender",
@@ -38,461 +259,54 @@
           },
           "distributions": [
             {
-              "distribution": 0.95,
+              "transition": "Recurrence Delay",
+              "distribution": 0.05
+            },
+            {
               "transition": "Terminal",
-              "remarks": [
-                "Most men will never get a UTI."
-              ]
-            },
-            {
-              "distribution": 0.05,
-              "transition": "Wait_For_Old_Age"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.5,
-              "transition": "Delay_Until_Right_Age",
-              "remarks": [
-                "1 in 2 women gets a UTI."
-              ]
-            },
-            {
-              "distribution": 0.5,
-              "transition": "Terminal"
+              "distribution": 0.95
             }
           ]
         }
       ]
     },
-    "Wait_For_Old_Age": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Age",
-        "operator": ">",
-        "quantity": 55,
-        "unit": "years"
-      },
-      "direct_transition": "Wait_For_Next_UTI"
-    },
-    "Delay_Until_Right_Age": {
+    "Recurrence Delay": {
       "type": "Delay",
-      "remarks": [
-        "Women may start getting UTIs at different points in their life."
-      ],
-      "range": {
-        "low": 15,
-        "high": 55,
-        "unit": "years"
-      },
-      "direct_transition": "Wait_For_Next_UTI"
-    },
-    "Wait_For_Next_UTI": {
-      "type": "Delay",
-      "remarks": [
-        "======================================================================",
-        " URINARY TRACT INFECTION                                              ",
-        "======================================================================",
-        "This is most commonly a bacterial infection of the urethra or bladder ",
-        "(urethritis and cystitis, respectively). In rare cases this could also ",
-        "be an infection of the kidneys (pyelonephritis)."
-      ],
-      "range": {
-        "low": 1,
-        "high": 7,
-        "unit": "years"
-      },
-      "direct_transition": "Urinary_Tract_Infection"
-    },
-    "Urinary_Tract_Infection": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.6,
-          "transition": "Urethritis"
-        },
-        {
-          "distribution": 0.39,
-          "transition": "Cystitis"
-        },
-        {
-          "distribution": 0.01,
-          "transition": "Pyelonephritis"
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 6,
+          "low": 3
         }
-      ]
+      },
+      "unit": "months",
+      "direct_transition": "Recurrent UTI",
+      "name": "Recurrence Delay"
     },
-    "Urethritis": {
+    "Recurrent UTI": {
       "type": "ConditionOnset",
-      "target_encounter": "UTI_Diagnosis",
-      "assign_to_attribute": "uti",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "301011002",
-          "display": "Escherichia coli urinary tract infection"
+          "code": 197927001,
+          "display": "Recurrent urinary tract infection (disorder)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "UTI_Symptom1"
-    },
-    "Cystitis": {
-      "type": "ConditionOnset",
-      "target_encounter": "UTI_Diagnosis",
-      "assign_to_attribute": "uti",
-      "codes": [
+      "lookup_table_transition": [
         {
-          "system": "SNOMED-CT",
-          "code": "38822007",
-          "display": "Cystitis"
-        }
-      ],
-      "direct_transition": "UTI_Symptom1"
-    },
-    "Pyelonephritis": {
-      "type": "ConditionOnset",
-      "target_encounter": "UTI_Diagnosis",
-      "assign_to_attribute": "uti",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "45816000",
-          "display": "Pyelonephritis"
-        }
-      ],
-      "direct_transition": "UTI_Symptom1"
-    },
-    "UTI_Diagnosis": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "uti",
-      "telemedicine_possibility": "possible",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185345009",
-          "display": "Encounter for symptom"
-        }
-      ],
-      "direct_transition": "Prescribe_UTI_Antibiotic"
-    },
-    "UTI_Symptom1": {
-      "type": "Symptom",
-      "symptom": "Dysuria",
-      "range": {
-        "low": 5,
-        "high": 25
-      },
-      "direct_transition": "UTI_Symptom2"
-    },
-    "UTI_Symptom2": {
-      "type": "Symptom",
-      "symptom": "Urgent Desire to Urinate",
-      "range": {
-        "low": 5,
-        "high": 25
-      },
-      "direct_transition": "UTI_Symptom3"
-    },
-    "UTI_Symptom3": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "range": {
-        "low": 5,
-        "high": 25
-      },
-      "direct_transition": "UTI_Symptom4"
-    },
-    "UTI_Symptom4": {
-      "type": "Symptom",
-      "symptom": "Discolored Urine",
-      "range": {
-        "low": 0,
-        "high": 10
-      },
-      "direct_transition": "UTI_Symptom5"
-    },
-    "UTI_Symptom5": {
-      "type": "Symptom",
-      "symptom": "Odor of Urine",
-      "range": {
-        "low": 0,
-        "high": 10
-      },
-      "direct_transition": "UTI_Symptom6"
-    },
-    "UTI_Symptom6": {
-      "type": "Symptom",
-      "symptom": "Pelvic Pain",
-      "range": {
-        "low": 0,
-        "high": 15
-      },
-      "direct_transition": "UTI_Symptom7"
-    },
-    "UTI_Symptom7": {
-      "type": "Symptom",
-      "symptom": "Fever",
-      "range": {
-        "low": 0,
-        "high": 10
-      },
-      "direct_transition": "Symptom_Period"
-    },
-    "Symptom_Period": {
-      "type": "Delay",
-      "range": {
-        "low": 24,
-        "high": 48,
-        "unit": "days"
-      },
-      "direct_transition": "UTI_Diagnosis"
-    },
-    "Prescribe_UTI_Antibiotic": {
-      "type": "MedicationOrder",
-      "reason": "uti",
-      "remarks": [
-        "This is an antibiotic commonly prescribed for UTIs."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "311989",
-          "display": "Nitrofurantoin 5 MG/ML Oral Suspension"
-        }
-      ],
-      "direct_transition": "Prescribe_OTC_Painkiller_For_UTIs"
-    },
-    "Prescribe_OTC_Painkiller_For_UTIs": {
-      "type": "MedicationOrder",
-      "reason": "uti",
-      "remarks": [
-        "This is an OTC pain medication specifically for the urinary tract."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "1094107",
-          "display": "Phenazopyridine hydrochloride 100 MG Oral Tablet"
-        }
-      ],
-      "direct_transition": "UTI_CarePlan"
-    },
-    "UTI_CarePlan": {
-      "type": "CarePlanStart",
-      "reason": "uti",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "773593000",
-          "display": "Urology care plan (record artifact)"
-        }
-      ],
-      "activities": [
-        {
-          "system": "SNOMED-CT",
-          "code": "223472008",
-          "display": "Discussion about hygiene"
+          "transition": "Cystitis",
+          "default_probability": 0.9,
+          "lookup_table_name": "uti_recurrence.csv"
         },
         {
-          "system": "SNOMED-CT",
-          "code": "171245007",
-          "display": "Urine screening"
+          "transition": "Pyelonephritis",
+          "default_probability": 0.1,
+          "lookup_table_name": "uti_recurrence.csv"
         }
       ],
-      "direct_transition": "End_Diagnosis_Encounter"
-    },
-    "End_Diagnosis_Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Take_Antibiotics"
-    },
-    "Take_Antibiotics": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 7,
-        "unit": "days"
-      },
-      "direct_transition": "End_First_Round_Of_Antibiotics"
-    },
-    "End_First_Round_Of_Antibiotics": {
-      "type": "MedicationEnd",
-      "medication_order": "Prescribe_UTI_Antibiotic",
-      "distributed_transition": [
-        {
-          "distribution": 0.15,
-          "transition": "Followup_Encounter"
-        },
-        {
-          "distribution": 0.85,
-          "transition": "End_Urinary_Tract_Infection"
-        }
-      ]
-    },
-    "Followup_Encounter": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "uti",
-      "telemedicine_possibility": "possible",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185345009",
-          "display": "Encounter for symptom"
-        }
-      ],
-      "direct_transition": "Prescribe_Second_Round_Of_Antibiotics"
-    },
-    "Prescribe_Second_Round_Of_Antibiotics": {
-      "type": "MedicationOrder",
-      "reason": "uti",
-      "remarks": [
-        "This is a stronger antibiotic."
-      ],
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "311995",
-          "display": "NITROFURANTOIN, MACROCRYSTALS 50 MG Oral Capsule"
-        }
-      ],
-      "direct_transition": "End_Followup"
-    },
-    "End_Followup": {
-      "type": "EncounterEnd",
-      "direct_transition": "Take_More_Antibiotics"
-    },
-    "Take_More_Antibiotics": {
-      "type": "Delay",
-      "exact": {
-        "quantity": 7,
-        "unit": "days"
-      },
-      "direct_transition": "End_Second_Round_Of_Antibiotics"
-    },
-    "End_Second_Round_Of_Antibiotics": {
-      "type": "MedicationEnd",
-      "medication_order": "Prescribe_Second_Round_Of_Antibiotics",
-      "direct_transition": "End_Urinary_Tract_Infection"
-    },
-    "End_Urinary_Tract_Infection": {
-      "type": "ConditionEnd",
-      "referenced_by_attribute": "uti",
-      "direct_transition": "UTI_Symptom1_Ends"
-    },
-    "UTI_Symptom1_Ends": {
-      "type": "Symptom",
-      "symptom": "Dysuria",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom2_Ends"
-    },
-    "UTI_Symptom2_Ends": {
-      "type": "Symptom",
-      "symptom": "Urgent Desire to Urinate",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom3_Ends"
-    },
-    "UTI_Symptom3_Ends": {
-      "type": "Symptom",
-      "symptom": "Frequent Urination",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom4_Ends"
-    },
-    "UTI_Symptom4_Ends": {
-      "type": "Symptom",
-      "symptom": "Discolored Urine",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom5_Ends"
-    },
-    "UTI_Symptom5_Ends": {
-      "type": "Symptom",
-      "symptom": "Odor of Urine",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom6_Ends"
-    },
-    "UTI_Symptom6_Ends": {
-      "type": "Symptom",
-      "symptom": "Pelvic Pain",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "UTI_Symptom7_Ends"
-    },
-    "UTI_Symptom7_Ends": {
-      "type": "Symptom",
-      "symptom": "Fever",
-      "exact": {
-        "quantity": 0
-      },
-      "direct_transition": "End_OTC_Painkiller"
-    },
-    "End_OTC_Painkiller": {
-      "type": "MedicationEnd",
-      "medication_order": "Prescribe_OTC_Painkiller_For_UTIs",
-      "direct_transition": "End_UTI_CarePlan"
-    },
-    "End_UTI_CarePlan": {
-      "type": "CarePlanEnd",
-      "careplan": "UTI_CarePlan",
-      "direct_transition": "Get_Additional_UTIs"
-    },
-    "Get_Additional_UTIs": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "distribution": 0.2,
-          "transition": "Wait_For_Next_UTI",
-          "remarks": [
-            "Nearly 20% of women who have one UTI have another "
-          ]
-        },
-        {
-          "distribution": 0.048,
-          "transition": "Recurrent_Urinary_Tract_Infections",
-          "remarks": [
-            "About 4.8% get recurring UTIs: ",
-            "0.8 * 0.3 * 0.2 = 0.048 "
-          ]
-        },
-        {
-          "distribution": 0.752,
-          "transition": "Terminal"
-        }
-      ]
-    },
-    "Recurrent_Urinary_Tract_Infections": {
-      "type": "ConditionOnset",
-      "target_encounter": "UTI_Diagnosis",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "197927001",
-          "display": "Recurrent urinary tract infection"
-        }
-      ],
-      "direct_transition": "Wait_For_Recurring_UTI"
-    },
-    "Wait_For_Recurring_UTI": {
-      "type": "Delay",
-      "range": {
-        "low": 3,
-        "high": 6,
-        "unit": "weeks"
-      },
-      "direct_transition": "Urinary_Tract_Infection"
-    },
-    "Terminal": {
-      "type": "Terminal"
+      "name": "Recurrent UTI"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }

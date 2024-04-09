@@ -189,7 +189,7 @@ public abstract class Transition implements Serializable {
     }
   }
 
-  public static final class TypeOfCareTransitionOptions {
+  public static final class TypeOfCareTransitionOptions implements Serializable {
     private String ambulatory;
     private String telemedicine;
     private String emergency;

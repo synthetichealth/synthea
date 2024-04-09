@@ -1,0 +1,84 @@
+---
+# name is just a friendly name for this mapping
+name: mCODE Flexporter Test
+
+# applicability determines whether this mapping applies to a given file.
+# for now the assumption is 1 file = 1 synthea patient bundle.
+applicability: Condition.code.coding.where($this.code in %primaryCancerConditionCodes)
+# for real mCODE: 
+#   In FHIR terms, these are patients who have a Condition where 
+#     Condition.code is a member of the value set [PrimaryOrUncertainBehaviorCancerDisorderVS] 
+#     and 
+#     Condition.verificationStatus is confirmed.
+# -- https://build.fhir.org/ig/HL7/fhir-mCODE-ig/conformance-patients.html
+
+variables:
+  primaryCancerConditionCodes:
+    - '188151006' # Malignant neoplasm of central part of female breast (disorder)
+    - '254837009' # Malignant neoplasm of breast (disorder) (B)
+    - '93761005' # Primary malignant neoplasm of colon (C)
+    - '109838007' # Overlapping malignant neoplasm of colon (C)
+    - '363406005' # Malignant tumor of colon (C)
+    - '94260004' # Secondary malignant neoplasm of colon (C) -- note this is a "secondary" code but is intended to be a primary cancer
+    - '254637007' # Non-small cell lung cancer (disorder) (L)
+    - '254632001' # Small cell carcinoma of lung (disorder) (L)
+    - '424132000' # Non-small cell carcinoma of lung, TNM stage 1 (disorder) (L)
+    - '425048006' # Non-small cell carcinoma of lung, TNM stage 2 (disorder) (L)
+    - '422968005' # Non-small cell carcinoma of lung, TNM stage 3 (disorder) (L)
+    - '423121009' # Non-small cell carcinoma of lung, TNM stage 4 (disorder) (L)
+    - '67811000119102' # Primary small cell malignant neoplasm of lung, TNM stage 1 (disorder) (L)
+    - '67821000119109' # Primary small cell malignant neoplasm of lung, TNM stage 2 (disorder) (L)
+    - '67831000119107' # Primary small cell malignant neoplasm of lung, TNM stage 3 (disorder) (L)
+    - '67841000119103' # Primary small cell malignant neoplasm of lung, TNM stage 4 (disorder) (L)
+
+
+# reminder - the fhir_mapper for Synthea->mCODE 1.0 is here:
+# https://github.com/standardhealth/fhir-mapper/blob/mcode1/src/mapping/mappers/SyntheaToV10.js
+
+actions:
+ - name: Apply Profiles
+   # v1: define specific profiles and an applicability statement on when to apply them
+   # v1.1: allow specifying a field from the profile to key off of (ex. mCode TNMPrimaryTumorCategory.code)
+   # maybe v2 will automatically infer?
+   # some of the challenges to keep in mind:
+   #  - what if the resource doesn't conform to the profile yet? 
+   #    we should make sure we can take other actions before applying profiles, 
+   #    or manually specify where to apply profiles so that we can apply other fixes based on profile later.
+   profiles:
+   - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-cancer-patient
+     applicability: Patient
+
+   - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-tnm-clinical-stage-group
+     applicability: Observation.code.coding.where($this.code = '21908-9')
+
+   - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-tnm-clinical-primary-tumor-category
+     applicability: Observation.code.coding.where($this.code = '21905-5')
+
+   - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-tnm-clinical-regional-nodes-category
+     applicability: Observation.code.coding.where($this.code = '21906-3')
+
+   - profile: http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-tnm-clinical-distant-metastases-category
+     applicability: Observation.code.coding.where($this.code = '21907-1')
+
+
+ - name: Create TNM References
+   set_values:
+    # TODO: make applicability optionally a list
+    # because sometimes it will be easier/cleaner to define 2 separate fhirpaths than make 1 complex one or duplicate an action here
+     - applicability: Observation.code.coding.where($this.code = '21908-9')
+       fields:
+         - location: Observation.hasMember.where(display='Tumor Category').reference
+           value: $findRef([Observation.code.coding.where($this.code = '21905-5')])
+         - location: Observation.hasMember.where(display='Nodes Category').reference
+           value: $findRef([Observation.code.coding.where($this.code = '21906-3')])
+         - location: Observation.hasMember.where(display='Metastases Category').reference
+           value: $findRef([Observation.code.coding.where($this.code = '21907-1')])
+
+
+ - name: Set Primary Cancer Focus
+   set_values:
+     - applicability: Observation.code.coding.where($this.code = '21905-5')  # Primary Tumor Category
+       fields:
+         - location: Observation.focus.reference
+           value: $findRef([Condition.code.coding.where($this.code = '254837009')])
+

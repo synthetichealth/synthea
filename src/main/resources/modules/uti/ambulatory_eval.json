@@ -1,0 +1,90 @@
+{
+  "name": "UTI_Ambulatory_Eval",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "direct_transition": "Eval Procedure"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Eval Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 386053000,
+          "display": "Evaluation procedure (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 15
+        }
+      },
+      "unit": "minutes",
+      "name": "Eval Procedure",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          },
+          "distributions": [
+            {
+              "transition": "UTI_Labs",
+              "distribution": 0.2
+            },
+            {
+              "transition": "GU_Pregnancy_Check",
+              "distribution": 0.8
+            }
+          ]
+        }
+      ]
+    },
+    "GU_Pregnancy_Check": {
+      "type": "CallSubmodule",
+      "submodule": "uti/gu_pregnancy_check",
+      "direct_transition": "UTI_Labs",
+      "name": "GU_Pregnancy_Check"
+    },
+    "UTI_Labs": {
+      "type": "CallSubmodule",
+      "submodule": "uti/labs",
+      "direct_transition": "Abx Therapy",
+      "name": "UTI_Labs"
+    },
+    "Abx Therapy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 281789004,
+          "display": "Antibiotic therapy (procedure)",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "UTI_Abx",
+      "name": "Abx Therapy"
+    },
+    "UTI_Abx": {
+      "type": "CallSubmodule",
+      "submodule": "uti/abx_tx",
+      "direct_transition": "Terminal",
+      "name": "UTI_Abx"
+    }
+  },
+  "gmf_version": 2
+}

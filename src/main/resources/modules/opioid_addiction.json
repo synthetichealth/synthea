@@ -645,7 +645,7 @@
       "distributed_transition": [
         {
           "distribution": 0.98747,
-          "transition": "End_Directed_Use_Overdose_Encounter"
+          "transition": "End_Directed_Use_Overdose"
         },
         {
           "distribution": 0.01253,
@@ -683,7 +683,7 @@
       "distributed_transition": [
         {
           "distribution": 0.98747,
-          "transition": "End_Misuse_Overdose_Encounter"
+          "transition": "End_Misuse_Overdose"
         },
         {
           "distribution": 0.01253,
@@ -738,19 +738,7 @@
         }
       },
       "unit": "hours",
-      "conditional_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "opioid_addiction_careplan",
-            "operator": "is nil"
-          },
-          "transition": "Opioid_Addiction_CarePlan"
-        },
-        {
-          "transition": "End_Addiction_Overdose_Encounter"
-        }
-      ]
+      "direct_transition": "End_Addiction_Overdose"
     },
     "Opioid_Addiction_CarePlan": {
       "type": "CarePlanStart",
@@ -928,6 +916,33 @@
       ],
       "direct_transition": "Recovery_Management",
       "assign_to_attribute": "opioid_drug_addiction"
+    },
+    "End_Addiction_Overdose": {
+      "type": "ConditionEnd",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "opioid_addiction_careplan",
+            "operator": "is nil"
+          },
+          "transition": "Opioid_Addiction_CarePlan"
+        },
+        {
+          "transition": "End_Addiction_Overdose_Encounter"
+        }
+      ],
+      "condition_onset": "Addiction_Overdose"
+    },
+    "End_Misuse_Overdose": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Misuse_Overdose_Encounter",
+      "condition_onset": "Misuse_Overdose"
+    },
+    "End_Directed_Use_Overdose": {
+      "type": "ConditionEnd",
+      "direct_transition": "End_Directed_Use_Overdose_Encounter",
+      "condition_onset": "Directed_Use_Overdose"
     }
   },
   "gmf_version": 1

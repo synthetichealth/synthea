@@ -1,0 +1,158 @@
+{
+  "name": "Onset Distribution",
+  "remarks": [
+    "This template demonstrates a distribution-based approach for modeling age of condition onset in Synthea."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Guard"
+    },
+    "Age_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 18,
+        "unit": "years"
+      },
+      "direct_transition": "Veteran_Diabetes_Prevalence"
+    },
+    "Eventual_Prediabetes": {
+      "type": "Delay",
+      "range": {
+        "low": 0,
+        "high": 37,
+        "unit": "years"
+      },
+      "remarks": [
+        "we assume that diabetes and prediabetes generally onset between the ages of 18-55"
+      ],
+      "direct_transition": "Onset_Prediabetes"
+    },
+    "Eventual_Diabetes": {
+      "type": "SetAttribute",
+      "attribute": "time_until_diabetes_onset",
+      "direct_transition": "Already_age_18",
+      "remarks": [
+        "we assume that diabetes and prediabetes generally onset between the ages of 18-55",
+        "this tracks a little lower so that we can diagnose prediabetes early and then diabetes later",
+        "there is little info on how many patients with prediabetes progress to diabetes",
+        "so we assume that 38% of patients with diabetes had a prediabetes diagnosis"
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 55,
+          "standardDeviation": 15
+        }
+      }
+    },
+    "Onset_Prediabetes": {
+      "type": "SetAttribute",
+      "attribute": "prediabetes",
+      "value": true,
+      "direct_transition": "No_Diabetes"
+    },
+    "No_Diabetes": {
+      "type": "Terminal"
+    },
+    "Onset_Prediabetes_Towards_Diabetes": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+    "Veteran_Diabetes_Prevalence": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Eventual_Diabetes",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Eventual_Prediabetes",
+          "distribution": 0.45
+        },
+        {
+          "transition": "No_Diabetes",
+          "distribution": 0.3
+        }
+      ]
+    },
+    "Onset_Prediabetes_2": {
+      "type": "SetAttribute",
+      "attribute": "prediabetes",
+      "direct_transition": "Delay_Another_Year",
+      "value": true
+    },
+    "Countdown to Diabetes": {
+      "type": "Counter",
+      "attribute": "time_until_diabetes_onset",
+      "action": "decrement",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Prediabetes_2",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Delay_Another_Year",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "Already_age_18": {
+      "type": "Counter",
+      "attribute": "time_until_diabetes_onset",
+      "action": "decrement",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Prediabetes_Towards_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "time_until_diabetes_onset",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Countdown to Diabetes"
+        }
+      ],
+      "amount": 18
+    },
+    "Delay_Another_Year": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Prediabetes_Towards_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "time_until_diabetes_onset",
+            "operator": "<=",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Countdown to Diabetes"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 1
+}

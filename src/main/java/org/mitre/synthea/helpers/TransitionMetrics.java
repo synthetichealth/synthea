@@ -3,20 +3,21 @@ package org.mitre.synthea.helpers;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.mitre.synthea.engine.Module;
-import org.mitre.synthea.engine.State;
-import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.engine.Module.ModuleSupplier;
+import org.mitre.synthea.export.Exporter;
 
 /**
  * Class to track state and transition metrics from the modules.
@@ -26,59 +27,40 @@ import org.mitre.synthea.world.agents.Person;
  * - What states they transitioned to
  * - How long they were in that state (ex, Guard, Delay)
  */
-public class TransitionMetrics {
+public abstract class TransitionMetrics {
   /**
    * Internal table of (Module,State) -> Metric.
    * Note that a table may not be the most appropriate data structure,
    * but it's a lot cleaner than a Map of Module -> Map of State -> Metric.
    */
-  private Table<String, String, Metric> metrics =
+  private static final Table<String, String, Metric> metrics =
       Tables.synchronizedTable(HashBasedTable.create());
 
+  public static boolean enabled =
+      Config.getAsBoolean("generate.track_detailed_transition_metrics", false);
+
   /**
-   * Record all appropriate state transition information from the given person.
-   *
-   * @param person
-   *          Person that went through the modules
-   * @param simulationEnd
-   *          Date the simulation ended
-   * @param modules
-   *          The collection of modules to record stats for
+   * Track entering a state within a given module.
+   * @param module The name of the module.
+   * @param state The name of the state.
+   * @param firstTime Whether or not this state was previously entered.
    */
-  @SuppressWarnings("unchecked")
-  public void recordStats(Person person, long simulationEnd, Collection<Module> modules) {
-    for (Module m : modules) {
-      if (!m.getClass().equals(Module.class)) {
-        // java module, not GMF. no states to show
-        continue;
-      }
+  public static void enter(String module, String state, boolean firstTime) {
+    if (enabled) {
+      getMetric(module, state).enter(firstTime);
+    }
+  }
 
-      List<State> history = (List<State>) person.attributes.get(m.name);
-      if (history == null) {
-        continue;
-      }
-
-      // count basic "counter" stats for this state
-      history.forEach(s -> countStateStats(s, getMetric(m.name, s.name), simulationEnd));
-
-      // count this person only once for each distinct state they hit
-      history.stream().map(s -> s.name).distinct()
-          .forEach(sName -> getMetric(m.name, sName).population.incrementAndGet());
-
-      getMetric(m.name, history.get(0).name).current.incrementAndGet();
-
-      // loop over the states backward (0 = current, n = initial)
-      // and track from->to stats in pair
-      if (history.size() >= 2) {
-        for (int fromIndex = history.size() - 1; fromIndex > 0; fromIndex--) {
-          int toIndex = fromIndex - 1;
-
-          State from = history.get(fromIndex);
-          State to = history.get(toIndex);
-
-          getMetric(m.name, from.name).incrementDestination(to.name);
-        }
-      }
+  /**
+   * Track exiting a state and the resulting destination.
+   * @param module The name of the module.
+   * @param state The name of the state.
+   * @param destination Target state that was transitioned to.
+   * @param duration The time in milliseconds spent within the state.
+   */
+  public static void exit(String module, String state, String destination, long duration) {
+    if (enabled) {
+      getMetric(module, state).exit(destination, duration);
     }
   }
 
@@ -89,7 +71,7 @@ public class TransitionMetrics {
    * @param stateName Name of the state
    * @return Metric object
    */
-  public Metric getMetric(String moduleName, String stateName) {
+  static Metric getMetric(String moduleName, String stateName) {
     Metric metric = metrics.get(moduleName, stateName);
 
     if (metric == null) {
@@ -105,138 +87,52 @@ public class TransitionMetrics {
     return metric;
   }
 
-  private void countStateStats(State state, Metric stateStats, long endDate) {
-    if (state == null || state.entered == null) {
-      return;
-    }
-    stateStats.entered.incrementAndGet();
-    long exitTime = (state.exited == null) ? endDate : state.exited;
-    // if they were in the last state when they died or time expired
-    long startTime = state.entered;
-    // note: the ruby module has a hack for
-    // "when the lifecycle module kills people before the initial state"
-    // but i dont think that will break anything here if it happens
-
-    stateStats.duration.addAndGet(exitTime - startTime);
+  /**
+   * Clears the metrics. Intended for unit tests.
+   */
+  static void clear() {
+    metrics.clear();
   }
 
   /**
-   * Print the statistics that have been gathered.
-   *
-   * @param totalPopulation
-   *          The total population that was simulated.
-   * @param modules
-   *          The collection of modules to display stats for
+   * Exports the metrics as JSON in the exporter base directory.
    */
-  public void printStats(int totalPopulation, Collection<Module> modules) {
-    for (Module m : modules) {
-      if (!m.getClass().equals(Module.class)) {
-        // java module, not GMF. no states to show
-        continue;
-      }
-      System.out.println(m.name.toUpperCase());
+  public static void exportMetrics() {
+    GsonBuilder builder = new GsonBuilder();
+    if (Config.getAsBoolean("exporter.pretty_print", true)) {
+      builder.setPrettyPrinting();
+    }
+    Gson gson = builder.create();
 
-      Map<String, Metric> moduleMetrics = metrics.row(m.name);
-      List<String> keys = new ArrayList<String>(moduleMetrics.keySet());
-      Collections.sort(keys);
+    System.out.println("Saving metrics for " + metrics.rowKeySet().size() + " modules.");
 
-      for (String stateName : keys) {
-        Metric stats = getMetric(m.name, stateName);
-        int entered = stats.entered.get();
-        int population = stats.population.get();
-        long duration = stats.duration.get();
-        int current = stats.current.get();
+    String baseDir = Config.get("exporter.baseDirectory", "./output/");
+    String statsDir = "metrics";
+    Path output = Paths.get(baseDir, statsDir);
+    output.toFile().mkdirs();
 
-        System.out.println(stateName + ":");
-        System.out.println(" Total times entered: " + stats.entered);
-        System.out.println(" Population that ever hit this state: " + stats.population + " ("
-            + decimal(population, totalPopulation) + "%)");
-        System.out.println(" Average # of hits per total population: "
-            + decimal(entered, totalPopulation));
-        System.out.println(" Average # of hits per person that ever hit state: "
-            + decimal(entered, population));
-        System.out.println(" Population currently in state: " + stats.current + " ("
-            + decimal(current, totalPopulation) + "%)");
-        State state = m.getState(stateName);
-        if (state instanceof State.Guard || state instanceof State.Delay) {
-          System.out.println(" Total duration: " + durationOf(duration));
-          System.out.println(" Average duration per time entered: "
-              + durationOf(duration / entered));
-          System.out.println(" Average duration per person that ever entered state: "
-              + durationOf(duration / population));
-        } else if (state instanceof State.Encounter && ((State.Encounter) state).isWellness()) {
-          System.out.println(" (duration metrics for wellness encounter omitted)");
+    List<ModuleSupplier> suppliers = Module.getModuleSuppliers(p -> !p.core);
+    for (ModuleSupplier supplier : suppliers) {
+      // System.out.println("Saving statistics: " + supplier.path);
+
+      Map<String, Metric> moduleMetrics = metrics.row(supplier.get().name);
+      String json = gson.toJson(moduleMetrics);
+
+      String filename = supplier.path + ".json";
+      Path p = output;
+
+      if (supplier.path.contains(File.separator)) {
+        int index = supplier.path.lastIndexOf(File.separator);
+        String subfolders = supplier.path.substring(0, index);
+        filename = supplier.path.substring(index + 1) + ".json";
+        for (String sub : subfolders.split(File.separator)) {
+          p = p.resolve(sub);
         }
-
-        if (!stats.destinations.isEmpty()) {
-          System.out.println(" Transitioned to:");
-          long total = stats.destinations.values().stream().mapToLong(ai -> ai.longValue()).sum();
-          stats.destinations.forEach((toState, count) ->
-                System.out.println(" --> " + toState + " : " + count + " = "
-                                    + decimal(count.get(), total) + "%"));
-        }
-        System.out.println();
+        p.toFile().mkdirs();
       }
 
-      List<String> unreached = new ArrayList<>(m.getStateNames());
-      Collections.sort(unreached);
-      // moduleMetrics only includes states actually hit
-      unreached.removeAll(moduleMetrics.keySet());
-      unreached.forEach(state -> System.out.println(state + ": \n Never reached \n\n"));
-
-      System.out.println();
-      System.out.println();
+      Exporter.overwriteFile(p.resolve(filename), json);
     }
-  }
-
-  /**
-   * Helper function to convert a # of milliseconds into a human-readable string. Results are not
-   * necessarily precise, and are intended for general understanding only. The resulting format is
-   * not specified and may change at any time.
-   * Ex. duration(14*30*24*60*60*1000) may indicate a result of "14 months", "1 year and 2 months",
-   * "1.17 years", etc.
-   *
-   * @param time time duration in ms
-   * @return Human readable description of the time
-   */
-  public static String durationOf(long time) {
-    // this returns something like 15 days 15 hours 24 minutes 26 seconds
-    String result = DurationFormatUtils.formatDurationWords(time, true, true);
-
-    // if it starts with a large number of days, we can do a little better
-    String[] parts = result.split(" ");
-
-    if (parts.length > 1 && parts[1].equals("days")) {
-      long days = Long.parseLong(parts[0]);
-
-      if (days > 365) {
-        long years = days / 365;
-        long months = (days % 365) / 30;
-        return years + " years " + months + " months";
-      } else if (days > 30) {
-        long months = days / 30;
-        days = days % 30;
-        return months + " months " + days + " days";
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Helper function to convert a numerator and denominator into a string with a single number and
-   * exactly 2 decimal places.
-   *
-   * @param num
-   *          Numerator
-   * @param denom
-   *          Denominator
-   * @return num/denom rounded to 2 decimal places
-   */
-  private static String decimal(double num, double denom) {
-    // note that this is especially helpful because ints can be passed in without explicit casting
-    // and if you want to get a double from integer division you have to cast the input items
-    return String.format("%.2f", (100.0 * num / denom));
   }
 
   /**
@@ -273,9 +169,10 @@ public class TransitionMetrics {
     /**
      * Helper function to increment the count for a destination state.
      *
-     * @param destination Target state that was transitioned to
+     * @param destination Target state that was transitioned to.
+     * @param duration The time in milliseconds spent within the state.
      */
-    void incrementDestination(String destination) {
+    public void exit(String destination, long duration) {
 
       AtomicInteger count = destinations.get(destination);
       if (count == null) {
@@ -288,6 +185,20 @@ public class TransitionMetrics {
         }
       }
       count.incrementAndGet();
+      this.current.decrementAndGet();
+      this.duration.addAndGet(duration);
+    }
+
+    /**
+     * Helper function to increment the counts when a state is entered.
+     * @param firstTime Whether or not this state was previously entered.
+     */
+    public void enter(boolean firstTime) {
+      this.entered.incrementAndGet();
+      this.current.incrementAndGet();
+      if (firstTime) {
+        this.population.incrementAndGet();
+      }
     }
   }
 }

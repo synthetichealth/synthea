@@ -17,11 +17,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +38,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
 import org.mitre.synthea.modules.EncounterModule;
@@ -98,7 +97,7 @@ public class Module implements Cloneable, Serializable {
   }
 
   /**
-   * The the path to the modules directory, ensuring the right file system support is loaded if
+   * Get the paths to the modules directories, ensuring the right file system support is loaded if
    * we are running from a jar file.
    * @return the path
    * @throws URISyntaxException if something goes wrong
@@ -173,23 +172,6 @@ public class Module implements Cloneable, Serializable {
     System.out.format("Scanned %d local modules and %d local submodules.\n",
                       modules.size() - (originalModuleCount + submoduleCount),
                       submoduleCount);
-  }
-
-  private static void fixPathFromJar(URI uri) throws IOException {
-    // this function is a hack to enable reading modules from within a JAR file
-    // see https://stackoverflow.com/a/48298758
-    if ("jar".equals(uri.getScheme())) {
-      for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
-        if (provider.getScheme().equalsIgnoreCase("jar")) {
-          try {
-            provider.getFileSystem(uri);
-          } catch (FileSystemNotFoundException e) {
-            // in this case we need to initialize it first:
-            provider.newFileSystem(uri, Collections.emptyMap());
-          }
-        }
-      }
-    }
   }
 
   /**
@@ -268,6 +250,30 @@ public class Module implements Cloneable, Serializable {
         v.get(); // ensure submodules get loaded
       } else if (v.core || pathPredicate.test(v.path)) {
         list.add(v.get());
+      }
+    });
+    return list;
+  }
+
+  /**
+   * Get the list of ModuleSuppliers.
+   * @return a list of ModuleSuppliers. Submodules are included.
+   */
+  public static List<ModuleSupplier> getModuleSuppliers() {
+    return getModuleSuppliers(p -> true);
+  }
+
+  /**
+   * Get a list of ModuleSuppliers, given a path predicate. No other filtering applies,
+   * so this list could include both core and submodules.
+   * @param predicate A predicate to filter a module based on path.
+   * @return A list of ModuleSuppliers.
+   */
+  public static List<ModuleSupplier> getModuleSuppliers(Predicate<ModuleSupplier> predicate) {
+    List<ModuleSupplier> list = new ArrayList<ModuleSupplier>();
+    modules.forEach((k, v) -> {
+      if (predicate.test(v)) {
+        list.add(v);
       }
     });
     return list;
@@ -407,8 +413,12 @@ public class Module implements Cloneable, Serializable {
     }
     if (!person.attributes.containsKey(historyKey)) {
       person.history = new LinkedList<State>();
-      person.history.add(initialState());
+      State initial = initialState();
+      person.history.add(initial);
       person.attributes.put(historyKey, person.history);
+      /* TODO - determining whether or not this the first time a person has
+         entered a submodule is currently not easily computed, so we use `true` below. */
+      TransitionMetrics.enter(historyKey, initial.name, true);
     }
     person.history = (List<State>) person.attributes.get(historyKey);
     State current = person.history.get(0);
@@ -418,11 +428,15 @@ public class Module implements Cloneable, Serializable {
     // probably more than one state
     String nextStateName = null;
     while (current.run(person, time, terminateOnDeath)) {
+      Long entered = current.entered;
       Long exited = current.exited;
+      Long duration = (exited - entered);
       nextStateName = current.transition(person, time);
-      // System.out.println(" Transitioning to " + nextStateName);
+      boolean firstTime = !person.hadPriorState(nextStateName);
+      TransitionMetrics.exit(historyKey, current.name, nextStateName, duration);
       current = states.get(nextStateName).clone(); // clone the state so we don't dirty the original
       person.history.add(0, current);
+      TransitionMetrics.enter(historyKey, nextStateName, firstTime);
       if (exited != null && exited < time) {
         // stop if the patient died in the meantime...
         if (terminateOnDeath && !person.alive(exited)) {

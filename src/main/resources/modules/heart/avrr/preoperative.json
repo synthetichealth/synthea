@@ -258,8 +258,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3336700,
-          "display": "Coronary angiography (procedure)"
+          "code": 33367005,
+          "display": "Angiography of coronary artery (procedure)"
         }
       ],
       "unit": "minutes",

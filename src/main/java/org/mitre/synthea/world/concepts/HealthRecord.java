@@ -85,6 +85,8 @@ public class HealthRecord implements Serializable {
     public String code;
     /** The human-readable description of the code. */
     public String display;
+    /** An identifier for the version of the code system that this code is part of. */
+    public String version;
     /**
      * A ValueSet URI that defines a set of possible codes, one of which should be selected at
      * random.
@@ -116,9 +118,13 @@ public class HealthRecord implements Serializable {
       this.display = definition.get("display").getAsString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-      return String
-          .format("system=%s, code=%s, display=%s, valueSet=%s", system, code, display, valueSet);
+      return String.format(
+          "system=%s, code=%s, display=%s, version=%s, valueSet=%s",
+          system, code, display, version, valueSet);
     }
 
     /**

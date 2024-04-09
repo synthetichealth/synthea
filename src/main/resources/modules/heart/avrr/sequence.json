@@ -51,7 +51,8 @@
         {
           "system": "SNOMED-CT",
           "code": 452331000124102,
-          "display": "Review of imaging finding (procedure)"
+          "display": "Review of imaging finding (procedure)",
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "distribution": {
@@ -351,7 +352,7 @@
     },
     "Referral and Preoperative Testing": {
       "type": "CallSubmodule",
-      "submodule": "heart/avrr/referral",
+      "submodule": "heart/avrr/avrr_referral",
       "conditional_transition": [
         {
           "transition": "Terminal",

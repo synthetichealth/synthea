@@ -1,7 +1,6 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.parser.IParser;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,12 +20,18 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.flexporter.Actions;
+import org.mitre.synthea.export.flexporter.FhirPathUtils;
+import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
+import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.identity.Seed;
@@ -97,6 +102,7 @@ public abstract class Exporter {
         !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
+    private List<Mapping> flexporterMappings;
 
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
@@ -111,6 +117,7 @@ public abstract class Exporter {
       terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
+      flexporterMappings = init.flexporterMappings;
     }
 
     /**
@@ -147,6 +154,19 @@ public abstract class Exporter {
      */
     public boolean isRecordQueueEmpty() {
       return recordQueue == null || recordQueue.size() == 0;
+    }
+
+    /**
+     * Register a new Flexporter mapping to be applied to Bundles from the FHIR exporter.
+     * Multiple mappings may be added and will be processed in order.
+     * @param mapping Flexporter mapping to add to list
+     */
+    public void addFlexporterMapping(Mapping mapping) {
+      if (this.flexporterMappings == null) {
+        this.flexporterMappings = new ArrayList<>();
+      }
+
+      this.flexporterMappings.add(mapping);
     }
   }
 
@@ -256,9 +276,26 @@ public abstract class Exporter {
     }
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
+      org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
+
+      if (options.flexporterMappings != null) {
+        FlexporterJavascriptContext fjContext = null;
+
+        for (Mapping mapping : options.flexporterMappings) {
+          if (FhirPathUtils.appliesToBundle(bundle, mapping.applicability, mapping.variables)) {
+            if (fjContext == null) {
+              // only set this the first time it is actually used
+              // TODO: figure out how to silence the truffle warnings
+              fjContext = new FlexporterJavascriptContext();
+            }
+            bundle = Actions.applyMapping(bundle, mapping, person, fjContext);
+          }
+        }
+      }
+
+      IParser parser = FhirR4.getContext().newJsonParser();
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
-        org.hl7.fhir.r4.model.Bundle bundle = FhirR4.convertToFHIR(person, stopTime);
-        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(false);
+        parser.setPrettyPrint(false);
         for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry : bundle.getEntry()) {
           String filename = entry.getResource().getResourceType().toString() + ".ndjson";
           Path outFilePath = outDirectory.toPath().resolve(filename);
@@ -266,7 +303,8 @@ public abstract class Exporter {
           appendToFile(outFilePath, entryJson);
         }
       } else {
-        String bundleJson = FhirR4.convertToFHIRJson(person, stopTime);
+        parser.setPrettyPrint(true);
+        String bundleJson = parser.encodeResourceToString(bundle);
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }
@@ -546,6 +584,10 @@ public abstract class Exporter {
       }
     }
 
+    if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
+      TransitionMetrics.exportMetrics();
+    }
+
     if (Config.getAsBoolean("exporter.custom.export", true)
             && postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
       for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
@@ -600,25 +642,15 @@ public abstract class Exporter {
 
     long cutoffDate = endTime - Utilities.convertTime("years", yearsToKeep);
     Predicate<HealthRecord.Entry> notFutureDated = e -> e.start <= endTime;
+    Predicate<HealthRecord.Entry> entryIsActive = e -> e.stop == 0L || e.stop > cutoffDate;
 
     for (Encounter encounter : record.encounters) {
       List<Claim.ClaimEntry> claimItems = encounter.claim.items;
-      // keep conditions if still active, regardless of start date
-      Predicate<HealthRecord.Entry> conditionActive = c -> record.conditionActive(c.type);
-      // or if the condition was active at any point since the cutoff date
-      Predicate<HealthRecord.Entry> activeWithinCutoff = c -> c.stop != 0L && c.stop > cutoffDate;
-      Predicate<HealthRecord.Entry> keepCondition = conditionActive.or(activeWithinCutoff);
-      filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, keepCondition);
+      // keep a condition if it was active at any point since the cutoff date
+      filterEntries(encounter.conditions, claimItems, cutoffDate, endTime, entryIsActive);
 
       // allergies are essentially the same as conditions
-      // But we need to redefine all of the predicates, because we are talking about Allergies as
-      // opposed to Entries... You would think that it would work... but generics are hard
-      Predicate<HealthRecord.Allergy> allergyActive = c -> record.allergyActive(c.type);
-      // or if the condition was active at any point since the cutoff date
-      Predicate<HealthRecord.Allergy> allergyActiveWithinCutoff =
-          c -> c.stop != 0L && c.stop > cutoffDate;
-      Predicate<HealthRecord.Allergy> keepAllergy = allergyActive.or(allergyActiveWithinCutoff);
-      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, keepAllergy);
+      filterEntries(encounter.allergies, claimItems, cutoffDate, endTime, entryIsActive);
 
       // some of the "future death" logic could potentially add a future-dated death certificate
       Predicate<Observation> isCauseOfDeath =
@@ -635,14 +667,12 @@ public abstract class Exporter {
       filterEntries(encounter.procedures, claimItems, cutoffDate, endTime, null);
 
       // keep medications if still active, regardless of start date
-      filterEntries(encounter.medications, claimItems, cutoffDate, endTime,
-          med -> record.medicationActive(med.type));
+      filterEntries(encounter.medications, claimItems, cutoffDate, endTime, entryIsActive);
 
       filterEntries(encounter.immunizations, claimItems, cutoffDate, endTime, null);
 
       // keep careplans if they are still active, regardless of start date
-      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime,
-          cp -> record.careplanActive(cp.type));
+      filterEntries(encounter.careplans, claimItems, cutoffDate, endTime, entryIsActive);
     }
 
     // if ANY of these are not empty, the encounter is not empty
@@ -677,7 +707,7 @@ public abstract class Exporter {
    */
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
       List<Claim.ClaimEntry> claimItems, long cutoffDate,
-      long endTime, Predicate<E> keepFunction) {
+      long endTime, Predicate<? super E> keepFunction) {
 
     Iterator<E> iterator = entries.iterator();
     // iterator allows us to use the remove() method

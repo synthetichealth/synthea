@@ -108,7 +108,8 @@
         {
           "system": "SNOMED-CT",
           "code": 454711000124102,
-          "display": "Depression screening using Patient Health Questionnaire Two-Item score (procedure)"
+          "display": "Depression screening using Patient Health Questionnaire Two-Item score (procedure)",
+          "version": "http://snomed.info/sct/731000124108"
         }
       ],
       "distribution": {
