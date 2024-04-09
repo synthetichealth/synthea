@@ -108,7 +108,7 @@ public class Module implements Cloneable, Serializable {
     Enumeration<URL> moduleURLs = Module.class.getClassLoader().getResources("modules");
     while (moduleURLs.hasMoreElements()) {
       URI uri = moduleURLs.nextElement().toURI();
-      fixPathFromJar(uri);
+      Utilities.enableReadingURIFromJar(uri);
       paths.add(Paths.get(uri));
     }
     return paths;
