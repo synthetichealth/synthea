@@ -410,7 +410,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 389153003,
+          "code": 413180006,
           "display": "Pan retinal photocoagulation for diabetes (procedure)"
         }
       ],
@@ -488,7 +488,7 @@
           "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
         }
       ],
-      "direct_transition": "Panretinal Laser",
+      "direct_transition": "End_Drops_Panretinal",
       "administration": true
     },
     "Numbing_Drops_Grid_Laser": {
@@ -500,7 +500,7 @@
           "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
         }
       ],
-      "direct_transition": "Grid_Laser",
+      "direct_transition": "End_Drops_Grid",
       "administration": true
     },
     "Numbing_Drops_AntiVEGF_Injection": {
@@ -512,7 +512,7 @@
           "display": "proparacaine hydrochloride 5 MG/ML Ophthalmic Solution"
         }
       ],
-      "direct_transition": "AntiVEGF_Therapy_Med",
+      "direct_transition": "End_Drops_AntiVEGF",
       "administration": true
     },
     "Dilation": {
@@ -524,7 +524,8 @@
           "display": "tropicamide 5 MG/ML Ophthalmic Solution"
         }
       ],
-      "direct_transition": "Gonioscopy"
+      "direct_transition": "End_Dilation_Med",
+      "administration": true
     },
     "Guard_for_Vision_Impact": {
       "type": "Guard",
@@ -607,6 +608,26 @@
         }
       ],
       "direct_transition": "Progress_DR_Vitals"
+    },
+    "End_Drops_Panretinal": {
+      "type": "MedicationEnd",
+      "direct_transition": "Panretinal Laser",
+      "medication_order": "Numbing_Drops_Panretinal_Laser"
+    },
+    "End_Drops_AntiVEGF": {
+      "type": "MedicationEnd",
+      "direct_transition": "AntiVEGF_Therapy_Med",
+      "medication_order": "Numbing_Drops_AntiVEGF_Injection"
+    },
+    "End_Drops_Grid": {
+      "type": "MedicationEnd",
+      "direct_transition": "Grid_Laser",
+      "medication_order": "Numbing_Drops_Grid_Laser"
+    },
+    "End_Dilation_Med": {
+      "type": "MedicationEnd",
+      "direct_transition": "Gonioscopy",
+      "medication_order": "Dilation"
     }
   },
   "gmf_version": 2

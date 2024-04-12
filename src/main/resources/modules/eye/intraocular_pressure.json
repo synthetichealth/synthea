@@ -27,29 +27,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "IOP_Results"
-    },
-    "IOP_Results": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "mm[Hg]",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "41633001",
-          "display": "Intraocular pressure (observable entity)"
-        },
-        {
-          "system": "LOINC",
-          "code": "56844-4",
-          "display": "Intraocular pressure of Eye"
-        }
-      ],
-      "direct_transition": "High IOP Meds",
-      "remarks": [
-        "Note code 1 is actually SNOMED"
-      ],
-      "attribute": "intraocular_pressure"
+      "direct_transition": "IOP_Results_Left"
     },
     "Timolol": {
       "type": "MedicationOrder",
@@ -119,6 +97,50 @@
       "type": "SetAttribute",
       "attribute": "eye_pressure_med",
       "direct_transition": "Terminal"
+    },
+    "IOP_Results_Left": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "mm[Hg]",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "41633001",
+          "display": "Intraocular pressure (observable entity)"
+        },
+        {
+          "system": "LOINC",
+          "code": "79893-4",
+          "display": "Left eye Intraocular pressure"
+        }
+      ],
+      "direct_transition": "IOP_Results_Right",
+      "remarks": [
+        "Note code 1 is actually SNOMED"
+      ],
+      "attribute": "intraocular_pressure"
+    },
+    "IOP_Results_Right": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "unit": "mm[Hg]",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "41633001",
+          "display": "Intraocular pressure (observable entity)"
+        },
+        {
+          "system": "LOINC",
+          "code": "79892-6",
+          "display": "Right eye Intraocular pressure"
+        }
+      ],
+      "direct_transition": "High IOP Meds",
+      "remarks": [
+        "Note code 1 is actually SNOMED"
+      ],
+      "attribute": "intraocular_pressure"
     }
   },
   "gmf_version": 2

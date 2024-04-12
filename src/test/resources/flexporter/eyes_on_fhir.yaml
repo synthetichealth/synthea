@@ -15,6 +15,17 @@ actions:
    - profile: http://hl7.org/fhir/uv/eyecare/StructureDefinition/diagnostic-report-oct-macula
      applicability: DiagnosticReport.code.coding.where($this.code = '57119-0')
 
+
+ - name: Delete MedicationRequests for drops
+   # numbing and dilation drops used in the clinic aren't prescribed.
+   # delete the MedicationRequests and just leave the MedicationAdministrations
+   delete_resources:
+     # tropicamide / dilation drops
+     - MedicationRequest.medication.coding.where($this.code = '313521')
+     # proparacaine / numbing drops
+     - MedicationRequest.medication.coding.where($this.code = '1191013')
+
+
  - name: Set Missing Values
    set_values:
      - applicability: Observation.code.coding.where($this.code = '422673001')

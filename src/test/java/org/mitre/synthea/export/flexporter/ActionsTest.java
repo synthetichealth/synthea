@@ -502,6 +502,25 @@ public class ActionsTest {
 
     assertEquals(0, countProvenance);
   }
+  
+  @Test
+  public void testDeleteResourcesByFhirPath() throws Exception {
+	    Bundle b = new Bundle();
+	    
+	    MedicationRequest m = new MedicationRequest();
+	    CodeableConcept cc = new CodeableConcept();
+	    cc.addCoding().setCode("1191013");
+	    m.setMedication(cc);
+	    b.addEntry().setResource(m);
+	    Map<String, Object> action = getActionByName("testDeleteResourcesByFhirPath");
+
+	    Actions.applyAction(b, action, null, null);
+
+	    long countProvenance = b.getEntry().stream()
+	        .filter(bec -> bec.getResource().getResourceType() == ResourceType.MedicationRequest).count();
+
+	    assertEquals(0, countProvenance);
+	  }
 
   @Test
   public void testDeleteResourcesCascade() throws Exception {

@@ -649,13 +649,9 @@ public abstract class Actions {
    * Cascade (current), Delete reference field but leave object, Do nothing
    *
    * @param bundle FHIR Bundle to filter
-   * @param list List of resource types to delete, other types not listed will be kept
+   * @param list List of resource types or FHIRPath to delete, other types not listed will be kept
    */
   public static void deleteResources(Bundle bundle, List<String> list) {
-    // TODO: make this FHIRPath instead of just straight resource types
-
-    Set<String> resourceTypesToDelete = new HashSet<>(list);
-
     Set<String> deletedResourceIDs = new HashSet<>();
 
     Iterator<BundleEntryComponent> itr = bundle.getEntry().iterator();
@@ -665,10 +661,15 @@ public abstract class Actions {
 
       Resource resource = entry.getResource();
       String resourceType = resource.getResourceType().toString();
-      if (resourceTypesToDelete.contains(resourceType)) {
-        deletedResourceIDs.add(resource.getId());
-        itr.remove();
+
+      for (String applicability : list) {
+          if (applicability.equals(resourceType) || FhirPathUtils.appliesToResource(resource, applicability)) {
+              deletedResourceIDs.add(resource.getId());
+              itr.remove();
+              break;
+            }
       }
+
     }
 
     if (!deletedResourceIDs.isEmpty()) {
