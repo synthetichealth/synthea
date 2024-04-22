@@ -40,16 +40,15 @@ public class C19Vaccine {
    */
   public static void initialize() {
     EUAs.put(EUASet.PFIZER,
-        new C19Vaccine("SARS-COV-2 (COVID-19) vaccine, mRNA, spike protein, LNP, "
-            + "preservative free, 30 mcg/0.3mL dose", "208", true, 0.531,
+        new C19Vaccine("COVID-19, mRNA, LNP-S, PF, 30 mcg/0.3 mL dose",
+            "208", true, 0.531,
             Utilities.convertTime("days", 21)));
     EUAs.put(EUASet.MODERNA,
-        new C19Vaccine("SARS-COV-2 (COVID-19) vaccine, mRNA, spike protein, LNP, "
-            + "preservative free, 100 mcg/0.5mL dose", "207", true, 0.398,
+        new C19Vaccine("COVID-19, mRNA, LNP-S, PF, 100 mcg/0.5mL dose or 50 mcg/0.25mL dose",
+            "207", true, 0.398,
             Utilities.convertTime("days", 28)));
     EUAs.put(EUASet.JANSSEN,
-        new C19Vaccine("SARS-COV-2 (COVID-19) vaccine, vector non-replicating, "
-            + "recombinant spike protein-Ad26, preservative free, 0.5 mL",
+        new C19Vaccine("COVID-19 vaccine, vector-nr, rS-Ad26, PF, 0.5 mL",
             "212", false, 0.071, 0));
 
     List<Pair<EUASet, Double>> pmf = EUAs.entrySet().stream()
