@@ -75,28 +75,10 @@
           ]
         },
         {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "eye_pressure_med",
-            "operator": "is not nil"
-          },
-          "distributions": [],
-          "transition": "End IOP Med"
-        },
-        {
           "distributions": [],
           "transition": "Terminal"
         }
       ]
-    },
-    "End IOP Med": {
-      "type": "MedicationEnd",
-      "direct_transition": "Clear out med attribute"
-    },
-    "Clear out med attribute": {
-      "type": "SetAttribute",
-      "attribute": "eye_pressure_med",
-      "direct_transition": "Terminal"
     },
     "IOP_Results_Left": {
       "type": "Observation",

@@ -160,18 +160,17 @@
     "Chance_of_Macular_Edema": {
       "type": "Simple",
       "remarks": [
-        "Incidence of DME is very low. Very rough estimate == ~1% per year.",
-        "only around 20% of patients will hit this state, so we scale up to about 5% per year among those patients",
-        "5% / yr = .4% / month",
+        "Incidence of DME is very low. Very rough estimate == ~1% per year or less.",
+        "1% / yr = .08% / month ; bumped up slightly per experimentation",
         "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4657234/table/Tab5/"
       ],
       "distributed_transition": [
         {
-          "distribution": 0.004,
+          "distribution": 0.001,
           "transition": "Set_Macular_Edema"
         },
         {
-          "distribution": 0.996,
+          "distribution": 0.999,
           "transition": "Chance_of_Blindness"
         }
       ]

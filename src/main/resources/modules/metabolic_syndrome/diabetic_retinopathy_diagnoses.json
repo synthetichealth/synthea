@@ -121,7 +121,8 @@
               {
                 "condition_type": "Attribute",
                 "attribute": "macular_edema",
-                "operator": "is not nil"
+                "operator": "==",
+                "value": true
               },
               {
                 "condition_type": "Not",
