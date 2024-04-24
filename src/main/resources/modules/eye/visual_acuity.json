@@ -45,7 +45,7 @@
     "VA_Results_Left": {
       "type": "Observation",
       "category": "exam",
-      "unit": "logmar",
+      "unit": "{logmar}",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -70,7 +70,7 @@
     "VA_Results_Right": {
       "type": "Observation",
       "category": "exam",
-      "unit": "logmar",
+      "unit": "{logmar}",
       "codes": [
         {
           "system": "SNOMED-CT",
