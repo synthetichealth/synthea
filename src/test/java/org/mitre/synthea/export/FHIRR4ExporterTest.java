@@ -49,7 +49,6 @@ import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
-import org.mitre.synthea.world.geography.Location;
 
 /**
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
@@ -104,8 +103,7 @@ public class FHIRR4ExporterTest {
     assertTrue(q.getValue().compareTo(BigDecimal.valueOf(0.00012346)) == 0);
   }
 
-  @Test
-  public void testFHIRR4Export() throws Exception {
+  private void setupTestFhirExport() throws Exception {
     TestHelper.loadTestProperties();
     Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
     Config.set("exporter.baseDirectory", tempFolder.newFolder().toString());
@@ -119,23 +117,63 @@ public class FHIRR4ExporterTest {
     FhirR4.USE_US_CORE_IG = false;
     FhirR4.USE_SHR_EXTENSIONS = false;
     FhirR4.US_CORE_VERSION = "4";
+  }
 
-    ValidationResources uscore4Validator = ValidationResources.forR4(true, false);
+  @Test
+  public void testFHIRR4Export() throws Exception {
+    setupTestFhirExport();
 
-    // pass 1 - us core off
-    // use the uscore 4 validator anyway
-    baseTestFHIRR4Export(uscore4Validator);
+    ValidationResources baseValidator = ValidationResources.forR4(null);
+    FhirR4.USE_US_CORE_IG = false;
+    baseTestFHIRR4Export(baseValidator);
+  }
+
+  @Test
+  public void testFHIRR4ExportUsCore3() throws Exception {
+    setupTestFhirExport();
 
     FhirR4.USE_US_CORE_IG = true;
-    FhirR4.useUSCore4();
-    // pass 2 - us core 4 enabled
-    baseTestFHIRR4Export(uscore4Validator);
+    FhirR4.US_CORE_VERSION = "3";
+    FhirR4.useUSCore3();
 
-    ValidationResources uscore5Validator = ValidationResources.forR4(false, true);
+    ValidationResources uscore3Validator = ValidationResources.forR4(FhirR4.USCoreVersion.v311);
+    baseTestFHIRR4Export(uscore3Validator);
+  }
+
+  @Test
+  public void testFHIRR4ExportUsCore4() throws Exception {
+    setupTestFhirExport();
+
+    FhirR4.USE_US_CORE_IG = true;
+    FhirR4.US_CORE_VERSION = "4";
+    FhirR4.useUSCore4();
+
+    ValidationResources uscore4Validator = ValidationResources.forR4(FhirR4.USCoreVersion.v400);
+    baseTestFHIRR4Export(uscore4Validator);
+  }
+
+  @Test
+  public void testFHIRR4ExportUsCore5() throws Exception {
+    setupTestFhirExport();
+
+    FhirR4.USE_US_CORE_IG = true;
     FhirR4.US_CORE_VERSION = "5";
     FhirR4.useUSCore5();
-    // pass 3 - us core 5 enabled
+
+    ValidationResources uscore5Validator = ValidationResources.forR4(FhirR4.USCoreVersion.v501);
     baseTestFHIRR4Export(uscore5Validator);
+  }
+
+  @Test
+  public void testFHIRR4ExportUsCore6() throws Exception {
+    setupTestFhirExport();
+
+    FhirR4.USE_US_CORE_IG = true;
+    FhirR4.US_CORE_VERSION = "6";
+    FhirR4.useUSCore6();
+
+    ValidationResources uscore6Validator = ValidationResources.forR4(FhirR4.USCoreVersion.v610);
+    baseTestFHIRR4Export(uscore6Validator);
   }
 
   /**

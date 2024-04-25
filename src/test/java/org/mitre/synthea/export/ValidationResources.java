@@ -38,16 +38,13 @@ public class ValidationResources {
 
   /**
    * Create FHIR context, validator, and validation chain for FHIR R4.
-   * US Core 4 and 5 support is optional. Note that if both are loaded,
-   * the validator may not be able to choose the correct artifact when
-   * validating a given resource.
+   * US Core 3, 4, 5, and 6 support is optional; only one may be loaded at a time.
    *
-   * @param useUSCore4 Whether or not the US Core v4 artifacts should be loaded
-   * @param useUSCore5 Whether or not the US Core v5 artifacts should be loaded
+   * @param usCoreVersion The version of US Core definitions to load
    */
-  public static ValidationResources forR4(boolean useUSCore4, boolean useUSCore5) {
+  public static ValidationResources forR4(FhirR4.USCoreVersion usCoreVersion) {
     ValidationResources vr = new ValidationResources();
-    vr.initializeR4(useUSCore4, useUSCore5);
+    vr.initializeR4(usCoreVersion);
     return vr;
   }
 
@@ -67,12 +64,12 @@ public class ValidationResources {
     validatorSTU3 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
-  private void initializeR4(boolean useUSCore4, boolean useUSCore5) {
+  private void initializeR4(FhirR4.USCoreVersion usCoreVersion) {
     FhirContext ctx = FhirR4.getContext();
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
     ValidationSupportChain chain = new ValidationSupportChain(
-            new ValidationSupportR4(ctx, useUSCore4, useUSCore5),
+            new ValidationSupportR4(ctx, usCoreVersion),
             new DefaultProfileValidationSupport(ctx),
             new CommonCodeSystemsTerminologyService(ctx),
             new InMemoryTerminologyServerValidationSupport(ctx)
