@@ -236,7 +236,7 @@ public abstract class ExportHelper {
   }
 
   /**
-   * Translate the the official FHIR system URI (e.g. http://snomed.info/sct)
+   * Translate the official FHIR system URI (e.g. http://snomed.info/sct)
    * into system name (e.g. SNOMED-CT).
    * @param uri http://snomed.info/sct, http://loinc.org, etc.
    * @return The internal short name used by Synthea, or "Unknown"

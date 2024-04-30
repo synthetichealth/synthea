@@ -498,7 +498,7 @@ public class BeneficiaryExporter extends RIFExporter {
   }
 
   /**
-   * The the current beneficiary ID code (CRNT_BIC).
+   * The current beneficiary ID code (CRNT_BIC).
    * @param person The person.
    * @param ageThisYear The person's current age (at the end of the year).
    * @param disabled If the person is disabled according to SSD.

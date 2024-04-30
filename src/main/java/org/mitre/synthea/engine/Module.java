@@ -93,7 +93,7 @@ public class Module implements Cloneable, Serializable {
   }
 
   /**
-   * The the path to the modules directory, ensuring the right file system support is loaded if
+   * The path to the modules directory, ensuring the right file system support is loaded if
    * we are running from a jar file.
    * @return the path
    * @throws URISyntaxException if something goes wrong
