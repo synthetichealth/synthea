@@ -293,6 +293,11 @@
           "system": "LOINC",
           "code": "2713-6",
           "display": "Oxygen saturation Calculated from oxygen partial pressure in Blood"
+        },
+        {
+          "system": "LOINC",
+          "code": "2708-6",
+          "display": "Oxygen saturation in Arterial blood"
         }
       ],
       "direct_transition": "Lactate_Level1",
