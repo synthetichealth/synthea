@@ -524,7 +524,7 @@
           "display": "Wheat (substance)"
         }
       ],
-      "reaction": [
+      "reactions": [
         {
           "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
           "possible_severities": [
@@ -543,7 +543,7 @@
           "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
           "possible_severities": [
             {"level":  "moderate", "value": 0.9},
-            {"level":  "none", "value":  0.09999999999999998}
+            {"level":  "none", "value":  0.1}
           ]
         },
         {

@@ -61,15 +61,7 @@
     },
     "Wellness Encounter": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
       "reason": "mTBI",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom (procedure)"
-        }
-      ],
       "direct_transition": "end encounter",
       "wellness": true
     },

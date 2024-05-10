@@ -505,7 +505,7 @@
     },
     "Next_Wellness_Encounter": {
       "type": "Encounter",
-      "wellness": "true",
+      "wellness": true,
       "direct_transition": "Maintenance_Medication_End",
       "reason": "asthma_condition"
     },

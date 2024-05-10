@@ -1691,7 +1691,7 @@
     },
     "Miscarriage_In_Second_Trimester": {
       "type": "ConditionOnset",
-      "target_encounter": "Week_15_Visit",
+      "target_encounter": "Week_16_Visit",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1800,7 +1800,7 @@
     },
     "Late_Fetal_Chromosomal_Anomaly": {
       "type": "ConditionOnset",
-      "target_encounter": "Week_15_Visit",
+      "target_encounter": "Week_16_Visit",
       "assign_to_attribute": "fatal_pregnancy_complication",
       "remarks": [
         "This is a separate state due to the limitation that a ConditionOnset must occur ",
@@ -1817,7 +1817,7 @@
     },
     "Uterine_Anomaly": {
       "type": "ConditionOnset",
-      "target_encounter": "Week_15_Visit",
+      "target_encounter": "Week_16_Visit",
       "assign_to_attribute": "fatal_pregnancy_complication",
       "codes": [
         {
@@ -1830,7 +1830,7 @@
     },
     "Unknown_Complication": {
       "type": "ConditionOnset",
-      "target_encounter": "Week_15_Visit",
+      "target_encounter": "Week_16_Visit",
       "assign_to_attribute": "fatal_pregnancy_complication",
       "codes": [
         {

@@ -429,7 +429,7 @@
     "Meconium_Ileus_Resolved": {
       "type": "ConditionEnd",
       "direct_transition": "Sweat_Test",
-      "condition_onset": "Meconium_Ileus"
+      "condition_onset": "Meconium Ileus"
     },
     "CF_CarePlan": {
       "type": "CarePlanStart",
