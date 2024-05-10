@@ -36,8 +36,7 @@
         {
           "transition": "Ear_Infection_Antibiotic_Terminal"
         }
-      ],
-      "name": "Initial"
+      ]
     },
     "Prescribe_Ear_Infection_Antibiotic": {
       "type": "Simple",
@@ -160,8 +159,7 @@
             }
           ]
         }
-      ],
-      "name": "Prescribe_Ear_Infection_Antibiotic"
+      ]
     },
     "Prescribe_Penicillin": {
       "type": "MedicationOrder",
@@ -198,8 +196,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Prescribe_Penicillin"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Prescribe_Ampicillin": {
       "type": "MedicationOrder",
@@ -236,8 +233,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Prescribe_Ampicillin"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Prescribe_Doxycycline": {
       "type": "Simple",
@@ -258,8 +254,7 @@
         {
           "transition": "Adult_Doxycycline"
         }
-      ],
-      "name": "Prescribe_Doxycycline"
+      ]
     },
     "Pediatric_Doxycycline": {
       "type": "MedicationOrder",
@@ -296,8 +291,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Pediatric_Doxycycline"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Adult_Doxycycline": {
       "type": "MedicationOrder",
@@ -334,12 +328,10 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Adult_Doxycycline"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Prescribe_Amoxicillin": {
       "type": "Simple",
-      "name": "Prescribe_Amoxicillin",
       "conditional_transition": [
         {
           "transition": "Pediatric_Allergy_Check",
@@ -385,8 +377,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Pediatric_Amoxicillin"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Adult_Amoxicillin": {
       "type": "MedicationOrder",
@@ -418,8 +409,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Adult_Amoxicillin"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Prescribe_Cefaclor": {
       "type": "Simple",
@@ -436,8 +426,7 @@
         {
           "transition": "Adult_Cefaclor"
         }
-      ],
-      "name": "Prescribe_Cefaclor"
+      ]
     },
     "Pediatric_Cefaclor": {
       "type": "MedicationOrder",
@@ -469,8 +458,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Pediatric_Cefaclor"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Adult_Cefaclor": {
       "type": "MedicationOrder",
@@ -502,8 +490,7 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Adult_Cefaclor"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Prescribe_Cefuroxime": {
       "type": "MedicationOrder",
@@ -538,12 +525,10 @@
           }
         ]
       },
-      "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Prescribe_Cefuroxime"
+      "direct_transition": "Ear_Infection_Antibiotic_Terminal"
     },
     "Ear_Infection_Antibiotic_Terminal": {
-      "type": "Terminal",
-      "name": "Ear_Infection_Antibiotic_Terminal"
+      "type": "Terminal"
     },
     "Pediatric_Allergy_Check": {
       "type": "Simple",
@@ -564,12 +549,10 @@
         {
           "transition": "Pediatric_Amoxicillin"
         }
-      ],
-      "name": "Pediatric_Allergy_Check"
+      ]
     },
     "Adult_Allergy_Check": {
       "type": "Simple",
-      "name": "Adult_Allergy_Check",
       "conditional_transition": [
         {
           "transition": "Adult_Azithromycin",
@@ -600,7 +583,6 @@
         }
       ],
       "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Pediatric_Cefdinir",
       "assign_to_attribute": "antibiotic_prescription"
     },
     "Adult_Azithromycin": {
@@ -614,7 +596,6 @@
         }
       ],
       "direct_transition": "Ear_Infection_Antibiotic_Terminal",
-      "name": "Adult_Azithromycin",
       "assign_to_attribute": "antibiotic_prescription"
     }
   },
