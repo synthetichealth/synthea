@@ -157,11 +157,9 @@
               "unit": "years"
             }
           },
-          "distributions": [],
           "transition": "Potential CHF Flare"
         },
         {
-          "distributions": [],
           "transition": "Followup CHF Encounter"
         }
       ]
@@ -277,7 +275,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "ICU Admission"
         },
         {
@@ -369,8 +366,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "<",
-            "year": 2005,
-            "value": 0
+            "year": 2005
           },
           "distributions": [
             {

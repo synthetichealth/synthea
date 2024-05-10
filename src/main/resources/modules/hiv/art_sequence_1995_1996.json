@@ -172,7 +172,6 @@
               "millisecond": 0
             }
           },
-          "distributions": [],
           "transition": "3TC"
         },
         {
@@ -186,7 +185,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "ddI"
         },
         {

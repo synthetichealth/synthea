@@ -110,12 +110,12 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Albuterol",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "emergency_inhaler_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Levalbuterol",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_ingredient_distribution.csv"
                 }
             ]
@@ -142,42 +142,42 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Albuterol_0_21_Mg_Ml_Inhalation_Solution",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Albuterol_0_417_Mg_Ml_Inhalation_Solution",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Albuterol_0_83_Mg_Ml_Inhalation_Solution",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Albuterol_5_Mg_Ml_Inhalation_Solution",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nda020503_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proventil",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nda020983_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nda021457_200_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Proair",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Nda020983_60_Actuat_Albuterol_0_09_Mg_Actuat_Metered_Dose_Inhaler_Ventolin",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_albuterol_product_distribution.csv"
                 }
             ]
@@ -199,17 +199,17 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_200_Actuat_Levalbuterol_0_045_Mg_Actuat_Metered_Dose_Inhaler_Xopenex",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Levalbuterol_0_417_Mg_Ml_Inhalation_Solution",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "emergency_inhaler_levalbuterol_product_distribution.csv"
                 }
             ]

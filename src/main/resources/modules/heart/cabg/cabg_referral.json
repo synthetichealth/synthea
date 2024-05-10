@@ -101,7 +101,6 @@
             "operator": ">",
             "value": 0
           },
-          "distributions": [],
           "transition": "End_Referral_Consultation"
         },
         {
@@ -417,7 +416,6 @@
             "operator": ">",
             "value": 0
           },
-          "distributions": [],
           "transition": "Referral to Surgery"
         },
         {

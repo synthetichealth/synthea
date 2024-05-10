@@ -115,22 +115,22 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Beclomethasone",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Budesonide",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Fluticasone",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Mometasone",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_ingredient_distribution.csv"
                 }
             ]
@@ -151,12 +151,12 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_04_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "maintenance_inhaler_beclomethasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Breath_Actuated_120_Actuat_Beclomethasone_Dipropionate_0_08_Mg_Actuat_Metered_Dose_Inhaler_Qvar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_beclomethasone_product_distribution.csv"
                 }
             ]
@@ -181,32 +181,32 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_120_Actuat_Budesonide_0_18_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_60_Actuat_Budesonide_0_09_Mg_Actuat_Dry_Powder_Inhaler_Pulmicort",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Budesonide_0_125_Mg_Ml_Inhalation_Suspension_Pulmicort",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Budesonide_0_25_Mg_Ml_Inhalation_Suspension",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Budesonide_0_5_Mg_Ml_Inhalation_Suspension",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_budesonide_product_distribution.csv"
                 }
             ]
@@ -233,42 +233,42 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_044_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_11_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_120_Actuat_Fluticasone_Propionate_0_22_Mg_Actuat_Metered_Dose_Inhaler_Flovent",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_30_Actuat_Fluticasone_Furoate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_30_Actuat_Fluticasone_Furoate_0_2_Mg_Actuat_Dry_Powder_Inhaler_Arnuity",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_05_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_1_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_60_Actuat_Fluticasone_Propionate_0_25_Mg_Actuat_Dry_Powder_Inhaler_Flovent",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_fluticasone_product_distribution.csv"
                 }
             ]
@@ -292,27 +292,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_1_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_120_Actuat_Mometasone_Furoate_0_2_Mg_Actuat_Metered_Dose_Inhaler_Asmanex",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_14_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_60_Actuat_Mometasone_Furoate_0_22_Mg_Actuat_Dry_Powder_Inhaler_Asmanex",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "maintenance_inhaler_mometasone_product_distribution.csv"
                 }
             ]

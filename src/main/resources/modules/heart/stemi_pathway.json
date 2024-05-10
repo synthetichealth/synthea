@@ -86,20 +86,6 @@
     "CABG_Operation": {
       "type": "CallSubmodule",
       "submodule": "heart/cabg_sequence",
-      "conditional_transition": [
-        {
-          "transition": "Deceased",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_mortality",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {
-          "transition": "Postop ICU and Ward"
-        }
-      ],
       "direct_transition": "Set_ACS_CABG_Referral"
     },
     "Cardiology Consultation": {

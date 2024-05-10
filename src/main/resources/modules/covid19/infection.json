@@ -80,7 +80,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Self Isolation At Home"
         }
       ]
@@ -310,11 +309,9 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Wait for Admission"
         },
         {
-          "distributions": [],
           "transition": "Self Isolation Delay"
         }
       ],

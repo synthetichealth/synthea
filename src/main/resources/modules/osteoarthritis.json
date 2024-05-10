@@ -268,7 +268,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Non_Veteran"
         }
       ]
@@ -458,7 +457,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "OA_Pain_Medication"
         }
       ],

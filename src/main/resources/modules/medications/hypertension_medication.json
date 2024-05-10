@@ -237,7 +237,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "ACE_Allergy_Check_2"
         },
         {
@@ -893,7 +892,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "ACE_Allergy_Check"
         },
         {

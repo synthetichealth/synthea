@@ -200,20 +200,6 @@
     },
     "Discharged Dead": {
       "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Delay",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Patient_Discharge"
-        }
-      ],
       "direct_transition": "Terminal",
       "discharge_disposition": {
         "system": "NUBC",

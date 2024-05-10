@@ -105,8 +105,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">",
-            "year": 1961,
-            "value": 0
+            "year": 1961
           }
         },
         {

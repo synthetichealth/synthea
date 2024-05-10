@@ -363,7 +363,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Suppression"
         },
         {

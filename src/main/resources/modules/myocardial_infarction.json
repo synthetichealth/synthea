@@ -288,16 +288,6 @@
         "high": 10,
         "unit": "minutes"
       },
-      "distributed_transition": [
-        {
-          "transition": "NSTEACS",
-          "distribution": 0.6
-        },
-        {
-          "transition": "STEMI",
-          "distribution": 0.4
-        }
-      ],
       "direct_transition": "ACS_Arrival_Meds"
     },
     "MI_Onset": {

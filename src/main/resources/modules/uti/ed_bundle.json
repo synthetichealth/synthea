@@ -394,7 +394,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -459,7 +460,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -591,7 +593,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -702,7 +705,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -1402,7 +1406,6 @@
             "operator": "<=",
             "value": 2
           },
-          "distributions": [],
           "transition": "CMP"
         },
         {
@@ -1451,7 +1454,6 @@
             "operator": ">=",
             "value": 1
           },
-          "distributions": [],
           "transition": "Comprehensive_Metabolic_Panel_with_Kidney_Damage"
         },
         {
@@ -1518,7 +1520,6 @@
             "operator": ">=",
             "value": 1
           },
-          "distributions": [],
           "transition": "Basic_Metabolic_Panel_with_Kidney Damage"
         },
         {
@@ -1528,7 +1529,6 @@
             "operator": "<=",
             "value": 2
           },
-          "distributions": [],
           "transition": "Basic_Metabolic_Panel_with_Normal_Kidney"
         },
         {

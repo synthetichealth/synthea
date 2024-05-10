@@ -176,18 +176,6 @@
           "display": "Admission to ward (procedure)"
         }
       ],
-      "conditional_transition": [
-        {
-          "transition": "cabg_icu_los set in outcomes",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "cabg_prolonged_los",
-            "operator": "==",
-            "value": true
-          }
-        },
-        {}
-      ],
       "direct_transition": "Education",
       "reason": "cabg_history"
     },

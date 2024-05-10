@@ -87,7 +87,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Evaluation"
         },
         {
@@ -135,7 +134,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Evaluation"
         }
       ]
@@ -280,7 +278,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Risk_Check"
         }
       ],
@@ -430,7 +427,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Emergency Follow Up"
         },
         {
