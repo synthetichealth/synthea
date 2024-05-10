@@ -37,7 +37,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Hospital admission"
         },
         {
@@ -46,7 +45,6 @@
             "attribute": "UTI_Positive_BldCx",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "Hospital admission"
         },
         {
@@ -68,7 +66,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Hospital admission",
           "condition": {
             "condition_type": "Attribute",
@@ -78,7 +75,6 @@
           }
         },
         {
-          "distributions": [],
           "transition": "Antibiotic therapy"
         }
       ]

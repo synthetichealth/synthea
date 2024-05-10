@@ -55,7 +55,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "End_Not_Referred_Wellness_Encounter"
         }
       ],

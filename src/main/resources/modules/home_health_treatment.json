@@ -300,38 +300,10 @@
     },
     "Finish Day": {
       "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Delay",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Patient_Discharge"
-        }
-      ],
       "direct_transition": "Delay"
     },
     "Last Visit": {
       "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Delay",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "home_health_days",
-            "operator": ">",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Patient_Discharge"
-        }
-      ],
       "direct_transition": "Reset Home Health"
     },
     "Wait Until Home Health": {

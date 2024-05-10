@@ -101,7 +101,6 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
             "date": {
               "year": 1991,
               "month": 10,
@@ -170,7 +169,6 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
             "date": {
               "year": 1994,
               "month": 6,
@@ -181,14 +179,12 @@
               "millisecond": 0
             }
           },
-          "distributions": [],
           "transition": "d4T"
         },
         {
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
             "date": {
               "year": 1992,
               "month": 6,
@@ -211,7 +207,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "ddI"
         }
       ]

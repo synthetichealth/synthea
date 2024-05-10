@@ -263,8 +263,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1979,
-            "value": 0
+            "year": 1979
           }
         },
         {
@@ -277,8 +276,7 @@
       "allow": {
         "condition_type": "Date",
         "operator": ">=",
-        "year": 1979,
-        "value": 0
+        "year": 1979
       },
       "direct_transition": "Diagnosis Check"
     }

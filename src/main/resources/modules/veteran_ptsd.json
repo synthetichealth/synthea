@@ -353,8 +353,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "SSRI",
-            "operator": "is not nil",
-            "value": "Vicodin"
+            "operator": "is not nil"
           }
         },
         {
@@ -1229,8 +1228,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "SSRI",
-            "operator": "is nil",
-            "value": "Vicodin"
+            "operator": "is nil"
           }
         }
       ],
@@ -1303,8 +1301,7 @@
       "allow": {
         "condition_type": "Date",
         "operator": ">=",
-        "year": 1999,
-        "value": 0
+        "year": 1999
       },
       "direct_transition": "PTSD_Encounter",
       "name": "Wait_For_PHQ"

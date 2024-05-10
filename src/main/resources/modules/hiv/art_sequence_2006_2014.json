@@ -148,8 +148,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2014,
-            "value": 0
+            "year": 2014
           },
           "distributions": [
             {
@@ -178,8 +177,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2009,
-            "value": 0
+            "year": 2009
           },
           "distributions": [
             {
@@ -204,7 +202,6 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
             "date": {
               "year": 2008,
               "month": 11,
@@ -326,8 +323,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2014,
-            "value": 0
+            "year": 2014
           }
         },
         {
@@ -343,8 +339,7 @@
               "minute": 0,
               "second": 0,
               "millisecond": 0
-            },
-            "value": 0
+            }
           }
         },
         {

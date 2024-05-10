@@ -123,77 +123,77 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Amlodipine_Benazepril",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochlorothiazide",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Enalapril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_Lisinopril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_Losartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_Valsartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Irbesartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Losartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Quinapril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ramipril",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Sacubitril_Valsartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Telmisartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Valsartan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ingredient_distribution.csv"
                 }
             ]
@@ -218,32 +218,32 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_20_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Amlodipine_10_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Amlodipine_5_Mg_Benazepril_Hydrochloride_40_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Amlodipine_2_5_Mg_Benazepril_Hydrochloride_10_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_amlodipine_benazepril_product_distribution.csv"
                 }
             ]
@@ -266,22 +266,22 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_10_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_40_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_benazepril_product_distribution.csv"
                 }
             ]
@@ -303,17 +303,17 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_10_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_12_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Benazepril_Hydrochloride_20_Mg_Hydrochlorothiazide_25_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_benazepril_hydrochlorothiazide_product_distribution.csv"
                 }
             ]
@@ -337,27 +337,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Enalapril_Maleate_10_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Enalapril_Maleate_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Enalapril_Maleate_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Enalapril_Maleate_2_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Enalapril_Maleate_1_Mg_Ml_Oral_Solution_Epaned",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_enalapril_product_distribution.csv"
                 }
             ]
@@ -379,17 +379,17 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_10_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Lisinopril_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Lisinopril_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_lisinopril_product_distribution.csv"
                 }
             ]
@@ -414,32 +414,32 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Losartan_Potassium_50_Mg_Oral_Tablet_Hyzaar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Losartan_Potassium_100_Mg_Oral_Tablet_Hyzaar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_losartan_product_distribution.csv"
                 }
             ]
@@ -463,27 +463,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_160_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_80_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_160_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_25_Mg_Valsartan_320_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Hydrochlorothiazide_12_5_Mg_Valsartan_320_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_hydrochlorothiazide_valsartan_product_distribution.csv"
                 }
             ]
@@ -505,17 +505,17 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Irbesartan_150_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Irbesartan_300_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Irbesartan_75_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_irbesartan_product_distribution.csv"
                 }
             ]
@@ -541,37 +541,37 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Lisinopril_10_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_30_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_2_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_40_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Lisinopril_1_Mg_Ml_Oral_Solution_Qbrelis",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_lisinopril_product_distribution.csv"
                 }
             ]
@@ -595,27 +595,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Losartan_Potassium_100_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Losartan_Potassium_50_Mg_Oral_Tablet_Cozaar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Losartan_Potassium_25_Mg_Oral_Tablet_Cozaar",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_losartan_product_distribution.csv"
                 }
             ]
@@ -638,22 +638,22 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Quinapril_10_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Quinapril_40_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Quinapril_20_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Quinapril_5_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_quinapril_product_distribution.csv"
                 }
             ]
@@ -676,22 +676,22 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Ramipril_10_Mg_Oral_Capsule",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ramipril_2_5_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ramipril_5_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Ramipril_1_25_Mg_Oral_Capsule",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_ramipril_product_distribution.csv"
                 }
             ]
@@ -713,17 +713,17 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Sacubitril_24_Mg_Valsartan_26_Mg_Oral_Tablet_Entresto",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Sacubitril_49_Mg_Valsartan_51_Mg_Oral_Tablet_Entresto",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Sacubitril_97_Mg_Valsartan_103_Mg_Oral_Tablet_Entresto",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_sacubitril_valsartan_product_distribution.csv"
                 }
             ]
@@ -747,27 +747,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Telmisartan_20_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Telmisartan_20_Mg_Oral_Tablet_Micardis",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Telmisartan_40_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Telmisartan_80_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Telmisartan_80_Mg_Oral_Tablet_Micardis",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_telmisartan_product_distribution.csv"
                 }
             ]
@@ -791,27 +791,27 @@
             "lookup_table_transition": [
                 {
                     "transition": "Prescribe_Valsartan_160_Mg_Oral_Tablet",
-                    "default_probability": "1",
+                    "default_probability": 1,
                     "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Valsartan_320_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Valsartan_80_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Valsartan_40_Mg_Oral_Tablet",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
                 },
                 {
                     "transition": "Prescribe_Valsartan_320_Mg_Oral_Tablet_Diovan",
-                    "default_probability": "0",
+                    "default_probability": 0,
                     "lookup_table_name": "ace_arb_valsartan_product_distribution.csv"
                 }
             ]

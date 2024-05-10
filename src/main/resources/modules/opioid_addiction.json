@@ -42,14 +42,12 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 1990,
-                "value": 0
+                "year": 1990
               },
               {
                 "condition_type": "Date",
                 "operator": "<",
-                "year": 2014,
-                "value": 0
+                "year": 2014
               }
             ]
           }

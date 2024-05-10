@@ -26,17 +26,17 @@
       "lookup_table_transition": [
           {
             "transition": "Wait Until Exposure",
-            "default_probability": "1",
+            "default_probability": 1,
             "lookup_table_name": "covid19_prob.csv"
           },
           {
             "transition": "Check Vaccine Status",
-            "default_probability": "0",
+            "default_probability": 0,
             "lookup_table_name": "covid19_prob.csv"
           },
           {
             "transition": "Terminal",
-            "default_probability": "0",
+            "default_probability": 0,
             "lookup_table_name": "covid19_prob.csv"
           }
       ],

@@ -15,7 +15,6 @@
             "attribute": "anemia",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "RBC"
         },
         {

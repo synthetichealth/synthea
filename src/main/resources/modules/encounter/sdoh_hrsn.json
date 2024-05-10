@@ -6,12 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Assessment",
-      "name": "Initial"
+      "direct_transition": "Assessment"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Assessment": {
       "type": "Procedure",
@@ -31,8 +29,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Q1",
-      "name": "Assessment"
+      "direct_transition": "Q1"
     },
     "PRAPARE": {
       "type": "MultiObservation",
@@ -300,8 +297,7 @@
           ],
           "attribute": "prapare_a21"
         }
-      ],
-      "name": "PRAPARE"
+      ]
     },
     "Q1": {
       "type": "Simple",
@@ -311,7 +307,6 @@
             "condition_type": "Race",
             "race": "Hispanic"
           },
-          "distributions": [],
           "transition": "A1_Yes"
         },
         {
@@ -326,8 +321,7 @@
             }
           ]
         }
-      ],
-      "name": "Q1"
+      ]
     },
     "A1_Yes": {
       "type": "SetAttribute",
@@ -337,8 +331,7 @@
         "system": "LOINC",
         "code": "LA33-6",
         "display": "Yes"
-      },
-      "name": "A1_Yes"
+      }
     },
     "A1_No": {
       "type": "SetAttribute",
@@ -348,8 +341,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Q2",
-      "name": "A1_No"
+      "direct_transition": "Q2"
     },
     "A1_NotAnswer": {
       "type": "SetAttribute",
@@ -359,8 +351,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q2",
-      "name": "A1_NotAnswer"
+      "direct_transition": "Q2"
     },
     "Q2": {
       "type": "Simple",
@@ -373,8 +364,7 @@
           "transition": "Q2A",
           "distribution": 0.995
         }
-      ],
-      "name": "Q2"
+      ]
     },
     "Q3": {
       "type": "Simple",
@@ -391,8 +381,7 @@
         {
           "transition": "Q3N"
         }
-      ],
-      "name": "Q3"
+      ]
     },
     "A2_Asian": {
       "type": "SetAttribute",
@@ -402,8 +391,7 @@
         "code": "LA6156-9",
         "display": "Asian"
       },
-      "direct_transition": "Q3",
-      "name": "A2_Asian"
+      "direct_transition": "Q3"
     },
     "A2_Hawaiian": {
       "type": "SetAttribute",
@@ -413,8 +401,7 @@
         "code": "LA14045-1",
         "display": "Native Hawaiian"
       },
-      "direct_transition": "Q3",
-      "name": "A2_Hawaiian"
+      "direct_transition": "Q3"
     },
     "A2_PacificIslander": {
       "type": "SetAttribute",
@@ -424,8 +411,7 @@
         "code": "LA30187-1",
         "display": "Pacific Islander"
       },
-      "direct_transition": "Q3",
-      "name": "A2_PacificIslander"
+      "direct_transition": "Q3"
     },
     "A2_Black": {
       "type": "SetAttribute",
@@ -435,8 +421,7 @@
         "code": "LA14042-8",
         "display": "Black/African American"
       },
-      "direct_transition": "Q3",
-      "name": "A2_Black"
+      "direct_transition": "Q3"
     },
     "A2_White": {
       "type": "SetAttribute",
@@ -446,8 +431,7 @@
         "code": "LA4457-3",
         "display": "White"
       },
-      "direct_transition": "Q3",
-      "name": "A2_White"
+      "direct_transition": "Q3"
     },
     "A2_NativeAmerican": {
       "type": "SetAttribute",
@@ -457,8 +441,7 @@
         "code": "LA4-4",
         "display": "American Indian/Alaskan Native"
       },
-      "direct_transition": "Q3",
-      "name": "A2_NativeAmerican"
+      "direct_transition": "Q3"
     },
     "A2_Other": {
       "type": "SetAttribute",
@@ -468,8 +451,7 @@
         "code": "LA46-8",
         "display": "Other"
       },
-      "direct_transition": "Q3",
-      "name": "A2_Other"
+      "direct_transition": "Q3"
     },
     "A2_NotAnswer": {
       "type": "SetAttribute",
@@ -479,8 +461,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q3",
-      "name": "A2_NotAnswer"
+      "direct_transition": "Q3"
     },
     "Q2A": {
       "type": "Simple",
@@ -541,8 +522,7 @@
         {
           "transition": "A2_Other"
         }
-      ],
-      "name": "Q2A"
+      ]
     },
     "Q4": {
       "type": "Simple",
@@ -558,8 +538,7 @@
         {
           "transition": "Q4N"
         }
-      ],
-      "name": "Q4"
+      ]
     },
     "A3_Yes": {
       "type": "SetAttribute",
@@ -578,8 +557,7 @@
           "transition": "Q4",
           "distribution": 0.9982599999999999
         }
-      ],
-      "name": "A3_Yes"
+      ]
     },
     "A3_No": {
       "type": "SetAttribute",
@@ -589,8 +567,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "End Migrant",
-      "name": "A3_No"
+      "direct_transition": "End Migrant"
     },
     "A3_NotAnswer": {
       "type": "SetAttribute",
@@ -600,8 +577,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q4",
-      "name": "A3_NotAnswer"
+      "direct_transition": "Q4"
     },
     "Q3N": {
       "type": "Simple",
@@ -614,8 +590,7 @@
           "transition": "A3_NotAnswer",
           "distribution": 0.005
         }
-      ],
-      "name": "Q3N"
+      ]
     },
     "Q3Y": {
       "type": "Simple",
@@ -765,8 +740,7 @@
             }
           ]
         }
-      ],
-      "name": "Q3Y"
+      ]
     },
     "Social Migrant": {
       "type": "ConditionOnset",
@@ -778,14 +752,12 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q4",
-      "name": "Social Migrant"
+      "direct_transition": "Q4"
     },
     "End Migrant": {
       "type": "ConditionEnd",
       "direct_transition": "Q4",
-      "condition_onset": "Social Migrant",
-      "name": "End Migrant"
+      "condition_onset": "Social Migrant"
     },
     "Q5": {
       "type": "Simple",
@@ -810,8 +782,7 @@
         {
           "transition": "A5_Other"
         }
-      ],
-      "name": "Q5"
+      ]
     },
     "A4_Yes": {
       "type": "SetAttribute",
@@ -821,8 +792,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "Veteran",
-      "name": "A4_Yes"
+      "direct_transition": "Veteran"
     },
     "A4_No": {
       "type": "SetAttribute",
@@ -832,8 +802,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Q5",
-      "name": "A4_No"
+      "direct_transition": "Q5"
     },
     "A4_NotAnswer": {
       "type": "SetAttribute",
@@ -843,8 +812,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q5",
-      "name": "A4_NotAnswer"
+      "direct_transition": "Q5"
     },
     "Q4N": {
       "type": "Simple",
@@ -857,8 +825,7 @@
           "transition": "A4_No",
           "distribution": 0.995
         }
-      ],
-      "name": "Q4N"
+      ]
     },
     "Veteran": {
       "type": "ConditionOnset",
@@ -870,8 +837,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q5",
-      "name": "Veteran"
+      "direct_transition": "Q5"
     },
     "Q6": {
       "type": "Simple",
@@ -887,8 +853,7 @@
         {
           "transition": "Q7"
         }
-      ],
-      "name": "Q6"
+      ]
     },
     "A5_English": {
       "type": "SetAttribute",
@@ -898,8 +863,7 @@
         "system": "LOINC",
         "code": "LA43-5",
         "display": "English"
-      },
-      "name": "A5_English"
+      }
     },
     "A5_Other": {
       "type": "SetAttribute",
@@ -909,8 +873,7 @@
         "code": "LA30188-9",
         "display": "Language other than English"
       },
-      "direct_transition": "Q6",
-      "name": "A5_Other"
+      "direct_transition": "Q6"
     },
     "A5_NotAnswer": {
       "type": "SetAttribute",
@@ -920,8 +883,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q6",
-      "name": "A5_NotAnswer"
+      "direct_transition": "Q6"
     },
     "Q7": {
       "type": "Simple",
@@ -933,7 +895,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "A7_Homeless"
         },
         {
@@ -948,8 +909,7 @@
             }
           ]
         }
-      ],
-      "name": "Q7"
+      ]
     },
     "Household_Size": {
       "type": "SetAttribute",
@@ -962,8 +922,7 @@
           "high": 8,
           "low": 1
         }
-      },
-      "name": "Household_Size"
+      }
     },
     "Q8": {
       "type": "Simple",
@@ -975,7 +934,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "A8_Yes"
         },
         {
@@ -990,8 +948,7 @@
             }
           ]
         }
-      ],
-      "name": "Q8"
+      ]
     },
     "A7_Homeless": {
       "type": "SetAttribute",
@@ -1001,8 +958,7 @@
         "system": "LOINC",
         "code": "LA30190-5",
         "display": "I do not have housing (staying with others, in a hotel, in a shelter, living outside on the street, on a beach, in a car, or in a park)"
-      },
-      "name": "A7_Homeless"
+      }
     },
     "A7_NotHomeless": {
       "type": "SetAttribute",
@@ -1012,8 +968,7 @@
         "code": "LA30189-7",
         "display": "I have housing"
       },
-      "direct_transition": "Not Homeless",
-      "name": "A7_NotHomeless"
+      "direct_transition": "Not Homeless"
     },
     "A7_NotAnswer": {
       "type": "SetAttribute",
@@ -1023,8 +978,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q8",
-      "name": "A7_NotAnswer"
+      "direct_transition": "Q8"
     },
     "Homeless": {
       "type": "ConditionOnset",
@@ -1036,8 +990,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q8",
-      "name": "Homeless"
+      "direct_transition": "Q8"
     },
     "Not Homeless": {
       "type": "ConditionEnd",
@@ -1049,8 +1002,7 @@
           "display": "Homeless (finding)",
           "value_set": ""
         }
-      ],
-      "name": "Not Homeless"
+      ]
     },
     "A8_Yes": {
       "type": "SetAttribute",
@@ -1060,8 +1012,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "Housing Issue",
-      "name": "A8_Yes"
+      "direct_transition": "Housing Issue"
     },
     "A8_No": {
       "type": "SetAttribute",
@@ -1071,8 +1022,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "End Housing Issue",
-      "name": "A8_No"
+      "direct_transition": "End Housing Issue"
     },
     "A8_NotAnswer": {
       "type": "SetAttribute",
@@ -1082,8 +1032,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q10",
-      "name": "A8_NotAnswer"
+      "direct_transition": "Q10"
     },
     "Housing Issue": {
       "type": "ConditionOnset",
@@ -1095,14 +1044,12 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q10",
-      "name": "Housing Issue"
+      "direct_transition": "Q10"
     },
     "End Housing Issue": {
       "type": "ConditionEnd",
       "direct_transition": "Q10",
-      "condition_onset": "Housing Issue",
-      "name": "End Housing Issue"
+      "condition_onset": "Housing Issue"
     },
     "Q10": {
       "type": "Simple",
@@ -1115,8 +1062,7 @@
           "transition": "A10_NotAnswer",
           "distribution": 0.005
         }
-      ],
-      "name": "Q10"
+      ]
     },
     "Q11": {
       "type": "Simple",
@@ -1133,8 +1079,7 @@
         {
           "transition": "Q11B"
         }
-      ],
-      "name": "Q11"
+      ]
     },
     "A10_NotAnswer": {
       "type": "SetAttribute",
@@ -1144,8 +1089,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q11",
-      "name": "A10_NotAnswer"
+      "direct_transition": "Q11"
     },
     "A10C": {
       "type": "SetAttribute",
@@ -1155,8 +1099,7 @@
         "code": "LA30193-9",
         "display": "More than high school"
       },
-      "direct_transition": "Education_Onset_2",
-      "name": "A10C"
+      "direct_transition": "Education_Onset_2"
     },
     "A10B": {
       "type": "SetAttribute",
@@ -1166,8 +1109,7 @@
         "code": "LA30192-1",
         "display": "High school diploma or GED"
       },
-      "direct_transition": "Education_Onset",
-      "name": "A10B"
+      "direct_transition": "Education_Onset"
     },
     "A10A": {
       "type": "SetAttribute",
@@ -1177,8 +1119,7 @@
         "system": "LOINC",
         "code": "LA30191-3",
         "display": "Less than high school degree"
-      },
-      "name": "A10A"
+      }
     },
     "Q10A": {
       "type": "Simple",
@@ -1204,8 +1145,7 @@
         {
           "transition": "A10C"
         }
-      ],
-      "name": "Q10A"
+      ]
     },
     "Education Onset": {
       "type": "ConditionOnset",
@@ -1218,8 +1158,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q11",
-      "name": "Education Onset"
+      "direct_transition": "Q11"
     },
     "Education_Onset": {
       "type": "ConditionOnset",
@@ -1232,8 +1171,7 @@
           "version": "http://snomed.info/sct/731000124108"
         }
       ],
-      "direct_transition": "Q11",
-      "name": "Education_Onset"
+      "direct_transition": "Q11"
     },
     "Education_Onset_2": {
       "type": "ConditionOnset",
@@ -1246,8 +1184,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q11",
-      "name": "Education_Onset_2"
+      "direct_transition": "Q11"
     },
     "Q12": {
       "type": "Simple",
@@ -1299,8 +1236,7 @@
         {
           "transition": "A12_NotAnswer"
         }
-      ],
-      "name": "Q12"
+      ]
     },
     "A11A": {
       "type": "SetAttribute",
@@ -1310,8 +1246,7 @@
         "code": "LA17956-6",
         "display": "Unemployed"
       },
-      "direct_transition": "Unemployed",
-      "name": "A11A"
+      "direct_transition": "Unemployed"
     },
     "Q11B": {
       "type": "Simple",
@@ -1324,8 +1259,7 @@
           "transition": "A11_NotAnswer",
           "distribution": 0.005
         }
-      ],
-      "name": "Q11B"
+      ]
     },
     "Unemployed": {
       "type": "ConditionOnset",
@@ -1338,8 +1272,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q12",
-      "name": "Unemployed"
+      "direct_transition": "Q12"
     },
     "A11_NotAnswer": {
       "type": "SetAttribute",
@@ -1349,8 +1282,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q12",
-      "name": "A11_NotAnswer"
+      "direct_transition": "Q12"
     },
     "A11B": {
       "type": "SetAttribute",
@@ -1360,8 +1292,7 @@
         "code": "LA30136-8",
         "display": "Full-time work"
       },
-      "direct_transition": "Employed Full Time",
-      "name": "A11B"
+      "direct_transition": "Employed Full Time"
     },
     "A11C": {
       "type": "SetAttribute",
@@ -1371,8 +1302,7 @@
         "code": "LA30138-4",
         "display": "Part-time or temporary work"
       },
-      "direct_transition": "Employed Part Time",
-      "name": "A11C"
+      "direct_transition": "Employed Part Time"
     },
     "A11D": {
       "type": "SetAttribute",
@@ -1382,8 +1312,7 @@
         "code": "LA30137-6",
         "display": "Otherwise unemployed but not seeking work (ex: student, retired, disabled, unpaid primary care giver)"
       },
-      "direct_transition": "Employed Not",
-      "name": "A11D"
+      "direct_transition": "Employed Not"
     },
     "Employed Full Time": {
       "type": "ConditionOnset",
@@ -1396,8 +1325,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q12",
-      "name": "Employed Full Time"
+      "direct_transition": "Q12"
     },
     "Employed Part Time": {
       "type": "ConditionOnset",
@@ -1410,8 +1338,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q12",
-      "name": "Employed Part Time"
+      "direct_transition": "Q12"
     },
     "Employed Not": {
       "type": "ConditionOnset",
@@ -1424,8 +1351,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q12",
-      "name": "Employed Not"
+      "direct_transition": "Q12"
     },
     "A12_NotAnswer": {
       "type": "SetAttribute",
@@ -1435,8 +1361,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q14",
-      "name": "A12_NotAnswer"
+      "direct_transition": "Q14"
     },
     "A12_None": {
       "type": "SetAttribute",
@@ -1446,8 +1371,7 @@
         "code": "LA30194-7",
         "display": "None/uninsured"
       },
-      "direct_transition": "Q14",
-      "name": "A12_None"
+      "direct_transition": "Q14"
     },
     "A12_Medicaid": {
       "type": "SetAttribute",
@@ -1457,8 +1381,7 @@
         "code": "LA17849-3",
         "display": "Medicaid"
       },
-      "direct_transition": "Q14",
-      "name": "A12_Medicaid"
+      "direct_transition": "Q14"
     },
     "A12_Medicare": {
       "type": "SetAttribute",
@@ -1468,8 +1391,7 @@
         "code": "LA15652-3",
         "display": "Medicare"
       },
-      "direct_transition": "Q14",
-      "name": "A12_Medicare"
+      "direct_transition": "Q14"
     },
     "A12_Private": {
       "type": "SetAttribute",
@@ -1479,8 +1401,7 @@
         "code": "LA6350-8",
         "display": "Private insurance"
       },
-      "direct_transition": "Q14",
-      "name": "A12_Private"
+      "direct_transition": "Q14"
     },
     "Q14": {
       "type": "Simple",
@@ -1506,8 +1427,7 @@
         {
           "transition": "Q14A"
         }
-      ],
-      "name": "Q14"
+      ]
     },
     "Q15": {
       "type": "Simple",
@@ -1529,7 +1449,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "A15_No"
         },
         {
@@ -1544,8 +1463,7 @@
             }
           ]
         }
-      ],
-      "name": "Q15"
+      ]
     },
     "A14_NotAnswer": {
       "type": "SetAttribute",
@@ -1555,8 +1473,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q15",
-      "name": "A14_NotAnswer"
+      "direct_transition": "Q15"
     },
     "Q14A": {
       "type": "Simple",
@@ -1569,8 +1486,7 @@
           "transition": "Q14B",
           "distribution": 0.99
         }
-      ],
-      "name": "Q14A"
+      ]
     },
     "Q14B": {
       "type": "Simple",
@@ -1587,8 +1503,7 @@
         {
           "transition": "Q14C"
         }
-      ],
-      "name": "Q14B"
+      ]
     },
     "A14_Food": {
       "type": "SetAttribute",
@@ -1598,8 +1513,7 @@
         "code": "LA30125-1",
         "display": "Food"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Food"
+      "direct_transition": "Q15"
     },
     "A14_Clothing": {
       "type": "SetAttribute",
@@ -1609,8 +1523,7 @@
         "code": "LA30126-9",
         "display": "Clothing"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Clothing"
+      "direct_transition": "Q15"
     },
     "A14_Utilities": {
       "type": "SetAttribute",
@@ -1620,8 +1533,7 @@
         "code": "LA30124-4",
         "display": "Utilities"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Utilities"
+      "direct_transition": "Q15"
     },
     "A14_Childcare": {
       "type": "SetAttribute",
@@ -1631,8 +1543,7 @@
         "code": "LA30127-7",
         "display": "Child care"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Childcare"
+      "direct_transition": "Q15"
     },
     "A14_Medicine": {
       "type": "SetAttribute",
@@ -1642,8 +1553,7 @@
         "code": "LA30128-5",
         "display": "Medicine or Any Health Care (Medical, Dental, Mental Health, Vision)"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Medicine"
+      "direct_transition": "Q15"
     },
     "A14_Phone": {
       "type": "SetAttribute",
@@ -1653,8 +1563,7 @@
         "code": "LA30129-3",
         "display": "Phone"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Phone"
+      "direct_transition": "Q15"
     },
     "A14_Other": {
       "type": "SetAttribute",
@@ -1664,8 +1573,7 @@
         "code": "LA46-8",
         "display": "Other"
       },
-      "direct_transition": "Q15",
-      "name": "A14_Other"
+      "direct_transition": "Q15"
     },
     "Q14C": {
       "type": "Simple",
@@ -1709,8 +1617,7 @@
         {
           "transition": "Q14_FiveOrHigher"
         }
-      ],
-      "name": "Q14C"
+      ]
     },
     "Q14_Half": {
       "type": "Simple",
@@ -1723,13 +1630,11 @@
           "transition": "Q14_Half_Food?",
           "distribution": 0.7729999999999999
         }
-      ],
-      "name": "Q14_Half"
+      ]
     },
     "Q14_LessThanOne": {
       "type": "Simple",
-      "direct_transition": "Q14_LessThanOne_Meds?",
-      "name": "Q14_LessThanOne"
+      "direct_transition": "Q14_LessThanOne_Meds?"
     },
     "Q14_LessThanTwo": {
       "type": "Simple",
@@ -1742,8 +1647,7 @@
           "transition": "Q14_LessThanTwo_Food?",
           "distribution": 0.804
         }
-      ],
-      "name": "Q14_LessThanTwo"
+      ]
     },
     "Q14_LessThanFive": {
       "type": "Simple",
@@ -1756,8 +1660,7 @@
           "transition": "Q14_LessThanFive_Food?",
           "distribution": 0.89
         }
-      ],
-      "name": "Q14_LessThanFive"
+      ]
     },
     "Q14_FiveOrHigher": {
       "type": "Simple",
@@ -1770,8 +1673,7 @@
           "transition": "Q14_FiveOrHigher_Food?",
           "distribution": 0.957
         }
-      ],
-      "name": "Q14_FiveOrHigher"
+      ]
     },
     "Q14_Durables": {
       "type": "Simple",
@@ -1792,8 +1694,7 @@
           "transition": "A14_Clothing",
           "distribution": 0.25
         }
-      ],
-      "name": "Q14_Durables"
+      ]
     },
     "Q14_LessThanOne_Meds?": {
       "type": "Simple",
@@ -1806,8 +1707,7 @@
           "transition": "Q14_LessThanOne_Food?",
           "distribution": 0.773
         }
-      ],
-      "name": "Q14_LessThanOne_Meds?"
+      ]
     },
     "Q14_LessThanOne_Food?": {
       "type": "Simple",
@@ -1820,8 +1720,7 @@
           "transition": "Q14_LessThanOne_Utils?",
           "distribution": 0.729
         }
-      ],
-      "name": "Q14_LessThanOne_Food?"
+      ]
     },
     "Q14_LessThanOne_Utils?": {
       "type": "Simple",
@@ -1834,8 +1733,7 @@
           "transition": "Q14_LessThanOne_Durables?",
           "distribution": 0.675
         }
-      ],
-      "name": "Q14_LessThanOne_Utils?"
+      ]
     },
     "Q14_LessThanOne_Durables?": {
       "type": "Simple",
@@ -1848,8 +1746,7 @@
           "transition": "A14_NotAnswer",
           "distribution": 0.675
         }
-      ],
-      "name": "Q14_LessThanOne_Durables?"
+      ]
     },
     "Q14_LessThanTwo_Food?": {
       "type": "Simple",
@@ -1862,8 +1759,7 @@
           "transition": "Q14_LessThanTwo_Utils?",
           "distribution": 0.815
         }
-      ],
-      "name": "Q14_LessThanTwo_Food?"
+      ]
     },
     "Q14_LessThanTwo_Utils?": {
       "type": "Simple",
@@ -1876,8 +1772,7 @@
           "transition": "Q14_LessThanTwo_Durables?",
           "distribution": 0.777
         }
-      ],
-      "name": "Q14_LessThanTwo_Utils?"
+      ]
     },
     "Q14_LessThanTwo_Durables?": {
       "type": "Simple",
@@ -1890,8 +1785,7 @@
           "transition": "A14_NotAnswer",
           "distribution": 0.784
         }
-      ],
-      "name": "Q14_LessThanTwo_Durables?"
+      ]
     },
     "Q14_Half_Food?": {
       "type": "Simple",
@@ -1904,8 +1798,7 @@
           "transition": "Q14_Half_Utils?",
           "distribution": 0.734
         }
-      ],
-      "name": "Q14_Half_Food?"
+      ]
     },
     "Q14_Half_Utils?": {
       "type": "Simple",
@@ -1918,8 +1811,7 @@
           "transition": "Q14_Half_Durables?",
           "distribution": 0.672
         }
-      ],
-      "name": "Q14_Half_Utils?"
+      ]
     },
     "Q14_Half_Durables?": {
       "type": "Simple",
@@ -1932,8 +1824,7 @@
           "transition": "A14_NotAnswer",
           "distribution": 0.689
         }
-      ],
-      "name": "Q14_Half_Durables?"
+      ]
     },
     "Q14_LessThanFive_Food?": {
       "type": "Simple",
@@ -1946,8 +1837,7 @@
           "transition": "Q14_LessThanFive_Utils?",
           "distribution": 0.916
         }
-      ],
-      "name": "Q14_LessThanFive_Food?"
+      ]
     },
     "Q14_LessThanFive_Utils?": {
       "type": "Simple",
@@ -1960,8 +1850,7 @@
           "transition": "Q14_LessThanFive_Durables?",
           "distribution": 0.876
         }
-      ],
-      "name": "Q14_LessThanFive_Utils?"
+      ]
     },
     "Q14_LessThanFive_Durables?": {
       "type": "Simple",
@@ -1974,8 +1863,7 @@
           "transition": "A14_NotAnswer",
           "distribution": 0.912
         }
-      ],
-      "name": "Q14_LessThanFive_Durables?"
+      ]
     },
     "Q14_FiveOrHigher_Food?": {
       "type": "Simple",
@@ -1988,8 +1876,7 @@
           "transition": "Q14_FiveOrHigher_Utils?",
           "distribution": 0.973
         }
-      ],
-      "name": "Q14_FiveOrHigher_Food?"
+      ]
     },
     "Q14_FiveOrHigher_Utils?": {
       "type": "Simple",
@@ -2002,8 +1889,7 @@
           "transition": "Q14_FiveOrHigher_Durables?",
           "distribution": 0.96
         }
-      ],
-      "name": "Q14_FiveOrHigher_Utils?"
+      ]
     },
     "Q14_FiveOrHigher_Durables?": {
       "type": "Simple",
@@ -2016,8 +1902,7 @@
           "transition": "A14_NotAnswer",
           "distribution": 0.963
         }
-      ],
-      "name": "Q14_FiveOrHigher_Durables?"
+      ]
     },
     "Q16": {
       "type": "Simple",
@@ -2034,8 +1919,7 @@
         {
           "transition": "Q16O"
         }
-      ],
-      "name": "Q16"
+      ]
     },
     "A15_YesA": {
       "type": "SetAttribute",
@@ -2045,8 +1929,7 @@
         "code": "LA30133-5",
         "display": "Yes, it has kept me from medical appointments or from getting my medications"
       },
-      "direct_transition": "No Transport Access",
-      "name": "A15_YesA"
+      "direct_transition": "No Transport Access"
     },
     "A15_YesB": {
       "type": "SetAttribute",
@@ -2056,8 +1939,7 @@
         "code": "LA30134-3",
         "display": "Yes, it has kept me from non-medical meetings, appointments, work, or from getting things that I need"
       },
-      "direct_transition": "Transport Problem",
-      "name": "A15_YesB"
+      "direct_transition": "Transport Problem"
     },
     "A15_No": {
       "type": "SetAttribute",
@@ -2067,8 +1949,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Q16",
-      "name": "A15_No"
+      "direct_transition": "Q16"
     },
     "Transport Problem": {
       "type": "ConditionOnset",
@@ -2080,8 +1961,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q16",
-      "name": "Transport Problem"
+      "direct_transition": "Q16"
     },
     "No Transport Access": {
       "type": "ConditionOnset",
@@ -2093,8 +1973,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q16",
-      "name": "No Transport Access"
+      "direct_transition": "Q16"
     },
     "Q17": {
       "type": "Simple",
@@ -2123,8 +2002,7 @@
           "transition": "A17_NotAnswer",
           "distribution": 0.008
         }
-      ],
-      "name": "Q17"
+      ]
     },
     "Q16M": {
       "type": "Simple",
@@ -2149,8 +2027,7 @@
           "transition": "A16_NotAnswer",
           "distribution": 0.005
         }
-      ],
-      "name": "Q16M"
+      ]
     },
     "Q16O": {
       "type": "Simple",
@@ -2175,8 +2052,7 @@
           "transition": "A16_NotAnswer",
           "distribution": 0.005
         }
-      ],
-      "name": "Q16O"
+      ]
     },
     "A16_LessThanOne": {
       "type": "SetAttribute",
@@ -2186,8 +2062,7 @@
         "code": "LA27722-0",
         "display": "Less than once a week"
       },
-      "direct_transition": "Isolation",
-      "name": "A16_LessThanOne"
+      "direct_transition": "Isolation"
     },
     "A16_OneOrTwo": {
       "type": "SetAttribute",
@@ -2197,8 +2072,7 @@
         "code": "LA30130-1",
         "display": "1 or 2 times a week"
       },
-      "direct_transition": "Limited Contact",
-      "name": "A16_OneOrTwo"
+      "direct_transition": "Limited Contact"
     },
     "A16_ThreeToFive": {
       "type": "SetAttribute",
@@ -2208,7 +2082,6 @@
         "code": "LA30131-9",
         "display": "3 to 5 times a week"
       },
-      "name": "A16_ThreeToFive",
       "conditional_transition": [
         {
           "transition": "End Isolation",
@@ -2251,7 +2124,6 @@
         "code": "LA30132-7",
         "display": "5 or more times a week"
       },
-      "name": "A16_FiveOrMore",
       "conditional_transition": [
         {
           "transition": "End Isolation",
@@ -2294,8 +2166,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q17",
-      "name": "A16_NotAnswer"
+      "direct_transition": "Q17"
     },
     "Isolation": {
       "type": "ConditionOnset",
@@ -2308,8 +2179,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q17",
-      "name": "Isolation"
+      "direct_transition": "Q17"
     },
     "Limited Contact": {
       "type": "ConditionOnset",
@@ -2322,14 +2192,12 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q17",
-      "name": "Limited Contact"
+      "direct_transition": "Q17"
     },
     "End Isolation": {
       "type": "ConditionEnd",
       "direct_transition": "Q17",
-      "referenced_by_attribute": "social_isolation",
-      "name": "End Isolation"
+      "referenced_by_attribute": "social_isolation"
     },
     "Q18": {
       "type": "Simple",
@@ -2340,7 +2208,6 @@
             "attribute": "criminal_record",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "A18_Yes"
         },
         {
@@ -2359,8 +2226,7 @@
             }
           ]
         }
-      ],
-      "name": "Q18"
+      ]
     },
     "A17_NotAnswer": {
       "type": "SetAttribute",
@@ -2370,8 +2236,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q18",
-      "name": "A17_NotAnswer"
+      "direct_transition": "Q18"
     },
     "A17_NotAtAll": {
       "type": "SetAttribute",
@@ -2381,8 +2246,7 @@
         "code": "LA6568-5",
         "display": "Not at all"
       },
-      "direct_transition": "End Stress",
-      "name": "A17_NotAtAll"
+      "direct_transition": "End Stress"
     },
     "A17_LittleBit": {
       "type": "SetAttribute",
@@ -2392,8 +2256,7 @@
         "code": "LA13863-8",
         "display": "A little bit"
       },
-      "direct_transition": "Stress",
-      "name": "A17_LittleBit"
+      "direct_transition": "Stress"
     },
     "A17_Somewhat": {
       "type": "SetAttribute",
@@ -2403,8 +2266,7 @@
         "code": "LA13909-9",
         "display": "Somewhat"
       },
-      "direct_transition": "Stress",
-      "name": "A17_Somewhat"
+      "direct_transition": "Stress"
     },
     "A17_QuiteBit": {
       "type": "SetAttribute",
@@ -2414,8 +2276,7 @@
         "code": "LA13902-4",
         "display": "Quite a bit"
       },
-      "direct_transition": "Stress",
-      "name": "A17_QuiteBit"
+      "direct_transition": "Stress"
     },
     "A17_VeryMuch": {
       "type": "SetAttribute",
@@ -2425,8 +2286,7 @@
         "code": "LA13914-9",
         "display": "Very much"
       },
-      "direct_transition": "Stress",
-      "name": "A17_VeryMuch"
+      "direct_transition": "Stress"
     },
     "Stress": {
       "type": "ConditionOnset",
@@ -2438,14 +2298,12 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q18",
-      "name": "Stress"
+      "direct_transition": "Q18"
     },
     "End Stress": {
       "type": "ConditionEnd",
       "direct_transition": "Q18",
-      "condition_onset": "Stress",
-      "name": "End Stress"
+      "condition_onset": "Stress"
     },
     "Q19": {
       "type": "Simple",
@@ -2456,7 +2314,6 @@
             "attribute": "refugee",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "A19_Yes"
         },
         {
@@ -2497,8 +2354,7 @@
             }
           ]
         }
-      ],
-      "name": "Q19"
+      ]
     },
     "A18_NotAnswer": {
       "type": "SetAttribute",
@@ -2508,8 +2364,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q19",
-      "name": "A18_NotAnswer"
+      "direct_transition": "Q19"
     },
     "A18_No": {
       "type": "SetAttribute",
@@ -2519,8 +2374,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Q19",
-      "name": "A18_No"
+      "direct_transition": "Q19"
     },
     "A18_Yes": {
       "type": "SetAttribute",
@@ -2530,8 +2384,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "Smooth Criminal",
-      "name": "A18_Yes"
+      "direct_transition": "Smooth Criminal"
     },
     "Smooth Criminal": {
       "type": "ConditionOnset",
@@ -2544,8 +2397,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q19",
-      "name": "Smooth Criminal"
+      "direct_transition": "Q19"
     },
     "Q20": {
       "type": "Simple",
@@ -2566,8 +2418,7 @@
           "transition": "A20_Yes",
           "distribution": 0.9365
         }
-      ],
-      "name": "Q20"
+      ]
     },
     "A19_NotAnswer": {
       "type": "SetAttribute",
@@ -2577,8 +2428,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q20",
-      "name": "A19_NotAnswer"
+      "direct_transition": "Q20"
     },
     "A19_No": {
       "type": "SetAttribute",
@@ -2588,8 +2438,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Q20",
-      "name": "A19_No"
+      "direct_transition": "Q20"
     },
     "A19_Yes": {
       "type": "SetAttribute",
@@ -2599,8 +2448,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "Refugee",
-      "name": "A19_Yes"
+      "direct_transition": "Refugee"
     },
     "Refugee": {
       "type": "ConditionOnset",
@@ -2613,8 +2461,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q20",
-      "name": "Refugee"
+      "direct_transition": "Q20"
     },
     "Q21": {
       "type": "Simple",
@@ -2647,8 +2494,7 @@
             }
           ]
         }
-      ],
-      "name": "Q21"
+      ]
     },
     "A20_NotAnswer": {
       "type": "SetAttribute",
@@ -2658,8 +2504,7 @@
         "code": "LA30122-8",
         "display": "I choose not to answer this question"
       },
-      "direct_transition": "Q21",
-      "name": "A20_NotAnswer"
+      "direct_transition": "Q21"
     },
     "A20_No": {
       "type": "SetAttribute",
@@ -2669,8 +2514,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "Violence",
-      "name": "A20_No"
+      "direct_transition": "Violence"
     },
     "A20_Yes": {
       "type": "SetAttribute",
@@ -2680,8 +2524,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "End Violence",
-      "name": "A20_Yes"
+      "direct_transition": "End Violence"
     },
     "A20_Unsure": {
       "type": "SetAttribute",
@@ -2691,8 +2534,7 @@
         "code": "LA14072-5",
         "display": "Unsure"
       },
-      "direct_transition": "Q21",
-      "name": "A20_Unsure"
+      "direct_transition": "Q21"
     },
     "Violence": {
       "type": "ConditionOnset",
@@ -2704,19 +2546,16 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Q21",
-      "name": "Violence"
+      "direct_transition": "Q21"
     },
     "End Violence": {
       "type": "ConditionEnd",
       "direct_transition": "Q21",
-      "condition_onset": "Violence",
-      "name": "End Violence"
+      "condition_onset": "Violence"
     },
     "End Q": {
       "type": "Simple",
-      "direct_transition": "PRAPARE",
-      "name": "End Q"
+      "direct_transition": "PRAPARE"
     },
     "A21_Yes": {
       "type": "SetAttribute",
@@ -2726,8 +2565,7 @@
         "code": "LA33-6",
         "display": "Yes"
       },
-      "direct_transition": "Partner Violence",
-      "name": "A21_Yes"
+      "direct_transition": "Partner Violence"
     },
     "A21_No": {
       "type": "SetAttribute",
@@ -2737,8 +2575,7 @@
         "code": "LA32-8",
         "display": "No"
       },
-      "direct_transition": "End Partner Violence",
-      "name": "A21_No"
+      "direct_transition": "End Partner Violence"
     },
     "Partner Violence": {
       "type": "ConditionOnset",
@@ -2750,18 +2587,15 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "End Q",
-      "name": "Partner Violence"
+      "direct_transition": "End Q"
     },
     "End Partner Violence": {
       "type": "ConditionEnd",
       "direct_transition": "End Q",
-      "condition_onset": "Partner Violence",
-      "name": "End Partner Violence"
+      "condition_onset": "Partner Violence"
     },
     "Check Temp Work Change": {
       "type": "Simple",
-      "name": "Check Temp Work Change",
       "conditional_transition": [
         {
           "transition": "Q12",
@@ -2792,12 +2626,10 @@
     "Start Change To Temp Employment": {
       "type": "ConditionEnd",
       "direct_transition": "A11C",
-      "name": "Start Change To Temp Employment",
       "referenced_by_attribute": "employment_condition"
     },
     "Some Employment": {
       "type": "Simple",
-      "name": "Some Employment",
       "distributed_transition": [
         {
           "transition": "Check Temp Work Change",
@@ -2815,7 +2647,6 @@
     },
     "Check Full Time Work Change": {
       "type": "Simple",
-      "name": "Check Full Time Work Change",
       "conditional_transition": [
         {
           "transition": "Q12",
@@ -2845,13 +2676,11 @@
     },
     "Start Change to Full Time": {
       "type": "ConditionEnd",
-      "name": "Start Change to Full Time",
       "referenced_by_attribute": "employment_condition",
       "direct_transition": "A11B"
     },
     "Check Otherwise Work Change": {
       "type": "Simple",
-      "name": "Check Otherwise Work Change",
       "conditional_transition": [
         {
           "transition": "Q12",
@@ -2882,12 +2711,10 @@
     "Start Change to Not in Labor Force": {
       "type": "ConditionEnd",
       "direct_transition": "A11D",
-      "name": "Start Change to Not in Labor Force",
       "referenced_by_attribute": "employment_condition"
     },
     "Check Unemployment Change": {
       "type": "Simple",
-      "name": "Check Unemployment Change",
       "conditional_transition": [
         {
           "transition": "Q12",
@@ -2918,7 +2745,6 @@
     "Start Change to Unemployed": {
       "type": "ConditionEnd",
       "direct_transition": "A11A",
-      "name": "Start Change to Unemployed",
       "referenced_by_attribute": "employment_condition"
     }
   },

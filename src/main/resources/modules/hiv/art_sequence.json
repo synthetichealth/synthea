@@ -59,8 +59,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2015,
-            "value": 0
+            "year": 2015
           }
         },
         {
@@ -68,8 +67,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2006,
-            "value": 0
+            "year": 2006
           }
         },
         {
@@ -77,8 +75,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2003,
-            "value": 0
+            "year": 2003
           }
         },
         {
@@ -86,8 +83,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1997,
-            "value": 0
+            "year": 1997
           }
         },
         {
@@ -95,8 +91,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1995,
-            "value": 0
+            "year": 1995
           }
         },
         {
@@ -104,8 +99,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1987,
-            "value": 0
+            "year": 1987
           }
         },
         {
@@ -150,7 +144,6 @@
             "attribute": "art_year",
             "operator": "is nil"
           },
-          "distributions": [],
           "transition": "Stop All 2015"
         },
         {
@@ -160,7 +153,6 @@
             "operator": ">=",
             "value": 2015
           },
-          "distributions": [],
           "transition": "Terminal"
         },
         {

@@ -1,6 +1,8 @@
 {
   "name": "Chronic Kidney Disease",
-  "remarks": [],
+  "remarks": [
+
+  ],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -184,7 +186,6 @@
             "operator": "==",
             "value": 5
           },
-          "distributions": [],
           "transition": "Expected_Lifespan_for_ESRD"
         }
       ]

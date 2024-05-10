@@ -579,8 +579,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "ssri",
-            "operator": "is not nil",
-            "value": 0
+            "operator": "is not nil"
           }
         },
         {

@@ -81,7 +81,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Terminal"
         }
       ]
@@ -378,7 +377,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Set Device CPAP"
         },
         {
@@ -759,14 +757,6 @@
         "code": 702172008,
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
-      "distributed_transition": [
-        {
-          "distribution": 0.5
-        },
-        {
-          "distribution": 0.5
-        }
-      ],
       "direct_transition": "Stop_previous_humidifier"
     },
     "Intraoral_Appliance": {
