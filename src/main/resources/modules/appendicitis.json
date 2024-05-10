@@ -229,7 +229,6 @@
     },
     "Appendicitis_Encounter": {
       "type": "Encounter",
-      "wellness": false,
       "encounter_class": "emergency",
       "reason": "Appendicitis",
       "remarks": [

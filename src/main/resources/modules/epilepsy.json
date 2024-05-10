@@ -158,14 +158,10 @@
         }
       ],
       "direct_transition": "Seizure_Encounter",
-      "remarks": [
-        ""
-      ],
       "assign_to_attribute": "seizure"
     },
     "Seizure_Encounter": {
       "type": "Encounter",
-      "wellness": false,
       "encounter_class": "emergency",
       "reason": "seizure",
       "remarks": [
@@ -410,18 +406,10 @@
     },
     "Medicine_Encounter": {
       "type": "Encounter",
-      "encounter_class": "outpatient",
       "wellness": true,
       "reason": "seizure",
       "remarks": [
         "Patients start with medication prescription or follow-up."
-      ],
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "390906007",
-          "display": "Follow-Up Encounter"
-        }
       ],
       "distributed_transition": [
         {
