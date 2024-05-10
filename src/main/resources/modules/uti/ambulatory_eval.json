@@ -3,12 +3,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "name": "Initial",
       "direct_transition": "Eval Procedure"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Eval Procedure": {
       "type": "Procedure",
@@ -27,7 +25,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Eval Procedure",
       "complex_transition": [
         {
           "condition": {
@@ -50,14 +47,12 @@
     "GU_Pregnancy_Check": {
       "type": "CallSubmodule",
       "submodule": "uti/gu_pregnancy_check",
-      "direct_transition": "UTI_Labs",
-      "name": "GU_Pregnancy_Check"
+      "direct_transition": "UTI_Labs"
     },
     "UTI_Labs": {
       "type": "CallSubmodule",
       "submodule": "uti/labs",
-      "direct_transition": "Abx Therapy",
-      "name": "UTI_Labs"
+      "direct_transition": "Abx Therapy"
     },
     "Abx Therapy": {
       "type": "Procedure",
@@ -76,14 +71,12 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_Abx",
-      "name": "Abx Therapy"
+      "direct_transition": "UTI_Abx"
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
       "submodule": "uti/abx_tx",
-      "direct_transition": "Terminal",
-      "name": "UTI_Abx"
+      "direct_transition": "Terminal"
     }
   },
   "gmf_version": 2

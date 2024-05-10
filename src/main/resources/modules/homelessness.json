@@ -429,7 +429,6 @@
     },
     "Homeless_Condition": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",

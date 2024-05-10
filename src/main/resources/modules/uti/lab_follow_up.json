@@ -3,12 +3,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Inform Patient",
-      "name": "Initial"
+      "direct_transition": "Inform Patient"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Inform Patient": {
       "type": "Procedure",
@@ -27,8 +25,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Lab Finding Education",
-      "name": "Inform Patient"
+      "direct_transition": "Lab Finding Education"
     },
     "Lab Finding Education": {
       "type": "Procedure",
@@ -47,8 +44,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Discussion",
-      "name": "Lab Finding Education"
+      "direct_transition": "Discussion"
     },
     "Discussion": {
       "type": "Procedure",
@@ -67,7 +63,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Discussion",
       "conditional_transition": [
         {
           "transition": "Evaluate Abx Response",
@@ -99,14 +94,12 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI Abx Tx Sub",
-      "name": "Prescribe Abx"
+      "direct_transition": "UTI Abx Tx Sub"
     },
     "UTI Abx Tx Sub": {
       "type": "CallSubmodule",
       "submodule": "uti/abx_tx",
-      "direct_transition": "Terminal",
-      "name": "UTI Abx Tx Sub"
+      "direct_transition": "Terminal"
     },
     "Evaluate Abx Response": {
       "type": "Procedure",
@@ -125,7 +118,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Evaluate Abx Response",
       "distributed_transition": [
         {
           "transition": "Stop UTI Abx",
@@ -140,7 +132,6 @@
     "Stop UTI Abx": {
       "type": "MedicationEnd",
       "direct_transition": "Change Treatment",
-      "name": "Stop UTI Abx",
       "referenced_by_attribute": "UTI_Tx"
     },
     "Change Treatment": {
@@ -160,8 +151,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI Abx Tx Sub",
-      "name": "Change Treatment"
+      "direct_transition": "UTI Abx Tx Sub"
     }
   },
   "gmf_version": 2
