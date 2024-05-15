@@ -402,7 +402,7 @@
               }
             ],
             "operator": "<",
-            "value": "7.0"
+            "value": 7.0
           },
           "addresses": [
             "diabetes_stage"
@@ -418,7 +418,7 @@
               }
             ],
             "operator": "<",
-            "value": "108"
+            "value": 108
           },
           "addresses": [
             "diabetes_stage"
