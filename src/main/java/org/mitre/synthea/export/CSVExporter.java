@@ -752,7 +752,9 @@ public class CSVExporter {
     s.append(clean(coding.display)).append(',');
 
     // BASE_ENCOUNTER_COST
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
+    */
     // TOTAL_COST
     /* UKAdp
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
@@ -951,7 +953,9 @@ public class CSVExporter {
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
     // BASE_COST
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", procedure.getCost())).append(',');
+    */
     // REASONCODE & REASONDESCRIPTION
     if (procedure.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -996,8 +1000,10 @@ public class CSVExporter {
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
     // BASE_COST
+    /* UKAdp
     BigDecimal cost = medication.getCost();
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
+    */
     // PAYER_COVERAGE
     /* UKAdp
     s.append(String.format(Locale.US, "%.2f", medication.claim.getTotalCoveredCost())).append(',');
@@ -1034,10 +1040,12 @@ public class CSVExporter {
       dispenses = 1;
     }
 
+    /* UKAdp
     s.append(dispenses).append(',');
     BigDecimal totalCost = cost.multiply(
         BigDecimal.valueOf(dispenses)).setScale(2, RoundingMode.DOWN); //Truncate 2 decimal places
     s.append(String.format(Locale.US, "%.2f", totalCost)).append(',');
+    */
 
     if (medication.reasons.isEmpty()) {
       s.append(','); // reason code & desc
@@ -1073,7 +1081,9 @@ public class CSVExporter {
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');
     // BASE_COST
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", immunization.getCost()));
+    */
 
     s.append(NEWLINE);
     write(s.toString(), immunizations);
