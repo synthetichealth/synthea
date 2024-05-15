@@ -171,12 +171,12 @@ public abstract class Transition implements Serializable {
         }
         */
         EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
-          synchronized (typical) {
-            typical.reseedRandomGenerator(person.randLong());
-            selectedTransition = typical.sample();
-          }  
+        synchronized (typical) {
+          typical.reseedRandomGenerator(person.randLong());
+          selectedTransition = typical.sample();
+        }
       } else {
-        /* UKAdp
+      /* UKAdp
         if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
           EnumeratedDistribution<String> high = config.getTelemedHighEmergency();
           synchronized (high) {
@@ -184,12 +184,12 @@ public abstract class Transition implements Serializable {
             selectedTransition = high.sample();
           }
         } else {
-        */
-          EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
-          synchronized (typical) {
-            typical.reseedRandomGenerator(person.randLong());
-            selectedTransition = typical.sample();
-          }        
+      */
+        EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
+        synchronized (typical) {
+          typical.reseedRandomGenerator(person.randLong());
+          selectedTransition = typical.sample();
+        }        
       }
       switch (selectedTransition) {
         case TelemedicineConfig.AMBULATORY:

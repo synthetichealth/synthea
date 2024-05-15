@@ -419,7 +419,7 @@ public class CSVExporter {
     }
   }
 
-  
+
   /**
    * Export the payers.csv file. This method should be called once after all the
    * Patient records have been exported using the export(Person,long) method.
@@ -445,7 +445,7 @@ public class CSVExporter {
    *
    * @throws IOException if any IO errors occur.
    */
-   /* UKAdp
+  /* UKAdp
    private void exportPayerTransitions(Person person, long cutOffTime, long stopTime)
       throws IOException {
     List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
@@ -532,7 +532,7 @@ public class CSVExporter {
       /* UKAdp
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        
+
         claim(person, medication.claim, encounter, encounterID, time);
       }
       */
@@ -1395,7 +1395,7 @@ public class CSVExporter {
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }
-  
+
 
   private void patientExpense(Person person, PlanRecord planRecord) throws IOException {
     // PATIENT_ID,YEAR,PAYER_ID,HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS
@@ -1661,7 +1661,7 @@ public class CSVExporter {
       }
     }
   }
-  
+
 
   private void simulateClaimProcess(Person person, Claim claim, String claimId,
       Encounter encounter, String encounterId, Claim.ClaimEntry claimEntry,
@@ -1908,7 +1908,7 @@ public class CSVExporter {
     /**
      * Convert this ClaimTransaction into a CSV row.
      */
-    /* UKAdp
+  /* UKAdp
     public String toString() {
       // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
       // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,

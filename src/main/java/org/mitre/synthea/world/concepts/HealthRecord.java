@@ -301,7 +301,7 @@ public class HealthRecord implements Serializable {
   public class Medication extends EntryWithReasons {
     public Code stopReason;
     public transient JsonObject prescriptionDetails;
-    /* UKAdp 
+    /* UKAdp
     public Claim claim;
     */
     public boolean administration;

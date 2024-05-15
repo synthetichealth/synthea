@@ -217,7 +217,7 @@ public class App {
                     "Specified keep-patients file (%s) does not exist", value));
               }
             }
-          /* UKAdp  
+          /* UKAdp
           } else if (currArg.equals("-fm")) {
             String value = argsQ.poll();
             File flexporterMappingFile = new File(value);
@@ -239,7 +239,7 @@ public class App {
               throw new FileNotFoundException(String.format(
                   "Specified IG directory (%s) does not exist", value));
             }
-          */  
+          */
           } else if (currArg.startsWith("--")) {
             String configSetting;
             String value;

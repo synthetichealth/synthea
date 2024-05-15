@@ -28,7 +28,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 /* UKAdaption
-import org.mitre.synthea.export.CDWExporter; 
+import org.mitre.synthea.export.CDWExporter;
 */
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
