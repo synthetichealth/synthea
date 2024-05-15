@@ -14,10 +14,14 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+/* UKAdaption
 import org.mitre.synthea.world.agents.PayerManager;
+*/
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.TelemedicineConfig;
+/* UKAdaption
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+*/
 
 /**
  * Transition represents all the transition types within the generic module
