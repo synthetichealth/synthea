@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.mitre.synthea.world.agents.Provider;
+/* UKAdp
 import org.mitre.synthea.world.concepts.Claim;
+*/
 import org.mitre.synthea.world.concepts.HealthRecord;
 
 /**
@@ -17,7 +19,9 @@ public class ConsolidatedServicePeriods {
     private long start;
     private long stop;
     private final List<HealthRecord.Encounter> encounters;
+    /* UKAdp
     private final Claim.ClaimCost totalCost;
+    */
     private final Provider provider;
 
     /**
@@ -29,7 +33,9 @@ public class ConsolidatedServicePeriods {
       stop = encounter.stop;
       encounters = new ArrayList<>();
       encounters.add(encounter);
+      /* UKAdp
       totalCost = new Claim.ClaimCost(encounter.claim.totals);
+      */
       provider = encounter.provider;
     }
 
@@ -55,7 +61,9 @@ public class ConsolidatedServicePeriods {
       encounters.add(encounter);
       start = Math.min(start, encounter.start);
       stop = Math.max(stop, encounter.stop);
+      /* UKAdp
       totalCost.addCosts(encounter.claim.totals);
+      */
     }
 
     public List<HealthRecord.Encounter> getEncounters() {
@@ -70,9 +78,11 @@ public class ConsolidatedServicePeriods {
       return stop;
     }
 
+    /* UKAdp
     public Claim.ClaimCost getTotalCost() {
       return totalCost;
     }
+    */
 
     public Provider getProvider() {
       return provider;
