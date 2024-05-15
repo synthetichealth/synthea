@@ -180,21 +180,25 @@ public class HealthRecord implements Serializable {
     /**
      * Determines the cost of the entry based on type and location adjustment factors.
      */
+    /* UKAdp
     void determineCost() {
       this.cost = BigDecimal.valueOf(Costs.determineCostOfEntry(this, this.record.person));
       // truncate to 2 decimal places
       this.cost = this.cost.setScale(2, RoundingMode.DOWN);
     }
+    */
 
     /**
      * Returns the base cost of the entry.
      */
+    /* UKAdp
     public BigDecimal getCost() {
       if ((this.cost == null)) {
         this.determineCost();
       }
       return this.cost;
     }
+    */
 
     /**
      * Determines if the given entry contains the provided code in its list of codes.
@@ -297,7 +301,9 @@ public class HealthRecord implements Serializable {
   public class Medication extends EntryWithReasons {
     public Code stopReason;
     public transient JsonObject prescriptionDetails;
+    /* UKAdp 
     public Claim claim;
+    */
     public boolean administration;
     public boolean chronic;
 
@@ -307,7 +313,9 @@ public class HealthRecord implements Serializable {
     public Medication(long time, String type) {
       super(time, type);
       // Create a medication claim.
+      /* UKAdp
       this.claim = new Claim(this, person);
+      */
     }
 
     /**
@@ -634,7 +642,9 @@ public class HealthRecord implements Serializable {
     public List<ImagingStudy> imagingStudies;
     public List<Device> devices;
     public List<Supply> supplies;
+    /* UKAdp
     public Claim claim; // for now assume 1 claim per encounter
+    */
     public Code reason;
     public Code discharge;
     public Provider provider;
@@ -677,7 +687,9 @@ public class HealthRecord implements Serializable {
       imagingStudies = new ArrayList<ImagingStudy>();
       devices = new ArrayList<Device>();
       supplies = new ArrayList<Supply>();
+      /* UKAdp
       this.claim = new Claim(this, person);
+      */
     }
 
     /**
@@ -1019,7 +1031,9 @@ public class HealthRecord implements Serializable {
       Entry condition = new Entry(time, primaryCode);
       Encounter encounter = currentEncounter(time);
       encounter.conditions.add(condition);
+      /* UKAdp
       encounter.claim.addLineItem(condition);
+      */
       present.put(primaryCode, condition);
     }
     return present.get(primaryCode);
@@ -1152,7 +1166,9 @@ public class HealthRecord implements Serializable {
     Procedure procedure = new Procedure(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.procedures.add(procedure);
+    /* UKAdp
     encounter.claim.addLineItem(procedure);
+    */
     present.put(type, procedure);
     return procedure;
   }
@@ -1168,7 +1184,9 @@ public class HealthRecord implements Serializable {
     device.generateUDI(person);
     Encounter encounter = currentEncounter(time);
     encounter.devices.add(device);
+    /* UKAdp
     encounter.claim.addLineItem(device);
+    */
     present.put(type, device);
     return device;
   }
@@ -1219,7 +1237,9 @@ public class HealthRecord implements Serializable {
     supply.codes.add(code);
     supply.quantity = quantity;
     encounter.supplies.add(supply);
+    /* UKAdp
     encounter.claim.addLineItem(supply);
+    */
     return supply;
   }
 
@@ -1246,7 +1266,9 @@ public class HealthRecord implements Serializable {
     }
     Report report = new Report(time, type, observations);
     encounter.reports.add(report);
+    /* UKAdp
     encounter.claim.addLineItem(report);
+    */
     observations.forEach(o -> o.report = report);
     return report;
   }
@@ -1278,8 +1300,10 @@ public class HealthRecord implements Serializable {
       if (encounterType == type && !encounter.ended) {
         encounter.end(time);
         // Update Costs/Claim information.
+        /* UKAdp
         encounter.determineCost();
         encounter.claim.assignCosts();
+        */
         return;
       }
     }
@@ -1299,7 +1323,9 @@ public class HealthRecord implements Serializable {
     Immunization immunization = new Immunization(time, type);
     Encounter encounter = currentEncounter(time);
     encounter.immunizations.add(immunization);
+    /* UKAdp
     encounter.claim.addLineItem(immunization);
+    */
     return immunization;
   }
 
