@@ -1204,7 +1204,7 @@ public class FhirR4 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
-    
+
     moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCurrency("USD");
     claimResource.setTotal(moneyResource);
@@ -1344,12 +1344,12 @@ public class FhirR4 {
     }
 
     Money moneyResource = new Money();
-    moneyResource.setCurrency("USD");    
+    moneyResource.setCurrency("USD");
     moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource, encounter.claim.uuid.toString());
-    
+
   }
   */
 
