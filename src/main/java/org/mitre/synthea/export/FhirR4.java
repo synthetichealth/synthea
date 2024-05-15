@@ -144,12 +144,18 @@ import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
 import org.mitre.synthea.world.agents.Clinician;
+/* UKAdp
 import org.mitre.synthea.world.agents.Payer;
+*/
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+/* UKAdp
 import org.mitre.synthea.world.concepts.Claim;
+*/
 import org.mitre.synthea.world.concepts.ClinicianSpecialty;
+/* UKAdp
 import org.mitre.synthea.world.concepts.Costs;
+*/
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -518,6 +524,7 @@ public class FhirR4 {
         clinicalNote(person, personEntry, bundle, encounterEntry, clinicalNoteText, lastNote);
       }
 
+      /* UKAdp
       if (shouldExport(org.hl7.fhir.r4.model.Claim.class)) {
         // one claim per encounter
         BundleEntryComponent encounterClaim =
@@ -528,6 +535,7 @@ public class FhirR4 {
               encounterClaim, encounter, encounter.claim);
         }
       }
+      */
     }
 
     if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
@@ -1147,6 +1155,7 @@ public class FhirR4 {
    * @param medicationCodeableConcept The medication CodeableConcept
    * @return the added Entry
    */
+  /* UKAdp
   private static BundleEntryComponent medicationClaim(
       Person person, BundleEntryComponent personEntry,
       Bundle bundle, BundleEntryComponent encounterEntry,
@@ -1195,6 +1204,7 @@ public class FhirR4 {
     claimResource.setPrescription(new Reference(medicationEntry.getFullUrl()));
 
     Money moneyResource = new Money();
+    
     moneyResource.setValue(claim.getTotalClaimCost());
     moneyResource.setCurrency("USD");
     claimResource.setTotal(moneyResource);
@@ -1207,6 +1217,7 @@ public class FhirR4 {
 
     return medicationClaimEntry;
   }
+  */
 
   /**
    * Create an entry for the given Claim, associated to an Encounter.
@@ -1272,6 +1283,7 @@ public class FhirR4 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
+    /* UKAdp
     for (Claim.ClaimEntry claimEntry : encounter.claim.items) {
       HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
@@ -1330,6 +1342,7 @@ public class FhirR4 {
       }
       itemSequence++;
     }
+    */
 
     Money moneyResource = new Money();
     moneyResource.setCurrency("USD");
@@ -1352,6 +1365,7 @@ public class FhirR4 {
    * @param claim the Claim.
    * @return the added entry
    */
+  /* UKAdp
   private static BundleEntryComponent explanationOfBenefit(BundleEntryComponent personEntry,
                                            Bundle bundle, BundleEntryComponent encounterEntry,
                                            Person person, BundleEntryComponent claimEntry,
@@ -1655,6 +1669,7 @@ public class FhirR4 {
         "ExplanationOfBenefit for Claim" + claim.uuid);
     return newEntry(bundle, eob, uuid);
   }
+  */
 
   /**
    * Map the Condition into a FHIR Condition resource, and add it to the given Bundle.
@@ -2503,11 +2518,13 @@ public class FhirR4 {
     BundleEntryComponent medicationEntry =
         newEntry(bundle, medicationResource, medication.uuid.toString());
 
+    /* UKAdp
     if (shouldExport(org.hl7.fhir.r4.model.Claim.class)) {
       // create new claim for medication
       medicationClaim(person, personEntry, bundle, encounterEntry, encounter,
           medication.claim, medicationEntry, medicationCodeableConcept);
     }
+    */
 
     // Create new administration for medication, if needed
     if (medication.administration && shouldExport(MedicationAdministration.class)) {

@@ -37,11 +37,15 @@ import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.world.agents.Clinician;
+/* UKAdp
 import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.PayerManager;
+*/
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+/* UKAdp
 import org.mitre.synthea.world.concepts.Claim;
+*/
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
@@ -54,7 +58,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Supply;
+/* UKAdp
 import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
+*/
 
 /**
  * Researchers have requested a simple table-based format that could easily be
@@ -413,12 +419,14 @@ public class CSVExporter {
     }
   }
 
+  
   /**
    * Export the payers.csv file. This method should be called once after all the
    * Patient records have been exported using the export(Person,long) method.
    *
    * @throws IOException if any IO errors occur.
    */
+  /* UKAdp
   public void exportPayers() throws IOException {
     // Export All Payers
     for (Payer payer : PayerManager.getAllPayers()) {
@@ -429,6 +437,7 @@ public class CSVExporter {
     payer(PayerManager.getNoInsurancePlan().getPayer());
     payers.flush();
   }
+  */
 
   /**
    * Export the payerTransitions.csv file. This method should be called once after all the
@@ -436,7 +445,8 @@ public class CSVExporter {
    *
    * @throws IOException if any IO errors occur.
    */
-  private void exportPayerTransitions(Person person, long cutOffTime, long stopTime)
+   /* UKAdp
+   private void exportPayerTransitions(Person person, long cutOffTime, long stopTime)
       throws IOException {
     List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
         .sorted(Comparator.comparingLong(PlanRecord::getStartTime))
@@ -448,6 +458,7 @@ public class CSVExporter {
     }
     payerTransitions.flush();
   }
+  */
 
   /**
    * Export the payerTransitions.csv file. This method should be called once after all the
@@ -455,6 +466,7 @@ public class CSVExporter {
    *
    * @throws IOException if any IO errors occur.
    */
+  /* UKAdp
   private void exportPatientExpenses(Person person, long cutOffTime, long stopTime)
       throws IOException {
     List<PlanRecord> sortedPlanRecords = person.coverage.getPlanHistory().stream()
@@ -467,6 +479,7 @@ public class CSVExporter {
     }
     patientExpenses.flush();
   }
+  */
 
   /**
    * Add a single Person's health record info to the CSV records.
@@ -484,7 +497,9 @@ public class CSVExporter {
       String encounterID = encounter(personID, encounter);
       String payerID = encounter.claim.getPayer().uuid;
 
+      /* UKAdp
       claim(person, encounter.claim, encounter, encounterID, time);
+      */
 
       for (HealthRecord.Entry condition : encounter.conditions) {
         /* condition to ignore codes other then retrieved from terminology url */
@@ -514,7 +529,9 @@ public class CSVExporter {
 
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
+        /* UKAdp
         claim(person, medication.claim, encounter, encounterID, time);
+        */
       }
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
@@ -543,8 +560,10 @@ public class CSVExporter {
       cutOff = Calendar.getInstance();
       cutOff.set(cutOff.get(Calendar.YEAR) - yearsOfHistory, 0, 1);
     }
+    /* UKAdp
     CSVExporter.getInstance().exportPayerTransitions(person, cutOff.getTimeInMillis(), time);
     CSVExporter.getInstance().exportPatientExpenses(person, cutOff.getTimeInMillis(), time);
+    */
     Calendar now = Calendar.getInstance();
     Calendar birthDay = Calendar.getInstance();
     birthDay.setTimeInMillis((long) person.attributes.get(Person.BIRTHDATE));
@@ -1260,6 +1279,7 @@ public class CSVExporter {
    * @param payer The payer to be exported.
    * @throws IOException if any IO error occurs.
    */
+  /* UKAdp
   private void payer(Payer payer) throws IOException {
     // Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,
     // AMOUNT_UNCOVERED,REVENUE,
@@ -1305,6 +1325,7 @@ public class CSVExporter {
     s.append(NEWLINE);
     write(s.toString(), payers);
   }
+  */
 
   /**
    * Write a single range of unchanged payer history to payer_transitions.csv
@@ -1313,6 +1334,7 @@ public class CSVExporter {
    * @param planRecord The plan
    * @throws IOException if any IO error occurs
    */
+  /* UKAdp
   private void payerTransition(Person person, PlanRecord planRecord) throws IOException {
     // PATIENT_ID,MEMBER_ID,START_YEAR,END_YEAR,PAYER_ID,SECONDARY_PAYER_ID,OWNERSHIP,OWNERNAME
 
@@ -1348,6 +1370,7 @@ public class CSVExporter {
     s.append(NEWLINE);
     write(s.toString(), payerTransitions);
   }
+  
 
   private void patientExpense(Person person, PlanRecord planRecord) throws IOException {
     // PATIENT_ID,YEAR,PAYER_ID,HEALTHCARE_EXPENSES,INSURANCE_COSTS,COVERED_COSTS
@@ -1372,6 +1395,7 @@ public class CSVExporter {
     s.append(NEWLINE);
     write(s.toString(), patientExpenses);
   }
+  */
 
   /**
    * Return a department code for the claim.
@@ -1379,6 +1403,7 @@ public class CSVExporter {
    * @param patient The patient.
    * @return The department code.
    */
+  /* UKAdp
   private String claimDepartmentCode(Encounter encounter, Person patient) {
     String dept = "99";
     if (encounter.type != null) {
@@ -1396,6 +1421,7 @@ public class CSVExporter {
     }
     return dept;
   }
+  */
 
   /**
    * Write a single claim to claims.csv.
@@ -1403,6 +1429,7 @@ public class CSVExporter {
    * @param claim The claim to be exported.
    * @throws IOException if any IO error occurs.
    */
+  /* UKAdp
   private void claim(Person person, Claim claim, Encounter encounter,
       String encounterID, long time) throws IOException {
     // Id,PATIENTID,PROVIDERID,PRIMARYPATIENTINSURANCEID,SECONDARYPATIENTINSURANCEID,
@@ -1609,6 +1636,7 @@ public class CSVExporter {
       }
     }
   }
+  
 
   private void simulateClaimProcess(Person person, Claim claim, String claimId,
       Encounter encounter, String encounterId, Claim.ClaimEntry claimEntry,
@@ -1772,7 +1800,9 @@ public class CSVExporter {
       chargeId = transactionId.getAndIncrement();
     }
   }
+  */
 
+  /* UKAdp
   public enum ClaimTransactionType {
     CHARGE, PAYMENT, ADJUSTMENT, TRANSFERIN, TRANSFEROUT;
   }
@@ -1807,6 +1837,7 @@ public class CSVExporter {
     String procedureDisplay;
     String[] diagnosisCodes;
     String notes;
+    */
 
     /**
      * Create a new ClaimTransaction.
@@ -1818,6 +1849,7 @@ public class CSVExporter {
      * @param claimEntry The entry for the transactions.
      * @param person The Person.
      */
+    /* UKAdp
     public ClaimTransaction(Encounter encounter, String encounterId, Claim claim, String claimId,
         long chargeId, Claim.ClaimEntry claimEntry, Person person) {
       // NOTE: see note above about the transactionId field
@@ -1846,10 +1878,12 @@ public class CSVExporter {
       this.amount = amount;
       this.unitAmount = amount;
     }
+    */
 
     /**
      * Convert this ClaimTransaction into a CSV row.
      */
+    /* UKAdp
     public String toString() {
       // ID,CLAIMID,CHARGEID,PATIENTID,TYPE,AMOUNT,METHOD,FROMDATE,TODATE,
       // PLACEOFSERVICE,PROCEDURECODE,MODIFIER1,MODIFIER2,DIAGNOSISREF1,DIAGNOSISREF2,
@@ -1962,6 +1996,7 @@ public class CSVExporter {
       return s.toString();
     }
   }
+  */
 
   /**
    * Replaces commas and line breaks in the source string with a single space.

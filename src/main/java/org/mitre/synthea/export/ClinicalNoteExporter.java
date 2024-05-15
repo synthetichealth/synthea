@@ -15,7 +15,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.RaceAndEthnicity;
+/* UKAdp
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+*/
 
 /**
  * Export Clinical Notes using Apache FreeMarker templates.
@@ -103,6 +105,7 @@ public class ClinicalNoteExporter {
       }
     }
 
+    /* UKAdp
     InsurancePlan plan;
     if (person.alive(encounterTime)) {
       plan = person.coverage.getPlanAtTime(encounter.start);
@@ -110,7 +113,11 @@ public class ClinicalNoteExporter {
       // If an encounter occurs after death, a plan record may be non-existent, throwing an error.
       plan = person.coverage.getLastPlanRecord().getPlan();
     }
+    */
+
+    /* UKAdp
     person.attributes.put("ehr_insurance", plan.getPayer().getName());
+    */
     person.attributes.put("ehr_ageInYears", person.ageInYears(encounter.start));
     person.attributes.put("ehr_ageInMonths", person.ageInMonths(encounter.start));
     person.attributes.put("ehr_symptoms", person.getSymptoms());

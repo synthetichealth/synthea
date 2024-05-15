@@ -25,11 +25,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import org.mitre.synthea.engine.Generator;
+/* UKAdp
 import org.mitre.synthea.export.flexporter.Actions;
 import org.mitre.synthea.export.flexporter.FhirPathUtils;
 import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
 import org.mitre.synthea.export.flexporter.Mapping;
 import org.mitre.synthea.export.rif.BB2RIFExporter;
+*/
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
@@ -38,7 +40,9 @@ import org.mitre.synthea.identity.Seed;
 import org.mitre.synthea.identity.Variant;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.world.agents.Person;
+/* UKAdp
 import org.mitre.synthea.world.concepts.Claim;
+*/
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -102,7 +106,9 @@ public abstract class Exporter {
         !Config.get("generate.terminology_service_url", "").isEmpty();
     private BlockingQueue<String> recordQueue;
     private SupportedFhirVersion fhirVersion;
+    /* UKAdp
     private List<Mapping> flexporterMappings;
+    */
 
     public ExporterRuntimeOptions() {
       yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
@@ -117,7 +123,9 @@ public abstract class Exporter {
       terminologyService = init.terminologyService;
       recordQueue = init.recordQueue;
       fhirVersion = init.fhirVersion;
+      /* UKAdp
       flexporterMappings = init.flexporterMappings;
+      */
     }
 
     /**
@@ -161,6 +169,7 @@ public abstract class Exporter {
      * Multiple mappings may be added and will be processed in order.
      * @param mapping Flexporter mapping to add to list
      */
+    /* UKAdp
     public void addFlexporterMapping(Mapping mapping) {
       if (this.flexporterMappings == null) {
         this.flexporterMappings = new ArrayList<>();
@@ -168,6 +177,7 @@ public abstract class Exporter {
 
       this.flexporterMappings.add(mapping);
     }
+    */
   }
 
   /**
@@ -240,6 +250,7 @@ public abstract class Exporter {
       valueSetCodeResolver.resolve();
     }
 
+    /* UKAdp
     if (Config.getAsBoolean("exporter.fhir_stu3.export")) {
       File outDirectory = getOutputFolder("fhir_stu3", person);
       if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
@@ -316,6 +327,7 @@ public abstract class Exporter {
       Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "xml"));
       writeNewFile(outFilePath, ccdaXml);
     }
+    */
     if (Config.getAsBoolean("exporter.json.export")) {
       String json = JSONExporter.export(person);
       File outDirectory = getOutputFolder("json", person);
@@ -329,6 +341,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    /* UKAdp
     if (Config.getAsBoolean("exporter.bfd.export")) {
       try {
         BB2RIFExporter exporter = BB2RIFExporter.getInstance();
@@ -385,6 +398,7 @@ public abstract class Exporter {
       String consolidatedNotes = ClinicalNoteExporter.export(person);
       writeNewFile(outFilePath, consolidatedNotes);
     }
+    */
 
     if (patientExporters != null && !patientExporters.isEmpty()) {
       for (PatientExporter patientExporter : patientExporters) {
@@ -395,12 +409,14 @@ public abstract class Exporter {
     if (options.isQueueEnabled()) {
       try {
         switch (options.queuedFhirVersion()) {
+          /* UKAdp
           case DSTU2:
             options.recordQueue.put(FhirDstu2.convertToFHIRJson(person, stopTime));
             break;
           case STU3:
             options.recordQueue.put(FhirStu3.convertToFHIRJson(person, stopTime));
             break;
+          */
           default:
             options.recordQueue.put(FhirR4.convertToFHIRJson(person, stopTime));
             break;
@@ -508,6 +524,7 @@ public abstract class Exporter {
       deferredExports.clear();
     }
 
+    /* UKAdp
     try {
       FhirGroupExporterR4.exportAndSave(generator.getRandomizer(), generator.stop);
     } catch (Exception e) {
@@ -565,16 +582,20 @@ public abstract class Exporter {
     if (Config.getAsBoolean("exporter.cdw.export")) {
       CDWExporter.getInstance().writeFactTables();
     }
+    */
 
     if (Config.getAsBoolean("exporter.csv.export")) {
       try {
         CSVExporter.getInstance().exportOrganizationsAndProviders();
+        /* UKAdp
         CSVExporter.getInstance().exportPayers();
+        */
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
 
+    /* UKAdp
     if (Config.getAsBoolean("exporter.metadata.export", false)) {
       try {
         MetadataExporter.exportMetadata(generator);
@@ -582,6 +603,7 @@ public abstract class Exporter {
         e.printStackTrace();
       }
     }
+    */
 
     if (Config.getAsBoolean("generate.track_detailed_transition_metrics", false)) {
       TransitionMetrics.exportMetrics();
@@ -642,6 +664,7 @@ public abstract class Exporter {
     Predicate<HealthRecord.Entry> notFutureDated = e -> e.start <= endTime;
     Predicate<HealthRecord.Entry> entryIsActive = e -> e.stop == 0L || e.stop > cutoffDate;
 
+    /* UKAdp
     for (Encounter encounter : record.encounters) {
       List<Claim.ClaimEntry> claimItems = encounter.claim.items;
       // keep a condition if it was active at any point since the cutoff date
@@ -672,6 +695,7 @@ public abstract class Exporter {
       // keep careplans if they are still active, regardless of start date
       filterEntries(encounter.careplans, claimItems, cutoffDate, endTime, entryIsActive);
     }
+    */
 
     // if ANY of these are not empty, the encounter is not empty
     Predicate<Encounter> encounterNotEmpty = e ->
@@ -686,7 +710,9 @@ public abstract class Exporter {
         encounterNotEmpty.or(isDeathCertification.and(notFutureDated));
 
     // finally filter out any empty encounters
+    /* UKAdp
     filterEntries(record.encounters, Collections.emptyList(), cutoffDate, endTime, keepEncounter);
+    */
 
     return record;
   }
@@ -703,6 +729,7 @@ public abstract class Exporter {
    * @param keepFunction Keep function, if this function returns `true` for an entry then it will
    *                     be kept
    */
+  /* UKAdp
   private static <E extends HealthRecord.Entry> void filterEntries(List<E> entries,
       List<Claim.ClaimEntry> claimItems, long cutoffDate,
       long endTime, Predicate<? super E> keepFunction) {
@@ -723,6 +750,7 @@ public abstract class Exporter {
       }
     }
   }
+  */
 
   private static boolean entryWithinTimeRange(
       HealthRecord.Entry e, long cutoffDate, long endTime) {
