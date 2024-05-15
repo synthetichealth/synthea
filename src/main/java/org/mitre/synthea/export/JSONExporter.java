@@ -99,7 +99,9 @@ public class JSONExporter {
       JsonObject personOut = new JsonObject();
       personOut.add("seed", new JsonPrimitive(src.getSeed()));
       personOut.add("lastUpdated", new JsonPrimitive(src.lastUpdated));
+      /* UKAdp
       personOut.add("coverage", context.serialize(src.coverage));
+      */
       personOut.add("symptoms", context.serialize(src.getExpressedSymptoms()));
       JsonObject attributes = new JsonObject();
       src.attributes.forEach((key, value) -> {

@@ -1229,6 +1229,7 @@ public class FhirR4 {
    * @param encounter      The health record encounter
    * @return the added Entry
    */
+  /* UKAdp
   private static BundleEntryComponent encounterClaim(
       Person person, BundleEntryComponent personEntry,
       Bundle bundle, BundleEntryComponent encounterEntry, Encounter encounter) {
@@ -1283,7 +1284,6 @@ public class FhirR4 {
     int procedureSequence = 1;
     int informationSequence = 1;
 
-    /* UKAdp
     for (Claim.ClaimEntry claimEntry : encounter.claim.items) {
       HealthRecord.Entry item = claimEntry.entry;
       if (Costs.hasCost(item)) {
@@ -1342,15 +1342,16 @@ public class FhirR4 {
       }
       itemSequence++;
     }
-    */
 
     Money moneyResource = new Money();
-    moneyResource.setCurrency("USD");
+    moneyResource.setCurrency("USD");    
     moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 
     return newEntry(bundle, claimResource, encounter.claim.uuid.toString());
+    
   }
+  */
 
   /**
    * Create an explanation of benefit resource for each claim, detailing insurance

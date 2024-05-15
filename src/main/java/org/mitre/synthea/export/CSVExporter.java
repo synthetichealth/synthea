@@ -495,7 +495,9 @@ public class CSVExporter {
     for (Encounter encounter : person.record.encounters) {
 
       String encounterID = encounter(personID, encounter);
+      /* UKAdp
       String payerID = encounter.claim.getPayer().uuid;
+      */
 
       /* UKAdp
       claim(person, encounter.claim, encounter, encounterID, time);
@@ -527,12 +529,13 @@ public class CSVExporter {
         procedure(personID, encounterID, procedure);
       }
 
+      /* UKAdp
       for (Medication medication : encounter.medications) {
         medication(personID, encounterID, payerID, medication, time);
-        /* UKAdp
+        
         claim(person, medication.claim, encounter, encounterID, time);
-        */
       }
+      */
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
         immunization(personID, encounterID, immunization);
@@ -666,9 +669,13 @@ public class CSVExporter {
     // LAT,LON
     s.append(',').append(person.getY()).append(',').append(person.getX()).append(',');
     // HEALTHCARE_EXPENSES
+    /* UKAdp
     s.append(person.coverage.getTotalOutOfPocketExpenses()).append(',');
+    */
     // HEALTHCARE_COVERAGE
+    /* UKAdp
     s.append(person.coverage.getTotalCoverage()).append(',');
+    */
     // INCOME
     s.append(person.attributes.get(Person.INCOME));
     // QALYS
@@ -722,11 +729,13 @@ public class CSVExporter {
       s.append(',');
     }
     // PAYER
+    /* UKAdp
     if (encounter.claim.getPayer() != null) {
       s.append(encounter.claim.getPayer().getResourceID()).append(',');
     } else {
       s.append(',');
     }
+    */
     // ENCOUNTERCLASS
     if (encounter.type != null) {
       s.append(encounter.type.toLowerCase()).append(',');
@@ -745,9 +754,13 @@ public class CSVExporter {
     // BASE_ENCOUNTER_COST
     s.append(String.format(Locale.US, "%.2f", encounter.getCost())).append(',');
     // TOTAL_COST
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalClaimCost())).append(',');
+    */
     // PAYER_COVERAGE
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", encounter.claim.getTotalCoveredCost())).append(',');
+    */
     // REASONCODE & REASONDESCRIPTION
     if (encounter.reason == null) {
       s.append(",");
@@ -986,7 +999,9 @@ public class CSVExporter {
     BigDecimal cost = medication.getCost();
     s.append(String.format(Locale.US, "%.2f", cost)).append(',');
     // PAYER_COVERAGE
+    /* UKAdp
     s.append(String.format(Locale.US, "%.2f", medication.claim.getTotalCoveredCost())).append(',');
+    */
     long dispenses = 1; // dispenses = refills + original
     // makes the math cleaner and more explicit. dispenses * unit cost = total cost
 
