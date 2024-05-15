@@ -189,7 +189,7 @@ public abstract class Transition implements Serializable {
         synchronized (typical) {
           typical.reseedRandomGenerator(person.randLong());
           selectedTransition = typical.sample();
-        }        
+        }
       }
       switch (selectedTransition) {
         case TelemedicineConfig.AMBULATORY:
