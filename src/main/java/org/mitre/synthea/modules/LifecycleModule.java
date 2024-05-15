@@ -20,7 +20,9 @@ import org.mitre.synthea.helpers.TrendingValueGenerator;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.modules.BloodPressureValueGenerator.SysDias;
 import org.mitre.synthea.world.agents.Person;
+/* UKAdp
 import org.mitre.synthea.world.agents.behaviors.planeligibility.QualifyingConditionCodesEligibility;
+*/
 import org.mitre.synthea.world.concepts.BMI;
 import org.mitre.synthea.world.concepts.BiometricsConfig;
 import org.mitre.synthea.world.concepts.BirthStatistics;
@@ -41,8 +43,10 @@ public final class LifecycleModule extends Module {
       GrowthChart.loadCharts();
   private static final List<LinkedHashMap<String, String>> weightForLengthChart =
       loadWeightForLengthChart();
+  /* UKAdp
   private static final QualifyingConditionCodesEligibility disabilityCriteria =
       loadDisabilityData();
+  */
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String DAYS_UNTIL_DEATH = "days_until_death";
@@ -85,6 +89,7 @@ public final class LifecycleModule extends Module {
     return soDistribution;
   }
 
+  /* UKAdp
   private static QualifyingConditionCodesEligibility loadDisabilityData() {
     QualifyingConditionCodesEligibility criteria = null;
     String filename = "payers/eligibility_input_files/ssd_eligibility.csv";
@@ -96,6 +101,7 @@ public final class LifecycleModule extends Module {
     }
     return criteria;
   }
+  */
 
   public Module clone() {
     return this;
@@ -121,7 +127,9 @@ public final class LifecycleModule extends Module {
     adherence(person, time);
     calculateVitalSigns(person, time);
     calculateFallRisk(person, time);
+    /* UKAdp
     person.attributes.put(Person.DISABLED, isDisabled(person, time));
+    */
     if (person.ageInYears(time) >= 18) {
       ((Employment) person.attributes.get(Person.EMPLOYMENT_MODEL)).checkEmployment(person, time);
     }
@@ -1198,6 +1206,7 @@ public final class LifecycleModule extends Module {
    * @param time The time.
    * @return true or false.
    */
+  /* UKAdp
   public static boolean isDisabled(Person person, long time) {
     if (disabilityCriteria != null) {
       return disabilityCriteria.isPersonEligible(person, time);
@@ -1205,6 +1214,7 @@ public final class LifecycleModule extends Module {
       return false;
     }
   }
+  */
 
   /**
    * Determines earliest disability diagnosis time according to input file
@@ -1212,6 +1222,7 @@ public final class LifecycleModule extends Module {
    * @param person The person.
    * @return Time of earliest disability diagnosis.
    */
+  /* UKAdp
   public static long getEarliestDisabilityDiagnosisTime(Person person) {
     if (disabilityCriteria != null) {
       return disabilityCriteria.getEarliestDiagnosis(person);
@@ -1219,6 +1230,7 @@ public final class LifecycleModule extends Module {
       return Long.MAX_VALUE;
     }
   }
+  */
 
   /**
    * Get all of the Codes this module uses, for inventory purposes.
