@@ -508,7 +508,6 @@
     "end re_evaluation_medication": {
       "type": "MedicationEnd",
       "direct_transition": "PTSD Medication Order",
-      "medication_order": "",
       "referenced_by_attribute": "SSRI"
     },
     "end_PTSD_Re_evaluation_Encounter": {
