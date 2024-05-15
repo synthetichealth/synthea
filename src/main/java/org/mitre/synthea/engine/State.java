@@ -1002,7 +1002,9 @@ public abstract class State implements Cloneable, Serializable {
         // person.record.medicationStart, but we are avoiding modifying the
         // chronic meds list until we are done iterating
         medication.chronic = true;
+        /* UKAdp
         medication.claim.assignCosts();
+        */
 
         // increment number of prescriptions prescribed by respective hospital
         Provider medicationProvider = person.getCurrentProvider(module.name);
@@ -1422,7 +1424,9 @@ public abstract class State implements Cloneable, Serializable {
         }
       }
       medication.prescriptionDetails = prescription;
+      /* UKAdp
       medication.claim.assignCosts();
+      */
     }
   }
 
