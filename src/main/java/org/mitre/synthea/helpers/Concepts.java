@@ -22,7 +22,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+/* UKAdp
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+*/
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.Immunizations;
@@ -82,8 +84,10 @@ public class Concepts {
       }
     });
 
+    /* UKAdp
     inventoryCodes(concepts, CardiovascularDiseaseModule.getAllCodes(),
         CardiovascularDiseaseModule.class.getSimpleName());
+    */
     inventoryCodes(concepts, DeathModule.getAllCodes(), DeathModule.class.getSimpleName());
     inventoryCodes(concepts, EncounterModule.getAllCodes(), EncounterModule.class.getSimpleName());
     // HealthInsuranceModule has no codes

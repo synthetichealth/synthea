@@ -32,16 +32,22 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/* UKAdp
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+*/
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
+/* UKAdp
 import org.mitre.synthea.modules.HealthInsuranceModule;
+*/
 import org.mitre.synthea.modules.Immunizations;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
+/* UKAdp
 import org.mitre.synthea.modules.calculators.ASCVD;
 import org.mitre.synthea.modules.calculators.Framingham;
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
+*/
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -147,16 +153,22 @@ public class Attributes {
       }
     });
 
+    /* UKAdp
     CardiovascularDiseaseModule.inventoryAttributes(attributes);
     Framingham.inventoryAttributes(attributes);
     ASCVD.inventoryAttributes(attributes);
+    */
     DeathModule.inventoryAttributes(attributes);
     EncounterModule.inventoryAttributes(attributes);
+    /* UKAdp
     HealthInsuranceModule.inventoryAttributes(attributes);
+    */
     Immunizations.inventoryAttributes(attributes);
     LifecycleModule.inventoryAttributes(attributes);
     QualityOfLifeModule.inventoryAttributes(attributes);
+    /* UKAdp
     C19ImmunizationModule.inventoryAttributes(attributes);
+    */
 
     return attributes;
   }
