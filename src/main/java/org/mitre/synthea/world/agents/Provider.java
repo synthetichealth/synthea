@@ -383,10 +383,12 @@ public class Provider implements QuadTreeElement, Serializable {
         loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
             random, true);
 
-        servicesProvided.add(EncounterType.WELLNESS);
+        /* UKAdp 
+            servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, random,
                 false);
+        */
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
