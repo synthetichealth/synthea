@@ -196,7 +196,9 @@ public final class LifecycleModule extends Module {
       location.assignPoint(person, city);
       String zipCode = location.getZipCode(city, person);
       person.attributes.put(Person.ZIP, zipCode);
+      /* UKAdp
       person.attributes.put(Person.FIPS, Location.getFipsCodeByZipCode(zipCode));
+      */
       String[] birthPlace;
       if ("english".equalsIgnoreCase((String) attributes.get(Person.FIRST_LANGUAGE))) {
         birthPlace = location.randomBirthPlace(person);
