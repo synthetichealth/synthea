@@ -108,6 +108,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Java Serialization support for the utilization field.
    * @param oos stream to write to
    */
+  /* UKAdp
   private void writeObject(ObjectOutputStream oos) throws IOException {
     oos.defaultWriteObject();
     ArrayList<Payer.UtilizationBean> entryUtilizationElements = null;
@@ -120,11 +121,13 @@ public class Provider implements QuadTreeElement, Serializable {
     }
     oos.writeObject(entryUtilizationElements);
   }
+  */
 
   /**
    * Java Serialization support for the utilization field.
    * @param ois stream to read from
    */
+  /* UKAdp
   private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
     ois.defaultReadObject();
     ArrayList<Payer.UtilizationBean> entryUtilizationElements =
@@ -136,6 +139,7 @@ public class Provider implements QuadTreeElement, Serializable {
       }
     }
   }
+  */
 
   /**
    * Create a new Provider with no information.
