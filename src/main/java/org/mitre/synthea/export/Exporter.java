@@ -1,6 +1,8 @@
 package org.mitre.synthea.export;
 
 import ca.uhn.fhir.parser.IParser;
+import com.google.common.base.Strings;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
-import com.google.common.base.Strings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -525,10 +526,8 @@ public abstract class Exporter {
                                 .setName("url")
                                 .setValue(new StringType(hostname + file.getName()))));
       }
-      overwriteFile(outDirectory.
-              toPath().
-              resolve("parameters.json"),
-              parser.encodeResourceToString(parameters));
+      overwriteFile(outDirectory.toPath().resolve("parameters.json"),
+          parser.encodeResourceToString(parameters));
     }
 
 
