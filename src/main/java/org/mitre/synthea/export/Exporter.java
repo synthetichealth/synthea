@@ -21,9 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import org.hl7.fhir.r4.model.Parameters;
+import org.hl7.fhir.r4.model.StringType;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.export.flexporter.Actions;
 import org.mitre.synthea.export.flexporter.FhirPathUtils;
@@ -498,6 +501,36 @@ public abstract class Exporter {
    * @param generator Generator that generated the patients
    */
   public static void runPostCompletionExports(Generator generator, ExporterRuntimeOptions options) {
+
+    if (Config.getAsBoolean("exporter.fhir.bulk_data")) {
+      IParser parser = FhirR4.getContext().newJsonParser();
+      parser.setPrettyPrint(false);
+      Parameters parameters = new Parameters()
+              .addParameter("inputFormat","application/fhir+ndjson");
+      File outDirectory = getOutputFolder("fhir", null);
+
+      File[] files = outDirectory.listFiles(pathname -> pathname.getName().endsWith("ndjson"));
+
+      String configHostname = Config.get("exporter.fhir.bulk_data.parameter_hostname");
+      String hostname = Strings.isNullOrEmpty(configHostname)
+              ? "http://localhost:8080/" : configHostname;
+
+      for (File file : files) {
+        parameters.addParameter(
+                new Parameters.ParametersParameterComponent().setName("input")
+                        .addPart(new Parameters.ParametersParameterComponent()
+                                .setName("type")
+                                .setValue(new StringType(file.getName().split("\\.")[0])))
+                        .addPart(new Parameters.ParametersParameterComponent()
+                                .setName("url")
+                                .setValue(new StringType(hostname + file.getName()))));
+      }
+      overwriteFile(outDirectory.
+              toPath().
+              resolve("parameters.json"),
+              parser.encodeResourceToString(parameters));
+    }
+
 
     if (options.deferExports) {
       ExporterRuntimeOptions nonDeferredOptions = new ExporterRuntimeOptions(options);
