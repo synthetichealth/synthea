@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -188,18 +189,28 @@ public class FhirR4 {
   protected static boolean TRANSACTION_BUNDLE =
       Config.getAsBoolean("exporter.fhir.transaction_bundle");
 
-  /* For the most part the US Core changes from v4 -> v5 are backwards compatible,
-   * so for those cases just check USE_US_CORE_IG.
-   * If there are version differences then use USE_US_CORE_(#) to separate them out.
-   */
   protected static boolean USE_US_CORE_IG =
       Config.getAsBoolean("exporter.fhir.use_us_core_ig");
   protected static String US_CORE_VERSION =
-      Config.get("exporter.fhir.us_core_version", "5.0.1");
+      Config.get("exporter.fhir.us_core_version", "6.1.0");
 
   private static Table<String, String, String> US_CORE_MAPPING;
+  private static final Table<String, String, String> US_CORE_3_MAPPING;
   private static final Table<String, String, String> US_CORE_4_MAPPING;
   private static final Table<String, String, String> US_CORE_5_MAPPING;
+  private static final Table<String, String, String> US_CORE_6_MAPPING;
+
+  public static enum USCoreVersion {
+    v311, v400, v501, v610
+  }
+
+  protected static boolean useUSCore3() {
+    boolean useUSCore3 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("3");
+    if (useUSCore3) {
+      US_CORE_MAPPING = US_CORE_3_MAPPING;
+    }
+    return useUSCore3;
+  }
 
   protected static boolean useUSCore4() {
     boolean useUSCore4 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("4");
@@ -217,6 +228,14 @@ public class FhirR4 {
     return useUSCore5;
   }
 
+  protected static boolean useUSCore6() {
+    boolean useUSCore6 = USE_US_CORE_IG && US_CORE_VERSION.startsWith("6");
+    if (useUSCore6) {
+      US_CORE_MAPPING = US_CORE_6_MAPPING;
+    }
+    return useUSCore6;
+  }
+
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
 
   private static final Table<String, String, String> SHR_MAPPING =
@@ -229,15 +248,21 @@ public class FhirR4 {
     reloadIncludeExclude();
 
     Map<String, Table<String, String, String>> usCoreMappings =
-        loadMappingWithVersions("us_core_mapping.csv", "4", "5");
+        loadMappingWithVersions("us_core_mapping.csv", "3", "4", "5", "6");
 
+    US_CORE_3_MAPPING = usCoreMappings.get("3");
     US_CORE_4_MAPPING = usCoreMappings.get("4");
     US_CORE_5_MAPPING = usCoreMappings.get("5");
+    US_CORE_6_MAPPING = usCoreMappings.get("6");
 
-    if (US_CORE_VERSION.startsWith("4")) {
+    if (US_CORE_VERSION.startsWith("3")) {
+      US_CORE_MAPPING = US_CORE_3_MAPPING;
+    } else if (US_CORE_VERSION.startsWith("4")) {
       US_CORE_MAPPING = US_CORE_4_MAPPING;
     } else if (US_CORE_VERSION.startsWith("5")) {
       US_CORE_MAPPING = US_CORE_5_MAPPING;
+    } else if (US_CORE_VERSION.startsWith("6")) {
+      US_CORE_MAPPING = US_CORE_6_MAPPING;
     }
   }
 
@@ -364,17 +389,15 @@ public class FhirR4 {
       String url = line.get("URL");
       String version = line.get("VERSION");
 
-      if (StringUtils.isBlank(version)) {
-        // blank means applies to ALL versions
-        versions.values().forEach(table -> table.put(system, code, url));
-      } else {
-        Table<String, String, String> mappingTable = versions.get(version);
-        if (mappingTable == null) {
-          throw new IllegalArgumentException("Error in loading mapping from file " + filename
-              + ". File contains row with version '" + version
-              + "' but supported version numbers are: " + String.join(",", supportedVersions));
+      for (Entry<String, Table<String, String, String>> e : versions.entrySet()) {
+        String versionKey = e.getKey();
+        Table<String, String, String> mappingTable = e.getValue();
+
+        if (StringUtils.isBlank(version) || version.contains(versionKey)) {
+          // blank means applies to ALL versions
+          // version.contains allows for things like "4,5,6"
+          mappingTable.put(system, code, url);
         }
-        mappingTable.put(system, code, url);
       }
     }
 
@@ -1649,7 +1672,7 @@ public class FhirR4 {
 
     if (USE_US_CORE_IG) {
       Meta meta = new Meta();
-      if (useUSCore5()) {
+      if (useUSCore5() || useUSCore6()) {
         meta.addProfile(
             "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis");
       } else {
@@ -1880,29 +1903,51 @@ public class FhirR4 {
         meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
       }
 
-      if (useUSCore5() && observation.category != null) {
-        switch (observation.category) {
-          case "imaging":
-            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
-            break;
-          case "social-history":
-            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
-            break;
-          case "survey":
-            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
-            // note that the -sdoh-assessment profile is a subset of -survey,
-            // those are handled by code in US_CORE_MAPPING above
-            break;
-          case "exam":
-            // this one is a little nebulous -- are all exams also clinical tests?
-            meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
+      if (observation.category != null) {
+        if (useUSCore6()) {
+          switch (observation.category) {
+            case "imaging":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result");
+              break;
+            case "social-history":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-simple-observation");
+              break;
+            case "survey":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment");
+              break;
+            case "exam":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result");
+              break;
+            case "laboratory":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab");
+              break;
+            default:
+              // do nothing
+          }
+        } else if (useUSCore5()) {
+          switch (observation.category) {
+            case "imaging":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-imaging");
+              break;
+            case "social-history":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-social-history");
+              break;
+            case "survey":
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-survey");
+              // note that the -sdoh-assessment profile is a subset of -survey,
+              // those are handled by code in US_CORE_MAPPING above
+              break;
+            case "exam":
+              // this one is a little nebulous -- are all exams also clinical tests?
+              meta.addProfile("http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-test");
 
-            observationResource.addCategory().addCoding().setCode("clinical-test")
-                .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
-                .setDisplay("Clinical Test");
-            break;
-          default:
-            // do nothing
+              observationResource.addCategory().addCoding().setCode("clinical-test")
+                  .setSystem("http://hl7.org/fhir/us/core/CodeSystem/us-core-observation-category")
+                  .setDisplay("Clinical Test");
+              break;
+            default:
+              // do nothing
+          }
         }
       }
 

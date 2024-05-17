@@ -297,7 +297,7 @@ public class CSVExporter {
    */
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
-        + "PREFIX,FIRST,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
+        + "PREFIX,FIRST,MIDDLE,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
         + "ADDRESS,CITY,STATE,COUNTY,FIPS,ZIP,LAT,LON,"
         + "HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
     patients.write(NEWLINE);
@@ -625,6 +625,7 @@ public class CSVExporter {
         Person.IDENTIFIER_PASSPORT,
         Person.NAME_PREFIX,
         Person.FIRST_NAME,
+        Person.MIDDLE_NAME,
         Person.LAST_NAME,
         Person.NAME_SUFFIX,
         Person.MAIDEN_NAME,

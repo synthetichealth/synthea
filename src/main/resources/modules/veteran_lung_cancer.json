@@ -309,8 +309,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "173160006",
-          "display": "Diagnostic fiberoptic bronchoscopy (procedure)"
+          "code": "85765000",
+          "display": "Fiberoptic bronchoscopy (procedure)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter_III"

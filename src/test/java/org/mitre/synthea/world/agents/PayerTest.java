@@ -708,7 +708,7 @@ public class PayerTest {
     // The No Insurance's uncovered costs should equal the total cost.
     assertTrue(fakeEncounter.getCost()
         .equals(PayerManager.getNoInsurancePlan().getPayer().getAmountUncovered()));
-    // The person's out of pocket expenses shoudl equal the total cost.
+    // The person's out of pocket expenses should equal the total cost.
     assertTrue(fakeEncounter.getCost().equals(person.coverage.getTotalOutOfPocketExpenses()));
   }
 
