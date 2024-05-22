@@ -743,7 +743,7 @@ public class Provider implements QuadTreeElement, Serializable {
     return new ArrayList<Provider>(providerByUuid.values());
   }
 
-  private void merge(Provider other) {
+  void merge(Provider other) {
     if (this.uuid == null) {
       this.uuid = other.uuid;
     }

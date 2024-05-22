@@ -238,4 +238,19 @@ public class ProviderTest {
   public void testNPICreation() {
     Assert.assertEquals("1234567893", Provider.toNPI(123_456_789L));
   }
+
+  @Test
+  public void testProviderMerge() {
+    Provider.loadProviders(city, providerRandom);
+    Person person = new Person(0L);
+    city.assignPoint(person, city.randomCityName(person));
+    Provider provider = Provider.findService(person, EncounterType.OUTPATIENT, 0);
+    Assert.assertNotNull(provider);
+    Provider blank = new Provider();
+    blank.uuid = null;
+    blank.merge(provider);
+    Assert.assertEquals(provider.uuid, blank.uuid);
+    Assert.assertEquals(provider.name, blank.name);
+    Assert.assertEquals(provider.servicesProvided, blank.servicesProvided);
+  }
 }

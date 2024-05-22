@@ -15,7 +15,7 @@ public class PayerAdjustmentFixed implements IPayerAdjustment, Serializable {
   private static final long serialVersionUID = -1515831606680338099L;
 
   /** Fixed adjustment rate. */
-  private double rate;
+  double rate;
 
   /**
    * Create a new fixed payer adjustment.
