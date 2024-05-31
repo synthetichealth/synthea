@@ -15,6 +15,12 @@ public class OphthalmicProgressionModule extends Module {
   public Module clone() {
     return this;
   }
+  
+  /**
+   * Constant factor to represent impact of Diabetic Retinopathy stage on Macular thickness.
+   * Based on https://pubmed.ncbi.nlm.nih.gov/12510717/
+   */
+  public static final double DR_THICKNESS_FACTOR = 1;
 
   @Override
   public boolean process(Person person, long time) {
@@ -23,7 +29,7 @@ public class OphthalmicProgressionModule extends Module {
     boolean edema = (boolean) person.attributes.getOrDefault("macular_edema", false);
 
     // set visual acuity in LogMAR
-    
+
     // some examples (ref: https://en.wikipedia.org/wiki/LogMAR_chart)
     // Foot LogMAR
     // 20/200 1.00
@@ -45,6 +51,8 @@ public class OphthalmicProgressionModule extends Module {
 
     // "Pressures of between 11 and 21 mmHg are considered normal"
     // https://www.ncbi.nlm.nih.gov/books/NBK532237/
+    //
+    // https://www.mdpi.com/2077-0383/13/3/676
     if (highIop || (drStage == 4 && person.rand() < 0.001)) {
       // very small chance of this happening
       person.attributes.getOrDefault("high_iop", true);
@@ -83,7 +91,8 @@ public class OphthalmicProgressionModule extends Module {
      */
 
     // https://iovs.arvojournals.org/article.aspx?articleid=2165526
-    Integer octOffset = (Integer) person.attributes.get("oct_offset");
+    // another source (not used) https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1941772/
+    Integer octOffset = (Integer) person.attributes.get("base_oct_offset");
     if (octOffset == null) {
       octOffset = (int) person.rand(-10, 10);
       if (person.attributes.get(Person.GENDER).equals("M")) {
@@ -92,22 +101,28 @@ public class OphthalmicProgressionModule extends Module {
         // with a mean of 278 ± 23 μm in males and 263 ± 22 μm in females.
         octOffset += 10;
       }
-
-      person.attributes.put("oct_center_point_thickness", 227 + octOffset);
-      person.attributes.put("oct_center_subfield_thickness", 270 + octOffset);
-      person.attributes.put("oct_inner_superior_subfield_thickness", 335 + octOffset);
-      person.attributes.put("oct_inner_nasal_subfield_thickness", 338 + octOffset);
-      person.attributes.put("oct_inner_inferior_subfield_thickness", 332 + octOffset);
-      person.attributes.put("oct_inner_temporal_subfield_thickness", 324 + octOffset);
-      person.attributes.put("oct_outer_superior_subfield_thickness", 290 + octOffset);
-      person.attributes.put("oct_outer_nasal_subfield_thickness", 305 + octOffset);
-      person.attributes.put("oct_outer_inferior_subfield_thickness", 280 + octOffset);
-      person.attributes.put("oct_outer_temporal_subfield_thickness", 279 + octOffset);
-      person.attributes.put("oct_total_volume", 8.4);
+      
+      person.attributes.put("base_oct_offset", octOffset);
     }
+    
+    //
+    octOffset += (int)(drStage * DR_THICKNESS_FACTOR);
+
+    person.attributes.put("oct_center_point_thickness", 227 + octOffset);
+    person.attributes.put("oct_center_subfield_thickness", 270 + octOffset);
+    person.attributes.put("oct_inner_superior_subfield_thickness", 335 + octOffset);
+    person.attributes.put("oct_inner_nasal_subfield_thickness", 338 + octOffset);
+    person.attributes.put("oct_inner_inferior_subfield_thickness", 332 + octOffset);
+    person.attributes.put("oct_inner_temporal_subfield_thickness", 324 + octOffset);
+    person.attributes.put("oct_outer_superior_subfield_thickness", 290 + octOffset);
+    person.attributes.put("oct_outer_nasal_subfield_thickness", 305 + octOffset);
+    person.attributes.put("oct_outer_inferior_subfield_thickness", 280 + octOffset);
+    person.attributes.put("oct_outer_temporal_subfield_thickness", 279 + octOffset);
+    person.attributes.put("oct_total_volume", 8.4);
 
     // note return options here, see State$CallSubmodule
-    // if we return true, the submodule completed and processing continues to the next state
+    // if we return true, the submodule completed and processing continues to the
+    // next state
     // if we return false, the submodule did not complete (like with a Delay)
     // and will re-process the next timestep.
     return true;

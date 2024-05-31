@@ -126,12 +126,17 @@ public class OphthalmicNoteModule extends Module {
     boolean edema = (boolean) person.attributes.getOrDefault("macular_edema", false);
     
     if (edema) {
-    	// TODO encounterNote.append("Macula: Flat, no edema or exudates OU\n");
+    	encounterNote.append("Macula: edema present OU\n");
     } else {
     	encounterNote.append("Macula: Flat, no edema or exudates OU\n");
     }
     
-    encounterNote.append("Vessels: Attenuated arterioles with some copper wiring changes OU. No neovascularization noted.\n");
+    if (drStage >= 3) {
+      encounterNote.append("Vessels: Attenuated arterioles with some copper wiring changes OU. Neovascularization present.\n");
+    } else {
+      encounterNote.append("Vessels: Attenuated arterioles with some copper wiring changes OU. No neovascularization noted.\n");
+    }
+    
     encounterNote.append("Periphery: No tears, holes, or detachments OU");
    
     Procedure firstAntiVEGF = (Procedure)person.attributes.get("first_anti_vegf");
