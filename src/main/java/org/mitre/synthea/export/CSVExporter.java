@@ -529,13 +529,13 @@ public class CSVExporter {
         procedure(personID, encounterID, procedure);
       }
 
-      /* UKAdp
+      // /* UKAdp
       for (Medication medication : encounter.medications) {
-        medication(personID, encounterID, payerID, medication, time);
+        medication(personID, encounterID, medication, time);
 
-        claim(person, medication.claim, encounter, encounterID, time);
+        // claim(person, medication.claim, encounter, encounterID, time);
       }
-      */
+      // */
 
       for (HealthRecord.Entry immunization : encounter.immunizations) {
         immunization(personID, encounterID, immunization);
@@ -974,12 +974,12 @@ public class CSVExporter {
    *
    * @param personID    ID of the person prescribed the medication.
    * @param encounterID ID of the encounter where the medication was prescribed
-   * @param payerID     ID of the payer who covered the immunization.
+  //  * @param payerID     ID of the payer who covered the immunization.
    * @param medication  The medication itself
    * @param stopTime    End time
    * @throws IOException if any IO error occurs
    */
-  private void medication(String personID, String encounterID, String payerID,
+  private void medication(String personID, String encounterID,
       Medication medication, long stopTime)
       throws IOException {
     // START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,
@@ -992,7 +992,6 @@ public class CSVExporter {
     }
     s.append(',');
     s.append(personID).append(',');
-    s.append(payerID).append(',');
     s.append(encounterID).append(',');
     // CODE
     Code coding = medication.codes.get(0);
