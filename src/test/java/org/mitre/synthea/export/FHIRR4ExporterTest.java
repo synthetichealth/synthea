@@ -115,7 +115,6 @@ public class FHIRR4ExporterTest {
     FhirR4.reloadIncludeExclude();
     FhirR4.TRANSACTION_BUNDLE = true;
     FhirR4.USE_US_CORE_IG = false;
-    FhirR4.USE_SHR_EXTENSIONS = false;
     FhirR4.US_CORE_VERSION = "4";
   }
 
