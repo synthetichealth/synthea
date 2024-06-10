@@ -17,7 +17,8 @@
       "type": "SetAttribute",
       "attribute": "hypertension_medication_step",
       "direct_transition": "Check Step",
-      "name": "Initialize Step"
+      "name": "Initialize Step",
+      "value": 0
     },
     "Increase Step": {
       "type": "Counter",
@@ -398,12 +399,7 @@
           }
         },
         {
-          "transition": "Increase Step",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_medication_step",
-            "operator": "is not nil"
-          }
+          "transition": "Increase Step"
         }
       ]
     },
@@ -494,7 +490,7 @@
         {
           "system": "RxNorm",
           "code": 17767,
-          "display": "RxNorm Code",
+          "display": "amlodipine",
           "value_set": ""
         }
       ],
@@ -582,7 +578,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
       "name": "Prescribe thiazide",
       "assign_to_attribute": "hypertension_medication_3",
       "chronic": true
@@ -597,7 +593,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
       "name": "Prescribe ACE 3",
       "chronic": true,
       "prescription": {
@@ -623,7 +619,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Terminal",
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
       "name": "Prescribe CCB 3"
     },
     "Prescribe ACE, CCB, Thiazide": {
@@ -677,6 +673,9 @@
               ]
             }
           }
+        },
+        {
+          "transition": "Terminal"
         }
       ]
     }
