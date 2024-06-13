@@ -390,7 +390,8 @@ public abstract class Exporter {
       writeNewFile(outFilePath, consolidatedNotes);
     }
 
-    if (patientExporters != null && !patientExporters.isEmpty()) {
+    if (Config.getAsBoolean("exporter.custom.export", true)
+            && patientExporters != null && !patientExporters.isEmpty()) {
       for (PatientExporter patientExporter : patientExporters) {
         patientExporter.export(person, stopTime, options);
       }
@@ -619,7 +620,8 @@ public abstract class Exporter {
       TransitionMetrics.exportMetrics();
     }
 
-    if (postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
+    if (Config.getAsBoolean("exporter.custom.export", true)
+            && postCompletionExporters != null && !postCompletionExporters.isEmpty()) {
       for (PostCompletionExporter postCompletionExporter : postCompletionExporters) {
         postCompletionExporter.export(generator, options);
       }

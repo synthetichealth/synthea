@@ -1007,7 +1007,7 @@
           "distribution": 0.7
         },
         {
-          "transition": "End_Of_Wellness_Encounter",
+          "transition": "Dental Referral?",
           "distribution": 0.3
         }
       ]
@@ -1015,7 +1015,7 @@
     "Substance Use Screening": {
       "type": "CallSubmodule",
       "submodule": "encounter/substance_use_screening",
-      "direct_transition": "End_Of_Wellness_Encounter"
+      "direct_transition": "Dental Referral?"
     },
     "Record_Head_Circumference_Percentile": {
       "type": "Observation",
@@ -1040,6 +1040,123 @@
         "code": 410424005,
         "display": "Wellness surveillance (regime/therapy)"
       }
+    },
+    "Dental Referral?": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pediatric Dentist",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 6,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Refer to Dentist"
+        }
+      ]
+    },
+    "Patient referral for dental care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103697008,
+          "display": "Patient referral for dental care (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Of_Wellness_Encounter",
+      "reason": "dental_referral"
+    },
+    "Gingivitis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 66383009,
+          "display": "Gingivitis (disorder)"
+        }
+      ],
+      "direct_transition": "Patient referral for dental care",
+      "assign_to_attribute": "dental_referral"
+    },
+    "Go see a Dentist": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 103697008,
+          "display": "Patient referral for dental care (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Of_Wellness_Encounter",
+      "assign_to_attribute": "dental_referral"
+    },
+    "Refer to Dentist": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Gingivitis",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Go see a Dentist",
+          "distribution": 0.25
+        },
+        {
+          "transition": "End_Of_Wellness_Encounter",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Pediatric Dentist": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 2,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "End_Of_Wellness_Encounter"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Go see a Dentist",
+              "distribution": 0.25
+            },
+            {
+              "transition": "End_Of_Wellness_Encounter",
+              "distribution": 0.75
+            }
+          ]
+        }
+      ]
     }
   },
   "gmf_version": 1

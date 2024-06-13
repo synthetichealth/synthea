@@ -252,6 +252,11 @@ public class App {
             }
 
             Config.set(configSetting, value);
+            // Special case for years of history which defaults to 0 in the
+            // constructor which is called before options are parsed
+            if (configSetting.equals("exporter.years_of_history")) {
+              exportOptions.yearsOfHistory = Integer.parseInt(value);
+            }
           } else if (options.state == null) {
             options.state = currArg;
           } else {
