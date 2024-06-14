@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
 /**
  * This is a rudimentary check of the CCDA Export. It uses XPath expressions to ensure that the
  * mandatory sections for the Continuity of Care Document (CCD) (V3) are present as specified in
- * HL7 Implementation Guide for CDA® Release 2: Consolidated CDA Templates for Clinical Notes
+ * HL7 Implementation Guide for CDA(R) Release 2: Consolidated CDA Templates for Clinical Notes
  * Specification Version: 2.1.0.7 September 2022.
  */
 public class CCDAExporterTest {

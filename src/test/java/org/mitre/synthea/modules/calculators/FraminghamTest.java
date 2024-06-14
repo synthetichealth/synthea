@@ -55,7 +55,7 @@ public class FraminghamTest {
     Risk Factor       Value   Points
     Age                53       8
     Total cholesterol 161       1
-    HDL                55      −1
+    HDL                55      -1
     Nontreated SBP    N/A       0
     Treated SBP       125       2
     Smoker             No       0
