@@ -1,10 +1,8 @@
 {
   "white": "2106-3",
-  "hispanic": "2135-2",
+  "mixed": "2135-2",
   "black": "2054-5",
   "asian": "2028-9",
-  "native": "1002-5",
-  "hawaiian": "2076-8",
   "other": "2131-1",
-  "nonhispanic": "2186-5"
+  "nonmixed": "2186-5"
 }

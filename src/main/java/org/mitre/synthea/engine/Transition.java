@@ -145,9 +145,9 @@ public abstract class Transition implements Serializable {
       String selectedTransition;
       /* UKAdp
       InsurancePlan current = person.coverage.getPlanAtTime(time);
-      */
+      
       String insuranceName;
-      /* UKAdp
+      
       if (current != null) {
         insuranceName = current.getPayer().getName();
       } else {

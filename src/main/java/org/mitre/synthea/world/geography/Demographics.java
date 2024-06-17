@@ -121,8 +121,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   public String pickEthnicity(RandomNumberGenerator random) {
     if (ethnicityDistribution == null) {
       ethnicityDistribution = new RandomCollection();
-      ethnicityDistribution.add(ethnicity, "hispanic");
-      ethnicityDistribution.add(1 - ethnicity, "nonhispanic");
+      ethnicityDistribution.add(ethnicity, "mixed");
+      ethnicityDistribution.add(1 - ethnicity, "nonmixed");
     }
     return ethnicityDistribution.next(random);
   }
@@ -138,97 +138,97 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    */
   public String languageFromRaceAndEthnicity(String race, String ethnicity,
       RandomNumberGenerator random) {
-    if (ethnicity.equals("hispanic")) {
-      RandomCollection<String> hispanicLanguageUsage = new RandomCollection<>();
-      // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16006&prodType=table
-      // Of the estimated 51,375,831 people with Hispanic ethnicity in the US:
-      // - 13,957,749 speak only English (27.1%)
-      // - 27,902,879 speak Spanish and English very well or well (54.3%)
-      // - 9,278,993 speak Spanish and English not well or not at all (18%)
-      // - 0.4% speak another language, which we will ignore to simplify things
-      // 48.85% will speak English (only English + half of bilingual) the rest will speak Spanish
-      hispanicLanguageUsage.add(48.85, "english");
-      hispanicLanguageUsage.add(51.15, "spanish");
-      return hispanicLanguageUsage.next(random);
-    } else {
-      switch (race) {
-        // For the people who are of nonhispanic ethnicity, use the national distribution of
-        // languages spoken:
-        // http://www2.census.gov/library/data/tables/2008/demo/language-use/2009-2013-acs-lang-tables-nation.xls?#
-        //
-        // While the census does not provide a breakdown of language usage by
-        // race, previously Synthea would associate languages to race through ethnicity. This
-        // code "flattens" out that older relationship.
-        case "white":
-          // Only 1.5% of people who report a race of white alone speak English less than very well.
-          // Given the previous categorization of languages by Synthea, the numbers line up closely.
-          // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005H&prodType=table
-          RandomCollection<String> whiteLanguageUsage = new RandomCollection();
-          whiteLanguageUsage.add(0.002, "italian");
-          whiteLanguageUsage.add(0.004, "french");
-          whiteLanguageUsage.add(0.003, "german");
-          whiteLanguageUsage.add(0.001, "polish");
-          whiteLanguageUsage.add(0.002, "portuguese");
-          whiteLanguageUsage.add(0.003, "russian");
-          whiteLanguageUsage.add(0.001, "greek");
-          whiteLanguageUsage.add(0.984, "english");
-          return whiteLanguageUsage.next(random);
-        case "black":
-          // Only 3% of people who report a race of black or African American alone speak English
-          // less than very well.
-          // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005B&prodType=table
-          RandomCollection<String> blackLanguageUsage = new RandomCollection();
-          blackLanguageUsage.add(0.004, "french");
-          blackLanguageUsage.add(0.026, "spanish");
-          blackLanguageUsage.add(0.97, "english");
-          return blackLanguageUsage.next(random);
-        case "asian":
-          // 33% of people who report a race of Asian alone speak English less than very well
-          // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005D&prodType=table
-          // From the national language numbers:
-          // - 2,896,766 Chinese speakers
-          // - 449,475 Japanese speakers
-          // - 1,117,343 Korean speakers
-          // - 1,399,936 Vietnamese speakers
-          // - 643,337 Hindi speakers
-          // So, 44.5% of the selected Asian language speakers use Chinese, which accounts for 14.7%
-          // of the overall population of people who report a race of Asian. This is repeated for
-          // the rest of the languages.
-          RandomCollection<String> asianLanguageUsage = new RandomCollection();
-          asianLanguageUsage.add(0.147, "chinese");
-          asianLanguageUsage.add(0.022, "japanese");
-          asianLanguageUsage.add(0.056, "korean");
-          asianLanguageUsage.add(0.07, "vietnamese");
-          asianLanguageUsage.add(0.033, "hindi");
-          asianLanguageUsage.add(0.67, "english");
-          return asianLanguageUsage.next(random);
-        case "native":
-          // TODO: This is overly simplistic, 7% of people who report a race of American Indian and
-          // Alaska Native speak English less than well.
-          // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005C&prodType=table
-          return "english";
-        case "hawaiian":
-          // https://files.hawaii.gov/dbedt/economic/data_reports/Non_English_Speaking_Population_in_Hawaii_April_2016.pdf
-          RandomCollection<String> hawaiianLanguageUsage = new RandomCollection();
-          hawaiianLanguageUsage.add(0.891, "english");
-          hawaiianLanguageUsage.add(0.109, "hawaiian");
-          return hawaiianLanguageUsage.next(random);
-        case "other":
-          // 36% of people who report a race of something else speak English less than well
-          // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005F&prodType=table
-          // There are 924,374 Arabic speakers estimated nationally. Since there are 14,270,613
-          // people report some other race, we'll give people in this race category a 6.5% chance
-          // of speaking Arabic.
-          // TODO: Figure out what languages to assign to the missing 30%
-          RandomCollection<String> otherLanguageUsage = new RandomCollection();
-          otherLanguageUsage.add(0.065, "arabic");
-          otherLanguageUsage.add(0.935, "english");
-          return otherLanguageUsage.next(random);
-        default:
-          // Should never happen
-          return "english";
+    // if (ethnicity.equals("hispanic")) {
+    //   RandomCollection<String> hispanicLanguageUsage = new RandomCollection<>();
+    //   // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16006&prodType=table
+    //   // Of the estimated 51,375,831 people with Hispanic ethnicity in the US:
+    //   // - 13,957,749 speak only English (27.1%)
+    //   // - 27,902,879 speak Spanish and English very well or well (54.3%)
+    //   // - 9,278,993 speak Spanish and English not well or not at all (18%)
+    //   // - 0.4% speak another language, which we will ignore to simplify things
+    //   // 48.85% will speak English (only English + half of bilingual) the rest will speak Spanish
+    //   hispanicLanguageUsage.add(48.85, "english");
+    //   hispanicLanguageUsage.add(51.15, "spanish");
+    //   return hispanicLanguageUsage.next(random);
+    // else {
+    switch (race) {
+      // For the people who are of nonhispanic ethnicity, use the national distribution of
+      // languages spoken:
+      // http://www2.census.gov/library/data/tables/2008/demo/language-use/2009-2013-acs-lang-tables-nation.xls?#
+      //
+      // While the census does not provide a breakdown of language usage by
+      // race, previously Synthea would associate languages to race through ethnicity. This
+      // code "flattens" out that older relationship.
+      case "white":
+        // Only 1.5% of people who report a race of white alone speak English less than very well.
+        // Given the previous categorization of languages by Synthea, the numbers line up closely.
+        // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005H&prodType=table
+        RandomCollection<String> whiteLanguageUsage = new RandomCollection();
+        whiteLanguageUsage.add(0.002, "italian");
+        whiteLanguageUsage.add(0.004, "french");
+        whiteLanguageUsage.add(0.003, "german");
+        whiteLanguageUsage.add(0.001, "polish");
+        whiteLanguageUsage.add(0.002, "portuguese");
+        whiteLanguageUsage.add(0.003, "russian");
+        whiteLanguageUsage.add(0.001, "greek");
+        whiteLanguageUsage.add(0.984, "english");
+        return whiteLanguageUsage.next(random);
+      case "black":
+        // Only 3% of people who report a race of black or African American alone speak English
+        // less than very well.
+        // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005B&prodType=table
+        RandomCollection<String> blackLanguageUsage = new RandomCollection();
+        blackLanguageUsage.add(0.004, "french");
+        blackLanguageUsage.add(0.026, "spanish");
+        blackLanguageUsage.add(0.97, "english");
+        return blackLanguageUsage.next(random);
+      case "asian":
+        // 33% of people who report a race of Asian alone speak English less than very well
+        // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005D&prodType=table
+        // From the national language numbers:
+        // - 2,896,766 Chinese speakers
+        // - 449,475 Japanese speakers
+        // - 1,117,343 Korean speakers
+        // - 1,399,936 Vietnamese speakers
+        // - 643,337 Hindi speakers
+        // So, 44.5% of the selected Asian language speakers use Chinese, which accounts for 14.7%
+        // of the overall population of people who report a race of Asian. This is repeated for
+        // the rest of the languages.
+        RandomCollection<String> asianLanguageUsage = new RandomCollection();
+        asianLanguageUsage.add(0.147, "chinese");
+        asianLanguageUsage.add(0.022, "japanese");
+        asianLanguageUsage.add(0.056, "korean");
+        asianLanguageUsage.add(0.07, "vietnamese");
+        asianLanguageUsage.add(0.033, "hindi");
+        asianLanguageUsage.add(0.67, "english");
+        return asianLanguageUsage.next(random);
+      // case "native":
+      //   // TODO: This is overly simplistic, 7% of people who report a race of American Indian and
+      //   // Alaska Native speak English less than well.
+      //   // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005C&prodType=table
+      //   return "english";
+      // case "hawaiian":
+      //   // https://files.hawaii.gov/dbedt/economic/data_reports/Non_English_Speaking_Population_in_Hawaii_April_2016.pdf
+      //   RandomCollection<String> hawaiianLanguageUsage = new RandomCollection();
+      //   hawaiianLanguageUsage.add(0.891, "english");
+      //   hawaiianLanguageUsage.add(0.109, "hawaiian");
+      //   return hawaiianLanguageUsage.next(random);
+      case "other":
+        // 36% of people who report a race of something else speak English less than well
+        // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005F&prodType=table
+        // There are 924,374 Arabic speakers estimated nationally. Since there are 14,270,613
+        // people report some other race, we'll give people in this race category a 6.5% chance
+        // of speaking Arabic.
+        // TODO: Figure out what languages to assign to the missing 30%
+        RandomCollection<String> otherLanguageUsage = new RandomCollection();
+        otherLanguageUsage.add(0.065, "arabic");
+        otherLanguageUsage.add(0.935, "english");
+        return otherLanguageUsage.next(random);
+      default:
+        // will happen when mixed race
+        return "english";
       }
-    }
+    // }
   }
 
   /**
@@ -416,7 +416,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
           "55..59", "60..64", "65..69", "70..74", "75..79", "80..84", "85..110");
 
   private static final List<String> CSV_RACES = Arrays.asList(
-      "WHITE", "BLACK", "ASIAN", "NATIVE", "OTHER");
+      "WHITE", "BLACK", "ASIAN", "OTHER");
 
   private static final List<String> CSV_INCOMES = Arrays.asList(
       "00..10", "10..15", "15..25", "25..35", "35..50",
@@ -425,7 +425,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   private static final List<String> CSV_EDUCATIONS = Arrays.asList(
       "LESS_THAN_HS", "HS_DEGREE", "SOME_COLLEGE", "BS_DEGREE");
 
-  private static final String CSV_ETHNICITY = "HISPANIC";
+  private static final String CSV_ETHNICITY = "MIXED";
 
   /**
    * Map a single line of the demographics CSV file into a Demographics object.

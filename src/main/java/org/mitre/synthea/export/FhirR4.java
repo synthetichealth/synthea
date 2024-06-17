@@ -657,12 +657,12 @@ public class FhirR4 {
         case "asian":
           raceDisplay = "Asian";
           break;
-        case "native":
-          raceDisplay = "American Indian or Alaska Native";
-          break;
-        case "hawaiian":
-          raceDisplay = "Native Hawaiian or Other Pacific Islander";
-          break;
+        // case "native":
+        //   raceDisplay = "American Indian or Alaska Native";
+        //   break;
+        // case "hawaiian":
+        //   raceDisplay = "Native Hawaiian or Other Pacific Islander";
+        //   break;
         default:
           raceDisplay = "Other";
           break;
@@ -695,12 +695,12 @@ public class FhirR4 {
       String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
 
       String ethnicityDisplay;
-      if (ethnicity.equals("hispanic")) {
-        ethnicity = "hispanic";
-        ethnicityDisplay = "Hispanic or Latino";
+      if (ethnicity.equals("mixed")) {
+        ethnicity = "mixed";
+        ethnicityDisplay = "Mixed or Multiple";
       } else {
-        ethnicity = "nonhispanic";
-        ethnicityDisplay = "Not Hispanic or Latino";
+        ethnicity = "nonmixed";
+        ethnicityDisplay = "Not Mixed";
       }
 
       String ethnicityNum = (String) raceEthnicityCodes.get(ethnicity);

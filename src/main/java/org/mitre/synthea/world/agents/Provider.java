@@ -96,7 +96,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public String ownership;
   /** institutional (e.g. hospital) else professional (e.g. PCP) */
   public boolean institutional;
-  private double revenue;
+  // private double revenue;
   private Point2D.Double coordinates;
   public Set<EncounterType> servicesProvided;
   @JSONSkip
@@ -149,7 +149,7 @@ public class Provider implements QuadTreeElement, Serializable {
     uuid = UUID.randomUUID().toString();
     locationUuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
-    revenue = 0.0;
+    // revenue = 0.0;
     utilization = HashBasedTable.create();
     servicesProvided = new HashSet<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
@@ -260,16 +260,16 @@ public class Provider implements QuadTreeElement, Serializable {
    *
    * @param costOfCare the cost of the care to be added to revenue.
    */
-  public void addRevenue(double costOfCare) {
-    this.revenue += costOfCare;
-  }
+  // public void addRevenue(double costOfCare) {
+  //   this.revenue += costOfCare;
+  // }
 
   /**
    * Returns the total revenue of this provider.
-   */
-  public double getRevenue() {
-    return this.revenue;
-  }
+  */
+  // public double getRevenue() {
+  //   return this.revenue;
+  // }
 
   /**
    * Find specific service provider for the given person.
