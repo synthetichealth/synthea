@@ -77,7 +77,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": 45816000,
-                "display": "Pyelonephritis"
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           },
@@ -398,7 +398,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": 45816000,
-                    "display": "Pyelonephritis"
+                    "display": "Pyelonephritis (disorder)"
                   }
                 ]
               }

@@ -111,8 +111,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "26763009",
-          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+          "code": 243150007,
+          "display": "Assist control ventilation (regime/therapy)"
         }
       ],
       "reason": "Ventilator Reason",
@@ -385,7 +385,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {

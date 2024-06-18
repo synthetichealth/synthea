@@ -325,8 +325,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": 736283006,
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [
@@ -349,8 +349,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": 736283006,
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [

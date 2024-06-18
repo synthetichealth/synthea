@@ -91,8 +91,8 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261051005,
-        "display": "Aortic (qualifier value)"
+        "code": 261146002,
+        "display": "Para-aortic (qualifier value)"
       }
     },
     "Subclavian": {

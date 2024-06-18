@@ -64,7 +64,7 @@
         {
           "system": "SNOMED-CT",
           "code": 267102003,
-          "display": "Sore throat symptom (finding)"
+          "display": "Sore throat (finding)"
         }
       ],
       "direct_transition": "Sputum Production End"

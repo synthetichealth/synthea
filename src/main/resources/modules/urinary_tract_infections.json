@@ -73,8 +73,7 @@
         {
           "system": "SNOMED-CT",
           "code": 45816000,
-          "display": "Pyelonephritis",
-          "value_set": ""
+          "display": "Pyelonephritis (disorder)"
         }
       ],
       "direct_transition": "Care Pathways",

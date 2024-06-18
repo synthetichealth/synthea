@@ -122,8 +122,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "233678006",
-          "display": "Childhood asthma"
+          "code": 233678006,
+          "display": "Childhood asthma (disorder)"
         }
       ],
       "direct_transition": "Set_Childhood_Asthma"
@@ -141,8 +141,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "195967001",
-          "display": "Asthma"
+          "code": 195967001,
+          "display": "Asthma (disorder)"
         }
       ],
       "direct_transition": "Set_Adult_Asthma"
@@ -294,8 +294,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "708409001",
-          "display": "Home nebulizer therapy"
+          "code": 708409001,
+          "display": "Home nebulizer therapy (procedure)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -319,8 +319,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "708409001",
-          "display": "Home nebulizer therapy"
+          "code": 708409001,
+          "display": "Home nebulizer therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -411,8 +411,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "195967001",
-          "display": "Asthma"
+          "code": 195967001,
+          "display": "Asthma (disorder)"
         }
       ],
       "direct_transition": "End_Wellness_1"
@@ -467,8 +467,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183478001",
-          "display": "Emergency hospital admission for asthma"
+          "code": 183478001,
+          "display": "Emergency hospital admission for asthma (procedure)"
         }
       ],
       "direct_transition": "End_Asthma_ED_Visit"

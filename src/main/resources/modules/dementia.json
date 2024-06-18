@@ -277,8 +277,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "710125008",
-          "display": "Promotion of use of memory skills"
+          "code": 710125008,
+          "display": "Promotion of use of memory skills (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -428,8 +428,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": 61488002,
+          "display": "Physical medicine initial examination for orthotic program (procedure)"
         }
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
@@ -574,8 +574,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": 61488002,
+          "display": "Physical medicine initial examination for orthotic program (procedure)"
         }
       ],
       "direct_transition": "Severe_MMSE_Score"
@@ -625,8 +625,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "316744009",
-          "display": "Office Visit"
+          "code": 61488002,
+          "display": "Physical medicine initial examination for orthotic program (procedure)"
         }
       ],
       "direct_transition": "VerySevere_MMSE_Score"
@@ -688,8 +688,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "233604007",
-          "display": "Pneumonia"
+          "code": 233604007,
+          "display": "Pneumonia (disorder)"
         }
       ],
       "remarks": [

@@ -443,8 +443,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1734006",
-          "display": "Fracture of the vertebral column with spinal cord injury"
+          "code": 1734006,
+          "display": "Fracture of vertebral column with spinal cord injury (disorder)"
         }
       ],
       "distributed_transition": [
@@ -786,8 +786,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "62106007",
-          "display": "Concussion with no loss of consciousness"
+          "code": 62106007,
+          "display": "Concussion with no loss of consciousness (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -799,8 +799,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "62564004",
-          "display": "Concussion with loss of consciousness"
+          "code": 62564004,
+          "display": "Concussion with loss of consciousness (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -844,8 +844,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "275272006",
-          "display": "Brain damage - traumatic"
+          "code": 127294003,
+          "display": "Traumatic or nontraumatic brain injury (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -1146,15 +1146,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "168594001",
-        "display": "Clavicle X-ray"
+        "code": 168594001,
+        "display": "Plain X-ray of clavicle (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "51299004",
-            "display": "Clavicle"
+            "code": 51299004,
+            "display": "Bone structure of clavicle (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1192,8 +1192,8 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "1225002",
-        "display": "Upper arm X-ray"
+        "code": 713026007,
+        "display": "Plain X-ray of humerus (procedure)"
       },
       "series": [
         {
@@ -1238,15 +1238,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "60027007",
-        "display": "Radiography of wrist (procedure)"
+        "code": 713024005,
+        "display": "Plain X-ray of wrist region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "8205005",
-            "display": "Wrist"
+            "code": 8205005,
+            "display": "Wrist region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1284,15 +1284,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "19490002",
-        "display": "Ankle X-ray"
+        "code": 1290459008,
+        "display": "Plain X-ray of ankle region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "344001",
-            "display": "Ankle"
+            "code": 344001,
+            "display": "Ankle region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1339,15 +1339,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "399208008",
-        "display": "Chest X-ray"
+        "code": 399208008,
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "51185008",
-            "display": "Chest"
+            "code": 51185008,
+            "display": "Thoracic structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1385,15 +1385,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "268425006",
-        "display": "Pelvis X-ray"
+        "code": 713021002,
+        "display": "Plain X-ray of pelvis (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "12921003",
-            "display": "Pelvis"
+            "code": 12921003,
+            "display": "Structure of pelvis (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1662,8 +1662,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "443165006",
-          "display": "Pathological fracture due to osteoporosis (disorder)"
+          "code": 443165006,
+          "display": "Osteoporotic fracture of bone (disorder)"
         }
       ],
       "direct_transition": "End_Broken_Bone_Encounter"
@@ -1717,8 +1717,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "443165006",
-                "display": "Pathological fracture due to osteoporosis (disorder)"
+                "code": 443165006,
+                "display": "Osteoporotic fracture of bone (disorder)"
               }
             ]
           },
@@ -1822,8 +1822,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "403191005",
-          "display": "Second degree burn"
+          "code": 403191005,
+          "display": "Partial thickness burn (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1835,8 +1835,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "403192003",
-          "display": "Third degree burn"
+          "code": 403192003,
+          "display": "Full thickness burn (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1889,8 +1889,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "403191005",
-                "display": "Second degree burn"
+                "code": 403191005,
+                "display": "Partial thickness burn (disorder)"
               }
             ]
           },
@@ -1902,8 +1902,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "403192003",
-                "display": "Third degree burn"
+                "code": 403192003,
+                "display": "Full thickness burn (disorder)"
               }
             ]
           },
@@ -2300,8 +2300,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
+          "code": 229070002,
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Sprain_Prescribe_Non_Opioid"
@@ -2390,15 +2390,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "74016001",
-        "display": "Knee X-ray"
+        "code": 1290407002,
+        "display": "Plain X-ray of knee region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "72696002",
-            "display": "Knee"
+            "code": 72696002,
+            "display": "Knee region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -2438,8 +2438,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
+          "code": 229070002,
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Knee_X_Ray"
@@ -2529,8 +2529,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "code": 183495009,
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "direct_transition": "Knee_Surgery_Procedure"
@@ -2638,8 +2638,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
+          "code": 229070002,
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "End_Shoulder_Injury_Encounter"
@@ -2672,8 +2672,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "code": 183495009,
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "direct_transition": "Shoulder_Surgery_Procedure"
@@ -2822,8 +2822,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "48333001",
-          "display": "Burn injury(morphologic abnormality)"
+          "code": 48333001,
+          "display": "Burn injury (morphologic abnormality)"
         }
       ],
       "direct_transition": "Death_Severe_Burn"
@@ -2855,8 +2855,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 363753007,
-        "display": "Crutches (physical object)"
+        "code": 74566002,
+        "display": "Crutch, device (physical object)"
       },
       "direct_transition": "Broken_Bone_Immobilization",
       "assign_to_attribute": "injury_dme"
@@ -2895,8 +2895,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 363753007,
-        "display": "Crutches (physical object)"
+        "code": 74566002,
+        "display": "Crutch, device (physical object)"
       },
       "direct_transition": "Broken_Bone_Surgery",
       "assign_to_attribute": "injury_dme"
@@ -2905,8 +2905,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705406009,
-        "display": "Walker (physical object)"
+        "code": 466312009,
+        "display": "Walker tray (physical object)"
       },
       "direct_transition": "Broken_Bone_Surgery",
       "assign_to_attribute": "injury_dme"

@@ -77,8 +77,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "200936003",
-          "display": "Lupus erythematosus"
+          "code": 200936003,
+          "display": "Lupus erythematosus (disorder)"
         }
       ],
       "direct_transition": "Lupus_Diagnosis"

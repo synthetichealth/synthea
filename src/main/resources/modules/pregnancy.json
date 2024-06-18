@@ -310,8 +310,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "312404004",
-          "display": "Antenatal blood tests"
+          "code": 312404004,
+          "display": "Antenatal blood tests (procedure)"
         }
       ],
       "assign_to_attribute": "pregnancy_careplan",
@@ -359,8 +359,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "104091002",
-          "display": "Hemogram, automated, with RBC, WBC, Hgb, Hct, Indices, Platelet count, and manual WBC differential"
+          "code": 104091002,
+          "display": "Hemogram, automated, with red blood cells, white blood cells, hemoglobin, hematocrit, indices, platelet count, and manual white blood cell differential (procedure)"
         }
       ],
       "direct_transition": "Hep_B_Surface_Antigen"
@@ -371,8 +371,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "47758006",
-          "display": "Hepatitis B Surface Antigen Measurement"
+          "code": 47758006,
+          "display": "Hepatitis B surface antigen measurement (procedure)"
         }
       ],
       "direct_transition": "HIV_Test"
@@ -383,8 +383,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "31676001",
-          "display": "Human immunodeficiency virus antigen test"
+          "code": 31676001,
+          "display": "Human immunodeficiency virus antigen test (procedure)"
         }
       ],
       "direct_transition": "Chlamydia_Test"
@@ -455,8 +455,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "395123002",
-          "display": "Urine screening test for diabetes"
+          "code": 395123002,
+          "display": "Urine screening test for diabetes (procedure)"
         }
       ],
       "direct_transition": "Hep_C_Test"
@@ -479,8 +479,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "169690007",
-          "display": "Rubella screening"
+          "code": 314098000,
+          "display": "Rubella screening test (procedure)"
         }
       ],
       "direct_transition": "Varicella_Test"
@@ -515,8 +515,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "167271000",
-          "display": "Urine protein test"
+          "code": 167275009,
+          "display": "Urine protein test = + (finding)"
         }
       ],
       "direct_transition": "Physical_Exam"
@@ -564,8 +564,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "47200007",
-          "display": "Non-low risk pregnancy"
+          "code": 47200007,
+          "display": "High risk pregnancy (finding)"
         }
       ],
       "assign_to_attribute": "non_low_risk_pregnancy",
@@ -694,8 +694,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "275833003",
-          "display": "AFP test - antenatal"
+          "code": 275833003,
+          "display": "Alpha-fetoprotein test - antenatal (procedure)"
         }
       ],
       "direct_transition": "Week_16_Fundal_Height"
@@ -890,8 +890,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "104091002",
-          "display": "Hemogram, automated, with RBC, WBC, Hgb, Hct, Indices, Platelet count, and manual WBC differential"
+          "code": 104091002,
+          "display": "Hemogram, automated, with red blood cells, white blood cells, hemoglobin, hematocrit, indices, platelet count, and manual white blood cell differential (procedure)"
         }
       ],
       "direct_transition": "Tdap_Vaccine"
@@ -971,8 +971,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "398254007",
-          "display": "Preeclampsia"
+          "code": 398254007,
+          "display": "Pre-eclampsia (disorder)"
         }
       ],
       "assign_to_attribute": "pregnancy_complication",
@@ -1070,8 +1070,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "198992004",
-          "display": "Antepartum eclampsia"
+          "code": 198992004,
+          "display": "Eclampsia in pregnancy (disorder)"
         }
       ],
       "assign_to_attribute": "pregnancy_complication",
@@ -1470,8 +1470,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "31208007",
-          "display": "Medical induction of labor"
+          "code": 31208007,
+          "display": "Medical induction of labor (procedure)"
         }
       ],
       "distributed_transition": [
@@ -1491,8 +1491,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "18946005",
-          "display": "Epidural anesthesia"
+          "code": 18946005,
+          "display": "Epidural anesthesia (procedure)"
         }
       ],
       "distributed_transition": [
@@ -1625,8 +1625,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "66348005",
-          "display": "Childbirth"
+          "code": 386216000,
+          "display": "Human parturition, function (observable entity)"
         }
       ],
       "direct_transition": "Normal_Pregnancy_Completion"
@@ -1637,8 +1637,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "65588006",
-          "display": "Premature birth of newborn"
+          "code": 367494004,
+          "display": "Premature birth of newborn (finding)"
         }
       ],
       "direct_transition": "Normal_Pregnancy_Completion"
@@ -1835,8 +1835,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "609496007",
-          "display": "Complication occuring during pregnancy"
+          "code": 609496007,
+          "display": "Complication occurring during pregnancy (disorder)"
         }
       ],
       "direct_transition": "End_Miscarriage_Encounter"

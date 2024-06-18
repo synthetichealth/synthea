@@ -210,8 +210,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "code": 399208008,
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -307,8 +307,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "371605008",
-          "display": "Deep breathing and coughing exercises"
+          "code": 371605008,
+          "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],
       "direct_transition": "OTC_Medicine"
@@ -332,8 +332,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "371605008",
-          "display": "Deep breathing and coughing exercises"
+          "code": 371605008,
+          "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],
       "direct_transition": "OTC_Medicine"

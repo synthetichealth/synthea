@@ -887,8 +887,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 111282000,
-          "display": "Acute respiratory insufficiency (disorder)"
+          "code": 65710008,
+          "display": "Acute respiratory failure (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",

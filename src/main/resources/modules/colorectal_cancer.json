@@ -614,8 +614,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "236077008",
-          "display": "Protracted diarrhea"
+          "code": 236077008,
+          "display": "Protracted diarrhea (finding)"
         }
       ],
       "direct_transition": "Colorectal_Cancer_Symptom_2"
@@ -626,8 +626,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "6072007",
-          "display": "Bleeding from anus"
+          "code": 6072007,
+          "display": "Bleeding from anus (disorder)"
         }
       ],
       "direct_transition": "Symptom_Encounter"
@@ -906,8 +906,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "94260004",
-          "display": "Secondary malignant neoplasm of colon"
+          "code": 94260004,
+          "display": "Metastatic malignant neoplasm to colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -1058,8 +1058,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "395082007",
-          "display": "Cancer care plan"
+          "code": 736252007,
+          "display": "Cancer care plan (record artifact)"
         }
       ],
       "activities": [
@@ -1236,8 +1236,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "103744005",
-          "display": "Administration of intravenous fluids"
+          "code": 103744005,
+          "display": "Administration of intravenous fluids (procedure)"
         }
       ],
       "direct_transition": "Postoperative Care"
@@ -1337,8 +1337,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "387607004",
-          "display": "Construction of diverting colostomy"
+          "code": 9905009,
+          "display": "Loop colostomy (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_2",
@@ -1369,8 +1369,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "103744005",
-          "display": "Administration of intravenous fluids"
+          "code": 103744005,
+          "display": "Administration of intravenous fluids (procedure)"
         }
       ],
       "direct_transition": "Postoperative_Care"

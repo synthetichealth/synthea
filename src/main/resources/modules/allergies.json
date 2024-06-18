@@ -261,8 +261,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 419199007,
-          "display": "Allergy to substance (finding)"
+          "code": 767116002,
+          "display": "Allergy to substance with ether structure (finding)"
         }
       ],
       "reactions": [],

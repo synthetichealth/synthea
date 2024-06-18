@@ -574,8 +574,8 @@
       "direct_transition": "Stage III",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261639007,
-        "display": "Stage 3B (qualifier value)"
+        "code": 261625007,
+        "display": "Stage B3 (qualifier value)"
       }
     },
     "IIIA": {
@@ -591,8 +591,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261638004,
-        "display": "Stage 3A (qualifier value)"
+        "code": 1222802001,
+        "display": "American Joint Committee on Cancer stage IIIA (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -725,8 +725,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261640009,
-        "display": "Stage 3C (qualifier value)"
+        "code": 261629001,
+        "display": "Stage C3 (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -743,8 +743,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261615002,
-        "display": "Stage 2B (qualifier value)"
+        "code": 261624006,
+        "display": "Stage B2 (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -761,8 +761,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261614003,
-        "display": "Stage 2A (qualifier value)"
+        "code": 261620002,
+        "display": "Stage A2 (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -779,8 +779,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261634002,
-        "display": "Stage 1A (qualifier value)"
+        "code": 261619008,
+        "display": "Stage A1 (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -797,8 +797,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261635001,
-        "display": "Stage 1B (qualifier value)"
+        "code": 261622005,
+        "display": "Stage B1 (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -943,8 +943,8 @@
             "operator": "!=",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 261635001,
-              "display": "Stage 1B (qualifier value)"
+              "code": 261622005,
+              "display": "Stage B1 (qualifier value)"
             }
           }
         },

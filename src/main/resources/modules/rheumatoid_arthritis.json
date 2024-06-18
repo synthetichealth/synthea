@@ -98,8 +98,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "69896004",
-          "display": "Rheumatoid arthritis"
+          "code": 69896004,
+          "display": "Rheumatoid arthritis (disorder)"
         }
       ],
       "direct_transition": "RA_Diagnosis"

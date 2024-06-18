@@ -14,8 +14,7 @@
         {
           "system": "SNOMED-CT",
           "code": 386478007,
-          "display": "Triage emergency center (procedure)",
-          "value_set": ""
+          "display": "Triage: emergency center (procedure)"
         }
       ],
       "distribution": {
@@ -53,7 +52,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": 45816000,
-                "display": "Pyelonephritis"
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           }
@@ -2240,7 +2239,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 708118007,
-        "display": "Microbiologic culture finding negative (finding)"
+        "display": "No organism isolated by microbiologic culture (finding)"
       }
     },
     "Positive_Blood_Culture": {
@@ -2258,7 +2257,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8730001000004107,
-        "display": "Blood culture positive for microorganism (finding)"
+        "display": "Organism isolated in blood by culture (finding)"
       },
       "direct_transition": "Set BldCx"
     },

@@ -214,8 +214,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "300913006",
-                "display": "Shellfish allergy"
+                "code": 300913006,
+                "display": "Allergy to shellfish (finding)"
               }
             ]
           },
@@ -334,8 +334,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "91930004",
-                "display": "Allergy to eggs"
+                "code": 213020009,
+                "display": "Allergy to egg protein (finding)"
               }
             ]
           },
@@ -394,8 +394,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "714035009",
-                "display": "Allergy to soya"
+                "code": 782594005,
+                "display": "Allergy to soy protein (finding)"
               }
             ]
           },
@@ -454,8 +454,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "425525006",
-                "display": "Allergy to dairy product"
+                "code": 414285001,
+                "display": "Allergy to food (finding)"
               }
             ]
           },
@@ -634,8 +634,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "232347008",
-                "display": "Dander (animal) allergy"
+                "code": 717234006,
+                "display": "Allergy to animal protein (finding)"
               }
             ]
           },
@@ -694,8 +694,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "232350006",
-                "display": "House dust mite allergy"
+                "code": 232350006,
+                "display": "Allergy to dust mite protein (finding)"
               }
             ]
           },
@@ -754,8 +754,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "419474003",
-                "display": "Allergy to mould"
+                "code": 419474003,
+                "display": "Allergy to mold (finding)"
               }
             ]
           },
@@ -874,8 +874,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "300916003",
-                "display": "Latex allergy"
+                "code": 1003755004,
+                "display": "Allergy to Hevea brasiliensis latex protein (finding)"
               }
             ]
           },

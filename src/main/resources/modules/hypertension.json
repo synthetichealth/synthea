@@ -369,12 +369,12 @@
         {
           "system": "SNOMED-CT",
           "code": 413473000,
-          "display": "Counseling about alcohol consumption"
+          "display": "Counseling about alcohol consumption (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 1151000175103,
-          "display": "Dietary approaches to stop hypertension diet"
+          "display": "Dietary Approaches to Stop Hypertension diet (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -453,7 +453,7 @@
                                       {
                                         "system": "SNOMED-CT",
                                         "code": 22298006,
-                                        "display": "Myocardial Infarction"
+                                        "display": "Myocardial infarction (disorder)"
                                       }
                                     ]
                                   },

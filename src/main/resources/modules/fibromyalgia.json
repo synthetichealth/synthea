@@ -181,8 +181,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "386294003",
-          "display": "Joint mobility exercises"
+          "code": 386294003,
+          "display": "Joint mobility exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",

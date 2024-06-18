@@ -178,8 +178,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": 108243003,
-          "display": "Sleep disorder test AND/OR procedure (procedure)"
+          "code": 10563004,
+          "display": "Sleep disorder function test (procedure)"
         },
         {
           "system": "SNOMED-CT",

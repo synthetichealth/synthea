@@ -44,24 +44,24 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 469212006,
-            "display": "Isolation gown, reusable (physical object)"
+            "code": 1141679000,
+            "display": "Isolation gown (physical object)"
           }
         },
         {
           "quantity": 10,
           "code": {
             "system": "SNOMED-CT",
-            "code": "469673003",
-            "display": "Isolation gown, single-use (physical object)"
+            "code": 1141679000,
+            "display": "Isolation gown (physical object)"
           }
         },
         {
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": "409534002",
-            "display": "Disposable air-purifying respirator (physical object)"
+            "code": 409533008,
+            "display": "Air-purifying respirator (physical object)"
           }
         },
         {

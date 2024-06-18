@@ -356,7 +356,7 @@
         {
           "system": "SNOMED-CT",
           "code": 40617009,
-          "display": "Artificial respiration (procedure)"
+          "display": "Artificial ventilation (regime/therapy)"
         }
       ],
       "duration": {
@@ -533,7 +533,7 @@
         {
           "system": "SNOMED-CT",
           "code": 243174005,
-          "display": "Weaning from mechanically assisted ventilation (procedure)"
+          "display": "Weaning from mechanically assisted ventilation (regime/therapy)"
         }
       ],
       "duration": {

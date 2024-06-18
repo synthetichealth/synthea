@@ -201,7 +201,7 @@
         {
           "system": "SNOMED-CT",
           "code": 430193006,
-          "display": "Medication Reconciliation (procedure)"
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "duration": {
