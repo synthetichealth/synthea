@@ -95,7 +95,7 @@
         {
           "system": "SNOMED-CT",
           "code": 305342007,
-          "display": "Admission to ward (procedure"
+          "display": "Admission to ward (procedure)"
         }
       ],
       "distribution": {
@@ -248,7 +248,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
@@ -424,7 +424,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
@@ -934,7 +934,7 @@
         {
           "system": "SNOMED-CT",
           "code": 305342007,
-          "display": "Admission to ward (procedure"
+          "display": "Admission to ward (procedure)"
         }
       ],
       "direct_transition": "Admission to Ward"

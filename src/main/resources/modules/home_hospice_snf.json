@@ -35,8 +35,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "91302008",
-                    "display": "Sepsis"
+                    "code": 91302008,
+                    "display": "Sepsis (disorder)"
                   }
                 ]
               },
@@ -50,8 +50,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "233604007",
-                    "display": "Pneumonia"
+                    "code": 233604007,
+                    "display": "Pneumonia (disorder)"
                   }
                 ]
               },
@@ -60,8 +60,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "38822007",
-                    "display": "Urinary Tract Infection"
+                    "code": 68566005,
+                    "display": "Urinary tract infectious disease (disorder)"
                   }
                 ]
               },
@@ -70,8 +70,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "10509002",
-                    "display": "Acute Bronchitis"
+                    "code": 10509002,
+                    "display": "Acute bronchitis (disorder)"
                   }
                 ]
               },
@@ -96,8 +96,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "26929004",
-                    "display": "Alzheimers"
+                    "code": 26929004,
+                    "display": "Alzheimer's disease (disorder)"
                   }
                 ]
               },
@@ -106,8 +106,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "254837009",
-                    "display": "Breast Cancer"
+                    "code": 254837009,
+                    "display": "Malignant neoplasm of breast (disorder)"
                   }
                 ]
               },
@@ -122,8 +122,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "126906006",
-                    "display": "Prostate Cancer"
+                    "code": 399068003,
+                    "display": "Malignant tumor of prostate (disorder)"
                   }
                 ]
               },
@@ -132,8 +132,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "93761005",
-                    "display": "Colorectal Cancer Stage I"
+                    "code": 93761005,
+                    "display": "Primary malignant neoplasm of colon (disorder)"
                   }
                 ]
               },
@@ -142,8 +142,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "109838007",
-                    "display": "Colorectal Cancer Stage II"
+                    "code": 109838007,
+                    "display": "Overlapping malignant neoplasm of colon (disorder)"
                   }
                 ]
               },
@@ -152,8 +152,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "363406005",
-                    "display": "Colorectal Cancer Stage III"
+                    "code": 363406005,
+                    "display": "Malignant neoplasm of colon (disorder)"
                   }
                 ]
               },
@@ -162,8 +162,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "94260004",
-                    "display": "Colorectal Cancer Stage IV"
+                    "code": 94260004,
+                    "display": "Metastatic malignant neoplasm to colon (disorder)"
                   }
                 ]
               },
@@ -172,8 +172,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "88805009",
-                    "display": "Chronic Congestive Heart Failure"
+                    "code": 88805009,
+                    "display": "Chronic congestive heart failure (disorder)"
                   }
                 ]
               },
@@ -182,8 +182,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "22298006",
-                    "display": "Myocardial Infarction"
+                    "code": 22298006,
+                    "display": "Myocardial infarction (disorder)"
                   }
                 ]
               },
@@ -223,8 +223,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "1734006",
-                    "display": "Fracture of the vertebral column with spinal cord injury"
+                    "code": 1734006,
+                    "display": "Fracture of vertebral column with spinal cord injury (disorder)"
                   }
                 ]
               },
@@ -233,8 +233,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "58150001",
-                    "display": "Broken Clavicle"
+                    "code": 58150001,
+                    "display": "Fracture of clavicle (disorder)"
                   }
                 ]
               },
@@ -243,8 +243,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "359817006",
-                    "display": "Closed Fracture of Hip"
+                    "code": 359817006,
+                    "display": "Closed fracture of hip (disorder)"
                   }
                 ]
               },
@@ -253,8 +253,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "33737001",
-                    "display": "Fracture of Rib"
+                    "code": 33737001,
+                    "display": "Fracture of rib (disorder)"
                   }
                 ]
               },
@@ -263,8 +263,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "16114001",
-                    "display": "Fracture of Ankle"
+                    "code": 16114001,
+                    "display": "Fracture of ankle (disorder)"
                   }
                 ]
               },
@@ -273,8 +273,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "65966004",
-                    "display": "Fracture of Forearm"
+                    "code": 65966004,
+                    "display": "Fracture of forearm (disorder)"
                   }
                 ]
               },
@@ -283,8 +283,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "263102004",
-                    "display": "Fracture Subluxation of Wrist"
+                    "code": 263102004,
+                    "display": "Fracture subluxation of wrist (disorder)"
                   }
                 ]
               },
@@ -308,8 +308,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "190905008",
-                    "display": "Cystic Fibrosis"
+                    "code": 190905008,
+                    "display": "Cystic fibrosis (disorder)"
                   }
                 ]
               },
@@ -318,8 +318,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "87433001",
-                    "display": "Pulmonary Emphysema"
+                    "code": 87433001,
+                    "display": "Pulmonary emphysema (disorder)"
                   }
                 ]
               },
@@ -328,8 +328,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "185086009",
-                    "display": "Chronic Obstructive Bronchitis"
+                    "code": 185086009,
+                    "display": "Chronic obstructive bronchitis (disorder)"
                   }
                 ]
               },
@@ -364,8 +364,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "161622006",
-                    "display": "History of Lower Limb Amputation"
+                    "code": 161622006,
+                    "display": "History of lower limb amputation (situation)"
                   }
                 ]
               },
@@ -374,8 +374,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "429280009",
-                    "display": "History of Amputation of Foot"
+                    "code": 429280009,
+                    "display": "History of amputation of foot (situation)"
                   }
                 ]
               },
@@ -384,8 +384,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "161621004",
-                    "display": "History of Upper Limb Amputation"
+                    "code": 161621004,
+                    "display": "History of upper limb amputation (situation)"
                   }
                 ]
               },
@@ -394,8 +394,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "698423002",
-                    "display": "History of Disarticulation at Wrist"
+                    "code": 698423002,
+                    "display": "History of disarticulation at wrist (situation)"
                   }
                 ]
               },
@@ -404,8 +404,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "200936003",
-                    "display": "Lupus erythematosus"
+                    "code": 200936003,
+                    "display": "Lupus erythematosus (disorder)"
                   }
                 ]
               },
@@ -414,8 +414,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "69896004",
-                    "display": "Rheumatoid arthritis"
+                    "code": 69896004,
+                    "display": "Rheumatoid arthritis (disorder)"
                   }
                 ]
               }

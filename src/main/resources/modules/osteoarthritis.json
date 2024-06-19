@@ -115,8 +115,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "386294003",
-          "display": "Joint mobility exercises"
+          "code": 386294003,
+          "display": "Joint mobility exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -473,8 +473,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705406009,
-        "display": "Walker (physical object)"
+        "code": 466312009,
+        "display": "Walker tray (physical object)"
       },
       "assign_to_attribute": "osteoarthritis_dme",
       "direct_transition": "Finish DME"

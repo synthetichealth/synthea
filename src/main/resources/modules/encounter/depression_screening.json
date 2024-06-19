@@ -39,7 +39,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": 370143000,
-                    "display": "Major depression disorder"
+                    "display": "Major depressive disorder (disorder)"
                   }
                 ]
               },
@@ -107,9 +107,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 454711000124102,
-          "display": "Depression screening using Patient Health Questionnaire Two-Item score (procedure)",
-          "version": "http://snomed.info/sct/731000124108"
+          "code": 171207006,
+          "display": "Depression screening (procedure)"
         }
       ],
       "distribution": {

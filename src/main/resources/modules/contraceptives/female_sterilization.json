@@ -59,8 +59,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "287664005",
-          "display": "Bilateral tubal ligation"
+          "code": 287664005,
+          "display": "Ligation of bilateral fallopian tubes (procedure)"
         }
       ],
       "duration": {

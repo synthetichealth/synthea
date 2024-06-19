@@ -134,8 +134,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 725351001,
-          "display": "Transcatheter aortic valve replacement (procedure)"
+          "code": 773996000,
+          "display": "Transcatheter aortic valve implantation (procedure)"
         }
       ],
       "distribution": {
@@ -154,8 +154,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 725351001,
-          "display": "Transcatheter aortic valve replacement (procedure)"
+          "code": 773996000,
+          "display": "Transcatheter aortic valve implantation (procedure)"
         }
       ],
       "distribution": {

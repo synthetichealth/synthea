@@ -403,8 +403,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
+                    "code": 714628002,
+                    "display": "Prediabetes (finding)"
                   }
                 ]
               }
@@ -606,8 +606,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "38341003",
-                    "display": "Hypertension"
+                    "code": 38341003,
+                    "display": "Hypertensive disorder, systemic arterial (disorder)"
                   }
                 ]
               }

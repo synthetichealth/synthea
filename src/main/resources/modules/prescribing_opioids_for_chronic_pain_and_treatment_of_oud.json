@@ -1917,8 +1917,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 55680006,
-          "display": "Drug overdose (disorder)"
+          "code": 296547009,
+          "display": "Antiviral drug overdose (disorder)"
         }
       ]
     },
@@ -2358,8 +2358,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 55680006,
-          "display": "Drug overdose (disorder)"
+          "code": 296547009,
+          "display": "Antiviral drug overdose (disorder)"
         }
       ],
       "direct_transition": "ED_Visit"

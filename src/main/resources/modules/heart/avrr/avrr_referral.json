@@ -88,7 +88,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183835003,
-          "display": "Refer for angiogram (procedure)"
+          "display": "Referral for angiography (procedure)"
         }
       ],
       "assign_to_attribute": "avrr_careplan",

@@ -117,8 +117,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "367498001",
-          "display": "Seasonal allergic rhinitis"
+          "code": 367498001,
+          "display": "Seasonal allergic rhinitis (disorder)"
         }
       ],
       "direct_transition": "Allergic_Rhinitis_Symptom1"
@@ -130,8 +130,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "446096008",
-          "display": "Perennial allergic rhinitis"
+          "code": 446096008,
+          "display": "Perennial allergic rhinitis (disorder)"
         }
       ],
       "direct_transition": "Allergic_Rhinitis_Symptom1"
@@ -283,8 +283,8 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": "232347008",
-                  "display": "Dander (animal) allergy"
+                  "code": 717234006,
+                  "display": "Allergy to animal protein (finding)"
                 }
               ]
             },
@@ -293,8 +293,8 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": "232350006",
-                  "display": "House dust mite allergy"
+                  "code": 232350006,
+                  "display": "Allergy to dust mite protein (finding)"
                 }
               ]
             },
@@ -303,8 +303,8 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": "419474003",
-                  "display": "Allergy to mould"
+                  "code": 419474003,
+                  "display": "Allergy to mold (finding)"
                 }
               ]
             }

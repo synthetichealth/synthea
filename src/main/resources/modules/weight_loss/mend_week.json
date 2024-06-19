@@ -32,8 +32,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "229095001",
-          "display": "Exercise class"
+          "code": 229095001,
+          "display": "Exercise class (regime/therapy)"
         }
       ],
       "duration": {

@@ -421,8 +421,8 @@
                         "codes": [
                           {
                             "system": "SNOMED-CT",
-                            "code": 26763009,
-                            "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+                            "code": 243150007,
+                            "display": "Assist control ventilation (regime/therapy)"
                           }
                         ]
                       }

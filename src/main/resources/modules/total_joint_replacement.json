@@ -54,8 +54,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "code": 183495009,
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "conditional_transition": [
@@ -122,8 +122,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
+          "code": 229070002,
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Post_Op_Prescribe_Pain_Reliever",

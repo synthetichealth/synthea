@@ -18,8 +18,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "86849004",
-          "display": "Suicidal deliberate poisoning"
+          "code": 86849004,
+          "display": "Suicidal poisoning (disorder)"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -81,8 +81,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "74857009",
-          "display": "Hospital admission, short-term, 24 hours"
+          "code": 74857009,
+          "display": "Hospital admission, short-term, 24 hours (procedure)"
         }
       ],
       "duration": {
@@ -163,8 +163,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "10029008",
-          "display": "Suicide precautions"
+          "code": 10029008,
+          "display": "Suicide precautions (procedure)"
         }
       ],
       "direct_transition": "Followup_Psychiatric_Evaluation"
@@ -251,8 +251,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "287193009",
-          "display": "Suicide - firearms"
+          "code": 287193009,
+          "display": "Suicide - firearms (event)"
         }
       ],
       "direct_transition": "Death"
@@ -277,8 +277,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "86849004",
-          "display": "Suicidal deliberate poisoning"
+          "code": 86849004,
+          "display": "Suicidal poisoning (disorder)"
         }
       ],
       "direct_transition": "Death"

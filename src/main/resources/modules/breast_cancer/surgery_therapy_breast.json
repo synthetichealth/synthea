@@ -16,8 +16,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 69031006,
-          "display": "Excision of breast tissue (procedure)"
+          "code": 770108008,
+          "display": "Excision of ectopic tissue of breast (procedure)"
         }
       ],
       "duration": {
@@ -126,8 +126,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 108290001,
-          "display": "Radiation oncology AND/OR radiotherapy (procedure)"
+          "code": 1287742003,
+          "display": "Radiotherapy (procedure)"
         }
       ],
       "duration": {
