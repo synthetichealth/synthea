@@ -21,11 +21,22 @@ public class OphthalmicProgressionModule extends Module {
    * Based on https://pubmed.ncbi.nlm.nih.gov/12510717/
    */
   public static final double DR_THICKNESS_FACTOR = 1;
+  
+  // https://loinc.org/LL2117-1
+  public static final Code[] DR_STAGE_CODES = {
+    /* 0 */ new Code("LOINC", "LA18643-9", "No apparent retinopathy"),
+    /* 1 */ new Code("LOINC", "LA18644-7", "Mild non-proliferative retinopathy"),
+    /* 2 */ new Code("LOINC", "LA18644-7", "Moderate non-proliferative retinopathy"),
+    /* 3 */ new Code("LOINC", "LA18646-2", "Severe non-proliferative retinopathy"),
+    /* 4 */ new Code("LOINC", "LA18648-8", "Proliferative retinopathy")
+  };
 
   @Override
   public boolean process(Person person, long time) {
-
     int drStage = (Integer) person.attributes.get("diabetic_retinopathy_stage");
+    
+    person.attributes.put("diabetic_retinopathy_stage_code", DR_STAGE_CODES[drStage]);
+    
     boolean edema = (boolean) person.attributes.getOrDefault("macular_edema", false);
 
     // set visual acuity in LogMAR

@@ -4,20 +4,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "conditional_transition": [
-        {
-          "transition": "Terminal",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "diabetic_retinopathy_stage",
-            "operator": "==",
-            "value": 0
-          }
-        },
-        {
-          "transition": "Check_Nonproliferative_Retinopathy"
-        }
-      ]
+      "direct_transition": "DR_Stage_Left_Eye"
     },
     "Check_Nonproliferative_Retinopathy": {
       "type": "Simple",
@@ -204,6 +191,47 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "DR_Stage_Left_Eye": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71490-7",
+          "display": "Left eye Diabetic retinopathy severity level by Ophthalmoscopy"
+        }
+      ],
+      "attribute": "diabetic_retinopathy_stage_code",
+      "direct_transition": "DR_Stage_Right_Eye"
+    },
+    "DR_Stage_Right_Eye": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "71491-5",
+          "display": "Right eye Diabetic retinopathy severity level by Ophthalmoscopy"
+        }
+      ],
+      "attribute": "diabetic_retinopathy_stage_code",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Check_Nonproliferative_Retinopathy"
+        }
+      ]
     }
   },
   "gmf_version": 2
