@@ -443,17 +443,8 @@ alt="Text Description automatically generated" />
 
 5.  
 
-###### 
+# Abbreviations and Acronyms
 
-###### Abbreviations and Acronyms
-
-A list of abbreviations/acronyms should be included for documents that
-contain 10 or more abbreviations/acronyms. The list of
-abbreviations/acronyms includes all abbreviations, initialisms, and
-acronyms listed in the document. The list must be sorted alphabetically.
-(Select the entire table and then select <img src="./media/image17.png"
-style="width:0.19167in;height:0.20833in" /> to sort the list.) Sample
-abbreviations/acronyms are listed in the following table.
 
 | **Term** | **Definition**                        |
 |----------|---------------------------------------|
@@ -465,7 +456,3 @@ abbreviations/acronyms are listed in the following table.
 | **PDR**  | Proliferative Diabetic Retinopathy    |
 | **PPP**  | Preferred Practice Pattern® (by AAO)  |
 |          |                                       |
-
-Abbreviations and AcronymsThe first column lists the abbreviatons and
-acronyms. The second column spells out what the abbreviation or acronym
-stands for.
