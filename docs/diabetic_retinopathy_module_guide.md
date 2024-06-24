@@ -1,8 +1,5 @@
-# Diabetic Retinopathy
+# Diabetic Retinopathy - Synthea™ Module Companion Guide
 
-# Synthea™ Module Companion Guide
-
-# 
 
 # Introduction
 
@@ -87,10 +84,6 @@ Academy of Ophthalmology® (AAO) Diabetic Retinopathy Preferred Practice
 Pattern® (PPP), 2019 edition\[1\].
 
 # Module Diagrams
-
-<span class="mark">TODO: figure out the best way to represent these.
-Module builder screenshots are easy but tough to read for large
-modules</span>
 
 ## Diabetic Retinopathy Treatment
 
@@ -476,10 +469,3 @@ abbreviations/acronyms are listed in the following table.
 Abbreviations and AcronymsThe first column lists the abbreviatons and
 acronyms. The second column spells out what the abbreviation or acronym
 stands for.
-
-**<span class="mark">To convert to Markdown when ready:</span>**
-
-brew install pandoc
-
-pandoc -f docx -t gfm diabetic_retinopathy_module_guide.docx -o
-output.md --extract-media=./
