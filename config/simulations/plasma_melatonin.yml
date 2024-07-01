@@ -1,0 +1,66 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: plasma_melatonin
+
+# Name of the model file
+model: Brown1997_Plasma_Melatonin.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: runge_kutta
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.01
+
+# Simulation duration in seconds
+duration: 10
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+#inputs:
+#    hrmean: 80
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: plasma_melatonin.png
+      type: line
+      title: "plasma_melatonin"
+      axisParamX: time
+      axisLabelX: time (?)
+      axisLabelY: ???
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: H1
+        # - param: H2
+        # - param: A
+        # - param: t_on
+        # - param: t_off
+        # - param: beta_I
+        # - param: beta_C
+        # - param: alpha
+        # - param: lambda
+
+# <parameter constant="false" id="H1" metaid="COPASI1" name="H1" value="0.05">
+# <parameter constant="false" id="H2" metaid="COPASI2" name="H2" value="1">
+# <parameter constant="false" id="A" metaid="COPASI3" name="A" value="0">
+# <parameter constant="true" id="t_on" metaid="COPASI4" name="t_on" value="1316">
+# <parameter constant="true" id="t_off" metaid="COPASI5" name="t_off" value="1794">
+# <parameter constant="true" id="A_max" metaid="COPASI6" name="A_max" value="6.51">
+# <parameter constant="false" id="beta_I" metaid="COPASI7" name="beta_I" value="0.245796872538988">
+# <parameter constant="false" id="beta_C" metaid="COPASI8" name="beta_C" value="0.0292837845610454">
+# <parameter constant="false" id="alpha" metaid="COPASI9" name="alpha" value="0.0267417893734547">
+# <parameter constant="false" id="lamda" metaid="COPASI10" name="lamda" value="0.0288330773943405">
+# <parameter constant="true" id="tau_I" metaid="COPASI11" name="tau_I" value="2.82">
+# <parameter constant="true" id="tau_C" metaid="COPASI12" name="tau_C" value="23.67">
+# <parameter constant="true" id="tau_alpha" metaid="COPASI13" name="tau_alpha" value="25.92">
+# <parameter constant="true" id="tau_lamda" metaid="COPASI14" name="tau_lamda" value="24.04">
