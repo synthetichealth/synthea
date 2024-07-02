@@ -189,12 +189,4 @@ $(window).resize(function () {
 $(window).scroll(function(event) {    
     // Update active based on page
     updateActiveOnPage(window.location.pathname);
-}); 
-
-$(document).ready(function(){
-    // binding click events to elements
-    var locationHash = window.location.hash.substring(1);
-    if(locationHash == 'thankyou'){
-        $('#thankYouModal').modal("show");
-    }
 });
