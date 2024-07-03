@@ -164,23 +164,34 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         // Given the previous categorization of languages by Synthea, the numbers line up closely.
         // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005H&prodType=table
         RandomCollection<String> whiteLanguageUsage = new RandomCollection();
-        whiteLanguageUsage.add(0.002, "italian");
-        whiteLanguageUsage.add(0.004, "french");
-        whiteLanguageUsage.add(0.003, "german");
-        whiteLanguageUsage.add(0.001, "polish");
-        whiteLanguageUsage.add(0.002, "portuguese");
-        whiteLanguageUsage.add(0.003, "russian");
-        whiteLanguageUsage.add(0.001, "greek");
-        whiteLanguageUsage.add(0.984, "english");
+        whiteLanguageUsage.add(0.003, "italian");
+        whiteLanguageUsage.add(0.003, "gujarati");
+        whiteLanguageUsage.add(0.004, "bengali");
+        whiteLanguageUsage.add(0.004, "arabic");
+        whiteLanguageUsage.add(0.004, "spanish");
+        whiteLanguageUsage.add(0.004, "portuguese");
+        whiteLanguageUsage.add(0.005, "urdu");
+        whiteLanguageUsage.add(0.005, "panjabi");
+        whiteLanguageUsage.add(0.008, "romanian");
+        whiteLanguageUsage.add(0.011, "polish");
+        whiteLanguageUsage.add(0.982, "english");
         return whiteLanguageUsage.next(random);
       case "black":
         // Only 3% of people who report a race of black or African American alone speak English
         // less than very well.
         // https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_B16005B&prodType=table
         RandomCollection<String> blackLanguageUsage = new RandomCollection();
-        blackLanguageUsage.add(0.004, "french");
-        blackLanguageUsage.add(0.026, "spanish");
-        blackLanguageUsage.add(0.97, "english");
+        blackLanguageUsage.add(0.003, "italian");
+        blackLanguageUsage.add(0.003, "gujarati");
+        blackLanguageUsage.add(0.004, "bengali");
+        blackLanguageUsage.add(0.004, "arabic");
+        blackLanguageUsage.add(0.004, "spanish");
+        blackLanguageUsage.add(0.004, "portuguese");
+        blackLanguageUsage.add(0.005, "urdu");
+        blackLanguageUsage.add(0.005, "panjabi");
+        blackLanguageUsage.add(0.008, "romanian");
+        blackLanguageUsage.add(0.011, "polish");
+        blackLanguageUsage.add(0.982, "english");
         return blackLanguageUsage.next(random);
       case "asian":
         // 33% of people who report a race of Asian alone speak English less than very well
@@ -195,12 +206,17 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         // of the overall population of people who report a race of Asian. This is repeated for
         // the rest of the languages.
         RandomCollection<String> asianLanguageUsage = new RandomCollection();
-        asianLanguageUsage.add(0.147, "chinese");
-        asianLanguageUsage.add(0.022, "japanese");
-        asianLanguageUsage.add(0.056, "korean");
-        asianLanguageUsage.add(0.07, "vietnamese");
-        asianLanguageUsage.add(0.033, "hindi");
-        asianLanguageUsage.add(0.67, "english");
+        asianLanguageUsage.add(0.003, "italian");
+        asianLanguageUsage.add(0.003, "gujarati");
+        asianLanguageUsage.add(0.004, "bengali");
+        asianLanguageUsage.add(0.004, "arabic");
+        asianLanguageUsage.add(0.004, "spanish");
+        asianLanguageUsage.add(0.004, "portuguese");
+        asianLanguageUsage.add(0.005, "urdu");
+        asianLanguageUsage.add(0.005, "panjabi");
+        asianLanguageUsage.add(0.008, "romanian");
+        asianLanguageUsage.add(0.011, "polish");
+        asianLanguageUsage.add(0.982, "english");
         return asianLanguageUsage.next(random);
       // case "native":
       //   // TODO: This is overly simplistic, 7% of people who report a race of American Indian and
@@ -221,8 +237,17 @@ public class Demographics implements Comparable<Demographics>, Serializable {
         // of speaking Arabic.
         // TODO: Figure out what languages to assign to the missing 30%
         RandomCollection<String> otherLanguageUsage = new RandomCollection();
-        otherLanguageUsage.add(0.065, "arabic");
-        otherLanguageUsage.add(0.935, "english");
+        otherLanguageUsage.add(0.003, "italian");
+        otherLanguageUsage.add(0.003, "gujarati");
+        otherLanguageUsage.add(0.004, "bengali");
+        otherLanguageUsage.add(0.004, "arabic");
+        otherLanguageUsage.add(0.004, "spanish");
+        otherLanguageUsage.add(0.004, "portuguese");
+        otherLanguageUsage.add(0.005, "urdu");
+        otherLanguageUsage.add(0.005, "panjabi");
+        otherLanguageUsage.add(0.008, "romanian");
+        otherLanguageUsage.add(0.011, "polish");
+        otherLanguageUsage.add(0.982, "english");
         return otherLanguageUsage.next(random);
       default:
         // will happen when mixed race
