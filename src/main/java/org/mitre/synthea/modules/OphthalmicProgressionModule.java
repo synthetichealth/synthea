@@ -26,7 +26,7 @@ public class OphthalmicProgressionModule extends Module {
   public static final Code[] DR_STAGE_CODES = {
     /* 0 */ new Code("LOINC", "LA18643-9", "No apparent retinopathy"),
     /* 1 */ new Code("LOINC", "LA18644-7", "Mild non-proliferative retinopathy"),
-    /* 2 */ new Code("LOINC", "LA18644-7", "Moderate non-proliferative retinopathy"),
+    /* 2 */ new Code("LOINC", "LA18645-4", "Moderate non-proliferative retinopathy"),
     /* 3 */ new Code("LOINC", "LA18646-2", "Severe non-proliferative retinopathy"),
     /* 4 */ new Code("LOINC", "LA18648-8", "Proliferative retinopathy")
   };
@@ -66,7 +66,7 @@ public class OphthalmicProgressionModule extends Module {
     // https://www.mdpi.com/2077-0383/13/3/676
     if (highIop || (drStage == 4 && person.rand() < 0.001)) {
       // very small chance of this happening
-      person.attributes.getOrDefault("high_iop", true);
+      person.attributes.put("high_iop", true);
 
       if (person.record.medicationActive("1923432") || person.record.medicationActive("861204")) {
         // dorzolamide 20 MG/ML / timolol 5 MG/ML Ophthalmic Solution
