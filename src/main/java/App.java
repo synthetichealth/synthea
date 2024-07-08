@@ -66,6 +66,7 @@ public class App {
 
     boolean validArgs = true;
     boolean overrideFutureDateError = false;
+    boolean reloadConfig = false;
     if (args != null && args.length > 0) {
       try {
         Queue<String> argsQ = new LinkedList<String>(Arrays.asList(args));
@@ -104,6 +105,7 @@ public class App {
           } else if (currArg.equalsIgnoreCase("-p")) {
             String value = argsQ.poll();
             options.population = Integer.parseInt(value);
+            Config.set("generate.default_population", value);
           } else if (currArg.equalsIgnoreCase("-o")) {
             String value = argsQ.poll();
             options.overflow = Boolean.parseBoolean(value);
@@ -132,10 +134,7 @@ public class App {
             String value = argsQ.poll();
             File configFile = new File(value);
             Config.load(configFile);
-            // Any options that are automatically set by reading the configuration
-            // file during options initialization need to be reset here.
-            options.population = Config.getAsInteger("generate.default_population", 1);
-            options.threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
+            reloadConfig = true;
           } else if (currArg.equalsIgnoreCase("-d")) {
             String value = argsQ.poll();
             File localModuleDir = new File(value);
@@ -252,6 +251,7 @@ public class App {
             }
 
             Config.set(configSetting, value);
+            reloadConfig = true;
           } else if (options.state == null) {
             options.state = currArg;
           } else {
@@ -266,10 +266,28 @@ public class App {
       }
     }
 
+    if (reloadConfig) {
+      resetOptionsFromConfig(options, exportOptions);
+    }
+
     if (validArgs && validateConfig(options, overrideFutureDateError)) {
       Generator generator = new Generator(options, exportOptions);
       generator.run();
     }
+  }
+
+  /**
+   * Reset the fields of the provided options to the current values in the Config.
+   */
+  private static void resetOptionsFromConfig(Generator.GeneratorOptions options,
+		  Exporter.ExporterRuntimeOptions exportOptions) {
+      // Any options that are automatically set by reading the configuration
+      // file during options initialization need to be reset here.
+      options.population = Config.getAsInteger("generate.default_population", 1);
+      options.threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
+
+      exportOptions.yearsOfHistory = Config.getAsInteger("exporter.years_of_history", 10);
+      exportOptions.terminologyService = !Config.get("generate.terminology_service_url", "").isEmpty();
   }
 
   private static boolean validateConfig(Generator.GeneratorOptions options,

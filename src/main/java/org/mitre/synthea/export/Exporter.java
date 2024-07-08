@@ -109,7 +109,7 @@ public abstract class Exporter {
     private List<Mapping> flexporterMappings;
 
     public ExporterRuntimeOptions() {
-      yearsOfHistory = Integer.parseInt(Config.get("exporter.years_of_history"));
+      yearsOfHistory = Config.getAsInteger("exporter.years_of_history", 10);
     }
 
     /**
