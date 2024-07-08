@@ -273,14 +273,14 @@
               "transition": "Numbing_Drops_AntiVEGF_Injection"
             },
             {
-              "transition": "Capture_Notes",
+              "transition": "End_Encounter",
               "distribution": 0.15
             }
           ]
         },
         {
           "distributions": [],
-          "transition": "Capture_Notes"
+          "transition": "End_Encounter"
         }
       ]
     },
@@ -440,7 +440,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Capture_Notes"
+      "direct_transition": "End_Encounter"
     },
     "Grid_Laser": {
       "type": "Procedure",
@@ -459,11 +459,11 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Capture_Notes"
+      "direct_transition": "End_Encounter"
     },
     "Progress_DR_Vitals": {
       "type": "CallSubmodule",
-      "submodule": "OphthalmicProgression",
+      "submodule": "eye/ophthalmic_progression",
       "direct_transition": "Check_Visual_Acuity"
     },
     "AntiVEGF_Therapy_Med": {
@@ -495,7 +495,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Capture_Notes"
+      "direct_transition": "End_Encounter"
     },
     "Numbing_Drops_Panretinal_Laser": {
       "type": "MedicationOrder",
@@ -601,11 +601,6 @@
       "remarks": [
         "DICOM notes: https://www.dicomstandard.org/News-dir/ftsup/docs/sups/sup91.pdf"
       ]
-    },
-    "Capture_Notes": {
-      "type": "CallSubmodule",
-      "submodule": "OphthalmicNote",
-      "direct_transition": "End_Encounter"
     },
     "Initial_Ophthalmic_Encounter": {
       "type": "Encounter",

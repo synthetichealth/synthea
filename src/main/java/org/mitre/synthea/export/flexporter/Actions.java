@@ -661,15 +661,13 @@ public abstract class Actions {
 
       Resource resource = entry.getResource();
       String resourceType = resource.getResourceType().toString();
-
       for (String applicability : list) {
-          if (applicability.equals(resourceType) || FhirPathUtils.appliesToResource(resource, applicability)) {
-              deletedResourceIDs.add(resource.getId());
-              itr.remove();
-              break;
-            }
+        if (applicability.equals(resourceType) || FhirPathUtils.appliesToResource(resource, applicability)) {
+          deletedResourceIDs.add(resource.getId());
+          itr.remove();
+          break;
+        }
       }
-
     }
 
     if (!deletedResourceIDs.isEmpty()) {
