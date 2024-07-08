@@ -1,5 +1,6 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -8,6 +9,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Records;
 import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.model.Factory;
@@ -24,12 +26,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
@@ -47,18 +47,20 @@ public class Graphviz {
   public static void main(String[] args) throws URISyntaxException, IOException {
     File folder = Exporter.getOutputFolder("graphviz", null);
 
-    Path inputPath = null;
+    List<Path> inputPaths = new ArrayList<Path>();
     if (args != null && args.length > 0) {
       File file = new File(args[0]);
-      inputPath = file.toPath();
+      inputPaths.add(file.toPath());
     } else {
-      inputPath = Module.getModulesPath();
+      inputPaths = Module.getModulePaths();
     }
 
     System.out.println("Rendering graphs to `" + folder.getAbsolutePath() + "`...");
 
     long start = System.currentTimeMillis();
-    generateJsonModuleGraphs(inputPath, folder);
+    for (Path path : inputPaths) {
+      generateJsonModuleGraphs(path, folder);
+    }
 
     System.out.println("Completed in " + (System.currentTimeMillis() - start) + " ms.");
   }
@@ -276,8 +278,16 @@ public class Graphviz {
 
     File outputFile = outputFolder.toPath().resolve(relativePath + ".png").toFile();
     outputFile.mkdirs();
-    guru.nidi.graphviz.engine.Graphviz.fromGraph(g)
+
+    try {
+      guru.nidi.graphviz.engine.Graphviz.fromGraph(g).engine(Engine.DOT)
+      .render(Format.PNG).toFile(outputFile);
+    } catch (guru.nidi.graphviz.engine.GraphvizException gve) {
+      if (gve.getMessage().contains("Command took too long to execute")) {
+        guru.nidi.graphviz.engine.Graphviz.fromGraph(g).engine(Engine.FDP)
         .render(Format.PNG).toFile(outputFile);
+      }
+    }
   }
 
   private static String getStateDescription(JsonObject state) {
@@ -319,7 +329,13 @@ public class Graphviz {
         }
         break;
       case "SetAttribute":
-        String v = state.has("value") ? state.get("value").getAsString() : null;
+        String v = "null";
+        if (state.has("value")) {
+          JsonElement e = state.get("value");
+          if (e != null && e != JsonNull.INSTANCE) {
+            v = e.getAsString();
+          }
+        }
         details.append("Set ").append(state.get("attribute").getAsString()).append(" = ").append(v);
         break;
       case "Symptom":

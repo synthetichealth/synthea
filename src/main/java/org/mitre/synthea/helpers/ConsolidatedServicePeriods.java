@@ -120,7 +120,7 @@ public class ConsolidatedServicePeriods {
     for (List<HealthRecord.Encounter> encounters: providerEncounters.values()) {
       List<ConsolidatedServicePeriod> providerServicePeriods = new ArrayList<>();
       encounters.sort((e1, e2) -> {
-        return (int)(e1.start - e2.start);
+        return Long.compare(e1.start, e2.start);
       });
       for (HealthRecord.Encounter encounter: encounters) {
         consolidate(encounter, providerServicePeriods, maxSeparationTime);
@@ -128,7 +128,7 @@ public class ConsolidatedServicePeriods {
       allServicePeriods.addAll(providerServicePeriods);
     }
     allServicePeriods.sort((e1, e2) -> {
-      return (int)(e1.getStart() - e2.getStart());
+      return Long.compare(e1.getStart(), e2.getStart());
     });
     return allServicePeriods;
   }

@@ -234,3 +234,268 @@ CODE,MIN,MODE,MAX,COMMENTS
 271280005,138,239,239,Removal of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31502
 36576007,389,447.5,506,Infusion (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77750
 706004007,7817,9034,10251,Implantable cardiac pacemaker (physical object) - https://www.medicare.gov/procedure-price-lookup/cost/33208
+D0120,39,54.79,78,periodic oral evaluation - established patient
+D0140,50,75.91,110,limited oral evaluation - problem focused
+D0145,40,65.4,103,oral evaluation for a patient under three years of age and counseling with primary caregiver
+D0150,60,87.19,126,comprehensive oral evaluation - new or established patient
+D0160,58,126.68,208,detailed and extensive oral evaluation - problem focused by report
+D0170,35,62.9,100,re-evaluation - limited problem focused (established patient; not post-operative visit)
+D0171,0,27.21,88,re-evaluation post-operative office visit
+D0180,72,100.67,150,comprehensive periodontal evaluation - new or established patient
+D0190,25,61.14,114,screening of a patient
+D0191,25,60.62,150,assessment of a patient
+D0210,110,143.3,195,intraoral - complete series of radiographic images
+D0220,21,30.99,45,intraoral - periapical first radiographic image
+D0230,16,25.3,38,intraoral - periapical each additional radiographic image
+D0251,0,35.9,89,extra-oral posterior dental radiographic image
+D0272,37,48.94,69,bitewings - two radiographic images
+D0273,45,59.09,82,bitewings - three radiographic images
+D0274,53,69.76,95,bitewings - four radiographic images
+D0277,74,101.21,140,vertical bitewings - 7 to 8 radiographic images
+D0330,95,123.36,166,panoramic radiographic image
+D0350,0,56.65,120,2D oral/facial photographic image obtained intra-orally or extra-orally
+D0364,125,256.6,432,cone beam CT capture and interpretation with limited field of view less than one whole jaw
+D0365,155,298.99,500,cone beam CT capture and interpretation with field of view of one full dental arch mandible
+D0366,150,297.93,500,cone beam CT capture and interpretation with field of view of one full dental arch maxilla with or without cranium
+D0367,170,327.17,515,cone beam CT capture and interpretation with field of view of both jaws; with or without cranium
+D0417,32,148.61,260,collection and preparation of saliva sample for laboratory diagnostic testing
+D0418,72,155.23,290,analysis of saliva sample
+D0431,29,63.53,95,adjunctive pre-diagnostic test that aids in detection of mucosal abnormalities including premalignant and malignant lesions not to include cytology or biopsy procedures
+D0470,69,121.41,250,diagnostic casts
+D0601,10,39.35,90,caries risk assessment and documentation with a finding of low risk
+D0602,8,37.48,87,caries risk assessment and documentation with a finding of moderate risk
+D0603,8,37.41,88,caries risk assessment and documentation with a finding of high risk
+D1110,74,97.5,135,prophylaxis - adult
+D1120,55,73.04,102,prophylaxis - child
+D1206,28,41.96,62,topical application of fluoride varnish
+D1208,27,39.89,57,topical application of fluoride excluding varnish
+D1320,0,38.2,97,tobacco counseling for the control and prevention of oral disease
+D1330,0,32.05,71,oral hygiene instructions
+D1351,42,57.1,80,sealant - per tooth
+D1352,51,99.32,175,preventive resin restoration in a moderate to high caries risk patient permanent tooth
+D1354,22,54.53,125,interim caries arresting medicament application per tooth
+D1510,250,328.92,450,space maintainer - fixed unilateral per quadrant
+D1515,335,441.18,599,space maintainer - fixed bilateral
+D2140,104,145.78,200,amalgam - one surface primary or permanent
+D2150,130,181.77,250,amalgam - two surfaces primary or permanent
+D2160,155,218.02,305,amalgam - three surfaces primary or permanent
+D2161,180,257.28,362,amalgam - four or more surfaces primary or permanent
+D2330,130,174.13,247,resin-based composite - one surface anterior
+D2331,159,212.11,293,resin-based composite - two surfaces anterior
+D2332,189,256.04,350,resin-based composite - three surfaces anterior
+D2335,220,310.07,430,resin-based composite - four or more surfaces or involving incisal angle (anterior)
+D2390,260,455.26,749,resin-based composite crown anterior
+D2391,144,190.99,260,resin-based composite - one surface posterior
+D2392,180,242.48,332,resin-based composite - two surfaces posterior
+D2393,218,294.82,401,resin-based composite - three surfaces posterior
+D2394,250,344.06,472,resin-based composite - four or more surfaces posterior
+D2520,615,917.92,1422,inlay - metallic - two surfaces
+D2543,770,1070.33,1550,onlay - metallic - three surfaces
+D2620,700,991.59,1418,inlay - porcelain/ceramic - two surfaces
+D2642,769,1059.45,1467,onlay - porcelain/ceramic - two surfaces
+D2643,869,1117.26,1500,onlay - porcelain/ceramic - three surfaces
+D2644,900,1164.29,1576,onlay - porcelain/ceramic - four or more surfaces
+D2651,600,891.25,1290,inlay - resin-based composite - two surfaces
+D2662,585,915.34,1293,onlay - resin-based composite - two surfaces
+D2663,650,968.6,1300,onlay - resin-based composite - three surfaces
+D2664,700,1027.09,1423,onlay - resin-based composite - four or more surfaces
+D2710,400,826.53,1367,crown - resin-based composite (indirect)
+D2740,970,1213.08,1600,crown - porcelain/ceramic
+D2750,950,1201.52,1600,crown - porcelain fused to high noble metal
+D2751,857,1095.76,1468,crown - porcelain fused to predominantly base metal
+D2752,900,1140.42,1500,crown - porcelain fused to noble metal
+D2780,900,1168.94,1590,crown - 3/4 cast high noble metal
+D2783,940,1198.26,1638,crown - 3/4 porcelain/ceramic
+D2790,973,1240.88,1673,crown - full cast high noble metal
+D2794,900,1195.54,1698,crown - titanium and titanium alloys
+D2799,120,356.87,600,provisional crown further treatment or completion of diagnosis necessary prior to final impression
+D2920,80,114.64,171,re-cement or re-bond crown
+D2929,211,345.69,518,prefabricated porcelain/ceramic crown primary tooth
+D2930,200,283.56,400,prefabricated stainless steel crown - primary tooth
+D2931,250,336.67,450,prefabricated stainless steel crown - permanent tooth
+D2940,81,126.23,200,protective restoration
+D2949,60,176.92,325,restorative foundation for an indirect restoration
+D2950,202,282.49,397,core buildup including any pins when required
+D2952,299,411.52,557,post and core in addition to crown indirectly fabricated
+D2954,255,348.17,483,prefabricated post and core in addition to crown
+D2961,659,1013.1,1450,labial veneer (resin laminate) - laboratory
+D2962,953,1230.66,1618,labial veneer (porcelain laminate) - laboratory
+D2980,165,268.67,402,crown repair necessitated by restorative material failure
+D2981,193,269.14,361,inlay repair necessitated by restorative material failure
+D2982,193,289.48,541,onlay repair necessitated by restorative material failure
+D2983,128,261.16,425,veneer repair necessitated by restorative material failure
+D2990,50,148.79,350,resin infiltration of incipient smooth surface lesions
+D3110,50,84.4,134,pulp cap - direct (excluding final restoration)
+D3120,49,81.75,130,pulp cap - indirect (excluding final restoration)
+D3220,125,201.5,315,therapeutic pulpotomy (excluding final restoration) - removal of pulp coronal to the dentinocemental junction and application of medicament
+D3221,125,218.16,361,pulpal debridement primary and permanent teeth
+D3222,145,259.23,400,partial pulpotomy for apexogenesis - permanent tooth with incomplete root development
+D3230,172,256.12,374,pulpal therapy (resorbable filling) - anterior primary tooth (excluding final restoration)
+D3240,183,283.96,419,pulpal therapy (resorbable filling) - posterior primary tooth (excluding final restoration)
+D3310,620,799.76,1100,endodontic therapy anterior tooth (excluding final restoration)
+D3320,705,917.71,1250,endodontic therapy premolar tooth (excluding final restoration)
+D3330,870,1109.31,1472,endodontic therapy molar tooth (excluding final restoration)
+D3331,210,487.32,750,treatment of root canal obstruction; non- surgical access
+D3332,103,385.88,625,incomplete endodontic therapy; inoperable unrestorable or fractured tooth
+D3346,670,911.61,1305,retreatment of previous root canal therapy - anterior
+D3347,760,1044.12,1454,retreatment of previous root canal therapy - premolar
+D3348,900,1246.06,1700,retreatment of previous root canal therapy - molar
+D3351,250,366.28,524,apexification/recalcification initial visit (apical closure / calcific repair of perforations root resorption etc.)
+D3352,149,239.73,353,apexification/recalcification interim medication replacement
+D3353,378,556.64,800,apexification/recalcification - final visit (includes completed root canal therapy - apical closure/calcific repair of perforations root resorption etc.)
+D3355,277,414.35,619,pulpal regeneration - initial visit
+D3356,147,261.7,511,pulpal regeneration - interim medication replacement
+D3357,195,488.61,721,pulpal regeneration - completion of treatment
+D3410,518,767.4,1140,apicoectomy - anterior
+D3421,600,849.16,1270,apicoectomy - premolar (first root)
+D3425,700,961.87,1452,apicoectomy - molar (first root)
+D3426,250,380.16,562,apicoectomy (each additional root)
+D4210,385,612.88,907,gingivectomy or gingivoplasty - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4211,180,299.46,464,gingivectomy or gingivoplasty - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4212,100,235.76,456,gingivectomy or gingivoplasty to allow access for restorative procedure per tooth
+D4240,446,751.41,1150,gingival flap procedure including root planing - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4241,300,573.17,905,gingival flap procedure including root planing - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4249,450,761.96,1153,clinical crown lengthening hard tissue
+D4260,733,1144.38,1654,osseous surgery (including elevation of a full thickness flap and closure) four or more contiguous teeth or tooth bounded spaces per quadrant
+D4261,561,906.77,1400,osseous surgery (including elevation of a full thickness flap and closure) one to three contiguous teeth or tooth bounded spaces per quadrant
+D4263,325,597.86,927,bone replacement graft retained natural tooth first site in quadrant
+D4264,260,466.03,737,bone replacement graft retained natural tooth each additional site in quadrant
+D4266,263,608.23,1027,guided tissue regeneration - resorbable barrier per site
+D4267,318,698.3,1150,guided tissue regeneration - nonresorbable barrier per site (includes membrane removal)
+D4273,779,1128.05,1610,autogenous connective tissue graft procedure (including donor and recipient surgical sites) first tooth implant or edentulous tooth position in graft
+D4275,653,969.72,1400,non-autogenous connective tissue graft (including recipient site and donor material) first tooth implant or edentulous tooth position in graft
+D4277,540,883.16,1490,free soft tissue graft procedure (including recipient and donor surgical sites) first tooth implant or edentulous tooth position in graft
+D4278,288,636.03,1214,free soft tissue graft procedure (including recipient and donor surgical sites) each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4283,546,871.06,1500,autogenous connective tissue graft procedure (including donor and recipient surgical sites) each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4285,446,801.1,1500,non-autogenous connective tissue graft procedure (including recipient surgical site and donor material) each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4321,239,424.69,646,provisional splinting - extracoronal
+D4341,201,266.51,355,periodontal scaling and root planing - four or more teeth per quadrant
+D4342,135,189.68,267,periodontal scaling and root planing - one to three teeth per quadrant
+D4355,135,187.06,274,full mouth debridement to enable a comprehensive oral evaluation and diagnosis on a subsequent visit
+D4381,40,92.84,198,localized delivery of antimicrobial agents via a controlled release vehicle into diseased crevicular tissue per tooth
+D4910,115,149.01,200,periodontal maintenance
+D5110,1250,1739.91,2561,complete denture - maxillary
+D5120,1250,1737.49,2573,complete denture - mandibular
+D5130,1340,1852.49,2727,immediate denture - maxillary
+D5140,1350,1850.74,2738,immediate denture - mandibular
+D5211,800,1338.52,2136,maxillary partial denture resin base (including retentive/clasping materials rests and teeth)
+D5212,800,1350.62,2147,mandibular partial denture resin base (including retentive/clasping materials rests and teeth)
+D5213,1335,1809.27,2565,maxillary partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5214,1340,1811.46,2575,mandibular partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5221,700,1352.9,2150,immediate maxillary partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5222,688,1354.47,2200,immediate mandibular partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5223,1090,1701.1,2500,immediate maxillary partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5224,1190,1725.42,2500,immediate mandibular partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5225,1004,1503.04,2142,maxillary partial denture - flexible base (including any clasps rests and teeth)
+D5226,1000,1498.05,2169,mandibular partial denture - flexible base (including any clasps rests and teeth)
+D5520,124,192.6,299,replace missing or broken teeth - complete denture (each tooth)
+D5640,125,197.79,309,replace broken teeth - per tooth
+D5650,155,234.11,350,add tooth to existing partial denture
+D5660,180,268.15,401,add clasp to existing partial denture - per tooth
+D5710,395,594.67,873,rebase complete maxillary denture
+D5711,400,589.98,850,rebase complete mandibular denture
+D5720,375,567.73,800,rebase maxillary partial denture
+D5721,376,566.31,801,rebase mandibular partial denture
+D5730,199,350.42,529,reline complete maxillary denture (chairside)
+D5731,200,351.32,533,reline complete mandibular denture (chairside)
+D5750,300,465.57,670,reline complete maxillary denture (laboratory)
+D5751,300,463.29,670,reline complete mandibular denture (laboratory)
+D5986,72,169.76,288,fluoride gel carrier
+D5991,113,202.54,300,vesiculobullous disease medicament carrier
+D5994,40,407.71,824,periodontal medicament carrier with peripheral seal laboratory processed
+D6010,1545,2013.73,2626,surgical placement of implant body: endosteal implant
+D6011,165,540.06,1654,second stage implant surgery
+D6012,1027,1646.55,2500,surgical placement of interim implant body for transitional prosthesis: endosteal implant
+D6051,200,448.96,800,interim abutment
+D6055,800,2554.28,4997,connecting bar implant supported or abutment supported
+D6056,450,717.97,1072,prefabricated abutment includes modification and placement
+D6057,600,872.56,1283,custom fabricated abutment includes placement
+D6059,1100,1456.48,2000,abutment supported porcelain fused to metal crown (high noble metal)
+D6066,1085,1511.04,2127,implant supported crown - porcelain fused to high noble alloys
+D6069,1050,1443.88,2000,abutment supported retainer for porcelain fused to metal FPD (high noble metal)
+D6076,1050,1509.74,2199,implant supported retainer for FPD - porcelain fused to high noble alloys
+D6080,70,212.47,410,implant maintenance procedures when prostheses are removed and reinserted including cleansing of prostheses and abutments
+D6100,260,640.78,1124,implant removal by report
+D6104,285,552.15,980,bone graft at time of implant placement
+D6205,682,982.41,1280,pontic - indirect resin based composite
+D6210,910,1171.26,1590,pontic - cast high noble metal
+D6240,945,1188.22,1600,pontic - porcelain fused to high noble metal
+D6241,857,1094.53,1455,pontic - porcelain fused to predominantly base metal
+D6245,950,1184.07,1580,pontic - porcelain/ceramic
+D6253,183,553.73,1050,provisional pontic - further treatment or completion of diagnosis necessary prior to final impression
+D6545,350,750.53,1250,retainer - cast metal for resin bonded fixed prosthesis
+D6549,268,717.92,1427,retainer for resin bonded fixed prosthesis
+D6710,748,1016.46,1340,retainer crown - indirect resin based composite
+D6750,954,1204.67,1625,retainer crown - porcelain fused to high noble metal
+D6751,875,1103.69,1455,retainer crown - porcelain fused to predominantly base metal
+D6790,950,1202.04,1673,retainer crown - full cast high noble metal
+D6793,200,487.26,1007,provisional retainer crown - further treatment or completion of diagnosis necessary prior to final impression
+D6930,110,170.52,265,re-cement or re-bond fixed partial denture
+D7111,88,134.94,200,extraction coronal remnants primary tooth
+D7140,135,189.83,299,extraction erupted tooth or exposed root (elevation and/or forceps removal)
+D7210,220,291.53,400,extraction erupted tooth requiring removal of bone and/or sectioning of tooth and including elevation of mucoperiosteal flap if indicated
+D7220,250,335.51,460,removal of impacted tooth - soft tissue
+D7230,312,417.17,572,removal of impacted tooth - partially bony
+D7240,383,505.38,702,removal of impacted tooth - completely bony
+D7250,200,304.09,427,removal of residual tooth roots (cutting procedure)
+D7251,160,415.76,674,coronectomy intentional partial tooth removal
+D7286,225,339.92,493,incisional biopsy of oral tissue-soft
+D7287,114,188.27,311,exfoliative cytological sample collection
+D7288,131,199.14,306,brush biopsy - transepithelial sample collection
+D7295,287,744.59,1449,harvest of bone for use in autogenous grafting procedure
+D7310,196,301.75,462,alveoloplasty in conjunction with extractions - four or more teeth or tooth spaces per quadrant
+D7320,255,428.09,642,alveoloplasty not in conjunction with extractions - four or more teeth or tooth spaces per quadrant
+D7410,177,394.64,807,excision of benign lesion up to 1.25 cm
+D7440,264,726.64,1603,excision of malignant tumor - lesion diameter up to 1.25 cm
+D7450,258,586.07,1009,removal of benign odontogenic cyst or tumor - lesion diameter up to 1.25 cm
+D7640,2843,3440.72,4118,mandible - closed reduction (teeth immobilized if present)
+D7880,451,876.43,1545,occlusal orthotic device by report
+D7910,150,292.09,500,suture of recent small wounds up to 5 cm
+D7921,100,371.34,694,collection and application of autologous blood concentrate product
+D7953,262,520.15,994,bone replacement graft for ridge preservation - per site
+D7960,300,441.78,625,frenulectomy - also known as frenectomy or frenotomy - separate procedure not incidental to another procedure
+D7970,256,471.24,800,excision of hyperplastic tissue - per arch
+D8020,1000,2692.42,5000,limited orthodontic treatment of the transitional dentition
+D8030,1575,3072.72,5000,limited orthodontic treatment of the adolescent dentition
+D8040,1950,3355.57,5000,limited orthodontic treatment of the adult dentition
+D8050,1800,2892.85,4900,interceptive orthodontic treatment of the primary dentition
+D8060,1800,2971.73,4950,interceptive orthodontic treatment of the transitional dentition
+D8070,4282,5327.8,6636,comprehensive orthodontic treatment of the transitional dentition
+D8080,4500,5369.51,6663,comprehensive orthodontic treatment of the adolescent dentition
+D8090,4560,5426.03,6600,comprehensive orthodontic treatment of the adult dentition
+D8660,82,290.44,587,pre-orthodontic treatment examination to monitor growth and development
+D8670,103,248.45,464,periodic orthodontic treatment visit
+D8681,51,162.16,395,removable orthodontic retainer adjustment
+D8690,180,368.81,730,orthodontic treatment (alternative billing to a contract fee)
+D9110,70,126.85,210,palliative (emergency) treatment of dental pain - minor procedure
+D9120,75,178.32,302,fixed partial denture sectioning
+D9210,30,65.14,108,local anesthesia not in conjunction with operative or surgical procedures
+D9215,0,35.03,85,local anesthesia in conjunction with operative or surgical procedures
+D9223,57,261.55,600,deep sedation/general anesthesia each subsequent 15 minute increment
+D9230,35,72.51,145,inhalation of nitrous oxide/analgesia anxiolysis
+D9243,108,204.05,417,intravenous moderate (conscious) sedation/analgesia each subsequent 15 minute increment
+D9248,0,211.53,481,non-intravenous conscious sedation
+D9310,0,106.84,203,consultation - diagnostic service provided by dentist or physician other than requesting dentist or physician
+D9410,89,219.17,394,house/extended care facility call
+D9420,150,295.57,460,hospital or ambulatory surgical center call
+D9430,0,62.88,118,office visit for observation (during regularly scheduled hours) - no other services performed
+D9440,93,165.05,261,office visit - after regularly scheduled hours
+D9450,77,145.42,250,case presentation detailed and extensive treatment planning
+D9610,0,61.92,141,therapeutic parenteral drug single administration
+D9630,0,29.23,73,drugs or medicaments dispensed in the office for home use
+D9910,25,55.96,100,application of desensitizing medicament
+D9911,15,63,125,application of desensitizing resin for cervical and/or root surface per tooth
+D9920,50,127.23,273,behavior management by report
+D9930,65,124.54,210,treatment of complications (post-surgical) - unusual circumstances by report
+D9932,25,68.03,175,cleaning and inspection of removable complete denture maxillary
+D9933,25,67.05,175,cleaning and inspection of removable complete denture mandibular
+D9934,25,64.82,175,cleaning and inspection of removable partial denture maxillary
+D9935,25,64.97,175,cleaning and inspection of removable partial denture mandibular
+D9940,324,522.02,788,occlusal guard by report
+D9941,100,241.4,500,fabrication of athletic mouthguard
+D9943,35,96.93,225,occlusal guard adjustment
+D9951,59,147.63,269,occlusal adjustment - limited
+D9952,200,565.5,943,occlusal adjustment - complete
+D9972,131,297.12,590,external bleaching - per arch - performed in office
+D9974,150,271.67,400,internal bleaching - per tooth
+D9975,108,242.1,495,external bleaching for home application per arch; includes materials and fabrication of custom trays
