@@ -121,7 +121,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String EMPLOYMENT_MODEL = "employment_model";
 
   public static final String NO_VEHICLE_ACCESS = "no_vehicle_access";
-  public static final String UNINSURED = "uninsured";
+  // public static final String UNINSURED = "uninsured";
 
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
