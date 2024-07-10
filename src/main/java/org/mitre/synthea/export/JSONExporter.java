@@ -18,7 +18,9 @@ import java.util.Random;
 
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
+/* UKAdp
 import org.mitre.synthea.world.agents.Payer;
+*/
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -40,7 +42,9 @@ public class JSONExporter {
         .registerTypeHierarchyAdapter(State.class, new StateSerializer())
         .registerTypeHierarchyAdapter(Person.class,
             new PersonSerializer(!Config.getAsBoolean("exporter.json.include_module_history")))
+        /* UKAdp
         .registerTypeHierarchyAdapter(Payer.class, new ShortPayerSerializer())
+        */
         .registerTypeHierarchyAdapter(Random.class, new RandomSerializer())
         .registerTypeHierarchyAdapter(LocalDate.class, new LocalDateSerializer());
     if (Config.getAsBoolean("exporter.pretty_print", true)) {
@@ -53,6 +57,7 @@ public class JSONExporter {
   /**
    * Trimming down the attributes that are serialized out when exporting the Person record.
    */
+  /* UKAdp
   public static class ShortPayerSerializer implements JsonSerializer<Payer> {
     @Override
     public JsonElement serialize(Payer src, Type typeOfSrc, JsonSerializationContext context) {
@@ -62,6 +67,7 @@ public class JSONExporter {
       return payerOut;
     }
   }
+  */
 
   /**
    * Custom serialization for LocalDates as Java 17 does not allow Gson to automatically serialize
@@ -93,7 +99,9 @@ public class JSONExporter {
       JsonObject personOut = new JsonObject();
       personOut.add("seed", new JsonPrimitive(src.getSeed()));
       personOut.add("lastUpdated", new JsonPrimitive(src.lastUpdated));
+      /* UKAdp
       personOut.add("coverage", context.serialize(src.coverage));
+      */
       personOut.add("symptoms", context.serialize(src.getExpressedSymptoms()));
       JsonObject attributes = new JsonObject();
       src.attributes.forEach((key, value) -> {

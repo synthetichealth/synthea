@@ -34,9 +34,9 @@ public class ProviderFinderNearest implements IProviderFinder {
       }
 
       // Filter out IHS facilities if someone is not Native American
-      if (! "native".equals(person.attributes.get(Person.RACE))) {
-        options = options.filter(p -> ! ProviderType.IHS.equals(p.type));
-      }
+      // if (! "native".equals(person.attributes.get(Person.RACE))) {
+      //   options = options.filter(p -> ! ProviderType.IHS.equals(p.type));
+      // }
     }
     // Sort by distance
     Map<Double, List<Provider>> groupedByDistance =

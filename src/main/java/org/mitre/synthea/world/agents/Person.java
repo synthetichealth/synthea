@@ -37,8 +37,10 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
+/* UKAdp
 import org.mitre.synthea.world.concepts.healthinsurance.CoverageRecord;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+*/
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
 public class Person implements Serializable, RandomNumberGenerator, QuadTreeElement {
@@ -119,7 +121,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String EMPLOYMENT_MODEL = "employment_model";
 
   public static final String NO_VEHICLE_ACCESS = "no_vehicle_access";
-  public static final String UNINSURED = "uninsured";
+  // public static final String UNINSURED = "uninsured";
 
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
@@ -158,7 +160,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /** History of the currently active module. */
   public List<State> history;
   /** Record of insurance coverage. */
+  /* UKAdp
   public final CoverageRecord coverage;
+  */
 
   /**
    * Person constructor.
@@ -177,7 +181,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       records = new ConcurrentHashMap<String, HealthRecord>();
     }
     this.initializeDefaultHealthRecords();
+    /* UKAdp
     coverage = new CoverageRecord(this);
+    */
   }
 
   /**
@@ -571,9 +577,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
     // Note: If person has no more income then they can no longer afford copays/premiums/etc.
     // meaning we can guarantee that they currently have no insurance.
+    /* UKAdp
     if (lossOfCareEnabled && !this.stillHasIncome(time)) {
       return this.lossOfCareRecord;
     }
+    */
 
     HealthRecord returnValue = this.defaultRecord;
     if (hasMultipleRecords) {
@@ -770,6 +778,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    *
    * @param plan the plan to check.
    */
+  /* UKAdp
   public boolean canAffordPlan(InsurancePlan plan) {
     double incomePercentage
         = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
@@ -778,6 +787,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return BigDecimal.valueOf(income)
         .multiply(BigDecimal.valueOf(incomePercentage)).compareTo(yearlyCost) >= 0;
   }
+  */
 
   /**
    * Returns whether the person's yearly expenses exceed their income. If they do,
@@ -786,6 +796,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    *
    * @param time the current time
    */
+  /* UKAdp
   private boolean stillHasIncome(long time) {
     int incomeRemaining = this.coverage.incomeRemaining(time);
     boolean stillHasIncome = incomeRemaining > 0;
@@ -795,6 +806,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     }
     return stillHasIncome;
   }
+  */
 
   /**
    * Checks if the person has paid their monthly premium. If not, the person pays
@@ -802,6 +814,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    *
    * @param time the time that the person checks to pay premium.
    */
+  /* UKAdp
   public void checkToPayMonthlyPremium(long time) {
 
     if (!this.attributes.containsKey(Person.LAST_MONTH_PAID)) {
@@ -825,6 +838,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       this.stillHasIncome(time);
     }
   }
+  */
 
   /**
    * Returns the person's QOL at the given time.

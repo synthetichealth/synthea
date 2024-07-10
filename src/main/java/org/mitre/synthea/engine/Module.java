@@ -38,12 +38,16 @@ import java.util.function.Supplier;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.TransitionMetrics;
 import org.mitre.synthea.helpers.Utilities;
+/* UKAdaption
 import org.mitre.synthea.modules.CardiovascularDiseaseModule;
+*/
 import org.mitre.synthea.modules.EncounterModule;
 import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.modules.QualityOfLifeModule;
 import org.mitre.synthea.modules.WeightLossModule;
+/* UKAdaption
 import org.mitre.synthea.modules.covid.C19ImmunizationModule;
+*/
 import org.mitre.synthea.world.agents.Person;
 
 /**
@@ -71,10 +75,14 @@ public class Module implements Cloneable, Serializable {
 
     retVal.put("Lifecycle", new ModuleSupplier(new LifecycleModule()));
     //retVal.put("Health Insurance", new ModuleSupplier(new HealthInsuranceModule()));
+    /* UKAdaption
     retVal.put("Cardiovascular Disease", new ModuleSupplier(new CardiovascularDiseaseModule()));
+    */
     retVal.put("Quality Of Life", new ModuleSupplier(new QualityOfLifeModule()));
     retVal.put("Weight Loss", new ModuleSupplier(new WeightLossModule()));
+    /* UKAdaption
     retVal.put("COVID-19 Immunization Module", new ModuleSupplier(new C19ImmunizationModule()));
+    */
 
     Properties moduleOverrides = getModuleOverrides();
 

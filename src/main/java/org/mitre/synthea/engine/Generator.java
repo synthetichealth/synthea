@@ -27,7 +27,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.mitre.synthea.editors.GrowthDataErrorsEditor;
+/* UKAdaption
 import org.mitre.synthea.export.CDWExporter;
+*/
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
@@ -38,12 +40,18 @@ import org.mitre.synthea.identity.EntityManager;
 import org.mitre.synthea.identity.Seed;
 import org.mitre.synthea.modules.DeathModule;
 import org.mitre.synthea.modules.EncounterModule;
+/* UKAdaption
 import org.mitre.synthea.modules.HealthInsuranceModule;
+*/
 import org.mitre.synthea.modules.LifecycleModule;
+/* UKAdaption
 import org.mitre.synthea.world.agents.PayerManager;
+*/
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+/* UKAdaption
 import org.mitre.synthea.world.concepts.Costs;
+*/
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
@@ -76,7 +84,7 @@ public class Generator {
   private boolean onlyVeterans;
   private Module keepPatientsModule;
   private Long maxAttemptsToKeepPatient;
-  public static String DEFAULT_STATE = "Massachusetts";
+  public static String DEFAULT_STATE = "South West";
   private Exporter.ExporterRuntimeOptions exporterRuntimeOptions;
   public static EntityManager entityManager;
   public final int threadPoolSize;
@@ -214,9 +222,11 @@ public class Generator {
       options.state = DEFAULT_STATE;
     }
     int stateIndex = Location.getIndex(options.state);
+    /* UKAdaption
     if (Config.getAsBoolean("exporter.cdw.export")) {
-      CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
+       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
+    */
     Exporter.loadCustomExporters();
 
     this.populationRandom = new DefaultRandomNumberGenerator(options.seed);
@@ -262,7 +272,9 @@ public class Generator {
     // initialize hospitals
     Provider.loadProviders(location, this.clinicianRandom);
     // Initialize Payers
+    /* UKAdaption
     PayerManager.loadPayers(location);
+    */
     // ensure modules load early
     if (options.localModuleDir != null) {
       Module.addModules(options.localModuleDir);
@@ -279,7 +291,7 @@ public class Generator {
       }
     }
 
-    Costs.loadCostData(); // ensure cost data loads early
+    // Costs.loadCostData(); // ensure cost data loads early
 
     String locationName;
     if (options.city == null) {
@@ -667,7 +679,9 @@ public class Generator {
    * @param person the previously created person to update
    */
   public void updatePerson(Person person) {
+    /* UKAdaption
     HealthInsuranceModule healthInsuranceModule = new HealthInsuranceModule();
+    */
     EncounterModule encounterModule = new EncounterModule();
 
     long time = person.lastUpdated;
@@ -691,7 +705,9 @@ public class Generator {
       }
 
       // Process Health Insurance.
+      /* UKAdaption
       healthInsuranceModule.process(person, time);
+      */
       // Process encounters.
       encounterModule.process(person, time);
 

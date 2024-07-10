@@ -27,7 +27,9 @@ public class Location implements Serializable {
   private static Map<String, String> timezones = loadTimezones();
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
+  /* UKAdp
   private static CMSStateCodeMapper cmsStateCodeMapper = new CMSStateCodeMapper();
+  */
   private long totalPopulation;
 
   // cache the population by city name for performance
@@ -535,7 +537,9 @@ public class Location implements Serializable {
    * @param zipCode The zip code of the location.
    * @return The FIPS county code of the location.
    */
+  /* UKAdp
   public static String getFipsCodeByZipCode(String zipCode) {
     return Location.cmsStateCodeMapper.zipToFipsCountyCode(zipCode);
   }
+  */
 }

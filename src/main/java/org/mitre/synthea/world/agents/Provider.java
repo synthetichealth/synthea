@@ -96,7 +96,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public String ownership;
   /** institutional (e.g. hospital) else professional (e.g. PCP) */
   public boolean institutional;
-  private double revenue;
+  // private double revenue;
   private Point2D.Double coordinates;
   public Set<EncounterType> servicesProvided;
   @JSONSkip
@@ -108,6 +108,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Java Serialization support for the utilization field.
    * @param oos stream to write to
    */
+  /* UKAdp
   private void writeObject(ObjectOutputStream oos) throws IOException {
     oos.defaultWriteObject();
     ArrayList<Payer.UtilizationBean> entryUtilizationElements = null;
@@ -120,11 +121,13 @@ public class Provider implements QuadTreeElement, Serializable {
     }
     oos.writeObject(entryUtilizationElements);
   }
+  */
 
   /**
    * Java Serialization support for the utilization field.
    * @param ois stream to read from
    */
+  /* UKAdp
   private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
     ois.defaultReadObject();
     ArrayList<Payer.UtilizationBean> entryUtilizationElements =
@@ -136,6 +139,7 @@ public class Provider implements QuadTreeElement, Serializable {
       }
     }
   }
+  */
 
   /**
    * Create a new Provider with no information.
@@ -145,7 +149,7 @@ public class Provider implements QuadTreeElement, Serializable {
     uuid = UUID.randomUUID().toString();
     locationUuid = UUID.randomUUID().toString();
     attributes = new LinkedTreeMap<>();
-    revenue = 0.0;
+    // revenue = 0.0;
     utilization = HashBasedTable.create();
     servicesProvided = new HashSet<EncounterType>();
     clinicianMap = new HashMap<String, ArrayList<Clinician>>();
@@ -256,16 +260,16 @@ public class Provider implements QuadTreeElement, Serializable {
    *
    * @param costOfCare the cost of the care to be added to revenue.
    */
-  public void addRevenue(double costOfCare) {
-    this.revenue += costOfCare;
-  }
+  // public void addRevenue(double costOfCare) {
+  //   this.revenue += costOfCare;
+  // }
 
   /**
    * Returns the total revenue of this provider.
-   */
-  public double getRevenue() {
-    return this.revenue;
-  }
+  */
+  // public double getRevenue() {
+  //   return this.revenue;
+  // }
 
   /**
    * Find specific service provider for the given person.
@@ -379,10 +383,12 @@ public class Provider implements QuadTreeElement, Serializable {
         loadProviders(location, ihsHospitalFile, ProviderType.IHS, servicesProvided,
             random, true);
 
-        servicesProvided.add(EncounterType.WELLNESS);
+        /* UKAdp 
+            servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, random,
                 false);
+        */
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);

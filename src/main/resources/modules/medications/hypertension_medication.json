@@ -1,43 +1,35 @@
 {
-  "name": "hypertension_medication",
+  "name": "UK Hypertension Medication",
   "remarks": [
     "A blank module"
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Initialize"
+      "direct_transition": "New_State",
+      "name": "Initial"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Initialize Step": {
       "type": "SetAttribute",
       "attribute": "hypertension_medication_step",
-      "value": 0,
-      "conditional_transition": [
-        {
-          "transition": "High BP",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": "<",
-            "value": 160
-          }
-        },
-        {
-          "transition": "Very High BP",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "Systolic Blood Pressure",
-            "operator": ">=",
-            "value": 160
-          }
-        }
-      ]
+      "direct_transition": "Check Step",
+      "name": "Initialize Step",
+      "value": 0
+    },
+    "Increase Step": {
+      "type": "Counter",
+      "attribute": "hypertension_medication_step",
+      "action": "increment",
+      "direct_transition": "Check Step",
+      "name": "Increase Step"
     },
     "Check Step": {
       "type": "Simple",
+      "name": "Check Step",
       "conditional_transition": [
         {
           "transition": "Step 1",
@@ -58,1034 +50,128 @@
           }
         },
         {
-          "transition": "Step 3"
-        }
-      ]
-    },
-    "Initialize": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Initialize Step",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_medication_step",
-            "operator": "is nil"
-          }
-        },
-        {
-          "transition": "Increase Step"
-        }
-      ]
-    },
-    "Increase Step": {
-      "type": "Counter",
-      "attribute": "hypertension_medication_step",
-      "action": "increment",
-      "direct_transition": "Check Race"
-    },
-    "Step 1": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step 1 High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
-        },
-        {
-          "transition": "Step 1 Very High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
-    "Step 2": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step 2 High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
-        },
-        {
-          "transition": "Step 2 Very High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
-    "Step 3": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step 3 High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
-        },
-        {
-          "transition": "Step 3 Very High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
-    "Step 1 High": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "HCTZ",
-          "distribution": 0.6
-        },
-        {
-          "transition": "Amlodipine",
-          "distribution": 0.4
-        }
-      ]
-    },
-    "Step 1 Very High": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "microalbuminuria",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "proteinuria",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.67,
-              "transition": "HCTZ+"
-            },
-            {
-              "transition": "ACE_Allergy_Check+",
-              "distribution": 0.33
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "HCTZ+",
-              "distribution": 0.6
-            },
-            {
-              "transition": "ACE_Allergy_Check+",
-              "distribution": 0.3
-            },
-            {
-              "transition": "Amlodipine+",
-              "distribution": 0.1
-            }
-          ]
-        }
-      ]
-    },
-    "Step 2 High": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "microalbuminuria",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "proteinuria",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "ACE_Allergy_Check_2"
-        },
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 310798,
-                "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "distribution": 0.5,
-              "transition": "Amlodipine_2"
-            },
-            {
-              "distribution": 0.5,
-              "transition": "ACE_Allergy_Check_2"
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "distribution": 0.5,
-              "transition": "ACE_Allergy_Check_2"
-            },
-            {
-              "distribution": 0.5,
-              "transition": "HCTZ_2"
-            }
-          ]
-        }
-      ]
-    },
-    "Step 2 Very High": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Amlodipine_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "HCTZ_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "ACE_Allergy_Check_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "Step 3 High": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Amlodipine_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "ACE_Allergy_Check_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "HCTZ_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "Step 3 Very High": {
-      "type": "Simple",
-      "direct_transition": "Refer to HTN Clinic"
-    },
-    "Check Race": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Non Hispanic Black",
-          "condition": {
-            "condition_type": "Race",
-            "race": "Black"
-          }
-        },
-        {
-          "transition": "All Others"
-        }
-      ]
-    },
-    "Non Hispanic Black": {
-      "type": "Simple",
-      "direct_transition": "Check Step"
-    },
-    "All Others": {
-      "type": "Simple",
-      "direct_transition": "Check_Step"
-    },
-    "Amlodipine": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 308136,
-          "display": "amLODIPine 2.5 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Terminal"
-    },
-    "Amlodipine_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 308136,
-          "display": "amLODIPine 2.5 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Terminal"
-    },
-    "Lisinopril_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 314076,
-          "display": "lisinopril 10 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Terminal"
-    },
-    "HCTZ": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
-      "direct_transition": "Terminal"
-    },
-    "HCTZ_2": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
-      "direct_transition": "Terminal"
-    },
-    "HCTZ_3": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "direct_transition": "Terminal"
-    },
-    "Amlodipine_3": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 308136,
-          "display": "amLODIPine 2.5 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Terminal"
-    },
-    "Lisinopril_3": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 314076,
-          "display": "lisinopril 10 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Terminal"
-    },
-    "HCTZ+": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 310798,
-          "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-        }
-      ],
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
-      "direct_transition": "ACE_Allergy_Check_2"
-    },
-    "Lisinopril+": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 314076,
-          "display": "lisinopril 10 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "Amlodipine_2"
-    },
-    "Amlodipine+": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": 308136,
-          "display": "amLODIPine 2.5 MG Oral Tablet"
-        }
-      ],
-      "chronic": true,
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
-      "prescription": {
-        "dosage": {
-          "amount": 1,
-          "frequency": 1,
-          "period": 1,
-          "unit": "days"
-        },
-        "duration": {
-          "quantity": 90,
-          "unit": "days"
-        }
-      },
-      "direct_transition": "HCTZ_2"
-    },
-    "Refer to HTN Clinic": {
-      "type": "Simple",
-      "direct_transition": "Terminal"
-    },
-    "Check_Step": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step_1",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_medication_step",
-            "operator": "==",
-            "value": 1
-          }
-        },
-        {
-          "transition": "Step_2",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_medication_step",
-            "operator": "==",
-            "value": 2
-          }
-        },
-        {
-          "transition": "Step_3",
+          "transition": "Step 3",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "hypertension_medication_step",
             "operator": "==",
             "value": 3
           }
+        },
+        {
+          "transition": "Step 4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_medication_step",
+            "operator": "==",
+            "value": 4
+          }
         }
       ]
     },
-    "Step_1": {
+    "Step 4": {
       "type": "Simple",
+      "direct_transition": "Diagnose Resistant Hypertension",
+      "name": "Step 4"
+    },
+    "Step 3": {
+      "type": "Simple",
+      "direct_transition": "Maybe Increase Doses",
+      "name": "Step 3"
+    },
+    "Step 2": {
+      "type": "Simple",
+      "name": "Step 2",
       "conditional_transition": [
         {
-          "transition": "Step_1_High",
+          "transition": "change ACE to ARB",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
+            "condition_type": "Race",
+            "race": "Black"
           }
         },
         {
-          "transition": "Step 1 Very High",
+          "transition": "Taking ACE, ARB or CCB?"
+        }
+      ]
+    },
+    "Step 1": {
+      "type": "Simple",
+      "name": "Step 1",
+      "conditional_transition": [
+        {
+          "transition": "Pregnant or Trying",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
+            "attribute": "pregnant",
             "operator": "==",
             "value": true
           }
-        }
-      ]
-    },
-    "Step_2": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step_2_High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
         },
         {
-          "transition": "Step 2 Very High",
+          "transition": "renin-angiotensin",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
+            "attribute": "diabetes",
             "operator": "==",
             "value": true
           }
+        },
+        {
+          "transition": "Check Race"
         }
       ]
     },
-    "Step_3": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Step_3_High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": false
-          }
-        },
-        {
-          "transition": "Step 3 Very High",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_severe",
-            "operator": "==",
-            "value": true
-          }
-        }
-      ]
-    },
-    "Step_1_High": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "microalbuminuria",
-                "operator": "==",
-                "value": true
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "proteinuria",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          },
-          "distributions": [],
-          "transition": "ACE_Allergy_Check"
-        },
-        {
-          "distributions": [
-            {
-              "transition": "ACE_Allergy_Check",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Amlodipine",
-              "distribution": 0.25
-            },
-            {
-              "transition": "HCTZ",
-              "distribution": 0.25
-            }
-          ]
-        }
-      ]
-    },
-    "Step_2_High": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 314076,
-                "display": "lisinopril 10 MG Oral Tablet"
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "HCTZ_2",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Amlodipine_2",
-              "distribution": 0.5
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 308136,
-                "display": "amLODIPine 2.5 MG Oral Tablet"
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "ACE_Allergy_Check_2",
-              "distribution": 0.5
-            },
-            {
-              "transition": "HCTZ_2",
-              "distribution": 0.5
-            }
-          ]
-        },
-        {
-          "condition": {
-            "condition_type": "Active Medication",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": 310798,
-                "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-              }
-            ]
-          },
-          "distributions": [
-            {
-              "transition": "ACE_Allergy_Check_2",
-              "distribution": 0.5
-            },
-            {
-              "transition": "Amlodipine_2",
-              "distribution": 0.5
-            }
-          ]
-        }
-      ]
-    },
-    "Step_3_High": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Amlodipine_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "HCTZ_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 314076,
-                    "display": "lisinopril 10 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "ACE_Allergy_Check_3",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 308136,
-                    "display": "amLODIPine 2.5 MG Oral Tablet"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Medication",
-                "codes": [
-                  {
-                    "system": "RxNorm",
-                    "code": 310798,
-                    "display": "Hydrochlorothiazide 25 MG Oral Tablet"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "Lisinopril": {
+    "renin-angiotensin": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 314076,
-          "display": "lisinopril 10 MG Oral Tablet"
+          "code": 214354,
+          "display": "candesartan",
+          "value_set": ""
         }
       ],
-      "chronic": true,
+      "direct_transition": "Terminal",
+      "name": "renin-angiotensin",
       "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
+      "reason": "Select Condition/Enter Attribute"
+    },
+    "Check Race": {
+      "type": "Simple",
+      "name": "Check Race",
+      "conditional_transition": [
+        {
+          "transition": "agiotensin II receptor blocker",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "Not Black"
+        }
+      ]
+    },
+    "Pregnant or Trying": {
+      "type": "Simple",
+      "name": "Pregnant or Trying",
+      "direct_transition": "Stop ARB/ACE If Active"
+    },
+    "agiotensin II receptor blocker": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1091643,
+          "display": "azilsartan",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "agiotensin II receptor blocker",
+      "assign_to_attribute": "hypertension_medication",
+      "reason": "Select Condition/Enter Attribute",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -1094,57 +180,25 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 1,
           "unit": "days"
         }
       },
-      "direct_transition": "Terminal"
+      "chronic": true
     },
-    "High BP": {
-      "type": "SetAttribute",
-      "attribute": "hypertension_severe",
-      "direct_transition": "Increase Step",
-      "value": false
-    },
-    "Very High BP": {
-      "type": "SetAttribute",
-      "attribute": "hypertension_severe",
-      "value": true,
-      "direct_transition": "Increase Step"
-    },
-    "ACE_Allergy_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Losartan",
-          "condition": {
-            "condition_type": "Active Allergy",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": "29046",
-                "display": "Lisinopril"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Lisinopril"
-        }
-      ]
-    },
-    "Losartan": {
+    "ACE Inhibitor": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 979485,
-          "display": "losartan potassium 25 MG Oral Tablet"
+          "code": 3827,
+          "display": "enalapril",
+          "value_set": ""
         }
       ],
       "direct_transition": "Terminal",
-      "chronic": true,
-      "reason": "hypertension_dx",
+      "name": "ACE Inhibitor",
+      "assign_to_attribute": "hypertension_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -1153,45 +207,171 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 1,
           "unit": "days"
         }
-      },
-      "assign_to_attribute": "hypertension_medication"
+      }
     },
-    "ACE_Allergy_Check_2": {
+    "change ACE to ARB": {
       "type": "Simple",
+      "name": "change ACE to ARB",
       "conditional_transition": [
         {
-          "transition": "Losartan 2",
+          "transition": "Unprescirbe ACE",
           "condition": {
-            "condition_type": "Active Allergy",
+            "condition_type": "Active Medication",
             "codes": [
               {
                 "system": "RxNorm",
-                "code": "29046",
-                "display": "Lisinopril"
+                "code": 3827,
+                "display": "enalapril"
               }
             ]
           }
         },
         {
-          "transition": "Lisinopril_2"
+          "transition": "Prescribe ARB 2"
         }
       ]
     },
-    "Losartan 2": {
+    "Taking ACE, ARB or CCB?": {
+      "type": "Simple",
+      "name": "Taking ACE, ARB or CCB?",
+      "conditional_transition": [
+        {
+          "transition": "ACE or ARB Active",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 3827,
+                "display": "enalapril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "ACE or ARB Active",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1091643,
+                "display": "azilsartan"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "CCB Active",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 17767,
+                "display": "amlodipine"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Prescribe CCB": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 979485,
-          "display": "losartan potassium 25 MG Oral Tablet"
+          "code": 17767,
+          "display": "amlodipine",
+          "value_set": ""
         }
       ],
       "direct_transition": "Terminal",
-      "assign_to_attribute": "hypertension_medication_2",
-      "reason": "hypertension_dx",
+      "name": "Prescribe CCB",
+      "assign_to_attribute": "hypertension_medication_2"
+    },
+    "Maybe Increase Doses": {
+      "type": "Simple",
+      "name": "Maybe Increase Doses",
+      "distributed_transition": [
+        {
+          "transition": "Prescribe ACE, CCB, Thiazide",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Increase Dose",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Increase Dose": {
+      "type": "Simple",
+      "direct_transition": "Terminal",
+      "name": "Increase Dose"
+    },
+    "Diagnose Resistant Hypertension": {
+      "type": "Simple",
+      "direct_transition": "Check Blood Potassium",
+      "name": "Diagnose Resistant Hypertension"
+    },
+    "Check Blood Potassium": {
+      "type": "Simple",
+      "name": "Check Blood Potassium",
+      "distributed_transition": [
+        {
+          "transition": "Alpha Blocker",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Low Dose Spironolactone",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Low Dose Spironolactone": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1234",
+          "display": "spironolactone 25 MG [Aldactone]",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Low Dose Spironolactone"
+    },
+    "Alpha Blocker": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 49276,
+          "display": "Doxazosin",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Alpha Blocker",
+      "assign_to_attribute": "hypertension_medication_4"
+    },
+    "Labetalol": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 372553,
+          "display": "Labetalol Oral Tablet",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Labetalol",
+      "reason": "Select Condition/Enter Attribute",
+      "assign_to_attribute": "hypertension_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -1206,40 +386,116 @@
       },
       "chronic": true
     },
-    "ACE_Allergy_Check_3": {
+    "New_State": {
       "type": "Simple",
+      "name": "New_State",
       "conditional_transition": [
         {
-          "transition": "Losartan_3",
+          "transition": "Initialize Step",
           "condition": {
-            "condition_type": "Active Allergy",
+            "condition_type": "Attribute",
+            "attribute": "hypertension_medication_step",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Increase Step"
+        }
+      ]
+    },
+    "stop ACE": {
+      "type": "MedicationEnd",
+      "direct_transition": "Labetalol",
+      "name": "stop ACE",
+      "medication_order": "ACE Inhibitor",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 3827,
+          "display": "enalapril",
+          "value_set": ""
+        }
+      ]
+    },
+    "Stop ARB/ACE If Active": {
+      "type": "Simple",
+      "name": "Stop ARB/ACE If Active",
+      "conditional_transition": [
+        {
+          "transition": "Stop ARB",
+          "condition": {
+            "condition_type": "Active Medication",
             "codes": [
               {
                 "system": "RxNorm",
-                "code": "29046",
-                "display": "Lisinopril"
+                "code": 1091643,
+                "display": "azilsartan"
               }
             ]
           }
         },
         {
-          "transition": "Lisinopril_3"
+          "transition": "stop ACE",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 3827,
+                "display": "enalapril"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Labetalol"
         }
       ]
     },
-    "Losartan_3": {
+    "Stop ARB": {
+      "type": "MedicationEnd",
+      "direct_transition": "Labetalol",
+      "name": "Stop ARB",
+      "medication_order": "agiotensin II receptor blocker",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1091643,
+          "display": "azilsartan",
+          "value_set": ""
+        }
+      ]
+    },
+    "Not Black": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "First CCB",
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 55,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "ACE Inhibitor"
+        }
+      ],
+      "name": "Not Black"
+    },
+    "First CCB": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 979485,
-          "display": "losartan potassium 25 MG Oral Tablet"
+          "code": 17767,
+          "display": "amlodipine",
+          "value_set": ""
         }
       ],
       "direct_transition": "Terminal",
-      "assign_to_attribute": "hypertension_medication_3",
-      "reason": "hypertension_dx",
-      "chronic": true,
+      "name": "First CCB",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -1248,44 +504,97 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 1,
           "unit": "days"
         }
       }
     },
-    "ACE_Allergy_Check+": {
-      "type": "Simple",
-      "conditional_transition": [
+    "Unprescirbe ACE": {
+      "type": "MedicationEnd",
+      "direct_transition": "Prescribe ARB 2",
+      "name": "Unprescirbe ACE",
+      "codes": [
         {
-          "transition": "Losartan+",
-          "condition": {
-            "condition_type": "Active Allergy",
-            "codes": [
-              {
-                "system": "RxNorm",
-                "code": "29046",
-                "display": "Lisinopril"
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Lisinopril+"
+          "system": "RxNorm",
+          "code": 3827,
+          "display": "enalapril",
+          "value_set": ""
         }
       ]
     },
-    "Losartan+": {
+    "Prescribe ARB 2": {
       "type": "MedicationOrder",
       "codes": [
         {
           "system": "RxNorm",
-          "code": 979485,
-          "display": "losartan potassium 25 MG Oral Tablet"
+          "code": 1091643,
+          "display": "azilsartan",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Amlodipine_2",
-      "assign_to_attribute": "hypertension_medication",
-      "reason": "hypertension_dx",
+      "direct_transition": "Terminal",
+      "name": "Prescribe ARB 2"
+    },
+    "ACE or ARB Active": {
+      "type": "Simple",
+      "name": "ACE or ARB Active",
+      "direct_transition": "Prescribe CCB"
+    },
+    "Prescribe ACE 2": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 3827,
+          "display": "enalapril",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "Prescribe ACE 2",
+      "assign_to_attribute": "hypertension_medication"
+    },
+    "CCB Active": {
+      "type": "Simple",
+      "name": "CCB Active",
+      "distributed_transition": [
+        {
+          "transition": "Prescribe ACE 2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Prescribe ARB 2",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Prescribe thiazide": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 5487,
+          "display": "hydrochlorothiazide",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
+      "name": "Prescribe thiazide",
+      "assign_to_attribute": "hypertension_medication_3",
+      "chronic": true
+    },
+    "Prescribe ACE 3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 3827,
+          "display": "enlapril",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
+      "name": "Prescribe ACE 3",
       "chronic": true,
       "prescription": {
         "dosage": {
@@ -1295,10 +604,80 @@
           "unit": "days"
         },
         "duration": {
-          "quantity": 90,
+          "quantity": 1,
           "unit": "days"
         }
       }
+    },
+    "Prescribe CCB 3": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 17767,
+          "display": "amlodipine",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Prescribe ACE, CCB, Thiazide",
+      "name": "Prescribe CCB 3"
+    },
+    "Prescribe ACE, CCB, Thiazide": {
+      "type": "Simple",
+      "name": "Prescribe ACE, CCB, Thiazide",
+      "conditional_transition": [
+        {
+          "transition": "Prescribe thiazide",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "Active Medication",
+              "codes": [
+                {
+                  "system": "RxNorm",
+                  "code": 5487,
+                  "display": "hydrochlorothiazide"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "transition": "Prescribe ACE 3",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "Active Medication",
+              "codes": [
+                {
+                  "system": "RxNorm",
+                  "code": 3827,
+                  "display": "enalapril"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "transition": "Prescribe CCB 3",
+          "condition": {
+            "condition_type": "Not",
+            "condition": {
+              "condition_type": "Active Medication",
+              "codes": [
+                {
+                  "system": "RxNorm",
+                  "code": 17767,
+                  "display": "amlodipine"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
     }
   },
   "gmf_version": 2

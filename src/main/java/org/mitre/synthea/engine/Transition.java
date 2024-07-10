@@ -14,10 +14,14 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
+/* UKAdp
 import org.mitre.synthea.world.agents.PayerManager;
+*/
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.TelemedicineConfig;
+/* UKAdp
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
+*/
 
 /**
  * Transition represents all the transition types within the generic module
@@ -139,14 +143,19 @@ public abstract class Transition implements Serializable {
     @Override
     public String follow(Person person, long time) {
       String selectedTransition;
+      /* UKAdp
       InsurancePlan current = person.coverage.getPlanAtTime(time);
+      
       String insuranceName;
+      
       if (current != null) {
         insuranceName = current.getPayer().getName();
       } else {
         insuranceName = PayerManager.NO_INSURANCE;
       }
+      */
       if (time < config.getTelemedicineStartTime()) {
+        /* UKAdp
         if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
           EnumeratedDistribution<String> preHigh = config.getPreTelemedHighEmergency();
           synchronized (preHigh) {
@@ -160,7 +169,14 @@ public abstract class Transition implements Serializable {
             selectedTransition = preTypical.sample();
           }
         }
+        */
+        EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
+        synchronized (typical) {
+          typical.reseedRandomGenerator(person.randLong());
+          selectedTransition = typical.sample();
+        }
       } else {
+      /* UKAdp
         if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
           EnumeratedDistribution<String> high = config.getTelemedHighEmergency();
           synchronized (high) {
@@ -168,11 +184,11 @@ public abstract class Transition implements Serializable {
             selectedTransition = high.sample();
           }
         } else {
-          EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
-          synchronized (typical) {
-            typical.reseedRandomGenerator(person.randLong());
-            selectedTransition = typical.sample();
-          }
+      */
+        EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
+        synchronized (typical) {
+          typical.reseedRandomGenerator(person.randLong());
+          selectedTransition = typical.sample();
         }
       }
       switch (selectedTransition) {

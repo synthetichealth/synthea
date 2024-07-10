@@ -1,5 +1,5 @@
 {
-  "name": "Hypertension",
+  "name": "UK Hypertension",
   "remarks": [
     "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults. ",
     "",
@@ -32,7 +32,8 @@
       "remarks": [
         "Initial impl == direct translation of ruby module"
       ],
-      "direct_transition": "Age_Guard"
+      "direct_transition": "Age_Guard",
+      "name": "Initial"
     },
     "Age_Guard": {
       "type": "Guard",
@@ -43,7 +44,8 @@
         "unit": "years",
         "value": 0
       },
-      "direct_transition": "Hypertension_Screening_Reason"
+      "direct_transition": "Hypertension_Screening_Reason",
+      "name": "Age_Guard"
     },
     "Set_Yearly_Risk": {
       "type": "Simple",
@@ -83,7 +85,8 @@
         {
           "transition": "Others"
         }
-      ]
+      ],
+      "name": "Set_Yearly_Risk"
     },
     "Chance_of_Hypertension": {
       "type": "Simple",
@@ -120,7 +123,8 @@
       ],
       "remarks": [
         "Use the risk set above, but also check if some other module may have set hypertension == true"
-      ]
+      ],
+      "name": "Chance_of_Hypertension"
     },
     "Wait_till_next_year": {
       "type": "Delay",
@@ -131,13 +135,15 @@
         }
       },
       "unit": "years",
-      "direct_transition": "Chance_of_Hypertension"
+      "direct_transition": "Chance_of_Hypertension",
+      "name": "Wait_till_next_year"
     },
     "Onset_Hypertension": {
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Wellness_Encounter",
+      "name": "Onset_Hypertension"
     },
     "Black": {
       "type": "Simple",
@@ -152,7 +158,8 @@
         {
           "transition": "Black_Male"
         }
-      ]
+      ],
+      "name": "Black"
     },
     "White": {
       "type": "Simple",
@@ -167,37 +174,43 @@
         {
           "transition": "White_Male"
         }
-      ]
+      ],
+      "name": "White"
     },
     "Others": {
       "type": "SetAttribute",
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.025
+      "value": 0.025,
+      "name": "Others"
     },
     "Black_Female": {
       "type": "SetAttribute",
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038
+      "value": 0.038,
+      "name": "Black_Female"
     },
     "Black_Male": {
       "type": "SetAttribute",
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038
+      "value": 0.038,
+      "name": "Black_Male"
     },
     "White_Male": {
       "type": "SetAttribute",
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.021
+      "value": 0.021,
+      "name": "White_Male"
     },
     "White_Female": {
       "type": "SetAttribute",
       "attribute": "risk_of_hypertension",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.014
+      "value": 0.014,
+      "name": "White_Female"
     },
     "Diagnose_Hypertension": {
       "type": "ConditionOnset",
@@ -205,11 +218,13 @@
         {
           "system": "SNOMED-CT",
           "code": 59621000,
-          "display": "Essential hypertension (disorder)"
+          "display": "Essential hypertension (disorder)",
+          "value_set": ""
         }
       ],
       "assign_to_attribute": "hypertension_dx",
-      "direct_transition": "Set_BP_Not Controlled"
+      "direct_transition": "Set_BP_Not Controlled",
+      "name": "Diagnose_Hypertension"
     },
     "Hypertension_Followup_Encounter": {
       "type": "Encounter",
@@ -220,10 +235,12 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Follow-up encounter (procedure)"
+          "display": "Follow-up encounter (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Record_BP"
+      "direct_transition": "Record_BP",
+      "name": "Hypertension_Followup_Encounter"
     },
     "End_Hypertension_Followup_Encounter": {
       "type": "EncounterEnd",
@@ -274,7 +291,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "End_Hypertension_Followup_Encounter"
     },
     "Hypertension_Followup_Encounter_2": {
       "type": "Encounter",
@@ -285,10 +303,12 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Follow-up encounter (procedure)"
+          "display": "Follow-up encounter (procedure)",
+          "value_set": ""
         }
       ],
-      "direct_transition": "Record_BP_2"
+      "direct_transition": "Record_BP_2",
+      "name": "Hypertension_Followup_Encounter_2"
     },
     "Hypertension_Followup_Encounter_3": {
       "type": "Encounter",
@@ -298,11 +318,13 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Follow-up encounter (procedure)"
+          "display": "Follow-up encounter (procedure)",
+          "value_set": ""
         }
       ],
       "direct_transition": "Record_BP_3",
-      "reason": "hypertension_dx"
+      "reason": "hypertension_dx",
+      "name": "Hypertension_Followup_Encounter_3"
     },
     "End_Hypertension_Followup_Encounter_2": {
       "type": "EncounterEnd",
@@ -349,11 +371,13 @@
           "distributions": [],
           "transition": "Delay_2_Month_2"
         }
-      ]
+      ],
+      "name": "End_Hypertension_Followup_Encounter_2"
     },
     "End_Hypertension_Followup_Encounter_3": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "End_Hypertension_Followup_Encounter_3"
     },
     "LifeStyle_Modifications_Hypertension_CarePlan": {
       "type": "CarePlanStart",
@@ -361,7 +385,8 @@
         {
           "system": "SNOMED-CT",
           "code": 443402002,
-          "display": "Lifestyle education regarding hypertension"
+          "display": "Lifestyle education regarding hypertension",
+          "value_set": ""
         }
       ],
       "activities": [
@@ -401,7 +426,8 @@
         }
       ],
       "reason": "hypertension_dx",
-      "direct_transition": "Prescribe_Medication"
+      "direct_transition": "Prescribe_Medication",
+      "name": "LifeStyle_Modifications_Hypertension_CarePlan"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
@@ -494,7 +520,8 @@
         }
       ],
       "wellness": true,
-      "reason": "hypertension_screening_reason"
+      "reason": "hypertension_screening_reason",
+      "name": "Wellness_Encounter"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -535,7 +562,8 @@
             "value": false
           }
         }
-      ]
+      ],
+      "name": "End_Wellness_Encounter"
     },
     "Delay_One_Month": {
       "type": "Delay",
@@ -590,7 +618,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Delay_One_Month"
     },
     "Record_BP": {
       "type": "MultiObservation",
@@ -599,7 +628,8 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood pressure panel with all children optional"
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
         }
       ],
       "observations": [
@@ -641,7 +671,8 @@
         {
           "transition": "End_Hypertension_Followup_Encounter"
         }
-      ]
+      ],
+      "name": "Record_BP"
     },
     "Record_BP_2": {
       "type": "MultiObservation",
@@ -650,7 +681,8 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood pressure panel with all children optional"
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
         }
       ],
       "observations": [
@@ -692,7 +724,8 @@
         {
           "transition": "End_Hypertension_Followup_Encounter_2"
         }
-      ]
+      ],
+      "name": "Record_BP_2"
     },
     "Record_BP_3": {
       "type": "MultiObservation",
@@ -701,7 +734,8 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood pressure panel with all children optional"
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
         }
       ],
       "observations": [
@@ -743,7 +777,8 @@
         {
           "transition": "End_Hypertension_Followup_Encounter_3"
         }
-      ]
+      ],
+      "name": "Record_BP_3"
     },
     "Referral To Hypertension Clinic": {
       "type": "Procedure",
@@ -751,16 +786,19 @@
         {
           "system": "SNOMED-CT",
           "code": 183856001,
-          "display": "Referral to hypertension clinic"
+          "display": "Referral to hypertension clinic",
+          "value_set": ""
         }
       ],
-      "direct_transition": "End_Hypertension_Followup_Encounter_3"
+      "direct_transition": "Prescribe_Medication_4",
+      "name": "Referral To Hypertension Clinic"
     },
     "Set_BP_Not Controlled": {
       "type": "SetAttribute",
       "attribute": "blood_pressure_controlled",
       "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
-      "value": false
+      "value": false,
+      "name": "Set_BP_Not Controlled"
     },
     "Delay 2_Month": {
       "type": "Delay",
@@ -807,7 +845,8 @@
             }
           ]
         }
-      ]
+      ],
+      "name": "Delay 2_Month"
     },
     "Delay_2_Month_2": {
       "type": "Delay",
@@ -815,47 +854,56 @@
         "quantity": 2,
         "unit": "months"
       },
-      "direct_transition": "Hypertension_Followup_Encounter_3"
+      "direct_transition": "Hypertension_Followup_Encounter_3",
+      "name": "Delay_2_Month_2"
     },
     "Set_BP_Controlled": {
       "type": "SetAttribute",
       "attribute": "blood_pressure_controlled",
       "value": true,
-      "direct_transition": "Delay_One_Month"
+      "direct_transition": "Delay_One_Month",
+      "name": "Set_BP_Controlled"
     },
     "Set_BP_Controlled_2": {
       "type": "SetAttribute",
       "attribute": "blood_pressure_controlled",
       "value": true,
-      "direct_transition": "Delay 2_Month"
+      "direct_transition": "Delay 2_Month",
+      "name": "Set_BP_Controlled_2"
     },
     "Set_BP_Controlled_3": {
       "type": "SetAttribute",
       "attribute": "blood_pressure_controlled",
       "value": true,
-      "direct_transition": "Delay_2_Month_2"
+      "direct_transition": "Delay_2_Month_2",
+      "name": "Set_BP_Controlled_3"
     },
     "Excluded": {
       "type": "Simple",
-      "direct_transition": "Wait Until Next Checkup"
+      "direct_transition": "Wait Until Next Checkup",
+      "name": "Excluded"
     },
     "Prescribe_Medication_3": {
       "type": "CallSubmodule",
       "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Hypertension_Followup_Encounter_2"
+      "direct_transition": "End_Hypertension_Followup_Encounter_2",
+      "name": "Prescribe_Medication_3"
     },
     "Prescribe_Medication_2": {
       "type": "CallSubmodule",
       "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Hypertension_Followup_Encounter"
+      "direct_transition": "End_Hypertension_Followup_Encounter",
+      "name": "Prescribe_Medication_2"
     },
     "Prescribe_Medication": {
       "type": "CallSubmodule",
       "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Wellness_Encounter"
+      "direct_transition": "End_Wellness_Encounter",
+      "name": "Prescribe_Medication"
     },
     "Terminal": {
-      "type": "Terminal"
+      "type": "Terminal",
+      "name": "Terminal"
     },
     "Included": {
       "type": "Simple",
@@ -882,15 +930,18 @@
         {
           "transition": "Wait Until Next Checkup"
         }
-      ]
+      ],
+      "name": "Included"
     },
     "Wait Until Next Checkup": {
       "type": "EncounterEnd",
-      "direct_transition": "Wellness_Encounter"
+      "direct_transition": "Wellness_Encounter",
+      "name": "Wait Until Next Checkup"
     },
     "Drop Outs": {
       "type": "Simple",
-      "direct_transition": "Terminal"
+      "direct_transition": "Terminal",
+      "name": "Drop Outs"
     },
     "Hypertension_Screening_Reason": {
       "type": "SetAttribute",
@@ -900,7 +951,14 @@
         "system": "SNOMED-CT",
         "code": 171222001,
         "display": "Hypertension screening (procedure)"
-      }
+      },
+      "name": "Hypertension_Screening_Reason"
+    },
+    "Prescribe_Medication_4": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter_3",
+      "name": "Prescribe_Medication_4"
     }
   },
   "gmf_version": 1
