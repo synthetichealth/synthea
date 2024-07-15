@@ -54,7 +54,7 @@
                   <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
                   <city>${preferredProviderwellness.city}</city>
                   <state>${preferredProviderwellness.state}</state>
-                  <postalCode>${preferredProviderwellness.zip}</postalCode>
+                  <postalCode>${preferredProviderwellness.postcode}</postalCode>
                 </addr>
               </representedOrganization>
             </assignedAuthor>

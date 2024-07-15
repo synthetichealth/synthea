@@ -38,7 +38,7 @@ public class Location implements Serializable {
   @JSONSkip
   private Map<String, Long> populationByCityId;
   @JSONSkip
-  private Map<String, List<Place>> zipCodes;
+  private Map<String, List<Place>> postCodes;
 
   public final String city;
   private Demographics fixedCity;
@@ -106,22 +106,22 @@ public class Location implements Serializable {
 
     String filename = null;
     try {
-      filename = Config.get("generate.geography.zipcodes.default_file");
+      filename = Config.get("generate.geography.postcodes.default_file");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
+      List<? extends Map<String,String>> postcodelist = SimpleCSV.parse(csv);
 
-      zipCodes = new HashMap<>();
-      for (Map<String,String> line : ziplist) {
+      postCodes = new HashMap<>();
+      for (Map<String,String> line : postcodelist) {
         Place place = new Place(line);
 
         if (!place.sameState(state)) {
           continue;
         }
 
-        if (!zipCodes.containsKey(place.name)) {
-          zipCodes.put(place.name, new ArrayList<Place>());
+        if (!postCodes.containsKey(place.name)) {
+          postCodes.put(place.name, new ArrayList<Place>());
         }
-        zipCodes.get(place.name).add(place);
+        postCodes.get(place.name).add(place);
       }
     } catch (Exception e) {
       System.err.println("ERROR: unable to load zips csv: " + filename);
@@ -187,13 +187,13 @@ public class Location implements Serializable {
    *               a zipcode when multiple exist for a location
    * @return a zip code for the given city
    */
-  public String getZipCode(String cityName, RandomNumberGenerator random) {
-    List<String> zipsForCity = getZipCodes(cityName);
-    if (zipsForCity.size() > 1) {
-      int randomChoice = random.randInt(zipsForCity.size());
-      return zipsForCity.get(randomChoice);
+  public String getPostCode(String cityName, RandomNumberGenerator random) {
+    List<String> postcodesForCity = getPostCodes(cityName);
+    if (postcodesForCity.size() > 1) {
+      int randomChoice = random.randInt(postcodesForCity.size());
+      return postcodesForCity.get(randomChoice);
     } else {
-      return zipsForCity.get(0);
+      return postcodesForCity.get(0);
     }
   }
 
@@ -202,16 +202,16 @@ public class Location implements Serializable {
    * @param cityName Name of the city.
    * @return List of legal zip codes or postal codes.
    */
-  public List<String> getZipCodes(String cityName) {
+  public List<String> getPostCodes(String cityName) {
     List<String> results = new ArrayList<String>();
-    List<Place> zipsForCity = zipCodes.get(cityName);
+    List<Place> postcodesForCity = postCodes.get(cityName);
 
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
+    if (postcodesForCity == null) {
+      postcodesForCity = postCodes.get(cityName + " Town");
     }
 
-    if (zipsForCity != null && zipsForCity.size() >= 1) {
-      for (Place place : zipsForCity) {
+    if (postcodesForCity != null && postcodesForCity.size() >= 1) {
+      for (Place place : postcodesForCity) {
         if (place.postalCode != null && !place.postalCode.isEmpty()) {
           results.add(place.postalCode);
         }
@@ -338,35 +338,35 @@ public class Location implements Serializable {
    * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
-    List<Place> zipsForCity;
+    List<Place> postcodesForCity;
 
     if (cityName == null) {
-      int size = zipCodes.keySet().size();
-      cityName = (String) zipCodes.keySet().toArray()[person.randInt(size)];
+      int size = postCodes.keySet().size();
+      cityName = (String) postCodes.keySet().toArray()[person.randInt(size)];
     }
-    zipsForCity = zipCodes.get(cityName);
+    postcodesForCity = postCodes.get(cityName);
 
-    if (zipsForCity == null) {
-      zipsForCity = zipCodes.get(cityName + " Town");
+    if (postcodesForCity == null) {
+      postcodesForCity = postCodes.get(cityName + " Town");
     }
 
     Place place;
-    if (zipsForCity != null && zipsForCity.size() == 1) {
-      place = zipsForCity.get(0);
-    } else if (zipsForCity != null) {
-      String personZip = (String) person.attributes.get(Person.ZIP);
-      if (personZip == null) {
-        place = zipsForCity.get(person.randInt(zipsForCity.size()));
+    if (postcodesForCity != null && postcodesForCity.size() == 1) {
+      place = postcodesForCity.get(0);
+    } else if (postcodesForCity != null) {
+      String personPostCode = (String) person.attributes.get(Person.POSTCODE);
+      if (personPostCode == null) {
+        place = postcodesForCity.get(person.randInt(postcodesForCity.size()));
       } else {
-        place = zipsForCity.stream()
-            .filter(c -> personZip.equals(c.postalCode))
+        place = postcodesForCity.stream()
+            .filter(c -> personPostCode.equals(c.postalCode))
             .findFirst()
-            .orElse(zipsForCity.get(person.randInt(zipsForCity.size())));
+            .orElse(postcodesForCity.get(person.randInt(postcodesForCity.size())));
       }
     } else {
       // The place doesn't exist for some reason, pick a random location...
-      String key = (String) zipCodes.keySet().toArray()[person.randInt(zipCodes.keySet().size())];
-      place = zipCodes.get(key).get(person.randInt(zipCodes.get(key).size()));
+      String key = (String) postCodes.keySet().toArray()[person.randInt(postCodes.keySet().size())];
+      place = postCodes.get(key).get(person.randInt(postCodes.get(key).size()));
     }
 
     if (place != null) {
@@ -414,11 +414,11 @@ public class Location implements Serializable {
     LinkedHashMap<String, String> abbreviations = new LinkedHashMap<String, String>();
     String filename = null;
     try {
-      filename = Config.get("generate.geography.zipcodes.default_file");
+      filename = Config.get("generate.geography.postcodes.default_file");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
+      List<? extends Map<String,String>> postcodelist = SimpleCSV.parse(csv);
 
-      for (Map<String,String> line : ziplist) {
+      for (Map<String,String> line : postcodelist) {
         String state = line.get("USPS");
         String abbreviation = line.get("ST");
         abbreviations.put(state, abbreviation);
@@ -534,7 +534,7 @@ public class Location implements Serializable {
 
   /**
    * Get the FIPS code, if it exists, for a given zip code.
-   * @param zipCode The zip code of the location.
+   * @param postCode The zip code of the location.
    * @return The FIPS county code of the location.
    */
   /* UKAdp

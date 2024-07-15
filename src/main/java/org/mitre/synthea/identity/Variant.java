@@ -29,7 +29,7 @@ public class Variant implements IdentityRecord {
   private List<String> addressLines;
   private String city;
   private String state;
-  private String zipCode;
+  private String postCode;
   private LocalDate dateOfBirth;
   private String gender;
   private String socialSecurityNumber;
@@ -148,15 +148,15 @@ public class Variant implements IdentityRecord {
    * seed
    * @return the zip code
    */
-  public String getZipCode() {
-    if (zipCode == null) {
-      return seed.getZipCode();
+  public String getPostCode() {
+    if (postCode == null) {
+      return seed.getPostCode();
     }
-    return zipCode;
+    return postCode;
   }
 
-  public void setZipCode(String zipCode) {
-    this.zipCode = zipCode;
+  public void setPostCode(String postCode) {
+    this.postCode = postCode;
   }
 
   /**
@@ -234,7 +234,7 @@ public class Variant implements IdentityRecord {
     attributes.put(Person.CITY, this.getCity());
     attributes.put(Person.ADDRESS, this.getAddressLines().stream()
         .collect(Collectors.joining("\n")));
-    attributes.put(Person.ZIP, this.getZipCode());
+    attributes.put(Person.POSTCODE, this.getPostCode());
     attributes.put(Person.IDENTIFIER_VARIANT_ID, this.getVariantId());
     if (this.getSocialSecurityNumber() != null) {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());

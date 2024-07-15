@@ -194,8 +194,8 @@ public final class LifecycleModule extends Module {
     if (location != null) {
       // A null location should never happen in practice, but can happen in unit tests
       location.assignPoint(person, city);
-      String zipCode = location.getZipCode(city, person);
-      person.attributes.put(Person.ZIP, zipCode);
+      String postCode = location.getPostCode(city, person);
+      person.attributes.put(Person.POSTCODE, postCode);
       /* UKAdp
       person.attributes.put(Person.FIPS, Location.getFipsCodeByZipCode(zipCode));
       */
@@ -1316,7 +1316,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.SEXUAL_ORIENTATION, false, true, null);
     Attributes.inventory(attributes, m, Person.SMOKER, false, true, "Boolean");
     Attributes.inventory(attributes, m, Person.TELECOM, false, true, "555-555-5555");
-    Attributes.inventory(attributes, m, Person.ZIP, false, true, "01730");
+    Attributes.inventory(attributes, m, Person.POSTCODE, false, true, "01730");
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_AGE, false, true, "Numeric");
     Attributes.inventory(attributes, m, QUIT_ALCOHOLISM_PROBABILITY, false, true, "1.0");
     Attributes.inventory(attributes, m, QUIT_SMOKING_AGE, false, true, "Numeric");

@@ -88,7 +88,7 @@ public class Provider implements QuadTreeElement, Serializable {
   public String address;
   public String city;
   public String state;
-  public String zip;
+  public String postcode;
   public String fipsCountyCode;
 
   public String phone;
@@ -582,7 +582,7 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Person.ADDRESS, address);
       clinician.attributes.put(Person.CITY, city);
       clinician.attributes.put(Person.STATE, state);
-      clinician.attributes.put(Person.ZIP, zip);
+      clinician.attributes.put(Person.POSTCODE, postcode);
       clinician.attributes.put(Person.COORDINATE, coordinates);
 
       String firstName = Names.fakeFirstName(gender, language, doc);
@@ -695,7 +695,7 @@ public class Provider implements QuadTreeElement, Serializable {
     d.address = line.remove("address");
     d.city = line.remove("city");
     d.state = line.remove("state");
-    d.zip = line.remove("zip");
+    d.postcode = line.remove("postcode");
     d.fipsCountyCode = line.remove("fips_county");
     d.phone = line.remove("phone");
     d.ownership = line.remove("ownership");
@@ -795,8 +795,8 @@ public class Provider implements QuadTreeElement, Serializable {
     if (this.state == null) {
       this.state = other.state;
     }
-    if (this.zip == null) {
-      this.zip = other.zip;
+    if (this.postcode == null) {
+      this.postcode = other.postcode;
     }
     if (this.fipsCountyCode == null) {
       this.fipsCountyCode = other.fipsCountyCode;

@@ -18,8 +18,8 @@
         <streetAddressLine>${address}</streetAddressLine>
         <city>${city}</city>
         <state>${state}</state>
-        <#if zip?has_content>
-        <postalCode>${zip}</postalCode>
+        <#if postcode?has_content>
+        <postalCode>${postcode}</postalCode>
         <#else>
         <postalCode nullFlavor="NI"/>
         </#if>
@@ -63,7 +63,7 @@
           <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
           <city>${preferredProviderwellness.city}</city>
           <state>${preferredProviderwellness.state}</state>
-          <postalCode>${preferredProviderwellness.zip}</postalCode>
+          <postalCode>${preferredProviderwellness.postcode}</postalCode>
         </addr>
       </representedOrganization>
     </assignedAuthor>
@@ -78,7 +78,7 @@
           <streetAddressLine>${preferredProviderwellness.address?replace("&", "&amp;")}</streetAddressLine>
           <city>${preferredProviderwellness.city}</city>
           <state>${preferredProviderwellness.state}</state>
-          <postalCode>${preferredProviderwellness.zip}</postalCode>
+          <postalCode>${preferredProviderwellness.postcode}</postalCode>
         </addr>
       </representedCustodianOrganization>
     </assignedCustodian>
