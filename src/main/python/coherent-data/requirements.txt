@@ -1,0 +1,3 @@
+pandas==1.5.3
+pillow==10.2.0
+pydicom==2.4.4
