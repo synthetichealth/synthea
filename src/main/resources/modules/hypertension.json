@@ -1,7 +1,8 @@
 {
   "name": "UK Hypertension",
   "remarks": [
-    "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults According to NICE guidelines. "
+    "This Hypertension model reflects the treatment of Primary Hypertension (HTN) in Adults According to NICE guidelines.",
+    "https://www.nice.org.uk/guidance/ng136"
   ],
   "states": {
     "Initial": {
