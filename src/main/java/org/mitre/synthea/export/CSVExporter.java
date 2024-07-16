@@ -142,15 +142,15 @@ public class CSVExporter {
   /**
    * Writer for claims.csv
    */
-  private OutputStreamWriter claims;
+  // private OutputStreamWriter claims;
   /**
    * Writer for claims_transactions.csv
    */
-  private OutputStreamWriter claimsTransactions;
+  // private OutputStreamWriter claimsTransactions;
   /**
    * Writer for patient_expenses.csv
    */
-  private OutputStreamWriter patientExpenses;
+  // private OutputStreamWriter patientExpenses;
 
   /**
    * Charset for specifying the character set of the output files.
@@ -168,7 +168,7 @@ public class CSVExporter {
    * which means that the claim_transactions.chargeid column will not be consistent
    * when recreating a population using multiple threads.
    */
-  private AtomicLong transactionId;
+  // private AtomicLong transactionId;
 
   /**
    * Constructor for the CSVExporter - initialize the specified files and store
@@ -257,13 +257,13 @@ public class CSVExporter {
       // payerTransitions = getWriter(outputDirectory, "payer_transitions.csv", append, includedFiles,
           // excludedFiles);
 
-      claims = getWriter(outputDirectory, "claims.csv", append, includedFiles, excludedFiles);
+      // claims = getWriter(outputDirectory, "claims.csv", append, includedFiles, excludedFiles);
 
-      claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
-          includedFiles, excludedFiles);
+      // claimsTransactions = getWriter(outputDirectory, "claims_transactions.csv", append,
+      //     includedFiles, excludedFiles);
 
-      patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
-          append, includedFiles, excludedFiles);
+      // patientExpenses = getWriter(outputDirectory, "patient_expenses.csv",
+      //     append, includedFiles, excludedFiles);
 
       if (!append) {
         writeCSVHeaders();
@@ -275,7 +275,7 @@ public class CSVExporter {
       throw new RuntimeException(e);
     }
 
-    this.transactionId = new AtomicLong();
+    // this.transactionId = new AtomicLong();
   }
 
   /**
@@ -304,7 +304,7 @@ public class CSVExporter {
   private void writeCSVHeaders() throws IOException {
     patients.write("Id,BIRTHDATE,DEATHDATE,SSN,DRIVERS,PASSPORT,"
         + "PREFIX,FIRST,MIDDLE,LAST,SUFFIX,MAIDEN,MARITAL,RACE,ETHNICITY,GENDER,BIRTHPLACE,"
-        + "ADDRESS,CITY,STATE,COUNTY,FIPS,ZIP,LAT,LON,"
+        + "ADDRESS,CITY,STATE,COUNTY,FIPS,POSTCODE,LAT,LON,"
         + "HEALTHCARE_EXPENSES,HEALTHCARE_COVERAGE,INCOME");
     patients.write(NEWLINE);
     allergies.write("START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,"
@@ -339,9 +339,9 @@ public class CSVExporter {
     supplies.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,QUANTITY");
     supplies.write(NEWLINE);
 
-    organizations.write("Id,NAME,ADDRESS,CITY,STATE,ZIP,LAT,LON,PHONE,UTILIZATION");
+    organizations.write("Id,NAME,ADDRESS,CITY,STATE,POSTCODE,LAT,LON,PHONE,UTILIZATION");
     organizations.write(NEWLINE);
-    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,ZIP,LAT,LON,"
+    providers.write("Id,ORGANIZATION,NAME,GENDER,SPECIALITY,ADDRESS,CITY,STATE,POSTCODE,LAT,LON,"
         + "ENCOUNTERS,PROCEDURES");
     providers.write(NEWLINE);
     // payers.write("Id,NAME,OWNERSHIP,ADDRESS,CITY,STATE_HEADQUARTERED,ZIP,PHONE,AMOUNT_COVERED,"
@@ -607,9 +607,9 @@ public class CSVExporter {
     imagingStudies.flush();
     devices.flush();
     supplies.flush();
-    claims.flush();
-    claimsTransactions.flush();
-    patientExpenses.flush();
+    // claims.flush();
+    // claimsTransactions.flush();
+    // patientExpenses.flush();
   }
 
   /**
@@ -661,7 +661,7 @@ public class CSVExporter {
         Person.STATE,
         Person.COUNTY,
         Person.FIPS,
-        Person.ZIP,
+        Person.POSTCODE,
     }) {
       String value = (String) person.attributes.getOrDefault(attribute, "");
       s.append(',').append(clean(value));
@@ -1257,7 +1257,7 @@ public class CSVExporter {
     s.append(clean(org.address)).append(',');
     s.append(org.city).append(',');
     s.append(org.state).append(',');
-    s.append(org.zip).append(',');
+    s.append(org.postcode).append(',');
     s.append(org.getY()).append(',');
     s.append(org.getX()).append(',');
     s.append(org.phone).append(',');
@@ -1283,7 +1283,7 @@ public class CSVExporter {
     s.append(orgId).append(',');
     for (String attribute : new String[] { Clinician.NAME, Clinician.GENDER,
         Clinician.SPECIALTY, Clinician.ADDRESS, Clinician.CITY, Clinician.STATE,
-        Clinician.ZIP }) {
+        Clinician.POSTCODE }) {
       String value = (String) provider.attributes.getOrDefault(attribute, "");
       s.append(clean(value)).append(',');
     }

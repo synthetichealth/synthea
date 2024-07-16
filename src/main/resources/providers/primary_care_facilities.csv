@@ -1,4 +1,4 @@
-provider_num,npi,name,address,city,state,zip,fips_county,lat,lon,phone,provider_type_code,category,emergency,upin,pin,region_code,bed_count,clia_lab_number
+provider_num,npi,name,address,city,state,postcode,fips_county,lat,lon,phone,provider_type_code,category,emergency,upin,pin,region_code,bed_count,clia_lab_number
 101936,1801826268,TRENTON MEDICAL CLINIC,PO BOX 640 911 SOUTH MAIN STREET,TRENTON,YH,326933239,041,29.6132942,-82.8176203,3524632374,00-04,21-Jan,TRUE,101936,77513,4,,
 101937,1801826269,Royal Shrewsbury Hospital,Mytton Oak Rd,Shrewsbury,WMS,SY3 8XQ,01743261000,52.7091,-2.7931,FALSE,,,,,,,,
 101938,1801826270,BRISTOL AND WESTON BCSC,MARLBOROUGH STREET,BRISTOL,SW,BS2 8HW,,51.458886,-2.596293,0117 992 300,,,,,,,,

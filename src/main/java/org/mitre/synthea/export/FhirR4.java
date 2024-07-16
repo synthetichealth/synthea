@@ -789,7 +789,7 @@ public class FhirR4 {
     Address addrResource = patientResource.addAddress();
     addrResource.addLine((String) person.attributes.get(Person.ADDRESS))
         .setCity((String) person.attributes.get(Person.CITY))
-        .setPostalCode((String) person.attributes.get(Person.ZIP))
+        .setPostalCode((String) person.attributes.get(Person.POSTCODE))
         .setState(state);
     if (COUNTRY_CODE != null) {
       addrResource.setCountry(COUNTRY_CODE);
@@ -3240,7 +3240,7 @@ public class FhirR4 {
     Address address = new Address()
         .addLine(provider.address)
         .setCity(provider.city)
-        .setPostalCode(provider.zip)
+        .setPostalCode(provider.postcode)
         .setState(provider.state);
     if (COUNTRY_CODE != null) {
       address.setCountry(COUNTRY_CODE);
@@ -3307,7 +3307,7 @@ public class FhirR4 {
     Address address = new Address()
         .addLine(provider.address)
         .setCity(provider.city)
-        .setPostalCode(provider.zip)
+        .setPostalCode(provider.postcode)
         .setState(provider.state);
     if (COUNTRY_CODE != null) {
       address.setCountry(COUNTRY_CODE);
@@ -3367,7 +3367,7 @@ public class FhirR4 {
     Address address = new Address()
         .addLine((String) clinician.attributes.get(Clinician.ADDRESS))
         .setCity((String) clinician.attributes.get(Clinician.CITY))
-        .setPostalCode((String) clinician.attributes.get(Clinician.ZIP))
+        .setPostalCode((String) clinician.attributes.get(Clinician.POSTCODE))
         .setState((String) clinician.attributes.get(Clinician.STATE));
     if (COUNTRY_CODE != null) {
       address.setCountry(COUNTRY_CODE);

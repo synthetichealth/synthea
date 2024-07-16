@@ -1,4 +1,4 @@
-provider_num,npi,name,address,city,state,zip,fips_county,lat,lon,phone,provider_type_code,category,emergency,upin,pin,region_code,bed_count,clia_lab_number
+provider_num,npi,name,address,city,state,postcode,fips_county,lat,lon,phone,provider_type_code,category,emergency,upin,pin,region_code,bed_count,clia_lab_number
 112011,1588664007,"SELECT SPECIALTY HOSPITAL - SAVANNAH, INC",5353 REYNOLDS STREET 4 SOUTH,SAVANNAH,YH,314056015,051,32.0564572,-81.0951271,9128197986,00-09,01-Feb,FALSE,,,04,40,
 0,010001,Royal Shrewsbury Hospital,Mytton Oak Rd,Shrewsbury,WMS,SY3 8XQ,Shropshire,52.709357,-2.7937517,,,,,,,,,
 1,,CINDERFORD DIALYSIS UNIT,FOREST VALE INDUSTRIAL ESTATE,CINDERFORD,SW,GL14 3JE,GLOUCESTERSHIRE,51.836855,-2.5124808,,,,,,,,,

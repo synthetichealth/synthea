@@ -20,7 +20,7 @@ public interface IdentityRecord {
 
   public String getState();
 
-  public String getZipCode();
+  public String getPostCode();
 
   public long birthdateTimestamp();
 
