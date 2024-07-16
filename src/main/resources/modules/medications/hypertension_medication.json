@@ -1,12 +1,12 @@
 {
   "name": "UK Hypertension Medication",
   "remarks": [
-    "A blank module"
+    "submodule modelling the prescription protocol for treating hypertension in the UK according to NICE guidelines."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "New_State",
+      "direct_transition": "Check Step Initialisation",
       "name": "Initial"
     },
     "Terminal": {
@@ -386,23 +386,6 @@
       },
       "chronic": true
     },
-    "New_State": {
-      "type": "Simple",
-      "name": "New_State",
-      "conditional_transition": [
-        {
-          "transition": "Initialize Step",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension_medication_step",
-            "operator": "is nil"
-          }
-        },
-        {
-          "transition": "Increase Step"
-        }
-      ]
-    },
     "stop ACE": {
       "type": "MedicationEnd",
       "direct_transition": "Labetalol",
@@ -676,6 +659,23 @@
         },
         {
           "transition": "Terminal"
+        }
+      ]
+    },
+    "Check Step Initialisation": {
+      "type": "Simple",
+      "name": "Check Step Initialisation",
+      "conditional_transition": [
+        {
+          "transition": "Initialize Step",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_medication_step",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Increase Step"
         }
       ]
     }
