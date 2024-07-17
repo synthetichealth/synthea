@@ -11,6 +11,8 @@ from PIL import Image
 import shutil
 import uuid
 
+
+import pydicom
 from pydicom.dataset import Dataset, FileMetaDataset
 from pydicom.sequence import Sequence
 
@@ -157,8 +159,9 @@ def process_file(file, fundus_index, oct_index, output):
         dicom = create_dicom(image, imaging_study, context)
         dicom_uid = imaging_study['identifier'][0]['value'][8:]  # cut off urn:uuid:
         pat_name = Path(file).stem
-        # dicom.save_as(f'{output}/dicom/{pat_name}_{dicom_uid}.dcm')
-        image.save(f'{output}/dicom/{pat_name}_{dicom_uid}.jpg')
+        if dicom:
+            dicom.save_as(f'{output}/dicom/{pat_name}_{dicom_uid}.dcm')
+        image.save(f'{output}/images/{pat_name}_{dicom_uid}.jpg')
 
         media = create_fhir_media(context, imaging_study, image, dicom)
         bundle['entry'].append(wrap_in_entry(media))
@@ -212,7 +215,7 @@ def get_stage(observations, encounter_id):
 
     stage = DR_STAGE_VALUE_CODES.index(stage_obs['valueCodeableConcept']['coding'][0]['code'])
 
-    return stage
+    return str(stage)
 
 
 def pick_image(fundus_index, oct_index, context):
@@ -316,117 +319,144 @@ def ref(resource):
 def create_dicom(image, imaging_study, context):
     # run `pydicom codify <path-to-dcm>` to build this
 
+    # for now only dicomify the fundus photos
+    if context['code'] == OCT_PROCEDURE_CODE:
+        return None
+
+
     # File meta info data elements
     file_meta = FileMetaDataset()
-    file_meta.FileMetaInformationGroupLength = 192
+    file_meta.FileMetaInformationGroupLength = 196
     file_meta.FileMetaInformationVersion = b'\x00\x01'
-    file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.2'
-    file_meta.MediaStorageSOPInstanceUID = '1.3.6.1.4.1.5962.1.1.1.1.1.20040119072730.12322'
+    file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
+    file_meta.MediaStorageSOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
     file_meta.TransferSyntaxUID = '1.2.840.10008.1.2.1'
-    file_meta.ImplementationClassUID = '1.3.6.1.4.1.5962.2'
-    file_meta.ImplementationVersionName = 'DCTOOL100'
-    file_meta.SourceApplicationEntityTitle = 'CLUNIE1'
+    file_meta.ImplementationClassUID = '1.2.392.200106.1651.6.2'
+    file_meta.ImplementationVersionName = 'TP_STO_IM6_100'
 
     # Main data elements
     ds = Dataset()
     ds.SpecificCharacterSet = 'ISO_IR 100'
-    ds.ImageType = ['ORIGINAL', 'PRIMARY', 'AXIAL']
-    ds.InstanceCreationDate = '20040119'
-    ds.InstanceCreationTime = '072731'
-    ds.InstanceCreatorUID = '1.3.6.1.4.1.5962.3'
-    ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.2'
-    ds.SOPInstanceUID = '1.3.6.1.4.1.5962.1.1.1.1.1.20040119072730.12322'
-    ds.StudyDate = '20040119'
-    ds.SeriesDate = '19970430'
-    ds.AcquisitionDate = '19970430'
-    ds.ContentDate = '19970430'
-    ds.StudyTime = '072730'
-    ds.SeriesTime = '112749'
-    ds.AcquisitionTime = '112936'
-    ds.ContentTime = '113008'
+    ds.ImageType = ['ORIGINAL', 'PRIMARY', '3D Wide']
+    ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
+    ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
+
+    image_date = imaging_study['started'][0:10].replace('-', '')
+    image_time = imaging_study['started'][11:19].replace(':', '') + '.000000'
+    ds.StudyDate = image_date
+    ds.SeriesDate = image_date
+    ds.AcquisitionDate = image_date
+    ds.ContentDate = image_date
+    ds.AcquisitionDateTime = image_date + image_time
+    ds.StudyTime = image_time
+    ds.SeriesTime = image_time
+    ds.AcquisitionTime = image_time
+    ds.ContentTime = image_time
     ds.AccessionNumber = ''
-    ds.Modality = 'CT'
-    ds.Manufacturer = 'GE MEDICAL SYSTEMS'
-    ds.InstitutionName = 'JFK IMAGING CENTER'
+    ds.Modality = 'OP'
+    ds.ConversionType = 'WSD'
+    ds.Manufacturer = 'Topcon Healthcare'
+    ds.InstitutionName = 'THINC'
     ds.ReferringPhysicianName = ''
-    ds.TimezoneOffsetFromUTC = '-0500'
-    ds.StationName = 'CT01_OC0'
-    ds.StudyDescription = 'e+1'
-    ds.ManufacturerModelName = 'RHAPSODE'
-    ds.PatientName = 'CompressedSamples^CT1'
-    ds.PatientID = '1CT1'
-    ds.PatientBirthDate = ''
-    ds.PatientSex = 'O'
+    ds.SeriesDescription = 'Fundus'
+    ds.ManufacturerModelName = 'Maestro2'
 
-    # Other Patient IDs Sequence
-    other_patient_i_ds_sequence = Sequence()
-    ds.OtherPatientIDsSequence = other_patient_i_ds_sequence
+    # Anatomic Region Sequence
+    anatomic_region_sequence = Sequence()
+    ds.AnatomicRegionSequence = anatomic_region_sequence
 
-    # Other Patient IDs Sequence: Other Patient IDs 1
-    other_patient_i_ds1 = Dataset()
-    other_patient_i_ds_sequence.append(other_patient_i_ds1)
-    other_patient_i_ds1.PatientID = 'ABCD1234'
-    other_patient_i_ds1.TypeOfPatientID = 'TEXT'
+    # Anatomic Region Sequence: Anatomic Region 1
+    anatomic_region1 = Dataset()
+    anatomic_region_sequence.append(anatomic_region1)
+    anatomic_region1.CodeValue = 'T-AA610'
+    anatomic_region1.CodingSchemeDesignator = 'SRT'
+    anatomic_region1.CodeMeaning = 'Retina'
 
-    # Other Patient IDs Sequence: Other Patient IDs 2
-    other_patient_i_ds2 = Dataset()
-    other_patient_i_ds_sequence.append(other_patient_i_ds2)
-    other_patient_i_ds2.PatientID = '1234ABCD'
-    other_patient_i_ds2.TypeOfPatientID = 'TEXT'
-
-    ds.PatientAge = '000Y'
-    ds.PatientWeight = '0.0'
-    ds.AdditionalPatientHistory = ''
-    ds.ContrastBolusAgent = 'ISOVUE300/100'
-    ds.ScanOptions = 'HELICAL MODE'
-    ds.SliceThickness = '5.0'
-    ds.KVP = '120.0'
-    ds.SpacingBetweenSlices = '5.0'
-    ds.DataCollectionDiameter = '480.0'
-    ds.SoftwareVersions = '05'
-    ds.ContrastBolusRoute = 'IV'
-    ds.ReconstructionDiameter = '338.6716'
-    ds.DistanceSourceToDetector = '1099.3100585938'
-    ds.DistanceSourceToPatient = '630.0'
-    ds.GantryDetectorTilt = '0.0'
-    ds.TableHeight = '133.699997'
-    ds.ExposureTime = '1601'
-    ds.XRayTubeCurrent = '170'
-    ds.Exposure = '170'
-    ds.FilterType = 'LARGE BOWTIE FIL'
-    ds.FocalSpots = '0.7'
-    ds.ConvolutionKernel = 'STANDARD'
-    ds.PatientPosition = 'FFS'
-    ds.StudyInstanceUID = '1.3.6.1.4.1.5962.1.2.1.20040119072730.12322'
-    ds.SeriesInstanceUID = '1.3.6.1.4.1.5962.1.3.1.1.20040119072730.12322'
-    ds.StudyID = '1CT1'
+    patient = context['patient']
+    name_obj = patient['name'][0]
+    ds.PatientName = f"{name_obj['family']}^{name_obj['given'][0]}"
+    ds.PatientID = patient['id']
+    ds.PatientBirthDate = patient['birthDate'].replace('-', '')
+    ds.PatientSex = patient['gender'][0].upper()
+    ds.DeviceSerialNumber = '3070395'
+    ds.SoftwareVersions = '2.54.24153'
+    ds.FrameTime = '0.0'
+    ds.SynchronizationTrigger = 'NO TRIGGER'
+    ds.DateOfLastCalibration = '20220822'
+    ds.TimeOfLastCalibration = '093900'
+    ds.AcquisitionTimeSynchronized = 'N'
+    ds.StudyInstanceUID = imaging_study['series'][0]['uid']
+    ds.SeriesInstanceUID = imaging_study['series'][0]['instance'][0]['uid']
+    ds.StudyID = '1'
     ds.SeriesNumber = '1'
-    ds.AcquisitionNumber = '2'
+    ds.AcquisitionNumber = '1'
     ds.InstanceNumber = '1'
-    ds.ImagePositionPatient = [-158.135803, -179.035797, -75.699997]
-    ds.ImageOrientationPatient = [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]
-    ds.FrameOfReferenceUID = '1.3.6.1.4.1.5962.1.4.1.1.20040119072730.12322'
-    ds.Laterality = ''
-    ds.PositionReferenceIndicator = 'SN'
-    ds.SliceLocation = '-77.2040634155'
-    ds.ImageComments = 'Uncompressed'
+    ds.PatientOrientation = ['L', 'F']
+    ds.ImageLaterality = 'R'
+    ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
+    ds.PatientEyeMovementCommanded = ''
+    ds.EmmetropicMagnification = None
+    ds.IntraOcularPressure = None
+    ds.HorizontalFieldOfView = None
+    ds.PupilDilated = ''
+
+    # Acquisition Device Type Code Sequence
+    acquisition_device_type_code_sequence = Sequence()
+    ds.AcquisitionDeviceTypeCodeSequence = acquisition_device_type_code_sequence
+
+    # Acquisition Device Type Code Sequence: Acquisition Device Type Code 1
+    acquisition_device_type_code1 = Dataset()
+    acquisition_device_type_code_sequence.append(acquisition_device_type_code1)
+    acquisition_device_type_code1.CodeValue = 'R-1021A'
+    acquisition_device_type_code1.CodingSchemeDesignator = 'SRT'
+    acquisition_device_type_code1.CodeMeaning = 'Fundus Camera'
+
+
+    # Illumination Type Code Sequence
+    illumination_type_code_sequence = Sequence()
+    ds.IlluminationTypeCodeSequence = illumination_type_code_sequence
+
+
+    # Light Path Filter Type Stack Code Sequence
+    light_path_filter_type_stack_code_sequence = Sequence()
+    ds.LightPathFilterTypeStackCodeSequence = light_path_filter_type_stack_code_sequence
+
+
+    # Image Path Filter Type Stack Code Sequence
+    image_path_filter_type_stack_code_sequence = Sequence()
+    ds.ImagePathFilterTypeStackCodeSequence = image_path_filter_type_stack_code_sequence
+
+
+    # Lenses Code Sequence
+    lenses_code_sequence = Sequence()
+    ds.LensesCodeSequence = lenses_code_sequence
+
+
+    # Refractive State Sequence
+    refractive_state_sequence = Sequence()
+    ds.RefractiveStateSequence = refractive_state_sequence
+
+
+    np_image = np.array(image.getdata(), dtype=np.uint8)[:,:3]
+
     ds.SamplesPerPixel = 3
-    # ds.PhotometricInterpretation = 'RGB'
+    ds.PhotometricInterpretation = 'RGB'
+    ds.PlanarConfiguration = 0
+    ds.NumberOfFrames = '1'
+    ds.FrameIncrementPointer = (0x0018, 0x1063)
     ds.Rows = image.height
     ds.Columns = image.width
-    # ds.PixelSpacing = [0.661468, 0.661468]
+    ds.PhotometricInterpretation = "RGB"
+    ds.PixelSpacing = [0, 0]
     ds.BitsAllocated = 8
     ds.BitsStored = 8
     ds.HighBit = 7
-    ds.PixelRepresentation = 1
-    ds.PixelPaddingValue = -2000
-    ds.RescaleIntercept = '-1024.0'
-    ds.RescaleSlope = '1.0'
-    image_data = np.array(image.getdata(), dtype=np.uint8)[:, :3]
-    # ds.PixelData = image_data.tobytes()
-    # ds.DataSetTrailingPadding = # XXX Array of 126 bytes excluded
+    ds.PixelRepresentation = 0
+    ds.BurnedInAnnotation = 'NO'
+    ds.LossyImageCompression = '00'
+    ds.PixelData = image.tobytes()
 
-    ds.file_meta = file_meta
+    # ds.file_meta = file_meta
     ds.is_implicit_VR = False
     ds.is_little_endian = True
     return ds
