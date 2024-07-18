@@ -246,10 +246,10 @@ public class Provider implements QuadTreeElement, Serializable {
       return true;
     }
     switch (this.type) {
-      case VETERAN:
-        return person.attributes.containsKey(Person.VETERAN);
-      case IHS:
-        return "native".equals(person.attributes.get(Person.RACE));
+      // case VETERAN:
+      //   return person.attributes.containsKey(Person.VETERAN);
+      // case IHS:
+      //   return "native".equals(person.attributes.get(Person.RACE));
       default:
         return true;
     }
