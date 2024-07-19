@@ -1,0 +1,7 @@
+site_name: Artificial Primary Care Data 
+nav:
+  - Home: index.md
+theme: material
+markdown_extensions:
+  - tables
+  - footnotes
