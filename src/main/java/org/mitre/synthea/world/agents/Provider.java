@@ -242,17 +242,18 @@ public class Provider implements QuadTreeElement, Serializable {
     // UNLESS it's a VA facility and the person is not a veteran or
     // it's an IHS Facility and only accepts people with a race set to Native American
     // eventually we may want to expand this (ex. capacity?)
-    if (this.type == null) {
-      return true;
-    }
-    switch (this.type) {
+    // if (this.type == null) {
+    //   return true;
+    // }
+    // switch (this.type) {
       // case VETERAN:
       //   return person.attributes.containsKey(Person.VETERAN);
       // case IHS:
       //   return "native".equals(person.attributes.get(Person.RACE));
-      default:
-        return true;
-    }
+    //   default:
+    //     return true;
+    // }
+    return true;
   }
 
   /**
