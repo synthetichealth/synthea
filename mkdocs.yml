@@ -1,7 +1,12 @@
 site_name: Artificial Primary Care Data 
 nav:
   - Home: index.md
-theme: material
+  - Users: users.md
+  - Devs: dev.md
+theme: 
+  name: material
+  features:
+    - navigation.tabs
 markdown_extensions:
   - tables
   - footnotes
