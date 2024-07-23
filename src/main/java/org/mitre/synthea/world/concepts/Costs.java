@@ -6,8 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mitre.synthea.engine.Distribution;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
@@ -16,6 +16,8 @@ import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
 
 public class Costs {
+  private static final Distribution.Kind COST_METHOD = parseCostMethod();
+
   // all of these are CSVs with these columns:
   // code, min cost in $, mode cost in $, max cost in $, comments
   private static final Map<String, CostData> PROCEDURE_COSTS =
@@ -144,7 +146,7 @@ public class Costs {
       return 0.0;
     }
 
-    String code = entry.codes.get(0).code;;
+    String code = entry.codes.get(0).code;
     // Retrieve the base cost based on the code.
     double baseCost;
     if (costs != null && costs.containsKey(code)) {
@@ -257,6 +259,17 @@ public class Costs {
   }
 
   /**
+   * Load the cost methodology.
+   * @return a Distribution.Kind enum value. Defaults to Triangular.
+   */
+  private static Distribution.Kind parseCostMethod() {
+    String configValue =
+        Config.get("generate.costs.method", Distribution.Kind.TRIANGULAR.toString());
+    Distribution.Kind distribution = Distribution.Kind.valueOf(configValue.toUpperCase());
+    return distribution;
+  }
+
+  /**
    * Whether or not this HealthRecord.Entry has an associated cost on a claim.
    * Billing cost is not necessarily reimbursed cost or paid cost.
    *
@@ -298,39 +311,64 @@ public class Costs {
     private double min;
     private double mode;
     private double max;
+    private Distribution distribution;
 
-    private CostData(double min, double mode, double max) {
+    CostData(double min, double mode, double max) {
       this.min = min;
       this.mode = mode;
       this.max = max;
+      this.distribution = new Distribution();
+      this.distribution.kind = COST_METHOD;
+      this.distribution.round = false;
+      this.distribution.parameters = new HashMap<String, Double>();
+      switch (COST_METHOD) {
+        case EXACT:
+          this.distribution.parameters.put("value", this.mode);
+          break;
+        case UNIFORM:
+          this.distribution.parameters.put("low", this.min);
+          this.distribution.parameters.put("high", this.max);
+          break;
+        case GAUSSIAN:
+          this.distribution.parameters.put("mean", this.mode);
+          this.distribution.parameters.put("min", this.min);
+          this.distribution.parameters.put("max", this.max);
+          double left = (this.mode - this.min) / 4.0d;
+          double right = (this.max - this.mode) / 4.0d;
+          double sd = Math.min(left, right);
+          this.distribution.parameters.put("standardDeviation", sd);
+          break;
+        case EXPONENTIAL:
+          this.distribution.parameters.put("mean", this.mode);
+          break;
+        case TRIANGULAR:
+          this.distribution.parameters.put("min", this.min);
+          this.distribution.parameters.put("mode", this.mode);
+          this.distribution.parameters.put("max", this.max);
+          break;
+        default:
+          break;
+      }
     }
 
     /**
-     * Select an individual cost based on this cost data. Uses a triangular
-     * distribution to pick a randomized value.
-     * @param rand Source of randomness
+     * Select an individual cost based on this cost data.
+     * @param person Source of randomness
      * @return Single cost within the range this set of cost data represents
      */
-    private double chooseCost(RandomNumberGenerator rand) {
-      return triangularDistribution(min, max, mode, rand.rand());
-    }
+    protected double chooseCost(Person person) {
+      double value = this.distribution.generate(person);
 
-    /**
-     * Pick a single value based on a triangular distribution. See:
-     * https://en.wikipedia.org/wiki/Triangular_distribution
-     * @param min  Lower limit of the distribution
-     * @param max  Upper limit of the distribution
-     * @param mode Most common value
-     * @param rand A random value between 0-1
-     * @return a single value from the distribution
-     */
-    public static double triangularDistribution(double min, double max, double mode, double rand) {
-      double f = (mode - min) / (max - min);
-      if (rand < f) {
-        return min + Math.sqrt(rand * (max - min) * (mode - min));
-      } else {
-        return max - Math.sqrt((1 - rand) * (max - min) * (max - mode));
+      if (COST_METHOD.equals(Distribution.Kind.EXPONENTIAL)) {
+        value = value - 1.0;
       }
+
+      if (value < this.min) {
+        value = this.min;
+      } else if (value > this.max) {
+        value = this.max;
+      }
+      return value;
     }
   }
 }

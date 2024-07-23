@@ -308,14 +308,14 @@ public class CSVExporter {
         "START,STOP,PATIENT,PAYER,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,PAYER_COVERAGE,DISPENSES,"
         + "TOTALCOST,REASONCODE,REASONDESCRIPTION");
     medications.write(NEWLINE);
-    conditions.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION");
+    conditions.write("START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION");
     conditions.write(NEWLINE);
     careplans.write(
         "Id,START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,REASONCODE,REASONDESCRIPTION");
     careplans.write(NEWLINE);
     observations.write("DATE,PATIENT,ENCOUNTER,CATEGORY,CODE,DESCRIPTION,VALUE,UNITS,TYPE");
     observations.write(NEWLINE);
-    procedures.write("START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST,"
+    procedures.write("START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION,BASE_COST,"
         + "REASONCODE,REASONDESCRIPTION");
     procedures.write(NEWLINE);
     immunizations.write("DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,BASE_COST");
@@ -752,7 +752,7 @@ public class CSVExporter {
    * @throws IOException if any IO error occurs
    */
   private void condition(String personID, String encounterID, Entry condition) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION
+    // START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(dateFromTimestamp(condition.start)).append(',');
@@ -765,6 +765,7 @@ public class CSVExporter {
 
     Code coding = condition.codes.get(0);
 
+    s.append(coding.system).append(',');
     s.append(coding.code).append(',');
     s.append(clean(coding.display));
 
@@ -903,7 +904,7 @@ public class CSVExporter {
    */
   private void procedure(String personID, String encounterID,
       Procedure procedure) throws IOException {
-    // START,STOP,PATIENT,ENCOUNTER,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
+    // START,STOP,PATIENT,ENCOUNTER,SYSTEM,CODE,DESCRIPTION,COST,REASONCODE,REASONDESCRIPTION
     StringBuilder s = new StringBuilder();
 
     s.append(iso8601Timestamp(procedure.start)).append(',');
@@ -915,6 +916,7 @@ public class CSVExporter {
     s.append(encounterID).append(',');
     // CODE
     Code coding = procedure.codes.get(0);
+    s.append(coding.system).append(',');
     s.append(coding.code).append(',');
     // DESCRIPTION
     s.append(clean(coding.display)).append(',');

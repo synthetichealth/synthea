@@ -263,7 +263,7 @@ public class CodeMapper {
       row.put("count", count.toString());
       missingCodeList.add(row);
     });
-    // sort in decending order by count
+    // sort in descending order by count
     Collections.sort(missingCodeList, (o1, o2) -> {
       return (int)(Long.parseLong(o2.get("count")) - Long.parseLong(o1.get("count")));
     });

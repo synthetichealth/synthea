@@ -188,7 +188,11 @@ public abstract class RIFExporter {
       if (encounter.start <= time) {
         for (HealthRecord.Entry dx : encounter.conditions) {
           if (dx.start <= time && (dx.stop == 0L || dx.stop > time)) {
-            if (exporter.conditionCodeMapper.canMap(dx.codes.get(0))) {
+            if (dx.codes.get(0).system.startsWith("ICD10")) {
+              // Temporarily duplicate the code... we'll remove it later.
+              dx.codes.add(dx.codes.get(0));
+              diagnoses.add(dx);
+            } else if (exporter.conditionCodeMapper.canMap(dx.codes.get(0))) {
               String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0), person, true);
               // Temporarily add the mapped code... we'll remove it later.
               HealthRecord.Code mappedCode = new HealthRecord.Code("ICD10", mapped,
@@ -234,7 +238,9 @@ public abstract class RIFExporter {
     List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       for (HealthRecord.Entry dx : encounter.conditions) {
-        if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
+        if (dx.codes.get(0).system.startsWith("ICD10")) {
+          diagnoses.add(dx);
+        } else if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
           String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0).code, person, true);
           if (mapped.equals(code)) {
             diagnoses.add(dx);

@@ -214,6 +214,9 @@ public abstract class ExportHelper {
   private static final String CVX_URI = "http://hl7.org/fhir/sid/cvx";
   private static final String DICOM_DCM_URI = "http://dicom.nema.org/medical/dicom/current/output/chtml/part16/sect_CID_29.html";
   private static final String CDT_URI = "http://www.ada.org/cdt";
+  private static final String ICD9_URI = "http://hl7.org/fhir/sid/icd-9-cm";
+  private static final String ICD10_URI = "http://hl7.org/fhir/sid/icd-10";
+  private static final String ICD10_CM_URI = "http://hl7.org/fhir/sid/icd-10-cm";
 
   /**
    * Translate the system name (e.g. SNOMED-CT) into the official
@@ -234,6 +237,12 @@ public abstract class ExportHelper {
       system = DICOM_DCM_URI;
     } else if (system.equals("CDT")) {
       system = CDT_URI;
+    } else if (system.equals("ICD9")) {
+      system = ICD9_URI;
+    } else if (system.equals("ICD10")) {
+      system = ICD10_URI;
+    } else if (system.equals("ICD10-CM")) {
+      system = ICD10_CM_URI;
     }
     return system;
   }
@@ -258,6 +267,12 @@ public abstract class ExportHelper {
         return "DICOM-DCM";
       case CDT_URI:
         return "CDT";
+      case ICD9_URI:
+        return "ICD9";
+      case ICD10_URI:
+        return "ICD10";
+      case ICD10_CM_URI:
+        return "ICD10-CM";
       default:
         return "Unknown";
     }
