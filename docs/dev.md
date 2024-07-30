@@ -10,7 +10,7 @@ The demographics breakdowns are done by the full region rather than per town as 
 | Column Name | Contains | Data Sources for UK Version |
 | ----------- | ---------|---------------------------- |
 | ID | Town ID number | monotonically increasing from 1 |
-| COUNTY | code for the county that town is found in | TOWN_211CODE column from [ONS data table](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/understandingtownsinenglandandwalespopulationanddemography) |
+| COUNTY | County Code where town is located | TOWN_211CODE column from [ONS data table](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/understandingtownsinenglandandwalespopulationanddemography) |
 | NAME | Town Name | TOWN_211NAME column from above ONS table |
 | STNAME | Region Name | REGION/COUNTRY from above ONS table |
 | POPESTIMATE2015 | Population of that town | TOTAL population rows for 2019 from above ONS data |
