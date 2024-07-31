@@ -46,5 +46,5 @@ Originally called zipcodes.csv but changed to use the English word. Postcode inf
 
 [^1]: Ethnicity categories were changed from the American version to align better with UK ethnicity breakdowns 
 [^2]: Under 18 ages set to 0 as we are only interested in an adult population currently. 
-[^3]: Income brackets don't match exactly, and so maths was done to estimate the brackets used in Synthea. 
+[^3]: Income brackets don't match exactly, and so estimations of the breakdowns within the brackets used in Synthea had to be done. 
 [^4]: We used data on mortgagors who found affording their mortgage very or fairly difficult (table AT2_8) plus renters who found affording their rent very or fairly difficult over the total number of people surveyed in the study used. This data was only available for the whole country. 
