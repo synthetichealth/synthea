@@ -110,7 +110,7 @@ public abstract class RandomCodeGenerator {
     if (!codeListCache.containsKey(valueSetUri)) {
       Request request = new Request.Builder()
               .url(expandBaseUrl + valueSetUri)
-              .header("Content-Type", "application/json")
+              .header("Accept", "application/json")
               .build();
       try {
         Response response = client.newCall(request).execute();
