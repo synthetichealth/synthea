@@ -1,0 +1,368 @@
+{
+  "name": "ophthalmic_progression",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Check_Stage"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Set_VA_High": {
+      "type": "SetAttribute",
+      "attribute": "visual_acuity_logmar",
+      "direct_transition": "Check_IOP",
+      "value": 0
+    },
+    "Set_VA_Low": {
+      "type": "SetAttribute",
+      "attribute": "visual_acuity_logmar",
+      "direct_transition": "Check_IOP",
+      "value": 0.3
+    },
+    "Check_Edema_for_VA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_VA_Low",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "macular_edema",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Set_VA_High"
+        }
+      ]
+    },
+    "Check_IOP": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "high_iop",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Set_High_IOP_Flag",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 4
+          },
+          "distributions": [
+            {
+              "distribution": 0.001,
+              "transition": "Set_High_IOP_Flag"
+            },
+            {
+              "transition": "Set_IOP_Normal_Range",
+              "distribution": 0.9990000000000001
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 1,
+              "transition": "Set_IOP_Normal_Range"
+            }
+          ]
+        }
+      ]
+    },
+    "Set_High_IOP_Flag": {
+      "type": "SetAttribute",
+      "attribute": "high_iop",
+      "value": true,
+      "conditional_transition": [
+        {
+          "transition": "Set_IOP_High_Reduced",
+          "condition": {
+            "condition_type": "Active Medication",
+            "codes": [
+              {
+                "system": "RxNorm",
+                "code": 1923432,
+                "display": "dorzolamide 20 MG/ML / timolol 5 MG/ML Ophthalmic Solution"
+              },
+              {
+                "system": "RxNorm",
+                "code": 861204,
+                "display": "brimonidine tartrate 1 MG/ML Ophthalmic Solution"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Set_IOP_High_Range"
+        }
+      ]
+    },
+    "Set_IOP_Normal_Range": {
+      "type": "SetAttribute",
+      "attribute": "intraocular_pressure",
+      "direct_transition": "Set_Findings_Right",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 18,
+          "low": 14
+        }
+      }
+    },
+    "Set_IOP_High_Range": {
+      "type": "SetAttribute",
+      "attribute": "intraocular_pressure",
+      "direct_transition": "Set_Findings_Right",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": true,
+        "parameters": {
+          "high": 24,
+          "low": 18
+        }
+      }
+    },
+    "Set_IOP_High_Reduced": {
+      "type": "SetAttribute",
+      "attribute": "intraocular_pressure",
+      "direct_transition": "Set_Findings_Right",
+      "distribution": {
+        "kind": "UNIFORM",
+        "round": false,
+        "parameters": {
+          "high": 18,
+          "low": 15
+        }
+      }
+    },
+    "Set_Findings_Left": {
+      "type": "SetAttribute",
+      "attribute": "oct_findings_left",
+      "direct_transition": "Set_oct_center_point_thickness",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA28409-8",
+        "display": "No abnormal findings"
+      }
+    },
+    "Set_Findings_Right": {
+      "type": "SetAttribute",
+      "attribute": "oct_findings_right",
+      "direct_transition": "Set_Findings_Left",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA28409-8",
+        "display": "No abnormal findings"
+      }
+    },
+    "Check_Stage": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Set_Stage_Code_0",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Set_Stage_Code_1",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "transition": "Set_Stage_Code_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Set_Stage_Code_3",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Set_Stage_Code_4",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "diabetic_retinopathy_stage",
+            "operator": "==",
+            "value": 4
+          }
+        }
+      ],
+      "remarks": [
+        "https://loinc.org/LL2117-1"
+      ]
+    },
+    "Set_Stage_Code_0": {
+      "type": "SetAttribute",
+      "attribute": "diabetic_retinopathy_stage_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA18643-9",
+        "display": "No apparent retinopathy"
+      },
+      "direct_transition": "Check_Edema_for_VA"
+    },
+    "Set_Stage_Code_1": {
+      "type": "SetAttribute",
+      "attribute": "diabetic_retinopathy_stage_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA18644-7",
+        "display": "Mild non-proliferative retinopathy"
+      },
+      "direct_transition": "Check_Edema_for_VA"
+    },
+    "Set_Stage_Code_2": {
+      "type": "SetAttribute",
+      "attribute": "diabetic_retinopathy_stage_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA18645-4",
+        "display": "Moderate non-proliferative retinopathy"
+      },
+      "direct_transition": "Check_Edema_for_VA"
+    },
+    "Set_Stage_Code_3": {
+      "type": "SetAttribute",
+      "attribute": "diabetic_retinopathy_stage_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA18646-2",
+        "display": "Severe non-proliferative retinopathy"
+      },
+      "direct_transition": "Check_Edema_for_VA"
+    },
+    "Set_Stage_Code_4": {
+      "type": "SetAttribute",
+      "attribute": "diabetic_retinopathy_stage_code",
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA18648-8",
+        "display": "Proliferative retinopathy"
+      },
+      "direct_transition": "Check_Edema_for_VA"
+    },
+    "Set_oct_center_point_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_center_point_thickness",
+      "direct_transition": "Set_oct_center_subfield_thickness",
+      "value": "227"
+    },
+    "Set_oct_center_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_center_subfield_thickness",
+      "direct_transition": "Set_oct_inner_superior_subfield_thickness",
+      "value": "270"
+    },
+    "Set_oct_inner_superior_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_inner_superior_subfield_thickness",
+      "direct_transition": "Set_oct_inner_nasal_subfield_thickness",
+      "value": "335"
+    },
+    "Set_oct_inner_nasal_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_inner_nasal_subfield_thickness",
+      "direct_transition": "Set_oct_inner_inferior_subfield_thickness",
+      "value": "338"
+    },
+    "Set_oct_inner_inferior_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_inner_inferior_subfield_thickness",
+      "direct_transition": "Set_oct_inner_temporal_subfield_thickness",
+      "value": "332"
+    },
+    "Set_oct_inner_temporal_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_inner_temporal_subfield_thickness",
+      "direct_transition": "Set_oct_outer_superior_subfield_thickness",
+      "value": "324"
+    },
+    "Set_oct_outer_superior_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_outer_superior_subfield_thickness",
+      "direct_transition": "Set_oct_outer_nasal_subfield_thickness",
+      "value": "290"
+    },
+    "Set_oct_outer_nasal_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_outer_nasal_subfield_thickness",
+      "direct_transition": "Set_oct_outer_inferior_subfield_thickness",
+      "value": "305"
+    },
+    "Set_oct_outer_inferior_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_outer_inferior_subfield_thickness",
+      "direct_transition": "Set_oct_outer_temporal_subfield_thickness",
+      "value": "280"
+    },
+    "Set_oct_outer_temporal_subfield_thickness": {
+      "type": "SetAttribute",
+      "attribute": "oct_outer_temporal_subfield_thickness",
+      "direct_transition": "Set_oct_total_volume",
+      "value": "279"
+    },
+    "Set_oct_total_volume": {
+      "type": "SetAttribute",
+      "attribute": "oct_total_volume",
+      "direct_transition": "Terminal",
+      "value": "8.4"
+    }
+  },
+  "gmf_version": 2,
+  "remarks": [
+    "A simple module to represent a few aspects of the progression of diabetic retinopathy. On the original \"diabetic_retinopathy\" branch this was implemented as a Java submodule which allows for additional power, but is opaque to the module builder and most users. The main difference is in the OCT quantitative measurements; in the original an individual had a single randomized offset which was applied to every value, here the values are fixed.",
+    "",
+    "Stage Codes are from https://loinc.org/LL2117-1",
+    "",
+    "Visual Acuity modeled in LogMAR",
+    "some examples (ref: https://en.wikipedia.org/wiki/LogMAR_chart)",
+    "Foot LogMAR",
+    "20/200 1.00",
+    "20/160 0.90",
+    "20/100 0.70",
+    "20/80 0.60",
+    "20/40 0.30",
+    "20/20 0.00",
+    "20/16 −0.10",
+    "",
+    "IOP:",
+    "\"Pressures of between 11 and 21 mmHg are considered normal\"",
+    "https://www.ncbi.nlm.nih.gov/books/NBK532237/",
+    "https://www.mdpi.com/2077-0383/13/3/676",
+    "",
+    "OCT measurements:",
+    "https://iovs.arvojournals.org/article.aspx?articleid=2165526",
+    "another source (not used) https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1941772/"
+  ]
+}

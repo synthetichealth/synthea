@@ -470,7 +470,7 @@
               "distribution": 0.084
             },
             {
-              "transition": "Check_Eye_Conditions",
+              "transition": "Check_Neuropathy",
               "distribution": 0.916
             }
           ]
@@ -488,7 +488,7 @@
               "distribution": 0.121
             },
             {
-              "transition": "Check_Eye_Conditions",
+              "transition": "Check_Neuropathy",
               "distribution": 0.879
             }
           ]
@@ -500,7 +500,7 @@
               "distribution": 0.174
             },
             {
-              "transition": "Check_Eye_Conditions",
+              "transition": "Check_Neuropathy",
               "distribution": 0.826
             }
           ],
@@ -524,7 +524,7 @@
               "distribution": 0.503
             },
             {
-              "transition": "Check_Eye_Conditions",
+              "transition": "Check_Neuropathy",
               "distribution": 0.497
             }
           ]
@@ -538,11 +538,6 @@
       "type": "CallSubmodule",
       "submodule": "metabolic_syndrome/kidney_conditions",
       "direct_transition": "Check_Diabetes"
-    },
-    "Check_Eye_Conditions": {
-      "type": "CallSubmodule",
-      "submodule": "metabolic_syndrome/eye_conditions",
-      "direct_transition": "Check_Neuropathy"
     },
     "Check_Neuropathy": {
       "type": "Simple",
@@ -706,7 +701,7 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "Check_Eye_Conditions"
+      "direct_transition": "Check_Neuropathy"
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -720,7 +715,7 @@
           }
         },
         {
-          "transition": "Check_Eye_Conditions"
+          "transition": "Check_Neuropathy"
         }
       ],
       "remarks": [

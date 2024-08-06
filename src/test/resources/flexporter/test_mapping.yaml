@@ -301,6 +301,10 @@ actions:
    delete_resources:
      - Provenance
 
+ - name: testDeleteResourcesByFhirPath
+   delete_resources:
+     - MedicationRequest.medication.coding.where($this.code = '1191013')
+
  - name: testDeleteResourcesCascade
    delete_resources:
      - Patient
