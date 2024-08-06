@@ -87,7 +87,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for Problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "fT4 panel results"
@@ -128,7 +128,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for Problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Synthroid Medication Order"

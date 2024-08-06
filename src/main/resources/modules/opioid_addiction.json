@@ -170,8 +170,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "196416002",
-          "display": "Impacted molars"
+          "code": 196416002,
+          "display": "Impacted molars (disorder)"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter1"
@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": 385867000,
+          "display": "Emergency treatment education (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -255,8 +255,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "124171000119105",
-          "display": "Chronic intractable migraine without aura"
+          "code": 124171000119105,
+          "display": "Chronic intractable migraine without aura (disorder)"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter3"
@@ -268,8 +268,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": 385867000,
+          "display": "Emergency treatment education (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -623,8 +623,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": 708079007,
+          "display": "Overdose of illicit drug (disorder)"
         }
       ],
       "direct_transition": "Directed_Use_Overdose_Encounter"
@@ -661,8 +661,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": 708079007,
+          "display": "Overdose of illicit drug (disorder)"
         }
       ],
       "direct_transition": "Misuse_Overdose_Encounter"
@@ -699,8 +699,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": 708079007,
+          "display": "Overdose of illicit drug (disorder)"
         }
       ],
       "direct_transition": "Addiction_Overdose_Encounter"
@@ -752,8 +752,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "60112009",
-          "display": "Drug addiction counseling"
+          "code": 60112009,
+          "display": "Drug addiction counseling (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -777,8 +777,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": 708079007,
+          "display": "Overdose of illicit drug (disorder)"
         }
       ],
       "direct_transition": "Terminal"

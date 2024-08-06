@@ -73,8 +73,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "77806000",
-          "display": "Low calorie diet"
+          "code": 77806000,
+          "display": "Calorie restricted diet (finding)"
         },
         {
           "system": "SNOMED-CT",

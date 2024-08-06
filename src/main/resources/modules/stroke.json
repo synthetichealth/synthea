@@ -45,7 +45,7 @@
         {
           "system": "SNOMED-CT",
           "code": 230690007,
-          "display": "Stroke"
+          "display": "Cerebrovascular accident (disorder)"
         }
       ],
       "direct_transition": "Emergency_Encounter"
@@ -156,7 +156,7 @@
         {
           "system": "SNOMED-CT",
           "code": 230690007,
-          "display": "Stroke"
+          "display": "Cerebrovascular accident (disorder)"
         }
       ],
       "direct_transition": "End_Encounter"

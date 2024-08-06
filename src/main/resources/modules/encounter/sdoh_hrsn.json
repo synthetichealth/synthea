@@ -832,9 +832,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 224355006,
-          "display": "Served in armed forces (finding)",
-          "value_set": ""
+          "code": 1187604002,
+          "display": "Serving in military service (finding)"
         }
       ],
       "direct_transition": "Q5"
@@ -1166,9 +1165,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5251000175109,
-          "display": "Received certificate of high school equivalency (finding)",
-          "version": "http://snomed.info/sct/731000124108"
+          "code": 473461003,
+          "display": "Educated to high school level (finding)"
         }
       ],
       "direct_transition": "Q11"

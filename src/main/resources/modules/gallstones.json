@@ -327,7 +327,7 @@
         {
           "system": "SNOMED-CT",
           "code": 65275009,
-          "display": "Acute Cholecystitis"
+          "display": "Acute cholecystitis (disorder)"
         }
       ],
       "distributed_transition": [
@@ -351,8 +351,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 235919008,
-          "display": "Cholelithiasis"
+          "code": 266474003,
+          "display": "Calculus in biliary tract (disorder)"
         }
       ],
       "remarks": [
@@ -487,7 +487,7 @@
         {
           "system": "SNOMED-CT",
           "code": 45595009,
-          "display": "Laparoscopic Removal of Gall Bladder"
+          "display": "Laparoscopic cholecystectomy (procedure)"
         }
       ],
       "duration": {
@@ -530,7 +530,7 @@
         {
           "system": "SNOMED-CT",
           "code": 38102005,
-          "display": "Open Removal of Gall Bladder"
+          "display": "Cholecystectomy (procedure)"
         }
       ],
       "duration": {
@@ -578,7 +578,7 @@
         {
           "system": "SNOMED-CT",
           "code": 91302008,
-          "display": "Death due to sepsis"
+          "display": "Sepsis (disorder)"
         }
       ]
     },
@@ -747,8 +747,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 436861000124104,
-          "display": "Decreased fat diet"
+          "code": 1055207008,
+          "display": "Decreased fat and oil diet (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -1148,7 +1148,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 53566005,
-        "display": "Positive Murphy's Sign"
+        "display": "Murphy's sign (finding)"
       }
     },
     "Chole_Symptom4_Ends": {
@@ -1365,7 +1365,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": 91936005,
-                "display": "Allergy to Penicillin"
+                "display": "Allergy to penicillin (finding)"
               }
             ]
           }

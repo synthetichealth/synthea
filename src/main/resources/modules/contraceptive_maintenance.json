@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "46706006",
-          "display": "Replacement of contraceptive intrauterine device"
+          "code": 46706006,
+          "display": "Replacement of contraceptive intrauterine device (procedure)"
         }
       ],
       "duration": {
@@ -216,8 +216,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "68254000",
-          "display": "Removal of intrauterine device"
+          "code": 1263416007,
+          "display": "Removal of intrauterine contraceptive device (procedure)"
         }
       ],
       "duration": {

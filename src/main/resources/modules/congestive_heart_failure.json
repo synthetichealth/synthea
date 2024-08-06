@@ -184,7 +184,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for Problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Oxygen_Saturation",
@@ -195,7 +195,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
@@ -904,8 +904,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 19283009,
-        "display": "Rales (finding)"
+        "code": 31846006,
+        "display": "Medium rales (finding)"
       },
       "direct_transition": "Initial Lab Work"
     },
@@ -1185,8 +1185,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "430193006",
-          "display": "Medication Reconciliation (procedure)"
+          "code": 430193006,
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "direct_transition": "Stop Ibuprofen"
@@ -1633,7 +1633,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
@@ -1767,8 +1767,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "430193006",
-          "display": "Medication Reconciliation (procedure)"
+          "code": 430193006,
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "direct_transition": "Inpatient_ECG"

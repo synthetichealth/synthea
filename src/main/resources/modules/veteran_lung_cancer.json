@@ -118,8 +118,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "code": 399208008,
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -161,8 +161,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "418891003",
-          "display": "Computed tomography of chest and abdomen"
+          "code": 418891003,
+          "display": "Computed tomography of chest and abdomen (procedure)"
         }
       ],
       "duration": {
@@ -617,8 +617,8 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "133918004",
-          "display": "Comfort measures"
+          "code": 133918004,
+          "display": "Comfort measures (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",

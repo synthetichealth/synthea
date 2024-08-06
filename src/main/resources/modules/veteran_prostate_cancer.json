@@ -211,7 +211,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 300531004,
-        "display": "Normal size prostate"
+        "display": "Normal sized prostate (finding)"
       }
     },
     "wellness_visit_time_delay": {
@@ -548,8 +548,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 314994000,
-          "display": "Metastasis from malignant tumor of prostate (disorder)"
+          "code": 94503003,
+          "display": "Metastatic malignant neoplasm to prostate (disorder)"
         }
       ],
       "direct_transition": "end_cancer_therapy encounter"
@@ -869,7 +869,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 720003003,
-            "display": "Reddish color urine"
+            "display": "Reddish color urine (finding)"
           }
         },
         {
@@ -1039,7 +1039,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1071,7 +1071,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
