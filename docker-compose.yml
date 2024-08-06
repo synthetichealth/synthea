@@ -1,0 +1,6 @@
+version: "3"
+services:
+  synthea:
+    build: .
+    tty: true
+    stdin_open: true

@@ -1,3 +1,6 @@
+/.devcontainer
+/.hermit
+
 **/.DS_Store
 .classpath
 .project
