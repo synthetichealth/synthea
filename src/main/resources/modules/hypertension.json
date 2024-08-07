@@ -120,7 +120,7 @@
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "Wellness_Encounter",
+      "direct_transition": "New_State",
       "name": "Onset_Hypertension"
     },
     "Black": {
@@ -937,6 +937,29 @@
       "submodule": "medications/hypertension_medication",
       "direct_transition": "End_Hypertension_Followup_Encounter_3",
       "name": "Prescribe_Medication_4"
+    },
+    "New_State": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "mean": 5,
+          "standardDeviation": 2
+        }
+      },
+      "unit": "years",
+      "conditional_transition": [
+        {
+          "transition": "Wellness_Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension",
+            "operator": "==",
+            "value": true
+          }
+        }
+      ],
+      "name": "New_State"
     }
   },
   "gmf_version": 1
