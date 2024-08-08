@@ -3,7 +3,6 @@ import base64
 from io import BytesIO
 import glob
 import json
-import numpy as np
 import os
 import pandas as pd
 from pathlib import Path
@@ -11,10 +10,7 @@ from PIL import Image
 import shutil
 import uuid
 
-
-import pydicom
-from pydicom.dataset import Dataset, FileMetaDataset
-from pydicom.sequence import Sequence
+from dicom import create_oct_dicom, create_fundus_dicom
 
 OCT_PROCEDURE_CODE = '700070005'
 OCT_DIAGREPORT_CODE = '87674-8'
@@ -143,6 +139,9 @@ def process_file(file, fundus_index, oct_index, output):
 
     # print(f"Found {len(imaging_studies)} imaging studies")
 
+    previous_context = None
+    previous_image = { 'OCT': [None, None], 'fundus': [None, None] }
+
     for i in range(len(imaging_studies)):
         imaging_study = imaging_studies[i]
         diag_report = diag_reports[i]
@@ -150,21 +149,34 @@ def process_file(file, fundus_index, oct_index, output):
         # TODO: seems not to be true when record filtering is enabled
 
         context = find_context(bundle, imaging_study, diag_report, resources_by_id, diagnoses, observations)
-        image = pick_image(fundus_index, oct_index, context)
+        img_type = context['type']
+        for index, instance in enumerate(imaging_study['series'][0]['instance']):
+            context['instance'] = instance
+            context['laterality'] = instance['title'] # OD or OS
+            if previous_image[img_type][index] and previous_context and previous_context['dr_stage'] == context['dr_stage']:
+                image = previous_image[img_type][index]
+            else:
+                image = pick_image(fundus_index, oct_index, context)
 
-        if not image:
-            # print("no image found")
-            continue
+            if not image:
+                # print("no image found")
+                previous_image[img_type][index] = None
+                continue
 
-        dicom = create_dicom(image, imaging_study, context)
-        dicom_uid = imaging_study['identifier'][0]['value'][8:]  # cut off urn:uuid:
-        pat_name = Path(file).stem
-        if dicom:
-            dicom.save_as(f'{output}/dicom/{pat_name}_{dicom_uid}.dcm')
-        image.save(f'{output}/images/{pat_name}_{dicom_uid}.jpg')
+            dicom = create_dicom(image, imaging_study, context)
+            dicom_uid = imaging_study['identifier'][0]['value'][8:]  # cut off urn:uuid:
+            instance_uid = context['instance']['uid']
 
-        media = create_fhir_media(context, imaging_study, image, dicom)
-        bundle['entry'].append(wrap_in_entry(media))
+            pat_name = Path(file).stem
+            if dicom:
+                dicom.save_as(f'{output}/dicom/{pat_name}_{dicom_uid}_{instance_uid}.dcm')
+            image.save(f'{output}/images/{pat_name}_{dicom_uid}_{instance_uid}.jpg')
+
+            media = create_fhir_media(context, imaging_study, image, dicom)
+            bundle['entry'].append(wrap_in_entry(media))
+            previous_image[img_type][index] = image
+
+        previous_context = context
 
     outputpath = Path(f"{output}/fhir") / os.path.basename(file)
     with open(outputpath, 'w') as f:
@@ -175,6 +187,10 @@ def find_context(bundle, imaging_study, diag_report, resources_by_id, diagnoses,
     context['patient'] = bundle['entry'][0]['resource']
     context['imaging_study'] = imaging_study
     context['code'] = imaging_study['procedureCode'][0]['coding'][0]['code']
+    if context['code'] == OCT_PROCEDURE_CODE:
+        context['type'] = 'OCT'
+    else:
+        context['type'] = 'fundus'
     context['encounter'] = resources_by_id[imaging_study['encounter']['reference']]
     encounter_date = context['encounter']['period']['start']
     encounter_id = context['encounter']['id']
@@ -280,8 +296,6 @@ def filter_fundus_index(fundus_index, context):
     else:
         fundus_index = fundus_index[fundus_index['Risk of macular edema'] == '0']
 
-
-
     return fundus_index
 
 def create_fhir_media(context, imaging_study, image, dicom):
@@ -291,7 +305,11 @@ def create_fhir_media(context, imaging_study, image, dicom):
     return {
         'resourceType': 'Media',
         'id': str(uuid.uuid4()),
-        'identifier': imaging_study['identifier'], # just copy it
+        'identifier': [ {
+            "use": "official",
+            "system": "urn:ietf:rfc:3986",
+            "value": f"urn:oid:{context['instance']['uid']}"
+          } ],
         'partOf': [ref(imaging_study)],
         'status': 'completed',
         'subject': ref(context['patient']),
@@ -317,149 +335,13 @@ def ref(resource):
     return {"reference": f"urn:uuid:{resource['id']}"}
 
 def create_dicom(image, imaging_study, context):
-    # run `pydicom codify <path-to-dcm>` to build this
-
     # for now only dicomify the fundus photos
     if context['code'] == OCT_PROCEDURE_CODE:
-        return None
-
-
-    # File meta info data elements
-    file_meta = FileMetaDataset()
-    file_meta.FileMetaInformationGroupLength = 196
-    file_meta.FileMetaInformationVersion = b'\x00\x01'
-    file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
-    file_meta.MediaStorageSOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
-    file_meta.TransferSyntaxUID = '1.2.840.10008.1.2.1'
-    file_meta.ImplementationClassUID = '1.2.392.200106.1651.6.2'
-    file_meta.ImplementationVersionName = 'TP_STO_IM6_100'
-
-    # Main data elements
-    ds = Dataset()
-    ds.SpecificCharacterSet = 'ISO_IR 100'
-    ds.ImageType = ['ORIGINAL', 'PRIMARY', '3D Wide']
-    ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
-    ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
-
-    image_date = imaging_study['started'][0:10].replace('-', '')
-    image_time = imaging_study['started'][11:19].replace(':', '') + '.000000'
-    ds.StudyDate = image_date
-    ds.SeriesDate = image_date
-    ds.AcquisitionDate = image_date
-    ds.ContentDate = image_date
-    ds.AcquisitionDateTime = image_date + image_time
-    ds.StudyTime = image_time
-    ds.SeriesTime = image_time
-    ds.AcquisitionTime = image_time
-    ds.ContentTime = image_time
-    ds.AccessionNumber = ''
-    ds.Modality = 'OP'
-    ds.ConversionType = 'WSD'
-    ds.Manufacturer = 'Topcon Healthcare'
-    ds.InstitutionName = 'THINC'
-    ds.ReferringPhysicianName = ''
-    ds.SeriesDescription = 'Fundus'
-    ds.ManufacturerModelName = 'Maestro2'
-
-    # Anatomic Region Sequence
-    anatomic_region_sequence = Sequence()
-    ds.AnatomicRegionSequence = anatomic_region_sequence
-
-    # Anatomic Region Sequence: Anatomic Region 1
-    anatomic_region1 = Dataset()
-    anatomic_region_sequence.append(anatomic_region1)
-    anatomic_region1.CodeValue = 'T-AA610'
-    anatomic_region1.CodingSchemeDesignator = 'SRT'
-    anatomic_region1.CodeMeaning = 'Retina'
-
-    patient = context['patient']
-    name_obj = patient['name'][0]
-    ds.PatientName = f"{name_obj['family']}^{name_obj['given'][0]}"
-    ds.PatientID = patient['id']
-    ds.PatientBirthDate = patient['birthDate'].replace('-', '')
-    ds.PatientSex = patient['gender'][0].upper()
-    ds.DeviceSerialNumber = '3070395'
-    ds.SoftwareVersions = '2.54.24153'
-    ds.FrameTime = '0.0'
-    ds.SynchronizationTrigger = 'NO TRIGGER'
-    ds.DateOfLastCalibration = '20220822'
-    ds.TimeOfLastCalibration = '093900'
-    ds.AcquisitionTimeSynchronized = 'N'
-    ds.StudyInstanceUID = imaging_study['series'][0]['uid']
-    ds.SeriesInstanceUID = imaging_study['series'][0]['instance'][0]['uid']
-    ds.StudyID = '1'
-    ds.SeriesNumber = '1'
-    ds.AcquisitionNumber = '1'
-    ds.InstanceNumber = '1'
-    ds.PatientOrientation = ['L', 'F']
-    ds.ImageLaterality = 'R'
-    ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
-    ds.PatientEyeMovementCommanded = ''
-    ds.EmmetropicMagnification = None
-    ds.IntraOcularPressure = None
-    ds.HorizontalFieldOfView = None
-    ds.PupilDilated = ''
-
-    # Acquisition Device Type Code Sequence
-    acquisition_device_type_code_sequence = Sequence()
-    ds.AcquisitionDeviceTypeCodeSequence = acquisition_device_type_code_sequence
-
-    # Acquisition Device Type Code Sequence: Acquisition Device Type Code 1
-    acquisition_device_type_code1 = Dataset()
-    acquisition_device_type_code_sequence.append(acquisition_device_type_code1)
-    acquisition_device_type_code1.CodeValue = 'R-1021A'
-    acquisition_device_type_code1.CodingSchemeDesignator = 'SRT'
-    acquisition_device_type_code1.CodeMeaning = 'Fundus Camera'
-
-
-    # Illumination Type Code Sequence
-    illumination_type_code_sequence = Sequence()
-    ds.IlluminationTypeCodeSequence = illumination_type_code_sequence
-
-
-    # Light Path Filter Type Stack Code Sequence
-    light_path_filter_type_stack_code_sequence = Sequence()
-    ds.LightPathFilterTypeStackCodeSequence = light_path_filter_type_stack_code_sequence
-
-
-    # Image Path Filter Type Stack Code Sequence
-    image_path_filter_type_stack_code_sequence = Sequence()
-    ds.ImagePathFilterTypeStackCodeSequence = image_path_filter_type_stack_code_sequence
-
-
-    # Lenses Code Sequence
-    lenses_code_sequence = Sequence()
-    ds.LensesCodeSequence = lenses_code_sequence
-
-
-    # Refractive State Sequence
-    refractive_state_sequence = Sequence()
-    ds.RefractiveStateSequence = refractive_state_sequence
-
-
-    np_image = np.array(image.getdata(), dtype=np.uint8)[:,:3]
-
-    ds.SamplesPerPixel = 3
-    ds.PhotometricInterpretation = 'RGB'
-    ds.PlanarConfiguration = 0
-    ds.NumberOfFrames = '1'
-    ds.FrameIncrementPointer = (0x0018, 0x1063)
-    ds.Rows = image.height
-    ds.Columns = image.width
-    ds.PhotometricInterpretation = "RGB"
-    ds.PixelSpacing = [0, 0]
-    ds.BitsAllocated = 8
-    ds.BitsStored = 8
-    ds.HighBit = 7
-    ds.PixelRepresentation = 0
-    ds.BurnedInAnnotation = 'NO'
-    ds.LossyImageCompression = '00'
-    ds.PixelData = image.tobytes()
-
-    # ds.file_meta = file_meta
-    ds.is_implicit_VR = False
-    ds.is_little_endian = True
-    return ds
+        return create_oct_dicom(image, imaging_study, context)
+    elif context['code'] == FUNDUS_PROCEDURE_CODE:
+        return create_fundus_dicom(image, imaging_study, context)
+    else:
+        raise ValueError(f"unexpected image type {context['code']}")
 
 
 if __name__ == '__main__':

@@ -3,10 +3,12 @@ package org.mitre.synthea.modules;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.ExportHelper;
 import org.mitre.synthea.world.agents.Person;
+import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
@@ -70,9 +72,11 @@ public class OphthalmicNoteModule extends Module {
       stable = false;
     }
     
-    if (drStage == 0) {
-      encounterNote.append("No current signs of diabetic retinopathy, both eyes\n");
-    } else {
+    long currentStageFirstObserved = drStageFirstObservedDate.get(drStage);
+    
+    
+    if (drStage > 0) {
+      encounterNote.append("\nDiagnosis History:");
     	boolean first = true;
     	for (int i = 1 ; i <= 4 ; i++) {
     		Long observed = drStageFirstObservedDate.get(i);
@@ -85,61 +89,65 @@ public class OphthalmicNoteModule extends Module {
     			}
     		}
     	}
+    	encounterNote.append('\n');
     }
     
     Procedure panRetinalLaser = (Procedure) person.attributes.get("panretinal_laser");
     List<Procedure> gridLaserHistory = (List<Procedure>)person.attributes.get("grid_laser_history");
+    Procedure firstAntiVEGF = (Procedure)person.attributes.get("first_anti_vegf");
+
     if (gridLaserHistory == null) {
     	gridLaserHistory = new ArrayList<>();
     	person.attributes.put("grid_laser_history", gridLaserHistory);
     }
     
-    if (panRetinalLaser != null || !gridLaserHistory.isEmpty()) {
-    	encounterNote.append("Procedure History:\n");
+    if (panRetinalLaser != null || !gridLaserHistory.isEmpty() || firstAntiVEGF != null) {
+    	encounterNote.append(person.rand("\nProcedure History:\n", "\nPast Surgical History:\n"));
     	if (panRetinalLaser != null) {
     		encounterNote.append("Panretinal laser ").append(ExportHelper.dateFromTimestamp(panRetinalLaser.start)).append('\n');
-    	} else {
+    	} 
+    	if (!gridLaserHistory.isEmpty()) {
     		encounterNote.append("Grid laser");
     		for (Procedure g : gridLaserHistory) {
     			encounterNote.append(", ").append(ExportHelper.dateFromTimestamp(g.start));
     		}
     		encounterNote.append('\n');
     	}
+    	if (firstAntiVEGF != null) {
+    	  encounterNote.append("Anti-VEGF first performed ").append(ExportHelper.dateFromTimestamp(firstAntiVEGF.start)).append('\n');
+    	}
     }
+    encounterNote.append('\n');
     
-    double va = (double) person.attributes.get("visual_acuity_logmar");
-    // logmar to 20/x = 20*10^(logmar)
-    long denom = Math.round(20 * Math.pow(10, va));
-    encounterNote.append("Visual Acuity: 20/").append(denom).append(" OD, 20/").append(denom).append(" OS\n");
+    recordVA(person, encounterNote);
+    recordIOP(person, encounterNote);
+    encounterNote.append('\n');
     
-    int iop = (int) person.attributes.get("intraocular_pressure");
-    encounterNote.append("Intraocular Pressure (IOP): ").append(iop).append(" mmHg OD, ").append(iop).append(" mmHg OS\n");
-    
-    // an example from chatGPT
-    encounterNote.append("Pupils: Equal, round, reactive to light and accommodation\n");
+    encounterNote.append("Pupils: Equal, round, reactive to light\n");
     encounterNote.append("Extraocular Movements: Full and smooth\n");
     encounterNote.append("Confrontation Visual Fields: Full to finger count OU\n");
-    encounterNote.append("Anterior Segment: Normal lids, lashes, and conjunctiva OU. Cornea clear OU. Anterior chamber deep and quiet OU. Iris normal architecture OU. Lens clear OU.\n");
-    encounterNote.append("Dilated Fundus Examination:\n");
-    encounterNote.append("Optic Disc: Pink, well-defined margins, cup-to-disc ratio 0.3 OU\n");
-    
-    boolean edema = (boolean) person.attributes.getOrDefault("macular_edema", false);
-    
-    if (edema) {
-    	encounterNote.append("Macula: edema present OU\n");
+    encounterNote.append("Anterior Segment: Normal lids, lashes, and conjunctiva OU.\n  Cornea clear OU. Anterior chamber deep and quiet OU. Iris normal OU. ");
+    int age = person.ageInYears(time);
+    if (age > 70) {
+      encounterNote.append("Moderate nuclear sclerosis observed OU.");
+    } else if (age > 50) {
+      encounterNote.append("Early nuclear sclerosis bilaterally.");
     } else {
-    	encounterNote.append("Macula: Flat, no edema or exudates OU\n");
+      encounterNote.append("Lens clear OU.");
+    }
+    encounterNote.append('\n');
+    
+    encounterNote.append(person.rand("Dilated Fundus Examination:\n", "Posterior Segment:\n"));
+    
+    Map<String, String> drSymptoms = (Map<String, String>) person.attributes.get("diabetic_retinopathy_symptoms");
+    if (drSymptoms == null) {
+      drSymptoms = new HashMap<>();
     }
     
-    if (drStage >= 3) {
-      encounterNote.append("Vessels: Attenuated arterioles with some copper wiring changes OU. Neovascularization present.\n");
-    } else {
-      encounterNote.append("Vessels: Attenuated arterioles with some copper wiring changes OU. No neovascularization noted.\n");
-    }
-    
-    encounterNote.append("Periphery: No tears, holes, or detachments OU");
-   
-    Procedure firstAntiVEGF = (Procedure)person.attributes.get("first_anti_vegf");
+    recordOpticDisc(person, encounterNote, drStage, stable, drSymptoms);
+    recordMacula(person, encounterNote, drStage, stable, drSymptoms, gridLaserHistory, currentStageFirstObserved);
+    recordVessels(person, encounterNote, drStage, stable, drSymptoms);
+    recordPeriphery(person, encounterNote, drStage, stable, drSymptoms, panRetinalLaser, currentStageFirstObserved);
     
     for (Procedure p : currEncounter.procedures) {
     	switch (p.type) {
@@ -191,31 +199,38 @@ public class OphthalmicNoteModule extends Module {
     			person.attributes.put("first_anti_vegf", firstAntiVEGF);
     		}
     		break;
-    	
     	}
     }
 
+    encounterNote.append("\nAssessment: \n");
+    if (currEncounter.conditions != null && !currEncounter.conditions.isEmpty()) {
+      for (HealthRecord.Entry c : currEncounter.conditions) {
+        encounterNote.append(" - ").append(c.codes.get(0).display).append('\n');
+      }
+    } else if (drStage == 0) {
+      encounterNote.append("No current signs of diabetic retinopathy, both eyes\n");
+    } else {
+      encounterNote.append(" - ").append(STAGES[drStage]);
+    }
+
+    
     Observation hba1c = person.record.getLatestObservation("4548-4");
     
     if (((Double)hba1c.value) > 6.5 && person.rand() > .7) {
       if (drStage == 0) {
-        encounterNote.append("Discussed the nature of DM and its potential effects on the eye in detail with the patient. Discussed the importance of maintaining strict glycemic control to avoid developing retinopathy.\n");
+        encounterNote.append("\nDiscussed the nature of DM and its potential effects on the eye in detail with the patient. \nDiscussed the importance of maintaining strict glycemic control to avoid developing retinopathy.\n");
       } else {
-        encounterNote.append("I discussed the effects of elevated glucose on the eye, and the importance of strict control in preventing progression of retinopathy.\n");
+        encounterNote.append("\nI discussed the effects of elevated glucose on the eye, \nand the importance of strict control in preventing progression of retinopathy.\n");
       }
     }
     
     if (prevEncounter == null) {
-    	encounterNote.append("Discussed the signs of vision changes that require immediate medical attention.\n");
+    	encounterNote.append("\nDiscussed the signs of vision changes that require immediate medical attention.\n");
     }
     
     // TODO: line about follow-up
 
     currEncounter.note = encounterNote.toString();
-    
-//    System.out.println(currEncounter.note);
-//    System.out.println("\n");
-    
     
     person.attributes.put("previous_ophthalmic_encounter", currEncounter);
     
@@ -224,5 +239,155 @@ public class OphthalmicNoteModule extends Module {
     // if we return false, the submodule did not complete (like with a Delay)
     // and will re-process the next timestep.
     return true;
+  }
+  
+  private static void recordVA(Person person, StringBuilder encounterNote) {
+    double va = (double) person.attributes.get("visual_acuity_logmar");
+    // logmar to 20/x = 20*10^(logmar)
+    long denom = Math.round(20 * Math.pow(10, va));
+    encounterNote.append("Visual Acuity: 20/").append(denom).append(" OD, 20/").append(denom).append(" OS\n");
+  }
+  
+  private static void recordIOP(Person person, StringBuilder encounterNote) {
+    int iop = (int) person.attributes.get("intraocular_pressure");
+    encounterNote.append("Intraocular Pressure (IOP): ").append(iop).append(" mmHg OD, ").append(iop).append(" mmHg OS\n");
+  }
+  
+  
+  
+  private static void recordOpticDisc(Person person, StringBuilder encounterNote, int drStage, boolean stable, Map<String, String> drSymptoms) {
+    
+    String opticDiscSymptom = drSymptoms.get("optic_disc");
+    
+    if (opticDiscSymptom == null || !stable) {
+      switch(drStage) {
+      case 0:
+        opticDiscSymptom = "Normal, no edema or pallor";
+        break;
+      case 1:
+        opticDiscSymptom = person.rand("Pink, well-defined margins, cup-to-disc ratio 0.3 OU", "Normal, no edema or pallor");
+        break;
+      case 2:
+      case 3:
+        opticDiscSymptom = "Normal in color and contour, no signs of neovascularization or optic disc edema.";
+        break;
+      case 4:
+        opticDiscSymptom = "NVD extending from the disc margins into the adjacent retina";
+        break;
+        
+      }
+      drSymptoms.put("optic_disc", opticDiscSymptom);
+    }
+    
+    encounterNote.append("Optic Disc: ").append(opticDiscSymptom).append('\n');
+
+  }
+  
+
+  private static void recordMacula(Person person, StringBuilder encounterNote, int drStage, boolean stable,
+      Map<String, String> drSymptoms, List<Procedure> gridLaserHistory, long currentStageFirstObserved) {
+    boolean edema = (boolean) person.attributes.getOrDefault("macular_edema", false);
+    
+    String maculaSymptom = drSymptoms.get("macula");
+    
+    if (stable && !gridLaserHistory.isEmpty()
+        && gridLaserHistory.get(gridLaserHistory.size() - 1).start > currentStageFirstObserved) {
+      maculaSymptom = "Evidence of grid laser scars, no active edema, no exudates";
+    } else if (maculaSymptom == null || !stable) {
+
+      if (edema) {
+        switch(drStage) {
+        // 0 and 1 can't get edema in this model
+        case 2:
+          maculaSymptom = "Mild edema noted OU.";
+          break;
+        case 3:
+        case 4:
+          maculaSymptom = "Severe edema noted OU, with hard exudates present.";
+        }
+       
+      } else {
+        switch(drStage) {
+        case 0:
+        case 1:
+        case 2:
+          maculaSymptom = person.rand("Flat, no edema or exudates OU.", "No edema or exudates OU.", "Clear, no edema or exudates OU");
+          break;
+        case 3:
+        case 4:
+          maculaSymptom = "No CSME, but presence of microaneurysms near the macula.";
+          break;
+        }
+      }
+      
+      if (!gridLaserHistory.isEmpty()) {
+        maculaSymptom += " Evidence of prior grid laser scars.";
+      }
+      
+      
+      drSymptoms.put("macula", maculaSymptom);
+    }
+    
+    encounterNote.append("Macula: ").append(maculaSymptom).append('\n');
+  }
+  
+  private static void recordVessels(Person person, StringBuilder encounterNote, int drStage, boolean stable, Map<String, String> drSymptoms) {
+    String vesselsSymptom = drSymptoms.get("vessels");
+    
+    if (vesselsSymptom == null || !stable) {
+      switch(drStage) {
+      case 0:
+        vesselsSymptom = "Normal, no microaneurysms, hemorrhages, or venous beading observed.";
+        break;
+      case 1:
+        vesselsSymptom = person.rand("Mild microaneurysms noted in both eyes.", "Microaneurysms OU.") + " No neovascularization noted.";
+        break;
+      case 2:
+        vesselsSymptom = "Presence of microaneurysms and mild venous beading.";
+        break;
+      case 3:
+        vesselsSymptom = "Presence of microaneurysms, intraretinal hemorrhages, IRMA, and mild venous beading.";
+        break;
+      case 4:
+        vesselsSymptom = "Numerous microaneurysms, intraretinal hemorrhages, IRMA, and venous beading OU";
+        break;
+      }
+      drSymptoms.put("vessels", vesselsSymptom);
+    }
+    
+    encounterNote.append("Vessels: ").append(vesselsSymptom).append('\n');
+  }
+  
+  private static void recordPeriphery(Person person, StringBuilder encounterNote, int drStage, boolean stable, Map<String, String> drSymptoms, Procedure panRetinalLaser, long currentStageFirstObserved) {
+    String peripherySymptom = drSymptoms.get("periphery");
+    
+    if (stable && panRetinalLaser != null && panRetinalLaser.start > currentStageFirstObserved) {
+      peripherySymptom = "Evidence of scattered laser scars from previous PRP, no new hemorrhages or microaneurysms, no neovascularization";
+    } else if (peripherySymptom == null || !stable) {
+      switch(drStage) {
+      case 0:
+      case 1:
+        peripherySymptom = person.rand("No signs of retinal neovascularization, microaneurysms, or areas of non-perfusion.", "No tears, holes, or detachments OU");
+        break;
+      case 2:
+      case 3:
+        peripherySymptom = "Scattered microaneurysms and dot-blot hemorrhages, no signs of neovascularization.";
+        break;
+      case 4:
+        peripherySymptom = "Neovascularization OU, no retinal detachment.";
+        break;
+      }
+      
+      if (panRetinalLaser != null) {
+        peripherySymptom += " Evidence of scattered laser scars from prior PRP.";
+      }
+      
+      
+      drSymptoms.put("periphery", peripherySymptom);
+    }
+    
+    
+    
+    encounterNote.append("Periphery: ").append(peripherySymptom).append('\n');
   }
 }

@@ -50,11 +50,35 @@ public class OphthalmicProgressionModule extends Module {
     // 20/40 0.30
     // 20/20 0.00
     // 20/16 −0.10
-    if (edema) {
-      person.attributes.put("visual_acuity_logmar", 0.30);
-    } else {
-      person.attributes.put("visual_acuity_logmar", 0.0);
+    
+    // pick a "baseline" VA for this individual.
+    // real VA is distributed roughly normally/poisson
+    // "Modelling visual acuity distributions to inform a simplified cost effectiveness analysis",
+    // Hirst A, Perera C, Hughes R
+    // https://www.ispor.org/docs/default-source/euro2023/ee758---modelling-visual-acuity-distributions-to-inform-a-simplified-cost-effectiveness-analysis-v10131936-pdf.pdf
+    // for simplicity we'll stick to a uniform distribution -0.1 to 0.1 (20/16 to 20/24)
+    
+    Double baselineVA = (Double)person.attributes.get("visual_acuity_baseline");
+    if (baselineVA == null) {
+      baselineVA = person.rand(-0.1, 0.1);
     }
+
+    // eyes are usually at their best around age 25-30 then very slowly worsen
+    // (~ 0.05 / 10 yrs)
+    // https://www.researchgate.net/figure/The-distribution-of-visual-acuity-among-eyes-of-223-normal-healthy-subjects-ranging-from_fig4_50289760
+    double ageAdjustment = ((person.ageInYears(time) - 30.0) / 10.0) * 0.05;
+    
+    double edemaAdjustment = edema && drStage == 4 ? 0.20 : 0.0;
+    
+    double finalVA = baselineVA + ageAdjustment + edemaAdjustment;
+    
+    // round to 1 decimal place
+    finalVA = Math.round(finalVA / 10.0) * 10.0;
+    
+    // limit to max of 1.0, though it shouldn't get that high anyway
+    finalVA = Math.min(finalVA, 1.0);
+    
+    person.attributes.put("visual_acuity_logmar", finalVA);
 
     // set intraocular pressure in mmHG
 

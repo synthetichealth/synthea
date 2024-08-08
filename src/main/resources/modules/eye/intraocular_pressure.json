@@ -86,19 +86,19 @@
       "unit": "mm[Hg]",
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": "41633001",
-          "display": "Intraocular pressure (observable entity)"
-        },
-        {
           "system": "LOINC",
           "code": "79893-4",
           "display": "Left eye Intraocular pressure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "41633001",
+          "display": "Intraocular pressure (observable entity)"
         }
       ],
       "direct_transition": "IOP_Results_Right",
       "remarks": [
-        "Note code 1 is actually SNOMED"
+        "Note code 2 is actually SNOMED"
       ],
       "attribute": "intraocular_pressure"
     },
@@ -108,14 +108,14 @@
       "unit": "mm[Hg]",
       "codes": [
         {
-          "system": "SNOMED-CT",
-          "code": "41633001",
-          "display": "Intraocular pressure (observable entity)"
-        },
-        {
           "system": "LOINC",
           "code": "79892-6",
           "display": "Right eye Intraocular pressure"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "41633001",
+          "display": "Intraocular pressure (observable entity)"
         }
       ],
       "direct_transition": "High IOP Meds",

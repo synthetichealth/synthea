@@ -32,7 +32,15 @@
           },
           "instances": [
             {
-              "title": "Title of this image",
+              "title": "OS",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.77.1.5.4",
+                "display": "Ophthalmic Tomography Image"
+              }
+            },
+            {
+              "title": "OD",
               "sop_class": {
                 "system": "DICOM-SOP",
                 "code": "1.2.840.10008.5.1.4.1.1.77.1.5.4",

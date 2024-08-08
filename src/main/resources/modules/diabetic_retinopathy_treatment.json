@@ -561,7 +561,15 @@
           },
           "instances": [
             {
-              "title": "Title of this image",
+              "title": "OS",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.77.1.5.1",
+                "display": "Ophthalmic Photography 8 Bit Image Storage"
+              }
+            },
+            {
+              "title": "OD",
               "sop_class": {
                 "system": "DICOM-SOP",
                 "code": "1.2.840.10008.5.1.4.1.1.77.1.5.1",
@@ -589,7 +597,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185387006,
+          "code": "36228007",
+          "display": "Ophthalmic examination and evaluation (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "185387006",
           "display": "New patient consultation (procedure)"
         }
       ],
@@ -603,8 +616,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
-          "display": "Encounter for check up (procedure)"
+          "code": "36228007",
+          "display": "Ophthalmic examination and evaluation (procedure)"
         }
       ],
       "direct_transition": "Progress_DR_Vitals"
