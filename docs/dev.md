@@ -3,7 +3,9 @@ Dev setup can be found in the [README](https://github.com/nhsengland/swpc_synthe
 
 # Development
 There are two types of development for the code:
+
 - To develop the underlying engine see java.md.
+
 - To develop the underlying information that the simulation works on read below about the resources and data sources
 
 ## Resource in swpc_synthea
@@ -37,7 +39,7 @@ There are two types of development for the code:
 
 We'll now highlight a few key files for the simulation inputs
 
-### geogrpahy/demographics.csv
+### geography/demographics.csv
 This file sets the general demographics for the population created during this simulation, such as age distributions and town populations. The meanings of the different columns in this file can be found [here](https://github.com/synthetichealth/synthea/wiki/Demographics-for-Other-Areas). 
 
 The demographics breakdowns are done by the full region rather than per town as information per town was not available. 
