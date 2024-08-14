@@ -1,4 +1,4 @@
-# Artifical Primary Care Data Using UK Version of [Synthea](https://synthetichealth.github.io/synthea/)
+# Generating Primary Care Data Using UK Version of [Synthea](https://synthetichealth.github.io/synthea/)
 
 Primary care records are crucial for understanding healthcare interactions at both the population and individual levels. However, these records are difficult to obtain and integrate with other services, hindering innovation due to data unavailability and privacy concerns.
 

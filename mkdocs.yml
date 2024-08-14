@@ -3,6 +3,8 @@ nav:
   - Home: index.md
   - Users: users.md
   - Devs: dev.md
+  - Java: java.md
+  - Example Outputs: outputs.md
 theme: 
   name: material
   features:
