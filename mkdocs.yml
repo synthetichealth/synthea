@@ -3,6 +3,9 @@ nav:
   - Home: index.md
   - Users: users.md
   - Devs: dev.md
+  - Java: java.md
+  - Example Outputs: outputs.md
+  - UK Adaptations: ukadaptions.md
 theme: 
   name: material
   features:

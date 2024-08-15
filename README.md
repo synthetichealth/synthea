@@ -1,6 +1,5 @@
 # UK adaptation of the Synthea<sup>TM</sup> Patient Generator
 
-
 This is an adaption from a fork of Synthea<sup>TM</sup> taken on the 15th May 2024. 
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.  Read their [wiki](https://github.com/synthetichealth/synthea/wiki) and [Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions) for more information.
@@ -56,6 +55,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 # License for NHS England UK Adaptions
+*relating to any commits in this fork since the 15th May 2024*
 
 2024 NHS England
 
