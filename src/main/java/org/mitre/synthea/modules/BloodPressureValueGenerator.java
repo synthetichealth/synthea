@@ -90,13 +90,12 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     if (cacheTime == time && cachedValue != null) {
       return cachedValue;
     }
-
     double baseline = calculateBaseline(person);
-
     cachedValue = baseline
       + getMedicationImpacts(person)
       + getLifestyleImpacts(person, baseline, time)
-      + getVariation(person, time);
+      + getVariation(person, time)
+      + getPreHypertensionImpacts(person);
 
     cacheTime = time;
     return cachedValue;
@@ -264,6 +263,26 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     return drugImpactDelta;
   }
 
+  /** 
+   * For a couple of years prior to hypertension diagnosis
+   * BP values are ramped up gradually to provide
+   * a more realistic progression
+   */
+  private static double getPreHypertensionImpacts(Person person) {
+    Object pre_hypertension_step_object = person.attributes.getOrDefault("pre_hypertension_step", 0.0);
+    double pre_hypertension_step = 0;
+    double pre_hypertension_impact = 0.0;
+    // need to be careful with type
+    // when attribute is first initialized it is Integer,
+    // but as it gets incremented switches to Double
+    if (pre_hypertension_step_object instanceof Double){
+      pre_hypertension_step = (double) person.attributes.getOrDefault("pre_hypertension_step", 0.0);
+    }
+    if (pre_hypertension_step < 6){
+      pre_hypertension_impact = pre_hypertension_step*5;
+    }
+    return pre_hypertension_impact;
+  }
   private static final long CYCLE_TIME = Utilities.convertTime("hours", 12);
 
   /**

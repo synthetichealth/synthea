@@ -86,7 +86,7 @@
         {
           "distributions": [
             {
-              "transition": "Onset_Hypertension",
+              "transition": "Initialize_Prehypertension",
               "distribution": {
                 "attribute": "risk_of_hypertension",
                 "default": 0.05
@@ -120,7 +120,7 @@
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "New_State",
+      "direct_transition": "Wellness_Encounter",
       "name": "Onset_Hypertension"
     },
     "Black": {
@@ -938,28 +938,90 @@
       "direct_transition": "End_Hypertension_Followup_Encounter_3",
       "name": "Prescribe_Medication_4"
     },
-    "New_State": {
+    "Pre_Diagnosis_Delay": {
       "type": "Delay",
       "distribution": {
         "kind": "GAUSSIAN",
         "parameters": {
-          "mean": 5,
-          "standardDeviation": 2
+          "mean": 12,
+          "standardDeviation": 3
         }
       },
-      "unit": "years",
+      "unit": "months",
+      "name": "Pre_Diagnosis_Delay",
+      "direct_transition": "increase_pre_hypertension_step"
+    },
+    "Initialize_Prehypertension": {
+      "type": "SetAttribute",
+      "attribute": "pre_hypertension_step",
+      "direct_transition": "Pre_Diagnosis_BP_record",
+      "name": "Initialize_Prehypertension",
+      "value": 1
+    },
+    "Check_step": {
+      "type": "Simple",
+      "name": "Check_step",
       "conditional_transition": [
         {
-          "transition": "Wellness_Encounter",
+          "transition": "Pre_Diagnosis_BP_record",
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "hypertension",
-            "operator": "==",
-            "value": true
+            "attribute": "pre_hypertension_step",
+            "operator": "<=",
+            "value": 5
           }
+        },
+        {
+          "transition": "Onset_Hypertension"
+        }
+      ]
+    },
+    "Pre_Diagnosis_BP_record": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
         }
       ],
-      "name": "New_State"
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "name": "Pre_Diagnosis_BP_record",
+      "direct_transition": "Pre_Diagnosis_Delay"
+    },
+    "increase_pre_hypertension_step": {
+      "type": "Counter",
+      "attribute": "pre_hypertension_step",
+      "action": "increment",
+      "direct_transition": "Check_step",
+      "name": "increase_pre_hypertension_step"
     }
   },
   "gmf_version": 1
