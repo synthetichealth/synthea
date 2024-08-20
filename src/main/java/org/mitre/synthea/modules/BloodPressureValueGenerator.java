@@ -276,10 +276,10 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     // when attribute is first initialized it is Integer,
     // but as it gets incremented switches to Double
     if (pre_hypertension_step_object instanceof Double){
-      pre_hypertension_step = (double) person.attributes.getOrDefault("pre_hypertension_step", 0.0);
+      pre_hypertension_step = (double) pre_hypertension_step_object;
     }
     if (pre_hypertension_step < 6){
-      pre_hypertension_impact = pre_hypertension_step*5;
+      pre_hypertension_impact = pre_hypertension_step*4.0;
     }
     return pre_hypertension_impact;
   }

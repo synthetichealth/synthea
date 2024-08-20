@@ -135,7 +135,7 @@
       "direct_transition": "Terminal",
       "name": "renin-angiotensin",
       "assign_to_attribute": "hypertension_medication",
-      "reason": "Select Condition/Enter Attribute"
+      "reason": "hypertension_dx"
     },
     "Check Race": {
       "type": "Simple",
@@ -171,7 +171,7 @@
       "direct_transition": "Terminal",
       "name": "agiotensin II receptor blocker",
       "assign_to_attribute": "hypertension_medication",
-      "reason": "Select Condition/Enter Attribute",
+      "reason": "hypertension_dx",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -199,6 +199,7 @@
       "direct_transition": "Terminal",
       "name": "ACE Inhibitor",
       "assign_to_attribute": "hypertension_medication",
+      "reason": "hypertension_dx",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -291,7 +292,8 @@
       ],
       "direct_transition": "Terminal",
       "name": "Prescribe CCB",
-      "assign_to_attribute": "hypertension_medication_2"
+      "assign_to_attribute": "hypertension_medication_2",
+      "reason": "hypertension_dx"
     },
     "Maybe Increase Doses": {
       "type": "Simple",
@@ -342,7 +344,9 @@
         }
       ],
       "direct_transition": "Terminal",
-      "name": "Low Dose Spironolactone"
+      "name": "Low Dose Spironolactone",
+      "assign_to_attribute": "hypertension_medication_4",
+      "reason": "hypertension_dx"
     },
     "Alpha Blocker": {
       "type": "MedicationOrder",
@@ -356,7 +360,8 @@
       ],
       "direct_transition": "Terminal",
       "name": "Alpha Blocker",
-      "assign_to_attribute": "hypertension_medication_4"
+      "assign_to_attribute": "hypertension_medication_4",
+      "reason": "hypertension_dx"
     },
     "Labetalol": {
       "type": "MedicationOrder",
@@ -370,7 +375,7 @@
       ],
       "direct_transition": "Terminal",
       "name": "Labetalol",
-      "reason": "Select Condition/Enter Attribute",
+      "reason": "hypertension_dx",
       "assign_to_attribute": "hypertension_medication",
       "prescription": {
         "dosage": {
@@ -479,6 +484,8 @@
       ],
       "direct_transition": "Terminal",
       "name": "First CCB",
+      "reason": "hypertension_dx",
+      "assign_to_attribute": "hypertension_medication",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -516,7 +523,9 @@
         }
       ],
       "direct_transition": "Terminal",
-      "name": "Prescribe ARB 2"
+      "name": "Prescribe ARB 2",
+      "assign_to_attribute": "hypertension_medication_2",
+      "reason": "hypertension_dx"
     },
     "ACE or ARB Active": {
       "type": "Simple",
@@ -535,6 +544,7 @@
       ],
       "direct_transition": "Terminal",
       "name": "Prescribe ACE 2",
+      "reason": "hypertension_dx",
       "assign_to_attribute": "hypertension_medication"
     },
     "CCB Active": {
@@ -564,6 +574,7 @@
       "direct_transition": "Prescribe ACE, CCB, Thiazide",
       "name": "Prescribe thiazide",
       "assign_to_attribute": "hypertension_medication_3",
+      "reason": "hypertension_dx",
       "chronic": true
     },
     "Prescribe ACE 3": {
@@ -578,6 +589,8 @@
       ],
       "direct_transition": "Prescribe ACE, CCB, Thiazide",
       "name": "Prescribe ACE 3",
+      "assign_to_attribute": "hypertension_medication_3",
+      "reason": "hypertension_dx",
       "chronic": true,
       "prescription": {
         "dosage": {
@@ -603,6 +616,8 @@
         }
       ],
       "direct_transition": "Prescribe ACE, CCB, Thiazide",
+      "assign_to_attribute": "hypertension_medication_3",
+      "reason": "hypertension_dx",
       "name": "Prescribe CCB 3"
     },
     "Prescribe ACE, CCB, Thiazide": {
