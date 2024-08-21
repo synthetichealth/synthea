@@ -1,4 +1,4 @@
-# UK Adaptions to Synthe<sup>TM</sup>
+# UK Adaptations to Synthe<sup>TM</sup>
 
 **Stage 1: Removing non-English NHS functions and simplifying the Java to an MVP**
 

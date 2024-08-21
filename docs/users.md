@@ -2,7 +2,7 @@
 See [Readme](https://github.com/nhsengland/swpc_synthea/blob/master/README.md)
 
 # Creating a patient dataset
-See the original Synthea documentationt that can be found [here](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running).
+See the original Synthea documentation that can be found [here](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running).
 
 # Interegating a patient dataset
 PLACEHOLDER

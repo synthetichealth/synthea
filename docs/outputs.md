@@ -1,6 +1,7 @@
 # Example of Outputs from swpc_sythea
 
 For a current csv run the outputs are stored in the `outputs/csv` folder.   These output files include:
+
 - allergies.csv 
 - careplans.csv
 - claims_transactions.csv 
@@ -19,7 +20,8 @@ For a current csv run the outputs are stored in the `outputs/csv` folder.   Thes
 - supplies.csv
 
 ## Showing blood test reading for an individual
-PLACEHOLDER
+
+See [this](https://github.com/nhsengland/swpc_synthea/blob/Minor-aib-improve-docs/notebooks/ht_analysis.ipynb?short_path=1f58092) notebook for a walkthrough of an example.
 
 ## Showing total activity by provider and location
 PLACEHOLDER
