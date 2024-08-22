@@ -16,6 +16,6 @@ Details of the available features can be found [here](https://github.com/nhsengl
 
 ### Evaluation
 
-The functionality and stability of the release has been "smoke-tested" by assuring valid outputs can be optained when using various option flags described in the documentation. 
+The functionality and stability of the release has been "smoke-tested" by assuring valid outputs can be obtained when using various option flags described in the documentation. 
 
 In the current release of the UK Adaptation of Synthea there have not been any statistical validations of outputs. 
