@@ -27,8 +27,8 @@ These functions have all been commented using a `UKAdp` tag to keep an audit tra
 * Keep birthweights.csv as US version (for the moment)
 * Keep bmi_correlations.json as US version (for the moment)
 * Keep cdc_growth_charts.json as US version (for the moment)
-* Keep gbd_disability_weigths.csv as US version (for the moment)
-* Update immunization_scheldule.json to vaccine schedules used in the UK
+* Keep gbd_disability_weights.csv as US version (for the moment)
+* Update immunization_schedule.json to vaccine schedules used in the UK
 * Update synthea.properties to remove unused exporter and payer functionality and amend inputs for South West Region.
 * Reduce the care settings down to hospitals, primary care and urgent care, and update these to have South West facilities.
 
