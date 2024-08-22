@@ -13,7 +13,7 @@ There are two types of development for the code:
 ```
 ├── src/main/resources
 |   ├── export
-|   ├── geogrpahy
+|   ├── geography
 |   ├── keep_modules
 |   ├── modules
 |   ├── physiology
@@ -31,7 +31,7 @@ There are two types of development for the code:
 |   language_lookup.json
 |   names.yml
 |   nhanes_two_year_olds_bmi.csv
-|   race_ethinicity_codes.json
+|   race_ethnicity_codes.json
 |   shr_mapping.csv
 |   telemedicine_config.json
 |   us_core_mapping.csv
