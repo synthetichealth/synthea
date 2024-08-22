@@ -4,7 +4,7 @@ See [Readme](https://github.com/nhsengland/swpc_synthea/blob/master/README.md)
 # Creating a patient dataset
 See the original Synthea documentation that can be found [here](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running).
 
-# Interegating a patient dataset
+# Integrating a patient dataset
 PLACEHOLDER
 
 
@@ -37,7 +37,7 @@ generate.log_patients.detail = simple
 # options are "none", "simple", or "detailed" (without quotes). defaults to simple if another value is used
 # none = print nothing to the console during generation
 # simple = print patient names once they are generated.
-# detailed = print patient names, atributes, vital signs, etc..  May slow down processing
+# detailed = print patient names, attributes, vital signs, etc..  May slow down processing
 
 generate.timestep = 604800000
 # time is in ms
