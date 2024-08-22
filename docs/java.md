@@ -59,7 +59,7 @@ States define the logic for what happens to the person when they are processed b
 ### engine/Transition.java
 Transition represents all the transition types within the generic module framework.
 
-### identitiy/Entity.java
+### identity/Entity.java
 This class represents a set of desired demographic information about a Person to be simulated. Typically in Synthea, a person's demographic information is made via random weighted selections and an individual stays in the same place for their entire life. An Entity can be used to specify demographic information. Additionally, information can be supplied that allows the simulation to mimic someone moving their primary place of residence.
 
 This class contains basic-level demographic information, such as date of birth and gender. More detailed information is contained in Seeds. Each Entity is made up of a list of Seeds, which represent the demographic information for a Person over a specified time range.
@@ -72,7 +72,7 @@ Seeds have one or more Variants. This is a representation of have the demographi
 Various java files for some of the default modules including `BloodPressureValueGenerator`, `DeathModule`, and the `EncounterModule` which defines the threshold for which a patient seeks symptom-driven care.
 
 ### world/agents/
-Files for creating new clincians, persons and providers.
+Files for creating new clinicians, persons and providers.
 
 ### world/geography
 Ingests the geography information for locations and places.

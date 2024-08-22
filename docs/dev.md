@@ -13,7 +13,7 @@ There are two types of development for the code:
 ```
 ├── src/main/resources
 |   ├── export
-|   ├── geogrpahy
+|   ├── geography
 |   ├── keep_modules
 |   ├── modules
 |   ├── physiology
@@ -31,7 +31,7 @@ There are two types of development for the code:
 |   language_lookup.json
 |   names.yml
 |   nhanes_two_year_olds_bmi.csv
-|   race_ethinicity_codes.json
+|   race_ethnicity_codes.json
 |   shr_mapping.csv
 |   telemedicine_config.json
 |   us_core_mapping.csv
@@ -73,7 +73,7 @@ This file contains information on social determinants of health for the differen
 | UNEMPLOYMENT | percentage of unemployment | ONS local labour market [data](https://www.ons.gov.uk/visualisations/labourmarketlocal/E06000066/) |
 | NO_VEHICLE_ACCESS | percentage of the population with no access to a vehicle | ONS census [data](https://www.ons.gov.uk/census/maps/choropleth/housing/number-of-cars-or-vans/number-of-cars-3a/no-cars-or-vans-in-household?geoLock=lad&lad=E07000042) |
 
-## geogrpahy/postcodes.csv
+## geography/postcodes.csv
 Originally called zipcodes.csv but changed to use the English word. Postcode information found [here](https://www.freemaptools.com/download-uk-postcode-lat-lng.htm). 
 
 ## modules/ 
@@ -83,9 +83,6 @@ Store for the clinical modules saved as jsons.  Most of these are currently base
 These file sets different medical facilities for patients to attend in the simulation. 
 
 GP practices in the South West were found in the [NHS digital GP Practice Data](https://digital.nhs.uk/services/organisation-data-service/export-data-files/csv-downloads/gp-and-gp-practice-related-data), and the conversion from postcode to latitude and longitude was done using the [grid reference finder](https://gridreferencefinder.com/postcodeBatchConverter/). 
-
-
-
 
 [^1]: Ethnicity categories were changed from the American version to align better with UK ethnicity breakdowns 
 [^2]: Under 18 ages set to 0 as we are only interested in an adult population currently. 
