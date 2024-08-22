@@ -4,7 +4,7 @@ This is an adaption from a fork of Synthea<sup>TM</sup> taken on the 15th May 20
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.  Read their [wiki](https://github.com/synthetichealth/synthea/wiki) and [Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions) for more information.
 
-This adaptaion makes a series of incompatible changes to Synthea<sup>TM</sup> in order create a tool for NHS England called "swpc_synthea".  These adaptions are listed in the MkDoc documentation pages. 
+This adaptation makes a series of incompatible changes to Synthea<sup>TM</sup> in order create a tool for NHS England called "swpc_synthea".  These adaptions are listed in the MkDoc documentation pages. 
 
 ## Prerequisites
  - Java JDK 11 or newer
