@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
@@ -23,11 +24,16 @@ import org.mitre.synthea.world.agents.behaviors.planfinder.IPlanFinder;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderBestRates;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderPriority;
 import org.mitre.synthea.world.agents.behaviors.planfinder.PlanFinderRandom;
+import org.mitre.synthea.world.concepts.HealthRecord;
+import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
+import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.geography.Location;
 
 public class PlanFinderTest {
 
+  private static final Code code = new Code("system", "code", "display");
   private Person person;
   private Location location;
 
@@ -114,6 +120,30 @@ public class PlanFinderTest {
 
   @Test
   public void onePayerBestRate() {
+    Config.set("generate.payers.selection_behavior", "best_rate");
+    PayerManager.clear();
+    PayerManager.loadPayers(location);
+    PlanFinderBestRates finder = new PlanFinderBestRates();
+    List<Payer> privatePayers = PayerManager.getAllPayers().stream().filter(payer -> payer
+        .getOwnership().equals(PayerManager.PRIVATE_OWNERSHIP)).collect(Collectors.toList());
+    Payer payer = finder.find(PayerManager.getActivePlans(privatePayers, 0L),
+        person, null, 0L).getPayer();
+    assertNotNull(payer);
+    assertFalse(payer.isNoInsurance());
+  }
+
+  @Test
+  public void onePayerBestRateMultipleRecordsAndEncounters() {
+    person.hasMultipleRecords = true;
+    person.records = new ConcurrentHashMap<String, HealthRecord>();
+    person.records.put("provider", person.record);
+    person.coverage.setPlanToNoInsurance(0L);
+    for (long time = 0L; time <= 3000L; time += 1000L) {
+      Encounter encounter = person.record.encounterStart(time, EncounterType.EMERGENCY);
+      encounter.codes.add(code);
+      person.record.encounterEnd((time + 500L), EncounterType.EMERGENCY);
+    }
+
     Config.set("generate.payers.selection_behavior", "best_rate");
     PayerManager.clear();
     PayerManager.loadPayers(location);

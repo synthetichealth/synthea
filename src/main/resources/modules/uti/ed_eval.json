@@ -3,17 +3,14 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "UTI_ED_Bundle",
-      "name": "Initial"
+      "direct_transition": "UTI_ED_Bundle"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "UTI_ED_Bundle": {
       "type": "CallSubmodule",
       "submodule": "uti/ed_bundle",
-      "name": "UTI_ED_Bundle",
       "complex_transition": [
         {
           "condition": {
@@ -37,7 +34,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Hospital admission"
         },
         {
@@ -46,7 +42,6 @@
             "attribute": "UTI_Positive_BldCx",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "Hospital admission"
         },
         {
@@ -68,7 +63,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Hospital admission",
           "condition": {
             "condition_type": "Attribute",
@@ -78,7 +72,6 @@
           }
         },
         {
-          "distributions": [],
           "transition": "Antibiotic therapy"
         }
       ]
@@ -100,14 +93,12 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_Abx",
-      "name": "Antibiotic therapy"
+      "direct_transition": "UTI_Abx"
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
       "submodule": "uti/abx_tx",
-      "direct_transition": "Patient discharge",
-      "name": "UTI_Abx"
+      "direct_transition": "Patient discharge"
     },
     "Patient discharge": {
       "type": "Procedure",
@@ -126,13 +117,11 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Terminal",
-      "name": "Patient discharge"
+      "direct_transition": "Terminal"
     },
     "Hospital admission": {
       "type": "Simple",
-      "direct_transition": "Antibiotic therapy",
-      "name": "Hospital admission"
+      "direct_transition": "Antibiotic therapy"
     }
   },
   "gmf_version": 2

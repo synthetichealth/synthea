@@ -3099,8 +3099,7 @@
           {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2014,
-            "value": 0
+            "year": 2014
           }
         ]
       },

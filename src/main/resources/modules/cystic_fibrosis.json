@@ -106,7 +106,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "chronic_cough"
         }
       ]
@@ -430,7 +429,7 @@
     "Meconium_Ileus_Resolved": {
       "type": "ConditionEnd",
       "direct_transition": "Sweat_Test",
-      "condition_onset": "Meconium_Ileus"
+      "condition_onset": "Meconium Ileus"
     },
     "CF_CarePlan": {
       "type": "CarePlanStart",
@@ -1405,7 +1404,7 @@
           "transition": "Tracheostomy",
           "condition": {
             "condition_type": "PriorState",
-            "name": "pulmonary_infective_exacerbation",
+            "name": "pulmonary_exacerbation",
             "within": {
               "quantity": 1,
               "unit": "days"

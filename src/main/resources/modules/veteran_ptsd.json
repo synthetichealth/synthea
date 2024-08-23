@@ -6,12 +6,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "age guard",
-      "name": "Initial"
+      "direct_transition": "age guard"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Female": {
       "type": "Simple",
@@ -44,8 +42,7 @@
       "remarks": [
         "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf",
         ""
-      ],
-      "name": "Female"
+      ]
     },
     "Male": {
       "type": "Simple",
@@ -77,8 +74,7 @@
       ],
       "remarks": [
         "The prevalence data presented here come from the seminal report on VHA health care delivery systems and management processes.  It can be accessed here: https://www.va.gov/opa/choiceact/documents/assessments/integrated_report.pdf"
-      ],
-      "name": "Male"
+      ]
     },
     "Veteran": {
       "type": "Simple",
@@ -97,13 +93,11 @@
             "gender": "M"
           }
         }
-      ],
-      "name": "Veteran"
+      ]
     },
     "Non_Veteran": {
       "type": "Simple",
-      "direct_transition": "Terminal",
-      "name": "Non_Veteran"
+      "direct_transition": "Terminal"
     },
     "Onset_age_30_to_39_Male": {
       "type": "Delay",
@@ -112,8 +106,7 @@
         "low": 9,
         "high": 18,
         "unit": "years"
-      },
-      "name": "Onset_age_30_to_39_Male"
+      }
     },
     "Onset_age_30_to_39_Female": {
       "type": "Delay",
@@ -122,8 +115,7 @@
         "low": 9,
         "high": 18,
         "unit": "years"
-      },
-      "name": "Onset_age_30_to_39_Female"
+      }
     },
     "Onset_age_40_to_49_Male": {
       "type": "Delay",
@@ -132,8 +124,7 @@
         "low": 19,
         "high": 28,
         "unit": "years"
-      },
-      "name": "Onset_age_40_to_49_Male"
+      }
     },
     "Onset_age_40_to_49_Female": {
       "type": "Delay",
@@ -142,8 +133,7 @@
         "low": 19,
         "high": 28,
         "unit": "years"
-      },
-      "name": "Onset_age_40_to_49_Female"
+      }
     },
     "Onset_age_50_to_59_Female": {
       "type": "Delay",
@@ -152,8 +142,7 @@
         "low": 29,
         "high": 38,
         "unit": "years"
-      },
-      "name": "Onset_age_50_to_59_Female"
+      }
     },
     "Onset_age_50_to_59_Male": {
       "type": "Delay",
@@ -162,8 +151,7 @@
         "low": 29,
         "high": 38,
         "unit": "years"
-      },
-      "name": "Onset_age_50_to_59_Male"
+      }
     },
     "PTSD Episode": {
       "type": "ConditionOnset",
@@ -177,8 +165,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Wait_For_PHQ",
-      "name": "PTSD Episode"
+      "direct_transition": "Wait_For_PHQ"
     },
     "PTSD_Initial_Careplan": {
       "type": "CarePlanStart",
@@ -198,8 +185,7 @@
           "display": "Initial psychiatric interview with mental status and evaluation"
         }
       ],
-      "direct_transition": "end_PTSD_Encounter",
-      "name": "PTSD_Initial_Careplan"
+      "direct_transition": "end_PTSD_Encounter"
     },
     "Initial_Psychiatric_PTSD_Encounter": {
       "type": "Encounter",
@@ -213,8 +199,7 @@
         }
       ],
       "reason": "ptsd",
-      "direct_transition": "PHQ2_Q9 Assessment",
-      "name": "Initial_Psychiatric_PTSD_Encounter"
+      "direct_transition": "PHQ2_Q9 Assessment"
     },
     "PTSD_Careplan_Psych_and_Rx": {
       "type": "CarePlanStart",
@@ -281,8 +266,7 @@
             "operator": "is nil"
           }
         }
-      ],
-      "name": "PTSD_Careplan_Psych_and_Rx"
+      ]
     },
     "PTSD_Careplan_Psych": {
       "type": "CarePlanStart",
@@ -328,14 +312,12 @@
           "code": 719858009,
           "display": "Telehealth monitoring (regime/therapy)"
         }
-      ],
-      "name": "PTSD_Careplan_Psych"
+      ]
     },
     "Change_Dx_Not_PTSD": {
       "type": "ConditionEnd",
       "direct_transition": "Pain_Vital_3",
-      "referenced_by_attribute": "ptsd",
-      "name": "Change_Dx_Not_PTSD"
+      "referenced_by_attribute": "ptsd"
     },
     "PTSD_Careplan_Rx_ONLY": {
       "type": "CarePlanStart",
@@ -353,8 +335,7 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "SSRI",
-            "operator": "is not nil",
-            "value": "Vicodin"
+            "operator": "is not nil"
           }
         },
         {
@@ -367,8 +348,7 @@
         }
       ],
       "reason": "ptsd",
-      "assign_to_attribute": "ptsd_careplan",
-      "name": "PTSD_Careplan_Rx_ONLY"
+      "assign_to_attribute": "ptsd_careplan"
     },
     "PTSD Diagnosis": {
       "type": "ConditionOnset",
@@ -410,8 +390,7 @@
       "remarks": [
         "estimate of percents of patients falling into larger categories of treatment models (e.g. Rx only, Rx + Psychology or Psych only) provided by Jodie Trafton, PhD.",
         ""
-      ],
-      "name": "PTSD Diagnosis"
+      ]
     },
     "end_PTSD_Encounter": {
       "type": "EncounterEnd",
@@ -420,8 +399,7 @@
         "system": "NUBC",
         "code": "01",
         "display": "Discharged home safe"
-      },
-      "name": "end_PTSD_Encounter"
+      }
     },
     "Evaluation Gate delay": {
       "type": "Delay",
@@ -429,8 +407,7 @@
         "quantity": 1,
         "unit": "weeks"
       },
-      "direct_transition": "PTSD_Re_evaluation Encounter",
-      "name": "Evaluation Gate delay"
+      "direct_transition": "PTSD_Re_evaluation Encounter"
     },
     "PTSD_Re_evaluation Encounter": {
       "type": "Encounter",
@@ -473,8 +450,7 @@
           "distribution": 0.15
         }
       ],
-      "reason": "ptsd",
-      "name": "PTSD_Re_evaluation Encounter"
+      "reason": "ptsd"
     },
     "end_Psych_encounter": {
       "type": "EncounterEnd",
@@ -500,8 +476,7 @@
         {
           "transition": "therapy delay"
         }
-      ],
-      "name": "end_Psych_encounter"
+      ]
     },
     "PTSD Medication Order": {
       "type": "MedicationOrder",
@@ -528,15 +503,12 @@
       "remarks": [
         "most common Rx ordered tied to mental health conditions like PTSD are SSRIs (per VA CDW data analysis)",
         ""
-      ],
-      "name": "PTSD Medication Order"
+      ]
     },
     "end re_evaluation_medication": {
       "type": "MedicationEnd",
       "direct_transition": "PTSD Medication Order",
-      "medication_order": "",
-      "referenced_by_attribute": "SSRI",
-      "name": "end re_evaluation_medication"
+      "referenced_by_attribute": "SSRI"
     },
     "end_PTSD_Re_evaluation_Encounter": {
       "type": "EncounterEnd",
@@ -552,8 +524,7 @@
         {
           "transition": "Terminal"
         }
-      ],
-      "name": "end_PTSD_Re_evaluation_Encounter"
+      ]
     },
     "age guard": {
       "type": "Delay",
@@ -581,8 +552,7 @@
             "operator": "is nil"
           }
         }
-      ],
-      "name": "age guard"
+      ]
     },
     "PTSD Chronic Pain Med": {
       "type": "MedicationOrder",
@@ -598,14 +568,12 @@
       "reason": "ptsd",
       "remarks": [
         "per Dr Trafton and other sources"
-      ],
-      "name": "PTSD Chronic Pain Med"
+      ]
     },
     "end_follow_up_careplan": {
       "type": "CarePlanEnd",
       "direct_transition": "Terminal",
-      "referenced_by_attribute": "ptsd_careplan",
-      "name": "end_follow_up_careplan"
+      "referenced_by_attribute": "ptsd_careplan"
     },
     "time gate": {
       "type": "Delay",
@@ -617,8 +585,7 @@
       "remarks": [
         "estimate provided by Jodie Trafton, PhD",
         ""
-      ],
-      "name": "time gate"
+      ]
     },
     "Columbia Suicide Risk Assessment": {
       "type": "Procedure",
@@ -649,8 +616,7 @@
       "remarks": [
         "per new VA protocol identified by Jodie Trafton, PhD",
         ""
-      ],
-      "name": "Columbia Suicide Risk Assessment"
+      ]
     },
     "PHQ2_Q9 Assessment": {
       "type": "Procedure",
@@ -681,8 +647,7 @@
       "remarks": [
         "estimate of 10% of patients who initially screened positive for PTSD to not ultimately screen in by a mental health expert, provided in consultation with Jodie Trafton, PhD",
         ""
-      ],
-      "name": "PHQ2_Q9 Assessment"
+      ]
     },
     "At Risk for suicide": {
       "type": "ConditionOnset",
@@ -696,8 +661,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Inpatient Suicide Assessment",
-      "name": "At Risk for suicide"
+      "direct_transition": "Inpatient Suicide Assessment"
     },
     "Inpatient Suicide Assessment": {
       "type": "Encounter",
@@ -711,8 +675,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Inpatient Suicide Risk Assessment",
-      "name": "Inpatient Suicide Assessment"
+      "direct_transition": "Inpatient Suicide Risk Assessment"
     },
     "Inpatient_admission": {
       "type": "Encounter",
@@ -726,8 +689,7 @@
         }
       ],
       "direct_transition": "Pain_Vital_2",
-      "reason": "suicide_risk",
-      "name": "Inpatient_admission"
+      "reason": "suicide_risk"
     },
     "Inpatient Suicide Risk Assessment": {
       "type": "Procedure",
@@ -745,13 +707,11 @@
         "unit": "minutes"
       },
       "reason": "ptsd",
-      "direct_transition": "emergency_encounter end",
-      "name": "Inpatient Suicide Risk Assessment"
+      "direct_transition": "emergency_encounter end"
     },
     "emergency_encounter end": {
       "type": "EncounterEnd",
-      "direct_transition": "Inpatient_admission",
-      "name": "emergency_encounter end"
+      "direct_transition": "Inpatient_admission"
     },
     "Inpatient Suicide Care Plan": {
       "type": "CarePlanStart",
@@ -776,8 +736,7 @@
           "code": 183401008,
           "display": "Anti-suicide psychotherapy (regime/therapy)"
         }
-      ],
-      "name": "Inpatient Suicide Care Plan"
+      ]
     },
     "time delay": {
       "type": "Delay",
@@ -785,14 +744,12 @@
         "quantity": 3,
         "unit": "days"
       },
-      "direct_transition": "Inpatient Suicide Care Plan_2",
-      "name": "time delay"
+      "direct_transition": "Inpatient Suicide Care Plan_2"
     },
     "Inpatient Suicide Care Plan_2": {
       "type": "CarePlanEnd",
       "direct_transition": "PTSD_Re_evaluation Encounter",
-      "careplan": "Inpatient Suicide Care Plan",
-      "name": "Inpatient Suicide Care Plan_2"
+      "careplan": "Inpatient Suicide Care Plan"
     },
     "Onset_age_21_to_29_Male": {
       "type": "Delay",
@@ -801,8 +758,7 @@
         "low": 0,
         "high": 9,
         "unit": "years"
-      },
-      "name": "Onset_age_21_to_29_Male"
+      }
     },
     "Onset_age_60_to_99_Male": {
       "type": "Delay",
@@ -811,8 +767,7 @@
         "low": 39,
         "high": 68,
         "unit": "years"
-      },
-      "name": "Onset_age_60_to_99_Male"
+      }
     },
     "Onset_age_21_to_29_Female": {
       "type": "Delay",
@@ -821,8 +776,7 @@
         "low": 0,
         "high": 9,
         "unit": "years"
-      },
-      "name": "Onset_age_21_to_29_Female"
+      }
     },
     "Onset_age_60_to_99_Female": {
       "type": "Delay",
@@ -831,8 +785,7 @@
         "low": 39,
         "high": 68,
         "unit": "years"
-      },
-      "name": "Onset_age_60_to_99_Female"
+      }
     },
     "PTSD_Encounter": {
       "type": "Encounter",
@@ -846,8 +799,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "PC-PTSD Screen",
-      "name": "PTSD_Encounter"
+      "direct_transition": "PC-PTSD Screen"
     },
     "Telehealth_Visit": {
       "type": "Encounter",
@@ -865,8 +817,7 @@
       "remarks": [
         "careplan to include regular telephone psychotherapy.  workflow recommendation provided by Brian Marx, PhD, SME for PTSD within VA",
         ""
-      ],
-      "name": "Telehealth_Visit"
+      ]
     },
     "therapy delay": {
       "type": "Delay",
@@ -895,8 +846,7 @@
         {
           "transition": "Therapy_Visit"
         }
-      ],
-      "name": "therapy delay"
+      ]
     },
     "Therapy_Visit": {
       "type": "Encounter",
@@ -910,8 +860,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Therapy Note",
-      "name": "Therapy_Visit"
+      "direct_transition": "Therapy Note"
     },
     "telehealth delay": {
       "type": "Delay",
@@ -919,8 +868,7 @@
         "quantity": 1,
         "unit": "weeks"
       },
-      "direct_transition": "Telehealth_Visit",
-      "name": "telehealth delay"
+      "direct_transition": "Telehealth_Visit"
     },
     "Telehealth_Observations": {
       "type": "Observation",
@@ -937,8 +885,7 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "end telehealth",
-      "name": "Telehealth_Observations"
+      "direct_transition": "end telehealth"
     },
     "Therapy Note": {
       "type": "Observation",
@@ -955,13 +902,11 @@
       "exact": {
         "quantity": 1
       },
-      "direct_transition": "end therapy visit",
-      "name": "Therapy Note"
+      "direct_transition": "end therapy visit"
     },
     "end therapy visit": {
       "type": "EncounterEnd",
-      "direct_transition": "telehealth delay",
-      "name": "end therapy visit"
+      "direct_transition": "telehealth delay"
     },
     "end telehealth": {
       "type": "EncounterEnd",
@@ -980,8 +925,7 @@
         {
           "transition": "Evaluation Gate delay"
         }
-      ],
-      "name": "end telehealth"
+      ]
     },
     "PHQ2_Q9_Assessment": {
       "type": "Procedure",
@@ -1003,8 +947,7 @@
       "remarks": [
         "per new VA protocol identified by Jodie Trafton, PhD",
         ""
-      ],
-      "name": "PHQ2_Q9_Assessment"
+      ]
     },
     "Columbia_Suicide_Risk_Assessment": {
       "type": "Procedure",
@@ -1025,8 +968,7 @@
       "direct_transition": "PTSD_Initial_Careplan",
       "remarks": [
         "per new VA protocol identified by Jodie Trafton, PhD"
-      ],
-      "name": "Columbia_Suicide_Risk_Assessment"
+      ]
     },
     "mTBI check": {
       "type": "Simple",
@@ -1063,8 +1005,7 @@
         "https://www.ncbi.nlm.nih.gov/books/NBK326723/",
         "",
         ""
-      ],
-      "name": "mTBI check"
+      ]
     },
     "Pain_Vital": {
       "type": "Observation",
@@ -1083,8 +1024,7 @@
         "low": 4,
         "high": 8
       },
-      "direct_transition": "end_Psych_encounter",
-      "name": "Pain_Vital"
+      "direct_transition": "end_Psych_encounter"
     },
     "Pain_Vital_2": {
       "type": "Observation",
@@ -1103,8 +1043,7 @@
         "low": 4,
         "high": 8
       },
-      "direct_transition": "Inpatient Suicide Care Plan",
-      "name": "Pain_Vital_2"
+      "direct_transition": "Inpatient Suicide Care Plan"
     },
     "Pain_Vital_3": {
       "type": "Observation",
@@ -1123,8 +1062,7 @@
         "low": 0,
         "high": 3
       },
-      "direct_transition": "end_PTSD_Re_evaluation_Encounter",
-      "name": "Pain_Vital_3"
+      "direct_transition": "end_PTSD_Re_evaluation_Encounter"
     },
     "Pain_Vital_4": {
       "type": "Observation",
@@ -1143,8 +1081,7 @@
         "low": 1,
         "high": 4
       },
-      "direct_transition": "end_Psych_encounter",
-      "name": "Pain_Vital_4"
+      "direct_transition": "end_Psych_encounter"
     },
     "PC-PTSD Screen": {
       "type": "Procedure",
@@ -1164,8 +1101,7 @@
       "direct_transition": "PHQ2_Q9_Assessment",
       "remarks": [
         "workflow approach provided by Brian "
-      ],
-      "name": "PC-PTSD Screen"
+      ]
     },
     "PTSD_Careplan_Telehealth_Psych_and_Rx": {
       "type": "CarePlanStart",
@@ -1229,12 +1165,10 @@
           "condition": {
             "condition_type": "Attribute",
             "attribute": "SSRI",
-            "operator": "is nil",
-            "value": "Vicodin"
+            "operator": "is nil"
           }
         }
-      ],
-      "name": "PTSD_Careplan_Telehealth_Psych_and_Rx"
+      ]
     },
     "PTSD_Careplan_Telehealth_Psych": {
       "type": "CarePlanStart",
@@ -1280,8 +1214,7 @@
           "display": "Telehealth monitoring (regime/therapy)"
         }
       ],
-      "direct_transition": "end_Psych_encounter",
-      "name": "PTSD_Careplan_Telehealth_Psych"
+      "direct_transition": "end_Psych_encounter"
     },
     "Therapy_Visit_Telehealth": {
       "type": "Encounter",
@@ -1295,19 +1228,16 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Therapy Note",
-      "name": "Therapy_Visit_Telehealth"
+      "direct_transition": "Therapy Note"
     },
     "Wait_For_PHQ": {
       "type": "Guard",
       "allow": {
         "condition_type": "Date",
         "operator": ">=",
-        "year": 1999,
-        "value": 0
+        "year": 1999
       },
-      "direct_transition": "PTSD_Encounter",
-      "name": "Wait_For_PHQ"
+      "direct_transition": "PTSD_Encounter"
     }
   },
   "gmf_version": 2

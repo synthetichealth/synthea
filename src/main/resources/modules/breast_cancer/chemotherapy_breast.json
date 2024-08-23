@@ -278,7 +278,7 @@
         {
           "condition": {
             "condition_type": "PriorState",
-            "name": ""
+            "name": "5-fluorouracil"
           },
           "distributions": [
             {

@@ -28,7 +28,6 @@
     "Aortic Valve Regurgitation": {
       "type": "ConditionOnset",
       "assign_to_attribute": "vhd_diagnosis",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",

@@ -232,34 +232,22 @@
     },
     "Question_2": {
       "type": "Simple",
-      "remarks": [
-        "simple random statistics here until we have a real HIV model",
-        "National Alliance to End Homelessness estimates that 3.4% of homeless people are HIV+",
-        "compared to 0.4% in the general population. (2006 data)",
-        "http://www.nationalhomeless.org/factsheets/hiv.html"
-      ],
-      "complex_transition": [
+      "conditional_transition": [
         {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Question_2_Positive"
-          },
           "transition": "Question_2_Positive",
-          "remarks": [
-            "If they previously said they are HIV+ then stick with it"
-          ]
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 86406008,
+                "display": "Human immunodeficiency virus infection (disorder)"
+              }
+            ]
+          }
         },
         {
-          "distributions": [
-            {
-              "distribution": 0.966,
-              "transition": "Question_2_Negative"
-            },
-            {
-              "distribution": 0.034,
-              "transition": "Question_2_Positive"
-            }
-          ]
+          "transition": "Question_2_Negative"
         }
       ]
     },
@@ -441,7 +429,6 @@
     },
     "Homeless_Condition": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",

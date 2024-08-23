@@ -125,7 +125,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "AVReplace"
         }
       ]
@@ -236,7 +235,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Set TAVR"
         }
       ]

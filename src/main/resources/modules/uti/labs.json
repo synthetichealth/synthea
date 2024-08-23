@@ -3,12 +3,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Collection",
-      "name": "Initial"
+      "direct_transition": "Collection"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Collection": {
       "type": "Procedure",
@@ -27,7 +25,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Collection",
       "conditional_transition": [
         {
           "transition": "Dipstick",
@@ -59,8 +56,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Record_Urinalysis",
-      "name": "Dipstick"
+      "direct_transition": "Record_Urinalysis"
     },
     "Record_Urinalysis": {
       "type": "DiagnosticReport",
@@ -198,7 +194,6 @@
           }
         }
       ],
-      "name": "Record_Urinalysis",
       "complex_transition": [
         {
           "condition": {
@@ -245,7 +240,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Terminal"
         }
       ]
@@ -267,8 +261,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Record_Urinalysis_Micro",
-      "name": "Urinalysis Micro"
+      "direct_transition": "Record_Urinalysis_Micro"
     },
     "Record_Urinalysis_Micro": {
       "type": "DiagnosticReport",
@@ -499,7 +492,6 @@
           }
         }
       ],
-      "name": "Record_Urinalysis_Micro",
       "direct_transition": "Urine Culture Result"
     },
     "Urine Culture": {
@@ -520,12 +512,10 @@
       },
       "unit": "minutes",
       "direct_transition": "Urine Culture Result",
-      "name": "Urine Culture",
       "assign_to_attribute": "UTI_Lab_Send_Out"
     },
     "Urine Culture Result": {
       "type": "Simple",
-      "name": "Urine Culture Result",
       "complex_transition": [
         {
           "condition": {
@@ -592,56 +582,48 @@
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "E Coli",
       "value": "Greater than 100,000 colony forming units per mL Escherichia coli"
     },
     "Klebsiella": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Klebsiella",
       "value": "Greater than 100,000 colony forming units per mL Klebsiella pneumoniae"
     },
     "Enterococcus": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Enterococcus",
       "value": "Greater than 100,000 colony forming units per mL Enterococcus faecalis"
     },
     "Proteus": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Proteus",
       "value": "Greater than 100,000 colony forming units per mL Proteus mirabilis"
     },
     "Pseudomonas": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Pseudomonas",
       "value": "Greater than 100,000 colony forming units per mL Pseudomonas aeruginosa"
     },
     "Klebsiella oxytoca": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Klebsiella oxytoca",
       "value": "Greater than 100,000 colony forming units per mL Klebsiella oxytoca"
     },
     "Citrobacter": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Citrobacter",
       "value": "Greater than 100,000 colony forming units per mL Citrobacter freundii complex"
     },
     "Staphylococcus": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
       "direct_transition": "Observe Bacteria",
-      "name": "Staphylococcus",
       "value": "Greater than 100,000 colony forming units per mL Staphylococcus aureus"
     },
     "No Growth": {
@@ -657,7 +639,6 @@
         }
       ],
       "direct_transition": "Terminal",
-      "name": "No Growth",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 264868006,
@@ -677,7 +658,6 @@
         }
       ],
       "direct_transition": "Terminal",
-      "name": "Observe Bacteria",
       "attribute": "UTI_Bacteria"
     }
   },

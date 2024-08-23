@@ -3,7 +3,6 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "name": "Initial",
       "distributed_transition": [
         {
           "transition": "UTI_Diagnosis_Encounter",
@@ -16,8 +15,7 @@
       ]
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "UTI_Diagnosis_Encounter_Audio_Only": {
       "type": "Encounter",
@@ -32,8 +30,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Telemed_Procedure",
-      "name": "UTI_Diagnosis_Encounter_Audio_Only"
+      "direct_transition": "Telemed_Procedure"
     },
     "UTI_Diagnosis_Encounter": {
       "type": "Encounter",
@@ -48,8 +45,7 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Telemed_Procedure",
-      "name": "UTI_Diagnosis_Encounter"
+      "direct_transition": "Telemed_Procedure"
     },
     "Telemed_Procedure": {
       "type": "Procedure",
@@ -69,12 +65,10 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_HPI",
-      "name": "Telemed_Procedure"
+      "direct_transition": "UTI_HPI"
     },
     "Risk_Check": {
       "type": "Simple",
-      "name": "Risk_Check",
       "complex_transition": [
         {
           "condition": {
@@ -87,7 +81,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Evaluation"
         },
         {
@@ -135,7 +128,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Evaluation"
         }
       ]
@@ -158,7 +150,6 @@
       },
       "unit": "minutes",
       "direct_transition": "End_UTI_Diagnosis",
-      "name": "Referral_to_Ambulatory",
       "assign_to_attribute": "UTI_Care_Referral"
     },
     "Evaluation": {
@@ -179,7 +170,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Evaluation",
       "distributed_transition": [
         {
           "transition": "Referral_to_Labs",
@@ -209,12 +199,10 @@
       },
       "unit": "minutes",
       "direct_transition": "End_UTI_Diagnosis",
-      "name": "Referral_to_Labs",
       "assign_to_attribute": "UTI_Labs"
     },
     "End_UTI_Diagnosis": {
       "type": "EncounterEnd",
-      "name": "End_UTI_Diagnosis",
       "conditional_transition": [
         {
           "transition": "Time Delay",
@@ -256,8 +244,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "UTI_Abx",
-      "name": "Antibiotics"
+      "direct_transition": "UTI_Abx"
     },
     "UTI_HPI": {
       "type": "CallSubmodule",
@@ -280,17 +267,14 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Risk_Check"
         }
-      ],
-      "name": "UTI_HPI"
+      ]
     },
     "GU_Pregnancy_Check": {
       "type": "CallSubmodule",
       "submodule": "uti/gu_pregnancy_check",
-      "direct_transition": "Risk_Check",
-      "name": "GU_Pregnancy_Check"
+      "direct_transition": "Risk_Check"
     },
     "UTI_Abx": {
       "type": "CallSubmodule",
@@ -304,8 +288,7 @@
           "transition": "Referral_to_Labs",
           "distribution": 0.05
         }
-      ],
-      "name": "UTI_Abx"
+      ]
     },
     "Time Delay": {
       "type": "Delay",
@@ -317,7 +300,6 @@
         }
       },
       "unit": "hours",
-      "name": "Time Delay",
       "conditional_transition": [
         {
           "transition": "Lab Encounter",
@@ -350,19 +332,16 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Labs Sub",
-      "name": "Lab Encounter"
+      "direct_transition": "Labs Sub"
     },
     "Labs Sub": {
       "type": "CallSubmodule",
       "submodule": "uti/labs",
-      "direct_transition": "End Labs Encounter",
-      "name": "Labs Sub"
+      "direct_transition": "End Labs Encounter"
     },
     "End Labs Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Result Delay",
-      "name": "End Labs Encounter"
+      "direct_transition": "Result Delay"
     },
     "Result Delay": {
       "type": "Delay",
@@ -374,8 +353,7 @@
         }
       },
       "unit": "hours",
-      "direct_transition": "Lab Result Encounter",
-      "name": "Result Delay"
+      "direct_transition": "Lab Result Encounter"
     },
     "Lab Result Encounter": {
       "type": "Encounter",
@@ -390,23 +368,19 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Follow Up",
-      "name": "Lab Result Encounter"
+      "direct_transition": "Follow Up"
     },
     "Follow Up": {
       "type": "CallSubmodule",
       "submodule": "uti/lab_follow_up",
-      "direct_transition": "End Results Encounter",
-      "name": "Follow Up"
+      "direct_transition": "End Results Encounter"
     },
     "End Results Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal",
-      "name": "End Results Encounter"
+      "direct_transition": "Terminal"
     },
     "Patient Choice": {
       "type": "Simple",
-      "name": "Patient Choice",
       "complex_transition": [
         {
           "condition": {
@@ -430,7 +404,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "Emergency Follow Up"
         },
         {
@@ -450,7 +423,6 @@
     "Ambulatory Eval": {
       "type": "CallSubmodule",
       "submodule": "uti/ambulatory_eval",
-      "name": "Ambulatory Eval",
       "direct_transition": "End Ambulatory"
     },
     "Ambulatory Encounter": {
@@ -466,14 +438,12 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Set UTI_Ambulatory",
-      "name": "Ambulatory Encounter"
+      "direct_transition": "Set UTI_Ambulatory"
     },
     "Set UTI_Ambulatory": {
       "type": "SetAttribute",
       "attribute": "UTI_Ambulatory",
       "direct_transition": "Ambulatory Eval",
-      "name": "Set UTI_Ambulatory",
       "value": true
     },
     "End Ambulatory": {
@@ -490,8 +460,7 @@
         {
           "transition": "Terminal"
         }
-      ],
-      "name": "End Ambulatory"
+      ]
     },
     "Emergency Follow Up": {
       "type": "Encounter",
@@ -506,25 +475,21 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Set UTI_ED",
-      "name": "Emergency Follow Up"
+      "direct_transition": "Set UTI_ED"
     },
     "ED Eval": {
       "type": "CallSubmodule",
       "submodule": "uti/ed_eval",
-      "direct_transition": "End ED Encounter",
-      "name": "ED Eval"
+      "direct_transition": "End ED Encounter"
     },
     "End ED Encounter": {
       "type": "EncounterEnd",
-      "direct_transition": "Terminal",
-      "name": "End ED Encounter"
+      "direct_transition": "Terminal"
     },
     "Set UTI_ED": {
       "type": "SetAttribute",
       "attribute": "UTI_ED",
       "direct_transition": "ED Eval",
-      "name": "Set UTI_ED",
       "value": true
     }
   },

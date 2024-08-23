@@ -85,9 +85,9 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "LOINC",
-                    "code": "55277-8",
-                    "display": "HIV Positive Status"
+                    "system": "SNOMED-CT",
+                    "code": "86406008",
+                    "display": "Human immunodeficiency virus infection (disorder)"
                   }
                 ]
               },

@@ -152,8 +152,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1997,
-            "value": 0
+            "year": 1997
           }
         },
         {
@@ -161,8 +160,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1991,
-            "value": 0
+            "year": 1991
           }
         },
         {
@@ -170,8 +168,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1978,
-            "value": 0
+            "year": 1978
           }
         },
         {

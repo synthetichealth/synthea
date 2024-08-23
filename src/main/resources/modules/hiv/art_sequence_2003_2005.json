@@ -182,7 +182,6 @@
               }
             ]
           },
-          "distributions": [],
           "transition": "EFV"
         },
         {
@@ -300,8 +299,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2004,
-            "value": 0
+            "year": 2004
           },
           "distributions": [
             {
@@ -315,7 +313,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "3TC"
         }
       ]
@@ -335,8 +332,7 @@
               "minute": 0,
               "second": 0,
               "millisecond": 0
-            },
-            "value": 0
+            }
           },
           "distributions": [
             {

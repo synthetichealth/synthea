@@ -18,12 +18,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wait Unit 15",
-      "name": "Initial"
+      "direct_transition": "Wait Unit 15"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Wait Unit 15": {
       "type": "Guard",
@@ -34,12 +32,10 @@
         "unit": "years",
         "value": 0
       },
-      "direct_transition": "Urinary Tract Infection",
-      "name": "Wait Unit 15"
+      "direct_transition": "Urinary Tract Infection"
     },
     "Urinary Tract Infection": {
       "type": "Simple",
-      "name": "Urinary Tract Infection",
       "lookup_table_transition": [
         {
           "transition": "Cystitis",
@@ -60,7 +56,6 @@
     },
     "Cystitis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -70,12 +65,10 @@
         }
       ],
       "direct_transition": "Care Pathways",
-      "name": "Cystitis",
       "assign_to_attribute": "uti"
     },
     "Pyelonephritis": {
       "type": "ConditionOnset",
-      "target_encounter": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -85,12 +78,10 @@
         }
       ],
       "direct_transition": "Care Pathways",
-      "name": "Pyelonephritis",
       "assign_to_attribute": "uti"
     },
     "Care Pathways": {
       "type": "Simple",
-      "name": "Care Pathways",
       "type_of_care_transition": {
         "ambulatory": "Ambulatory",
         "emergency": "ED",
@@ -107,41 +98,34 @@
         }
       },
       "unit": "months",
-      "direct_transition": "Urinary Tract Infection",
-      "name": "Wait_for_UTI"
+      "direct_transition": "Urinary Tract Infection"
     },
     "Telemedicine": {
       "type": "Simple",
-      "direct_transition": "UTI Telemed Sub",
-      "name": "Telemedicine"
+      "direct_transition": "UTI Telemed Sub"
     },
     "Ambulatory": {
       "type": "Simple",
-      "direct_transition": "UTI Ambulatory Sub",
-      "name": "Ambulatory"
+      "direct_transition": "UTI Ambulatory Sub"
     },
     "ED": {
       "type": "Simple",
-      "direct_transition": "UTI ED Sub",
-      "name": "ED"
+      "direct_transition": "UTI ED Sub"
     },
     "UTI Telemed Sub": {
       "type": "CallSubmodule",
       "submodule": "uti/telemed_path",
-      "direct_transition": "Time Delay",
-      "name": "UTI Telemed Sub"
+      "direct_transition": "Time Delay"
     },
     "UTI Ambulatory Sub": {
       "type": "CallSubmodule",
       "submodule": "uti/ambulatory_path",
-      "direct_transition": "Time Delay",
-      "name": "UTI Ambulatory Sub"
+      "direct_transition": "Time Delay"
     },
     "UTI ED Sub": {
       "type": "CallSubmodule",
       "submodule": "uti/ed_path",
-      "direct_transition": "Time Delay",
-      "name": "UTI ED Sub"
+      "direct_transition": "Time Delay"
     },
     "Time Delay": {
       "type": "Delay",
@@ -153,12 +137,10 @@
         }
       },
       "unit": "hours",
-      "direct_transition": "Clear ESI",
-      "name": "Time Delay"
+      "direct_transition": "Clear ESI"
     },
     "End UTI Tx": {
       "type": "MedicationEnd",
-      "name": "End UTI Tx",
       "referenced_by_attribute": "UTI_Tx",
       "distributed_transition": [
         {
@@ -174,66 +156,55 @@
     "Clear ESI": {
       "type": "SetAttribute",
       "attribute": "esi",
-      "direct_transition": "Clear BldCx",
-      "name": "Clear ESI"
+      "direct_transition": "Clear BldCx"
     },
     "Clear BldCx": {
       "type": "SetAttribute",
       "attribute": "UTI_Positive_BldCx",
-      "direct_transition": "Clear UTI ED",
-      "name": "Clear BldCx"
+      "direct_transition": "Clear UTI ED"
     },
     "Clear UTI ED": {
       "type": "SetAttribute",
       "attribute": "UTI_ED",
-      "direct_transition": "Clear UTI_Care_Referral",
-      "name": "Clear UTI ED"
+      "direct_transition": "Clear UTI_Care_Referral"
     },
     "Clear UTI_Care_Referral": {
       "type": "SetAttribute",
       "attribute": "UTI_Care_Referral",
-      "direct_transition": "Clear UTI_Lab_SendOut",
-      "name": "Clear UTI_Care_Referral"
+      "direct_transition": "Clear UTI_Lab_SendOut"
     },
     "Clear UTI_Lab_SendOut": {
       "type": "SetAttribute",
       "attribute": "UTI_Lab_SendOut",
-      "direct_transition": "Clear GU_Pregnancy_Check",
-      "name": "Clear UTI_Lab_SendOut"
+      "direct_transition": "Clear GU_Pregnancy_Check"
     },
     "Clear GU_Pregnancy_Check": {
       "type": "SetAttribute",
       "attribute": "GU_Pregnancy_Check",
-      "direct_transition": "Clear UTI_Labs",
-      "name": "Clear GU_Pregnancy_Check"
+      "direct_transition": "Clear UTI_Labs"
     },
     "Clear UTI_Labs": {
       "type": "SetAttribute",
       "attribute": "UTI_Labs",
-      "direct_transition": "Clear UTI_Bacteria",
-      "name": "Clear UTI_Labs"
+      "direct_transition": "Clear UTI_Bacteria"
     },
     "Clear UTI_Bacteria": {
       "type": "SetAttribute",
       "attribute": "UTI_Bacteria",
-      "direct_transition": "Clear UTI_Telemed",
-      "name": "Clear UTI_Bacteria"
+      "direct_transition": "Clear UTI_Telemed"
     },
     "Clear UTI_Telemed": {
       "type": "SetAttribute",
       "attribute": "UTI_Telemed",
-      "direct_transition": "Clear UTI_Ambulatory",
-      "name": "Clear UTI_Telemed"
+      "direct_transition": "Clear UTI_Ambulatory"
     },
     "Clear UTI_Ambulatory": {
       "type": "SetAttribute",
       "attribute": "UTI_Ambulatory",
-      "direct_transition": "End UTI Tx",
-      "name": "Clear UTI_Ambulatory"
+      "direct_transition": "End UTI Tx"
     },
     "End UTI": {
       "type": "ConditionEnd",
-      "name": "End UTI",
       "referenced_by_attribute": "uti",
       "complex_transition": [
         {
@@ -280,8 +251,7 @@
         }
       },
       "unit": "months",
-      "direct_transition": "Recurrent UTI",
-      "name": "Recurrence Delay"
+      "direct_transition": "Recurrent UTI"
     },
     "Recurrent UTI": {
       "type": "ConditionOnset",
@@ -304,8 +274,7 @@
           "default_probability": 0.1,
           "lookup_table_name": "uti_recurrence.csv"
         }
-      ],
-      "name": "Recurrent UTI"
+      ]
     }
   },
   "gmf_version": 2

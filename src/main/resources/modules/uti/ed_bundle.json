@@ -3,12 +3,10 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Triage",
-      "name": "Initial"
+      "direct_transition": "Triage"
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Triage": {
       "type": "Procedure",
@@ -27,8 +25,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Vitals",
-      "name": "Triage"
+      "direct_transition": "Vitals"
     },
     "Vitals": {
       "type": "Procedure",
@@ -47,7 +44,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Vitals",
       "conditional_transition": [
         {
           "transition": "Pyelo",
@@ -79,7 +75,6 @@
     },
     "Cystitis": {
       "type": "Simple",
-      "name": "Cystitis",
       "distributed_transition": [
         {
           "transition": "ESI-3",
@@ -97,7 +92,6 @@
     },
     "Pyelo": {
       "type": "Simple",
-      "name": "Pyelo",
       "complex_transition": [
         {
           "condition": {
@@ -167,7 +161,6 @@
         }
       ],
       "direct_transition": "ESI_State 1",
-      "name": "ESI-1",
       "value_code": {
         "system": "LOINC",
         "code": "LA21567-5",
@@ -186,7 +179,6 @@
           "value_set": ""
         }
       ],
-      "name": "ESI-2",
       "value_code": {
         "system": "LOINC",
         "code": "LA21752-3",
@@ -206,7 +198,6 @@
           "value_set": ""
         }
       ],
-      "name": "ESI-3",
       "value_code": {
         "system": "LOINC",
         "code": "LA21753-1",
@@ -226,7 +217,6 @@
           "value_set": ""
         }
       ],
-      "name": "ESI-4",
       "value_code": {
         "system": "LOINC",
         "code": "LA21754-9",
@@ -246,7 +236,6 @@
           "value_set": ""
         }
       ],
-      "name": "ESI-5",
       "value_code": {
         "system": "LOINC",
         "code": "LA21755-6",
@@ -297,7 +286,6 @@
           }
         }
       ],
-      "name": "Record_BP_4_5",
       "direct_transition": "Record_Heart_Rate_4_5"
     },
     "Record_BP_3": {
@@ -343,7 +331,6 @@
           }
         }
       ],
-      "name": "Record_BP_3",
       "direct_transition": "Record_Heart_Rate_3"
     },
     "Record_Heart_Rate_4_5": {
@@ -358,7 +345,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Heart_Rate_4_5",
       "direct_transition": "Record_Respiratory_Rate_4_5",
       "range": {
         "low": 60,
@@ -377,7 +363,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Respiratory_Rate_4_5",
       "direct_transition": "O2_4_5",
       "range": {
         "low": 12,
@@ -394,7 +379,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -408,8 +394,7 @@
           "low": 99
         }
       },
-      "direct_transition": "Take_Temperature_4_5",
-      "name": "O2_4_5"
+      "direct_transition": "Take_Temperature_4_5"
     },
     "Record_Heart_Rate_3": {
       "type": "Observation",
@@ -423,7 +408,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Heart_Rate_3",
       "range": {
         "low": 60,
         "high": 99
@@ -442,7 +426,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Respiratory_Rate_3",
       "range": {
         "low": 12,
         "high": 20
@@ -459,7 +442,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -473,7 +457,6 @@
           "low": 97
         }
       },
-      "name": "O2_3",
       "direct_transition": "Take_Temperature_3"
     },
     "History and Physical Exam": {
@@ -494,8 +477,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Check CBC",
-      "name": "History and Physical Exam"
+      "direct_transition": "Check CBC"
     },
     "Record_BP_2": {
       "type": "MultiObservation",
@@ -540,7 +522,6 @@
           }
         }
       ],
-      "name": "Record_BP_2",
       "direct_transition": "Record_Heart_Rate_2"
     },
     "Record_Heart_Rate_2": {
@@ -555,7 +536,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Heart_Rate_2",
       "range": {
         "low": 80,
         "high": 130
@@ -574,7 +554,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Respiratory_Rate_2",
       "range": {
         "low": 21,
         "high": 25
@@ -591,7 +570,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -605,7 +585,6 @@
           "low": 89
         }
       },
-      "name": "O2_2",
       "direct_transition": "Take_Temperature_2"
     },
     "Record_BP_1": {
@@ -651,7 +630,6 @@
           }
         }
       ],
-      "name": "Record_BP_1",
       "direct_transition": "Record_Heart_Rate_1"
     },
     "Record_Heart_Rate_1": {
@@ -666,7 +644,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Heart_Rate_1",
       "range": {
         "low": 80,
         "high": 130
@@ -685,7 +662,6 @@
           "value_set": ""
         }
       ],
-      "name": "Record_Respiratory_Rate_1",
       "range": {
         "low": 25,
         "high": 30
@@ -702,7 +678,8 @@
           "code": "2708-6",
           "display": "Oxygen saturation in Arterial blood",
           "value_set": ""
-        },{
+        },
+        {
           "system": "LOINC",
           "code": "59408-5",
           "display": "Oxygen saturation in Arterial blood by Pulse oximetry"
@@ -716,12 +693,10 @@
           "low": 70
         }
       },
-      "name": "O2_1",
       "direct_transition": "Take_Temperature_1"
     },
     "Check CBC": {
       "type": "Simple",
-      "name": "Check CBC",
       "conditional_transition": [
         {
           "transition": "CBC",
@@ -739,7 +714,6 @@
     },
     "Electrolyte Check": {
       "type": "Simple",
-      "name": "Electrolyte Check",
       "conditional_transition": [
         {
           "transition": "Provider Choice",
@@ -772,7 +746,6 @@
         }
       },
       "unit": "minutes",
-      "name": "CBC",
       "complex_transition": [
         {
           "condition": {
@@ -863,7 +836,6 @@
           "value_set": ""
         }
       ],
-      "name": "Take_Temperature_4_5",
       "direct_transition": "History and Physical Exam"
     },
     "Take_Temperature_3": {
@@ -891,7 +863,6 @@
           "value_set": ""
         }
       ],
-      "name": "Take_Temperature_3",
       "direct_transition": "History and Physical Exam"
     },
     "Take_Temperature_1": {
@@ -919,7 +890,6 @@
           "value_set": ""
         }
       ],
-      "name": "Take_Temperature_1",
       "direct_transition": "History and Physical Exam"
     },
     "Take_Temperature_2": {
@@ -947,41 +917,35 @@
           "value_set": ""
         }
       ],
-      "name": "Take_Temperature_2",
       "direct_transition": "History and Physical Exam"
     },
     "ESI State 5": {
       "type": "SetAttribute",
       "attribute": "esi",
       "direct_transition": "Record_BP_4_5",
-      "name": "ESI State 5",
       "value": 5
     },
     "ESI_State 4": {
       "type": "SetAttribute",
       "attribute": "esi",
-      "name": "ESI_State 4",
       "value": 4,
       "direct_transition": "Record_BP_4_5"
     },
     "ESI_State 3": {
       "type": "SetAttribute",
       "attribute": "esi",
-      "name": "ESI_State 3",
       "value": 3,
       "direct_transition": "Record_BP_3"
     },
     "ESI_State 2": {
       "type": "SetAttribute",
       "attribute": "esi",
-      "name": "ESI_State 2",
       "value": 2,
       "direct_transition": "Record_BP_2"
     },
     "ESI_State 1": {
       "type": "SetAttribute",
       "attribute": "esi",
-      "name": "ESI_State 1",
       "value": 1,
       "direct_transition": "Record_BP_1"
     },
@@ -1163,7 +1127,6 @@
           }
         }
       ],
-      "name": "Record_CBC_Panel",
       "direct_transition": "Electrolyte Check"
     },
     "Record_Abnormal CBC_Panel": {
@@ -1344,12 +1307,10 @@
           }
         }
       ],
-      "name": "Record_Abnormal CBC_Panel",
       "direct_transition": "Electrolyte Check"
     },
     "Blood Culture Check": {
       "type": "Simple",
-      "name": "Blood Culture Check",
       "conditional_transition": [
         {
           "transition": "Blood Culture",
@@ -1382,18 +1343,15 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Labs Submodule",
-      "name": "Urinalysis"
+      "direct_transition": "Labs Submodule"
     },
     "Labs Submodule": {
       "type": "CallSubmodule",
       "submodule": "uti/labs",
-      "direct_transition": "Terminal",
-      "name": "Labs Submodule"
+      "direct_transition": "Terminal"
     },
     "Provider Choice": {
       "type": "Simple",
-      "name": "Provider Choice",
       "complex_transition": [
         {
           "condition": {
@@ -1402,7 +1360,6 @@
             "operator": "<=",
             "value": 2
           },
-          "distributions": [],
           "transition": "CMP"
         },
         {
@@ -1442,7 +1399,6 @@
         }
       },
       "unit": "minutes",
-      "name": "CMP",
       "complex_transition": [
         {
           "condition": {
@@ -1451,7 +1407,6 @@
             "operator": ">=",
             "value": 1
           },
-          "distributions": [],
           "transition": "Comprehensive_Metabolic_Panel_with_Kidney_Damage"
         },
         {
@@ -1509,7 +1464,6 @@
         }
       },
       "unit": "minutes",
-      "name": "BMP",
       "complex_transition": [
         {
           "condition": {
@@ -1518,7 +1472,6 @@
             "operator": ">=",
             "value": 1
           },
-          "distributions": [],
           "transition": "Basic_Metabolic_Panel_with_Kidney Damage"
         },
         {
@@ -1528,7 +1481,6 @@
             "operator": "<=",
             "value": 2
           },
-          "distributions": [],
           "transition": "Basic_Metabolic_Panel_with_Normal_Kidney"
         },
         {
@@ -1767,7 +1719,6 @@
           }
         }
       ],
-      "name": "Comprehensive_Metabolic_Panel",
       "direct_transition": "Blood Culture Check"
     },
     "Comprehensive_Metabolic_Panel_with_Kidney_Damage": {
@@ -1986,7 +1937,6 @@
           }
         }
       ],
-      "name": "Comprehensive_Metabolic_Panel_with_Kidney_Damage",
       "direct_transition": "Blood Culture Check"
     },
     "Basic_Metabolic_Panel_with_Normal_Kidney": {
@@ -2115,8 +2065,7 @@
           }
         }
       ],
-      "direct_transition": "Blood Culture Check",
-      "name": "Basic_Metabolic_Panel_with_Normal_Kidney"
+      "direct_transition": "Blood Culture Check"
     },
     "Basic_Metabolic_Panel_with_Kidney Damage": {
       "type": "DiagnosticReport",
@@ -2244,7 +2193,6 @@
           }
         }
       ],
-      "name": "Basic_Metabolic_Panel_with_Kidney Damage",
       "direct_transition": "Blood Culture Check"
     },
     "Blood Culture": {
@@ -2265,7 +2213,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Blood Culture",
       "distributed_transition": [
         {
           "transition": "Positive_Blood_Culture",
@@ -2290,7 +2237,6 @@
         }
       ],
       "direct_transition": "Urinalysis",
-      "name": "Negative Blood Culture",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 708118007,
@@ -2309,7 +2255,6 @@
           "value_set": ""
         }
       ],
-      "name": "Positive_Blood_Culture",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8730001000004107,
@@ -2321,7 +2266,6 @@
       "type": "SetAttribute",
       "attribute": "UTI_Positive_BldCx",
       "direct_transition": "Urinalysis",
-      "name": "Set BldCx",
       "value": true
     }
   },

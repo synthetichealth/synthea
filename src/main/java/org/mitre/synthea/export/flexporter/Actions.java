@@ -870,7 +870,7 @@ public abstract class Actions {
     Map<String, String> codeAsMap = Map.of(
          "system", code.system,
          "code", code.code,
-         "display", code.display);
+         "display", code.display == null ? "" : code.display);
     return codeAsMap;
   }
 }

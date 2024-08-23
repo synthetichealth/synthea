@@ -1046,39 +1046,6 @@
         "high": 45,
         "unit": "minutes"
       },
-      "conditional_transition": [
-        {
-          "transition": "Intubation Supplies",
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 65710008,
-                    "display": "Acute respiratory failure (disorder)"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Active Condition",
-                "codes": [
-                  {
-                    "system": "SNOMED-CT",
-                    "code": 76571007,
-                    "display": "Septic shock (disorder)"
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "ICU Day Begin"
-        }
-      ],
       "direct_transition": "ICU Day Begin"
     },
     "Check for Bacterial Infection": {

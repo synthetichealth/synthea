@@ -38,8 +38,7 @@
         {
           "transition": "OTC_Pain_Reliever_Terminal"
         }
-      ],
-      "name": "Initial"
+      ]
     },
     "Prescribe_OTC_Pain_Reliever": {
       "type": "Simple",
@@ -128,8 +127,7 @@
             }
           ]
         }
-      ],
-      "name": "Prescribe_OTC_Pain_Reliever"
+      ]
     },
     "Prescribe_Aspirin": {
       "type": "MedicationOrder",
@@ -149,8 +147,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Prescribe_Aspirin"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "Prescribe_Acetaminophen": {
       "type": "Simple",
@@ -167,8 +164,7 @@
         {
           "transition": "Adult_Acetaminophen"
         }
-      ],
-      "name": "Prescribe_Acetaminophen"
+      ]
     },
     "Pediatric_Acetaminophen": {
       "type": "MedicationOrder",
@@ -184,8 +180,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Pediatric_Acetaminophen"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "Adult_Acetaminophen": {
       "type": "MedicationOrder",
@@ -201,8 +196,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Adult_Acetaminophen"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "Prescribe_Ibuprofen": {
       "type": "Simple",
@@ -239,8 +233,7 @@
             "value": 0
           }
         }
-      ],
-      "name": "Prescribe_Ibuprofen"
+      ]
     },
     "Pediatric_Ibuprofen": {
       "type": "MedicationOrder",
@@ -256,8 +249,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Pediatric_Ibuprofen"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "Adult_Ibuprofen": {
       "type": "MedicationOrder",
@@ -273,8 +265,7 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Adult_Ibuprofen"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "Prescribe_Naproxen_Sodium": {
       "type": "Simple",
@@ -309,8 +300,7 @@
             }
           ]
         }
-      ],
-      "name": "Prescribe_Naproxen_Sodium"
+      ]
     },
     "Naproxen_Sodium": {
       "type": "MedicationOrder",
@@ -326,12 +316,10 @@
       "prescription": {
         "as_needed": true
       },
-      "direct_transition": "OTC_Pain_Reliever_Terminal",
-      "name": "Naproxen_Sodium"
+      "direct_transition": "OTC_Pain_Reliever_Terminal"
     },
     "OTC_Pain_Reliever_Terminal": {
-      "type": "Terminal",
-      "name": "OTC_Pain_Reliever_Terminal"
+      "type": "Terminal"
     }
   },
   "gmf_version": 2

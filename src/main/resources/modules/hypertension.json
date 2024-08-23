@@ -235,7 +235,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Delay 2_Month"
         },
         {
@@ -314,7 +313,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Delay_2_Month_2"
         },
         {
@@ -324,7 +322,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Delay_2_Month_2"
         },
         {
@@ -346,7 +343,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Delay_2_Month_2"
         }
       ]
@@ -551,7 +547,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Hypertension_Followup_Encounter"
         },
         {
@@ -776,7 +771,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Hypertension_Followup_Encounter_2"
         },
         {
@@ -786,7 +780,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Hypertension_Followup_Encounter_2"
         },
         {

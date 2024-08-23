@@ -94,8 +94,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2021,
-            "value": 0
+            "year": 2021
           },
           "distributions": [
             {
@@ -108,8 +107,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2017,
-            "value": 0
+            "year": 2017
           },
           "distributions": [
             {
@@ -216,8 +214,7 @@
                   "minute": 0,
                   "second": 0,
                   "millisecond": 0
-                },
-                "value": 0
+                }
               },
               {
                 "condition_type": "And",
@@ -273,8 +270,7 @@
               "minute": 0,
               "second": 0,
               "millisecond": 0
-            },
-            "value": 0
+            }
           },
           "distributions": [
             {
@@ -302,14 +298,12 @@
               {
                 "condition_type": "Date",
                 "operator": "<=",
-                "year": 2018,
-                "value": 0
+                "year": 2018
               },
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 2016,
-                "value": 0
+                "year": 2016
               }
             ]
           },

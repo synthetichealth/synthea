@@ -3,7 +3,6 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "name": "Initial",
       "conditional_transition": [
         {
           "transition": "Female",
@@ -22,12 +21,10 @@
       ]
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Male": {
       "type": "Simple",
-      "name": "Male",
       "conditional_transition": [
         {
           "transition": "Male with Pyelo",
@@ -59,7 +56,6 @@
     },
     "Female": {
       "type": "Simple",
-      "name": "Female",
       "conditional_transition": [
         {
           "transition": "Pregnant Female with Cystitis",
@@ -110,7 +106,6 @@
     },
     "Male with Pyelo": {
       "type": "Simple",
-      "name": "Male with Pyelo",
       "complex_transition": [
         {
           "condition": {
@@ -181,7 +176,6 @@
     },
     "Male with Cystitis": {
       "type": "Simple",
-      "name": "Male with Cystitis",
       "complex_transition": [
         {
           "condition": {
@@ -265,7 +259,6 @@
       ],
       "reason": "uti",
       "direct_transition": "ED Check",
-      "name": "Nitro 5 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -291,7 +284,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Nitro 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -318,7 +310,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Fosfo",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -345,7 +336,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Sulfa 3 day",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -372,7 +362,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Sulfa 7 day",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -399,7 +388,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Sulfa 10 day",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -426,7 +414,6 @@
         }
       ],
       "reason": "uti",
-      "name": "AmxClav 500, 5 day",
       "assign_to_attribute": "UTI_Tx",
       "direct_transition": "ED Check"
     },
@@ -441,7 +428,6 @@
         }
       ],
       "reason": "uti",
-      "name": "AmxClav 875, 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -468,7 +454,6 @@
         }
       ],
       "reason": "uti",
-      "name": "AmxClav 875, 10 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -495,7 +480,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Amox 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -522,7 +506,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cepha 5 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -549,7 +532,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cepha 10 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -576,7 +558,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cepha 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -603,7 +584,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cipro 250, 3 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -630,7 +610,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cipro 500, 5 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -657,7 +636,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cipro_500 7 day",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -684,7 +662,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cefpo 100",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -711,7 +688,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Cefpo 200",
       "assign_to_attribute": "UTI_Tx",
       "prescription": {
         "dosage": {
@@ -738,7 +714,6 @@
         }
       ],
       "reason": "uti",
-      "name": "Ceftriaxone",
       "prescription": {
         "dosage": {
           "amount": 1,
@@ -756,7 +731,6 @@
     },
     "ED Check": {
       "type": "Simple",
-      "name": "ED Check",
       "complex_transition": [
         {
           "condition": {
@@ -792,14 +766,12 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Terminal"
         }
       ]
     },
     "Female_with_Cystitis": {
       "type": "Simple",
-      "name": "Female_with_Cystitis",
       "complex_transition": [
         {
           "condition": {
@@ -954,12 +926,10 @@
             }
           ]
         }
-      ],
-      "name": "Pregnant Female with Cystitis"
+      ]
     },
     "Female with Pyelo": {
       "type": "Simple",
-      "name": "Female with Pyelo",
       "complex_transition": [
         {
           "condition": {
@@ -1069,8 +1039,7 @@
         {
           "transition": "Ceftriaxone"
         }
-      ],
-      "name": "ED and Pyelo"
+      ]
     }
   },
   "gmf_version": 2

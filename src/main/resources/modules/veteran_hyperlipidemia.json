@@ -82,15 +82,7 @@
     },
     "Hyperlipidemia initial workup encounter": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
       "reason": "hyperlipidemia",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom"
-        }
-      ],
       "direct_transition": "Record_LipidPanel",
       "wellness": true
     },

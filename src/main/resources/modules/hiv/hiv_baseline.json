@@ -654,7 +654,6 @@
             "attribute": "ckd",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "Metabolic Panel"
         },
         {
@@ -1217,7 +1216,6 @@
             "attribute": "anemia",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "Has Anemia"
         },
         {
@@ -1265,7 +1263,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "No Anemia"
         }
       ]
@@ -2028,8 +2025,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1996,
-            "value": 0
+            "year": 1996
           }
         },
         {

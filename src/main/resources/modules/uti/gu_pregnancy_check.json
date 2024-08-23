@@ -3,7 +3,6 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "name": "Initial",
       "complex_transition": [
         {
           "condition": {
@@ -11,7 +10,6 @@
             "attribute": "UTI_Telemed",
             "operator": "is not nil"
           },
-          "distributions": [],
           "transition": "Discuss Pregnancy"
         },
         {
@@ -51,8 +49,7 @@
       ]
     },
     "Terminal": {
-      "type": "Terminal",
-      "name": "Terminal"
+      "type": "Terminal"
     },
     "Pregnancy Test": {
       "type": "Procedure",
@@ -71,7 +68,6 @@
         }
       },
       "unit": "minutes",
-      "name": "Pregnancy Test",
       "conditional_transition": [
         {
           "transition": "Positive Result",
@@ -104,8 +100,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Terminal",
-      "name": "Discuss Pregnancy"
+      "direct_transition": "Terminal"
     },
     "Negative Result": {
       "type": "Observation",
@@ -120,7 +115,6 @@
         }
       ],
       "direct_transition": "Terminal",
-      "name": "Negative Result",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 260385009,
@@ -139,7 +133,6 @@
           "value_set": ""
         }
       ],
-      "name": "Positive Result",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 10828004,

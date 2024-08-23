@@ -16,7 +16,7 @@ public class PayerAdjustmentRandom implements IPayerAdjustment, Serializable {
   private static final long serialVersionUID = -5292509643177122361L;
 
   /** Maximum adjustment rate. */
-  private double rate;
+  double rate;
 
   /**
    * Create a new random payer adjustment.

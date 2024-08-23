@@ -56,8 +56,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1981,
-            "value": 0
+            "year": 1981
           }
         },
         {
@@ -65,8 +64,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1954,
-            "value": 0
+            "year": 1954
           }
         },
         {

@@ -11,8 +11,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "==",
-            "year": 2002,
-            "value": 0
+            "year": 2002
           },
           "distributions": [
             {
@@ -53,12 +52,10 @@
                   "minute": 0,
                   "second": 0,
                   "millisecond": 0
-                },
-                "value": 0
+                }
               }
             ]
           },
-          "distributions": [],
           "transition": "3TC+ZDV"
         },
         {
@@ -141,8 +138,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "<",
-            "year": 2000,
-            "value": 0
+            "year": 2000
           },
           "distributions": [
             {
@@ -230,8 +226,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "<",
-            "year": 2000,
-            "value": 0
+            "year": 2000
           },
           "distributions": [
             {
@@ -245,7 +240,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "3TC"
         }
       ]
@@ -339,8 +333,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2001,
-            "value": 0
+            "year": 2001
           }
         },
         {
@@ -348,8 +341,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "==",
-            "year": 2000,
-            "value": 0
+            "year": 2000
           }
         },
         {
@@ -365,8 +357,7 @@
               "minute": 0,
               "second": 0,
               "millisecond": 0
-            },
-            "value": 0
+            }
           }
         },
         {
@@ -374,7 +365,6 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "value": 0,
             "date": {
               "year": 1997,
               "month": 9,
@@ -425,8 +415,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 2001,
-            "value": 0
+            "year": 2001
           }
         },
         {

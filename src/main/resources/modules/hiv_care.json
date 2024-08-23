@@ -133,7 +133,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "End Treatment Encounter"
         },
         {
@@ -143,7 +142,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "Medication_Submodule"
         },
         {
@@ -272,7 +270,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Long Encounter Delay"
         }
       ]
@@ -330,8 +327,7 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 2016,
-                "value": 0
+                "year": 2016
               },
               {
                 "condition_type": "Attribute",
@@ -353,7 +349,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Medium Encounter Delay"
         }
       ],
@@ -437,8 +432,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1996,
-            "value": 0
+            "year": 1996
           }
         },
         {
@@ -503,8 +497,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": ">=",
-            "year": 1996,
-            "value": 0
+            "year": 1996
           }
         },
         {
@@ -553,7 +546,6 @@
             "operator": "==",
             "value": true
           },
-          "distributions": [],
           "transition": "ART Sequence"
         },
         {
@@ -832,8 +824,7 @@
               {
                 "condition_type": "Date",
                 "operator": ">=",
-                "year": 2017,
-                "value": 0
+                "year": 2017
               }
             ]
           }
@@ -957,8 +948,7 @@
           "condition": {
             "condition_type": "Date",
             "operator": "<",
-            "year": 2010,
-            "value": 0
+            "year": 2010
           }
         },
         {
