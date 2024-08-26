@@ -935,6 +935,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns whether or not a person can afford a given payer.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#canMap(java.lang.String)">canMap(String)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Determines whether this mapper has an entry for the supplied code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#canMap(org.mitre.synthea.world.concepts.HealthRecord.Code)">canMap(HealthRecord.Code)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Determines whether this mapper has an entry for the supplied code.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/VitalSign.html#CARBON_DIOXIDE">CARBON_DIOXIDE</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#CARDIAC_ELECTROPHYSIOLOGY">CARDIAC_ELECTROPHYSIOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
@@ -1024,6 +1032,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.DME.html#CARR_NUM">CARR_NUM</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.DME.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.DME</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.CARRIER.html#CARR_PRFRNG_PIN_NUM">CARR_PRFRNG_PIN_NUM</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.CARRIER.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.CARRIER</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#CARRIER">CARRIER</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html#CARRIER_CLAIMS">CARRIER_CLAIMS</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.EXPORT_SUMMARY</a></dt>
 <dd>&nbsp;</dd>
@@ -1135,6 +1145,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.html#chooseClinicianList(java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">chooseClinicianList(String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.html" title="class in org.mitre.synthea.world.agents">Provider</a></dt>
 <dd>
 <div class="block">Randomly chooses a clinician out of a given clinician list.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Costs.CostData.html#chooseCost(org.mitre.synthea.world.agents.Person)">chooseCost(Person)</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts">Costs.CostData</a></dt>
+<dd>
+<div class="block">Select an individual cost based on this cost data.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/behaviors/planfinder/IPlanFinder.html#chooseRandomPlan(java.util.List,org.mitre.synthea.helpers.RandomNumberGenerator)">chooseRandomPlan(List&lt;InsurancePlan&gt;, RandomNumberGenerator)</a></span> - Method in interface org.mitre.synthea.world.agents.behaviors.planfinder.<a href="org/mitre/synthea/world/agents/behaviors/planfinder/IPlanFinder.html" title="interface in org.mitre.synthea.world.agents.behaviors.planfinder">IPlanFinder</a></dt>
 <dd>
@@ -1716,6 +1730,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/RandomCodeGenerator.html#codeListCache">codeListCache</a></span> - Static variable in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/RandomCodeGenerator.html" title="class in org.mitre.synthea.helpers">RandomCodeGenerator</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">CodeMapper</span></a> - Class in <a href="org/mitre/synthea/export/rif/package-summary.html">org.mitre.synthea.export.rif</a></dt>
+<dd>
+<div class="block">Utility class for dealing with code mapping configuration writers.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#%3Cinit%3E(java.lang.String)">CodeMapper(String)</a></span> - Constructor for class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Create a new CodeMapper for the supplied JSON string.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html#codes">codes</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Entry.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Entry</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#coinsurancePaidByPayer">coinsurancePaidByPayer</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
@@ -2423,6 +2445,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine"><span class="typeNameLink">Distribution.Kind</span></a> - Enum in <a href="org/mitre/synthea/engine/package-summary.html">org.mitre.synthea.engine</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/covid/C19VaccineAgeDistributions.html#distributions">distributions</a></span> - Static variable in class org.mitre.synthea.modules.covid.<a href="org/mitre/synthea/modules/covid/C19VaccineAgeDistributions.html" title="class in org.mitre.synthea.modules.covid">C19VaccineAgeDistributions</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#DME">DME</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html#DME_CLAIMS">DME_CLAIMS</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.EXPORT_SUMMARY</a></dt>
 <dd>&nbsp;</dd>
@@ -3652,6 +3676,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Gets the city for the variant.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getClaimTypes(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">getClaimTypes(HealthRecord.Encounter)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
+<dd>
+<div class="block">Get the types of claim for the supplied encounter.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PreGenerator.html#getClassName()">getClassName()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PreGenerator.html" title="class in org.mitre.synthea.helpers.physiology">PreGenerator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html#getClinician()">getClinician()</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/ConsolidatedClaimLines.ConsolidatedClaimLine.html" title="class in org.mitre.synthea.export.rif">ConsolidatedClaimLines.ConsolidatedClaimLine</a></dt>
@@ -3758,6 +3786,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#getCount()">getCount()</a></span> - Method in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BeneficiaryExporter.html#getCoverageStartDate(org.mitre.synthea.world.agents.Person)">getCoverageStartDate(Person)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BeneficiaryExporter.html" title="class in org.mitre.synthea.export.rif">BeneficiaryExporter</a></dt>
+<dd>
+<div class="block">Get the start date of Medicare coverage.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html#getCoveredCost()">getCoveredCost()</a></span> - Method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Claim.ClaimCost.html" title="class in org.mitre.synthea.world.concepts">Claim.ClaimCost</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html#getCoveredExpenses()">getCoveredExpenses()</a></span> - Method in class org.mitre.synthea.world.concepts.healthinsurance.<a href="org/mitre/synthea/world/concepts/healthinsurance/PlanRecord.html" title="class in org.mitre.synthea.world.concepts.healthinsurance">PlanRecord</a></dt>
@@ -3807,7 +3839,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Gets the date of birth for the variant.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability(Person)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability(Person)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>
 <div class="block">Get the date of disability.</div>
 </dd>
@@ -3841,11 +3873,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Determines earliest disability diagnosis time according to input file
  criteria.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis(Person, String)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis(Person, String)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>
 <div class="block">Returns the earliest unmapped diagnosis time stamp for a particular condition.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis(Person, String[])</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis(Person, String[])</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>
 <div class="block">Returns the earliest unmapped diagnosis time stamp for a set of conditions.</div>
 </dd>
@@ -4070,6 +4102,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns the number of medications this payer did not cover for their customers.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#getMissingCodes()">getMissingCodes()</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get the missing code as a list of maps, where each map includes the mapper name, a missing
+ code, a description, and the count of times the code was requested.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html#getModel()">getModel()</a></span> - Method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/PhysiologySimulator.SimConfig.html" title="class in org.mitre.synthea.engine">PhysiologySimulator.SimConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html#getModel()">getModel()</a></span> - Method in class org.mitre.synthea.helpers.physiology.<a href="org/mitre/synthea/helpers/physiology/PhysiologyGeneratorConfig.html" title="class in org.mitre.synthea.helpers.physiology">PhysiologyGeneratorConfig</a></dt>
@@ -4080,6 +4117,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModuleNames()">getModuleNames()</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModulePaths()">getModulePaths()</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
+<dd>
+<div class="block">Get the paths to the modules directories, ensuring the right file system support is loaded if
+ we are running from a jar file.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModules()">getModules()</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>
 <div class="block">Get the top-level modules.</div>
@@ -4087,11 +4129,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModules(java.util.function.Predicate)">getModules(Predicate&lt;String&gt;)</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>
 <div class="block">Get a list of top-level modules including core and submodules.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModulesPath()">getModulesPath()</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
-<dd>
-<div class="block">The path to the modules directory, ensuring the right file system support is loaded if
- we are running from a jar file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Module.html#getModuleSuppliers()">getModuleSuppliers()</a></span> - Static method in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Module.html" title="class in org.mitre.synthea.engine">Module</a></dt>
 <dd>
@@ -4974,6 +5011,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#HEMATOPOIETIC_CELL_TRANSPLANTATION_AND_CELLULAR_TH">HEMATOPOIETIC_CELL_TRANSPLANTATION_AND_CELLULAR_TH</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#HHA">HHA</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html#HHA_CLAIMS">HHA_CLAIMS</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.EXPORT_SUMMARY</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mitre/synthea/export/rif/HHAExporter.html" title="class in org.mitre.synthea.export.rif"><span class="typeNameLink">HHAExporter</span></a> - Class in <a href="org/mitre/synthea/export/rif/package-summary.html">org.mitre.synthea.export.rif</a></dt>
@@ -4989,6 +5028,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Utility class for working with CMS HICNs.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#%3Cinit%3E(long)">HICN(long)</a></span> - Constructor for class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#%3Cinit%3E(long,boolean)">HICN(long, boolean)</a></span> - Constructor for class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Components.Range.html#high">high</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Components.Range.html" title="class in org.mitre.synthea.engine">Components.Range</a></dt>
 <dd>
@@ -5029,6 +5070,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.ProviderType.html#HOME_HEALTH">HOME_HEALTH</a></span> - org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.ProviderType.html" title="enum in org.mitre.synthea.world.agents">Provider.ProviderType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.html#homeDxFields">homeDxFields</a></span> - Static variable in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.html" title="class in org.mitre.synthea.export.rif">BB2RIFStructure</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#HOSPICE">HOSPICE</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Provider.ProviderType.html#HOSPICE">HOSPICE</a></span> - org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Provider.ProviderType.html" title="enum in org.mitre.synthea.world.agents">Provider.ProviderType</a></dt>
 <dd>&nbsp;</dd>
@@ -6414,6 +6457,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Adapts values whose runtime type may differ from their declaration type.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#INPATIENT">INPATIENT</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#INPATIENT">INPATIENT</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Clinician.html#INPATIENT">INPATIENT</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Clinician.html" title="class in org.mitre.synthea.world.agents">Clinician</a></dt>
@@ -7308,6 +7353,38 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html#manufactureTime">manufactureTime</a></span> - Variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.Device.html" title="class in org.mitre.synthea.world.concepts">HealthRecord.Device</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(java.lang.String,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">map(String, String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(java.lang.String,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator,boolean)">map(String, String, RandomNumberGenerator, boolean)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">map(String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator,boolean)">map(String, RandomNumberGenerator, boolean)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator)">map(HealthRecord.Code, String, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String,org.mitre.synthea.helpers.RandomNumberGenerator,boolean)">map(HealthRecord.Code, String, RandomNumberGenerator, boolean)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(org.mitre.synthea.world.concepts.HealthRecord.Code,org.mitre.synthea.helpers.RandomNumberGenerator)">map(HealthRecord.Code, RandomNumberGenerator)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(org.mitre.synthea.world.concepts.HealthRecord.Code,org.mitre.synthea.helpers.RandomNumberGenerator,boolean)">map(HealthRecord.Code, RandomNumberGenerator, boolean)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
+<dd>
+<div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
 <dt><a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">Mapping</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#%3Cinit%3E()">Mapping()</a></span> - Constructor for class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
@@ -7320,9 +7397,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/CLIA.html#MAX_CLIA">MAX_CLIA</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/CLIA.html" title="class in org.mitre.synthea.export.rif.identifiers">CLIA</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#MAX_HICN">MAX_HICN</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#MAX_FAKE_HICN">MAX_FAKE_HICN</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#MAX_MBI">MAX_MBI</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#MAX_FAKE_MBI">MAX_FAKE_MBI</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/PartCContractID.html#MAX_PARTC_CONTRACT_ID">MAX_PARTC_CONTRACT_ID</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PartCContractID.html" title="class in org.mitre.synthea.export.rif.identifiers">PartCContractID</a></dt>
 <dd>&nbsp;</dd>
@@ -7334,6 +7411,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The highest percentile to use when attempting to calculate a value.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#MAX_REAL_HICN">MAX_REAL_HICN</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#MAX_REAL_MBI">MAX_REAL_MBI</a></span> - Static variable in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html#maxAge">maxAge</a></span> - Variable in class org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Generator.GeneratorOptions.html" title="class in org.mitre.synthea.engine">Generator.GeneratorOptions</a></dt>
 <dd>
 <div class="block">Maximum age of people to be generated.</div>
@@ -7359,6 +7440,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Utility class for working with CMS MBIs.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#%3Cinit%3E(long)">MBI(long)</a></span> - Constructor for class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#%3Cinit%3E(long,boolean)">MBI(long, boolean)</a></span> - Constructor for class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY.html#MBI_NUM">MBI_NUM</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.BENEFICIARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.BENEFICIARY</a></dt>
 <dd>&nbsp;</dd>
@@ -8057,6 +8140,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#OTOLARYNGOLOGY">OTOLARYNGOLOGY</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#OUTPATIENT">OUTPATIENT</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#OUTPATIENT">OUTPATIENT</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html#OUTPATIENT_CLAIMS">OUTPATIENT_CLAIMS</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.EXPORT_SUMMARY</a></dt>
@@ -8114,9 +8199,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/CLIA.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/CLIA.html" title="class in org.mitre.synthea.export.rif.identifiers">CLIA</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/HICN.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/HICN.html" title="class in org.mitre.synthea.export.rif.identifiers">HICN</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Parse a HICN from a string.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/MBI.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Parse an MBI from a String.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/PartCContractID.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PartCContractID.html" title="class in org.mitre.synthea.export.rif.identifiers">PartCContractID</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/identifiers/PartDContractID.html#parse(java.lang.String)">parse(String)</a></span> - Static method in class org.mitre.synthea.export.rif.identifiers.<a href="org/mitre/synthea/export/rif/identifiers/PartDContractID.html" title="class in org.mitre.synthea.export.rif.identifiers">PartDContractID</a></dt>
@@ -8245,6 +8334,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  the appropriate provider based on which threshold they meet.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.PDE.html#PD_DT">PD_DT</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.PDE.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.PDE</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#PDE">PDE</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html#PDE_CLAIMS">PDE_CLAIMS</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.EXPORT_SUMMARY.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.EXPORT_SUMMARY</a></dt>
 <dd>&nbsp;</dd>
@@ -9739,6 +9830,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#%3Cinit%3E(org.mitre.synthea.export.rif.BB2RIFExporter)">RIFExporter(BB2RIFExporter)</a></span> - Constructor for class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif"><span class="typeNameLink">RIFExporter.ClaimType</span></a> - Enum in <a href="org/mitre/synthea/export/rif/package-summary.html">org.mitre.synthea.export.rif</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.HHA.html#RNDRNG_PHYSN_NPI">RNDRNG_PHYSN_NPI</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.HHA.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.HHA</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.HOSPICE.html#RNDRNG_PHYSN_NPI">RNDRNG_PHYSN_NPI</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.HOSPICE.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.HOSPICE</a></dt>
@@ -10292,6 +10385,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html#SLEEP_MEDICINE">SLEEP_MEDICINE</a></span> - Static variable in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/ClinicianSpecialty.html" title="class in org.mitre.synthea.world.concepts">ClinicianSpecialty</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/agents/Person.html#SMOKER">SMOKER</a></span> - Static variable in class org.mitre.synthea.world.agents.<a href="org/mitre/synthea/world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#SNF">SNF</a></span> - org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html#SNF">SNF</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/HealthRecord.EncounterType.html" title="enum in org.mitre.synthea.world.concepts">HealthRecord.EncounterType</a></dt>
 <dd>&nbsp;</dd>
@@ -10976,10 +11071,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">A ValueGenerator that generates values which follow a trend.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/Costs.CostData.html#triangularDistribution(double,double,double,double)">triangularDistribution(double, double, double, double)</a></span> - Static method in class org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/Costs.CostData.html" title="class in org.mitre.synthea.world.concepts">Costs.CostData</a></dt>
-<dd>
-<div class="block">Pick a single value based on a triangular distribution.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/engine/Distribution.Kind.html#TRIANGULAR">TRIANGULAR</a></span> - org.mitre.synthea.engine.<a href="org/mitre/synthea/engine/Distribution.Kind.html" title="enum in org.mitre.synthea.engine">Distribution.Kind</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/WeightLossModule.html#TRIGGER_WEIGHT_LOSS">TRIGGER_WEIGHT_LOSS</a></span> - Static variable in class org.mitre.synthea.modules.<a href="org/mitre/synthea/modules/WeightLossModule.html" title="class in org.mitre.synthea.modules">WeightLossModule</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/world/concepts/VitalSign.html#TRIGLYCERIDES">TRIGLYCERIDES</a></span> - org.mitre.synthea.world.concepts.<a href="org/mitre/synthea/world/concepts/VitalSign.html" title="enum in org.mitre.synthea.world.concepts">VitalSign</a></dt>
@@ -11255,6 +11348,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#valueOf(java.lang.String)">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this type with the specified name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/ChartRenderer.ChartType.html#valueOf(java.lang.String)">valueOf(String)</a></span> - Static method in enum org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/ChartRenderer.ChartType.html" title="enum in org.mitre.synthea.helpers">ChartRenderer.ChartType</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
@@ -11381,6 +11478,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/BB2RIFStructure.SNF.html#values()">values()</a></span> - Static method in enum org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/BB2RIFStructure.SNF.html" title="enum in org.mitre.synthea.export.rif">BB2RIFStructure.SNF</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum type, in
+the order they are declared.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html#values()">values()</a></span> - Static method in enum org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum type, in
 the order they are declared.</div>

@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -155,20 +155,17 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static double</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#triangularDistribution(double,double,double,double)">triangularDistribution</a></span>&#8203;(double&nbsp;min,
-                      double&nbsp;max,
-                      double&nbsp;mode,
-                      double&nbsp;rand)</code></th>
+<td class="colFirst"><code>protected double</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chooseCost(org.mitre.synthea.world.agents.Person)">chooseCost</a></span>&#8203;(<a href="../agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
 <td class="colLast">
-<div class="block">Pick a single value based on a triangular distribution.</div>
+<div class="block">Select an individual cost based on this cost data.</div>
 </td>
 </tr>
 </table>
@@ -195,26 +192,19 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="triangularDistribution(double,double,double,double)">
+<a id="chooseCost(org.mitre.synthea.world.agents.Person)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>triangularDistribution</h4>
-<pre class="methodSignature">public static&nbsp;double&nbsp;triangularDistribution&#8203;(double&nbsp;min,
-                                            double&nbsp;max,
-                                            double&nbsp;mode,
-                                            double&nbsp;rand)</pre>
-<div class="block">Pick a single value based on a triangular distribution. See:
- https://en.wikipedia.org/wiki/Triangular_distribution</div>
+<h4>chooseCost</h4>
+<pre class="methodSignature">protected&nbsp;double&nbsp;chooseCost&#8203;(<a href="../agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Select an individual cost based on this cost data.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>min</code> - Lower limit of the distribution</dd>
-<dd><code>max</code> - Upper limit of the distribution</dd>
-<dd><code>mode</code> - Most common value</dd>
-<dd><code>rand</code> - A random value between 0-1</dd>
+<dd><code>person</code> - Source of randomness</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a single value from the distribution</dd>
+<dd>Single cost within the range this set of cost data represents</dd>
 </dl>
 </li>
 </ul>

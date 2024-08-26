@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -88,7 +88,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -145,6 +145,23 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.org.mitre.synthea.export.rif.RIFExporter">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.mitre.synthea.export.rif.<a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></h3>
+<code><a href="RIFExporter.ClaimType.html" title="enum in org.mitre.synthea.export.rif">RIFExporter.ClaimType</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- =========== FIELD SUMMARY =========== -->
 <section>
 <ul class="blockList">
@@ -170,7 +187,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected static java.util.concurrent.atomic.AtomicReference&lt;<a href="identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a>&gt;</code></td>
+<td class="colFirst"><code>static java.util.concurrent.atomic.AtomicReference&lt;<a href="identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nextMbi">nextMbi</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -216,7 +233,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -231,13 +248,20 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <div class="block">Export a beneficiary details for single person.</div>
 </td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCoverageStartDate(org.mitre.synthea.world.agents.Person)">getCoverageStartDate</a></span>&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</code></th>
+<td class="colLast">
+<div class="block">Get the start date of Medicare coverage.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.mitre.synthea.export.rif.RIFExporter">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.mitre.synthea.export.rif.<a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></h3>
-<code><a href="RIFExporter.html#bb2TaxId(java.lang.String)">bb2TaxId</a>, <a href="RIFExporter.html#getBillableProcedureAndMedAdminItems(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">getBillableProcedureAndMedAdminItems</a>, <a href="RIFExporter.html#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability</a>, <a href="RIFExporter.html#getDiagnosesCodes(org.mitre.synthea.world.agents.Person,long)">getDiagnosesCodes</a>, <a href="RIFExporter.html#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestDiagnosis</a>, <a href="RIFExporter.html#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestDiagnosis</a>, <a href="RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis</a>, <a href="RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis</a>, <a href="RIFExporter.html#getFirstMappedHCPCSCode(java.util.List,org.mitre.synthea.helpers.RandomNumberGenerator)">getFirstMappedHCPCSCode</a>, <a href="RIFExporter.html#hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">hasPartABCoverage</a>, <a href="RIFExporter.html#isDisabled(org.mitre.synthea.world.agents.Person)">isDisabled</a>, <a href="RIFExporter.html#parseSimpleDate(java.lang.String)">parseSimpleDate</a></code></li>
+<code><a href="RIFExporter.html#bb2TaxId(java.lang.String)">bb2TaxId</a>, <a href="RIFExporter.html#getBillableProcedureAndMedAdminItems(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">getBillableProcedureAndMedAdminItems</a>, <a href="RIFExporter.html#getClaimTypes(org.mitre.synthea.world.concepts.HealthRecord.Encounter)">getClaimTypes</a>, <a href="RIFExporter.html#getDateOfDisability(org.mitre.synthea.world.agents.Person)">getDateOfDisability</a>, <a href="RIFExporter.html#getDiagnosesCodes(org.mitre.synthea.world.agents.Person,long)">getDiagnosesCodes</a>, <a href="RIFExporter.html#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestDiagnosis</a>, <a href="RIFExporter.html#getEarliestDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestDiagnosis</a>, <a href="RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String)">getEarliestUnmappedDiagnosis</a>, <a href="RIFExporter.html#getEarliestUnmappedDiagnosis(org.mitre.synthea.world.agents.Person,java.lang.String%5B%5D)">getEarliestUnmappedDiagnosis</a>, <a href="RIFExporter.html#getFirstMappedHCPCSCode(java.util.List,org.mitre.synthea.helpers.RandomNumberGenerator)">getFirstMappedHCPCSCode</a>, <a href="RIFExporter.html#hasPartABCoverage(org.mitre.synthea.world.agents.Person,long)">hasPartABCoverage</a>, <a href="RIFExporter.html#isDisabled(org.mitre.synthea.world.agents.Person)">isDisabled</a>, <a href="RIFExporter.html#parseSimpleDate(java.lang.String)">parseSimpleDate</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -286,7 +310,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <ul class="blockListLast">
 <li class="blockList">
 <h4>nextMbi</h4>
-<pre>protected static final&nbsp;java.util.concurrent.atomic.AtomicReference&lt;<a href="identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a>&gt; nextMbi</pre>
+<pre>public static final&nbsp;java.util.concurrent.atomic.AtomicReference&lt;<a href="identifiers/MBI.html" title="class in org.mitre.synthea.export.rif.identifiers">MBI</a>&gt; nextMbi</pre>
 </li>
 </ul>
 </li>
@@ -326,7 +350,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <a id="export(org.mitre.synthea.world.agents.Person,long,long)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>export</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;export&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person,
@@ -343,6 +367,23 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <dd>the beneficiary ID</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if something goes wrong</dd>
+</dl>
+</li>
+</ul>
+<a id="getCoverageStartDate(org.mitre.synthea.world.agents.Person)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCoverageStartDate</h4>
+<pre class="methodSignature">public static&nbsp;long&nbsp;getCoverageStartDate&#8203;(<a href="../../world/agents/Person.html" title="class in org.mitre.synthea.world.agents">Person</a>&nbsp;person)</pre>
+<div class="block">Get the start date of Medicare coverage. This is the earliest of the
+ beneficiary's 65th birthday, ESRD diagnosis or disability diagnosis.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>person</code> - the person</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the date as ms since the epoch</dd>
 </dl>
 </li>
 </ul>
@@ -397,7 +438,7 @@ extends <a href="RIFExporter.html" title="class in org.mitre.synthea.export.rif"
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
