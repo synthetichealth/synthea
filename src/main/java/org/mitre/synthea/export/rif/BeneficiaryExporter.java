@@ -29,7 +29,7 @@ public class BeneficiaryExporter extends RIFExporter {
           Config.getAsLong("exporter.bfd.bene_id_start", -1));
   public static final AtomicReference<HICN> nextHicn = new AtomicReference<>(
           HICN.parse(Config.get("exporter.bfd.hicn_start", "T00000000A")));
-  protected static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
+  public static final AtomicReference<MBI> nextMbi = new AtomicReference<>(
           MBI.parse(Config.get("exporter.bfd.mbi_start", "1S00-A00-AA00")));
   // https://aspe.hhs.gov/sites/default/files/documents/f81aafbba0b331c71c6e8bc66512e25d/medicare-beneficiary-enrollment-ib.pdf
   private static final double PART_B_ENROLLEE_PERCENT = 92.5;
@@ -98,16 +98,13 @@ public class BeneficiaryExporter extends RIFExporter {
     long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
     long dateOf65thBirthday = Utilities.getAnniversary(birthdate, 65);
     int monthOf65thBirthday = Utilities.getMonth(dateOf65thBirthday) - 1;
-    long dateOfESRD = getEarliestDiagnosis(person, ESRD_CODES);
-    long coverageStartDate = Long.min(dateOf65thBirthday, dateOfESRD);
-    long dateOfUnmappedESRD = getEarliestUnmappedDiagnosis(person, ESRD_SNOMEDS);
-    coverageStartDate = Long.min(coverageStartDate, dateOfUnmappedESRD);
     boolean disabled = isDisabled(person);
     long dateOfDisability = getDateOfDisability(person);
-    coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
+
+    long coverageStartDate = getCoverageStartDate(person);
+    person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
 
     String partDCostSharingCode = PartDContractHistory.getPartDCostSharingCode(person);
-    person.attributes.put(RIFExporter.COVERAGE_START_DATE, coverageStartDate);
     boolean lowIncome = partDCostSharingCode.equals("01");
 
     boolean firstYearOutput = true;
@@ -338,6 +335,22 @@ public class BeneficiaryExporter extends RIFExporter {
     } else {
       return beneIdStr;
     }
+  }
+
+  /**
+   * Get the start date of Medicare coverage. This is the earliest of the
+   * beneficiary's 65th birthday, ESRD diagnosis or disability diagnosis.
+   * @param person the person
+   * @return the date as ms since the epoch
+   */
+  public static long getCoverageStartDate(Person person) {
+    long birthdate = (long) person.attributes.get(Person.BIRTHDATE);
+    long dateOf65thBirthday = Utilities.getAnniversary(birthdate, 65);
+    long dateOfUnmappedESRD = getEarliestUnmappedDiagnosis(person, ESRD_SNOMEDS);
+    long coverageStartDate = Long.min(dateOf65thBirthday, dateOfUnmappedESRD);
+    long dateOfDisability = getDateOfDisability(person);
+    coverageStartDate = Long.min(coverageStartDate, dateOfDisability);
+    return coverageStartDate;
   }
 
   /**

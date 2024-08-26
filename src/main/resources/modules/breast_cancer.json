@@ -1709,8 +1709,17 @@
     "Set pre-surgery chemo counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_neoCount",
-      "direct_transition": "Neoadjuvant Chemo Before Surgery",
-      "value": 0
+      "value": 0,
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Neoadjuvant Chemo Before Surgery",
+          "distribution": 0.99
+        }
+      ]
     },
     "Neoadjuvant chemotherapy procedure": {
       "type": "Procedure",
@@ -2176,6 +2185,12 @@
         "code": 268547008,
         "display": "Screening for malignant neoplasm of breast (procedure)"
       }
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Neoadjuvant Chemo Before Surgery",
+      "value": true
     }
   },
   "gmf_version": 1

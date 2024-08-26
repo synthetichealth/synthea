@@ -37,7 +37,7 @@ public class Clinician implements Serializable, QuadTreeElement {
 
   public final long identifier;
   public final String uuid;
-  public final String npi;
+  public String npi;
   public Map<String, Object> attributes;
   private ArrayList<String> servicesProvided;
   private Provider organization;

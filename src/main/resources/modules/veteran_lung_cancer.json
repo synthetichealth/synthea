@@ -648,7 +648,16 @@
         "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "End_Diagnosis_Encounter_IV"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cells",
+          "distribution": 0.01
+        },
+        {
+          "transition": "End_Diagnosis_Encounter_IV",
+          "distribution": 0.99
+        }
+      ]
     },
     "End_Diagnosis_Encounter_IV": {
       "type": "EncounterEnd",
@@ -1058,6 +1067,12 @@
       "action": "increment",
       "amount": 2,
       "direct_transition": "Begin_NSCLC_Day"
+    },
+    "Stem Cells": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "End_Diagnosis_Encounter_IV",
+      "value": true
     }
   },
   "gmf_version": 1

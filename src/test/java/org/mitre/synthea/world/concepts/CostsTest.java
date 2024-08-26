@@ -3,8 +3,6 @@ package org.mitre.synthea.world.concepts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Random;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
@@ -168,17 +166,5 @@ public class CostsTest {
     double cost = Costs.determineCostOfEntry(fakeMedication, person);
     double expectedCost = Config.getAsDouble("generate.costs.default_medication_cost");
     assertEquals(expectedCost, cost, 0.01); // assert the cost is within $0.01
-  }
-
-  @Test public void testTriangularDistributionLimits() {
-    Random random = new Random();
-    double min = 0;
-    double max = 1;
-    double mode = 0.5;
-    for (int i = 0; i < 10000; i++) {
-      double value = Costs.CostData.triangularDistribution(min, max, mode, random.nextDouble());
-      assertTrue(value >= min);
-      assertTrue(value <= max);
-    }
   }
 }

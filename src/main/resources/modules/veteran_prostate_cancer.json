@@ -490,7 +490,16 @@
       "exact": {
         "quantity": 20
       },
-      "direct_transition": "Prostate_Cancer_Therapy"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cells",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Prostate_Cancer_Therapy",
+          "distribution": 0.99
+        }
+      ]
     },
     "end_chemo_med": {
       "type": "Simple",
@@ -1282,6 +1291,12 @@
         "code": 410424005,
         "display": "Wellness surveillance (regime/therapy)"
       }
+    },
+    "Stem Cells": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Prostate_Cancer_Therapy",
+      "value": true
     }
   },
   "gmf_version": 1

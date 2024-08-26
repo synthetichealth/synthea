@@ -21,6 +21,7 @@
     "8.  'sprain'       - a sprained ankle or wrist ",
     "9.  'knee'         - a torn ligament (ACL, MCL, meniscus) ",
     "10. 'shoulder'     - a torn rotator cuff ",
+    "11. 'broken jaw' - broken jaw",
     "Sources are included throughout the module where supplemental information was needed.",
     "Every injury pathway in this module assigns a care plan for the patient. This care ",
     "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
@@ -157,13 +158,17 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.5,
-          "transition": "Wait_For_Injury",
+          "distribution": 0.000159184,
+          "transition": "Broken Jaw",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
             "out of 1.0 if none of the other transitions are taken, see: ",
             "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
           ]
+        },
+        {
+          "transition": "Wait_For_Injury",
+          "distribution": 0.911749816
         }
       ]
     },
@@ -224,13 +229,17 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.5,
-          "transition": "Wait_For_Injury",
+          "distribution": 0.001034694,
+          "transition": "Broken Jaw",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
             "out of 1.0 if none of the other transitions are taken, see: ",
             "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
           ]
+        },
+        {
+          "transition": "Wait_For_Injury",
+          "distribution": 0.943824306
         }
       ]
     },
@@ -298,13 +307,17 @@
               "transition": "Shoulder_Injury"
             },
             {
-              "distribution": 0.5,
-              "transition": "Wait_For_Injury",
+              "distribution": 0.000212245,
+              "transition": "Broken Jaw",
               "remarks": [
                 "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
                 "out of 1.0 if none of the other transitions are taken, see: ",
                 "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
               ]
+            },
+            {
+              "transition": "Wait_For_Injury",
+              "distribution": 0.8941967550000001
             }
           ]
         },
@@ -360,13 +373,17 @@
               "transition": "Shoulder_Injury"
             },
             {
-              "distribution": 0.5,
-              "transition": "Wait_For_Injury",
+              "distribution": 0.000106122,
+              "transition": "Broken Jaw",
               "remarks": [
                 "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
                 "out of 1.0 if none of the other transitions are taken, see: ",
                 "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
               ]
+            },
+            {
+              "transition": "Wait_For_Injury",
+              "distribution": 0.9193028780000001
             }
           ]
         }
@@ -3055,6 +3072,11 @@
       "type": "ConditionEnd",
       "direct_transition": "End_Gunshot_Followup",
       "condition_onset": "Gunshot_Injury"
+    },
+    "Broken Jaw": {
+      "type": "CallSubmodule",
+      "submodule": "injuries/broken_jaw",
+      "direct_transition": "Conclude_Injury"
     }
   },
   "gmf_version": 1

@@ -11,7 +11,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Distribution implements Serializable {
   public enum Kind {
-    EXACT, GAUSSIAN, UNIFORM, EXPONENTIAL
+    EXACT, GAUSSIAN, UNIFORM, EXPONENTIAL, TRIANGULAR
   }
 
   public Kind kind;
@@ -50,8 +50,23 @@ public class Distribution implements Serializable {
         break;
       case EXPONENTIAL:
         double average = this.parameters.get("mean");
-        double lambda = (1.0d / average);
-        value = 1.0d + Math.log(1.0d - person.rand()) / (-1.0d * lambda);
+        double lambda = (-1.0d / average);
+        value = 1.0d + Math.log(1.0d - person.rand()) / lambda;
+        break;
+      case TRIANGULAR:
+        /* Pick a single value based on a triangular distribution. See:
+         * https://en.wikipedia.org/wiki/Triangular_distribution
+         */
+        double min = this.parameters.get("min");
+        double mode = this.parameters.get("mode");
+        double max = this.parameters.get("max");
+        double f = (mode - min) / (max - min);
+        double rand = person.rand();
+        if (rand < f) {
+          value = min + Math.sqrt(rand * (max - min) * (mode - min));
+        } else {
+          value = max - Math.sqrt((1 - rand) * (max - min) * (max - mode));
+        }
         break;
       default:
         value = -1;
@@ -81,6 +96,10 @@ public class Distribution implements Serializable {
             && this.parameters.containsKey("standardDeviation");
       case EXPONENTIAL:
         return this.parameters.containsKey("mean");
+      case TRIANGULAR:
+        return this.parameters.containsKey("min")
+            && this.parameters.containsKey("mode")
+            && this.parameters.containsKey("max");
       default:
         return false;
     }

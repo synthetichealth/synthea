@@ -28,7 +28,7 @@
         }
       },
       "unit": "years",
-      "direct_transition": "Transplant Encounter"
+      "direct_transition": "Initiate Dental Cleaning"
     },
     "Reset Kidney Damage": {
       "type": "SetAttribute",
@@ -221,7 +221,8 @@
           "display": "Awaiting transplantation of kidney (situation)"
         }
       ],
-      "direct_transition": "Referral"
+      "direct_transition": "Referral",
+      "assign_to_attribute": "kidney_transplant_dental_reason"
     },
     "Wait for Consultation": {
       "type": "Delay",
@@ -2151,6 +2152,40 @@
       "type": "ConditionEnd",
       "direct_transition": "Begin Post Surgical Stay",
       "referenced_by_attribute": "dialysis_reason"
+    },
+    "Initiate Dental Cleaning": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "direct_transition": "Wait for Cleaning",
+      "value_attribute": "kidney_transplant_dental_reason"
+    },
+    "Wait for Cleaning": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Check Cleaning Status"
+    },
+    "Check Cleaning Status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Cleaning",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_referral",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Transplant Encounter"
+        }
+      ]
     }
   },
   "gmf_version": 2

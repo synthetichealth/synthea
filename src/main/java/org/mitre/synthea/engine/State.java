@@ -945,6 +945,12 @@ public abstract class State implements Cloneable, Serializable {
                 break;
               }
             }
+          } else if (module.getStateNames().contains(reason)) {
+            State state = module.getState(reason);
+            if (state != null && state instanceof ConditionOnset) {
+              ConditionOnset condition = (ConditionOnset) state;
+              encounter.reason = condition.codes.get(0);
+            }
           }
         }
 
@@ -1419,6 +1425,12 @@ public abstract class State implements Cloneable, Serializable {
               medication.reasons.addAll(entry.codes);
             }
           }
+        } else if (module.getStateNames().contains(reason)) {
+          State state = module.getState(reason);
+          if (state != null && state instanceof ConditionOnset) {
+            ConditionOnset condition = (ConditionOnset) state;
+            medication.reasons.addAll(condition.codes);
+          }
         }
       }
       medication.prescriptionDetails = prescription;
@@ -1512,6 +1524,12 @@ public abstract class State implements Cloneable, Serializable {
             if (reason.equals(entry.name)) {
               careplan.mergeReasonList(entry.codes);
             }
+          }
+        } else if (module.getStateNames().contains(reason)) {
+          State state = module.getState(reason);
+          if (state != null && state instanceof ConditionOnset) {
+            ConditionOnset condition = (ConditionOnset) state;
+            careplan.reasons.addAll(condition.codes);
           }
         }
       }
@@ -1620,6 +1638,12 @@ public abstract class State implements Cloneable, Serializable {
             if (reason.equals(entry.name)) {
               procedure.reasons.addAll(entry.codes);
             }
+          }
+        } else if (module.getStateNames().contains(reason)) {
+          State state = module.getState(reason);
+          if (state != null && state instanceof ConditionOnset) {
+            ConditionOnset condition = (ConditionOnset) state;
+            procedure.reasons.addAll(condition.codes);
           }
         }
       }
@@ -2285,6 +2309,12 @@ public abstract class State implements Cloneable, Serializable {
             if (entry.name != null && entry.name.equals(conditionOnset)) {
               reason = entry.codes.get(0);
             }
+          }
+        } else if (module.getStateNames().contains(conditionOnset)) {
+          State state = module.getState(conditionOnset);
+          if (state != null && state instanceof ConditionOnset) {
+            ConditionOnset condition = (ConditionOnset) state;
+            reason = condition.codes.get(0);
           }
         }
       } else if (referencedByAttribute != null) {

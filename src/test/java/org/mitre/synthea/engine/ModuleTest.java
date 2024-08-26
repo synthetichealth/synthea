@@ -11,10 +11,10 @@ import static org.junit.Assert.fail;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import java.io.File;
 
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -291,9 +291,12 @@ public class ModuleTest {
   public void targetEncounters() throws Exception {
     Utilities.walkAllModules((modulesFolder, t) -> {
       try {
-        FileReader fileReader = new FileReader(t.toString());
-        JsonReader reader = new JsonReader(fileReader);
+        System.out.format("Loading %s\n", t.toString());
+        String moduleRelativePath = modulesFolder.getParent().relativize(t).toString();
+        JsonReader reader = new JsonReader(new StringReader(
+                 Utilities.readResourceOrPath(moduleRelativePath)));
         JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
         JsonObject states = object.getAsJsonObject("states");
         for (String stateName : states.keySet()) {
           JsonObject state = states.getAsJsonObject(stateName);
