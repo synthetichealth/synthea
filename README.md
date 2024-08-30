@@ -50,7 +50,7 @@ for more details, or use our [guided customizer tool](https://synthetichealth.gi
 
 Requirements: Python 3.8 or higher
 
-Run the Makefile
+Run the Makefile in a terminal:
 
 ```bash
 make
@@ -65,8 +65,10 @@ Example alert:
 ```text
 Localhost:8000 says
 
-Command to run: ./run_synthea "New York" "New York" -p 10 -s 42 -c 42 -r 20240830 -g M -a 1-99 -o 5 -u 5 --exporter.baseDirectory="./test"
+Command to run: ./run_synthea "New York" "New York" -p 10 -s 42 -cs 12345 -r 20240830 -g M -a 1-99 -o 5 --exporter.baseDirectory="./output"
 ```
+
+To end program Ctrl+c in the terminal.
 
 ## Command Line
 

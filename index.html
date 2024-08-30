@@ -73,19 +73,21 @@
     <script>
         document.getElementById('syntheaForm').addEventListener('submit', function(event) {
             event.preventDefault();
-    
+
             // Collect form data
             const formData = new FormData(event.target);
             let command = './run_synthea';
-    
+
             // Append form data to command
             for (let [key, value] of formData.entries()) {
                 if (value) {
-                    // Automatically wrap state and city in quotes if they contain spaces
                     if (key === 'state' || key === 'city' || key === 'configFilePath' || key === 'modulesDirPath' ||
                         key === 'initialSnapshotPath' || key === 'updatedSnapshotPath' || key === 'keepMatchingPatientsPath') {
                         value = `"${value}"`;
                         command += ` -${key.charAt(0)} ${value}`;
+                    } else if (key === 'clinicianSeed') {
+                        // Explicitly handle clinicianSeed to use -cs
+                        command += ` -cs ${value}`;
                     } else if (key === 'saveDirectory') {
                         // Append save directory path with --exporter.baseDirectory=
                         command += ` --exporter.baseDirectory="${value}"`;
@@ -97,7 +99,7 @@
                     }
                 }
             }
-    
+
             // Show the command in an alert
             alert(`Command to run: ${command}`);
         });
