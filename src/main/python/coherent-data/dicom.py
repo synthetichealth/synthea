@@ -21,12 +21,12 @@ def create_dataset_common(image, imaging_study, context):
     image_time = imaging_study['started'][11:19].replace(':', '') + '.000000'
     ds.StudyDate = image_date
     ds.SeriesDate = image_date
-    ds.AcquisitionDate = image_date
+    # ds.AcquisitionDate = image_date
     ds.ContentDate = image_date
     ds.AcquisitionDateTime = image_date + image_time
     ds.StudyTime = image_time
     ds.SeriesTime = image_time
-    ds.AcquisitionTime = image_time
+    # ds.AcquisitionTime = image_time
     ds.ContentTime = image_time
 
     patient = context['patient']
@@ -42,10 +42,28 @@ def create_dataset_common(image, imaging_study, context):
     ds.SeriesNumber = '1'
     ds.AcquisitionNumber = '1'
     ds.InstanceNumber = str(context['instance']['number'])
+    ds.ImageLaterality = 'L' if context['laterality'] == 'OS' else 'OD'
+    ds.AccessionNumber = ''
+
+    ds.PupilDilated = 'YES'
+    ds.MydriaticAgentSequence = None
+    ds.DegreeOfDilation = None
+    ds.IntraOcularPressure = None
+    ds.HorizontalFieldOfView = None
+    ds.EmmetropicMagnification = None
+    ds.RefractiveStateSequence = None
 
     ds.Rows = image.height
     ds.Columns = image.width
-    ds.PixelData = image.tobytes()
+    if context['type'] == 'OCT':
+        ds.SamplesPerPixel = 1
+        ds.PhotometricInterpretation = 'MONOCHROME2'
+        np_image = np.array(image.getdata(), dtype=np.uint8)[:,0]
+        ds.PixelData = np_image.tobytes()
+    else:
+        ds.SamplesPerPixel = 3
+        ds.PhotometricInterpretation = 'RGB'
+        ds.PixelData = image.tobytes()
 
     return ds
 
@@ -63,20 +81,25 @@ def create_oct_dicom(image, imaging_study, context):
 
     # Main data elements
     ds = create_dataset_common(image, imaging_study, context)
+    ds.file_meta = file_meta
+    # import pdb; pdb.set_trace()
     ds.SpecificCharacterSet = 'ISO_IR 100'
     ds.ImageType = ['ORIGINAL', 'PRIMARY', '']
     ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.4'
     ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.17'
 
+    ds.LightPathFilterTypeStackCodeSequence = None
+    ds.AcquisitionContextSequence = None
+
     ds.Modality = 'OPT'
-    ds.Manufacturer = 'Topcon Healthcare'
-    ds.InstitutionName = 'THINC'
+    ds.Manufacturer = 'GenericMfr'
+    ds.InstitutionName = 'Generic'
     ds.ReferringPhysicianName = ''
     ds.StationName = 'VM'
     ds.SeriesDescription = 'OCT'
     ds.InstitutionalDepartmentName = 'GPM'
     ds.OperatorsName = 'admin'
-    ds.ManufacturerModelName = 'Maestro2'
+    ds.ManufacturerModelName = 'GenericDevice'
 
     # Anatomic Region Sequence
     anatomic_region_sequence = Sequence()
@@ -105,9 +128,11 @@ def create_oct_dicom(image, imaging_study, context):
     ds.SOPInstanceUIDOfConcatenationSource = '1.2.392.200106.1651.6.2.1803921148151.45272.2.2'
     ds.PositionReferenceIndicator = ''
     ds.ConcatenationUID = '1.2.392.200106.1651.6.2.1803921148151.45272.2.2'
+    ds.ConcatenationFrameOffsetNumber = 0
     ds.InConcatenationNumber = 1
     ds.InConcatenationTotalNumber = 1
 
+    ds.PresentationLUTShape = 'IDENTITY'
 
     # Acquisition Device Type Code Sequence
     acquisition_device_type_code_sequence = Sequence()
@@ -120,7 +145,6 @@ def create_oct_dicom(image, imaging_study, context):
     acquisition_device_type_code1.CodingSchemeDesignator = 'SRT'
     acquisition_device_type_code1.CodeMeaning = 'Optical Coherence Tomography Scanner'
 
-
     ds.AxialLengthOfTheEye = None
     ds.DepthSpatialResolution = 6.0
     ds.MaximumDepthDistortion = 0.5
@@ -131,11 +155,7 @@ def create_oct_dicom(image, imaging_study, context):
     ds.IlluminationWaveLength = 840.0
     ds.IlluminationPower = 650.0
     ds.IlluminationBandwidth = 50.0
-    ds.SamplesPerPixel = 3
-    ds.PhotometricInterpretation = 'RGB' # TODO: should be 'MONOCHROME2'
     ds.NumberOfFrames = '1'
-    # ds.Rows = 885
-    # ds.Columns = 512
     ds.BitsAllocated = 8
     ds.BitsStored = 8
     ds.HighBit = 7
@@ -244,6 +264,14 @@ def create_oct_dicom(image, imaging_study, context):
     frame_content1.InStackPositionNumber = 1
     frame_content1.DimensionIndexValues = [1, 1]
 
+    # Dimension Organization Sequence
+    dimension_organization_sequence = Sequence()
+    ds.DimensionOrganizationSequence = dimension_organization_sequence
+
+    # Dimension Organization Sequence: Dimension Organization 1
+    dimension_organization1 = Dataset()
+    dimension_organization_sequence.append(dimension_organization1)
+    dimension_organization1.DimensionOrganizationUID = '@@@'
 
     # Plane Position Sequence
     plane_position_sequence = Sequence()
@@ -289,7 +317,7 @@ def create_oct_dicom(image, imaging_study, context):
     purpose_of_ref_code1.CodingSchemeDesignator = 'DCM'
     purpose_of_ref_code1.CodeMeaning = 'Localizer'
 
-    # ds.file_meta = file_meta
+    
     ds.is_implicit_VR = False
     ds.is_little_endian = True
 
@@ -310,18 +338,24 @@ def create_fundus_dicom(image, imaging_study, context):
 
     # Main data elements
     ds = create_dataset_common(image, imaging_study, context)
+    ds.file_meta = file_meta
     ds.SpecificCharacterSet = 'ISO_IR 100'
-    ds.ImageType = ['ORIGINAL', 'PRIMARY', '3D Wide']
+    ds.ImageType = ['ORIGINAL', 'PRIMARY', '3D WIDE']
     ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
     ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
 
     ds.Modality = 'OP'
-    ds.ConversionType = 'WSD'
+    # ds.ConversionType = 'WSD'
     ds.Manufacturer = 'Topcon Healthcare'
     ds.InstitutionName = 'THINC'
     ds.ReferringPhysicianName = ''
     ds.SeriesDescription = 'Fundus'
     ds.ManufacturerModelName = 'Maestro2'
+
+    ds.IlluminationTypeCodeSequence = None
+    ds.LightPathFilterTypeStackCodeSequence = None
+    ds.ImagePathFilterTypeStackCodeSequence = None
+    ds.LensesCodeSequence = None
 
     # Anatomic Region Sequence
     anatomic_region_sequence = Sequence()
@@ -344,14 +378,9 @@ def create_fundus_dicom(image, imaging_study, context):
     ds.AcquisitionTimeSynchronized = 'N'
 
     ds.PatientOrientation = ['L', 'F']
-    ds.ImageLaterality = 'R'
     ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
-    ds.PatientEyeMovementCommanded = ''
-    ds.EmmetropicMagnification = None
-    ds.IntraOcularPressure = None
-    ds.HorizontalFieldOfView = None
-    ds.PupilDilated = ''
-
+    ds.PatientEyeMovementCommanded = 'NO'
+    ds.DetectorType = ''
     # Acquisition Device Type Code Sequence
     acquisition_device_type_code_sequence = Sequence()
     ds.AcquisitionDeviceTypeCodeSequence = acquisition_device_type_code_sequence
@@ -363,8 +392,7 @@ def create_fundus_dicom(image, imaging_study, context):
     acquisition_device_type_code1.CodingSchemeDesignator = 'SRT'
     acquisition_device_type_code1.CodeMeaning = 'Fundus Camera'
 
-    ds.SamplesPerPixel = 3
-    ds.PhotometricInterpretation = 'RGB'
+
     ds.PlanarConfiguration = 0
     ds.NumberOfFrames = '1'
     ds.FrameIncrementPointer = (0x0018, 0x1063)
@@ -377,7 +405,6 @@ def create_fundus_dicom(image, imaging_study, context):
     ds.BurnedInAnnotation = 'NO'
     ds.LossyImageCompression = '00'
     
-    # ds.file_meta = file_meta
     ds.is_implicit_VR = False
     ds.is_little_endian = True
     return ds

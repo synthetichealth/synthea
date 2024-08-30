@@ -4,6 +4,7 @@ from io import BytesIO
 import glob
 import json
 import os
+import numpy as np
 import pandas as pd
 from pathlib import Path
 from PIL import Image
@@ -169,8 +170,8 @@ def process_file(file, fundus_index, oct_index, output):
 
             pat_name = Path(file).stem
             if dicom:
-                dicom.save_as(f'{output}/dicom/{pat_name}_{dicom_uid}_{instance_uid}.dcm')
-            image.save(f'{output}/images/{pat_name}_{dicom_uid}_{instance_uid}.jpg')
+                dicom.save_as(f'{output}/dicom/{pat_name}_{img_type}_{dicom_uid}_{instance_uid}.dcm', write_like_original=False)
+            image.save(f'{output}/images/{pat_name}_{img_type}_{dicom_uid}_{instance_uid}.jpg')
 
             media = create_fhir_media(context, imaging_study, image, dicom)
             bundle['entry'].append(wrap_in_entry(media))
