@@ -56,9 +56,9 @@ Run the Makefile in a terminal:
 make
 ```
 
-Open browser to `http://localhost:8000/`
+Open browser to `http://localhost:8000/` or `http://127.0.0.1:8000/`
 
-Enter the desired inputs and hit the generate button at the bottom of the form. An alert will pop up; copy all except "Command to run:" and run the command.
+Enter the desired inputs and hit the generate button at the bottom of the form. An alert will pop up; copy all except "Command to run:" into a terminal.
 
 Example alert:
 
