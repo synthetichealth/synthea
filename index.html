@@ -1,47 +1,126 @@
-<script>
-    document.getElementById('syntheaForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthea Patient Generator</title>
+</head>
+<body>
+    <h1>Synthea Patient Generator</h1>
+    
+    <form id="syntheaForm">
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" placeholder="Enter state" /><br><br>
 
-        // Collect form data
-        const formData = new FormData(event.target);
-        let command = './run_synthea';
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" placeholder="Enter city" /><br><br>
 
-        // Append form data to command
-        for (let [key, value] of formData.entries()) {
-            if (value) {
-                switch(key) {
-                    case 'state':
-                    case 'city':
-                        command += ` ${value}`;
-                        break;
-                    case 'configValue':
-                        command += ` --config=${value}`;
-                        break;
-                    default:
-                        command += ` -${key.charAt(0)} ${value}`;
+        <label for="populationSize">Population Size (-p):</label>
+        <input type="number" id="populationSize" name="populationSize" min="1" placeholder="Enter population size" /><br><br>
+
+        <label for="seed">Random Seed (-s):</label>
+        <input type="number" id="seed" name="seed" placeholder="Enter seed value" /><br><br>
+
+        <label for="clinicianSeed">Clinician Seed (-cs):</label>
+        <input type="number" id="clinicianSeed" name="clinicianSeed" placeholder="Enter clinician seed" /><br><br>
+
+        <label for="referenceDate">Reference Date (-r) (YYYYMMDD):</label>
+        <input type="text" id="referenceDate" name="referenceDate" placeholder="Enter reference date" /><br><br>
+
+        <label for="gender">Gender (-g):</label>
+        <select id="gender" name="gender">
+            <option value="">Any</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select><br><br>
+
+        <label for="ageRange">Age Range (-a) (minAge-maxAge):</label>
+        <input type="text" id="ageRange" name="ageRange" placeholder="Enter age range (e.g., 30-40)" /><br><br>
+
+        <label for="overflowPopulation">Overflow Population (-o):</label>
+        <input type="number" id="overflowPopulation" name="overflowPopulation" placeholder="Enter overflow population" /><br><br>
+
+        <label for="configFilePath">Local Config File Path (-c):</label>
+        <input type="text" id="configFilePath" name="configFilePath" placeholder="Enter config file path" /><br><br>
+
+        <label for="modulesDirPath">Local Modules Directory Path (-d):</label>
+        <input type="text" id="modulesDirPath" name="modulesDirPath" placeholder="Enter modules directory path" /><br><br>
+
+        <label for="initialSnapshotPath">Initial Population Snapshot Path (-i):</label>
+        <input type="text" id="initialSnapshotPath" name="initialSnapshotPath" placeholder="Enter initial snapshot path" /><br><br>
+
+        <label for="updatedSnapshotPath">Updated Population Snapshot Path (-u):</label>
+        <input type="text" id="updatedSnapshotPath" name="updatedSnapshotPath" placeholder="Enter updated snapshot path" /><br><br>
+
+        <label for="updateTimePeriod">Update Time Period (-t) (in days):</label>
+        <input type="number" id="updateTimePeriod" name="updateTimePeriod" placeholder="Enter update time period in days" /><br><br>
+
+        <label for="fixedRecordPath">Fixed Record Path (-f):</label>
+        <input type="text" id="fixedRecordPath" name="fixedRecordPath" placeholder="Enter fixed record path" /><br><br>
+
+        <label for="keepMatchingPatientsPath">Keep Matching Patients Path (-k):</label>
+        <input type="text" id="keepMatchingPatientsPath" name="keepMatchingPatientsPath" placeholder="Enter keep matching patients path" /><br><br>
+
+        <label for="configValue">Additional Config (--config*=value):</label>
+        <input type="text" id="configValue" name="configValue" placeholder="Enter additional config value" /><br><br>
+
+        <button type="submit">Generate</button>
+    </form>
+
+    <script>
+        document.getElementById('syntheaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            let command = './run_synthea';
+
+            // Append form data to command
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    switch(key) {
+                        case 'state':
+                        case 'city':
+                            command += ` ${value}`;
+                            break;
+                        case 'configValue':
+                            command += ` --config=${value}`;
+                            break;
+                        case 'populationSize':
+                        case 'seed':
+                        case 'clinicianSeed':
+                        case 'referenceDate':
+                        case 'gender':
+                        case 'ageRange':
+                        case 'overflowPopulation':
+                        case 'configFilePath':
+                        case 'modulesDirPath':
+                        case 'initialSnapshotPath':
+                        case 'updatedSnapshotPath':
+                        case 'updateTimePeriod':
+                        case 'fixedRecordPath':
+                        case 'keepMatchingPatientsPath':
+                            command += ` -${key.charAt(0)} ${value}`;
+                            break;
+                    }
                 }
             }
-        }
 
-        // Send command to backend
-        fetch('http://localhost:5000/run-synthea', {
-            method: 'POST',
-            body: JSON.stringify({ command: command }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert('Error: ' + data.error);
-            } else {
-                alert('Command Output: ' + data.output);
-                if (data.returncode !== 0) {
-                    alert('Error Output: ' + data.error);
-                }
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
-</script>
+            // Display the command or run it via an API if implemented
+            alert(`Command to run: ${command}`);
+
+            // Implement AJAX request to backend to trigger Synthea if desired
+            // Example: 
+            // fetch('/run-synthea', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ command: command }),
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     }
+            // }).then(response => response.json())
+            //   .then(data => console.log(data));
+        });
+    </script>
+</body>
+</html>
+
