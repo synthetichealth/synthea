@@ -64,63 +64,45 @@
         <label for="configValue">Additional Config (--config*=value):</label>
         <input type="text" id="configValue" name="configValue" placeholder="Enter additional config value" /><br><br>
 
+        <label for="saveDirectory">Save Directory (--exporter.baseDirectory=):</label>
+        <input type="text" id="saveDirectory" name="saveDirectory" placeholder="Enter directory path" /><br><br>
+
         <button type="submit">Generate</button>
     </form>
 
     <script>
         document.getElementById('syntheaForm').addEventListener('submit', function(event) {
             event.preventDefault();
-
+    
             // Collect form data
             const formData = new FormData(event.target);
             let command = './run_synthea';
-
+    
             // Append form data to command
             for (let [key, value] of formData.entries()) {
                 if (value) {
-                    switch(key) {
-                        case 'state':
-                        case 'city':
-                            command += ` ${value}`;
-                            break;
-                        case 'configValue':
-                            command += ` --config=${value}`;
-                            break;
-                        case 'populationSize':
-                        case 'seed':
-                        case 'clinicianSeed':
-                        case 'referenceDate':
-                        case 'gender':
-                        case 'ageRange':
-                        case 'overflowPopulation':
-                        case 'configFilePath':
-                        case 'modulesDirPath':
-                        case 'initialSnapshotPath':
-                        case 'updatedSnapshotPath':
-                        case 'updateTimePeriod':
-                        case 'fixedRecordPath':
-                        case 'keepMatchingPatientsPath':
-                            command += ` -${key.charAt(0)} ${value}`;
-                            break;
+                    // Automatically wrap state and city in quotes if they contain spaces
+                    if (key === 'state' || key === 'city') {
+                        if (value.includes(' ')) {
+                            value = `"${value}"`;
+                        }
+                        command += ` ${value}`;
+                    } else if (key === 'configValue') {
+                        command += ` --config=${value}`;
+                    } else if (key === 'saveDirectory') {
+                        // Append save directory path with --exporter.baseDirectory=
+                        command += ` --exporter.baseDirectory="${value}"`;
+                    } else {
+                        command += ` -${key.charAt(0)} ${value}`;
                     }
                 }
             }
-
-            // Display the command or run it via an API if implemented
+    
+            // Show the command in an alert
             alert(`Command to run: ${command}`);
-
-            // Implement AJAX request to backend to trigger Synthea if desired
-            // Example: 
-            // fetch('/run-synthea', {
-            //     method: 'POST',
-            //     body: JSON.stringify({ command: command }),
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     }
-            // }).then(response => response.json())
-            //   .then(data => console.log(data));
         });
     </script>
+    
 </body>
 </html>
 
