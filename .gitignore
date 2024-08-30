@@ -55,3 +55,4 @@ src/main/resources/export/outpatient_rev_cntr_code_map.json
 
 #Python
 /venv
+/.venv
