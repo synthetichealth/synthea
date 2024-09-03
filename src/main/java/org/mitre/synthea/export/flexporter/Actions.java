@@ -758,6 +758,18 @@ public abstract class Actions {
     String outBundleJson = fjContext.getBundle();
 
     Bundle newBundle = parser.parseResource(Bundle.class, outBundleJson);
+    for (BundleEntryComponent bec : newBundle.getEntry()) {
+      Resource r = bec.getResource();
+      if (r.getId().startsWith("urn:uuid:")) {
+        // HAPI does some weird stuff with IDs
+        // by default in Synthea they are just plain UUIDs
+        // and the entry.fullUrl is urn:uuid:(id)
+        // but somehow when they get parsed back in, the id is urn:uuid:etc
+        // which then doesn't get written back out at the end
+        // so this removes the "urn:uuid:" bit if it got added
+        r.setId(r.getId().substring(9));
+      }
+    }
 
     return newBundle;
   }
