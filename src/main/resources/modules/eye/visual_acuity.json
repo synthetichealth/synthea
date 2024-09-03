@@ -1,7 +1,10 @@
 {
   "name": "Visual Acuity",
   "remarks": [
-    "A blank module"
+    "Simple visual acuity tests. Tests are skipped if the patient is blind.",
+    "",
+    "Codes are selected based on the \"Eyes on FHIR\" IG:",
+    "https://build.fhir.org/ig/HL7/fhir-eyecare-ig/index.html"
   ],
   "states": {
     "Initial": {
@@ -61,7 +64,6 @@
       "direct_transition": "VA_Results_Right",
       "remarks": [
         "Note code 1 is SNOMED per eyes-on-fhir IG",
-        "Snellen was chosen from the valueset based on personal experience",
         "",
         "LOINC has options for left/right, corrrected/uncorrected, near/far: https://loinc.org/98497-1/"
       ],
@@ -86,7 +88,6 @@
       "direct_transition": "Terminal",
       "remarks": [
         "Note code 1 is SNOMED per eyes-on-fhir IG",
-        "Snellen was chosen from the valueset based on personal experience",
         "",
         "LOINC has options for left/right, corrrected/uncorrected, near/far: https://loinc.org/98497-1/"
       ],

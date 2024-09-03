@@ -1,7 +1,7 @@
 {
   "name": "Intraocular Pressure",
   "remarks": [
-    "A blank module"
+    "Submodule for IOP procedure and findings."
   ],
   "states": {
     "Initial": {

@@ -1,7 +1,25 @@
 {
   "name": "Diabetic Retinopathy Treatment",
   "remarks": [
-    "A blank module"
+    "The Diabetic Retinopathy Treatment top-level module represents the ophthalmic treatment cycle a patient with diabetes will go through after diagnosis. This module starts with a Guard state that allows only patients with an active diagnosis diabetes, then two possible paths prior to their first encounter: some patients follow recommended practices and will seek an ophthalmologist for screening right away after the diabetes diagnosis, some patients will wait until there are significant symptoms. Once a patient is in the treatment cycle, they will continue to have encounters based on the recommended follow-up schedule for their disease status.",
+    "",
+    "At the start of each encounter, the OphthalmicProgression submodule is called to align various attributes with the patient’s current disease status, so that those attributes can be read at the subsequent examination states. Then the patient will have basic exams performed:",
+    " - visual acuity (via the Visual Acuity submodule),",
+    " - intraocular pressure (via the Intraocular Pressure submodule),",
+    " - slit-lamp,",
+    " - dilation,",
+    " - gonioscopy, and",
+    " - fundoscopy.",
+    "",
+    "If the patient has previously been diagnosed with diabetic retinopathy, an OCT will be performed (via the Ophthalmic Tomography submodule). Further diagnoses will be made in the Diabetic Retinopathy Diagnoses submodule. Treatments will be considered based on the AAO PPP: panretinal laser, grid laser, and anti-VEGF injections. Finally, the OphthalmicNote submodule is called to create an unstructured note based on the observations and procedures from this encounter.",
+    "",
+    "These modules and submodules are intended to reflect the most common diagnoses and treatment options associated with diabetic retinopathy, not necessarily every possible complication and comorbidity. Treatment plans represented in the module are primarily based on the American Academy of Ophthalmology® (AAO) Diabetic Retinopathy Preferred Practice Pattern® (PPP), 2019 edition[1].",
+    "",
+    "",
+    "Thanks to Brig. Gen. James Dienst for assisting with the initial module structure, and Dr. Aaron Lee and Dr. Emily Chew for their time in reviewing this module. (No endorsement of this module by Dr. Lee or Dr. Chew is implied)",
+    "",
+    "",
+    "1: C. J. Flaxel et al., “Diabetic retinopathy preferred practice pattern®,” Ophthalmology, vol. 127, no. 1, Sep. 2019. doi:10.1016/j.ophtha.2019.09.025"
   ],
   "states": {
     "Initial": {

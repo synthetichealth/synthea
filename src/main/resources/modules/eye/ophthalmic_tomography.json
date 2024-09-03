@@ -1,7 +1,8 @@
 {
   "name": "ophthalmic_tomography",
   "remarks": [
-    "A blank module"
+    "Submodule containing OCT imaging study and qualitative findings.",
+    "Quantitative findings are possible, but generally not present in real-world EHRs."
   ],
   "states": {
     "Initial": {
