@@ -760,7 +760,7 @@ public abstract class Actions {
     Bundle newBundle = parser.parseResource(Bundle.class, outBundleJson);
     for (BundleEntryComponent bec : newBundle.getEntry()) {
       Resource r = bec.getResource();
-      if (r.getId().startsWith("urn:uuid:")) {
+      if (r.getId() != null && r.getId().startsWith("urn:uuid:")) {
         // HAPI does some weird stuff with IDs
         // by default in Synthea they are just plain UUIDs
         // and the entry.fullUrl is urn:uuid:(id)
