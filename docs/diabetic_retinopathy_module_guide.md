@@ -88,7 +88,7 @@ Pattern® (PPP), 2019 edition\[1\].
 ## Diabetic Retinopathy Treatment
 
 <img src="./media/image1.png" style="width:6.20848in;height:8.9172in"
-alt="Diagram Description automatically generated" />
+alt="Diabetic Retinopathy Treatment module" />
 
 ## Submodules
 
@@ -101,32 +101,32 @@ branch of Synthea.
 ### Intraocular Pressure
 
 <img src="./media/image2.png" style="width:6.5in;height:3.95972in"
-alt="Diagram Description automatically generated" />
+alt="Intraocular Pressure submodule" />
 
 ### Ophthalmic Tomography
 
 <img src="./media/image3.png" style="width:6.5in;height:4.05486in"
-alt="Diagram Description automatically generated" />
+alt="Ophthalmic Tomography submodule" />
 
 ### Visual Acuity
 
 <img src="./media/image4.png" style="width:6.5in;height:4.45069in"
-alt="Diagram Description automatically generated" />
+alt="Visual Acuity submodule" />
 
 ### Diabetic Retinopathy Diagnoses
 
 <img src="./media/image5.png" style="width:6.5in;height:4.19514in"
-alt="Diagram, schematic Description automatically generated" />
+alt="Diabetic Retinopathy Diagnoses submodule" />
 
 ### Diabetic Retinopathy Progression
 
 <img src="./media/image6.png" style="width:6.5in;height:3.92292in"
-alt="Diagram Description automatically generated" />
+alt="Diabetic Retinopathy Progression submodule" />
 
 ### OphthalmicProgression
 
 <img src="./media/image7.png" style="width:3.05044in;height:4.67516in"
-alt="Diagram Description automatically generated" />
+alt="OphthalmicProgression submodule (non-GMF)" />
 
 ### OphthalmicNote
 
@@ -148,7 +148,7 @@ A note per encounter is structured as follows:
 
 - Vessels, text depends on DR stage
 
-- Optional “discussed \_ with patient” lines based on hba1c and whether
+- Optional “discussed \_ with patient” lines based on HbA1c and whether
   this is the first encounter
 
 # Module Concepts
@@ -160,18 +160,6 @@ relevant to Diabetic Retinopathy.
 
 | System | Code | Display | Module |
 |----|----|----|----|
-| LOINC | 57108-3 | Macular grid.center point thickness by OCT | ophthalmic_tomography |
-| LOINC | 57109-1 | Macular grid.center subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57110-9 | Macular grid.inner superior subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57111-7 | Macular grid.inner nasal subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57112-5 | Macular grid.inner inferior subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57113-3 | Macular grid.inner temporal subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57114-1 | Macular grid.outer superior subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57115-8 | Macular grid.outer nasal subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57116-6 | Macular grid.outer inferior subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57117-4 | Macular grid.outer temporal subfield thickness by OCT | ophthalmic_tomography |
-| LOINC | 57118-2 | Macular grid.total volume by OCT | ophthalmic_tomography |
-| LOINC | 57119-0 | Optical coherence tomography panel | ophthalmic_tomography |
 | LOINC | 79818-1 | Study observation Right retina by OCT | ophthalmic_tomography |
 | LOINC | 79819-9 | Study observation Left retina by OCT | ophthalmic_tomography |
 | LOINC | 79892-6 | Right eye Intraocular pressure | Intraocular Pressure |
@@ -260,12 +248,12 @@ in the run command, these changes are applied to the output records:
 # Running the Module
 
 To generate the most robust set of data, it is necessary to use the
-diabetic_retinopathy branch of Synthea – this branch includes additional
+`diabetic_retinopathy` branch of Synthea – this branch includes additional
 experimental features which are not implemented on the main branch.
 Refer to the Developer Setup and Running guide on the Synthea wiki
 (<https://github.com/synthetichealth/synthea/wiki/Developer-Setup-and-Running>
-) for instructions on how to setup Synthea, then run git checkout
-diabetic_retinopathy to switch to the relevant branch.
+) for instructions on how to setup Synthea, then run `git checkout
+diabetic_retinopathy` to switch to the relevant branch.
 
 Note 1: to reduce the size of the final dataset, you may wish to remove
 modules for conditions that are not of interest. Relationships between
