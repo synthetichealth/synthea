@@ -215,6 +215,7 @@ task rifBeneSplit(type: JavaExec) {
 }
 
 shadowJar {
+  zip64 true
   def versionFile = new File("$projectDir/src/main/resources/version.txt")
   def versionText = "N/A"
   if (versionFile.exists()) {
@@ -363,7 +364,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.2.2-SNAPSHOT'
+def mavenVersion = '3.3.0'
 
 publishing {
     publications {
