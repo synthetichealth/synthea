@@ -42,7 +42,9 @@ def create_dataset_common(image, imaging_study, context):
     ds.SeriesNumber = '1'
     ds.AcquisitionNumber = '1'
     ds.InstanceNumber = str(context['instance']['number'])
-    ds.ImageLaterality = 'L' if context['laterality'] == 'OS' else 'OD'
+    laterality = 'L' if context['laterality'] == 'OS' else 'R'
+    ds.ImageLaterality = laterality
+    ds.ImageLaterality = laterality
     ds.AccessionNumber = ''
 
     ds.PupilDilated = 'YES'
@@ -123,7 +125,7 @@ def create_oct_dicom(image, imaging_study, context):
     ds.AcquisitionDuration = 0.0
 
     ds.FrameOfReferenceUID = '1.2.392.200106.1651.6.2.1.20231214124222'
-    ds.ImageLaterality = 'R'
+
     ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
     ds.SOPInstanceUIDOfConcatenationSource = '1.2.392.200106.1651.6.2.1803921148151.45272.2.2'
     ds.PositionReferenceIndicator = ''
@@ -257,9 +259,6 @@ def create_oct_dicom(image, imaging_study, context):
     # Frame Content Sequence: Frame Content 1
     frame_content1 = Dataset()
     frame_content_sequence.append(frame_content1)
-    frame_content1.FrameAcquisitionDateTime = ''
-    frame_content1.FrameReferenceDateTime = ''
-    frame_content1.FrameAcquisitionDuration = None
     frame_content1.StackID = '1'
     frame_content1.InStackPositionNumber = 1
     frame_content1.DimensionIndexValues = [1, 1]
@@ -340,7 +339,7 @@ def create_fundus_dicom(image, imaging_study, context):
     ds = create_dataset_common(image, imaging_study, context)
     ds.file_meta = file_meta
     ds.SpecificCharacterSet = 'ISO_IR 100'
-    ds.ImageType = ['ORIGINAL', 'PRIMARY', '3D WIDE']
+    ds.ImageType = ['ORIGINAL', 'PRIMARY', 'COLOR']
     ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
     ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
 
@@ -397,7 +396,6 @@ def create_fundus_dicom(image, imaging_study, context):
     ds.NumberOfFrames = '1'
     ds.FrameIncrementPointer = (0x0018, 0x1063)
 
-    ds.PixelSpacing = [0, 0]
     ds.BitsAllocated = 8
     ds.BitsStored = 8
     ds.HighBit = 7
