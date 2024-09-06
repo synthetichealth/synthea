@@ -37,12 +37,9 @@ import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
 public final class LifecycleModule extends Module {
-  private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
-      GrowthChart.loadCharts();
-  private static final List<LinkedHashMap<String, String>> weightForLengthChart =
-      loadWeightForLengthChart();
-  private static final QualifyingConditionCodesEligibility disabilityCriteria =
-      loadDisabilityData();
+  private static final Map<GrowthChart.ChartType, GrowthChart> growthChart = GrowthChart.loadCharts();
+  private static final List<LinkedHashMap<String, String>> weightForLengthChart = loadWeightForLengthChart();
+  private static final QualifyingConditionCodesEligibility disabilityCriteria = loadDisabilityData();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
   public static final String DAYS_UNTIL_DEATH = "days_until_death";
@@ -53,11 +50,9 @@ public final class LifecycleModule extends Module {
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
-  private static final Double MIDDLE_NAME_PROBABILITY =
-      Config.getAsDouble("generate.middle_names", 0.80);
+  private static final Double MIDDLE_NAME_PROBABILITY = Config.getAsDouble("generate.middle_names", 0.80);
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
-
 
   public LifecycleModule() {
     this.name = "Lifecycle";
@@ -110,7 +105,8 @@ public final class LifecycleModule extends Module {
     // ruby "rules" are converted to static functions here
     // since this is intended to only be temporary
 
-    // birth(person, time); intentionally left out - call it only once from Generator
+    // birth(person, time); intentionally left out - call it only once from
+    // Generator
     if (age(person, time)) {
       grow(person, time);
     }
@@ -123,7 +119,12 @@ public final class LifecycleModule extends Module {
     calculateFallRisk(person, time);
     person.attributes.put(Person.DISABLED, isDisabled(person, time));
     if (person.ageInYears(time) >= 18) {
-      ((Employment) person.attributes.get(Person.EMPLOYMENT_MODEL)).checkEmployment(person, time);
+      Employment empl = ((Employment) person.attributes.get(Person.EMPLOYMENT_MODEL));
+      if (empl == null) {
+        empl = new Employment(time);
+      }
+
+      empl.checkEmployment(person, time);
     }
     death(person, time);
 
@@ -133,8 +134,9 @@ public final class LifecycleModule extends Module {
 
   /**
    * For unto us a child is born.
+   * 
    * @param person The baby.
-   * @param time The time of birth.
+   * @param time   The time of birth.
    */
   public static void birth(Person person, long time) {
     Map<String, Object> attributes = person.attributes;
@@ -171,8 +173,7 @@ public final class LifecycleModule extends Module {
     // this is anglocentric where the baby gets the father's last name
     attributes.put(Person.NAME_FATHER, fatherFirstName + " " + attributes.get(Person.LAST_NAME));
 
-    double prevalenceOfTwins =
-        (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
+    double prevalenceOfTwins = (double) BiometricsConfig.get("lifecycle.prevalence_of_twins", 0.02);
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
@@ -215,7 +216,8 @@ public final class LifecycleModule extends Module {
     } else if (headPercentile > 1) {
       headPercentile = 1.0;
     }
-    // Convert and store as percentage (0 to 100%) because it is recorded in an Observation.
+    // Convert and store as percentage (0 to 100%) because it is recorded in an
+    // Observation.
     headPercentile = (100.0 * headPercentile);
     person.setVitalSign(VitalSign.HEIGHT_PERCENTILE, heightPercentile);
     person.setVitalSign(VitalSign.WEIGHT_PERCENTILE, weightPercentile);
@@ -227,7 +229,8 @@ public final class LifecycleModule extends Module {
     mother.attributes.put(Person.GENDER, "F");
     mother.attributes.put("pregnant", true);
     mother.attributes.put(Person.RACE, person.attributes.get(Person.RACE));
-    mother.attributes.put(Person.ETHNICITY, person.attributes.get(Person.ETHNICITY));
+    // mother.attributes.put(Person.ETHNICITY,
+    // person.attributes.get(Person.ETHNICITY));
     mother.attributes.put(BirthStatistics.BIRTH_SEX, person.attributes.get(Person.GENDER));
     BirthStatistics.setBirthStatistics(mother, time);
 
@@ -247,7 +250,7 @@ public final class LifecycleModule extends Module {
     person.attributes.put(ADHERENCE_PROBABILITY, adherenceBaseline);
 
     grow(person, time); // set initial height and weight from percentiles
-    calculateVitalSigns(person, time);  // Set initial values for many vital signs.
+    calculateVitalSigns(person, time); // Set initial values for many vital signs.
 
     String orientation = sexualOrientationData.next(person);
     attributes.put(Person.SEXUAL_ORIENTATION, orientation);
@@ -257,7 +260,9 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Set up the generators for vital signs which use the generator-based approach already.
+   * Set up the generators for vital signs which use the generator-based approach
+   * already.
+   * 
    * @param person The person to generate vital signs for.
    */
   private static void setupVitalSignGenerators(Person person) {
@@ -436,17 +441,15 @@ public final class LifecycleModule extends Module {
     return shouldGrow;
   }
 
-  private static final int ADULT_MAX_WEIGHT_AGE =
-      (int) BiometricsConfig.get("lifecycle.adult_max_weight_age", 49);
+  private static final int ADULT_MAX_WEIGHT_AGE = (int) BiometricsConfig.get("lifecycle.adult_max_weight_age", 49);
 
-  private static final int GERIATRIC_WEIGHT_LOSS_AGE =
-      (int) BiometricsConfig.get("lifecycle.geriatric_weight_loss_age", 60);
+  private static final int GERIATRIC_WEIGHT_LOSS_AGE = (int) BiometricsConfig.get("lifecycle.geriatric_weight_loss_age",
+      60);
 
-  private static final double[] ADULT_WEIGHT_GAIN_RANGE =
-      BiometricsConfig.doubles("lifecycle.adult_weight_gain");
+  private static final double[] ADULT_WEIGHT_GAIN_RANGE = BiometricsConfig.doubles("lifecycle.adult_weight_gain");
 
-  private static final double[] GERIATRIC_WEIGHT_LOSS_RANGE =
-      BiometricsConfig.doubles("lifecycle.geriatric_weight_loss");
+  private static final double[] GERIATRIC_WEIGHT_LOSS_RANGE = BiometricsConfig
+      .doubles("lifecycle.geriatric_weight_loss");
 
   private static void grow(Person person, long time) {
     int age = person.ageInYears(time);
@@ -499,8 +502,7 @@ public final class LifecycleModule extends Module {
     double weight = person.getVitalSign(VitalSign.WEIGHT, time);
     String gender = (String) person.attributes.get(Person.GENDER);
     double heightPercentile = person.getVitalSign(VitalSign.HEIGHT_PERCENTILE, time);
-    PediatricGrowthTrajectory pgt =
-        (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
+    PediatricGrowthTrajectory pgt = (PediatricGrowthTrajectory) person.attributes.get(Person.GROWTH_TRAJECTORY);
     int age = person.ageInYears(time);
     int ageInMonths = person.ageInMonths(time);
     if (age < 3 && pgt.beforeInitialSample(time)) {
@@ -516,7 +518,7 @@ public final class LifecycleModule extends Module {
       Object weightManagement = person.attributes.get(Person.ACTIVE_WEIGHT_MANAGEMENT);
       // If there is active weight management,
       // changing of weight will be handled by the WeightLossModule
-      if (weightManagement != null && ! (boolean) weightManagement) {
+      if (weightManagement != null && !(boolean) weightManagement) {
         if (age <= ADULT_MAX_WEIGHT_AGE) {
           // getting older and fatter
           double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
@@ -531,7 +533,8 @@ public final class LifecycleModule extends Module {
       Object kgToGain = person.attributes.get(Person.KILOGRAMS_TO_GAIN);
       if (kgToGain != null && ((double) kgToGain) > 0.0) {
         // We'll reuse the same adult weight gain used for standard adult weight gain.
-        // This will result in about double weight gained per year until target kilograms to gain
+        // This will result in about double weight gained per year until target
+        // kilograms to gain
         // has been reached.
         double adultWeightGain = person.rand(ADULT_WEIGHT_GAIN_RANGE);
         weight += adultWeightGain;
@@ -548,13 +551,15 @@ public final class LifecycleModule extends Module {
    * values to calculate the intermediate values.
    * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
    *
-   * <p>Note: BMI values only available for ageInMonths 24 - 240 as BMI is
-   * not typically useful in patients under 24 months.</p>
+   * <p>
+   * Note: BMI values only available for ageInMonths 24 - 240 as BMI is
+   * not typically useful in patients under 24 months.
+   * </p>
    *
-   * @param chartType "height" | "weight" | "bmi" | "head"
-   * @param gender "M" | "F"
+   * @param chartType   "height" | "weight" | "bmi" | "head"
+   * @param gender      "M" | "F"
    * @param ageInMonths 0 - 240
-   * @param percentile 0.0 - 1.0
+   * @param percentile  0.0 - 1.0
    * @return The height (cm), weight (kg), bmi (%), or head (cm)
    */
   public static double lookupGrowthChart(String chartType, String gender, int ageInMonths,
@@ -576,9 +581,11 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Look up the percentile that a given BMI falls into based on gender and age in months.
-   * @param bmi the BMI to find the percentile for
-   * @param gender "M" | "F"
+   * Look up the percentile that a given BMI falls into based on gender and age in
+   * months.
+   * 
+   * @param bmi         the BMI to find the percentile for
+   * @param gender      "M" | "F"
    * @param ageInMonths 24 - 240
    * @return 0 - 1.0
    */
@@ -591,7 +598,7 @@ public final class LifecycleModule extends Module {
    * percentile attribute is set. Otherwise, it is removed.
    *
    * @param person The person.
-   * @param time The time during the simulation.
+   * @param time   The time during the simulation.
    */
   public static void setCurrentWeightForLengthPercentile(Person person, long time) {
     if (person.ageInMonths(time) <= 36) {
@@ -627,6 +634,7 @@ public final class LifecycleModule extends Module {
 
   /**
    * Populate the entries of the drug -> impacts map.
+   * 
    * @return a map of drug code -> expected hba1c delta
    */
   private static Map<String, Double> createDrugImpactsMap() {
@@ -634,10 +642,11 @@ public final class LifecycleModule extends Module {
     // Metformin and sulfonylureas may lower A1C 1.5 to 2 percentage points,
     // GLP-1 agonists and DPP-4 inhibitors 0.5 to 1 percentage point on average, and
     // insulin as much as 6 points or more, depending on where you start.
-    // -- http://www.diabetesforecast.org/2013/mar/your-a1c-achieving-personal-blood-glucose-goals.html
+    // --
+    // http://www.diabetesforecast.org/2013/mar/your-a1c-achieving-personal-blood-glucose-goals.html
     // [:metformin, :glp1ra, :sglt2i, :basal_insulin, :prandial_insulin]
-    //     mono        bi      tri        insulin          insulin++
-    Map<String,Double> impacts = new HashMap<>();
+    // mono bi tri insulin insulin++
+    Map<String, Double> impacts = new HashMap<>();
     // key is the RxNorm code
     impacts.put("860975", -1.5); // metformin
     impacts.put("897122", -0.5); // liraglutide
@@ -648,72 +657,57 @@ public final class LifecycleModule extends Module {
     return impacts;
   }
 
-  private static final int[] CHOLESTEROL_RANGE =
-      BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
-  private static final int[] TRIGLYCERIDES_RANGE =
-      BiometricsConfig.ints("metabolic.lipid_panel.triglycerides");
-  private static final int[] HDL_RANGE =
-      BiometricsConfig.ints("metabolic.lipid_panel.hdl");
+  private static final int[] CHOLESTEROL_RANGE = BiometricsConfig.ints("metabolic.lipid_panel.cholesterol");
+  private static final int[] TRIGLYCERIDES_RANGE = BiometricsConfig.ints("metabolic.lipid_panel.triglycerides");
+  private static final int[] HDL_RANGE = BiometricsConfig.ints("metabolic.lipid_panel.hdl");
 
-  private static final int[] GLUCOSE_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.glucose");
+  private static final int[] GLUCOSE_RANGE = BiometricsConfig.ints("metabolic.basic_panel.glucose");
 
-  private static final int[] UREA_NITROGEN_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.normal.urea_nitrogen");
-  private static final double[] CALCIUM_RANGE =
-      BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
+  private static final int[] UREA_NITROGEN_RANGE = BiometricsConfig.ints("metabolic.basic_panel.normal.urea_nitrogen");
+  private static final double[] CALCIUM_RANGE = BiometricsConfig.doubles("metabolic.basic_panel.normal.calcium");
 
+  private static final int[] MILD_KIDNEY_DMG_CC_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
+  private static final int[] MODERATE_KIDNEY_DMG_CC_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage");
+  private static final int[] SEVERE_KIDNEY_DMG_CC_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.creatinine_clearance.severe_kidney_damage");
+  private static final int[] ESRD_CC_RANGE = BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.esrd");
+  private static final int[] NORMAL_FEMALE_CC_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.creatinine_clearance.normal.female");
+  private static final int[] NORMAL_MALE_CC_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.creatinine_clearance.normal.male");
 
-  private static final int[] MILD_KIDNEY_DMG_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.mild_kidney_damage");
-  private static final int[] MODERATE_KIDNEY_DMG_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.moderate_kidney_damage");
-  private static final int[] SEVERE_KIDNEY_DMG_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.severe_kidney_damage");
-  private static final int[] ESRD_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.esrd");
-  private static final int[] NORMAL_FEMALE_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.female");
-  private static final int[] NORMAL_MALE_CC_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.creatinine_clearance.normal.male");
-
-  private static final int[] NORMAL_MCR_RANGE =
-      BiometricsConfig.ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
-  private static final int[] CONTROLLED_MCR_RANGE =
-      BiometricsConfig
+  private static final int[] NORMAL_MCR_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.normal");
+  private static final int[] CONTROLLED_MCR_RANGE = BiometricsConfig
       .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_controlled");
 
-  private static final int[] UNCONTROLLED_MCR_RANGE =
-      BiometricsConfig
-     .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_uncontrolled");
+  private static final int[] UNCONTROLLED_MCR_RANGE = BiometricsConfig
+      .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.microalbuminuria_uncontrolled");
 
-  private static final int[] PROTEINURIA_MCR_RANGE =
-      BiometricsConfig
+  private static final int[] PROTEINURIA_MCR_RANGE = BiometricsConfig
       .ints("metabolic.basic_panel.microalbumin_creatinine_ratio.proteinuria");
 
-  private static final double[] CHLORIDE_RANGE =
-      BiometricsConfig.doubles("metabolic.basic_panel.normal.chloride");
-  private static final double[] POTASSIUM_RANGE =
-      BiometricsConfig.doubles("metabolic.basic_panel.normal.potassium");
-  private static final double[] CO2_RANGE =
-      BiometricsConfig.doubles("metabolic.basic_panel.normal.carbon_dioxide");
-  private static final double[] SODIUM_RANGE =
-      BiometricsConfig.doubles("metabolic.basic_panel.normal.sodium");
+  private static final double[] CHLORIDE_RANGE = BiometricsConfig.doubles("metabolic.basic_panel.normal.chloride");
+  private static final double[] POTASSIUM_RANGE = BiometricsConfig.doubles("metabolic.basic_panel.normal.potassium");
+  private static final double[] CO2_RANGE = BiometricsConfig.doubles("metabolic.basic_panel.normal.carbon_dioxide");
+  private static final double[] SODIUM_RANGE = BiometricsConfig.doubles("metabolic.basic_panel.normal.sodium");
 
-  private static final int[] BLOOD_OXYGEN_SATURATION_NORMAL =
-      BiometricsConfig.ints("cardiovascular.oxygen_saturation.normal");
-  private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA =
-      BiometricsConfig.ints("cardiovascular.oxygen_saturation.hypoxemia");
-  private static final double[] HEART_RATE_NORMAL =
-      BiometricsConfig.doubles("cardiovascular.heart_rate.normal");
-  private static final double[] RESPIRATION_RATE_NORMAL =
-      BiometricsConfig.doubles("respiratory.respiration_rate.normal");
+  private static final int[] BLOOD_OXYGEN_SATURATION_NORMAL = BiometricsConfig
+      .ints("cardiovascular.oxygen_saturation.normal");
+  private static final int[] BLOOD_OXYGEN_SATURATION_HYPOXEMIA = BiometricsConfig
+      .ints("cardiovascular.oxygen_saturation.hypoxemia");
+  private static final double[] HEART_RATE_NORMAL = BiometricsConfig.doubles("cardiovascular.heart_rate.normal");
+  private static final double[] RESPIRATION_RATE_NORMAL = BiometricsConfig
+      .doubles("respiratory.respiration_rate.normal");
 
   /**
    * Calculate this person's vital signs,
    * based on their conditions, medications, body composition, etc.
+   * 
    * @param person The person
-   * @param time Current simulation timestamp
+   * @param time   Current simulation timestamp
    */
   private static void calculateVitalSigns(Person person, long time) {
     int index = 0;
@@ -729,20 +723,21 @@ public final class LifecycleModule extends Module {
       // for patients without diabetes
       // source for the below: https://www.cdc.gov/nchs/data/databriefs/db363-h.pdf
       // NCHS Data Brief - No. 363 - April 2020
-      // Total and High-density Lipoprotein Cholesterol in Adults: United States, 2015-2018
+      // Total and High-density Lipoprotein Cholesterol in Adults: United States,
+      // 2015-2018
       boolean lowHDL;
       boolean highTotalChol;
       if (person.attributes.containsKey("low_hdl")) {
         // cache low or high status, so it's consistent
-        lowHDL = (boolean)person.attributes.get("low_hdl");
-        highTotalChol = (boolean)person.attributes.get("high_total_chol");
+        lowHDL = (boolean) person.attributes.get("low_hdl");
+        highTotalChol = (boolean) person.attributes.get("high_total_chol");
       } else {
         boolean female = "F".equals(person.attributes.get(Person.GENDER));
 
         // gender is the largest factor, much more than age or race/ethnicity
         // from the above source ("Key findings" section):
-        //  "Over one-quarter of men (26.6%) and 8.5% of women
-        //   had low high-density lipoprotein cholesterol (HDL-C)."
+        // "Over one-quarter of men (26.6%) and 8.5% of women
+        // had low high-density lipoprotein cholesterol (HDL-C)."
         double chanceOfLowHDL = female ? .085 : .266;
 
         lowHDL = person.rand() < chanceOfLowHDL;
@@ -750,8 +745,8 @@ public final class LifecycleModule extends Module {
         person.attributes.put("low_hdl", lowHDL);
 
         // from the above source:
-        //  "During 2015-2018, 11.4% of adults had high total cholesterol,
-        //   and prevalence was similar by race and Hispanic origin."
+        // "During 2015-2018, 11.4% of adults had high total cholesterol,
+        // and prevalence was similar by race and Hispanic origin."
         highTotalChol = person.rand() < .114;
         person.attributes.put("high_total_chol", highTotalChol);
       }
@@ -785,8 +780,8 @@ public final class LifecycleModule extends Module {
     person.setVitalSign(VitalSign.LDL, ldl);
 
     double bmi = person.getVitalSign(VitalSign.BMI, time);
-    boolean prediabetes = (boolean)person.attributes.getOrDefault("prediabetes", false);
-    boolean diabetes = (boolean)person.attributes.getOrDefault("diabetes", false);
+    boolean prediabetes = (boolean) person.attributes.getOrDefault("prediabetes", false);
+    boolean diabetes = (boolean) person.attributes.getOrDefault("diabetes", false);
     double hbA1c = estimateHbA1c(bmi, prediabetes, diabetes, person);
 
     if (prediabetes || diabetes) {
@@ -812,7 +807,8 @@ public final class LifecycleModule extends Module {
     }
     person.setVitalSign(VitalSign.OXYGEN_SATURATION, oxygenSaturation);
 
-    // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney damage
+    // CKD == stage of "Chronic Kidney Disease" or the level of diabetic kidney
+    // damage
     int kidneyDamage = (Integer) person.attributes.getOrDefault("ckd", 0);
     int[] ccRange;
     int[] mcrRange;
@@ -878,17 +874,20 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Estimate the person's HbA1c using BMI and whether or not they have diabetes or prediabetes as a
+   * Estimate the person's HbA1c using BMI and whether or not they have diabetes
+   * or prediabetes as a
    * rough guideline.
    *
    * @param bmi
-   *          The person's BMI.
+   *                    The person's BMI.
    * @param prediabetes
-   *          Whether or not the person is prediabetic. (Diagnosed or undiagnosed)
+   *                    Whether or not the person is prediabetic. (Diagnosed or
+   *                    undiagnosed)
    * @param diabetes
-   *          Whether or not the person is diabetic. (Diagnosed or undiagnosed)
+   *                    Whether or not the person is diabetic. (Diagnosed or
+   *                    undiagnosed)
    * @param p
-   *          The person
+   *                    The person
    * @return A calculated HbA1c value.
    */
   private static double estimateHbA1c(double bmi, boolean prediabetes, boolean diabetes, Person p) {
@@ -911,10 +910,11 @@ public final class LifecycleModule extends Module {
 
   /**
    * Calculate Creatinine from Creatinine Clearance.
-   *  Source: http://www.mcw.edu/calculators/creatinine.htm
+   * Source: http://www.mcw.edu/calculators/creatinine.htm
+   * 
    * @param person The person
-   * @param crcl Creatinine Clearance
-   * @param time Current Time
+   * @param crcl   Creatinine Clearance
+   * @param time   Current Time
    * @return Estimated Creatinine
    */
   private static double reverseCalculateCreatinine(Person person, double crcl, long time) {
@@ -933,18 +933,17 @@ public final class LifecycleModule extends Module {
     }
   }
 
-  protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
-      Config.getAsBoolean("lifecycle.death_by_natural_causes");
-  protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
-      Config.getAsBoolean("lifecycle.death_by_loss_of_care");
-  public static boolean ENABLE_PHYSIOLOGY_GENERATORS =
-      Config.getAsBoolean("physiology.generators.enabled", false);
+  protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES = Config.getAsBoolean("lifecycle.death_by_natural_causes");
+  protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE = Config.getAsBoolean("lifecycle.death_by_loss_of_care");
+  public static boolean ENABLE_PHYSIOLOGY_GENERATORS = Config.getAsBoolean("physiology.generators.enabled", false);
 
   // Death From Natural Causes SNOMED Code
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
-  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
-  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering
+  // treatment)
+  // Note: This SNOMED Code (397709008) is just for death - not death from lack of
+  // treatment.
   public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
       "Death due to Uncovered and Unreceived Treatment");
 
@@ -1054,7 +1053,8 @@ public final class LifecycleModule extends Module {
     // 1995 - 24.7%
     // 2005 - 20.9%
     // 2015 - 16.1%
-    // assume that it was never significantly higher than 42% pre-1960s, but will continue to drop
+    // assume that it was never significantly higher than 42% pre-1960s, but will
+    // continue to drop
     // slowly after 2016
     // it's decreasing about .5% per year
     if (year < 1965) {
@@ -1072,16 +1072,16 @@ public final class LifecycleModule extends Module {
       // assume about 8 mil alcoholics/320 mil gen pop
       Boolean alcoholic = person.rand() < 0.025;
       person.attributes.put(Person.ALCOHOLIC, alcoholic);
-      double quitAlcoholismBaseline =
-              Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.05);
+      double quitAlcoholismBaseline = Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.05);
       person.attributes.put(QUIT_ALCOHOLISM_PROBABILITY, quitAlcoholismBaseline);
     }
   }
 
   /**
    * If the person is a smoker, there is a small chance they will quit.
+   * 
    * @param person The person who might quit smoking.
-   * @param time The current time in the simulation.
+   * @param time   The current time in the simulation.
    */
   public static void quitSmoking(Person person, long time) {
     int age = person.ageInYears(time);
@@ -1093,8 +1093,7 @@ public final class LifecycleModule extends Module {
           person.attributes.put(QUIT_SMOKING_AGE, age);
         } else {
           double quitSmokingBaseline = Config.getAsDouble("lifecycle.quit_smoking.baseline", 0.01);
-          double quitSmokingTimestepDelta =
-                  Config.getAsDouble("lifecycle.quit_smoking.timestep_delta", -0.1);
+          double quitSmokingTimestepDelta = Config.getAsDouble("lifecycle.quit_smoking.timestep_delta", -0.1);
           probability += quitSmokingTimestepDelta;
           if (probability < quitSmokingBaseline) {
             probability = quitSmokingBaseline;
@@ -1107,8 +1106,9 @@ public final class LifecycleModule extends Module {
 
   /**
    * If the person is an alcoholic, there is a small chance they will quit.
+   * 
    * @param person The person who might quit drinking.
-   * @param time The current time in the simulation.
+   * @param time   The current time in the simulation.
    */
   public static void quitAlcoholism(Person person, long time) {
     int age = person.ageInYears(time);
@@ -1120,10 +1120,8 @@ public final class LifecycleModule extends Module {
           person.attributes.put(Person.ALCOHOLIC, false);
           person.attributes.put(QUIT_ALCOHOLISM_AGE, age);
         } else {
-          double quitAlcoholismBaseline =
-                  Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.01);
-          double quitAlcoholismTimestepDelta =
-                  Config.getAsDouble("lifecycle.quit_alcoholism.timestep_delta", -0.1);
+          double quitAlcoholismBaseline = Config.getAsDouble("lifecycle.quit_alcoholism.baseline", 0.01);
+          double quitAlcoholismTimestepDelta = Config.getAsDouble("lifecycle.quit_alcoholism.timestep_delta", -0.1);
           probability += quitAlcoholismTimestepDelta;
           if (probability < quitAlcoholismBaseline) {
             probability = quitAlcoholismBaseline;
@@ -1137,15 +1135,15 @@ public final class LifecycleModule extends Module {
   /**
    * Adjust the probability of a patients adherence to Doctor orders, whether
    * medication, careplans, whatever.
+   * 
    * @param person The patient to consider.
-   * @param time The time in the simulation.
+   * @param time   The time in the simulation.
    */
   public static void adherence(Person person, long time) {
     if (person.attributes.containsKey(Person.ADHERENCE)) {
       double probability = (double) person.attributes.get(ADHERENCE_PROBABILITY);
       double adherenceBaseline = Config.getAsDouble("lifecycle.adherence.baseline", 0.05);
-      double adherenceTimestepDelta =
-              Config.getAsDouble("lifecycle.adherence.timestep_delta", -0.01);
+      double adherenceTimestepDelta = Config.getAsDouble("lifecycle.adherence.timestep_delta", -0.01);
       probability += adherenceTimestepDelta;
       if (probability < adherenceBaseline) {
         probability = adherenceBaseline;
@@ -1155,10 +1153,12 @@ public final class LifecycleModule extends Module {
   }
 
   /**
-   * Creates a "probability_of_fall_injury" attribute that gets referenced in the Injuries module
+   * Creates a "probability_of_fall_injury" attribute that gets referenced in the
+   * Injuries module
    * where adults > age 65 have multiple screenings that affect fall.
+   * 
    * @param person The person to calculate risk for.
-   * @param time The time within the simulation.
+   * @param time   The time within the simulation.
    */
   private void calculateFallRisk(Person person, long time) {
     if (person.ageInYears(time) >= 65) {
@@ -1194,8 +1194,9 @@ public final class LifecycleModule extends Module {
   /**
    * Determines if the person is disabled according to input file
    * criteria. If the input file is unavailable, the default is false.
+   * 
    * @param person The person.
-   * @param time The time.
+   * @param time   The time.
    * @return true or false.
    */
   public static boolean isDisabled(Person person, long time) {
@@ -1209,6 +1210,7 @@ public final class LifecycleModule extends Module {
   /**
    * Determines earliest disability diagnosis time according to input file
    * criteria. If the input file is unavailable, the default is Long.MAX_VALUE.
+   * 
    * @param person The person.
    * @return Time of earliest disability diagnosis.
    */
@@ -1235,7 +1237,7 @@ public final class LifecycleModule extends Module {
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = LifecycleModule.class.getSimpleName();
     // Read
     Attributes.inventory(attributes, m, Person.ADHERENCE, true, false, null);

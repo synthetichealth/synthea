@@ -1,20 +1,2 @@
-Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Max Out of Pocket,Medicare Supplement,Is ACA Plan,Income Based Premium,Eligibility Policy,Start Year,End Year,Priority Level,Notes
-10000,10001,Medicare Plan,*,233,0.8,0,170.10,8700,false,false,false,MedicareEligible,0,,2,https://www.medicare.gov/your-medicare-costs/medicare-costs-at-a-glance
-20000,20001,Medicaid Plan,*,100,0,50,10,8700,false,false,false,MedicaidEligible,0,,2,
-30000,30001,Standard Dual Eligible Plan,*,0,0,35,10,8700,false,false,false,DualEligible,0,,1,
-40000,40001,Private BRONZE - Humana,*,6094,0.6,0,342,8700,false,false,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184 https://quotewizard.com/health-insurance/how-much-does-health-insurance-cost 
-50000,50001,Private SILVER - BCBS,*,4500,0.7,0,459,8700,false,false,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
-60000,60001,Private GOLD - UnitedHealthCare,*,1458,0.8,0,503,8700,false,false,false,Generic,0,,,https://www.ncsl.org/research/health/health-insurance-premiums.aspx|https://www.investopedia.com/how-much-does-health-insurance-cost-4774184
-70000,70001,ACA 150% FPL BRONZE - Aetna,*,6094,0.6,0,0,8700,false,true,true,ACASubsidy150,0,,3,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-80000,80001,ACA 150% FPL SILVER - Cigna,*,4500,0.7,0,0,8700,false,true,true,ACASubsidy150,0,,3,
-90000,90001,ACA 150% FPL GOLD - Anthem,*,1458,0.8,0,0,8700,false,true,true,ACASubsidy150,0,,3,
-70000,70002,ACA 200% FPL BRONZE - Aetna,*,6094,0.6,0,0.02,8700,false,true,true,ACASubsidy200,0,,4,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-80000,80002,ACA 200% FPL SILVER - Cigna,*,4500,0.7,0,0.03,8700,false,true,true,ACASubsidy200,0,,4,
-90000,90002,ACA 200% FPL GOLD - Anthem,*,1458,0.8,0,0.04,8700,false,true,true,ACASubsidy200,0,,4,
-70000,70003,ACA 300% FPL BRONZE - Aetna,*,6094,0.6,0,0.04,8700,false,true,true,ACASubsidy300,0,,5,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-80000,80003,ACA 300% FPL SILVER - Cigna,*,4500,0.7,0,0.05,8700,false,true,true,ACASubsidy300,0,,5,
-90000,90003,ACA 300% FPL GOLD - Anthem,*,1458,0.8,0,0.06,8700,false,true,true,ACASubsidy300,0,,5,
-70000,70004,ACA 400% FPL BRONZE - Aetna,*,6094,0.6,0,0.06,8700,false,true,true,ACASubsidy400,0,,6,https://www.healthinsurance.org/faqs/is-the-irs-saying-ill-have-to-pay-more-for-my-health-insurance-next-year/
-80000,80004,ACA 400% FPL SILVER - Cigna,*,4500,0.7,0,0.07,8700,false,true,true,ACASubsidy400,0,,6,
-90000,90004,ACA 400% FPL GOLD - Anthem,*,1458,0.8,0,0.085,8700,false,true,true,ACASubsidy400,0,,6,
-50000,50002,Supplemental Medicare - BCBS,*,0,0,0,150.00,8700,true,false,false,Generic,0,,1,https://www.retireguide.com/medicare/supplement-insurance/costs/#:~:text=The%20average%20cost%20of%20a-A%20and%20Part%20B)%20coverage.
+Payer Id,Plan Id,Name,Services Covered,Deductible,Default Coinsurance,Default Copay,Monthly Premium,Medicare Supplement,Eligibility Policy,Start Year,End Year,Notes
+10001,10010,National Health Service Plan,*,0,0,0,0,false,EveryoneEligible,0,,

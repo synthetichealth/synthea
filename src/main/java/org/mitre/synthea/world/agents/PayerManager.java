@@ -68,12 +68,10 @@ public class PayerManager {
   public static final String PRIVATE_OWNERSHIP = "PRIVATE";
   public static final String NO_INSURANCE = "NO_INSURANCE";
 
-  public static final String MEDICARE =
-      Config.get("generate.payers.insurance_companies.medicare", "Medicare");
-  public static final String MEDICAID =
-      Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
-  public static final String DUAL_ELIGIBLE =
-      Config.get("generate.payers.insurance_companies.dual_eligible", "Dual Eligible");
+  public static final String MEDICARE = Config.get("generate.payers.insurance_companies.medicare", "Medicare");
+  public static final String MEDICAID = Config.get("generate.payers.insurance_companies.medicaid", "Medicaid");
+  public static final String DUAL_ELIGIBLE = Config.get("generate.payers.insurance_companies.dual_eligible",
+      "Dual Eligible");
 
   /* Map of all loaded Payers. */
   private static final Map<Integer, Payer> payers = new LinkedHashMap<Integer, Payer>();
@@ -122,7 +120,7 @@ public class PayerManager {
    *
    * @param location the state being loaded
    * @param fileName Location of the file, relative to src/main/resources
-
+   * 
    * @throws IOException if the file cannot be read
    */
   private static void loadPayers(Location location, String fileName) throws IOException {
@@ -134,7 +132,12 @@ public class PayerManager {
     while (csv.hasNext()) {
       Map<String, String> row = csv.next();
       String payerStates = row.get(STATES_COVERED).toUpperCase();
-      String abbreviation = Location.getAbbreviation(location.state).toUpperCase();
+      String abbreviation = Location.getAbbreviation(location.state);
+      if (abbreviation != null) {
+        abbreviation = abbreviation.toUpperCase();
+      } else {
+        abbreviation = "";
+      }
 
       // For now, only allow one U.S. state at a time.
       if (payerStates.contains(abbreviation) || payerStates.contains("*")) {
@@ -244,6 +247,7 @@ public class PayerManager {
 
   /**
    * Converts a key-value CSV line to a plan.
+   * 
    * @param line The Map with the CSV key-value pairs.
    */
   private static void csvLineToPlan(Map<String, String> line) {
@@ -253,29 +257,34 @@ public class PayerManager {
       throw new RuntimeException("Plan IDs must be non-negative. Given Id " + planId + ".");
     }
     if (!PayerManager.payers.containsKey(payerId)) {
-      // Return without an error, because the given payer might only exist in another state.
+      // Return without an error, because the given payer might only exist in another
+      // state.
       return;
     }
     String planName = line.remove(NAME).trim();
-    Set<String> servicesCovered
-        = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
+    Set<String> servicesCovered = commaSeparatedStringToHashSet(line.remove(SERVICES_COVERED).trim());
     BigDecimal deductible = new BigDecimal(line.remove(DEDUCTIBLE).trim());
     BigDecimal defaultCoinsurance = new BigDecimal(line.remove(COINSURANCE).trim());
     BigDecimal defaultCopay = new BigDecimal(line.remove(COPAY).trim());
     BigDecimal monthlyPremium = new BigDecimal(line.remove(MONTHLY_PREMIUM).trim());
     boolean medicareSupplement = Boolean.parseBoolean(line.remove(MEDICARE_SUPPLEMENT).trim());
-    boolean isACA = Boolean.parseBoolean(line.remove(ACA).trim());
-    boolean incomeBasedPremium = Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim());
+    boolean isACA = line.remove(ACA) != null ? Boolean.parseBoolean(line.remove(ACA).trim()) : false;
+    boolean incomeBasedPremium = line.remove(INCOME_BASED_PREMIUM) != null
+        ? Boolean.parseBoolean(line.remove(INCOME_BASED_PREMIUM).trim())
+        : false;
     String yearStartStr = line.remove(START_YEAR).trim();
     int yearStart = yearStartStr.equals("") ? 0 : Integer.parseInt(yearStartStr);
     String yearEndStr = line.remove(END_YEAR).trim();
     int yearEnd = StringUtils.isBlank(yearEndStr)
-        ? Integer.MAX_VALUE : Integer.parseInt(yearEndStr);
-    BigDecimal maxOutOfPocket = new BigDecimal(line.remove(MAX_OOP).trim());
+        ? Integer.MAX_VALUE
+        : Integer.parseInt(yearEndStr);
+    BigDecimal maxOutOfPocket = line.remove(MAX_OOP) != null ? new BigDecimal(line.remove(MAX_OOP).trim())
+        : new BigDecimal(0);
     // If the priority is blank, give it minimum priority (maximum int value).
-    String priorityString = line.remove(PRIORITY_LEVEL).trim();
+    String priorityString = line.remove(PRIORITY_LEVEL) != null ? line.remove(PRIORITY_LEVEL).trim() : "";
     int priority = StringUtils.isBlank(priorityString)
-        ? Integer.MAX_VALUE : Integer.parseInt(priorityString);
+        ? Integer.MAX_VALUE
+        : Integer.parseInt(priorityString);
     String eligibilityName = line.remove(ELIGIBILITY_POLICY);
 
     Payer payer = PayerManager.payers.get(payerId);
@@ -348,7 +357,8 @@ public class PayerManager {
       return potentialPlan;
     }
     if (!person.coverage.getPlanHistory().isEmpty()) {
-      // If the person can't get a government plan, they will try to keep their existing insurance.
+      // If the person can't get a government plan, they will try to keep their
+      // existing insurance.
       InsurancePlan previousPlan = person.coverage
           .getPlanAtTime(time - Config.getAsLong("generate.timestep"));
       if (!previousPlan.isNoInsurance()
@@ -362,8 +372,9 @@ public class PayerManager {
 
   /**
    * Returns all active plans in the given payers based on the given time.
-   * @param payers  The payers.
-   * @param time  The time for the plan to be active in.
+   * 
+   * @param payers The payers.
+   * @param time   The time for the plan to be active in.
    * @return The set of active plans.
    */
   public static List<InsurancePlan> getActivePlans(List<Payer> payers, long time) {
@@ -377,6 +388,7 @@ public class PayerManager {
 
   /**
    * Returns the no insurance plan.
+   * 
    * @return
    */
   public static InsurancePlan getNoInsurancePlan() {
@@ -385,10 +397,11 @@ public class PayerManager {
 
   /**
    * Finds an eligible medicare supplement plan for the given person.
+   * 
    * @param person  The person for whom to find a medicare supplement plan.
    * @param service The service the plan should cover.
-   * @param time  The time.
-   * @return  A potential Medicare Supplement plan, if eligible and affordable.
+   * @param time    The time.
+   * @return A potential Medicare Supplement plan, if eligible and affordable.
    */
   public static InsurancePlan findMedicareSupplement(Person person,
       EncounterType service, long time) {

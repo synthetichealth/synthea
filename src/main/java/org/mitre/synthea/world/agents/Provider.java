@@ -61,11 +61,11 @@ public class Provider implements QuadTreeElement, Serializable {
   private static Set<String> statesLoaded = new HashSet<String>();
   private static int loaded = 0;
 
-  private static final double MAX_PROVIDER_SEARCH_DISTANCE =
-      Config.getAsDouble("generate.providers.maximum_search_distance", 2);
+  private static final double MAX_PROVIDER_SEARCH_DISTANCE = Config
+      .getAsDouble("generate.providers.maximum_search_distance", 2);
   private static IProviderFinder providerFinder = buildProviderFinder();
-  public static final Boolean USE_HOSPITAL_AS_DEFAULT =
-      Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
+  public static final Boolean USE_HOSPITAL_AS_DEFAULT = Config
+      .getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
   @JSONSkip
   public Map<String, Object> attributes;
@@ -106,6 +106,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Java Serialization support for the utilization field.
+   * 
    * @param oos stream to write to
    */
   private void writeObject(ObjectOutputStream oos) throws IOException {
@@ -113,9 +114,9 @@ public class Provider implements QuadTreeElement, Serializable {
     ArrayList<Payer.UtilizationBean> entryUtilizationElements = null;
     if (utilization != null) {
       entryUtilizationElements = new ArrayList<>(utilization.size());
-      for (Table.Cell<Integer, String, AtomicInteger> cell: utilization.cellSet()) {
+      for (Table.Cell<Integer, String, AtomicInteger> cell : utilization.cellSet()) {
         entryUtilizationElements.add(
-                new Payer.UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
+            new Payer.UtilizationBean(cell.getRowKey(), cell.getColumnKey(), cell.getValue()));
       }
     }
     oos.writeObject(entryUtilizationElements);
@@ -123,15 +124,15 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Java Serialization support for the utilization field.
+   * 
    * @param ois stream to read from
    */
   private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
     ois.defaultReadObject();
-    ArrayList<Payer.UtilizationBean> entryUtilizationElements =
-            (ArrayList<Payer.UtilizationBean>)ois.readObject();
+    ArrayList<Payer.UtilizationBean> entryUtilizationElements = (ArrayList<Payer.UtilizationBean>) ois.readObject();
     if (entryUtilizationElements != null) {
       this.utilization = HashBasedTable.create();
-      for (Payer.UtilizationBean u: entryUtilizationElements) {
+      for (Payer.UtilizationBean u : entryUtilizationElements) {
         this.utilization.put(u.year, u.type, u.count);
       }
     }
@@ -154,8 +155,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   private static IProviderFinder buildProviderFinder() {
     IProviderFinder finder = null;
-    String behavior =
-        Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
+    String behavior = Config.get("generate.providers.selection_behavior", "nearest").toLowerCase();
     switch (behavior) {
       case RANDOM:
       case NETWORK:
@@ -221,6 +221,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Get the bed count for this Provider facility.
+   * 
    * @return The number of beds, if they exist, otherwise null.
    */
   public Integer getBedCount() {
@@ -229,14 +230,16 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Will this provider accept the given person as a patient at the given time?.
+   * 
    * @param person Person to consider
-   * @param time Time the person seeks care
+   * @param time   Time the person seeks care
    * @return whether or not the person can receive care by this provider
    */
   public boolean accepts(Person person, long time) {
     // for now assume every provider accepts every patient
     // UNLESS it's a VA facility and the person is not a veteran or
-    // it's an IHS Facility and only accepts people with a race set to Native American
+    // it's an IHS Facility and only accepts people with a race set to Native
+    // American
     // eventually we may want to expand this (ex. capacity?)
     if (this.type == null) {
       return true;
@@ -269,9 +272,10 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Find specific service provider for the given person.
-   * @param person The patient who requires the service.
+   * 
+   * @param person  The patient who requires the service.
    * @param service The service required. For example, EncounterType.AMBULATORY.
-   * @param time The date/time within the simulated world, in milliseconds.
+   * @param time    The date/time within the simulated world, in milliseconds.
    * @return Service provider or null if none is available.
    */
   public static Provider findService(Person person, EncounterType service, long time) {
@@ -291,7 +295,8 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
-   * Find a provider that does not already have a healthrecord for the given person.
+   * Find a provider that does not already have a healthrecord for the given
+   * person.
    */
   public static Provider findServiceNewProvider(Person person, EncounterType service, long time,
       List<String> takenIds) {
@@ -312,7 +317,8 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Find a service around a given point.
-   * @param person The patient who requires the service.
+   * 
+   * @param person   The patient who requires the service.
    * @param distance in degrees
    * @return List of providers within the given distance.
    */
@@ -351,6 +357,7 @@ public class Provider implements QuadTreeElement, Serializable {
   /**
    * Generate a quad tree with sufficient capacity and depth to load
    * the biggest states.
+   * 
    * @return QuadTree.
    */
   private static QuadTree generateQuadTree() {
@@ -359,6 +366,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Load into cache the list of providers for a state.
+   * 
    * @param location the state being loaded.
    */
   public static void loadProviders(Location location, DefaultRandomNumberGenerator random) {
@@ -382,7 +390,7 @@ public class Provider implements QuadTreeElement, Serializable {
         servicesProvided.add(EncounterType.WELLNESS);
         String vaFile = Config.get("generate.providers.veterans.default_file");
         loadProviders(location, vaFile, ProviderType.VETERAN, servicesProvided, random,
-                false);
+            false);
 
         servicesProvided.clear();
         servicesProvided.add(EncounterType.WELLNESS);
@@ -433,15 +441,18 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
-   * Read the providers from the given resource file, only importing the ones for the given state.
-   * THIS method is for loading providers and generating clinicians with specific specialties
+   * Read the providers from the given resource file, only importing the ones for
+   * the given state.
+   * THIS method is for loading providers and generating clinicians with specific
+   * specialties
    *
-   * @param location the state being loaded
-   * @param filename Location of the file
-   * @param providerType ProviderType
+   * @param location         the state being loaded
+   * @param filename         Location of the file
+   * @param providerType     ProviderType
    * @param servicesProvided Set of services provided by these facilities
-   * @param random Source of randomness for provider generation
-   * @param optional if true the function will silently ignore a null or empty filename
+   * @param random           Source of randomness for provider generation
+   * @param optional         if true the function will silently ignore a null or
+   *                         empty filename
    * @throws IOException if the file cannot be read
    */
   public static void loadProviders(Location location, String filename,
@@ -453,10 +464,10 @@ public class Provider implements QuadTreeElement, Serializable {
     }
 
     String resource = Utilities.readResource(filename, true, true);
-    Iterator<? extends Map<String,String>> csv = SimpleCSV.parseLineByLine(resource);
+    Iterator<? extends Map<String, String>> csv = SimpleCSV.parseLineByLine(resource);
 
     while (csv.hasNext()) {
-      Map<String,String> row = csv.next();
+      Map<String, String> row = csv.next();
       String currState = row.get("state");
       String abbreviation = Location.getAbbreviation(location.state);
 
@@ -467,8 +478,7 @@ public class Provider implements QuadTreeElement, Serializable {
 
         Provider parsed = csvLineToProvider(row);
         parsed.type = providerType;
-        parsed.institutional =
-            (providerType == ProviderType.HOSPITAL || providerType == ProviderType.NURSING);
+        parsed.institutional = (providerType == ProviderType.HOSPITAL || providerType == ProviderType.NURSING);
         parsed.servicesProvided.addAll(servicesProvided);
 
         String emergency = row.remove("emergency");
@@ -523,9 +533,11 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
-   * Generates a list of clinicians, given the number to generate and the specialty.
+   * Generates a list of clinicians, given the number to generate and the
+   * specialty.
+   * 
    * @param numClinicians - the number of clinicians to generate
-   * @param specialty - which specialty clinicians to generate
+   * @param specialty     - which specialty clinicians to generate
    * @return
    */
   private ArrayList<Clinician> generateClinicianList(int numClinicians, String specialty,
@@ -545,7 +557,7 @@ public class Provider implements QuadTreeElement, Serializable {
    * Generate a random clinician, from the given seed.
    *
    * @param clinicianSeed
-   *          Seed for the random clinician
+   *                      Seed for the random clinician
    * @return generated Clinician
    */
   private Clinician generateClinician(long clinicianSeed, long clinicianIdentifier,
@@ -561,7 +573,7 @@ public class Provider implements QuadTreeElement, Serializable {
       String ethnicity = cityDemographics.pickEthnicity(random);
       out.put(Person.ETHNICITY, ethnicity);
       String language = cityDemographics.languageFromRaceAndEthnicity(race, ethnicity,
-              random);
+          random);
       out.put(Person.FIRST_LANGUAGE, language);
       String gender = cityDemographics.pickGender(random);
       if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("M")) {
@@ -599,8 +611,9 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Randomly chooses a clinician out of a given clinician list.
+   * 
    * @param specialty - the specialty to choose from.
-   * @param rand - random number generator.
+   * @param rand      - random number generator.
    * @return A clinician with the required specialty.
    */
   public Clinician chooseClinicianList(String specialty, RandomNumberGenerator rand) {
@@ -608,7 +621,9 @@ public class Provider implements QuadTreeElement, Serializable {
     if (clinicians == null || clinicians.isEmpty()) {
       clinicians = this.clinicianMap.get(ClinicianSpecialty.GENERAL_PRACTICE);
     }
-    Clinician doc = clinicians.get(rand.randInt(clinicians.size()));
+    Clinician doc = clinicians != null ? clinicians.get(rand.randInt(clinicians.size())) : null;
+    if (doc == null)
+      return new Clinician(loaded, rand, loaded, null);
     doc.incrementEncounters();
     return doc;
   }
@@ -622,21 +637,24 @@ public class Provider implements QuadTreeElement, Serializable {
     }
     if (id > 888_888_888L) {
       throw new IllegalArgumentException(
-              String.format("Supplied id (%d) is too big, max is %d", id, 888_888_888L));
+          String.format("Supplied id (%d) is too big, max is %d", id, 888_888_888L));
     }
     return toNPI(888_888_888L - id);
   }
 
   /**
-   * Creates an NPI from a number by appending a check digit calculated according to:
+   * Creates an NPI from a number by appending a check digit calculated according
+   * to:
    * https://www.cms.gov/Regulations-and-Guidance/Administrative-Simplification/NationalProvIdentStand/Downloads/NPIcheckdigit.pdf
-   * @param id must be a 9 digit number otherwise throws an IllegalArgumentException
+   * 
+   * @param id must be a 9 digit number otherwise throws an
+   *           IllegalArgumentException
    * @return the NPI as a String
    */
   static String toNPI(long id) {
     if (id < 100_000_000L || id > 999_999_999L) {
       throw new IllegalArgumentException(
-              String.format("Supplied identifier (%d) should be exactly 9 digits", id));
+          String.format("Supplied identifier (%d) should be exactly 9 digits", id));
     }
     long checkDigit = 24;
     long remainingDigits = id;
@@ -664,12 +682,14 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Given a line of parsed CSV input, convert the data into a Provider.
+   * 
    * @param line - read a csv line to a provider's attributes
    * @return A provider.
    */
-  private static Provider csvLineToProvider(Map<String,String> line) {
+  private static Provider csvLineToProvider(Map<String, String> line) {
     Provider d = new Provider();
-    // using 'remove' instead of 'get' so that we can iterate over the remaining keys later
+    // using 'remove' instead of 'get' so that we can iterate over the remaining
+    // keys later
     d.id = line.remove("id");
     d.npi = line.remove("npi");
     if (d.npi == null) {
@@ -685,7 +705,7 @@ public class Provider implements QuadTreeElement, Serializable {
     String base = d.npi + d.name;
     d.uuid = UUID.nameUUIDFromBytes(base.getBytes()).toString();
     d.locationUuid = UUID.nameUUIDFromBytes(
-            new StringBuilder(base).reverse().toString().getBytes()).toString();
+        new StringBuilder(base).reverse().toString().getBytes()).toString();
     d.address = line.remove("address");
     d.city = line.remove("city");
     d.state = line.remove("state");
@@ -805,7 +825,8 @@ public class Provider implements QuadTreeElement, Serializable {
       this.ownership = other.ownership;
     }
     /*
-     * This is the most important piece of the merge function: we need to ensure that
+     * This is the most important piece of the merge function: we need to ensure
+     * that
      * the de-duplicated provider offers all intended services.
      */
     if (this.servicesProvided == null) {

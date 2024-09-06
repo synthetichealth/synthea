@@ -30,8 +30,7 @@ public class BirthStatistics {
   /** Default birth height. */
   public static final double DEFAULT_HEIGHT = 51.0; // centimeters (cm)
 
-  private static final boolean LOG_OUTPUT =
-      Config.getAsBoolean("generate.birthweights.logging", false);
+  private static final boolean LOG_OUTPUT = Config.getAsBoolean("generate.birthweights.logging", false);
   private static FileWriter OUTPUT = openFile();
 
   private static FileWriter openFile() {
@@ -51,11 +50,11 @@ public class BirthStatistics {
     return fw;
   }
 
-  private static List<? extends Map<String,String>> WEIGHT_DATA = loadData();
+  private static List<? extends Map<String, String>> WEIGHT_DATA = loadData();
 
-  private static List<? extends Map<String,String>> loadData() {
+  private static List<? extends Map<String, String>> loadData() {
     String filename = Config.get("generate.birthweights.default_file");
-    List<? extends Map<String,String>> csv = null;
+    List<? extends Map<String, String>> csv = null;
     try {
       String resource = Utilities.readResource(filename, true, true);
       csv = SimpleCSV.parse(resource);
@@ -69,6 +68,7 @@ public class BirthStatistics {
   /**
    * Clear birth statistics of mothers newborn. Call this method
    * after the mother gives birth.
+   * 
    * @param mother The baby's mother.
    */
   public static void clearBirthStatistics(Person mother) {
@@ -82,10 +82,12 @@ public class BirthStatistics {
   /**
    * Sets attributes on the mother on when her baby will be born,
    * the baby sex, and the birth height and weight.
-   * <p></p>
+   * <p>
+   * </p>
    * These attributes will be overridden on subsequent pregnancies.
+   * 
    * @param mother The baby's mother.
-   * @param time The time.
+   * @param time   The time.
    */
   public static void setBirthStatistics(Person mother, long time) {
     // Ignore men, they cannot become pregnant.
@@ -206,11 +208,12 @@ public class BirthStatistics {
 
   /**
    * Check whether or not the mother is hispanic.
+   * 
    * @param mother The baby's mother.
    * @return True if the mother is hispanic, otherwise false.
    */
   private static boolean isHispanic(Person mother) {
     String ethnicity = (String) mother.attributes.get(Person.ETHNICITY);
-    return (ethnicity.equalsIgnoreCase("hispanic"));
+    return ("hispanic".equalsIgnoreCase(ethnicity));
   }
 }

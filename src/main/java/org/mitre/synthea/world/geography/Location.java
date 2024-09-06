@@ -51,17 +51,18 @@ public class Location implements Serializable {
 
   /**
    * Location is a set of demographic and place information.
+   * 
    * @param state The full name of the state.
-   *     e.g. "Ohio" and not an abbreviation.
-   * @param city The full name of the city.
-   *     e.g. "Columbus" or null for an entire state.
+   *              e.g. "Ohio" and not an abbreviation.
+   * @param city  The full name of the city.
+   *              e.g. "Columbus" or null for an entire state.
    */
   public Location(String state, String city) {
     try {
       this.city = city;
       this.state = state;
 
-      Table<String,String,Demographics> allDemographics = Demographics.load(state);
+      Table<String, String, Demographics> allDemographics = Demographics.load(state);
 
       // this still works even if only 1 city given,
       // because allDemographics will only contain that 1 city
@@ -80,9 +81,9 @@ public class Location implements Serializable {
       populationByCity = new LinkedHashMap<>();
       populationByCityId = new LinkedHashMap<>();
       // sort the demographics to ensure tests pass regardless of implementing class
-      // for this.demographics, see comment above on non-serializability of Google Table.row
-      ArrayList<Demographics> sortedDemographics =
-          new ArrayList<Demographics>(this.demographics.values());
+      // for this.demographics, see comment above on non-serializability of Google
+      // Table.row
+      ArrayList<Demographics> sortedDemographics = new ArrayList<Demographics>(this.demographics.values());
       Collections.sort(sortedDemographics);
       for (Demographics d : sortedDemographics) {
         long pop = d.population;
@@ -93,6 +94,16 @@ public class Location implements Serializable {
           populationByCity.put(d.city, pop);
         }
         populationByCityId.put(d.id, pop);
+      }
+
+      if (populationByCity.size() <= 0) {
+        populationByCity.put(city, Long.valueOf(0));
+      }
+      if (populationByCityId.size() <= 0) {
+        if (city.equalsIgnoreCase("Huddinge")) {
+          populationByCityId.put("406", Long.valueOf(90182));
+        }
+
       }
 
       totalPopulation = runningPopulation;
@@ -106,10 +117,10 @@ public class Location implements Serializable {
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
+      List<? extends Map<String, String>> ziplist = SimpleCSV.parse(csv);
 
       zipCodes = new HashMap<>();
-      for (Map<String,String> line : ziplist) {
+      for (Map<String, String> line : ziplist) {
         Place place = new Place(line);
 
         if (!place.sameState(state)) {
@@ -130,11 +141,11 @@ public class Location implements Serializable {
     socialDeterminantsOfHealth = new HashMap<String, Map<String, Double>>();
     try {
       filename = Config.get("generate.geography.sdoh.default_file",
-        "geography/sdoh.csv");
+          "geography/sdoh.csv");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> sdohList = SimpleCSV.parse(csv);
+      List<? extends Map<String, String>> sdohList = SimpleCSV.parse(csv);
 
-      for (Map<String,String> line : sdohList) {
+      for (Map<String, String> line : sdohList) {
         String lineState = line.remove("STATE");
         if (!lineState.equalsIgnoreCase(state)) {
           continue;
@@ -175,14 +186,13 @@ public class Location implements Serializable {
     }
   }
 
-
   /**
    * Get the zip code for the given city name.
    * If a city has more than one zip code, this picks a random one.
    *
    * @param cityName Name of the city
-   * @param random Used for a source of repeatable randomness when selecting
-   *               a zipcode when multiple exist for a location
+   * @param random   Used for a source of repeatable randomness when selecting
+   *                 a zipcode when multiple exist for a location
    * @return a zip code for the given city
    */
   public String getZipCode(String cityName, RandomNumberGenerator random) {
@@ -197,6 +207,7 @@ public class Location implements Serializable {
 
   /**
    * Get the list of zip codes (or postal codes) by city name.
+   * 
    * @param cityName Name of the city.
    * @return List of legal zip codes or postal codes.
    */
@@ -236,11 +247,12 @@ public class Location implements Serializable {
    */
   public Demographics randomCity(RandomNumberGenerator random) {
     if (city != null) {
-      // if we're only generating one city at a time, just use the largest entry for that one city
+      // if we're only generating one city at a time, just use the largest entry for
+      // that one city
       if (fixedCity == null) {
         fixedCity = demographics.values().stream()
-          .filter(d -> d.city.equalsIgnoreCase(city))
-          .sorted().findFirst().get();
+            .filter(d -> d.city.equalsIgnoreCase(city))
+            .sorted().findFirst().get();
       }
       return fixedCity;
     }
@@ -249,6 +261,7 @@ public class Location implements Serializable {
 
   /**
    * Pick a random city name, weighted by population.
+   * 
    * @param random the source of randomness
    * @return a city name
    */
@@ -259,6 +272,7 @@ public class Location implements Serializable {
 
   /**
    * Pick a random city id, weighted by population.
+   * 
    * @param random the source of randomness
    * @return a city id
    */
@@ -279,6 +293,7 @@ public class Location implements Serializable {
 
   /**
    * Pick a random birth place, weighted by population.
+   * 
    * @param random the source of randomness
    * @return Array of Strings: [city, state, country, "city, state, country"]
    */
@@ -292,12 +307,14 @@ public class Location implements Serializable {
   }
 
   /**
-   * Method which returns a city from the foreignPlacesOfBirth map if the map contains values
+   * Method which returns a city from the foreignPlacesOfBirth map if the map
+   * contains values
    * for an language.
-   * In the case an language is not present the method returns the value from a call to
+   * In the case an language is not present the method returns the value from a
+   * call to
    * randomCityName().
    *
-   * @param random the source of randomness
+   * @param random   the source of randomness
    * @param language the language to look for cities in
    * @return A String representing the place of birth
    */
@@ -315,12 +332,13 @@ public class Location implements Serializable {
       if (split.length != 3) {
         birthPlace = randomBirthPlace(random);
       } else {
-        //concatenate all the results together, adding spaces behind commas for readability
+        // concatenate all the results together, adding spaces behind commas for
+        // readability
         birthPlace = ArrayUtils.addAll(split,
-            new String[] {randomBirthPlace.replaceAll(",", ", ")});
+            new String[] { randomBirthPlace.replaceAll(",", ", ") });
       }
 
-    } else {  //if we can't find a foreign city at least return something
+    } else { // if we can't find a foreign city at least return something
       birthPlace = randomBirthPlace(random);
     }
 
@@ -328,11 +346,14 @@ public class Location implements Serializable {
   }
 
   /**
-   * Assign a geographic location to the given Person. Location includes City, State, Zip, and
-   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to valid values for
-   * that city. If cityName is not given, then picks a random city from the list of all cities.
+   * Assign a geographic location to the given Person. Location includes City,
+   * State, Zip, and
+   * Coordinate. If cityName is given, then Zip and Coordinate are restricted to
+   * valid values for
+   * that city. If cityName is not given, then picks a random city from the list
+   * of all cities.
    *
-   * @param person Person to assign location information
+   * @param person   Person to assign location information
    * @param cityName Name of the city, or null to choose one randomly
    */
   public void assignPoint(Person person, String cityName) {
@@ -385,6 +406,7 @@ public class Location implements Serializable {
   /**
    * Set social determinants of health attributes on the patient, as defined
    * by the optional social determinants of health county-level file.
+   * 
    * @param person The person to assign attributes.
    */
   public void setSocialDeterminants(Person person) {
@@ -414,9 +436,9 @@ public class Location implements Serializable {
     try {
       filename = Config.get("generate.geography.zipcodes.default_file");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> ziplist = SimpleCSV.parse(csv);
+      List<? extends Map<String, String>> ziplist = SimpleCSV.parse(csv);
 
-      for (Map<String,String> line : ziplist) {
+      for (Map<String, String> line : ziplist) {
         String state = line.get("USPS");
         String abbreviation = line.get("ST");
         abbreviations.put(state, abbreviation);
@@ -430,6 +452,7 @@ public class Location implements Serializable {
 
   /**
    * Get the abbreviation for a state.
+   * 
    * @param state State name. e.g. "Massachusetts"
    * @return state abbreviation. e.g. "MA"
    */
@@ -441,6 +464,7 @@ public class Location implements Serializable {
    * Get the index for a state. This maybe useful for
    * exporters where you want to generate a list of unique
    * identifiers that do not collide across state-boundaries.
+   * 
    * @param state State name. e.g. "Massachusetts"
    * @return state index. e.g. 1 or 50
    */
@@ -457,6 +481,7 @@ public class Location implements Serializable {
 
   /**
    * Get the state name from an abbreviation.
+   * 
    * @param abbreviation State abbreviation. e.g. "MA"
    * @return state name. e.g. "Massachusetts"
    */
@@ -475,9 +500,9 @@ public class Location implements Serializable {
     try {
       filename = Config.get("generate.geography.timezones.default_file");
       String csv = Utilities.readResource(filename, true, true);
-      List<? extends Map<String,String>> tzlist = SimpleCSV.parse(csv);
+      List<? extends Map<String, String>> tzlist = SimpleCSV.parse(csv);
 
-      for (Map<String,String> line : tzlist) {
+      for (Map<String, String> line : tzlist) {
         String state = line.get("STATE");
         String timezone = line.get("TIMEZONE");
         timezones.put(state, timezone);
@@ -490,19 +515,25 @@ public class Location implements Serializable {
   }
 
   private static Map<String, List<String>> loadCitiesByLanguage() {
-    //get the default foreign_birthplace file if we can't get the file listed in the config
+    // get the default foreign_birthplace file if we can't get the file listed in
+    // the config
     String resource = Config.get("generate.geography.foreign.birthplace.default_file",
-            "geography/foreign_birthplace.json");
+        "geography/foreign_birthplace.json");
     return loadCitiesByLanguage(resource);
   }
 
   /**
-   * Load a resource which contains foreign places of birth based on ethnicity in json format:
-   * <p></p>
-   * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
-   * <p></p>
+   * Load a resource which contains foreign places of birth based on ethnicity in
+   * json format:
+   * <p>
+   * </p>
+   * {"ethnicity":["city1,state1,country1", "city2,state2,country2"...,
+   * "cityN,stateN,countryN"]}
+   * <p>
+   * </p>
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing
+   * 
    * @param resource A json file listing foreign places of birth by ethnicity.
    * @return Map of ethnicity to Lists of Strings "city,state,country"
    */
@@ -523,6 +554,7 @@ public class Location implements Serializable {
   /**
    * Get the full name of the timezone by the full name of the state.
    * Timezones are approximate.
+   * 
    * @param state The full name of the state (e.g. "Massachusetts")
    * @return The full name of the timezone (e.g. "Eastern Standard Time")
    */
@@ -532,6 +564,7 @@ public class Location implements Serializable {
 
   /**
    * Get the FIPS code, if it exists, for a given zip code.
+   * 
    * @param zipCode The zip code of the location.
    * @return The FIPS county code of the location.
    */

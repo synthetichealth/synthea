@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -124,7 +125,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
   /**
-   * Tracks the last time that the person was updated over a serialize/deserialize.
+   * Tracks the last time that the person was updated over a
+   * serialize/deserialize.
    */
   public long lastUpdated;
   /**
@@ -133,27 +135,39 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public List<Module> currentModules;
   public Map<String, Object> attributes;
   public Map<VitalSign, ValueGenerator> vitalSigns;
-  /** Data structure for storing symptoms faced by a person.
-   * Adding the Long keyset to keep track of the time a symptom is set. */
+  /**
+   * Data structure for storing symptoms faced by a person.
+   * Adding the Long keyset to keep track of the time a symptom is set.
+   */
   Map<String, ExpressedSymptom> symptoms;
-  /** Data structure for storing onset conditions (init_time, end_time).*/
+  /** Data structure for storing onset conditions (init_time, end_time). */
   public ExpressedConditionRecord onsetConditionRecord;
   public Map<String, HealthRecord.Medication> chronicMedications;
   /** The active health record. */
   public HealthRecord record;
-  /** Default health record. If "lossOfCareEnabled" is true, this is also the
-   * record with entries that were covered by insurance. */
+  /**
+   * Default health record. If "lossOfCareEnabled" is true, this is also the
+   * record with entries that were covered by insurance.
+   */
   public HealthRecord defaultRecord;
-  /** Only used if "lossOfCareEnabled" is true. In that case, this health record
-   * contains entries that should have, but did not, occur. */
+  /**
+   * Only used if "lossOfCareEnabled" is true. In that case, this health record
+   * contains entries that should have, but did not, occur.
+   */
   public HealthRecord lossOfCareRecord;
-  /** Experimental feature flag. When "lossOfCareEnabled" is true, patients can miss
-   * care due to cost or lack of health insurance coverage. */
+  /**
+   * Experimental feature flag. When "lossOfCareEnabled" is true, patients can
+   * miss
+   * care due to cost or lack of health insurance coverage.
+   */
   public boolean lossOfCareEnabled;
   /** Individual provider health records (if "hasMultipleRecords" is enabled). */
   public Map<String, HealthRecord> records;
-  /** Flag that enables each provider having a different health record for each patient.
-   * In other words, the patients entire record is split across provider systems. */
+  /**
+   * Flag that enables each provider having a different health record for each
+   * patient.
+   * In other words, the patients entire record is split across provider systems.
+   */
   public boolean hasMultipleRecords;
   /** History of the currently active module. */
   public List<State> history;
@@ -181,7 +195,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-   * Initializes person's default health records. May need to be called if attributes
+   * Initializes person's default health records. May need to be called if
+   * attributes
    * change due to fixed demographics.
    */
   public void initializeDefaultHealthRecords() {
@@ -261,7 +276,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     if (attributes.containsKey(BIRTHDATE)) {
       LocalDate now = Instant.ofEpochMilli(time).atZone(ZoneOffset.UTC).toLocalDate();
 
-      // we call age() a lot, so caching the birthdate as a LocalDate saves some translation
+      // we call age() a lot, so caching the birthdate as a LocalDate saves some
+      // translation
       LocalDate birthdate = (LocalDate) attributes.get(BIRTHDATE_AS_LOCALDATE);
       if (birthdate == null) {
         birthdate = Instant.ofEpochMilli((long) attributes.get(BIRTHDATE))
@@ -333,15 +349,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-  * Get the expressed symptoms.
-  */
+   * Get the expressed symptoms.
+   */
   public Map<String, ExpressedSymptom> getExpressedSymptoms() {
     return symptoms;
   }
 
   /**
-  * Get the onsetonditionRecord.
-  */
+   * Get the onsetonditionRecord.
+   */
   public ExpressedConditionRecord getOnsetConditionRecord() {
     return onsetConditionRecord;
   }
@@ -361,7 +377,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     return count;
   }
 
-  /** Updating the method for accounting of the time on which
+  /**
+   * Updating the method for accounting of the time on which
    * the symptom is set.
    */
   public void setSymptom(String module, String cause, String type,
@@ -374,7 +391,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-   * Method for retrieving the last time a given symptom has been updated from a given module.
+   * Method for retrieving the last time a given symptom has been updated from a
+   * given module.
    */
   public Long getSymptomLastUpdatedTime(String module, String symptom) {
     Long result = null;
@@ -401,6 +419,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Get active symptoms above some threshold.
    * TODO These symptoms are not filtered by time.
+   * 
    * @return list of active symptoms above the threshold.
    */
   public List<String> getSymptoms() {
@@ -466,8 +485,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
     Double retVal = value;
     try {
       retVal = BigDecimal.valueOf(value)
-              .setScale(decimalPlaces, RoundingMode.HALF_UP)
-              .doubleValue();
+          .setScale(decimalPlaces, RoundingMode.HALF_UP)
+          .doubleValue();
     } catch (NumberFormatException e) {
       // Ignore, value was NaN or infinity.
     }
@@ -484,8 +503,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public void setVitalSign(VitalSign vitalSign, double value) {
     if (!Double.isFinite(value)) {
       throw new IllegalArgumentException(String.format(
-              "Vital signs must have finite values - %s is invalid",
-              Double.valueOf(value).toString()));
+          "Vital signs must have finite values - %s is invalid",
+          Double.valueOf(value).toString()));
     }
     setVitalSign(vitalSign, new ConstantValueGenerator(this, value));
   }
@@ -493,8 +512,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Records a person's death.
    *
-   * @param time     the time of death.
-   * @param cause    the cause of death.
+   * @param time  the time of death.
+   * @param cause the cause of death.
    */
   public void recordDeath(long time, Code cause) {
     if (alive(time)) {
@@ -560,16 +579,20 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-   * Returns the current HealthRecord based on the provider. If the person has no more remaining
+   * Returns the current HealthRecord based on the provider. If the person has no
+   * more remaining
    * income, Uncovered HealthRecord is returned.
    *
    * @param provider the provider of the encounter
-   * @param time the current time (To determine person's current income and payer)
+   * @param time     the current time (To determine person's current income and
+   *                 payer)
    */
   public synchronized HealthRecord getHealthRecord(Provider provider, long time) {
 
-    // If the person has no more income at this time, then operate on the UncoveredHealthRecord.
-    // Note: If person has no more income then they can no longer afford copays/premiums/etc.
+    // If the person has no more income at this time, then operate on the
+    // UncoveredHealthRecord.
+    // Note: If person has no more income then they can no longer afford
+    // copays/premiums/etc.
     // meaning we can guarantee that they currently have no insurance.
     if (lossOfCareEnabled && !this.stillHasIncome(time)) {
       return this.lossOfCareRecord;
@@ -582,7 +605,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
       if (!records.containsKey(key)) {
         HealthRecord record = null;
         if (this.record != null && this.record.provider == null) {
-          // If the active healthrecord does not have a provider, assign it as the active record.
+          // If the active healthrecord does not have a provider, assign it as the active
+          // record.
           record = this.record;
         } else {
           record = new HealthRecord(this);
@@ -607,6 +631,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Check if there is a current encounter.
+   * 
    * @return true if there is a current encounter, false otherwise.
    */
   public boolean hasCurrentEncounter() {
@@ -618,7 +643,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * This always succeeds, so any calls should make sure they are
    * the owners using 'getCurrentEncounterModule()'.
    * Currently the parameters are unused.
-   * @param time The time in the simulation.
+   * 
+   * @param time   The time in the simulation.
    * @param module The name of the module releasing the reservation.
    */
   public void releaseCurrentEncounter(long time, String module) {
@@ -628,7 +654,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   /**
    * Reserve the current Encounter... no other module can run an encounter
    * (except for Wellness Encounters).
-   * @param time The time in the simulation.
+   * 
+   * @param time   The time in the simulation.
    * @param module The name of the module making the reservation.
    * @return true if the encounter is reserved, false otherwise.
    */
@@ -646,8 +673,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String PREFERREDYPROVIDER = "preferredProvider";
 
   /**
-   * Get the preferred provider for the specified encounter type. If none is set the
-   * provider at the specified time as the preferred provider for this encounter type.
+   * Get the preferred provider for the specified encounter type. If none is set
+   * the
+   * provider at the specified time as the preferred provider for this encounter
+   * type.
    */
   public Provider getProvider(EncounterType type, long time) {
     String key = PREFERREDYPROVIDER + type;
@@ -677,14 +706,15 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, Provider provider) {
     if (provider == null) {
-      throw new RuntimeException("Unable to find provider: " + type);
+      provider = new Provider();
     }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);
   }
 
   /**
-   * Set the preferred provider for the specified encounter type to be the provider
+   * Set the preferred provider for the specified encounter type to be the
+   * provider
    * at the specified time.
    */
   public void setProvider(EncounterType type, long time) {
@@ -734,12 +764,11 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-  * Returns the sum of QALYS of this person's life.
-  */
+   * Returns the sum of QALYS of this person's life.
+   */
   public double getQalys() {
 
-    Map<Integer, Double> qalys
-        = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.QALY);
+    Map<Integer, Double> qalys = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.QALY);
 
     double sum = 0.0;
     for (double currQaly : qalys.values()) {
@@ -753,8 +782,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public double getDalys() {
 
-    Map<Integer, Double> dalys
-        = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.DALY);
+    Map<Integer, Double> dalys = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.DALY);
 
     double sum = 0.0;
     for (double currDaly : dalys.values()) {
@@ -771,8 +799,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    * @param plan the plan to check.
    */
   public boolean canAffordPlan(InsurancePlan plan) {
-    double incomePercentage
-        = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
+    double incomePercentage = Config.getAsDouble("generate.payers.insurance_plans.income_premium_ratio");
     int income = (int) this.attributes.get(Person.INCOME);
     BigDecimal yearlyCost = plan.getYearlyCost(income);
     return BigDecimal.valueOf(income)
@@ -813,7 +840,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
     if (currentMonth > lastMonthPaid || (currentMonth == 1 && lastMonthPaid == 12)) {
 
-      // TODO - Check that they can still afford the premium due to any newly incurred health costs.
+      // TODO - Check that they can still afford the premium due to any newly incurred
+      // health costs.
 
       // Pay the payer.
       this.coverage.payMonthlyPremiumsAtTime(time,
@@ -834,8 +862,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   @SuppressWarnings("unchecked")
   public double getQolsForYear(int year) {
     double retVal = 0;
-    Map<Integer, Double> qols = (Map<Integer, Double>)
-        this.attributes.get(QualityOfLifeModule.QOLS);
+    Map<Integer, Double> qols = (Map<Integer, Double>) this.attributes.get(QualityOfLifeModule.QOLS);
     if (qols != null && qols.containsKey(year)) {
       retVal = qols.get(year);
     }

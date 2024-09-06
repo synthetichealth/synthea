@@ -24,10 +24,12 @@ public final class EncounterModule extends Module {
   /**
    * These are thresholds for patients to seek symptom-driven care - they'll go to
    * the appropriate provider based on which threshold they meet.
-   * By CDC statistics (https://www.cdc.gov/nchs/data/ahcd/namcs_summary/2015_namcs_web_tables.pdf),
+   * By CDC statistics
+   * (https://www.cdc.gov/nchs/data/ahcd/namcs_summary/2015_namcs_web_tables.pdf),
    * a person goes to an average of
    * 24,904,00/(US adult population = 249485228) = .0998 urgent visits per year.
-   * The goal for the number of symptom-driven encounters (urgent care, PCP, and ER) is .0998 * age.
+   * The goal for the number of symptom-driven encounters (urgent care, PCP, and
+   * ER) is .0998 * age.
    */
   public static final int PCP_SYMPTOM_THRESHOLD = 300;
   public static final int URGENT_CARE_SYMPTOM_THRESHOLD = 350;
@@ -67,8 +69,7 @@ public final class EncounterModule extends Module {
     Encounter encounter = null;
 
     // add a wellness encounter if this is the right time
-    if (person.record.timeSinceLastWellnessEncounter(time)
-        >= recommendedTimeBetweenWellnessVisits(person, time)) {
+    if (person.record.timeSinceLastWellnessEncounter(time) >= recommendedTimeBetweenWellnessVisits(person, time)) {
       Code code = getWellnessVisitCode(person, time);
       encounter = createEncounter(person, time, EncounterType.WELLNESS,
           ClinicianSpecialty.GENERAL_PRACTICE, code, name);
@@ -79,7 +80,7 @@ public final class EncounterModule extends Module {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
       }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+      if (person.symptomTotal() != (int) person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
         encounter = createEncounter(person, time, EncounterType.EMERGENCY,
@@ -92,7 +93,7 @@ public final class EncounterModule extends Module {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
       }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+      if (person.symptomTotal() != (int) person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
         encounter = createEncounter(person, time, EncounterType.URGENTCARE,
@@ -105,7 +106,7 @@ public final class EncounterModule extends Module {
       if (!person.attributes.containsKey(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, 0);
       }
-      if (person.symptomTotal() != (int)person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
+      if (person.symptomTotal() != (int) person.attributes.get(LAST_VISIT_SYMPTOM_TOTAL)) {
         person.attributes.put(LAST_VISIT_SYMPTOM_TOTAL, person.symptomTotal());
         person.addressLargestSymptom();
         encounter = createEncounter(person, time, EncounterType.OUTPATIENT,
@@ -125,14 +126,17 @@ public final class EncounterModule extends Module {
   }
 
   /**
-   * Create an Encounter that is coded, with a provider organization, and a clinician.
-   * @param person The patient.
-   * @param time The time of the encounter.
-   * @param type The type of encounter (e.g. emergency).
+   * Create an Encounter that is coded, with a provider organization, and a
+   * clinician.
+   * 
+   * @param person    The patient.
+   * @param time      The time of the encounter.
+   * @param type      The type of encounter (e.g. emergency).
    * @param specialty The clinician specialty (e.g. "General Practice")
-   * @param code The code to assign to the encounter.
-   * @param module The module creating this encounter.
-   * @return The encounter, or null if the person is already in an active encounter
+   * @param code      The code to assign to the encounter.
+   * @param module    The module creating this encounter.
+   * @return The encounter, or null if the person is already in an active
+   *         encounter
    */
   public static Encounter createEncounter(Person person, long time, EncounterType type,
       String specialty, Code code, String module) {
@@ -155,7 +159,11 @@ public final class EncounterModule extends Module {
     Provider prov = null;
     if (specialty.equalsIgnoreCase(ClinicianSpecialty.CARDIOLOGY)) {
       // Get the first provider in the list that was loaded
-      prov = Provider.getProviderList().get(0);
+      if (Provider.getProviderList().size() <= 0) {
+        prov = new Provider();
+      } else {
+        prov = Provider.getProviderList().get(0);
+      }
     } else {
       prov = person.getProvider(type, time);
     }
@@ -168,8 +176,9 @@ public final class EncounterModule extends Module {
 
   /**
    * Get the correct Wellness Visit Code by age of patient.
+   * 
    * @param person The patient.
-   * @param time The time of the encounter which we translate to age of patient.
+   * @param time   The time of the encounter which we translate to age of patient.
    * @return SNOMED-CT code for Wellness Visit.
    */
   public static Code getWellnessVisitCode(Person person, long time) {
@@ -184,8 +193,9 @@ public final class EncounterModule extends Module {
   /**
    * Recommended time between Wellness Visits by age of patient and whether
    * they have chronic medications.
+   * 
    * @param person The patient.
-   * @param time The time of the encounter which we translate to age of patient.
+   * @param time   The time of the encounter which we translate to age of patient.
    * @return Recommended time between Wellness Visits in milliseconds
    */
   public long recommendedTimeBetweenWellnessVisits(Person person, long time) {
@@ -266,7 +276,7 @@ public final class EncounterModule extends Module {
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = EncounterModule.class.getSimpleName();
     // Read
     Attributes.inventory(attributes, m, LAST_VISIT_SYMPTOM_TOTAL, true, true, "Integer");

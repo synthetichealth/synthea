@@ -89,6 +89,11 @@
     "system": "urn:ietf:bcp:47",
     "display": "Hindi"
   },
+  "swedish": {
+    "code": "sv-SE",
+    "system": "urn:ietf:bcp:47",
+    "display": "Swedish"
+  },
   "undetermined": {
     "code": "und",
     "system": "urn:ietf:bcp:47",
