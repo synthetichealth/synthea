@@ -6,7 +6,7 @@ if [ -z "$NUM" ]; then
   exit 2
 fi
 
-./run_synthea --exporter.baseDirectory "$WORKDIR" \
+./run_synthea \
   --exporter.fhir.bulk_data true \
   --exporter.fhir.included_resources \
   AllergyIntolerance,Condition,Device,DiagnosticReport,DocumentReference,Encounter,Immunization,MedicationRequest,Observation,Patient,Procedure \
