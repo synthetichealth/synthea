@@ -11,10 +11,13 @@ base_run_synthea () {
                   --generate.log_patients.detail=none \
                   --generate.only_alive_patients=true \
                   --generate.max_attempts_to_keep_patient=2000 \
+                  --exporter.fhir.excluded_resources "Medication,Provenance" \
                   "$@" \
                   $location
 }
-
+# note Medication is excluded to simplify MedicationRequests,
+# and Provenance is excluded to simplify the flexporter mapping removing MedicationRequests 
+#  (for numbing/dilation drops which are administered but not prescribed)
 
 run_population () {
   popcount=$1
@@ -25,7 +28,8 @@ run_population () {
 }
 
 
-#rm -rf output
+
+rm -rf selected1000/ selected100/ selected10/
 
 # all populations have:
 # 25% diabetes but no DR
@@ -39,29 +43,58 @@ run_population () {
 # We minimize anachronism by picking records where things happen when they are supposed to.
 # 2) File size. Treatment loops and images add a lot of data, so making those start later means the files don't get as crazy large.
 
+cat deleted_modules.txt | xargs rm -f 
+
+##############
 # population 1
 # 1000 records with 5-year history and only relevant conditions enabled
 outputfolder="./output_population1000"
+rm -r $outputfolder
 seed=12345
 location=Massachusetts
 years_of_history=5
 run_population 10000
 
+python3 find_good_records.py $outputfolder > ./population1000_details.csv 
+python3 select_nei_records.py ./population1000_details.csv > selected_files1000.txt
+mkdir selected1000
+./copy.sh selected_files1000.txt selected1000/
+cp output_population1000/fhir/*Information*.json selected1000
+
+
+cat deleted_modules.txt | xargs git restore
+
+##############
 # population 2
 # 100 records with 5 year history and all conditions enabled
 outputfolder="./output_population100"
+rm -r $outputfolder
 seed=98765
 location=Virginia
 years_of_history=5
 run_population 1000
 
+python3 find_good_records.py $outputfolder > ./population100_details.csv
+python3 select_nei_records.py ./population100_details.csv > selected_files100.txt
+mkdir selected100
+./copy.sh selected_files100.txt selected100/
+cp output_population100/fhir/*Information*.json selected100
+
+##############
 # population 3
 # 5-10 curated records with full history and all conditions enabled
 outputfolder="./output_population10"
+rm -r $outputfolder
 seed=4444
 location=Washington
 years_of_history=0
 run_population 1000
+
+python3 find_good_records.py $outputfolder > ./population10_details.csv
+python3 select_nei_records.py ./population10_details.csv > selected_files10.txt
+mkdir selected10
+./copy.sh selected_files10.txt selected10/
+cp output_population10/fhir/*Information*.json selected10
 
 
 # cd src/main/python/coherent-data/
