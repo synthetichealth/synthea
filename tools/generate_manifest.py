@@ -3,7 +3,7 @@ import json
 import re
 
 # Configuration
-base_url = "http://fileserver:80"
+base_url = "http://host.docker.internal:8000"
 input_format = "application/fhir+ndjson"
 output_directory = "../output/fhir/"
 

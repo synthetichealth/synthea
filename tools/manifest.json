@@ -7,7 +7,7 @@
     },
     {
       "name": "inputSource",
-      "valueUrl": "http://fileserver:80"
+      "valueUrl": "http://host.docker.internal:8000"
     },
     {
       "name": "storageDetail",
@@ -27,7 +27,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Patient.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Patient.ndjson"
         },
         {
           "name": "type",
@@ -35,7 +35,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/DiagnosticReport.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/DiagnosticReport.ndjson"
         },
         {
           "name": "type",
@@ -43,7 +43,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/MedicationRequest.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/MedicationRequest.ndjson"
         },
         {
           "name": "type",
@@ -51,7 +51,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/AllergyIntolerance.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/AllergyIntolerance.ndjson"
         },
         {
           "name": "type",
@@ -59,7 +59,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Immunization.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Immunization.ndjson"
         },
         {
           "name": "type",
@@ -67,7 +67,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Procedure.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Procedure.ndjson"
         },
         {
           "name": "type",
@@ -75,7 +75,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Encounter.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Encounter.ndjson"
         },
         {
           "name": "type",
@@ -83,7 +83,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Location.1680480000000.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Location.1680480000000.ndjson"
         },
         {
           "name": "type",
@@ -91,7 +91,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Observation.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Observation.ndjson"
         },
         {
           "name": "type",
@@ -99,7 +99,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Condition.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Condition.ndjson"
         },
         {
           "name": "type",
@@ -107,7 +107,7 @@
         },
         {
           "name": "url",
-          "valueUrl": "http://fileserver:80/Device.ndjson"
+          "valueUrl": "http://host.docker.internal:8000/Device.ndjson"
         }
       ]
     }
