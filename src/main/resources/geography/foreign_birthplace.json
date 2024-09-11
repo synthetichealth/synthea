@@ -121,5 +121,12 @@
     "Hanoi,Hà Đông,VN",
     "Haiphong,Kiến An,VN",
     "Cantho,Cần Thơ,VN"
+  ],
+  "swedish": [
+    "Stockholm,Stockholm County,SE",
+    "Gothenburg,Västra Götaland County,SE",
+    "Malmö,Skåne County,SE",
+    "Uppsala,Uppsala County,SE",
+    "Västerås,Västmanland County,SE"
   ]
 }
