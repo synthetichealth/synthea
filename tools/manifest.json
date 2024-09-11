@@ -1,0 +1,115 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "inputFormat",
+      "valueCode": "application/fhir+ndjson"
+    },
+    {
+      "name": "inputSource",
+      "valueUrl": "http://fileserver:8080"
+    },
+    {
+      "name": "storageDetail",
+      "part": [
+        {
+          "name": "type",
+          "valueCode": "http"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "part": [
+        {
+          "name": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Patient.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "DiagnosticReport"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/DiagnosticReport.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "MedicationRequest"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/MedicationRequest.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "AllergyIntolerance"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/AllergyIntolerance.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Immunization"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Immunization.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Procedure"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Procedure.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Encounter"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Encounter.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Location.1680480000000"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Location.1680480000000.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Observation"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Observation.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Condition"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Condition.ndjson"
+        },
+        {
+          "name": "type",
+          "valueCode": "Device"
+        },
+        {
+          "name": "url",
+          "valueUrl": "http://fileserver:8080/Device.ndjson"
+        }
+      ]
+    }
+  ]
+}
