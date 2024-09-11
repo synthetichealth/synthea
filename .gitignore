@@ -10,9 +10,10 @@ lib/custom/*.jar
 
 /.gradle/
 /bin/
-
+/.idea/
 /failed_exports/
 /output/
+
 /out/
 
 **/*.log

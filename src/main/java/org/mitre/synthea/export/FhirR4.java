@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -22,16 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.AllergyIntolerance;
+import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCriticality;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceType;
-import org.hl7.fhir.r4.model.BooleanType;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
@@ -41,7 +43,6 @@ import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityDetailComponent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanActivityStatus;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanIntent;
 import org.hl7.fhir.r4.model.CarePlan.CarePlanStatus;
-import org.hl7.fhir.r4.model.CareTeam;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamParticipantComponent;
 import org.hl7.fhir.r4.model.CareTeam.CareTeamStatus;
 import org.hl7.fhir.r4.model.Claim.ClaimStatus;
@@ -50,88 +51,45 @@ import org.hl7.fhir.r4.model.Claim.InsuranceComponent;
 import org.hl7.fhir.r4.model.Claim.ItemComponent;
 import org.hl7.fhir.r4.model.Claim.ProcedureComponent;
 import org.hl7.fhir.r4.model.Claim.SupportingInformationComponent;
-import org.hl7.fhir.r4.model.CodeType;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
-import org.hl7.fhir.r4.model.Coverage;
 import org.hl7.fhir.r4.model.Coverage.CoverageStatus;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.DateType;
-import org.hl7.fhir.r4.model.DecimalType;
-import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Device.DeviceNameType;
 import org.hl7.fhir.r4.model.Device.FHIRDeviceStatus;
-import org.hl7.fhir.r4.model.DiagnosticReport;
 import org.hl7.fhir.r4.model.DiagnosticReport.DiagnosticReportStatus;
-import org.hl7.fhir.r4.model.DocumentReference;
 import org.hl7.fhir.r4.model.DocumentReference.DocumentReferenceContextComponent;
-import org.hl7.fhir.r4.model.Dosage;
 import org.hl7.fhir.r4.model.Dosage.DosageDoseAndRateComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Enumerations.DocumentReferenceStatus;
-import org.hl7.fhir.r4.model.ExplanationOfBenefit;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.RemittanceOutcome;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.TotalComponent;
 import org.hl7.fhir.r4.model.ExplanationOfBenefit.Use;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Goal;
 import org.hl7.fhir.r4.model.Goal.GoalLifecycleStatus;
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudySeriesInstanceComponent;
 import org.hl7.fhir.r4.model.ImagingStudy.ImagingStudyStatus;
 import org.hl7.fhir.r4.model.Immunization.ImmunizationStatus;
-import org.hl7.fhir.r4.model.Immunization;
-import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.Location.LocationPositionComponent;
 import org.hl7.fhir.r4.model.Location.LocationStatus;
-import org.hl7.fhir.r4.model.Media;
 import org.hl7.fhir.r4.model.Media.MediaStatus;
 import org.hl7.fhir.r4.model.Medication.MedicationStatus;
-import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationAdministration.MedicationAdministrationDosageComponent;
-import org.hl7.fhir.r4.model.MedicationRequest;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestIntent;
 import org.hl7.fhir.r4.model.MedicationRequest.MedicationRequestStatus;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Money;
-import org.hl7.fhir.r4.model.Narrative;
 import org.hl7.fhir.r4.model.Narrative.NarrativeStatus;
 import org.hl7.fhir.r4.model.Observation.ObservationComponentComponent;
 import org.hl7.fhir.r4.model.Observation.ObservationStatus;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.ContactComponent;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
-import org.hl7.fhir.r4.model.Period;
-import org.hl7.fhir.r4.model.PositiveIntType;
-import org.hl7.fhir.r4.model.Practitioner;
-import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
-import org.hl7.fhir.r4.model.Property;
-import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Provenance.ProvenanceAgentComponent;
-import org.hl7.fhir.r4.model.Quantity;
-import org.hl7.fhir.r4.model.Reference;
-import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r4.model.ServiceRequest;
-import org.hl7.fhir.r4.model.SimpleQuantity;
-import org.hl7.fhir.r4.model.StringType;
-import org.hl7.fhir.r4.model.SupplyDelivery;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliveryStatus;
 import org.hl7.fhir.r4.model.SupplyDelivery.SupplyDeliverySuppliedItemComponent;
-import org.hl7.fhir.r4.model.Timing;
 import org.hl7.fhir.r4.model.Timing.TimingRepeatComponent;
 import org.hl7.fhir.r4.model.Timing.UnitsOfTime;
-import org.hl7.fhir.r4.model.Type;
 import org.hl7.fhir.r4.model.codesystems.DoseRateType;
 
 import org.hl7.fhir.utilities.xhtml.NodeType;
@@ -161,6 +119,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Observation;
 import org.mitre.synthea.world.concepts.HealthRecord.Procedure;
 import org.mitre.synthea.world.concepts.HealthRecord.Report;
 import org.mitre.synthea.world.geography.Location;
+
 
 public class FhirR4 {
   // HAPI FHIR warns that the context creation is expensive, and should be performed
@@ -398,6 +357,13 @@ public class FhirR4 {
     }
 
     BundleEntryComponent personEntry = basicInfo(person, bundle, stopTime);
+    // create one root careplan up top
+    BundleEntryComponent rootCarePlanEntry = rootCarePlan(person,personEntry,bundle);
+
+    if (shouldExport(Consent.class)) {
+      consentByPerson(person, bundle, personEntry,"");
+      consentByPerson(person, bundle, personEntry,"gina");
+    }
 
     for (Encounter encounter : person.record.encounters) {
       BundleEntryComponent encounterEntry = encounter(person, personEntry, bundle, encounter);
@@ -467,15 +433,27 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.CarePlan.class)) {
         final boolean shouldExportCareTeam = shouldExport(CareTeam.class);
+
         for (CarePlan careplan : encounter.careplans) {
           BundleEntryComponent careTeamEntry = null;
 
           if (shouldExportCareTeam) {
             careTeamEntry = careTeam(person, personEntry, bundle, encounterEntry, careplan);
           }
-          carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
-                  careplan);
+          BundleEntryComponent carePlanEntry = carePlan(person, personEntry, bundle, encounterEntry, encounter.provider, careTeamEntry,
+                  careplan, rootCarePlanEntry);
+
+          BundleEntryComponent carePlanChild1 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child1");
+          BundleEntryComponent carePlanChild2 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child2");
+          BundleEntryComponent carePlanChild3 = childCarePlan(person, personEntry, bundle, carePlanEntry, rootCarePlanEntry, "child3");
+
+          //create a task and reverse link to root careplan
+          task(person,personEntry,bundle, rootCarePlanEntry);
+
+          //create a service request and reversse link to root care plan
+          serviceRequest(person, personEntry, bundle, rootCarePlanEntry);
         }
+
       }
 
       if (shouldExport(org.hl7.fhir.r4.model.ImagingStudy.class)) {
@@ -501,7 +479,22 @@ public class FhirR4 {
               encounterClaim, encounter, encounter.claim);
         }
       }
+
+      // add appointment to every encounter as well
+      if (shouldExport(org.hl7.fhir.r4.model.Appointment.class)) {
+        encounterAppointment(person, personEntry, bundle, encounter, encounterEntry);
+      }
+
+      if (shouldExport(org.hl7.fhir.r4.model.Consent.class)) {
+
+          BundleEntryComponent qr = questionnaireResponse(bundle, encounterEntry);
+          consentByEncounter(person, bundle,personEntry,encounter, encounterEntry, qr);
+
+
+      }
     }
+
+
 
     if (USE_US_CORE_IG && shouldExport(Provenance.class)) {
       // Add Provenance to the Bundle
@@ -509,6 +502,298 @@ public class FhirR4 {
     }
     return bundle;
   }
+
+  private static BundleEntryComponent questionnaireResponse(Bundle bundle, BundleEntryComponent encounterEntry) {
+    org.hl7.fhir.r4.model.QuestionnaireResponse qrResource = new QuestionnaireResponse();
+    org.hl7.fhir.r4.model.Encounter encounter = (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    // add status
+    qrResource.setStatus(QuestionnaireResponse.QuestionnaireResponseStatus.COMPLETED);
+
+    // connect to an encounter
+    qrResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
+
+    // add answers and text for the collected consent
+    List<QuestionnaireResponse.QuestionnaireResponseItemComponent> items = new ArrayList<>();
+    List<QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent> answers = new ArrayList<>();
+    answers.add(
+            new QuestionnaireResponse.QuestionnaireResponseItemAnswerComponent()
+                    .setValue(new BooleanType(true))
+    );
+    items.add(
+            new QuestionnaireResponse.QuestionnaireResponseItemComponent()
+                    .setAnswer(answers).setLinkId("1.0").setText("Do u consent to this chat?")
+    );
+    qrResource.setItem(items);
+
+    // set subject (aka patient)
+    qrResource.setSubject(encounter.getSubject());
+
+    return newEntry(bundle, qrResource, String.valueOf(UUID.randomUUID()));
+
+  }
+
+  private static BundleEntryComponent consentByPerson(Person person, Bundle bundle, BundleEntryComponent personEntry, String type) {
+    org.hl7.fhir.r4.model.Consent consent = new Consent();
+
+    consent.setPatient(new Reference()
+            .setReference(personEntry.getFullUrl())
+            .setDisplay(person.attributes
+                    .get(Person.FIRST_NAME).toString()
+                    +
+                    person.attributes.get(Person.LAST_NAME).toString()));
+    List<CodeableConcept> codingList = new ArrayList<>();
+//    set category
+    if (type.equals(new String(""))) {
+        CodeableConcept termsAndConditionsCC = new CodeableConcept();
+        termsAndConditionsCC.addCoding().setCode("terms_and_conditions")
+                .setDisplay("Terms and Conditions")
+                .setSystem("terms and conditions");
+        codingList.add(termsAndConditionsCC);
+    } else {
+      CodeableConcept ginaCC = new CodeableConcept();
+      ginaCC.addCoding().setCode("gina")
+              .setDisplay("GINA")
+              .setSystem("gina");
+      codingList.add(ginaCC);
+    }
+
+    consent.setCategory(codingList);
+
+    // status set
+    consent.setStatus(Consent.ConsentState.ACTIVE);
+
+    // date time
+    consent.setDateTime(Date.from(Instant.now()));
+
+    consent.setId(String.valueOf(UUID.randomUUID()));
+    if (type.equals(new String(""))) {
+      consent.setProvision(new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT));
+    } else {
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime end = now.plusDays(365);
+
+
+
+      consent.setProvision(new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT)
+              .setPeriod(
+                      new Period()
+                      .setStart(java.sql.Timestamp.valueOf(now))
+                      .setEnd(java.sql.Timestamp.valueOf(end))
+              )
+      );
+    }
+
+    // adding scope
+    CodeableConcept scopeCC = new CodeableConcept();
+    scopeCC.addCoding().setCode("active");
+    consent.setScope(scopeCC);
+
+    // policy rule Codeable Concept addition
+    CodeableConcept policyRuleCC =  new CodeableConcept();
+    policyRuleCC.addCoding().setCode("policy rule").setDisplay("Policy Rule");
+    consent.setPolicyRule(policyRuleCC);
+
+
+
+    return newEntry(bundle, consent, consent.getId());
+  }
+
+  private static BundleEntryComponent consentByEncounter(Person person, Bundle bundle,
+                                                         BundleEntryComponent personEntry, Encounter encounter,
+                                                         BundleEntryComponent encounterEntry,
+                                                         BundleEntryComponent questionnaireResponseEntry) {
+    org.hl7.fhir.r4.model.Consent consent = new Consent();
+
+    // convert participant
+    org.hl7.fhir.r4.model.Encounter encounterResource =
+            (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    consent.setPatient(new Reference()
+            .setReference(personEntry.getFullUrl())
+            .setDisplay(person.attributes
+                    .get(Person.FIRST_NAME).toString()
+                    +
+                    person.attributes.get(Person.LAST_NAME).toString()));
+
+    //filter out practitioner
+    org.hl7.fhir.r4.model.Encounter.EncounterParticipantComponent practitioner
+            = encounterResource.getParticipant().get(0);
+
+    List<CodeableConcept> codingList = new ArrayList<>();
+    CodeableConcept encounterCC = new CodeableConcept();
+
+    // say we want appointment id and practitioner ref to generate a hash
+    String consentCode = "encounter:" + encounterResource.getId() + ":" + practitioner.getIndividual().getReference();
+    String CodeInSha256Hex = DigestUtils.sha256Hex(consentCode);
+    encounterCC.addCoding()
+            .setCode("appointment-booking")
+            .setDisplay("Appointment Booking")
+            .setSystem("url/coding-system-consents");
+    codingList.add(encounterCC);
+    consent.setCategory(codingList);
+
+    // set source as questionnaireResponse
+    consent.setSource(new Reference(questionnaireResponseEntry.getFullUrl()));
+
+    // status set
+    consent.setStatus(Consent.ConsentState.ACTIVE);
+
+    // date time
+    consent.setDateTime(Date.from(Instant.now()));
+
+    consent.setId(String.valueOf(UUID.randomUUID()));
+
+    consent.setProvision(
+            new Consent.provisionComponent().setType(Consent.ConsentProvisionType.PERMIT)
+    );
+
+    // adding scope
+    CodeableConcept scopeCC = new CodeableConcept();
+    scopeCC.addCoding().setCode("active");
+    consent.setScope(scopeCC);
+
+    // policy rule Codeable Concept addition
+    CodeableConcept policyRuleCC =  new CodeableConcept();
+    policyRuleCC.addCoding().setCode("policy rule").setDisplay("Policy Rule");
+    consent.setPolicyRule(policyRuleCC);
+
+
+    //adding a custom extension
+    List<Extension> extnList = new ArrayList<>();
+    Coding extnCoding = new Coding().setCode("extn code 1").setDisplay("extn display code");
+    // searchable extension string
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-id-token")
+            .setValue(new StringType(CodeInSha256Hex))
+
+    );
+
+    // identifier extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueIdentifier")
+            .setValue(new Identifier()
+                    .setValue("value-identifier")
+                    .setSystem("http://example.com/token-system")
+                    .setUse(IdentifierUse.OFFICIAL))
+    );
+
+    // bool extn
+    extnList.add(new Extension()
+            .setUrl("http://example.com/fhir/extensions#appointment-valueBoolean")
+            .setValue(new BooleanType().setValue(true))
+    );
+    consent.setExtension(extnList);
+
+    return newEntry(bundle, consent, consent.getId());
+
+  }
+
+  private static BundleEntryComponent encounterAppointment(Person person, BundleEntryComponent personEntry,
+                                                           Bundle bundle, Encounter encounter,
+                                                           BundleEntryComponent encounterEntry) {
+
+    org.hl7.fhir.r4.model.Appointment apptResource = new org.hl7.fhir.r4.model.Appointment();
+    apptResource.setId(String.valueOf(UUID.randomUUID()));
+
+    // convert participant
+    org.hl7.fhir.r4.model.Encounter encounterResource =
+            (org.hl7.fhir.r4.model.Encounter) encounterEntry.getResource();
+
+    //status
+    apptResource.setStatus(Appointment.AppointmentStatus.PROPOSED);
+
+    // identifier
+    List<Identifier> identifierList = new ArrayList<>();
+    identifierList.add(new Identifier()
+            .setSystem("http://fhir.league.com/r4/LeagueUserProfiles/NamingSystem/league-user-id")
+            .setValue((String) person.attributes.get(Person.ID)));
+
+    apptResource.setIdentifier(identifierList);
+
+    // appt type
+
+    CodeableConcept aTypeCC = new CodeableConcept();
+    aTypeCC.setText("Appt Type");
+    Coding apptTypeCoding = aTypeCC.addCoding().setCode("apptType")
+            .setDisplay("Appt Type display").setSystem("appt Type System");
+
+    apptResource.setAppointmentType(aTypeCC);
+
+    // serviceCategory
+    List<org.hl7.fhir.r4.model.CodeableConcept> categories = new ArrayList<>();
+    CodeableConcept cc = new CodeableConcept();
+    cc.setText("category 1");
+    Coding serviceCatCoding = cc.addCoding();
+    serviceCatCoding.setDisplay("cat 1 display");
+    serviceCatCoding.setSystem("cat 1 system");
+    serviceCatCoding.setCode("cat1");
+
+    categories.add(cc);
+    apptResource.setServiceCategory(categories);
+
+    // serviceType
+    List<org.hl7.fhir.r4.model.CodeableConcept> types = new ArrayList<>();
+    CodeableConcept stcc = new CodeableConcept();
+    stcc.setText("type 1");
+    Coding serviceTypesCoding = stcc.addCoding();
+    serviceTypesCoding.setDisplay("type 1 display");
+    serviceTypesCoding.setSystem("type 1 system");
+    serviceTypesCoding.setCode("type1");
+
+    types.add(stcc);
+    apptResource.setServiceType(types);
+
+    //adding a custom extension
+    List<Extension> extnList = new ArrayList<>();
+    Coding extnCoding = new Coding().setCode("extn code 1").setDisplay("extn display code");
+    extnList.add(new Extension()
+            .setUrl("http://fhir.league.com/r4/LeagueCareServiceBookings/StructureDefinition/custom-extension")
+            .setValue(new StringType("custom-exn-val")));
+    apptResource.setExtension(extnList);
+
+
+    // add all participants
+    List<Appointment.AppointmentParticipantComponent> aPList = new ArrayList<>();
+    for (org.hl7.fhir.r4.model.Encounter.EncounterParticipantComponent eParticipant : encounterResource.getParticipant()) {
+      Appointment.AppointmentParticipantComponent aProvider = new Appointment.AppointmentParticipantComponent();
+      // Add provider
+      aProvider.setPeriod(eParticipant.getPeriod());
+      aProvider.setActor(eParticipant.getIndividual());
+      aProvider.setStatus(Appointment.ParticipationStatus.ACCEPTED);
+
+      aPList.add(aProvider);
+
+
+      // Add location
+      Appointment.AppointmentParticipantComponent aLoc = new Appointment.AppointmentParticipantComponent();
+      aLoc.setActor(encounterResource.getLocation().get(0).getLocation());
+      aLoc.setStatus(Appointment.ParticipationStatus.ACCEPTED);
+      aPList.add(aLoc);
+
+      //Add patient
+      Appointment.AppointmentParticipantComponent aPatient = new Appointment.AppointmentParticipantComponent();
+      aPatient.setActor(encounterResource.getSubject());
+      aPatient.setStatus(Appointment.ParticipationStatus.ACCEPTED);
+      aPList.add(aPatient);
+
+    }
+
+    //start and end
+    LocalDateTime start = LocalDateTime.now().minusHours((long) (Math.random() * (10)));
+    LocalDateTime end = start.plusHours(1);
+
+    apptResource.setStart(java.sql.Timestamp.valueOf(start));
+    apptResource.setEnd(java.sql.Timestamp.valueOf(end));
+
+    apptResource.setParticipant(aPList);
+
+
+    return newEntry(bundle, apptResource, apptResource.getId());
+
+  }
+
+
 
   /**
    * Convert the given Person into a JSON String, containing a FHIR Bundle of the Person and the
@@ -2627,20 +2912,118 @@ public class FhirR4 {
     }
   }
 
-  /**
-   * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
-   *
-   * @param person         The Person
-   * @param personEntry    The Entry for the Person
-   * @param bundle         Bundle to add the CarePlan to
-   * @param encounterEntry Current Encounter entry
-   * @param provider       The current provider
-   * @param carePlan       The CarePlan to map to FHIR and add to the bundle
-   * @return The added Entry
-   */
+  private static BundleEntryComponent rootCarePlan(Person person,
+                                                   BundleEntryComponent personEntry, Bundle bundle) {
+
+    org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
+    careplanResource.setIntent(CarePlanIntent.PLAN);
+    careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    careplanResource.setStatus(CarePlanStatus.ACTIVE);
+
+    careplanResource.addCategory(mapCodeToCodeableConcept(
+            new Code("http://hl7.org/fhir/us/core/CodeSystem/careplan-category", "root-assess-plan",
+                    null), null));
+
+
+    return newEntry(bundle, careplanResource,  String.valueOf(UUID.randomUUID()));
+  }
+
+  private static BundleEntryComponent childCarePlan(Person person,
+                                                    BundleEntryComponent personEntry, Bundle bundle,
+                                                    BundleEntryComponent parentCarePlan,
+                                                    BundleEntryComponent rootCarePlan,
+                                                    String childCode) {
+
+    org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
+    careplanResource.setIntent(CarePlanIntent.PROPOSAL);
+    careplanResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+    careplanResource.addCategory(mapCodeToCodeableConcept(
+            new Code("http://hl7.org/fhir/us/core/CodeSystem/careplan-category", childCode +"-assess-plan",
+                    null), null));
+
+    careplanResource.setStatus(CarePlanStatus.COMPLETED);
+
+    List<Reference> partOfCarePlans = new ArrayList<>();
+    partOfCarePlans.add(new Reference(parentCarePlan.getFullUrl()));
+    careplanResource.setPartOf(partOfCarePlans);
+
+    List<Reference> basedOfCarePlans = new ArrayList<>();
+    basedOfCarePlans.add(new Reference(rootCarePlan.getFullUrl()));
+
+    careplanResource.setBasedOn(basedOfCarePlans);
+
+
+    return newEntry(bundle, careplanResource, String.valueOf(UUID.randomUUID()));
+  }
+
+  private static BundleEntryComponent task(Person person,
+                                           BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent rootCarePlanEntry) {
+
+    org.hl7.fhir.r4.model.Task taskResource = new Task();
+
+    // add status
+    taskResource.setStatus(Task.TaskStatus.ACCEPTED);
+
+    //add intent
+    taskResource.setIntent(Task.TaskIntent.PLAN);
+
+    // add priority
+    taskResource.setPriority(Task.TaskPriority.ROUTINE);
+
+    // add references to root care plan
+    List<Reference> basedOnReferences = new ArrayList<>();
+    basedOnReferences.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    taskResource.setBasedOn(basedOnReferences);
+
+    // set owner
+    taskResource.setOwner(new Reference(personEntry.getFullUrl()));
+
+
+    return newEntry(bundle, taskResource, String.valueOf(UUID.randomUUID()));
+  }
+
+  private static BundleEntryComponent serviceRequest(Person person,
+                                           BundleEntryComponent personEntry,
+                                           Bundle bundle, BundleEntryComponent rootCarePlanEntry) {
+    org.hl7.fhir.r4.model.ServiceRequest serviceRequestResource = new ServiceRequest();
+
+    // set status
+    serviceRequestResource.setStatus(ServiceRequest.ServiceRequestStatus.ACTIVE);
+
+    // set priority
+    serviceRequestResource.setPriority(ServiceRequest.ServiceRequestPriority.ROUTINE);
+
+    // set intent
+    serviceRequestResource.setIntent(ServiceRequest.ServiceRequestIntent.PLAN);
+
+    // add references to root care plan
+    List<Reference> basedOnReferences = new ArrayList<>();
+    basedOnReferences.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    serviceRequestResource.setBasedOn(basedOnReferences);
+
+    // set subject
+    serviceRequestResource.setSubject(new Reference(personEntry.getFullUrl()));
+
+
+    return newEntry(bundle, serviceRequestResource, String.valueOf(UUID.randomUUID()));
+  }
+    /**
+     * Map the given CarePlan to a FHIR CarePlan resource, and add it to the given Bundle.
+     *
+     * @param person         The Person
+     * @param personEntry    The Entry for the Person
+     * @param bundle         Bundle to add the CarePlan to
+     * @param encounterEntry Current Encounter entry
+     * @param provider       The current provider
+     * @param carePlan       The CarePlan to map to FHIR and add to the bundle
+     * @return The added Entry
+     */
   private static BundleEntryComponent carePlan(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
-          Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan) {
+          Provider provider, BundleEntryComponent careTeamEntry, CarePlan carePlan, BundleEntryComponent rootCarePlanEntry) {
     org.hl7.fhir.r4.model.CarePlan careplanResource = new org.hl7.fhir.r4.model.CarePlan();
 
     if (USE_US_CORE_IG) {
@@ -2735,6 +3118,12 @@ public class FhirR4 {
 
     careplanResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
         .setDiv(new XhtmlNode(NodeType.Element).setValue(narrative)));
+
+    // set basedon
+    List<Reference> basedOnRefs = new ArrayList<>();
+    basedOnRefs.add(new Reference(rootCarePlanEntry.getFullUrl()));
+    careplanResource.setBasedOn(basedOnRefs);
+    careplanResource.setPartOf(basedOnRefs);
 
     return newEntry(bundle, careplanResource, carePlan.uuid.toString());
   }
