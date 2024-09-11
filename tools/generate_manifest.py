@@ -1,8 +1,9 @@
 import os
 import json
+import re
 
 # Configuration
-base_url = "http://fileserver:8080"
+base_url = "http://fileserver:8000"
 input_format = "application/fhir+ndjson"
 output_directory = "../output/fhir/"
 
@@ -39,6 +40,7 @@ def generate_manifest(base_url, input_format, output_directory):
     for filename in os.listdir(output_directory):
         if filename.endswith(".ndjson"):
             resource_type = os.path.splitext(filename)[0]
+            resource_type = re.match(r'^[a-zA-Z]+', resource_type).group(0)
             file_url = f"{base_url}/{filename}"
             
             parameters["parameter"][3]["part"].append({
