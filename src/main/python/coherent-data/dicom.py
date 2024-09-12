@@ -1,5 +1,5 @@
 import numpy as np
-
+import json
 import pydicom
 from pydicom.dataset import Dataset, FileMetaDataset
 from pydicom.sequence import Sequence
@@ -9,6 +9,30 @@ from pydicom.datadict import add_dict_entry
 # https://dicom.innolitics.com/ciods/photoacoustic-image/sop-common/0008001c
 # values are YES and NO
 add_dict_entry(tag=0x0008001C, VR="CS", keyword="SyntheticData", description="Synthetic Data Attribute")
+
+
+def uid(category, obj):
+    # https://stackoverflow.com/a/46316162
+    # B.1 Organizationally Derived UID:
+    # The following example presents a particular choice made by a specific organization in defining its suffix to guarantee uniqueness of a SOP Instance UID.
+    # "1.2.840.xxxxx.3.152.235.2.12.187636473"
+    # In this example, the root is:
+    #     1 Identifies ISO
+    #     2 Identifies ANSI Member Body
+    #     840 Country code of a specific Member Body (U.S. for ANSI)
+    #     xxxxx Identifies a specific Organization.(assigned by ANSI)
+    # In this example the first two components of the suffix relate to the identification of the device:
+    #     3 Manufacturer defined device type
+    #     152 Manufacturer defined serial number
+    # The remaining four components of the suffix relate to the identification of the image:
+    #     235 Study number
+    #     2 Series number
+    #     12 Image number
+    #     187636473 Encoded date and time stamp of image acquisition
+
+    # we use the hash() function just to get unique-enough numbers
+
+    return f"1.2.840.99999999.{abs(hash(category))}.{abs(hash(json.dumps(obj, sort_keys=True)))}"
 
 # to create these templates based on an existing image,
 # run `pydicom codify <path-to-source-dcm>` 
@@ -44,7 +68,6 @@ def create_dataset_common(image, imaging_study, context):
     ds.InstanceNumber = str(context['instance']['number'])
     laterality = 'L' if context['laterality'] == 'OS' else 'R'
     ds.ImageLaterality = laterality
-    ds.ImageLaterality = laterality
     ds.AccessionNumber = ''
 
     ds.PupilDilated = 'YES'
@@ -54,6 +77,14 @@ def create_dataset_common(image, imaging_study, context):
     ds.HorizontalFieldOfView = None
     ds.EmmetropicMagnification = None
     ds.RefractiveStateSequence = None
+
+    ds.Manufacturer = 'GenericMfr'
+    ds.InstitutionName = 'Generic'
+    ds.ReferringPhysicianName = ''
+    ds.StationName = 'VM'
+    ds.InstitutionalDepartmentName = 'GPM'
+    ds.OperatorsName = 'admin'
+    ds.ManufacturerModelName = 'GenericDevice'
 
     ds.Rows = image.height
     ds.Columns = image.width
@@ -76,7 +107,7 @@ def create_oct_dicom(image, imaging_study, context):
     file_meta.FileMetaInformationGroupLength = 196
     file_meta.FileMetaInformationVersion = b'\x00\x01'
     file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.4'
-    file_meta.MediaStorageSOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.17'
+    file_meta.MediaStorageSOPInstanceUID = uid("MediaStorageSOPInstanceUID", imaging_study)
     file_meta.TransferSyntaxUID = '1.2.840.10008.1.2.1'
     file_meta.ImplementationClassUID = '1.2.392.200106.1651.6.2'
     file_meta.ImplementationVersionName = 'TP_STO_IM6_100'
@@ -84,7 +115,6 @@ def create_oct_dicom(image, imaging_study, context):
     # Main data elements
     ds = create_dataset_common(image, imaging_study, context)
     ds.file_meta = file_meta
-    # import pdb; pdb.set_trace()
     ds.SpecificCharacterSet = 'ISO_IR 100'
     ds.ImageType = ['ORIGINAL', 'PRIMARY', '']
     ds.SOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.4'
@@ -94,14 +124,7 @@ def create_oct_dicom(image, imaging_study, context):
     ds.AcquisitionContextSequence = None
 
     ds.Modality = 'OPT'
-    ds.Manufacturer = 'GenericMfr'
-    ds.InstitutionName = 'Generic'
-    ds.ReferringPhysicianName = ''
-    ds.StationName = 'VM'
     ds.SeriesDescription = 'OCT'
-    ds.InstitutionalDepartmentName = 'GPM'
-    ds.OperatorsName = 'admin'
-    ds.ManufacturerModelName = 'GenericDevice'
 
     # Anatomic Region Sequence
     anatomic_region_sequence = Sequence()
@@ -118,18 +141,18 @@ def create_oct_dicom(image, imaging_study, context):
     ds.DeviceSerialNumber = '3070395'
     ds.SoftwareVersions = '2.54.24153'
     ds.SynchronizationTrigger = 'NO TRIGGER'
-    ds.DateOfLastCalibration = '20220822'
+    ds.DateOfLastCalibration = '20200822'
     ds.TimeOfLastCalibration = '093900'
     ds.AcquisitionTimeSynchronized = 'N'
     ds.DetectorType = 'CCD'
     ds.AcquisitionDuration = 0.0
 
-    ds.FrameOfReferenceUID = '1.2.392.200106.1651.6.2.1.20231214124222'
+    ds.FrameOfReferenceUID = uid("FrameOfReferenceUID", imaging_study)
 
-    ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
-    ds.SOPInstanceUIDOfConcatenationSource = '1.2.392.200106.1651.6.2.1803921148151.45272.2.2'
+    ds.SynchronizationFrameOfReferenceUID = uid("SynchronizationFrameOfReferenceUID", imaging_study)
+    ds.SOPInstanceUIDOfConcatenationSource = uid("SOPInstanceUIDOfConcatenationSource", imaging_study)
     ds.PositionReferenceIndicator = ''
-    ds.ConcatenationUID = '1.2.392.200106.1651.6.2.1803921148151.45272.2.2'
+    ds.ConcatenationUID = uid("ConcatenationUID", imaging_study)
     ds.ConcatenationFrameOffsetNumber = 0
     ds.InConcatenationNumber = 1
     ds.InConcatenationTotalNumber = 1
@@ -174,76 +197,6 @@ def create_oct_dicom(image, imaging_study, context):
     shared_functional_groups1 = Dataset()
     shared_functional_groups_sequence.append(shared_functional_groups1)
 
-    # Referenced Image Sequence
-    refd_image_sequence = Sequence()
-    shared_functional_groups1.ReferencedImageSequence = refd_image_sequence
-
-    # Referenced Image Sequence: Referenced Image 1
-    refd_image1 = Dataset()
-    refd_image_sequence.append(refd_image1)
-    refd_image1.ReferencedSOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
-    refd_image1.ReferencedSOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
-
-    # Purpose of Reference Code Sequence
-    purpose_of_ref_code_sequence = Sequence()
-    refd_image1.PurposeOfReferenceCodeSequence = purpose_of_ref_code_sequence
-
-    # Purpose of Reference Code Sequence: Purpose of Reference Code 1
-    purpose_of_ref_code1 = Dataset()
-    purpose_of_ref_code_sequence.append(purpose_of_ref_code1)
-    purpose_of_ref_code1.CodeValue = '121311'
-    purpose_of_ref_code1.CodingSchemeDesignator = 'DCM'
-    purpose_of_ref_code1.CodeMeaning = 'Localizer'
-
-
-    # Derivation Image Sequence
-    derivation_image_sequence = Sequence()
-    shared_functional_groups1.DerivationImageSequence = derivation_image_sequence
-
-
-    # Frame Anatomy Sequence
-    frame_anatomy_sequence = Sequence()
-    shared_functional_groups1.FrameAnatomySequence = frame_anatomy_sequence
-
-    # Frame Anatomy Sequence: Frame Anatomy 1
-    frame_anatomy1 = Dataset()
-    frame_anatomy_sequence.append(frame_anatomy1)
-
-    # Anatomic Region Sequence
-    anatomic_region_sequence = Sequence()
-    frame_anatomy1.AnatomicRegionSequence = anatomic_region_sequence
-
-    # Anatomic Region Sequence: Anatomic Region 1
-    anatomic_region1 = Dataset()
-    anatomic_region_sequence.append(anatomic_region1)
-    anatomic_region1.CodeValue = 'T-AA610'
-    anatomic_region1.CodingSchemeDesignator = '1C SRT'
-    anatomic_region1.CodeMeaning = 'Retina'
-
-    frame_anatomy1.FrameLaterality = 'R'
-
-
-    # Plane Orientation Sequence
-    plane_orientation_sequence = Sequence()
-    shared_functional_groups1.PlaneOrientationSequence = plane_orientation_sequence
-
-    # Plane Orientation Sequence: Plane Orientation 1
-    plane_orientation1 = Dataset()
-    plane_orientation_sequence.append(plane_orientation1)
-    plane_orientation1.ImageOrientationPatient = [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]
-
-
-    # Pixel Measures Sequence
-    pixel_measures_sequence = Sequence()
-    shared_functional_groups1.PixelMeasuresSequence = pixel_measures_sequence
-
-    # Pixel Measures Sequence: Pixel Measures 1
-    pixel_measures1 = Dataset()
-    pixel_measures_sequence.append(pixel_measures1)
-    pixel_measures1.SliceThickness = '0.0703125'
-    pixel_measures1.PixelSpacing = [0.002600, 0.023438]
-
-
     # Per-frame Functional Groups Sequence
     per_frame_functional_groups_sequence = Sequence()
     ds.PerFrameFunctionalGroupsSequence = per_frame_functional_groups_sequence
@@ -252,69 +205,17 @@ def create_oct_dicom(image, imaging_study, context):
     per_frame_functional_groups1 = Dataset()
     per_frame_functional_groups_sequence.append(per_frame_functional_groups1)
 
-    # Frame Content Sequence
-    frame_content_sequence = Sequence()
-    per_frame_functional_groups1.FrameContentSequence = frame_content_sequence
-
-    # Frame Content Sequence: Frame Content 1
-    frame_content1 = Dataset()
-    frame_content_sequence.append(frame_content1)
-    frame_content1.StackID = '1'
-    frame_content1.InStackPositionNumber = 1
-    frame_content1.DimensionIndexValues = [1, 1]
 
     # Dimension Organization Sequence
     dimension_organization_sequence = Sequence()
     ds.DimensionOrganizationSequence = dimension_organization_sequence
 
+    ds.DimensionOrganizationType = '3D'
+
     # Dimension Organization Sequence: Dimension Organization 1
     dimension_organization1 = Dataset()
     dimension_organization_sequence.append(dimension_organization1)
-    dimension_organization1.DimensionOrganizationUID = '@@@'
-
-    # Plane Position Sequence
-    plane_position_sequence = Sequence()
-    per_frame_functional_groups1.PlanePositionSequence = plane_position_sequence
-
-    # Plane Position Sequence: Plane Position 1
-    plane_position1 = Dataset()
-    plane_position_sequence.append(plane_position1)
-    plane_position1.ImagePositionPatient = None
-
-    # Purpose of Reference Code Sequence
-    purpose_of_ref_code_sequence = Sequence()
-    plane_position1.PurposeOfReferenceCodeSequence = purpose_of_ref_code_sequence
-
-    # Purpose of Reference Code Sequence: Purpose of Reference Code 1
-    purpose_of_ref_code1 = Dataset()
-    purpose_of_ref_code_sequence.append(purpose_of_ref_code1)
-    purpose_of_ref_code1.CodeValue = '121311'
-    purpose_of_ref_code1.CodingSchemeDesignator = 'DCM'
-    purpose_of_ref_code1.CodeMeaning = 'Localizer'
-
-
-    # Ophthalmic Frame Location Sequence
-    ophthalmic_frame_location_sequence = Sequence()
-    per_frame_functional_groups1.OphthalmicFrameLocationSequence = ophthalmic_frame_location_sequence
-
-    # Ophthalmic Frame Location Sequence: Ophthalmic Frame Location 1
-    ophthalmic_frame_location1 = Dataset()
-    ophthalmic_frame_location_sequence.append(ophthalmic_frame_location1)
-    ophthalmic_frame_location1.ReferencedSOPClassUID = '1.2.840.10008.5.1.4.1.1.77.1.5.1'
-    ophthalmic_frame_location1.ReferencedSOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
-    ophthalmic_frame_location1.ReferenceCoordinates = [296.0, 371.0, 296.0, 2165.0]
-    ophthalmic_frame_location1.OphthalmicImageOrientation = 'LINEAR'
-
-    # Purpose of Reference Code Sequence
-    purpose_of_ref_code_sequence = Sequence()
-    ophthalmic_frame_location1.PurposeOfReferenceCodeSequence = purpose_of_ref_code_sequence
-
-    # Purpose of Reference Code Sequence: Purpose of Reference Code 1
-    purpose_of_ref_code1 = Dataset()
-    purpose_of_ref_code_sequence.append(purpose_of_ref_code1)
-    purpose_of_ref_code1.CodeValue = '121311'
-    purpose_of_ref_code1.CodingSchemeDesignator = 'DCM'
-    purpose_of_ref_code1.CodeMeaning = 'Localizer'
+    dimension_organization1.DimensionOrganizationUID = uid("DimensionOrganizationUID", imaging_study)
 
     
     ds.is_implicit_VR = False
@@ -344,12 +245,7 @@ def create_fundus_dicom(image, imaging_study, context):
     ds.SOPInstanceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542.14'
 
     ds.Modality = 'OP'
-    # ds.ConversionType = 'WSD'
-    ds.Manufacturer = 'Topcon Healthcare'
-    ds.InstitutionName = 'THINC'
-    ds.ReferringPhysicianName = ''
     ds.SeriesDescription = 'Fundus'
-    ds.ManufacturerModelName = 'Maestro2'
 
     ds.IlluminationTypeCodeSequence = None
     ds.LightPathFilterTypeStackCodeSequence = None
@@ -377,7 +273,7 @@ def create_fundus_dicom(image, imaging_study, context):
     ds.AcquisitionTimeSynchronized = 'N'
 
     ds.PatientOrientation = ['L', 'F']
-    ds.SynchronizationFrameOfReferenceUID = '1.2.392.200106.1651.6.2.1803921148151.3911546542'
+    ds.SynchronizationFrameOfReferenceUID = uid("SynchronizationFrameOfReferenceUID", imaging_study)
     ds.PatientEyeMovementCommanded = 'NO'
     ds.DetectorType = ''
     # Acquisition Device Type Code Sequence
