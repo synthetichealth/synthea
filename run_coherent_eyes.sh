@@ -56,7 +56,7 @@ years_of_history=5
 run_population 10000
 
 python3 find_good_records.py $outputfolder > ./population1000_details.csv 
-python3 select_nei_records.py ./population1000_details.csv > selected_files1000.txt
+python3 select_good_records.py ./population1000_details.csv > selected_files1000.txt
 mkdir selected1000
 ./copy.sh selected_files1000.txt selected1000/
 cp output_population1000/fhir/*Information*.json selected1000
@@ -75,7 +75,7 @@ years_of_history=5
 run_population 1000
 
 python3 find_good_records.py $outputfolder > ./population100_details.csv
-python3 select_nei_records.py ./population100_details.csv > selected_files100.txt
+python3 select_good_records.py ./population100_details.csv > selected_files100.txt
 mkdir selected100
 ./copy.sh selected_files100.txt selected100/
 cp output_population100/fhir/*Information*.json selected100
@@ -91,7 +91,7 @@ years_of_history=0
 run_population 1000
 
 python3 find_good_records.py $outputfolder > ./population10_details.csv
-python3 select_nei_records.py ./population10_details.csv > selected_files10.txt
+python3 select_good_records.py ./population10_details.csv > selected_files10.txt
 mkdir selected10
 ./copy.sh selected_files10.txt selected10/
 cp output_population10/fhir/*Information*.json selected10
