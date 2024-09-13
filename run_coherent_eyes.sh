@@ -3,6 +3,13 @@ set -e
 
 basedir=`pwd`
 
+rm -rf selected1000/ selected100/ selected10/
+
+python3 -m venv ./venv/
+source ./venv/bin/activate
+python3 -m pip install -r src/main/python/coherent-data/requirements.txt
+
+
 base_run_synthea () {
     ./run_synthea -a 55-70 \
                   -fm src/test/resources/flexporter/eyes_on_fhir.yaml \
@@ -27,13 +34,6 @@ run_population () {
   base_run_synthea -p $((popcount / 2)) -k keep_npdr_no_pdr.json
   base_run_synthea -p $((popcount / 4)) -k keep_pdr.json
 }
-
-
-python3 -m venv ./venv/
-source ./venv/bin/activate
-python3 -m pip install -r src/main/python/coherent-data/requirements.txt
-
-rm -rf selected1000/ selected100/ selected10/
 
 # all populations have:
 # 25% diabetes but no DR
@@ -100,15 +100,13 @@ mkdir selected10
 ./copy.sh selected_files10.txt selected10/
 cp output_population10/fhir/*Information*.json selected10
 
+## IMPORTANT: this last one was manually curated, I put results are in the subfolder keep/
 
-# cd src/main/python/coherent-data/
-# source ./venv/bin/activate
+cd src/main/python/coherent-data/
 
-# ./venv/bin/python associate_images.py ${basedir}/images/fundus_index.csv ${basedir}/images/oct_index.csv ${basedir}/output/fhir --clean --output ${basedir}/coherent_eyes
+./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected10/keep --clean --add_dup_images --output ${basedir}/coherent_eyes10
+./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected100/ --clean --image_limit 2 --output ${basedir}/coherent_eyes100
+./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected1000/ --clean --image_limit 1 --reuse_images --output ${basedir}/coherent_eyes1000
 
-# # ./venv/bin/python associate_images.py ${basedir}/images/fundus_index.csv ${basedir}/images/oct_index.csv ${basedir}/samples --clean --output ${basedir}/coherent_eyes
-
-# rm ${basedir}/dicom_errors.txt
-
-# validate_iods --verbose /Users/dehall/synthea/nei/coherent_eyes/dicom/Annabel185_Lettie611_Fisher429_af88404e-aad1-c9cb-3e7f-07daf0e44eac_fundus_1.2.840.99999999.10633938.1562002233954_1.2.840.99999999.1.1.99330560.1562002233954.dcm > ${basedir}/dicom_errors.txt
-# validate_iods --verbose /Users/dehall/synthea/nei/coherent_eyes/dicom/Annabel185_Lettie611_Fisher429_af88404e-aad1-c9cb-3e7f-07daf0e44eac_OCT_1.2.840.99999999.11240513.1609790227954_1.2.840.99999999.1.1.66970829.1609790227954.dcm >> ${basedir}/dicom_errors.txt
+# Note tool to validate dicoms:
+# validate_iods --verbose coherent_eyes/dicom/Annabel185_Lettie611_Fisher429_af88404e-aad1-c9cb-3e7f-07daf0e44eac_fundus_1.2.840.99999999.10633938.1562002233954_1.2.840.99999999.1.1.99330560.1562002233954.dcm > ${basedir}/dicom_errors.txt

@@ -1,4 +1,4 @@
 pandas==1.5.3
 numpy==1.26.4
 pillow==10.2.0
-pydicom==2.4.4
+pydicom==3.0.0

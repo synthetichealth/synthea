@@ -57,6 +57,25 @@ def parse_args():
         default="./output",
         help="Output directory",
     )
+    parser.add_argument(
+        "--reuse_images",
+        dest="reuse_images",
+        action="store_true",
+        help="Reuse images between patients",
+    )
+    parser.add_argument(
+        "--add_dup_images",
+        dest="add_dup_images",
+        action="store_true",
+        help="Add DICOM and FHIR Media for duplicate images (eg, when there's more than one ImagingStudy with no change in disease state)",
+    )
+    parser.add_argument(
+        "--image_limit",
+        dest="image_limit",
+        type=float,
+        default=float('inf'),
+        help="Maximum number of images to associate, default: no limit",
+    )
 
     args = parser.parse_args()
     return args
@@ -81,7 +100,12 @@ def main():
     for file in fhir_jsons:
         if 'hospitalInformation' in file or 'practitionerInformation' in file:
             continue
-        process_file(file, fundus_index, oct_index, args.output)
+        process_file(file, fundus_index, oct_index, args.output, args)
+
+        if args.reuse_images:
+            fundus_index['selected'] = False
+            oct_index['selected'] = False
+
 
 def clean(output):
     outputpath = Path(output)
@@ -94,7 +118,7 @@ def clean(output):
     (outputpath / '.keep').touch()
 
 
-def process_file(file, fundus_index, oct_index, output):
+def process_file(file, fundus_index, oct_index, output, args):
     print(f"Processing {file}")
     with open(file) as f:
         bundle = json.load(f)
@@ -104,6 +128,7 @@ def process_file(file, fundus_index, oct_index, output):
     diag_reports = []
     diagnoses = { 'npdr': None, 'pdr': None, 'dme': None }
     observations = []
+    added_img_count = 0
 
     for entry in bundle['entry']:
         resource = entry['resource']
@@ -136,14 +161,14 @@ def process_file(file, fundus_index, oct_index, output):
     if not imaging_studies:
         return
 
-    # import pdb; pdb.set_trace()
-
-    # print(f"Found {len(imaging_studies)} imaging studies")
 
     previous_context = None
     previous_image = { 'OCT': [None, None], 'fundus': [None, None] }
 
     for i in range(len(imaging_studies)):
+        if added_img_count > args.image_limit:
+            break
+
         imaging_study = imaging_studies[i]
         diag_report = diag_reports[i]
         # these should always be 1:1
@@ -164,6 +189,9 @@ def process_file(file, fundus_index, oct_index, output):
                 previous_image[img_type][index] = None
                 continue
 
+            if not args.add_dup_images and image == previous_image[img_type][index]:
+                continue
+
             dicom = create_dicom(image, imaging_study, context)
             dicom_uid = imaging_study['identifier'][0]['value'][8:]  # cut off urn:uuid:
             instance_uid = context['instance']['uid']
@@ -176,6 +204,7 @@ def process_file(file, fundus_index, oct_index, output):
             media = create_fhir_media(context, imaging_study, image, dicom)
             bundle['entry'].append(wrap_in_entry(media))
             previous_image[img_type][index] = image
+            added_img_count = added_img_count + 1
 
         previous_context = context
 
@@ -249,6 +278,7 @@ def pick_image(fundus_index, oct_index, context):
     index.at[selected.index[0], 'selected'] = True
 
     path = selected['File Path'].iat[0]
+    print(f"Loading image from {path}")
     image = Image.open(path)
 
     return image
@@ -259,43 +289,17 @@ def filter_oct_index(oct_index, context):
     # CNV = Choroidal neovascularization
     # DME = diabetic macular edema
 
-    if context['dme']:
+    if context['dme'] or context['pdr']:
         oct_index = oct_index[oct_index['Class'] == 'DME']
-    elif context['pdr']:
-        oct_index = oct_index[oct_index['Class'] == 'CNV']
     else:
         oct_index = oct_index[oct_index['Class'] == 'Normal']
 
     return oct_index
 
 
-# def filter_fundus_index(fundus_index, context):
-#     # fundus_index items are 0/1
-#     # DR = diabetic retinopathy
-#     # MH = macular hole
-#     # DN = ??
-#     # BRVO = Branch Retinal Vein Occlusion
-#     # ODC = Optic Disc Coloboma?
-#     # ODE = Optic disc edema?
-#     # (there were more but i deleted all columns with all 0s)
-
-#     if context['npdr']:
-#         fundus_index = fundus_index[fundus_index['DR'] == '1']
-#     else:
-#         fundus_index = fundus_index[fundus_index['DR'] == '0']
-
-#     return fundus_index
-
 def filter_fundus_index(fundus_index, context):
-    # Retinopathy grade = lines up to our stages
-    # Risk of macular edema = unclear. seems like 0 = no DME, 1/2 = DME
-
-    fundus_index = fundus_index[fundus_index['Retinopathy grade'] == context['dr_stage']]
-
-    if context['dme']:
-        fundus_index = fundus_index[fundus_index['Risk of macular edema'] != '0']
-    else:
-        fundus_index = fundus_index[fundus_index['Risk of macular edema'] == '0']
+    # dr_stage = lines up to our stages
+    fundus_index = fundus_index[fundus_index['dr_stage'] == context['dr_stage']]
 
     return fundus_index
 
