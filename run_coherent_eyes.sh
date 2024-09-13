@@ -104,9 +104,14 @@ cp output_population10/fhir/*Information*.json selected10
 
 cd src/main/python/coherent-data/
 
-./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected10/keep --clean --add_dup_images --output ${basedir}/coherent_eyes10
+./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected10 --clean --add_dup_images --output ${basedir}/coherent_eyes10
+cp ${basedir}/selected10/*Information*.json ${basedir}/coherent_eyes10/fhir/
+
 ./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected100/ --clean --image_limit 2 --output ${basedir}/coherent_eyes100
+cp ${basedir}/selected100/*Information*.json ${basedir}/coherent_eyes100/fhir/
+
 ./venv/bin/python associate_images.py ${basedir}/images/Model1_250step/index.csv ${basedir}/images/oct_index.csv ${basedir}/selected1000/ --clean --image_limit 1 --reuse_images --output ${basedir}/coherent_eyes1000
+cp ${basedir}/selected1000/*Information*.json ${basedir}/coherent_eyes1000/fhir/
 
 # Note tool to validate dicoms:
 # validate_iods --verbose coherent_eyes/dicom/Annabel185_Lettie611_Fisher429_af88404e-aad1-c9cb-3e7f-07daf0e44eac_fundus_1.2.840.99999999.10633938.1562002233954_1.2.840.99999999.1.1.99330560.1562002233954.dcm > ${basedir}/dicom_errors.txt
