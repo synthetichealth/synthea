@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 basedir=`pwd`
 
@@ -28,6 +29,9 @@ run_population () {
 }
 
 
+python3 -m venv ./venv/
+source ./venv/bin/activate
+python3 -m pip install -r src/main/python/coherent-data/requirements.txt
 
 rm -rf selected1000/ selected100/ selected10/
 
@@ -49,7 +53,7 @@ cat deleted_modules.txt | xargs rm -f
 # population 1
 # 1000 records with 5-year history and only relevant conditions enabled
 outputfolder="./output_population1000"
-rm -r $outputfolder
+rm -rf $outputfolder
 seed=12345
 location=Massachusetts
 years_of_history=5
@@ -68,7 +72,7 @@ cat deleted_modules.txt | xargs git restore
 # population 2
 # 100 records with 5 year history and all conditions enabled
 outputfolder="./output_population100"
-rm -r $outputfolder
+rm -rf $outputfolder
 seed=98765
 location=Virginia
 years_of_history=5
@@ -84,7 +88,7 @@ cp output_population100/fhir/*Information*.json selected100
 # population 3
 # 5-10 curated records with full history and all conditions enabled
 outputfolder="./output_population10"
-rm -r $outputfolder
+rm -rf $outputfolder
 seed=4444
 location=Washington
 years_of_history=0
