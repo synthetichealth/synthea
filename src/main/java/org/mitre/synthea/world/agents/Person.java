@@ -87,6 +87,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String SMOKER = "smoker";
   public static final String ALCOHOLIC = "alcoholic";
   public static final String ADHERENCE = "adherence";
+  // Personnummer from hl7.se
+  public static final String IDENTIFIER_PNR = "identifier_personnummer"; // http://electronichealth.se/identifier/personnummer
   public static final String IDENTIFIER_SSN = "identifier_ssn";
   public static final String IDENTIFIER_DRIVERS = "identifier_drivers";
   public static final String IDENTIFIER_PASSPORT = "identifier_passport";

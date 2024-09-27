@@ -13,6 +13,7 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.helpers.Attributes;
 import org.mitre.synthea.helpers.Attributes.Inventory;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.PersonnummerGenerator;
 import org.mitre.synthea.helpers.PhysiologyValueGenerator;
 import org.mitre.synthea.helpers.RandomCollection;
 import org.mitre.synthea.helpers.SimpleCSV;
@@ -157,8 +158,9 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
 
-      String phoneNumber = "555-" + ((person.randInt(999 - 100 + 1) + 100)) + "-"
-          + ((person.randInt(9999 - 1000 + 1) + 1000));
+      String phoneNumber = "+46 7" + (person.randInt(9)) + " " +
+          (person.randInt(899) + 100) + " " +
+          (person.randInt(8999) + 1000);
       attributes.put(Person.TELECOM, phoneNumber);
 
       boolean hasStreetAddress2 = person.rand() < 0.5;
@@ -178,9 +180,14 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
 
+    // TODO: Remove when fully moved to PNR
     String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
         + ((person.randInt(9999 - 1000 + 1) + 1000));
     attributes.put(Person.IDENTIFIER_SSN, ssn);
+
+    System.out.println("time: " + time + " gender: " + gender);
+    String pnr = PersonnummerGenerator.generateUniquePersonnummer(time, gender);
+    attributes.put(Person.IDENTIFIER_PNR, pnr);
 
     String city = (String) attributes.get(Person.CITY);
     Location location = (Location) attributes.get(Person.LOCATION);

@@ -557,6 +557,12 @@ public class FhirR4 {
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
+    Code pnrCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "PN", "Personnummer");
+    patientResource.addIdentifier()
+        .setType(mapCodeToCodeableConcept(pnrCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
+        .setSystem("http://electronichealth.se/identifier/personnummer")
+        .setValue((String) person.attributes.get(Person.IDENTIFIER_PNR));
+
     Code ssnCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "SS", "Social Security Number");
     patientResource.addIdentifier()
         .setType(mapCodeToCodeableConcept(ssnCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))

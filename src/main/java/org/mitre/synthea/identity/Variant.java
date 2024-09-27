@@ -11,14 +11,19 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A representation of demographic information for a person. The expectation is that it will be a
- * deviation from its associated Seed, reproducing the variability usually observed in demographic
- * data, such as nicknames, typos, or even placeholder values. Variant information is only used for
- * supplying information to write into the exported record, so it can contain an incorrect date of
+ * A representation of demographic information for a person. The expectation is
+ * that it will be a
+ * deviation from its associated Seed, reproducing the variability usually
+ * observed in demographic
+ * data, such as nicknames, typos, or even placeholder values. Variant
+ * information is only used for
+ * supplying information to write into the exported record, so it can contain an
+ * incorrect date of
  * birth or non-existent city.
  * <p>
- *   Variants may be sparsely populated. If a value for a field is null, it will pull the value from
- *   the associated seed.
+ * Variants may be sparsely populated. If a value for a field is null, it will
+ * pull the value from
+ * the associated seed.
  * </p>
  */
 public class Variant implements IdentityRecord {
@@ -32,6 +37,7 @@ public class Variant implements IdentityRecord {
   private String zipCode;
   private LocalDate dateOfBirth;
   private String gender;
+  private String personnummer;
   private String socialSecurityNumber;
   private transient Seed seed;
 
@@ -48,8 +54,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the given name for the variant. If null, will return the given name of the associated
+   * Gets the given name for the variant. If null, will return the given name of
+   * the associated
    * seed
+   * 
    * @return the given name
    */
   public String getGivenName() {
@@ -64,8 +72,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the family name for the variant. If null, will return the family name of the associated
+   * Gets the family name for the variant. If null, will return the family name of
+   * the associated
    * seed
+   * 
    * @return the family name
    */
   public String getFamilyName() {
@@ -80,8 +90,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the phone number for the variant. If null, will return the phone number of the associated
+   * Gets the phone number for the variant. If null, will return the phone number
+   * of the associated
    * seed
+   * 
    * @return the phone number
    */
   public String getPhone() {
@@ -96,8 +108,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the address lines for the variant. If null, will return the address lines of the
+   * Gets the address lines for the variant. If null, will return the address
+   * lines of the
    * associated seed
+   * 
    * @return the address lines
    */
   public List<String> getAddressLines() {
@@ -112,8 +126,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the city for the variant. If null, will return the city of the associated
+   * Gets the city for the variant. If null, will return the city of the
+   * associated
    * seed
+   * 
    * @return the city
    */
   public String getCity() {
@@ -128,8 +144,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the state for the variant. If null, will return the state of the associated
+   * Gets the state for the variant. If null, will return the state of the
+   * associated
    * seed
+   * 
    * @return the state
    */
   public String getState() {
@@ -144,8 +162,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the zip code for the variant. If null, will return the zip code of the associated
+   * Gets the zip code for the variant. If null, will return the zip code of the
+   * associated
    * seed
+   * 
    * @return the zip code
    */
   public String getZipCode() {
@@ -160,8 +180,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the date of birth for the variant. If null, will return the date of birth of the
+   * Gets the date of birth for the variant. If null, will return the date of
+   * birth of the
    * associated seed
+   * 
    * @return the date of birth
    */
   public LocalDate getDateOfBirth() {
@@ -176,8 +198,10 @@ public class Variant implements IdentityRecord {
   }
 
   /**
-   * Gets the gender for the variant. If null, will return the gender of the associated
+   * Gets the gender for the variant. If null, will return the gender of the
+   * associated
    * seed
+   * 
    * @return the gender
    */
   public String getGender() {
@@ -217,9 +241,24 @@ public class Variant implements IdentityRecord {
     this.socialSecurityNumber = socialSecurityNumber;
   }
 
+  @Override
+  public String getPersonnummer() {
+    if (personnummer == null) {
+      return this.getSeed().getPersonnummer();
+    }
+
+    return personnummer;
+  }
+
+  public void setPersonnummer(String personnummer) {
+    this.personnummer = personnummer;
+  }
+
   /**
-   * Returns the attributes the Synthea Generator usually fills in for a person. These can be used
+   * Returns the attributes the Synthea Generator usually fills in for a person.
+   * These can be used
    * to overwrite those attributes with information from the fixed record file
+   * 
    * @return a map of person attributes
    */
   public Map<String, Object> demographicAttributesForPerson() {
@@ -238,6 +277,9 @@ public class Variant implements IdentityRecord {
     attributes.put(Person.IDENTIFIER_VARIANT_ID, this.getVariantId());
     if (this.getSocialSecurityNumber() != null) {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
+    }
+    if (this.getPersonnummer() != null) {
+      attributes.put(Person.IDENTIFIER_PNR, this.getPersonnummer());
     }
     return Utilities.cleanMap(attributes);
   }

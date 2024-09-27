@@ -25,4 +25,6 @@ public interface IdentityRecord {
   public long birthdateTimestamp();
 
   public String getSocialSecurityNumber();
+
+  public String getPersonnummer();
 }

@@ -13,18 +13,24 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * A representation of demographic information for an Entity for a period of time. A seed is
- * considered "ground truth" for the simulation. The city and state supplied in the seed are what
+ * A representation of demographic information for an Entity for a period of
+ * time. A seed is
+ * considered "ground truth" for the simulation. The city and state supplied in
+ * the seed are what
  * Synthea will use determine location, which will impact the providers used.
  * <p>
- *   Seeds have an associated Period, which is the time range that they should be used for in the
- *   simulation. The last seed in a Entity should have an open ended Period. That is, the Period
- *   should have an end date set to null. This means that the seed will be used from its start date
- *   until the end of the simulation.
+ * Seeds have an associated Period, which is the time range that they should be
+ * used for in the
+ * simulation. The last seed in a Entity should have an open ended Period. That
+ * is, the Period
+ * should have an end date set to null. This means that the seed will be used
+ * from its start date
+ * until the end of the simulation.
  * </p>
  * <p>
- *   Seeds may have one or more Variants. These variants can be used to capture error or other
- *   deviation from the demographic information in the seeds.
+ * Seeds may have one or more Variants. These variants can be used to capture
+ * error or other
+ * deviation from the demographic information in the seeds.
  * </p>
  */
 public class Seed implements IdentityRecord {
@@ -37,6 +43,7 @@ public class Seed implements IdentityRecord {
   private String city;
   private String state;
   private String zipCode;
+  private String personnummer;
   private String socialSecurityNumber;
   private transient Entity entity;
   private List<Variant> variants;
@@ -94,10 +101,13 @@ public class Seed implements IdentityRecord {
   }
 
   /**
-   * Randomly pick a Variant of this seed, using the source of randomness passed in.
+   * Randomly pick a Variant of this seed, using the source of randomness passed
+   * in.
+   * 
    * @param rng A source of randomness. Likely Person
-   * @return a random Variant. If no variants exist for this Seed, it is wrapped in Variant and
-   *     returned.
+   * @return a random Variant. If no variants exist for this Seed, it is wrapped
+   *         in Variant and
+   *         returned.
    */
   public Variant selectVariant(RandomNumberGenerator rng) {
     if (variants.size() == 0) {
@@ -161,6 +171,15 @@ public class Seed implements IdentityRecord {
   }
 
   @Override
+  public String getPersonnummer() {
+    return personnummer;
+  }
+
+  public void setPersonnummer(String personnummer) {
+    this.personnummer = personnummer;
+  }
+
+  @Override
   public long birthdateTimestamp() {
     return localDateToTimestamp(this.getDateOfBirth());
   }
@@ -170,8 +189,10 @@ public class Seed implements IdentityRecord {
   }
 
   /**
-   * Returns the attributes the Synthea Generator usually fills in for a person. These can be used
+   * Returns the attributes the Synthea Generator usually fills in for a person.
+   * These can be used
    * to overwrite those attributes with information from the fixed record file
+   * 
    * @return a map of person attributes
    */
   public Map<String, Object> demographicAttributesForPerson() {
@@ -190,12 +211,17 @@ public class Seed implements IdentityRecord {
     if (this.getSocialSecurityNumber() != null) {
       attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
     }
+    if (this.getPersonnummer() != null) {
+      attributes.put(Person.IDENTIFIER_PNR, this.getPersonnummer());
+    }
     return Utilities.cleanMap(attributes);
   }
 
   /**
-   * Wrap the Seed in a Variant. Essentially, create a Variant that just uses all of the information
+   * Wrap the Seed in a Variant. Essentially, create a Variant that just uses all
+   * of the information
    * from the Seed.
+   * 
    * @return a Variant that is the same as the Seed
    */
   public Variant toVariant() {

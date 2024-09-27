@@ -7,9 +7,9 @@ if [ -z "$NUM" ]; then
 fi
 
 ./run_synthea \
-  --exporter.fhir.bulk_data true \
+  --exporter.fhir.bulk_data false \
   --exporter.fhir.included_resources \
-  AllergyIntolerance,Condition,Device,DiagnosticReport,DocumentReference,Encounter,Immunization,MedicationRequest,Observation,Patient,Procedure \
+  Patient,Encounter,Observation,Condition \
   -cs 54321 \
   -s 54321 \
   -r 20230403 \
