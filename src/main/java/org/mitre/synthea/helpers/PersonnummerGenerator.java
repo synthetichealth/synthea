@@ -31,64 +31,24 @@ public class PersonnummerGenerator {
         String dateOfBirth = String.format("%04d%02d%02d", year, month, day);
 
         String individualNumber = generateLastfour(gender);
-
         System.out.println(individualNumber);
 
-        String basePnr = dateOfBirth + individualNumber;
-
-        int checksum = calculateLuhnChecksum(basePnr);
-
-        // Return the complete personnummer
         return dateOfBirth + "-" + individualNumber;
     }
 
     private static String generateLastfour(String gender) {
-        int firstTwoDigits = random.nextInt(100); // Generate a number between 0 and 99
+        int firstTwoDigits = random.nextInt(100);
         int thirdDigit;
 
         // Determine the third digit based on gender
         if (gender.equals("M")) {
-            thirdDigit = 1 + random.nextInt(5) * 2 - 1; // Odd number for male
+            thirdDigit = (1 + random.nextInt(5)) * 2 - 1;
         } else {
-            thirdDigit = 0 + random.nextInt(5) * 2; // Even number for female
+            thirdDigit = 0 + random.nextInt(5) * 2;
         }
+        int lastDigit = random.nextInt(10);
 
-        // Generate the last digit
-        int lastDigit = random.nextInt(10); // Generate a number between 0 and 9
-
-        // Combine and format as a 4-character string
-        return String.format("%02d%d%d", firstTwoDigits, thirdDigit, lastDigit).substring(0, 4);
-    }
-
-    // Private helper method to calculate the Luhn checksum
-    private static int calculateLuhnChecksum(String basePnr) {
-        int sum = 0;
-        for (int i = 0; i < basePnr.length(); i++) {
-            int digit = Character.getNumericValue(basePnr.charAt(i));
-            if (i % 2 == 0) { // Double every second digit (starting from index 0)
-                digit *= 2;
-                if (digit > 9) {
-                    digit -= 9; // Subtract 9 from any results over 9
-                }
-            }
-            sum += digit;
-        }
-        return (10 - (sum % 10)) % 10; // Calculate checksum
-    }
-
-    // Private helper method to get the number of days in a given month and year
-    private static int getDaysInMonth(int year, int month) {
-        switch (month) {
-            case 2: // February, check for leap year
-                return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? 29 : 28;
-            case 4:
-            case 6:
-            case 9:
-            case 11: // April, June, September, November
-                return 30;
-            default: // All other months have 31 days
-                return 31;
-        }
+        return String.format("%02d%d%d", firstTwoDigits, thirdDigit, lastDigit);
     }
 
     private static int[] getDateFromTimestamp(long timestamp) {
