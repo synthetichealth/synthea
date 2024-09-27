@@ -19,7 +19,9 @@ public class DMEExporter extends RIFExporter {
 
   /**
    * Construct an exporter for DME claims.
-   * @param exporter the exporter instance that will be used to access code mappers
+   * 
+   * @param exporter the exporter instance that will be used to access code
+   *                 mappers
    */
   public DMEExporter(BB2RIFExporter exporter) {
     super(exporter);
@@ -27,9 +29,10 @@ public class DMEExporter extends RIFExporter {
 
   /**
    * Export DME details for a single person.
-   * @param person the person to export
+   * 
+   * @param person    the person to export
    * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
+   * @param stopTime  end time of simulation
    * @return count of claims exported
    * @throws IOException if something goes wrong
    */
@@ -67,33 +70,33 @@ public class DMEExporter extends RIFExporter {
       fieldValues.put(BB2RIFStructure.DME.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(BB2RIFStructure.DME.CARR_CLM_CNTL_NUM, "" + carrClmId);
       fieldValues.put(BB2RIFStructure.DME.BENE_ID,
-              (String)person.attributes.get(RIFExporter.BB2_BENE_ID));
+          (String) person.attributes.get(RIFExporter.BB2_BENE_ID));
       fieldValues.put(BB2RIFStructure.DME.LINE_HCT_HGB_RSLT_NUM, "" + latestHemoglobin);
       fieldValues.put(BB2RIFStructure.DME.CARR_NUM,
-              CarrierExporter.getCarrier(encounter.provider.state,
-                      BB2RIFStructure.CARRIER.CARR_NUM));
+          CarrierExporter.getCarrier(encounter.provider.state,
+              BB2RIFStructure.CARRIER.CARR_NUM));
       fieldValues.put(BB2RIFStructure.DME.NCH_WKLY_PROC_DT,
-              RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+          RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_NUM,
-              StringUtils.truncate(encounter.provider.cmsProviderNum, 10));
+          StringUtils.truncate(encounter.provider.cmsProviderNum, 10));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_NPI, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.DME.RFR_PHYSN_NPI, encounter.clinician.npi);
       fieldValues.put(BB2RIFStructure.DME.RFR_PHYSN_UPIN,
-              StringUtils.truncate(encounter.provider.cmsUpin, 12));
+          StringUtils.truncate(encounter.provider.cmsUpin, 12));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_SPCLTY,
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
       fieldValues.put(BB2RIFStructure.DME.PRVDR_STATE_CD,
-              exporter.locationMapper.getStateCode(encounter.provider.state));
+          exporter.locationMapper.getStateCode(encounter.provider.state));
       fieldValues.put(BB2RIFStructure.DME.TAX_NUM,
-              BeneficiaryExporter.bb2TaxId(
-                      (String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+          BeneficiaryExporter.bb2TaxId(
+              (String) encounter.clinician.attributes.get(Person.IDENTIFIER_PNR)));
       fieldValues.put(BB2RIFStructure.DME.DMERC_LINE_PRCNG_STATE_CD,
-              exporter.locationMapper.getStateCode((String)person.attributes.get(Person.STATE)));
+          exporter.locationMapper.getStateCode((String) person.attributes.get(Person.STATE)));
       fieldValues.put(BB2RIFStructure.DME.LINE_1ST_EXPNS_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.start));
+          RIFExporter.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(BB2RIFStructure.DME.LINE_LAST_EXPNS_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.stop));
+          RIFExporter.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(BB2RIFStructure.DME.LINE_SRVC_CNT, "" + encounter.claim.items.size());
       fieldValues.put(BB2RIFStructure.DME.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
@@ -129,7 +132,7 @@ public class DMEExporter extends RIFExporter {
       Claim.ClaimEntry subTotals = (encounter.claim).new ClaimEntry(null);
       for (Claim.ClaimEntry lineItem : encounter.claim.items) {
         if (lineItem.entry instanceof HealthRecord.Device
-                || lineItem.entry instanceof HealthRecord.Supply) {
+            || lineItem.entry instanceof HealthRecord.Supply) {
           subTotals.addCosts(lineItem);
         }
       }
@@ -153,7 +156,7 @@ public class DMEExporter extends RIFExporter {
         // Now generate the line items...
         for (Claim.ClaimEntry lineItem : encounter.claim.items) {
           if (!(lineItem.entry instanceof HealthRecord.Device
-                  || lineItem.entry instanceof HealthRecord.Supply)) {
+              || lineItem.entry instanceof HealthRecord.Supply)) {
             continue;
           }
           if (lineItem.entry instanceof HealthRecord.Supply) {
@@ -166,26 +169,27 @@ public class DMEExporter extends RIFExporter {
             continue;
           }
           fieldValues.put(BB2RIFStructure.DME.CLM_FROM_DT,
-                  RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
+              RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
           fieldValues.put(BB2RIFStructure.DME.CLM_THRU_DT,
-                  RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
+              RIFExporter.bb2DateFromTimestamp(lineItem.entry.start));
           String hcpcsCode = exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0), person);
           fieldValues.put(BB2RIFStructure.DME.HCPCS_CD, hcpcsCode);
           if (exporter.betosCodeMapper.canMap(hcpcsCode)) {
             fieldValues.put(BB2RIFStructure.DME.BETOS_CD,
-                    exporter.betosCodeMapper.map(hcpcsCode, person));
+                exporter.betosCodeMapper.map(hcpcsCode, person));
           } else {
             fieldValues.put(BB2RIFStructure.DME.BETOS_CD, "");
           }
           fieldValues.put(BB2RIFStructure.DME.LINE_CMS_TYPE_SRVC_CD,
-                  exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0),
-                          BB2RIFStructure.DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
-                          person));
+              exporter.dmeCodeMapper.map(lineItem.entry.codes.get(0),
+                  BB2RIFStructure.DME.LINE_CMS_TYPE_SRVC_CD.toString().toLowerCase(),
+                  person));
           fieldValues.put(BB2RIFStructure.DME.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.deductiblePaidByPatient));
+              String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(BB2RIFStructure.DME.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.getCoinsurancePaid()));
-          // LINE_BENE_PMT_AMT and NCH_CLM_BENE_PMT_AMT are always 0, set in field value spreadsheet
+              String.format("%.2f", lineItem.getCoinsurancePaid()));
+          // LINE_BENE_PMT_AMT and NCH_CLM_BENE_PMT_AMT are always 0, set in field value
+          // spreadsheet
           BigDecimal providerAmount = lineItem.getCoveredCost();
           fieldValues.put(BB2RIFStructure.DME.LINE_PRVDR_PMT_AMT,
               String.format("%.2f", providerAmount));

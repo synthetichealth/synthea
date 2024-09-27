@@ -158,9 +158,8 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
 
-      String phoneNumber = "+46 7" + (person.randInt(9)) + " " +
-          (person.randInt(899) + 100) + " " +
-          (person.randInt(8999) + 1000);
+      String phoneNumber = "+46 7" + (person.randInt(9)) +
+          (person.randInt(899) + 100) + (person.randInt(8999) + 1000);
       attributes.put(Person.TELECOM, phoneNumber);
 
       boolean hasStreetAddress2 = person.rand() < 0.5;
@@ -179,11 +178,6 @@ public final class LifecycleModule extends Module {
     if ((person.rand() < prevalenceOfTwins)) {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
-
-    // TODO: Remove when fully moved to PNR
-    String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
-        + ((person.randInt(9999 - 1000 + 1) + 1000));
-    attributes.put(Person.IDENTIFIER_SSN, ssn);
 
     System.out.println("time: " + time + " gender: " + gender);
     String pnr = PersonnummerGenerator.generateUniquePersonnummer(time, gender);
@@ -303,43 +297,10 @@ public final class LifecycleModule extends Module {
     person.attributes.put(AGE_MONTHS, newAgeMos);
     switch (newAge) {
       case 16:
-        // driver's license
-        if (person.attributes.get(Person.IDENTIFIER_DRIVERS) == null) {
-          String identifierDrivers = "S999" + ((person.randInt(99999 - 10000 + 1) + 10000));
-          person.attributes.put(Person.IDENTIFIER_DRIVERS, identifierDrivers);
-        }
         break;
       case 18:
-        // name prefix
-        if (person.attributes.get(Person.NAME_PREFIX) == null) {
-          String namePrefix;
-          if ("M".equals(person.attributes.get(Person.GENDER))) {
-            namePrefix = "Mr.";
-          } else {
-            namePrefix = "Ms.";
-          }
-          person.attributes.put(Person.NAME_PREFIX, namePrefix);
-        }
         break;
       case 20:
-        // passport number
-        if (person.attributes.get(Person.IDENTIFIER_PASSPORT) == null) {
-          Boolean getsPassport = (person.rand() < 0.5);
-          if (getsPassport) {
-            String identifierPassport = "X" + (person.randInt(99999999 - 10000000 + 1) + "X");
-            person.attributes.put(Person.IDENTIFIER_PASSPORT, identifierPassport);
-          }
-        }
-        if (person.attributes.get("veteran") != null) {
-          if (person.attributes.get("veteran_provider_reset") == null) {
-            // reset providers for veterans, they'll switch to VA facilities
-            person.attributes.remove(Person.CURRENTPROVIDER);
-            for (EncounterType type : EncounterType.values()) {
-              person.attributes.remove(Person.PREFERREDYPROVIDER + type);
-            }
-            person.attributes.put("veteran_provider_reset", true);
-          }
-        }
         break;
       case 28:
         // get married
@@ -348,7 +309,6 @@ public final class LifecycleModule extends Module {
           if (getsMarried) {
             person.attributes.put(Person.MARITAL_STATUS, "M");
             if ("F".equals(person.attributes.get(Person.GENDER))) {
-              person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
               String middleName = null;
@@ -1260,10 +1220,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.FIRST_NAME, true, false, null);
     Attributes.inventory(attributes, m, Person.FIRST_LANGUAGE, true, false, null);
     Attributes.inventory(attributes, m, Person.GENDER, true, false, "M");
-    Attributes.inventory(attributes, m, Person.IDENTIFIER_DRIVERS, true, false, null);
-    Attributes.inventory(attributes, m, Person.IDENTIFIER_PASSPORT, true, false, null);
     Attributes.inventory(attributes, m, Person.LAST_NAME, true, false, null);
-    Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
     Attributes.inventory(attributes, m, Person.MIDDLE_NAME, true, true, null);
@@ -1295,9 +1252,7 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.FIRST_NAME, false, true, null);
     Attributes.inventory(attributes, m, Person.GENDER, false, true, "F");
     Attributes.inventory(attributes, m, Person.ID, false, true, null);
-    Attributes.inventory(attributes, m, Person.IDENTIFIER_DRIVERS, false, true, null);
-    Attributes.inventory(attributes, m, Person.IDENTIFIER_PASSPORT, false, true, null);
-    Attributes.inventory(attributes, m, Person.IDENTIFIER_SSN, false, true, "999-99-9999");
+
     Attributes.inventory(attributes, m, Person.LAST_NAME, false, true, null);
     Attributes.inventory(attributes, m, Person.MAIDEN_NAME, false, true, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, false, true, "M");
@@ -1305,7 +1260,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.NAME, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_FATHER, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_MOTHER, false, true, null);
-    Attributes.inventory(attributes, m, Person.NAME_PREFIX, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, false, true, null);
     Attributes.inventory(attributes, m, Person.RACE, false, true, null);
     Attributes.inventory(attributes, m, Person.SEXUAL_ORIENTATION, false, true, null);

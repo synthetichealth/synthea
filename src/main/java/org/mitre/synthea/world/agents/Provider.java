@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mitre.synthea.export.JSONSkip;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
+import org.mitre.synthea.helpers.PersonnummerGenerator;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
@@ -599,9 +600,9 @@ public class Provider implements QuadTreeElement, Serializable {
       clinician.attributes.put(Clinician.NAME_PREFIX, "Dr.");
       // Degree's beyond a bachelors degree are not currently tracked.
       clinician.attributes.put(Clinician.EDUCATION, "bs_degree");
-      String ssn = "999-" + ((doc.randInt(99 - 10 + 1) + 10)) + "-"
-          + ((doc.randInt(9999 - 1000 + 1) + 1000));
-      clinician.attributes.put(Person.IDENTIFIER_SSN, ssn);
+
+      clinician.attributes.put(Person.IDENTIFIER_PNR,
+          PersonnummerGenerator.generateUniquePersonnummer(Long.valueOf(0), gender));
     } catch (Throwable e) {
       e.printStackTrace();
       throw e;

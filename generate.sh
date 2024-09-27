@@ -9,7 +9,7 @@ fi
 ./run_synthea \
   --exporter.fhir.bulk_data false \
   --exporter.fhir.included_resources \
-  Patient,Encounter,Observation,Condition \
+  Patient,Encounter,Observation,Condition,Practitioner \
   -cs 54321 \
   -s 54321 \
   -r 20230403 \
