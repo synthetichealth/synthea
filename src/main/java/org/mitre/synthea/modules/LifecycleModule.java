@@ -158,9 +158,8 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.LAST_NAME, lastName);
       attributes.put(Person.NAME, firstName + " " + lastName);
 
-      String phoneNumber = "+46 7" + (person.randInt(9)) + " " +
-          (person.randInt(899) + 100) + " " +
-          (person.randInt(8999) + 1000);
+      String phoneNumber = "+46 7" + (person.randInt(9)) +
+          (person.randInt(899) + 100) + (person.randInt(8999) + 1000);
       attributes.put(Person.TELECOM, phoneNumber);
 
       boolean hasStreetAddress2 = person.rand() < 0.5;
