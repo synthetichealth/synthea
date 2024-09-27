@@ -27,7 +27,7 @@ public class CarrierExporter extends RIFExporter {
 
   private static final List<LinkedHashMap<String, String>> carrierLookup = getCarriers();
   public static final AtomicLong nextCarrClmCntlNum = new AtomicLong(Config.getAsLong(
-          "exporter.bfd.carr_clm_cntl_num_start", -1));
+      "exporter.bfd.carr_clm_cntl_num_start", -1));
 
   private static List<LinkedHashMap<String, String>> getCarriers() {
     String csv;
@@ -50,7 +50,9 @@ public class CarrierExporter extends RIFExporter {
 
   /**
    * Construct an exporter for Carrier claims.
-   * @param exporter the exporter instance that will be used to access code mappers
+   * 
+   * @param exporter the exporter instance that will be used to access code
+   *                 mappers
    */
   public CarrierExporter(BB2RIFExporter exporter) {
     super(exporter);
@@ -58,14 +60,15 @@ public class CarrierExporter extends RIFExporter {
 
   /**
    * Export carrier claims details for a single person.
-   * @param person the person to export
+   * 
+   * @param person    the person to export
    * @param startTime earliest claim date to export
-   * @param stopTime end time of simulation
+   * @param stopTime  end time of simulation
    * @return number of claims exported
    * @throws IOException if something goes wrong
    */
   long export(Person person, long startTime, long stopTime) throws IOException {
-    Boolean partBEnrollee = (Boolean)person.attributes.get(RIFExporter.BB2_PARTB_ENROLLEE);
+    Boolean partBEnrollee = (Boolean) person.attributes.get(RIFExporter.BB2_PARTB_ENROLLEE);
     if (partBEnrollee.equals(false)) {
       // Skip carrier claims if beneficiary is not enrolled in part B
       return 0;
@@ -99,45 +102,45 @@ public class CarrierExporter extends RIFExporter {
 
       exporter.staticFieldConfig.setValues(fieldValues, BB2RIFStructure.CARRIER.class, person);
       fieldValues.put(BB2RIFStructure.CARRIER.BENE_ID,
-              (String) person.attributes.get(RIFExporter.BB2_BENE_ID));
+          (String) person.attributes.get(RIFExporter.BB2_BENE_ID));
 
       // The REQUIRED fields
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_ID, "" + claimId);
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_GRP_ID, "" + claimGroupId);
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_CNTL_NUM, "" + carrClmId);
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_FROM_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.start));
+          RIFExporter.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_1ST_EXPNS_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.start));
+          RIFExporter.bb2DateFromTimestamp(encounter.start));
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_THRU_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.stop));
+          RIFExporter.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_LAST_EXPNS_DT,
-              RIFExporter.bb2DateFromTimestamp(encounter.stop));
+          RIFExporter.bb2DateFromTimestamp(encounter.stop));
       fieldValues.put(BB2RIFStructure.CARRIER.NCH_WKLY_PROC_DT,
-              RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
+          RIFExporter.bb2DateFromTimestamp(ExportHelper.nextFriday(encounter.stop)));
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_NUM,
-              getCarrier(encounter.provider.state, BB2RIFStructure.CARRIER.CARR_NUM));
+          getCarrier(encounter.provider.state, BB2RIFStructure.CARRIER.CARR_NUM));
       fieldValues.put(BB2RIFStructure.CARRIER.CLM_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       if (encounter.claim.coveredByMedicare()) {
         fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT, "0");
       } else {
         fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_PRMRY_PYR_PD_AMT,
-                String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+            String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       }
       // NCH_CLM_BENE_PMT_AMT, is always zero (set in field value spreadsheet)
       fieldValues.put(BB2RIFStructure.CARRIER.NCH_CLM_PRVDR_PMT_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(BB2RIFStructure.CARRIER.NCH_CARR_CLM_SBMTD_CHRG_AMT,
-              String.format("%.2f", encounter.claim.getTotalClaimCost()));
+          String.format("%.2f", encounter.claim.getTotalClaimCost()));
       fieldValues.put(BB2RIFStructure.CARRIER.NCH_CARR_CLM_ALOWD_AMT,
-              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+          String.format("%.2f", encounter.claim.getTotalCoveredCost()));
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_CASH_DDCTBL_APLD_AMT,
-              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
+          String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_RFRNG_PIN_NUM,
-              StringUtils.truncate(encounter.provider.cmsPin, 14));
+          StringUtils.truncate(encounter.provider.cmsPin, 14));
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_PRFRNG_PIN_NUM,
-              StringUtils.truncate(encounter.provider.cmsPin, 15));
+          StringUtils.truncate(encounter.provider.cmsPin, 15));
       fieldValues.put(BB2RIFStructure.CARRIER.ORG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_CLM_BLG_NPI_NUM, encounter.provider.npi);
       fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_NPI, encounter.clinician.npi);
@@ -146,25 +149,25 @@ public class CarrierExporter extends RIFExporter {
           ClinicianSpecialty.getCMSProviderSpecialtyCode(
               (String) encounter.clinician.attributes.get(Clinician.SPECIALTY)));
       fieldValues.put(BB2RIFStructure.CARRIER.TAX_NUM,
-              BeneficiaryExporter.bb2TaxId(
-                      (String)encounter.clinician.attributes.get(Person.IDENTIFIER_SSN)));
+          BeneficiaryExporter.bb2TaxId(
+              (String) encounter.clinician.attributes.get(Person.IDENTIFIER_PNR)));
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_SRVC_CNT, "" + encounter.claim.items.size());
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_LINE_PRCNG_LCLTY_CD,
-              getCarrier(encounter.provider.state,
-                      BB2RIFStructure.CARRIER.CARR_LINE_PRCNG_LCLTY_CD));
+          getCarrier(encounter.provider.state,
+              BB2RIFStructure.CARRIER.CARR_LINE_PRCNG_LCLTY_CD));
       // length of encounter in minutes
       fieldValues.put(BB2RIFStructure.CARRIER.CARR_LINE_MTUS_CNT,
-              "" + ((encounter.stop - encounter.start) / (1000 * 60)));
+          "" + ((encounter.stop - encounter.start) / (1000 * 60)));
 
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_HCT_HGB_RSLT_NUM,
-              "" + latestHemoglobin);
+          "" + latestHemoglobin);
       fieldValues.put(BB2RIFStructure.CARRIER.LINE_PLACE_OF_SRVC_CD, getPlaceOfService(encounter));
 
       // OPTIONAL
       fieldValues.put(BB2RIFStructure.CARRIER.PRF_PHYSN_UPIN,
-              StringUtils.truncate(encounter.provider.cmsUpin, 12));
+          StringUtils.truncate(encounter.provider.cmsUpin, 12));
       fieldValues.put(BB2RIFStructure.CARRIER.RFR_PHYSN_UPIN,
-              StringUtils.truncate(encounter.provider.cmsUpin, 12));
+          StringUtils.truncate(encounter.provider.cmsUpin, 12));
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_STATE_CD, encounter.provider.state);
       fieldValues.put(BB2RIFStructure.CARRIER.PRVDR_ZIP, encounter.provider.zip);
 
@@ -186,7 +189,7 @@ public class CarrierExporter extends RIFExporter {
         continue; // skip this encounter
       }
       int smallest = Math.min(mappedDiagnosisCodes.size(),
-              BB2RIFStructure.carrierDxFields.length);
+          BB2RIFStructure.carrierDxFields.length);
       for (int i = 0; i < smallest; i++) {
         BB2RIFStructure.CARRIER[] dxField = BB2RIFStructure.carrierDxFields[i];
         fieldValues.put(dxField[0], mappedDiagnosisCodes.get(i));
@@ -198,8 +201,7 @@ public class CarrierExporter extends RIFExporter {
 
       synchronized (exporter.rifWriters.getOrCreateWriter(BB2RIFStructure.CARRIER.class)) {
         int lineNum = 1;
-        CLIA cliaLab = RIFExporter.cliaLabNumbers[
-                person.randInt(RIFExporter.cliaLabNumbers.length)];
+        CLIA cliaLab = RIFExporter.cliaLabNumbers[person.randInt(RIFExporter.cliaLabNumbers.length)];
         List<Claim.ClaimEntry> allItems = new ArrayList<>();
         allItems.add(encounter.claim.mainEntry);
         allItems.addAll(encounter.claim.items);
@@ -216,7 +218,7 @@ public class CarrierExporter extends RIFExporter {
           } else if (lineItem.entry instanceof HealthRecord.Medication) {
             HealthRecord.Medication med = (HealthRecord.Medication) lineItem.entry;
             if (med.administration) {
-              hcpcsCode = "T1502";  // Administration of medication
+              hcpcsCode = "T1502"; // Administration of medication
               ndcCode = exporter.medicationCodeMapper.map(med.codes.get(0), person);
             }
           }
@@ -232,7 +234,7 @@ public class CarrierExporter extends RIFExporter {
             } else if (probability <= 0.48) {
               // The principal diagnosis code
               fieldValues.put(BB2RIFStructure.CARRIER.LINE_ICD_DGNS_CD,
-                      fieldValues.get(BB2RIFStructure.CARRIER.PRNCPAL_DGNS_CD));
+                  fieldValues.get(BB2RIFStructure.CARRIER.PRNCPAL_DGNS_CD));
             } else {
               // No line item diagnosis code
               fieldValues.remove(BB2RIFStructure.CARRIER.LINE_ICD_DGNS_CD);
@@ -241,20 +243,20 @@ public class CarrierExporter extends RIFExporter {
           // TBD: decide whether line item skip logic is needed here and in other files
           // TBD: affects ~80% of carrier claim lines, so left out for now
           // if (hcpcsCode == null) {
-          //   continue; // skip this line item
+          // continue; // skip this line item
           // }
           fieldValues.put(BB2RIFStructure.CARRIER.HCPCS_CD, hcpcsCode);
           if (exporter.betosCodeMapper.canMap(hcpcsCode)) {
             fieldValues.put(BB2RIFStructure.CARRIER.BETOS_CD,
-                    exporter.betosCodeMapper.map(hcpcsCode, person));
+                exporter.betosCodeMapper.map(hcpcsCode, person));
           } else {
             fieldValues.put(BB2RIFStructure.CARRIER.BETOS_CD, "");
           }
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_NDC_CD, ndcCode);
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", lineItem.deductiblePaidByPatient));
+              String.format("%.2f", lineItem.deductiblePaidByPatient));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_COINSRNC_AMT,
-                  String.format("%.2f", lineItem.coinsurancePaidByPayer));
+              String.format("%.2f", lineItem.coinsurancePaidByPayer));
 
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
@@ -269,10 +271,10 @@ public class CarrierExporter extends RIFExporter {
               String.format("%.2f", lineItem.cost.subtract(lineItem.adjustment)));
 
           // If this item is a lab report, add the number of the clinical lab...
-          if  (lineItem.entry instanceof HealthRecord.Report) {
+          if (lineItem.entry instanceof HealthRecord.Report) {
             if (encounter.provider.cliaNumber != null) {
               fieldValues.put(BB2RIFStructure.CARRIER.CARR_LINE_CLIA_LAB_NUM,
-                      encounter.provider.cliaNumber);
+                  encounter.provider.cliaNumber);
             } else {
               fieldValues.put(BB2RIFStructure.CARRIER.CARR_LINE_CLIA_LAB_NUM, cliaLab.toString());
             }
@@ -288,19 +290,19 @@ public class CarrierExporter extends RIFExporter {
           // Add a single top-level entry.
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_NUM, Integer.toString(lineNum));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_BENE_PTB_DDCTBL_AMT,
-                  String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
+              String.format("%.2f", encounter.claim.getTotalDeductiblePaid()));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_COINSRNC_AMT,
-                  String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
+              String.format("%.2f", encounter.claim.getTotalCoinsurancePaid()));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_SBMTD_CHRG_AMT,
-                  String.format("%.2f", encounter.claim.getTotalClaimCost()));
+              String.format("%.2f", encounter.claim.getTotalClaimCost()));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_ALOWD_CHRG_AMT,
-                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           // Like NCH_CLM_BENE_PMT_AMT, LINE_BENE_PMT_AMT is always zero
           // (set in field value spreadsheet)
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_PRVDR_PMT_AMT,
-                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           fieldValues.put(BB2RIFStructure.CARRIER.LINE_NCH_PMT_AMT,
-                  String.format("%.2f", encounter.claim.getTotalCoveredCost()));
+              String.format("%.2f", encounter.claim.getTotalCoveredCost()));
           // 99241: "Office consultation for a new or established patient"
           fieldValues.put(BB2RIFStructure.CARRIER.HCPCS_CD, "99241");
           exporter.rifWriters.writeValues(BB2RIFStructure.CARRIER.class, fieldValues);

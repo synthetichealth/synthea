@@ -641,7 +641,6 @@ public class CDWExporter {
     s.append(patientName);
     s.append(',').append(clean((String) person.attributes.getOrDefault(Person.LAST_NAME, "")));
     s.append(',').append(clean((String) person.attributes.getOrDefault(Person.FIRST_NAME, "")));
-    s.append(',').append(clean((String) person.attributes.getOrDefault(Person.IDENTIFIER_SSN, "")));
 
     boolean alive = person.alive(time);
     int age = 0;

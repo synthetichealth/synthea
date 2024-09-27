@@ -309,28 +309,6 @@ public class FhirStu3 {
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
-    Code ssnCode = new Code("http://hl7.org/fhir/identifier-type", "SB", "Social Security Number");
-    patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(ssnCode, "http://hl7.org/fhir/identifier-type"))
-        .setSystem("http://hl7.org/fhir/sid/us-ssn")
-        .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
-
-    if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://hl7.org/fhir/v2/0203", "DL", "Driver's license number");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(driversCode, "http://hl7.org/fhir/v2/0203"))
-          .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
-    }
-
-    if (person.attributes.get(Person.IDENTIFIER_PASSPORT) != null) {
-      Code passportCode = new Code("http://hl7.org/fhir/v2/0203", "PPN", "Passport Number");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(passportCode, "http://hl7.org/fhir/v2/0203"))
-          .setSystem(PASSPORT_URI)
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
-    }
-
     if (person.attributes.get(Person.CONTACT_EMAIL) != null) {
       ContactComponent contact = new ContactComponent();
       HumanName contactName = new HumanName();

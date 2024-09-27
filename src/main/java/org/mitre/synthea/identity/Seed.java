@@ -44,7 +44,6 @@ public class Seed implements IdentityRecord {
   private String state;
   private String zipCode;
   private String personnummer;
-  private String socialSecurityNumber;
   private transient Entity entity;
   private List<Variant> variants;
 
@@ -162,15 +161,6 @@ public class Seed implements IdentityRecord {
   }
 
   @Override
-  public String getSocialSecurityNumber() {
-    return socialSecurityNumber;
-  }
-
-  public void setSocialSecurityNumber(String socialSecurityNumber) {
-    this.socialSecurityNumber = socialSecurityNumber;
-  }
-
-  @Override
   public String getPersonnummer() {
     return personnummer;
   }
@@ -208,9 +198,6 @@ public class Seed implements IdentityRecord {
     attributes.put(Person.ADDRESS, this.addressLines.stream()
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.zipCode);
-    if (this.getSocialSecurityNumber() != null) {
-      attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
-    }
     if (this.getPersonnummer() != null) {
       attributes.put(Person.IDENTIFIER_PNR, this.getPersonnummer());
     }

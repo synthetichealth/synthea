@@ -563,28 +563,6 @@ public class FhirR4 {
         .setSystem("http://electronichealth.se/identifier/personnummer")
         .setValue((String) person.attributes.get(Person.IDENTIFIER_PNR));
 
-    Code ssnCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "SS", "Social Security Number");
-    patientResource.addIdentifier()
-        .setType(mapCodeToCodeableConcept(ssnCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
-        .setSystem("http://hl7.org/fhir/sid/us-ssn")
-        .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
-
-    if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      Code driversCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "DL", "Driver's license number");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(driversCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
-          .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
-    }
-
-    if (person.attributes.get(Person.IDENTIFIER_PASSPORT) != null) {
-      Code passportCode = new Code("http://terminology.hl7.org/CodeSystem/v2-0203", "PPN", "Passport Number");
-      patientResource.addIdentifier()
-          .setType(mapCodeToCodeableConcept(passportCode, "http://terminology.hl7.org/CodeSystem/v2-0203"))
-          .setSystem(PASSPORT_URI)
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_PASSPORT));
-    }
-
     if (person.attributes.get(Person.ENTITY) != null) {
       Entity entity = (Entity) person.attributes.get(Person.ENTITY);
       patientResource.addIdentifier()

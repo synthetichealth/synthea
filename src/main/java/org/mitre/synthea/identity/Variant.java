@@ -38,7 +38,6 @@ public class Variant implements IdentityRecord {
   private LocalDate dateOfBirth;
   private String gender;
   private String personnummer;
-  private String socialSecurityNumber;
   private transient Seed seed;
 
   public String getVariantId() {
@@ -229,19 +228,6 @@ public class Variant implements IdentityRecord {
   }
 
   @Override
-  public String getSocialSecurityNumber() {
-    if (socialSecurityNumber == null) {
-      return this.getSeed().getSocialSecurityNumber();
-    }
-
-    return socialSecurityNumber;
-  }
-
-  public void setSocialSecurityNumber(String socialSecurityNumber) {
-    this.socialSecurityNumber = socialSecurityNumber;
-  }
-
-  @Override
   public String getPersonnummer() {
     if (personnummer == null) {
       return this.getSeed().getPersonnummer();
@@ -275,9 +261,6 @@ public class Variant implements IdentityRecord {
         .collect(Collectors.joining("\n")));
     attributes.put(Person.ZIP, this.getZipCode());
     attributes.put(Person.IDENTIFIER_VARIANT_ID, this.getVariantId());
-    if (this.getSocialSecurityNumber() != null) {
-      attributes.put(Person.IDENTIFIER_SSN, this.getSocialSecurityNumber());
-    }
     if (this.getPersonnummer() != null) {
       attributes.put(Person.IDENTIFIER_PNR, this.getPersonnummer());
     }

@@ -298,18 +298,6 @@ public class FhirDstu2 {
         .setSystem("http://hospital.smarthealthit.org")
         .setValue((String) person.attributes.get(Person.ID));
 
-    patientResource.addIdentifier()
-        .setType(IdentifierTypeCodesEnum.SOCIAL_BENEFICIARY_IDENTIFIER)
-        .setSystem("http://hl7.org/fhir/sid/us-ssn")
-        .setValue((String) person.attributes.get(Person.IDENTIFIER_SSN));
-
-    if (person.attributes.get(Person.IDENTIFIER_DRIVERS) != null) {
-      patientResource.addIdentifier()
-          .setType(IdentifierTypeCodesEnum.DL)
-          .setSystem("urn:oid:2.16.840.1.113883.4.3.25")
-          .setValue((String) person.attributes.get(Person.IDENTIFIER_DRIVERS));
-    }
-
     ExtensionDt raceExtension = new ExtensionDt();
     raceExtension.setUrl("http://hl7.org/fhir/StructureDefinition/us-core-race");
     String race = (String) person.attributes.get(Person.RACE);

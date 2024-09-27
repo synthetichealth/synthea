@@ -626,9 +626,6 @@ public class CSVExporter {
     }
 
     for (String attribute : new String[] {
-        Person.IDENTIFIER_SSN,
-        Person.IDENTIFIER_DRIVERS,
-        Person.IDENTIFIER_PASSPORT,
         Person.FIRST_NAME,
         Person.MIDDLE_NAME,
         Person.LAST_NAME,
