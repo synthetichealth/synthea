@@ -1,7 +1,7 @@
 swedish:
   M: ["Lars", "Johan", "Erik", "Anders", "Magnus", "Oskar", "Karl", "Simon", "Fredrik", "Gustav"]
   F: ["Anna", "Elin", "Sofia", "Maja", "Julia", "Emilia", "Freja", "Alice", "Linnea", "Klara"]
-  family: ["Johansson", "Andersson", "Karlsson", "Nilsson", "Lindström", "Svensson", "Gustafsson", "Persson", "Bergström", "Olsson"]
+  family: ["Johansson", "Johnsson", "Andersson", "Karlsson", "Nilsson", "Lindström", "Svensson", "Gustafsson", "Persson", "Bergström", "Olsson"]
 
 street:
   type: ["Väg", "Gata", "Allé", "Gränd", "Torg", "Stig", "Slinga", "Berg", "Bro", "Hamngata", "Krog", "Vik", "Äng", "Kulle", "Torget", "Fält", "Kanal", "Norr", "Syd", "Öst", "Väst"]
