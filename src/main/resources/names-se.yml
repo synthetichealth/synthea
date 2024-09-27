@@ -1,8 +1,49 @@
 swedish:
-  M: ["Lars", "Johan", "Erik", "Anders", "Magnus", "Oskar", "Karl", "Simon", "Fredrik", "Gustav"]
-  F: ["Anna", "Elin", "Sofia", "Maja", "Julia", "Emilia", "Freja", "Alice", "Linnea", "Klara"]
-  family: ["Johansson", "Johnsson", "Andersson", "Karlsson", "Nilsson", "Lindström", "Svensson", "Gustafsson", "Persson", "Bergström", "Olsson"]
+  M: ["Erik", "Lars", "Karl", "Johan", "Mikael", "Anders", "Per", "Nils", "Henrik", "Jan", "Fredrik", "Stefan", "Daniel", "Peter", "Magnus", "Thomas", "Jonas", 
+      "Christer", "Patrik", "Göran", "Alexander", "Mattias", "Ola", "Martin", "Gustav", "Robert", "Olle", "Håkan", "Sten", "Simon", "David", "Oskar", "Viktor", 
+      "Rasmus", "Joakim", "Filip", "Marcus", "Adam", "Emil", "Rickard", "Johan", "Jesper", "Tobias", "Pontus", "Samuel", "Arvid", "William", "Vincent", "Sebastian", 
+      "Liam", "Noah", "Lucas", "Matteo", "Elijah", "Ethan", "Aiden", "Leo", "Adrian", "Gabriel", "Benjamin", "Oscar", "Julian", "Carlos", "Rick"]
+
+  F: ["Anna", "Maria", "Emma", "Sara", "Lina", "Karin", "Eva", "Malin", "Lisa", "Johanna", "Sofia", "Linda", "Jenny", "Camilla", "Viktoria", "Louise", 
+      "Helena", "Matilda", "Felicia", "Hanna", "Cecilia", "Madeleine", "Frida", "Caroline", "Clara", "Ingrid", "Elsa", "Alice", "Amanda", "Nathalie", 
+      "Lovisa", "Alva", "Maja", "Isabella", "Olivia", "Ebba", "Ida", "Sigrid", "Stina", "Linnéa", "Fanny", "Tove", "Agnes", "Selma", "Nora", "Saga", 
+      "Moa", "Emma", "Sophia", "Emily", "Chloe", "Mia", "Amelia", "Ava", "Ella", "Charlotte", "Harper", "Lily", "Zoe", "Mila", "Livia", "Isabelle", "Sofia"]
+
+
+
+  family: ["Andersson", "Johansson", "Karlsson", "Nilsson", "Eriksson", "Larsson", "Olsson", "Persson", "Svensson", "Gustafsson", "Pettersson", "Jonsson",
+           "Lindberg", "Lindström", "Lindqvist", "Berg", "Sandberg", "Holm", "Bergström", "Lundgren", "Lundqvist", "Axelsson", "Jansson", "Mattsson", "Blomqvist", 
+           "Sjöberg", "Berglund", "Nyberg", "Dahlberg", "Holmberg", "Forsberg", "Lundberg", "Wallin", "Lindholm", "Hedlund", "Falk", "Norberg", "Hellström", "Åberg",
+           "Norén", "Nyström", "Håkansson", "Hermansson", "Strömberg", "Hedberg", "Sahlberg", "Rydberg", "Eklund", "Björk", "Stenberg", "Ekström", "Engström", "Holmgren",
+           "Arvidsson", "Bergman", "Engman", "Holmström", "Bäckström", "Bergqvist", "Ekman", "Friberg", "Wahlström", "Åkesson", "Björklund", "Lindén", "Forsman",
+           "Samuelsson", "Viklund", "Öberg", "Lundin", "Öhman", "Hansson", "Linder", "Ström", "Rönn", "Melin", "Nylander", "Jonasson", "Frisk", "Byström", "Lundqvist",
+           "Backman", "Hellman", "Åström", "Danielsson", "Berggren", "Erixon", "Sjögren", "Silfver", "Törnqvist", "Jernberg", "Knutsson", "Hallberg", "Isaksson", "Östlund",
+           "Månsson", "Jakobsson", "Strandberg", "Vikman", "Ekberg", "Skoglund", "Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Garcia", "Martinez", "Rodriguez",
+           "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Taylor", "Thomas", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez",
+           "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "King", "Scott", "Green", "Baker", "Adams", "Nelson", "Carter", "Mitchell", "Parker", "Evans",
+           "Edwards", "Collins", "Stewart", "Morris", "Nguyen", "Murphy", "Rivera", "Cooper", "Reed", "Bailey", "Moza", "Astley"]
+
+
 
 street:
-  type: ["Väg", "Gata", "Allé", "Gränd", "Torg", "Stig", "Slinga", "Berg", "Bro", "Hamngata", "Krog", "Vik", "Äng", "Kulle", "Torget", "Fält", "Kanal", "Norr", "Syd", "Öst", "Väst"]
-  secondary: ["Lägenhet", "Villa", "Torp"]
+  name: [ "Ringvägen", "Strandvägen", "Hälsovägen", "Rudanvägen", "Valhallavägen",
+          "Drottninggatan", "Kungsgatan", "Vasagatan", "Sergels Torg", "Östermalmstorg",
+          "Regeringsgatan", "Norrmalmstorg", "Storgatan", "Luntmakargatan", "Sveavägen",
+          "Torsgatan", "Folkungagatan", "Skånegatan", "Köpmangatan", "Brogatan",
+          "Götgatan", "Hötorget", "Tegelbacken", "Sundbybergsvägen", "Värmdövägen",
+          "Södra Förstadsgatan", "Hälsingegatan", "Kistavägen", "Mälarhöjdsgatan",
+          "Vikingagatan", "Viksgatan", "Ängsvägen", "Blåbärsvägen", "Hagagatan",
+          "Nygatan", "Kyrkogatan", "Färgfabriken", "Petersberg", "Röda Sten",
+          "Sandviksgatan", "Skogsbacken", "Trollhättansgatan", "Ölandsgatan", "Visbyvägen",
+          "Svalnäs", "Fröslundavägen", "Brunnsgatan", "Almedalsvägen", "Västra Mälargatan",
+          "Strandvägen", "Kullagatan", "Lövgatan", "Lindhagensgatan", "Mörbyvägen"]
+          
+  type: ["Väg", "Gata", "Allé", "Gränd", "Torg", "Stig", "Slinga", "Berg", "Bro", 
+          "Hamngata", "Krog", "Vik", "Äng", "Kulle", "Torget", "Fält", "Kanal", 
+          "Norr", "Syd", "Öst", "Väst", "Sjö", "Park", "Bäck", "Älv", "Norrbacka", 
+          "Brunn", "Rådjursväg", "Rönn", "Asp", "Ek", "Hassel", "Tall", "Björk", 
+          "Lönn", "Stjärna", "Myr", "Hagväg", "Tjärn", "Lyckovägen", "Söder"]
+
+  secondary: ["Lägenhet", "Villa", "Torp", "Enhet", "Rum", "Suite", "Café", "Hus", 
+               "Etage", "Delsvit", "Studie", "Kontor", "Gård", "Plats", "Brygga", 
+               "Stuga", "Fristad", "Bostad", "Resort"]

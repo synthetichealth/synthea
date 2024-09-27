@@ -709,9 +709,6 @@ public class FhirR4 {
       name.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
     }
     name.setFamily((String) person.attributes.get(Person.LAST_NAME));
-    if (person.attributes.get(Person.NAME_PREFIX) != null) {
-      name.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
-    }
     if (person.attributes.get(Person.NAME_SUFFIX) != null) {
       name.addSuffix((String) person.attributes.get(Person.NAME_SUFFIX));
     }
@@ -723,9 +720,6 @@ public class FhirR4 {
         maidenName.addGiven((String) person.attributes.get(Person.MIDDLE_NAME));
       }
       maidenName.setFamily((String) person.attributes.get(Person.MAIDEN_NAME));
-      if (person.attributes.get(Person.NAME_PREFIX) != null) {
-        maidenName.addPrefix((String) person.attributes.get(Person.NAME_PREFIX));
-      }
       if (person.attributes.get(Person.NAME_SUFFIX) != null) {
         maidenName.addSuffix((String) person.attributes.get(Person.NAME_SUFFIX));
       }
@@ -3206,8 +3200,7 @@ public class FhirR4 {
     practitionerResource.setActive(true);
     practitionerResource.addName().setFamily(
         (String) clinician.attributes.get(Clinician.LAST_NAME))
-        .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME))
-        .addPrefix((String) clinician.attributes.get(Clinician.NAME_PREFIX));
+        .addGiven((String) clinician.attributes.get(Clinician.FIRST_NAME));
     String email = (String) clinician.attributes.get(Clinician.FIRST_NAME)
         + "." + (String) clinician.attributes.get(Clinician.LAST_NAME)
         + "@example.com";

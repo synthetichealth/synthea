@@ -179,11 +179,6 @@ public final class LifecycleModule extends Module {
       attributes.put(Person.MULTIPLE_BIRTH_STATUS, person.randInt(3) + 1);
     }
 
-    // TODO: Remove when fully moved to PNR
-    String ssn = "999-" + ((person.randInt(99 - 10 + 1) + 10)) + "-"
-        + ((person.randInt(9999 - 1000 + 1) + 1000));
-    attributes.put(Person.IDENTIFIER_SSN, ssn);
-
     System.out.println("time: " + time + " gender: " + gender);
     String pnr = PersonnummerGenerator.generateUniquePersonnummer(time, gender);
     attributes.put(Person.IDENTIFIER_PNR, pnr);
@@ -309,16 +304,6 @@ public final class LifecycleModule extends Module {
         }
         break;
       case 18:
-        // name prefix
-        if (person.attributes.get(Person.NAME_PREFIX) == null) {
-          String namePrefix;
-          if ("M".equals(person.attributes.get(Person.GENDER))) {
-            namePrefix = "Mr.";
-          } else {
-            namePrefix = "Ms.";
-          }
-          person.attributes.put(Person.NAME_PREFIX, namePrefix);
-        }
         break;
       case 20:
         // passport number
@@ -347,7 +332,6 @@ public final class LifecycleModule extends Module {
           if (getsMarried) {
             person.attributes.put(Person.MARITAL_STATUS, "M");
             if ("F".equals(person.attributes.get(Person.GENDER))) {
-              person.attributes.put(Person.NAME_PREFIX, "Mrs.");
               person.attributes.put(Person.MAIDEN_NAME, person.attributes.get(Person.LAST_NAME));
               String firstName = ((String) person.attributes.get(Person.FIRST_NAME));
               String middleName = null;
@@ -1262,7 +1246,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.IDENTIFIER_DRIVERS, true, false, null);
     Attributes.inventory(attributes, m, Person.IDENTIFIER_PASSPORT, true, false, null);
     Attributes.inventory(attributes, m, Person.LAST_NAME, true, false, null);
-    Attributes.inventory(attributes, m, Person.NAME_PREFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, true, false, null);
     Attributes.inventory(attributes, m, Person.MARITAL_STATUS, true, false, null);
     Attributes.inventory(attributes, m, Person.MIDDLE_NAME, true, true, null);
@@ -1304,7 +1287,6 @@ public final class LifecycleModule extends Module {
     Attributes.inventory(attributes, m, Person.NAME, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_FATHER, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_MOTHER, false, true, null);
-    Attributes.inventory(attributes, m, Person.NAME_PREFIX, false, true, null);
     Attributes.inventory(attributes, m, Person.NAME_SUFFIX, false, true, null);
     Attributes.inventory(attributes, m, Person.RACE, false, true, null);
     Attributes.inventory(attributes, m, Person.SEXUAL_ORIENTATION, false, true, null);

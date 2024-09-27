@@ -29,7 +29,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
 
 /**
  * Exporter for a simple human-readable text format per person.
- * Sample: <pre>
+ * Sample:
+ * 
+ * <pre>
  * Colleen Wilkinson
  * =================
  * Race:                White
@@ -75,9 +77,11 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * 2016-12-28 : Encounter for Viral sinusitis (disorder)
  * 2016-10-26 : Encounter for check up (procedure)
  * </pre>
-
+ * 
  * Exporter for a simple human-readable text format per encounter.
- * Sample: <pre>
+ * Sample:
+ * 
+ * <pre>
  * Chia293 Rohan584
  * ================
  * Race:                White
@@ -159,10 +163,11 @@ public class TextExporter {
   /**
    * Produce and export a person's record in the text format.
    *
-   * @param person Person to export
+   * @param person  Person to export
    * @param fileTag Tag to add to the filename
-   * @param time Time the simulation ended
-   * @throws IOException if any error occurs writing to the standard export location
+   * @param time    Time the simulation ended
+   * @throws IOException if any error occurs writing to the standard export
+   *                     location
    */
   public static void exportAll(Person person, String fileTag, long time) throws IOException {
 
@@ -281,8 +286,9 @@ public class TextExporter {
    * Produce and export a person's record in text format.
    *
    * @param person Person
-   * @param time Time the simulation ended
-   * @throws IOException if any error occurs writing to the standard export location
+   * @param time   Time the simulation ended
+   * @throws IOException if any error occurs writing to the standard export
+   *                     location
    */
   public static void exportEncounter(Person person, long time) throws IOException {
     List<Encounter> encounters = person.record.encounters;
@@ -305,11 +311,11 @@ public class TextExporter {
     Collections.reverse(medications);
     Collections.reverse(careplans);
 
-    //set an integer that will be used as a counter for file naming purposes
+    // set an integer that will be used as a counter for file naming purposes
     int encounterNumber = 0;
 
     for (Encounter encounter : encounters) {
-      //make a record for each encounter to write information
+      // make a record for each encounter to write information
       List<String> textRecord = new LinkedList<>();
 
       basicInfo(textRecord, person, time);
@@ -353,7 +359,7 @@ public class TextExporter {
 
       encounterNumber++;
 
-      //write to the file
+      // write to the file
       File outDirectory2 = Exporter.getOutputFolder("text_encounters", person);
       Path outFilePath2 = outDirectory2.toPath().resolve(Exporter.filename(person,
           Integer.toString(encounterNumber), "txt"));
@@ -365,11 +371,12 @@ public class TextExporter {
    * Add the basic information to the record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param person
-   *          The person to export
+   *                   The person to export
    * @param endTime
-   *          Time the simulation ended (to calculate age/deceased status)
+   *                   Time the simulation ended (to calculate age/deceased
+   *                   status)
    */
   private static void basicInfo(List<String> textRecord, Person person, long endTime) {
     String name = (String) person.attributes.get(Person.NAME);
@@ -409,23 +416,22 @@ public class TextExporter {
    * Write a line for a single Encounter to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param encounter
-   *          The Encounter to add to the export
+   *                   The Encounter to add to the export
    */
   private static void encounter(List<String> textRecord, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
 
     String clinician = "";
     if (encounter.clinician != null) {
-      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME_PREFIX)
-          + " " + encounter.clinician.attributes.get(Clinician.NAME) + ")";
+      clinician = " (" + encounter.clinician.attributes.get(Clinician.NAME) + ")";
     }
     if (encounter.reason == null && encounter.provider == null) {
       textRecord.add(encounterTime + clinician + " : " + encounter.codes.get(0).display);
-    } else if  (encounter.reason == null && encounter.provider != null) {
+    } else if (encounter.reason == null && encounter.provider != null) {
       textRecord.add(encounterTime + clinician + " : Encounter at " + encounter.provider.name);
-    } else if  (encounter.reason != null && encounter.provider == null) {
+    } else if (encounter.reason != null && encounter.provider == null) {
       textRecord.add(encounterTime + clinician + " : Encounter for " + encounter.reason.display);
     } else {
       textRecord.add(encounterTime + clinician + " : Encounter at "
@@ -437,11 +443,11 @@ public class TextExporter {
    * Add all info from the encounter to the record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param person
-   *          The person to export
+   *                   The person to export
    * @param encounter
-   *          The encounter all of the information refers to
+   *                   The encounter all of the information refers to
    */
   private static void encounterReport(List<String> textRecord, Person person, Encounter encounter) {
     String encounterTime = dateFromTimestamp(encounter.start);
@@ -460,7 +466,7 @@ public class TextExporter {
     textRecord.add("Type: " + encounter.type);
     textRecord.add("   ");
 
-    //Create lists for only the items that occurred at the encounter
+    // Create lists for only the items that occurred at the encounter
     List<Entry> encounterConditions = new ArrayList<>();
     List<Report> encounterReports = new ArrayList<>();
     List<Observation> encounterObservations = new ArrayList<>();
@@ -540,11 +546,11 @@ public class TextExporter {
    * Write a line for a single Condition to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param condition
-   *          The condition to add to the export
+   *                   The condition to add to the export
    * @param end
-   *          Whether or not the condition end date will be displayed
+   *                   Whether or not the condition end date will be displayed
    */
   private static void condition(List<String> textRecord, Entry condition, Boolean end) {
     String start = dateFromTimestamp(condition.start);
@@ -552,7 +558,7 @@ public class TextExporter {
     String description = condition.codes.get(0).display;
     if (end) {
       if (condition.stop == 0L) {
-        //     "YYYY-MM-DD"
+        // "YYYY-MM-DD"
         stop = "          ";
       } else {
         stop = dateFromTimestamp(condition.stop);
@@ -567,18 +573,18 @@ public class TextExporter {
    * Write a line for a condition that has not ended at the time of the encounter.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param condition
-   *          The condition to add to the export
+   *                   The condition to add to the export
    * @param encounter
-   *          The encounter at which the continuing condition is reported
+   *                   The encounter at which the continuing condition is reported
    */
   private static void conditionpast(List<String> textRecord, Entry condition, Encounter encounter) {
     String start = dateFromTimestamp(condition.start);
     if ((condition.stop == 0L || condition.stop > encounter.stop)
         && (condition.start < encounter.start)) {
-      //checks that the condition hasn't ended by the time of the encounter
-      //and began prior to the encounter
+      // checks that the condition hasn't ended by the time of the encounter
+      // and began prior to the encounter
       String description = condition.codes.get(0).display;
       textRecord.add("  " + start + " : " + description);
     }
@@ -588,9 +594,9 @@ public class TextExporter {
    * Write a line for a single Observation to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                    Text format record, as a list of lines
    * @param observation
-   *          The Observation to add to the export
+   *                    The Observation to add to the export
    */
   private static void observation(List<String> textRecord, Observation observation) {
     String value = ExportHelper.getObservationValue(observation);
@@ -618,9 +624,9 @@ public class TextExporter {
    * Write lines for a Diagnostic Report to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                    Text format record, as a list of lines
    * @param observation
-   *          The Report to add to the export
+   *                    The Report to add to the export
    */
   private static void diagnosticReport(List<String> textRecord, Report report) {
     // note that this is largely the same as the MultiObservation
@@ -636,9 +642,9 @@ public class TextExporter {
    * Write lines for an Observation with multiple parts to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                    Text format record, as a list of lines
    * @param observation
-   *          The Observation to add to the export
+   *                    The Observation to add to the export
    */
   private static void multiobservation(List<String> textRecord, Observation observation) {
     String obsTime = dateFromTimestamp(observation.start);
@@ -652,10 +658,11 @@ public class TextExporter {
   /**
    * Common logic for outputting a group of observations,
    * intended to be used by MultiObservations and DiagnosticReports.
+   * 
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                    Text format record, as a list of lines
    * @param observation
-   *          The group of Observations to add to the export
+   *                    The group of Observations to add to the export
    */
   private static void observationGroup(List<String> textRecord, List<Observation> subObservations) {
     for (Observation subObs : subObservations) {
@@ -671,9 +678,9 @@ public class TextExporter {
    * Write a line for a single Procedure to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param procedure
-   *          The Procedure to add to the export
+   *                   The Procedure to add to the export
    */
   private static void procedure(List<String> textRecord, Procedure procedure) {
     String procedureTime = dateFromTimestamp(procedure.start);
@@ -690,11 +697,11 @@ public class TextExporter {
    * Write a line for a single Medication to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param medication
-   *          The Medication to add to the export
+   *                   The Medication to add to the export
    * @param stat
-   *          Whether or not the medication status will be displayed
+   *                   Whether or not the medication status will be displayed
    */
   private static void medication(List<String> textRecord, Medication medication, Boolean stat) {
     String medTime = dateFromTimestamp(medication.start);
@@ -718,14 +725,16 @@ public class TextExporter {
   }
 
   /**
-   * Write a line for a medication that is still being taken at the time of the encounter.
+   * Write a line for a medication that is still being taken at the time of the
+   * encounter.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param medication
-   *          The medication to add to the export
+   *                   The medication to add to the export
    * @param encounter
-   *          The encounter at which the continuing medication is reported
+   *                   The encounter at which the continuing medication is
+   *                   reported
    */
   private static void medicationpast(List<String> textRecord, Medication medication,
       Encounter encounter) {
@@ -733,13 +742,13 @@ public class TextExporter {
     String medDesc = medication.codes.get(0).display;
     if ((medication.stop == 0L || medication.stop > encounter.stop)
         && (medication.start < encounter.start)) {
-      //checks that the medication is still being taken at the time of the encounter
-      //and began prior to the encounter
+      // checks that the medication is still being taken at the time of the encounter
+      // and began prior to the encounter
       if (medication.reasons == null || medication.reasons.isEmpty()) {
         textRecord.add("  " + medTime + " : " + medDesc);
       } else {
         String reason = medication.reasons.get(0).display;
-        textRecord.add("  " + medTime + " + " + medDesc  + " for " + reason);
+        textRecord.add("  " + medTime + " + " + medDesc + " for " + reason);
       }
     }
   }
@@ -748,9 +757,9 @@ public class TextExporter {
    * Write a line for a single Immunization to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                     Text format record, as a list of lines
    * @param immunization
-   *          The immunization to add to the export
+   *                     The immunization to add to the export
    */
   private static void immunization(List<String> textRecord, Entry immunization) {
     String immTime = dateFromTimestamp(immunization.start);
@@ -762,11 +771,11 @@ public class TextExporter {
    * Write lines for a single CarePlan to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param careplan
-   *          The CarePlan to add to the export
+   *                   The CarePlan to add to the export
    * @param stat
-   *          Whether or not the careplan status will be displayed
+   *                   Whether or not the careplan status will be displayed
    */
   private static void careplan(List<String> textRecord, CarePlan careplan, Boolean stat) {
     String cpTime = dateFromTimestamp(careplan.start);
@@ -777,7 +786,6 @@ public class TextExporter {
     } else {
       textRecord.add("  " + cpTime + " : " + cpDesc);
     }
-
 
     if (careplan.reasons != null && !careplan.reasons.isEmpty()) {
       for (Code reason : careplan.reasons) {
@@ -793,14 +801,15 @@ public class TextExporter {
   }
 
   /**
-   * Write a line for a careplan that is still being followed at the time of the encounter.
+   * Write a line for a careplan that is still being followed at the time of the
+   * encounter.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                   Text format record, as a list of lines
    * @param careplan
-   *          The careplan to add to the export
+   *                   The careplan to add to the export
    * @param encounter
-   *          The encounter at which the continuing careplan is reported
+   *                   The encounter at which the continuing careplan is reported
    */
   private static void careplanpast(List<String> textRecord, CarePlan careplan,
       Encounter encounter) {
@@ -808,8 +817,8 @@ public class TextExporter {
     String cpDesc = careplan.codes.get(0).display;
     if ((careplan.stop == 0L || careplan.stop > encounter.stop)
         && (careplan.start < encounter.start)) {
-      //checks that the careplan is still being followed at the time of the encounter
-      //and began prior to the encounter
+      // checks that the careplan is still being followed at the time of the encounter
+      // and began prior to the encounter
       textRecord.add("  " + cpTime + " : " + cpDesc);
       if (careplan.reasons != null && !careplan.reasons.isEmpty()) {
         for (Code reason : careplan.reasons) {
@@ -828,9 +837,9 @@ public class TextExporter {
    * Write lines for a single ImagingStudy to the exported record.
    *
    * @param textRecord
-   *          Text format record, as a list of lines
+   *                     Text format record, as a list of lines
    * @param imagingstudy
-   *          The ImagingStudy to add to the export
+   *                     The ImagingStudy to add to the export
    */
   private static void imagingStudy(List<String> textRecord, ImagingStudy imagingStudy) {
     String studyTime = dateFromTimestamp(imagingStudy.start);
@@ -849,7 +858,7 @@ public class TextExporter {
    * Add a section separator line to the record.
    *
    * @param textRecord
-   *          Record to add separator line to
+   *                   Record to add separator line to
    */
   private static void breakline(List<String> textRecord) {
     textRecord.add(SECTION_SEPARATOR);

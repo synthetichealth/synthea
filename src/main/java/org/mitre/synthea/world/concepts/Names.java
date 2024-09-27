@@ -87,25 +87,19 @@ public class Names {
   public static String fakeAddress(boolean includeLine2, Person person) {
     int number = person.randInt(100) + 1;
 
-    // Get family names and street types from the names data structure.
-    List<String> familyNames = (List<String>) names.get("swedish.family");
-    List<String> streetTypes = (List<String>) names.get("street.type");
+    List<String> streetNames = (List<String>) names.get("street.name");
 
-    // Randomly select a family name and street type.
-    String familyName = familyNames.get(person.randInt(familyNames.size()));
-    String streetType = streetTypes.get(person.randInt(streetTypes.size()));
+    String streetName = streetNames.get(person.randInt(streetNames.size()));
 
-    // Construct the street name in the format [familyname]s [type].
-    // For example Johnssons väg
-    String streetName = familyName + "s " + streetType;
-
-    if (includeLine2) {
-      List<String> secondaryTypes = (List<String>) names.get("street.secondary");
-      String addtlType = secondaryTypes.get(person.randInt(secondaryTypes.size()));
-      return streetName + ", " + addtlType + " " + number;
-    } else {
-      return streetName + " " + number;
-    }
+    /*
+     * if (includeLine2) {
+     * List<String> secondaryTypes = (List<String>) names.get("street.secondary");
+     * String addtlType = secondaryTypes.get(person.randInt(secondaryTypes.size()));
+     * return streetName + ", " + addtlType + " " + number;
+     * } else {
+     */
+    return streetName + " " + number;
+    // }
   }
 
   /**

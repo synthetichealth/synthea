@@ -41,7 +41,8 @@ import org.mitre.synthea.world.geography.Location;
  * This exporter attempts to export synthetic patient data into
  * comma-separated value (CSV) files that align with the Veteran's
  * Health Administration (VHA) Corporate Data Warehouse (CDW).
- * <p></p>
+ * <p>
+ * </p>
  * https://www.data.va.gov/dataset/corporate-data-warehouse-cdw
  */
 public class CDWExporter {
@@ -54,7 +55,7 @@ public class CDWExporter {
   /**
    * Table key sequence generators.
    */
-  private Map<OutputStreamWriter,AtomicInteger> sids;
+  private Map<OutputStreamWriter, AtomicInteger> sids;
   private int sidStart = 1;
 
   private FactTable sstaff = new FactTable();
@@ -157,10 +158,10 @@ public class CDWExporter {
 
   /**
    * Constructor for the CDWExporter -
-   *  initialize the required files and associated writers.
+   * initialize the required files and associated writers.
    */
   private CDWExporter() {
-    sids = new HashMap<OutputStreamWriter,AtomicInteger>();
+    sids = new HashMap<OutputStreamWriter, AtomicInteger>();
 
     try {
       File output = Exporter.getOutputFolder("cdw", null);
@@ -231,6 +232,7 @@ public class CDWExporter {
 
   /**
    * Write the headers to each of the CSV files.
+   * 
    * @throws IOException if any IO error occurs
    */
   private void writeCSVHeaders() throws IOException {
@@ -391,8 +393,8 @@ public class CDWExporter {
   }
 
   /**
-   *  Thread safe singleton pattern adopted from
-   *  https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
+   * Thread safe singleton pattern adopted from
+   * https://stackoverflow.com/questions/7048198/thread-safe-singletons-in-java
    */
   private static class SingletonHolder {
     /**
@@ -403,6 +405,7 @@ public class CDWExporter {
 
   /**
    * Get the current instance of the CDWExporter.
+   * 
    * @return the current instance of the CDWExporter.
    */
   public static CDWExporter getInstance() {
@@ -413,6 +416,7 @@ public class CDWExporter {
    * Set the sequence generator key starting values.
    * Useful to ensure states do not generate
    * overlapping or colliding values.
+   * 
    * @param id The start of the sequence generators.
    */
   public void setKeyStart(int id) {
@@ -421,7 +425,8 @@ public class CDWExporter {
     // Dim tables have smaller key ranges: only a 2 byte integer -- max of 32K
     id = (id / 2500); // this gives a range of 400 entries per state without collisions.
     if (id == 0) {
-      // We don't want to have any keys with zero, because certain queries ignore them.
+      // We don't want to have any keys with zero, because certain queries ignore
+      // them.
       id = 1;
     }
 
@@ -453,8 +458,9 @@ public class CDWExporter {
 
   /**
    * Add a single Person's health record info to the CSV records.
+   * 
    * @param person Person to write record data for
-   * @param time Time the simulation ended
+   * @param time   Time the simulation ended
    * @throws IOException if any IO error occurs
    */
   public void export(Person person, long time) throws IOException {
@@ -468,7 +474,7 @@ public class CDWExporter {
       String state = Location.getStateName(provider.state);
       String tz = Location.getTimezoneByState(state);
       primarySta3n = sta3n.addFact(provider.id, clean(provider.name) + "," + tz);
-      location.addFact(provider.id,  clean(provider.name));
+      location.addFact(provider.id, clean(provider.name));
     }
 
     int personID = patient(person, primarySta3n, time);
@@ -597,17 +603,15 @@ public class CDWExporter {
    * Record a Patient.
    *
    * @param person Person to write data for
-   * @param sta3n The primary station ID for this patient
-   * @param time Time the simulation ended, to calculate age/deceased status
+   * @param sta3n  The primary station ID for this patient
+   * @param time   Time the simulation ended, to calculate age/deceased status
    * @return the patient's ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
    */
   private int patient(Person person, int sta3n, long time) throws IOException {
     // Generate full name and ID
     StringBuilder s = new StringBuilder();
-    if (person.attributes.containsKey(Person.NAME_PREFIX)) {
-      s.append(person.attributes.get(Person.NAME_PREFIX)).append(' ');
-    }
+
     s.append(person.attributes.get(Person.FIRST_NAME)).append(' ');
     s.append(person.attributes.get(Person.LAST_NAME));
     if (person.attributes.containsKey(Person.NAME_SUFFIX)) {
@@ -617,7 +621,7 @@ public class CDWExporter {
     int personID = getNextKey(spatient);
 
     // lookuppatient.write("PatientSID,Sta3n,PatientIEN,PatientICN,PatientFullCN,"
-    //     + "PatientName,TestPatient");
+    // + "PatientName,TestPatient");
     s.setLength(0);
     s.append(personID).append(',');
     s.append(sta3n).append(',');
@@ -629,8 +633,9 @@ public class CDWExporter {
     write(s.toString(), lookuppatient);
 
     // spatient.write("PatientSID,PatientName,PatientLastName,PatientFirstName,PatientSSN,Age,"
-    //     + "BirthDateTime,DeceasedFlag,DeathDateTime,Gender,SelfIdentifiedGender,Religion,"
-    //     + "MaritalStatus,MaritalStatusSID,PatientEnteredDateTime");
+    // +
+    // "BirthDateTime,DeceasedFlag,DeathDateTime,Gender,SelfIdentifiedGender,Religion,"
+    // + "MaritalStatus,MaritalStatusSID,PatientEnteredDateTime");
     s.setLength(0);
     s.append(personID).append(',');
     s.append(patientName);
@@ -663,7 +668,8 @@ public class CDWExporter {
     s.append(",None"); // Religion
 
     // Currently there are no divorces or widows
-    // Legal codes: (D)ivorced, (N)ever Married, (S)eperated, (W)idowed, (M)arried, (U)nknown
+    // Legal codes: (D)ivorced, (N)ever Married, (S)eperated, (W)idowed, (M)arried,
+    // (U)nknown
     String marital = ((String) person.attributes.get(Person.MARITAL_STATUS));
     if (marital != null) {
       if (marital.equals("M")) {
@@ -687,10 +693,10 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), spatient);
 
-    //  spatientaddress.write("SPatientAddressSID,PatientSID,AddressType,NameOfContact,"
-    //  + "RelationshipToPatient,StreetAddress1,StreetAddress2,StreetAddress3,"
-    //  + "City,State,Zip,PostalCode,Country,GISMatchScore,GISStreetSide,"
-    //  + "GISPatientAddressLongitude,GISPatientAddressLatitude,GISFIPSCode");
+    // spatientaddress.write("SPatientAddressSID,PatientSID,AddressType,NameOfContact,"
+    // + "RelationshipToPatient,StreetAddress1,StreetAddress2,StreetAddress3,"
+    // + "City,State,Zip,PostalCode,Country,GISMatchScore,GISStreetSide,"
+    // + "GISPatientAddressLongitude,GISPatientAddressLatitude,GISFIPSCode");
     s.setLength(0);
     s.append(getNextKey(spatientaddress)).append(',');
     s.append(personID).append(',');
@@ -713,8 +719,8 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), spatientaddress);
 
-    //spatientphone.write("SPatientPhoneSID,PatientSID,PatientContactType,NameOfContact,"
-    //  + "RelationshipToPatient,PhoneNumber,WorkPhoneNumber,EmailAddress");
+    // spatientphone.write("SPatientPhoneSID,PatientSID,PatientContactType,NameOfContact,"
+    // + "RelationshipToPatient,PhoneNumber,WorkPhoneNumber,EmailAddress");
     s.setLength(0);
     s.append(getNextKey(spatientphone)).append(',');
     s.append(personID).append(',');
@@ -742,7 +748,7 @@ public class CDWExporter {
       write(s.toString(), spatientphone);
     }
 
-    //patientrace.write("PatientRaceSID,PatientSID,Race");
+    // patientrace.write("PatientRaceSID,PatientSID,Race");
     String race = (String) person.attributes.get(Person.RACE);
     String ethnicity = (String) person.attributes.get(Person.ETHNICITY);
     if (race.equals("white") && !ethnicity.equals("hispanic")) {
@@ -769,7 +775,7 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), patientrace);
 
-    //patientethnicity.write("PatientEthnicitySID,PatientSID,Ethnicity");
+    // patientethnicity.write("PatientEthnicitySID,PatientSID,Ethnicity");
     s.setLength(0);
     s.append(getNextKey(patientethnicity)).append(',');
     s.append(personID).append(',');
@@ -788,9 +794,9 @@ public class CDWExporter {
   /**
    * Write a single Encounter to the tables.
    *
-   * @param personID The ID of the person that had this encounter
-   * @param person The person attending the encounter
-   * @param encounter The encounter itself
+   * @param personID     The ID of the person that had this encounter
+   * @param person       The person attending the encounter
+   * @param encounter    The encounter itself
    * @param primarySta3n The primary home sta3n for the patient
    * @return The encounter ID, to be referenced as a "foreign key" if necessary
    * @throws IOException if any IO error occurs
@@ -827,9 +833,9 @@ public class CDWExporter {
     write(s.toString(), visit);
 
     // appointment.write("AppointmentSID,Sta3n,PatientSID,AppointmentDateTime,AppointmentMadeDate,"
-    //    + "AppointmentTypeSID,AppointmentStatus,VisitSID,LocationSID,PurposeOfVisit,"
-    //    + "SchedulingRequestType,FollowUpVisitFlag,LengthOfAppointment,ConsultSID,"
-    //    + "CheckInDateTime,CheckOutDateTime");
+    // + "AppointmentTypeSID,AppointmentStatus,VisitSID,LocationSID,PurposeOfVisit,"
+    // + "SchedulingRequestType,FollowUpVisitFlag,LengthOfAppointment,ConsultSID,"
+    // + "CheckInDateTime,CheckOutDateTime");
     s.setLength(0);
     s.append(getNextKey(appointment)).append(',');
     if (encounter.provider != null) {
@@ -851,7 +857,7 @@ public class CDWExporter {
       s.append(primarySta3n).append(",");
     }
     s.append("3,"); // 3:SCHEDULED VISIT
-    s.append(person.rand(new String[] {"N", "C", "P", "W", "M", "A", "O"})).append(',');
+    s.append(person.rand(new String[] { "N", "C", "P", "W", "M", "A", "O" })).append(',');
     s.append(person.randInt(1)).append(',');
     s.append((encounter.stop - encounter.start) / (60 * 1000)).append(',');
     s.append(consultSid).append(',');
@@ -874,10 +880,10 @@ public class CDWExporter {
   /**
    * Write a single Condition to the tables.
    *
-   * @param personID ID of the person that has the condition.
-   * @param encounterID ID of the encounter where the condition was diagnosed
-   * @param encounter The encounter
-   * @param condition The condition itself
+   * @param personID     ID of the person that has the condition.
+   * @param encounterID  ID of the encounter where the condition was diagnosed
+   * @param encounter    The encounter
+   * @param condition    The condition itself
    * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
@@ -897,8 +903,8 @@ public class CDWExporter {
     int snomedSID = providerNarrative.addFact(code.code, clean(code.display));
 
     // problemlist.write("ProblemListSID,Sta3n,ICD9SID,ICD10SID,PatientSID,ProviderNarrativeSID,"
-    //    + "EnteredDateTime,OnsetDateTime,ProblemListCondition,RecordingProviderSID,"
-    //    + "ResolvedDateTime,SNOMEDCTConceptCode");
+    // + "EnteredDateTime,OnsetDateTime,ProblemListCondition,RecordingProviderSID,"
+    // + "ResolvedDateTime,SNOMEDCTConceptCode");
     int problemListSid = getNextKey(problemlist);
     s.append(problemListSid).append(',');
     if (sta3nValue != null) {
@@ -923,8 +929,8 @@ public class CDWExporter {
     write(s.toString(), problemlist);
 
     // vdiagnosis.write("VDiagnosisSID,Sta3n,ICD9SID,ICD10SID,PatientSID,VisitSID,"
-    //    + "VisitDateTime,VDiagnosisDateTime,ProviderNarrativeSID,ProblemListSID,"
-    //    + "OrderingProviderSID,EncounterProviderSID");
+    // + "VisitDateTime,VDiagnosisDateTime,ProviderNarrativeSID,ProblemListSID,"
+    // + "OrderingProviderSID,EncounterProviderSID");
     s.setLength(0);
     s.append(getNextKey(vdiagnosis));
     s.append(',');
@@ -950,10 +956,10 @@ public class CDWExporter {
   /**
    * Write a single Allergy to the tables.
    *
-   * @param personID ID of the person that has the allergy.
-   * @param person The person
-   * @param encounterID ID of the encounter where the allergy was diagnosed
-   * @param encounter The encounter
+   * @param personID     ID of the person that has the allergy.
+   * @param person       The person
+   * @param encounterID  ID of the encounter where the allergy was diagnosed
+   * @param encounter    The encounter
    * @param allergyEntry The allergy itself
    * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
@@ -974,9 +980,11 @@ public class CDWExporter {
     boolean food = code.display.matches(".*(nut|peanut|milk|dairy|eggs|shellfish|wheat).*");
 
     // allergy.write("AllergySID,AllergyIEN,Sta3n,PatientSID,AllergyType,AllergicReactant,"
-    //     + "LocalDrugSID,DrugNameWithoutDoseSID,DrugClassSID,ReactantSID,DrugIngredientSID,"
-    //     + "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
-    //     + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
+    // +
+    // "LocalDrugSID,DrugNameWithoutDoseSID,DrugClassSID,ReactantSID,DrugIngredientSID,"
+    // +
+    // "OriginationDateTime,OriginatingStaffSID,ObservedHistorical,Mechanism,VerifiedFlag,"
+    // + "VerificatiionDateTime,VerifyingStaffSID,EnteredInErrorFlag");
     int allergySID = getNextKey(allergy);
     s.append(allergySID).append(',');
     s.append(allergySID).append(',');
@@ -1000,7 +1008,7 @@ public class CDWExporter {
     s.append(','); // DrugIngredientSID
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
     s.append(providerSID).append(','); // OriginatingStaffSID
-    s.append(person.rand(new String[] {"o", "h"})).append(',');
+    s.append(person.rand(new String[] { "o", "h" })).append(',');
     s.append("A,");
     s.append("1,"); // Verified
     s.append(iso8601Timestamp(allergyEntry.start)).append(',');
@@ -1010,8 +1018,8 @@ public class CDWExporter {
 
     // allergyreaction.write("AllergicReactionSID,AllergySID,AllergyIEN,Sta3n,ReactionSID");
     String reactionDisplay = person.rand(
-        new String[] {"Sneezing and Coughing", "Inflammation of Skin",
-            "Itchy Watery Eyes", "Difficulty Breathing"});
+        new String[] { "Sneezing and Coughing", "Inflammation of Skin",
+            "Itchy Watery Eyes", "Difficulty Breathing" });
     s.setLength(0);
     int allergyreactionSID = getNextKey(allergicreaction);
     s.append(allergyreactionSID).append(',');
@@ -1028,7 +1036,8 @@ public class CDWExporter {
     write(s.toString(), allergicreaction);
 
     // allergycomment.write("AllergyCommentSID,AllergySID,AllergyIEN,Sta3n,PatientSID,"
-    //    + "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
+    // +
+    // "OriginationDateTime,EnteringStaffSID,AllergyComment,CommentEnteredDateTime");
     s.setLength(0);
     int allergyCommentSid = getNextKey(allergycomment);
     s.append(allergyCommentSid).append(',');
@@ -1052,11 +1061,11 @@ public class CDWExporter {
   /**
    * Write a DiagnosticReport to the tables.
    *
-   * @param personID The ID of the person that had this encounter
-   * @param encounterID The ID of the encounter
-   * @param encounter The encounter
+   * @param personID     The ID of the person that had this encounter
+   * @param encounterID  The ID of the encounter
+   * @param encounter    The encounter
    * @param primarySta3n The primary home sta3n for the patient
-   * @param report The diagnostic lab report
+   * @param report       The diagnostic lab report
    * @throws IOException if any IO error occurs
    */
   private void report(int personID, int encounterID, Encounter encounter,
@@ -1073,8 +1082,9 @@ public class CDWExporter {
     }
 
     // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
-    //   + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
-    //   + "PackageReference");
+    // +
+    // "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    // + "PackageReference");
     int cprsSID = getNextKey(cprsorder);
     s.setLength(0);
     s.append(cprsSID).append(',');
@@ -1137,7 +1147,8 @@ public class CDWExporter {
     int sampleSID = collectionsample.addFact(code.code, clean(code.display) + " Sample");
 
     // labchem.write("LabChemSID,Sta3n,LabPanelSID,LabChemTestSID,PatientSID,StaffSID,"
-    // + "LabChemSpecimenDateTime,LabChemResultValue,LOINCSID,Units,Abnormal,RefHigh,RefLow");
+    // +
+    // "LabChemSpecimenDateTime,LabChemResultValue,LOINCSID,Units,Abnormal,RefHigh,RefLow");
     for (Observation observation : report.observations) {
       Code obscode = observation.codes.get(0);
       // labchemtest.setHeader("LabChemTestSID,LabChemTestName,CollectionSampleSID");
@@ -1206,10 +1217,10 @@ public class CDWExporter {
     write(s.toString(), patientlabchem);
   }
 
-  private static final Map<String,String> VITALS = vitalSignCodes();
+  private static final Map<String, String> VITALS = vitalSignCodes();
 
-  private static Map<String,String> vitalSignCodes() {
-    Map<String,String> codes = new HashMap<String,String>();
+  private static Map<String, String> vitalSignCodes() {
+    Map<String, String> codes = new HashMap<String, String>();
     codes.put("29463-7", "4500639");
     codes.put("85354-9", "4500634");
     codes.put("72514-3", "4500635");
@@ -1220,11 +1231,11 @@ public class CDWExporter {
   /**
    * Write a single Observation to the tables.
    *
-   * @param personID ID of the person to whom the observation applies.
-   * @param encounterID The ID of the encounter
-   * @param encounter The encounter
+   * @param personID     ID of the person to whom the observation applies.
+   * @param encounterID  The ID of the encounter
+   * @param encounter    The encounter
    * @param primarySta3n The primary home sta3n for the patient
-   * @param observation The observation itself
+   * @param observation  The observation itself
    * @throws IOException if any IO error occurs
    */
   private void observation(int personID, int encounterID, Encounter encounter,
@@ -1302,10 +1313,10 @@ public class CDWExporter {
   /**
    * Write a Procedure to the tables.
    *
-   * @param personID ID of the person on whom the procedure was performed.
-   * @param encounterID ID of the encounter where the procedure was performed
-   * @param encounter The encounter
-   * @param procedure The procedure itself
+   * @param personID     ID of the person on whom the procedure was performed.
+   * @param encounterID  ID of the encounter where the procedure was performed
+   * @param encounter    The encounter
+   * @param procedure    The procedure itself
    * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
@@ -1323,8 +1334,9 @@ public class CDWExporter {
     }
 
     // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
-    //   + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
-    //   + "PackageReference");
+    // +
+    // "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    // + "PackageReference");
     int cprsSID = getNextKey(cprsorder);
     s.setLength(0);
     s.append(cprsSID).append(',');
@@ -1346,7 +1358,7 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), cprsorder);
 
-    //surgeryPRE.write("SurgerySID,VisitSID,NonORLocationSID,SurgeryCancelReasonSID,CPRSOrderSID")
+    // surgeryPRE.write("SurgerySID,VisitSID,NonORLocationSID,SurgeryCancelReasonSID,CPRSOrderSID")
     int surgerySID = getNextKey(surgeryPRE);
     s.setLength(0);
     s.append(surgerySID).append(',');
@@ -1358,13 +1370,13 @@ public class CDWExporter {
     write(s.toString(), surgeryPRE);
 
     Code code = procedure.codes.get(0);
-    //Code reason = procedure.reasons.get(0);
-    //cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
+    // Code reason = procedure.reasons.get(0);
+    // cpt.setHeader("CPTSID,CPTCode,CPTName,CPTDescription");
     int cptSID = cpt.addFact(code.code, "XXXXX," + clean(code.display) + "," + clean(code.display));
 
-    //surgeryProcedureDiagnosisCode.write("SurgeryProcedureDiagnosisCodeSID,SurgerySID,Sta3n,"
-    //    + "PrincipalCPTSID,PatientSID,SurgeryDateTime,PrincipalPostOpICD9SID,"
-    //    + "PrincipalPostOpICD10SID,CodingCompleteFlag");
+    // surgeryProcedureDiagnosisCode.write("SurgeryProcedureDiagnosisCodeSID,SurgerySID,Sta3n,"
+    // + "PrincipalCPTSID,PatientSID,SurgeryDateTime,PrincipalPostOpICD9SID,"
+    // + "PrincipalPostOpICD10SID,CodingCompleteFlag");
     int spdcSID = getNextKey(surgeryProcedureDiagnosisCode);
     s.setLength(0);
     s.append(spdcSID).append(',');
@@ -1383,10 +1395,10 @@ public class CDWExporter {
   /**
    * Write a single Medication to the tables.
    *
-   * @param personID ID of the person prescribed the medication.
-   * @param encounterID ID of the encounter where the medication was prescribed
-   * @param encounter The encounter
-   * @param medication The medication itself
+   * @param personID     ID of the person prescribed the medication.
+   * @param encounterID  ID of the encounter where the medication was prescribed
+   * @param encounter    The encounter
+   * @param medication   The medication itself
    * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
@@ -1404,7 +1416,8 @@ public class CDWExporter {
     }
     Code code = medication.codes.get(0);
 
-    // pharmacyOrderableItem ("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
+    // pharmacyOrderableItem
+    // ("PharmacyOrderableItemSID,PharmacyOrderableItem,SupplyFlag");
     int pharmSID = pharmacyOrderableItem.addFact(code.code, clean(code.display) + ",1");
 
     // dosageForm.setHeader("DosageFormSID,DosageFormIEN,DosageForm");
@@ -1424,7 +1437,7 @@ public class CDWExporter {
     }
 
     // nationalDrug.setHeader("NationalDrugSID,DrugNameWithDose,DosageFormSID,"
-    //    + "InactivationDate,VUID");
+    // + "InactivationDate,VUID");
     s.setLength(0);
     s.append(clean(code.display));
     s.append(',');
@@ -1434,7 +1447,7 @@ public class CDWExporter {
     int ndrugSID = nationalDrug.addFact(code.code, s.toString());
 
     // localDrug.setHeader("LocalDrugSID,LocalDrugIEN,Sta3n,LocalDrugNameWithDose,"
-    //    + "NationalDrugSID,NationalDrugNameWithDose,PharmacyOrderableItemSID");
+    // + "NationalDrugSID,NationalDrugNameWithDose,PharmacyOrderableItemSID");
     s.setLength(0);
     s.append(ndrugSID).append(',');
     s.append(sta3nValue).append(',');
@@ -1445,8 +1458,8 @@ public class CDWExporter {
     final int ldrugSID = localDrug.addFact(code.code, s.toString());
 
     // rxoutpatient.write("RxOutpatSID,Sta3n,RxNumber,IssueDate,CancelDate,FinishingDateTime,"
-    //    + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
-    //    + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
+    // + "PatientSID,ProviderSID,EnteredByStaffSID,LocalDrugSID,NationalDrugSID,"
+    // + "PharmacyOrderableItemSID,MaxRefills,RxStatus,OrderedQuantity");
     s.setLength(0);
     int rxNum = getNextKey(rxoutpatient);
     s.append(rxNum).append(',');
@@ -1493,8 +1506,9 @@ public class CDWExporter {
     write(s.toString(), rxoutpatfill);
 
     // cprsorder.write("CPRSOrderID,Sta3n,PatientSID,OrderStaffSID,EnteredByStaffSID,"
-    //    + "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
-    //    + "PackageReference");
+    // +
+    // "EnteredDateTime,OrderStatusSID,VistaPackageSID,OrderStartDateTime,OrderStopDateTime,"
+    // + "PackageReference");
     int cprsSID = getNextKey(cprsorder);
     s.setLength(0);
     s.append(cprsSID).append(',');
@@ -1520,7 +1534,8 @@ public class CDWExporter {
     s.append(NEWLINE);
     write(s.toString(), cprsorder);
 
-    // orderableItem ("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
+    // orderableItem
+    // ("OrderableItemSID,OrderableItemName,IVBaseFlag,IVAdditiveFlag");
     int orderSID = orderableItem.addFact(code.code, clean(code.display) + ",0,0");
 
     // ordereditem.write("OrderedItemSID,CPRSOrderSID,OrderableItemSID");
@@ -1531,8 +1546,8 @@ public class CDWExporter {
     write(s.toString(), ordereditem);
 
     // nonvamed.write("NonVAMedSID,PatientSID,NonVAMedIEN,Sta3n,LocalDrugSID,Dosage,"
-    //    + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
-    //    + "DocumentedDateTime,NonVAMedComments");
+    // + "MedicationRoute,Schedule,NonVAMedStatus,CPRSOrderSID,StartDateTime,"
+    // + "DocumentedDateTime,NonVAMedComments");
     s.setLength(0);
     int nonvamedSID = getNextKey(nonvamed);
     s.append(nonvamedSID).append(',');
@@ -1559,20 +1574,21 @@ public class CDWExporter {
   /**
    * Write a single Immunization to the tables.
    *
-   * @param personID ID of the person on whom the immunization was performed.
-   * @param person The person
-   * @param encounterID ID of the encounter where the immunization was performed
-   * @param encounter The encounter itself
+   * @param personID     ID of the person on whom the immunization was performed.
+   * @param person       The person
+   * @param encounterID  ID of the encounter where the immunization was performed
+   * @param encounter    The encounter itself
    * @param immunization The immunization itself
    * @param primarySta3n The primary home sta3n for the patient
    * @throws IOException if any IO error occurs
    */
   private void immunization(int personID, Person person, int encounterID, Encounter encounter,
-      Immunization immunizationEntry, int primarySta3n) throws IOException  {
+      Immunization immunizationEntry, int primarySta3n) throws IOException {
     StringBuilder s = new StringBuilder();
 
     // immunization.write("ImmunizationSID,ImmunizationIEN,Sta3n,PatientSID,ImmunizationNameSID,"
-    // + "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
+    // +
+    // "Series,Reaction,VisitDateTime,ImmunizationDateTime,OrderingStaffSID,ImmunizingStaffSID,"
     // + "VisitSID,ImmunizationComments,ImmunizationRemarks");
     int immunizationSid = getNextKey(immunization);
     s.append(immunizationSid).append(',');
@@ -1635,9 +1651,10 @@ public class CDWExporter {
 
   /**
    * Helper method to write a line to a File.
-   * Extracted to a separate method here to make it a little easier to replace implementations.
+   * Extracted to a separate method here to make it a little easier to replace
+   * implementations.
    *
-   * @param line The line to write
+   * @param line   The line to write
    * @param writer The place to write it
    * @throws IOException if an I/O error occurs
    */
