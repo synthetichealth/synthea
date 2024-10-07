@@ -8,8 +8,8 @@ fi
 
 ./run_synthea \
   --exporter.fhir.bulk_data false \
-  --exporter.fhir.included_resources \
-  Patient,Encounter,Observation,Condition,Practitioner \
+  --exporter.fhir.included_resources Patient,Encounter,Observation,Condition,Practitioner \
+  --exporter.practitioner.fhir.export true \
   -cs 54321 \
   -s 54321 \
   -r 20230403 \

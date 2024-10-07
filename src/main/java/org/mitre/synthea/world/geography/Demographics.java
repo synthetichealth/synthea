@@ -394,12 +394,15 @@ public class Demographics implements Comparable<Demographics>, Serializable {
     for (Map<String,String> demographicsLine : demographicsCsv) {
       String currCityId = demographicsLine.get("ID");
       String currState = demographicsLine.get("STNAME");
+      System.out.println("DEBUG in file: Demographics.java: Got " + currCityId + " and " + currState + " looking for state:" + state);
 
       // for now, only allow one state at a time
       if (state != null && state.equalsIgnoreCase(currState)) {
         Demographics parsed = csvLineToDemographics(demographicsLine);
 
         table.put(currState, currCityId, parsed);
+        System.out.println("DEBUG in file: Demographics.java: Got " + parsed);
+
       }
     }
 
