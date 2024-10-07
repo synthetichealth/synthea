@@ -55,7 +55,7 @@
     "Eventual_Diabetes": {
       "type": "SetAttribute",
       "attribute": "time_until_diabetes_onset",
-      "direct_transition": "Already_age_18",
+      "direct_transition": "Check Onset",
       "remarks": [
         "we assume that diabetes and prediabetes generally onset between the ages of 18-55",
         "this tracks a little lower so that we can diagnose prediabetes early and then diabetes later",
@@ -725,6 +725,26 @@
         {
           "transition": "Countdown to Diabetes"
         }
+      ]
+    },
+    "Check Onset": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Eventual_Diabetes",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "time_until_diabetes_onset",
+            "operator": "<=",
+            "value": 18
+          }
+        },
+        {
+          "transition": "Already_age_18"
+        }
+      ],
+      "remarks": [
+        "Looping back to Eventual_Diabetes will redraw from the time_until_diabetes_onset distribution. In effect this will eliminate a spike in 18 year olds (i.e., all the random sampling of 18 and under would all appear at age 18) and smooth the distribution appropriately."
       ]
     }
   },

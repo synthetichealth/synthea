@@ -11,7 +11,6 @@
     "2014 evidence-based guideline for the management of high blood pressure in adults: report from the panel members appointed to the Eighth Joint National Committee (JNC 8). ",
     "Canadian Hypertension Guidelines",
     "",
-    "",
     "The following model assumptions apply: ",
     "HTN Definitions: Our model definition of HTN is >= 140/90 for all populations, given general agreement of this threshold for pharmacotherapy across most clinical guidelines. Our model threshold for use of pharmacotherapy is SBP >= 140. We define control as SBP < 140. All individuals do NOT achieve control consistent with epidemiological studies. We acknowledge that HTN may be defined using a lower blood pressure (see ACC/AHA) and that lower pharmacotherapy thresholds and targets may be used for populations with certain comorbid conditions, cardiovascular risk, and/or of a certain age. This model does not reflect all primary HTN care pathways, as individual decision making that accounts for benefits, harms, treatment burden and other factors is a critical part of hypertension management. ",
     " ",
@@ -32,172 +31,13 @@
       "remarks": [
         "Initial impl == direct translation of ruby module"
       ],
-      "direct_transition": "Age_Guard"
-    },
-    "Age_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Age",
-        "operator": ">=",
-        "quantity": 18,
-        "unit": "years",
-        "value": 0
-      },
-      "direct_transition": "Hypertension_Screening_Reason"
-    },
-    "Set_Yearly_Risk": {
-      "type": "Simple",
-      "remarks": [
-        "By age 55 years, cumulative incidence of hypertension was 75.5% in black men, 75.7% in black women, 54.5% in white men, and 40.0% in white women -- https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007988",
-        "",
-        "",
-        "Cumulative Incidence  = 1 - e(-IR x D)",
-        "e^(-IRxD) = 1 - CI",
-        "-IR x D = ln(1-CI)",
-        "IR = -ln(1-CI)/D",
-        "",
-        "Assuming 0% at age 18, and per the chart the increase is roughly linear, use the following yearly incidence rates:",
-        "",
-        "",
-        "black men - 3.8%",
-        "black women - 3.8%",
-        "white men - 2.1%",
-        "white women - 1.4%",
-        "others - 2.5% (just a value in the middle, no source)"
-      ],
-      "conditional_transition": [
-        {
-          "transition": "Black",
-          "condition": {
-            "condition_type": "Race",
-            "race": "Black"
-          }
-        },
-        {
-          "transition": "White",
-          "condition": {
-            "condition_type": "Race",
-            "race": "White"
-          }
-        },
-        {
-          "transition": "Others"
-        }
-      ]
-    },
-    "Chance_of_Hypertension": {
-      "type": "Simple",
-      "complex_transition": [
-        {
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "hypertension",
-            "operator": "==",
-            "value": true
-          },
-          "distributions": [
-            {
-              "transition": "Wellness_Encounter",
-              "distribution": 1
-            }
-          ]
-        },
-        {
-          "distributions": [
-            {
-              "transition": "Onset_Hypertension",
-              "distribution": {
-                "attribute": "risk_of_hypertension",
-                "default": 0.05
-              }
-            },
-            {
-              "transition": "Wait_till_next_year",
-              "distribution": 0.95
-            }
-          ]
-        }
-      ],
-      "remarks": [
-        "Use the risk set above, but also check if some other module may have set hypertension == true"
-      ]
-    },
-    "Wait_till_next_year": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "EXACT",
-        "parameters": {
-          "value": 1
-        }
-      },
-      "unit": "years",
-      "direct_transition": "Chance_of_Hypertension"
+      "direct_transition": "Assign Hypertension Base Probability"
     },
     "Onset_Hypertension": {
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "Wellness_Encounter"
-    },
-    "Black": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Black_Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "Black_Male"
-        }
-      ]
-    },
-    "White": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "White_Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "White_Male"
-        }
-      ]
-    },
-    "Others": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.025
-    },
-    "Black_Female": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038
-    },
-    "Black_Male": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038
-    },
-    "White_Male": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.021
-    },
-    "White_Female": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.014
+      "direct_transition": "Check for Exclusions"
     },
     "Diagnose_Hypertension": {
       "type": "ConditionOnset",
@@ -401,96 +241,9 @@
     },
     "Wellness_Encounter": {
       "type": "Encounter",
-      "conditional_transition": [
-        {
-          "transition": "Excluded",
-          "condition": {
-            "condition_type": "Or",
-            "conditions": [
-              {
-                "condition_type": "Age",
-                "operator": "<",
-                "quantity": 18,
-                "unit": "years",
-                "value": 0
-              },
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "ckd",
-                    "operator": ">",
-                    "value": 3
-                  },
-                  {
-                    "condition_type": "Or",
-                    "conditions": [
-                      {
-                        "condition_type": "Attribute",
-                        "attribute": "pregnant",
-                        "operator": "==",
-                        "value": true
-                      },
-                      {
-                        "condition_type": "Or",
-                        "conditions": [
-                          {
-                            "condition_type": "Attribute",
-                            "attribute": "coronary_heart_disease",
-                            "operator": "==",
-                            "value": true
-                          },
-                          {
-                            "condition_type": "Or",
-                            "conditions": [
-                              {
-                                "condition_type": "Or",
-                                "conditions": [
-                                  {
-                                    "condition_type": "Active Condition",
-                                    "codes": [
-                                      {
-                                        "system": "SNOMED-CT",
-                                        "code": 22298006,
-                                        "display": "Myocardial Infarction"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "condition_type": "Active Condition",
-                                    "codes": [
-                                      {
-                                        "system": "SNOMED-CT",
-                                        "code": 399211009,
-                                        "display": "History of myocardial infarction (situation)"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "condition_type": "Attribute",
-                                "attribute": "chf",
-                                "operator": "is not nil"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Included"
-        }
-      ],
       "wellness": true,
-      "reason": "hypertension_screening_reason"
+      "reason": "hypertension_screening_reason",
+      "direct_transition": "Diagnose_Hypertension"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -828,10 +581,6 @@
       "value": true,
       "direct_transition": "Delay_2_Month_2"
     },
-    "Excluded": {
-      "type": "Simple",
-      "direct_transition": "Wait Until Next Checkup"
-    },
     "Prescribe_Medication_3": {
       "type": "CallSubmodule",
       "submodule": "medications/hypertension_medication",
@@ -850,13 +599,197 @@
     "Terminal": {
       "type": "Terminal"
     },
-    "Included": {
+    "Drop Outs": {
+      "type": "Simple",
+      "direct_transition": "Terminal"
+    },
+    "Check for Hypertension": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Eventual Hypertension",
+          "distribution": {
+            "attribute": "p_hypertension",
+            "default": 0.454
+          }
+        },
+        {
+          "transition": "Unlikely Onset",
+          "distribution": 0.546
+        }
+      ]
+    },
+    "Hypertension_Screening_Reason": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_screening_reason",
+      "direct_transition": "Wellness_Encounter",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 171222001,
+        "display": "Hypertension screening (procedure)"
+      }
+    },
+    "White": {
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Diagnose_Hypertension",
+          "transition": "White Male",
           "condition": {
-            "condition_type": "And",
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "White Female"
+        }
+      ]
+    },
+    "Black": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.571
+    },
+    "All Others": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.454
+    },
+    "White Male": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.51
+    },
+    "White Female": {
+      "type": "SetAttribute",
+      "attribute": "p_hypertension",
+      "direct_transition": "Check for Hypertension",
+      "value": 0.397
+    },
+    "Assign Hypertension Base Probability": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Black",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "All Others"
+        }
+      ],
+      "remarks": [
+        "Probabilities draw from:",
+        "Ostchega Y, Fryar CD, Nwankwo T, Nguyen DT. Hypertension prevalence among adults aged 18 and over: United States, 2017–2018. NCHS Data Brief, no 364. Hyattsville, MD: National Center for Health Statistics. 2020.",
+        "",
+        "In survey period 2017–2018, the prevalence of age-adjusted hypertension was 45.4% among adults and was higher among men (51.0%) than women (39.7%).",
+        "",
+        "Hypertension prevalence was higher among non-Hispanic black (57.1%) than non-Hispanic white (43.6%) or Hispanic (43.7%) adults."
+      ]
+    },
+    "Eventual Hypertension": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "White Onset Age",
+          "condition": {
+            "condition_type": "Race",
+            "race": "White"
+          }
+        },
+        {
+          "transition": "Black Onset Age",
+          "condition": {
+            "condition_type": "Race",
+            "race": "Black"
+          }
+        },
+        {
+          "transition": "All Others Onset Age"
+        }
+      ],
+      "remarks": [
+        "Distributions drawn from Table 2 of:",
+        "Huang X, Lee K, Wang MC, Shah NS, Khan SS. Age at Diagnosis of Hypertension by Race and Ethnicity in the US From 2011 to 2020. JAMA Cardiol. 2022;7(9):986–987. doi:10.1001/jamacardio.2022.2345"
+      ]
+    },
+    "Wait for Hypertension Onset": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Decrement_Years"
+    },
+    "Black Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 42,
+          "standardDeviation": 14
+        }
+      }
+    },
+    "White Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 47,
+          "standardDeviation": 15
+        }
+      }
+    },
+    "All Others Onset Age": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Check Result",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "round": true,
+        "parameters": {
+          "mean": 46,
+          "standardDeviation": 15
+        }
+      }
+    },
+    "Unlikely Onset": {
+      "type": "SetAttribute",
+      "attribute": "years_until_hypertension_onset",
+      "direct_transition": "Wait for Hypertension Onset",
+      "value": 120,
+      "remarks": [
+        "These patients are not removed from the pool, in case another module (for example, diabetes) activates hypertension."
+      ]
+    },
+    "Check for Hypertension Override": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Onset_Hypertension",
+          "condition": {
+            "condition_type": "Or",
             "conditions": [
               {
                 "condition_type": "Attribute",
@@ -866,34 +799,137 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "hypertension_dx",
-                "operator": "is nil"
+                "attribute": "years_until_hypertension_onset",
+                "operator": "<=",
+                "value": 0
               }
             ]
           }
         },
         {
-          "transition": "Wait Until Next Checkup"
+          "transition": "Check for Smoking related Hypertension",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Hypertension Onset"
+        }
+      ],
+      "remarks": [
+        "Use the risk set above, but also check if some other module may have set hypertension == true"
+      ]
+    },
+    "Check for Smoking related Hypertension": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Hypertension",
+          "distribution": 0.005
+        },
+        {
+          "transition": "Wait for Hypertension Onset",
+          "distribution": 0.995
+        }
+      ],
+      "remarks": [
+        "Various studies have estimated that smokers have between 1.2 and 1.5 higher odds ratio of hypertension than non-smokers. In this model, every year a patient actively smokes, they may experience the onset of hypertension."
+      ]
+    },
+    "Check for Exclusions": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Hypertension Onset",
+          "condition": {
+            "condition_type": "At Least",
+            "minimum": 1,
+            "conditions": [
+              {
+                "condition_type": "Age",
+                "operator": "<=",
+                "quantity": 18,
+                "unit": "years"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ckd",
+                "operator": ">",
+                "value": 3
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "pregnant",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "coronary_heart_disease",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 22298006,
+                    "display": "Myocardial Infarction"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [
+                  {
+                    "system": "SNOMED-CT",
+                    "code": 399211009,
+                    "display": "History of myocardial infarction (situation)"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chf",
+                "operator": "is not nil"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Hypertension_Screening_Reason"
         }
       ]
     },
-    "Wait Until Next Checkup": {
-      "type": "EncounterEnd",
-      "direct_transition": "Wellness_Encounter"
+    "Decrement_Years": {
+      "type": "Counter",
+      "attribute": "years_until_hypertension_onset",
+      "action": "decrement",
+      "direct_transition": "Check for Hypertension Override"
     },
-    "Drop Outs": {
+    "Check Result": {
       "type": "Simple",
-      "direct_transition": "Terminal"
-    },
-    "Hypertension_Screening_Reason": {
-      "type": "SetAttribute",
-      "attribute": "hypertension_screening_reason",
-      "direct_transition": "Set_Yearly_Risk",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 171222001,
-        "display": "Hypertension screening (procedure)"
-      }
+      "conditional_transition": [
+        {
+          "transition": "Eventual Hypertension",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "years_until_hypertension_onset",
+            "operator": "<=",
+            "value": 18
+          }
+        },
+        {
+          "transition": "Wait for Hypertension Onset"
+        }
+      ],
+      "remarks": [
+        "Looping back to Eventual_Hypertension will redraw from the years_until_hypertension_onset distribution. In effect this will eliminate a spike in 18 year olds (i.e., all the random sampling of 18 and under would all appear at age 18) and smooth the distribution (and average onset age) appropriately."
+      ]
     }
   },
   "gmf_version": 1
