@@ -1252,7 +1252,7 @@ public class FhirR4 {
     }
 
     Money moneyResource = new Money();
-    moneyResource.setCurrency("USD");
+    moneyResource.setCurrency("SEK");
     moneyResource.setValue(encounter.claim.getTotalClaimCost());
     claimResource.setTotal(moneyResource);
 

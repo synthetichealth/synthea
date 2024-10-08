@@ -97,10 +97,11 @@ public class PractitionerExportTestR4 {
     FhirR4.TRANSACTION_BUNDLE = false; // set this manually, in case it has already been loaded.
     FhirR4.USE_US_CORE_IG = true;
     TestHelper.loadTestProperties();
-    Generator.DEFAULT_STATE = Config.get("test_state.default", "Massachusetts");
+    Generator.DEFAULT_STATE = Config.get("test_state.default", "Stockholm");
     Location location = new Location(Generator.DEFAULT_STATE, null);
     Provider.clear();
     Provider.loadProviders(location, ProviderTest.providerRandom);
+    System.out.println(Provider.getProviderList());
     assertNotNull(Provider.getProviderList());
     assertFalse(Provider.getProviderList().isEmpty());
 

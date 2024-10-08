@@ -704,7 +704,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
    */
   public void setProvider(EncounterType type, Provider provider) {
     if (provider == null) {
-      provider = new Provider();
+      throw new RuntimeException("Unable to find provider: " + type);
     }
     String key = PREFERREDYPROVIDER + type;
     attributes.put(key, provider);

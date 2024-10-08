@@ -853,10 +853,10 @@ public class Generator {
     // Generate the person's race data based on their location.
     String race = city.pickRace(random);
     demographicsOutput.put(Person.RACE, race);
-    // String ethnicity = city.pickEthnicity(random);
+    String ethnicity = city.pickEthnicity(random);
     // demographicsOutput.put(Person.ETHNICITY, ethnicity);
-    // String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
-    demographicsOutput.put(Person.FIRST_LANGUAGE, "swedish");
+    String language = city.languageFromRaceAndEthnicity(race, ethnicity, random);
+    demographicsOutput.put(Person.FIRST_LANGUAGE, language);
 
     // Generate the person's gender based on their location.
     String gender;

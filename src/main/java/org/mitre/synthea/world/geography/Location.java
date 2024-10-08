@@ -99,12 +99,12 @@ public class Location implements Serializable {
       if (populationByCity.size() <= 0) {
         populationByCity.put(city, Long.valueOf(0));
       }
-      if (populationByCityId.size() <= 0) {
-        if (city.equalsIgnoreCase("Huddinge")) {
+      /*if (populationByCityId.size() <= 0) {
+        if ("Huddinge".equalsIgnoreCase(city)) {
           populationByCityId.put("406", Long.valueOf(90182));
         }
 
-      }
+      }*/
 
       totalPopulation = runningPopulation;
     } catch (Exception e) {

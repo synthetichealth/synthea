@@ -9,14 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mitre.synthea.export.JSONSkip;
@@ -287,6 +280,7 @@ public class Provider implements QuadTreeElement, Serializable {
     while (degrees <= maxDistance) {
       options = findProvidersByLocation(person, degrees);
       provider = providerFinder.find(options, person, service, time);
+
       if (provider != null) {
         return provider;
       }
@@ -325,6 +319,7 @@ public class Provider implements QuadTreeElement, Serializable {
    */
   private static List<Provider> findProvidersByLocation(Person person, double distance) {
     List<QuadTreeElement> results = providerMap.query(person, distance);
+
     List<Provider> providers = new ArrayList<Provider>();
     for (QuadTreeElement item : results) {
       providers.add((Provider) item);
@@ -471,10 +466,12 @@ public class Provider implements QuadTreeElement, Serializable {
       Map<String, String> row = csv.next();
       String currState = row.get("state");
       String abbreviation = Location.getAbbreviation(location.state);
+      boolean isCorrectState = currState != null && currState.toLowerCase().startsWith(Objects.requireNonNull(location.state).toLowerCase());
 
       // for now, only allow one state at a time
       if ((location.state == null)
           || (location.state != null && location.state.equalsIgnoreCase(currState))
+              || isCorrectState
           || (abbreviation != null && abbreviation.equalsIgnoreCase(currState))) {
 
         Provider parsed = csvLineToProvider(row);
