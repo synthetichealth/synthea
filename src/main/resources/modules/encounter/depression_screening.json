@@ -49,7 +49,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": 183401008,
-                    "display": "Anti-suicide psychotherapy"
+                    "display": "Anti-suicide psychotherapy (regime/therapy)"
                   }
                 ]
               }

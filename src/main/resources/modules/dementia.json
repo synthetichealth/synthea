@@ -80,7 +80,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "26929004",
+          "code": 26929004,
           "display": "Alzheimer's disease (disorder)"
         }
       ],
@@ -102,7 +102,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "230265002",
+          "code": 230265002,
           "display": "Familial Alzheimer's disease of early onset (disorder)"
         }
       ],
@@ -265,14 +265,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "386257007",
-          "display": "Dementia management"
+          "code": 386257007,
+          "display": "Dementia management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "311401005",
+          "code": 311401005,
           "display": "Patient education (procedure)"
         },
         {
@@ -282,8 +282,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "315043002",
-          "display": "Long term social support"
+          "code": 315043002,
+          "display": "Long term social support (regime/therapy)"
         }
       ],
       "direct_transition": "FirstPrescription"
@@ -428,8 +428,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61488002,
-          "display": "Physical medicine initial examination for orthotic program (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
@@ -574,8 +574,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61488002,
-          "display": "Physical medicine initial examination for orthotic program (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "Severe_MMSE_Score"
@@ -625,8 +625,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61488002,
-          "display": "Physical medicine initial examination for orthotic program (procedure)"
+          "code": "316744009",
+          "display": "Office Visit"
         }
       ],
       "direct_transition": "VerySevere_MMSE_Score"

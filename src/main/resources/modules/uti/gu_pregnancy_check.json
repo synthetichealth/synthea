@@ -57,8 +57,7 @@
         {
           "system": "SNOMED-CT",
           "code": 252160004,
-          "display": "Standard pregnancy test (procedure)",
-          "value_set": ""
+          "display": "Standard pregnancy test (procedure)"
         }
       ],
       "distribution": {
@@ -89,8 +88,7 @@
         {
           "system": "SNOMED-CT",
           "code": 440546007,
-          "display": "Discussion about pregnancy (procedure)",
-          "value_set": ""
+          "display": "Discussion about pregnancy (procedure)"
         }
       ],
       "distribution": {

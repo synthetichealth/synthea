@@ -86,7 +86,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "63332003",
+          "code": 63332003,
           "display": "History AND physical examination (procedure)"
         }
       ],
@@ -97,7 +97,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "315639002",
+          "code": 315639002,
           "display": "Initial patient assessment (procedure)"
         }
       ],
@@ -108,7 +108,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "370789001",
+          "code": 370789001,
           "display": "Development of individualized plan of care (procedure)"
         }
       ],
@@ -126,7 +126,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "410401003",
+          "code": 410401003,
           "display": "Nursing care/supplementary surveillance (regime/therapy)"
         }
       ],
@@ -150,7 +150,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
+          "code": 91251008,
           "display": "Physical therapy procedure (regime/therapy)"
         }
       ],
@@ -179,7 +179,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "84478008",
+          "code": 84478008,
           "display": "Occupational therapy (regime/therapy)"
         }
       ],
@@ -203,7 +203,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "311555007",
+          "code": 311555007,
           "display": "Speech and language therapy regime (regime/therapy)"
         }
       ],
@@ -227,7 +227,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "409023009",
+          "code": 409023009,
           "display": "Professional / ancillary services care (regime/therapy)"
         }
       ],
@@ -251,7 +251,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "392091000",
+          "code": 392091000,
           "display": "Care regimes assessment (procedure)"
         }
       ],
@@ -286,7 +286,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "225386006",
+          "code": 225386006,
           "display": "Pre-discharge assessment (procedure)"
         }
       ],
@@ -337,7 +337,7 @@
       "direct_transition": "SNF_Admission",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": "25675004",
+        "code": 25675004,
         "display": "Patient transfer to skilled nursing facility (procedure)"
       }
     },

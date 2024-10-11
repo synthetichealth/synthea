@@ -146,7 +146,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "64859006",
+                "code": 64859006,
                 "display": "Osteoporosis (disorder)"
               }
             ]
@@ -164,7 +164,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "312681000",
+          "code": 312681000,
           "display": "Bone density scan (procedure)"
         }
       ],
@@ -196,7 +196,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "64859006",
+          "code": 64859006,
           "display": "Osteoporosis (disorder)"
         }
       ],

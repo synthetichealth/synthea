@@ -24,8 +24,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "420174000",
-                "display": "Allergy to wheat"
+                "code": 420174000,
+                "display": "Allergy to wheat (finding)"
               }
             ]
           },
@@ -55,8 +55,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "420174000",
-          "display": "Allergy to wheat"
+          "code": 420174000,
+          "display": "Allergy to wheat (finding)"
         }
       ],
       "direct_transition": "Dairy_Allergy"
@@ -277,8 +277,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "91935009",
-                    "display": "Allergy to peanuts"
+                    "code": 91935009,
+                    "display": "Allergy to peanut (finding)"
                   }
                 ]
               },
@@ -287,8 +287,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "91934008",
-                    "display": "Allergy to nut"
+                    "code": 91934008,
+                    "display": "Allergy to nut (finding)"
                   }
                 ]
               },
@@ -297,8 +297,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "417532002",
-                    "display": "Allergy to fish"
+                    "code": 417532002,
+                    "display": "Allergy to fish (finding)"
                   }
                 ]
               },

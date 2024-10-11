@@ -17,8 +17,7 @@
         {
           "system": "SNOMED-CT",
           "code": 84100007,
-          "display": "History taking (procedure)",
-          "value_set": ""
+          "display": "History taking (procedure)"
         }
       ],
       "distribution": {
@@ -106,8 +105,7 @@
         {
           "system": "SNOMED-CT",
           "code": 223470000,
-          "display": "Discussion about signs and symptoms (procedure)",
-          "value_set": ""
+          "display": "Discussion about signs and symptoms (procedure)"
         }
       ],
       "distribution": {

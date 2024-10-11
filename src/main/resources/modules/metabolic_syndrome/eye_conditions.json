@@ -25,7 +25,7 @@
                   "codes": [
                     {
                       "system": "SNOMED-CT",
-                      "code": "422034002",
+                      "code": 422034002,
                       "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
@@ -49,7 +49,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "422034002",
+                    "code": 422034002,
                     "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
@@ -68,7 +68,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "422034002",
+          "code": 422034002,
           "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -79,7 +79,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "422034002",
+          "code": 422034002,
           "display": "Retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -262,7 +262,7 @@
                   "codes": [
                     {
                       "system": "SNOMED-CT",
-                      "code": "97331000119101",
+                      "code": 97331000119101,
                       "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
@@ -286,7 +286,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "97331000119101",
+                    "code": 97331000119101,
                     "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
@@ -305,7 +305,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "97331000119101",
+          "code": 97331000119101,
           "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -316,7 +316,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "97331000119101",
+          "code": 97331000119101,
           "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -341,7 +341,7 @@
                   "codes": [
                     {
                       "system": "SNOMED-CT",
-                      "code": "60951000119105",
+                      "code": 60951000119105,
                       "display": "Blindness due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
@@ -365,7 +365,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "60951000119105",
+                    "code": 60951000119105,
                     "display": "Blindness due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
@@ -384,7 +384,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "60951000119105",
+          "code": 60951000119105,
           "display": "Blindness due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -395,7 +395,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "60951000119105",
+          "code": 60951000119105,
           "display": "Blindness due to type 2 diabetes mellitus (disorder)"
         }
       ],

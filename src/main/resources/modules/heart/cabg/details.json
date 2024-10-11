@@ -107,7 +107,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "359672006",
+          "code": 359672006,
           "display": "Median sternotomy (procedure)"
         }
       ],
@@ -198,7 +198,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "177765008",
+          "code": 177765008,
           "display": "Opening of chest (procedure)"
         }
       ],
@@ -217,7 +217,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "385488000",
+          "code": 385488000,
           "display": "Surgical procedure on chest wall (procedure)"
         }
       ],

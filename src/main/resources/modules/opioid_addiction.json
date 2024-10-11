@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385867000,
-          "display": "Emergency treatment education (procedure)"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "65546002",
-          "display": "Extraction of wisdom tooth"
+          "code": 65546002,
+          "display": "Extraction of wisdom tooth (procedure)"
         }
       ],
       "direct_transition": "Directed_Use_Prescription1"
@@ -218,8 +218,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "82423001",
-          "display": "Chronic pain"
+          "code": 82423001,
+          "display": "Chronic pain (finding)"
         }
       ],
       "direct_transition": "Enter_Directed_Use_Encounter2"
@@ -231,7 +231,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183452005",
+          "code": 183452005,
           "display": "Emergency hospital admission (procedure)"
         }
       ],
@@ -268,8 +268,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385867000,
-          "display": "Emergency treatment education (procedure)"
+          "code": 182813001,
+          "display": "Emergency treatment (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -548,8 +548,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "56876005",
-          "display": "Drug rehabilitation and detoxification"
+          "code": 56876005,
+          "display": "Drug rehabilitation and detoxification (regime/therapy)"
         }
       ],
       "direct_transition": "Pain_Vital_4",
@@ -623,8 +623,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 708079007,
-          "display": "Overdose of illicit drug (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Directed_Use_Overdose_Encounter"
@@ -636,7 +636,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -661,8 +661,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 708079007,
-          "display": "Overdose of illicit drug (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Misuse_Overdose_Encounter"
@@ -674,7 +674,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -699,8 +699,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 708079007,
-          "display": "Overdose of illicit drug (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Addiction_Overdose_Encounter"
@@ -712,7 +712,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -757,13 +757,13 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "61480009",
-          "display": "Drug detoxification"
+          "code": 61480009,
+          "display": "Drug detoxification (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": 266707007,
-          "display": "Drug addiction therapy"
+          "display": "Drug addiction therapy (regime/therapy)"
         }
       ],
       "direct_transition": "End_Addiction_Overdose_Encounter"
@@ -777,8 +777,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 708079007,
-          "display": "Overdose of illicit drug (disorder)"
+          "code": "55680006",
+          "display": "Drug overdose"
         }
       ],
       "direct_transition": "Terminal"

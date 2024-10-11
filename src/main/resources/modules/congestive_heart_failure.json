@@ -54,7 +54,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Recorded Symptom 1"
@@ -65,7 +65,7 @@
         {
           "system": "SNOMED-CT",
           "code": 735984001,
-          "display": "Heart failure self management plan"
+          "display": "Heart failure self management plan (record artifact)"
         }
       ],
       "direct_transition": "Wrap up follow-up encounter",
@@ -74,7 +74,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183063000,
-          "display": "Low salt diet education"
+          "display": "Low salt diet education (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -409,7 +409,7 @@
         {
           "system": "SNOMED-CT",
           "code": 735984001,
-          "display": "Heart failure self management plan"
+          "display": "Heart failure self management plan (record artifact)"
         }
       ],
       "reason": "chf",
@@ -417,7 +417,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183063000,
-          "display": "Low salt diet education"
+          "display": "Low salt diet education (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -427,7 +427,7 @@
         {
           "system": "SNOMED-CT",
           "code": 225323000,
-          "display": "Smoking cessation education"
+          "display": "Smoking cessation education (procedure)"
         }
       ],
       "direct_transition": "Wrap up follow-up encounter"
@@ -443,7 +443,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": 735984001,
-                "display": "Heart failure self management plan"
+                "display": "Heart failure self management plan (record artifact)"
               }
             ]
           }
@@ -671,7 +671,7 @@
         {
           "system": "SNOMED-CT",
           "code": 448337001,
-          "display": "Telemedicine consultation with patient"
+          "display": "Telemedicine consultation with patient (procedure)"
         }
       ],
       "direct_transition": "Daily self-measurement",
@@ -904,8 +904,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 31846006,
-        "display": "Medium rales (finding)"
+        "code": 19283009,
+        "display": "Rales (finding)"
       },
       "direct_transition": "Initial Lab Work"
     },
@@ -939,7 +939,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Echocardiography"
@@ -1480,7 +1480,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "371908008",
+          "code": 371908008,
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
@@ -1548,7 +1548,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "371908008",
+          "code": 371908008,
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
@@ -1574,7 +1574,7 @@
         {
           "system": "SNOMED-CT",
           "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {
@@ -1725,7 +1725,7 @@
         {
           "system": "SNOMED-CT",
           "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {

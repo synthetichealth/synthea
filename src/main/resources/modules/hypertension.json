@@ -357,14 +357,14 @@
         {
           "system": "SNOMED-CT",
           "code": 443402002,
-          "display": "Lifestyle education regarding hypertension"
+          "display": "Lifestyle education regarding hypertension (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": 386463000,
-          "display": "Prescribed activity/exercise education"
+          "display": "Prescribed activity/exercise education (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -379,7 +379,7 @@
         {
           "system": "SNOMED-CT",
           "code": 225323000,
-          "display": "Smoking cessation education"
+          "display": "Smoking cessation education (procedure)"
         }
       ],
       "goals": [
@@ -746,7 +746,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183856001,
-          "display": "Referral to hypertension clinic"
+          "display": "Referral to hypertension clinic (procedure)"
         }
       ],
       "direct_transition": "End_Hypertension_Followup_Encounter_3"

@@ -14,8 +14,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "698314001",
-          "display": "Consultation for treatment"
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "End_Consultation",
@@ -45,8 +45,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "308335008",
-          "display": "Patient encounter procedure"
+          "code": 308335008,
+          "display": "Patient encounter procedure (procedure)"
         }
       ],
       "direct_transition": "Vasectomy",
@@ -57,8 +57,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "22523008",
-          "display": "Vasectomy"
+          "code": 22523008,
+          "display": "Vasectomy (procedure)"
         }
       ],
       "duration": {
@@ -79,20 +79,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "737471002",
+          "code": 737471002,
           "display": "Minor surgery care management (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "183051005",
-          "display": "Recommendation to rest"
+          "code": 183051005,
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "243077000",
-          "display": "Recommendation to limit sexual activity"
+          "code": 243077000,
+          "display": "Recommendation to limit sexual activity (procedure)"
         }
       ],
       "direct_transition": "End_Sterilization_Requested"

@@ -15,7 +15,7 @@
         {
           "system": "SNOMED-CT",
           "code": 449868002,
-          "display": "Smokes tobacco daily"
+          "display": "Smokes tobacco daily (finding)"
         }
       ],
       "direct_transition": "Smoking_Careplan"
@@ -87,7 +87,7 @@
         {
           "system": "SNOMED-CT",
           "code": 7200002,
-          "display": "Alcoholism"
+          "display": "Alcoholism (disorder)"
         }
       ],
       "direct_transition": "Alcoholism_Care_Plan"

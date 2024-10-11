@@ -153,8 +153,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "128613002",
-          "display": "Seizure disorder"
+          "code": 128613002,
+          "display": "Seizure disorder (disorder)"
         }
       ],
       "direct_transition": "Seizure_Encounter",
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -198,7 +198,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "54550000",
+          "code": 54550000,
           "display": "Electroencephalogram (procedure)"
         }
       ],
@@ -233,8 +233,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "84757009",
-          "display": "Epilepsy"
+          "code": 84757009,
+          "display": "Epilepsy (disorder)"
         }
       ],
       "distributed_transition": [

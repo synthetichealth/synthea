@@ -574,8 +574,8 @@
       "direct_transition": "Stage III",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261625007,
-        "display": "Stage B3 (qualifier value)"
+        "code": 261639007,
+        "display": "Stage 3B (qualifier value)"
       }
     },
     "IIIA": {
@@ -725,8 +725,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261629001,
-        "display": "Stage C3 (qualifier value)"
+        "code": 261640009,
+        "display": "Stage 3C (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -743,8 +743,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261624006,
-        "display": "Stage B2 (qualifier value)"
+        "code": 261615002,
+        "display": "Stage 2B (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -761,8 +761,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261620002,
-        "display": "Stage A2 (qualifier value)"
+        "code": 261614003,
+        "display": "Stage 2A (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -779,8 +779,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261619008,
-        "display": "Stage A1 (qualifier value)"
+        "code": 261634002,
+        "display": "Stage 1A (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -797,8 +797,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261622005,
-        "display": "Stage B1 (qualifier value)"
+        "code": 261635001,
+        "display": "Stage 1B (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -943,8 +943,8 @@
             "operator": "!=",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 261622005,
-              "display": "Stage B1 (qualifier value)"
+              "code": 261635001,
+              "display": "Stage 1B (qualifier value)"
             }
           }
         },
@@ -1523,7 +1523,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs",
@@ -1709,8 +1709,17 @@
     "Set pre-surgery chemo counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_neoCount",
-      "direct_transition": "Neoadjuvant Chemo Before Surgery",
-      "value": 0
+      "value": 0,
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Neoadjuvant Chemo Before Surgery",
+          "distribution": 0.99
+        }
+      ]
     },
     "Neoadjuvant chemotherapy procedure": {
       "type": "Procedure",
@@ -1760,7 +1769,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs"
@@ -2176,6 +2185,12 @@
         "code": 268547008,
         "display": "Screening for malignant neoplasm of breast (procedure)"
       }
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Neoadjuvant Chemo Before Surgery",
+      "value": true
     }
   },
   "gmf_version": 1

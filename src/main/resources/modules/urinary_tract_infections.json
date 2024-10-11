@@ -60,8 +60,7 @@
         {
           "system": "SNOMED-CT",
           "code": 307426000,
-          "display": "Acute infective cystitis (disorder)",
-          "value_set": ""
+          "display": "Acute infective cystitis (disorder)"
         }
       ],
       "direct_transition": "Care Pathways",
@@ -258,8 +257,7 @@
         {
           "system": "SNOMED-CT",
           "code": 197927001,
-          "display": "Recurrent urinary tract infection (disorder)",
-          "value_set": ""
+          "display": "Recurrent urinary tract infection (disorder)"
         }
       ],
       "lookup_table_transition": [

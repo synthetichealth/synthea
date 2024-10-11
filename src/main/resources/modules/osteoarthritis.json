@@ -55,8 +55,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "201834006",
-          "display": "Localized, primary osteoarthritis of the hand"
+          "code": 201834006,
+          "display": "Localized, primary osteoarthritis of the hand (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -68,8 +68,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "239873007",
-          "display": "Osteoarthritis of knee"
+          "code": 239873007,
+          "display": "Osteoarthritis of knee (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -81,8 +81,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "239872002",
-          "display": "Osteoarthritis of hip"
+          "code": 239872002,
+          "display": "Osteoarthritis of hip (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -95,8 +95,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Pain Vital"
@@ -108,8 +108,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "408869004",
-          "display": "Musculoskeletal care"
+          "code": 408869004,
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
@@ -120,8 +120,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "266694003",
-          "display": "Heat therapy"
+          "code": 266694003,
+          "display": "Heat therapy (procedure)"
         }
       ],
       "direct_transition": "Assign DME"
@@ -473,8 +473,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 466312009,
-        "display": "Walker tray (physical object)"
+        "code": 705406009,
+        "display": "Walker (physical object)"
       },
       "assign_to_attribute": "osteoarthritis_dme",
       "direct_transition": "Finish DME"

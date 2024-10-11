@@ -21,8 +21,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "698314001",
-          "display": "Consultation for treatment"
+          "code": 698314001,
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "Consultation",
@@ -47,8 +47,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "305408004",
-          "display": "Admission to surgical department"
+          "code": 305408004,
+          "display": "Admission to surgical department (procedure)"
         }
       ],
       "direct_transition": "Tubal_Ligation_Procedure",
@@ -82,20 +82,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "737471002",
+          "code": 737471002,
           "display": "Minor surgery care management (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "183051005",
-          "display": "Recommendation to rest"
+          "code": 183051005,
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "243077000",
-          "display": "Recommendation to limit sexual activity"
+          "code": 243077000,
+          "display": "Recommendation to limit sexual activity (procedure)"
         }
       ],
       "direct_transition": "Postoperative Care",

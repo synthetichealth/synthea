@@ -160,8 +160,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185345009",
-          "display": "Encounter for symptom"
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "Asthma_Symptom1"
@@ -226,8 +226,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "171231001",
-          "display": "Asthma screening"
+          "code": 171231001,
+          "display": "Asthma screening (procedure)"
         }
       ],
       "direct_transition": "Prescribe_Maintenance_Inhaler"
@@ -277,20 +277,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "699728000",
-          "display": "Asthma self management"
+          "code": 699728000,
+          "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "710081004",
-          "display": "Smoking cessation therapy"
+          "code": 710081004,
+          "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "710818004",
-          "display": "Inhaled steroid therapy"
+          "code": 710818004,
+          "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -307,15 +307,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "699728000",
-          "display": "Asthma self management"
+          "code": 699728000,
+          "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "710818004",
-          "display": "Inhaled steroid therapy"
+          "code": 710818004,
+          "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -324,8 +324,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "229298005",
-          "display": "Breathing control"
+          "code": 229298005,
+          "display": "Breathing control (regime/therapy)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -493,8 +493,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "394701000",
-          "display": "Asthma follow-up"
+          "code": 394701000,
+          "display": "Asthma follow-up (regime/therapy)"
         }
       ],
       "direct_transition": "Followup_End"

@@ -20,8 +20,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "reason": "diabetic_neuropathy",
@@ -217,7 +217,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "161622006",
+          "code": 161622006,
           "display": "History of lower limb amputation (situation)"
         }
       ],
@@ -229,7 +229,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "429280009",
+          "code": 429280009,
           "display": "History of amputation of foot (situation)"
         }
       ],
@@ -387,7 +387,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "161621004",
+          "code": 161621004,
           "display": "History of upper limb amputation (situation)"
         }
       ],
@@ -399,7 +399,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "698423002",
+          "code": 698423002,
           "display": "History of disarticulation at wrist (situation)"
         }
       ],

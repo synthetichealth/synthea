@@ -101,8 +101,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -130,8 +130,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "395142003",
-          "display": "Allergy screening test"
+          "code": 395142003,
+          "display": "Allergy screening test (procedure)"
         }
       ],
       "direct_transition": "Allergy_Panel"
@@ -158,15 +158,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "384758001",
+          "code": 384758001,
           "display": "Self-care interventions (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "58332002",
-          "display": "Allergy education"
+          "code": 58332002,
+          "display": "Allergy education (procedure)"
         }
       ],
       "conditional_transition": [
@@ -261,8 +261,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 767116002,
-          "display": "Allergy to substance with ether structure (finding)"
+          "code": 419199007,
+          "display": "Allergy to substance (finding)"
         }
       ],
       "reactions": [],

@@ -14,8 +14,7 @@
         {
           "system": "SNOMED-CT",
           "code": 57617002,
-          "display": "Urine specimen collection (procedure)",
-          "value_set": ""
+          "display": "Urine specimen collection (procedure)"
         }
       ],
       "distribution": {
@@ -45,8 +44,7 @@
         {
           "system": "SNOMED-CT",
           "code": 167226008,
-          "display": "Urine dipstick test (procedure)",
-          "value_set": ""
+          "display": "Urine dipstick test (procedure)"
         }
       ],
       "distribution": {
@@ -250,8 +248,7 @@
         {
           "system": "SNOMED-CT",
           "code": 441550005,
-          "display": "Urinalysis with reflex to microscopy and culture (procedure)",
-          "value_set": ""
+          "display": "Urinalysis with reflex to microscopy and culture (procedure)"
         }
       ],
       "distribution": {
@@ -500,8 +497,7 @@
         {
           "system": "SNOMED-CT",
           "code": 117010004,
-          "display": "Urine culture (procedure)",
-          "value_set": ""
+          "display": "Urine culture (procedure)"
         }
       ],
       "distribution": {

@@ -161,8 +161,7 @@
         {
           "system": "SNOMED-CT",
           "code": 47505003,
-          "display": "Posttraumatic stress disorder",
-          "value_set": ""
+          "display": "Posttraumatic stress disorder (disorder)"
         }
       ],
       "direct_transition": "Wait_For_PHQ"
@@ -173,8 +172,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736254008,
-          "display": "Psychiatry care plan",
-          "value_set": ""
+          "display": "Psychiatry care plan (record artifact)"
         }
       ],
       "reason": "ptsd",
@@ -182,7 +180,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial psychiatric interview with mental status and evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "direct_transition": "end_PTSD_Encounter"
@@ -206,8 +204,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan (record artifact)",
-          "value_set": ""
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "reason": "ptsd",
@@ -273,8 +270,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan (record artifact)",
-          "value_set": ""
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "direct_transition": "end_Psych_encounter",
@@ -324,8 +320,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan (record artifact)",
-          "value_set": ""
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -356,8 +351,7 @@
         {
           "system": "SNOMED-CT",
           "code": 47505003,
-          "display": "Posttraumatic stress disorder",
-          "value_set": ""
+          "display": "Posttraumatic stress disorder (disorder)"
         }
       ],
       "distributed_transition": [
@@ -591,8 +585,7 @@
         {
           "system": "SNOMED-CT",
           "code": 225337009,
-          "display": "Suicide risk assessment (procedure)",
-          "value_set": ""
+          "display": "Suicide risk assessment (procedure)"
         }
       ],
       "duration": {
@@ -622,8 +615,7 @@
         {
           "system": "SNOMED-CT",
           "code": 715252007,
-          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)",
-          "value_set": ""
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
         }
       ],
       "duration": {
@@ -668,8 +660,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Inpatient Suicide Risk Assessment"
@@ -693,8 +684,7 @@
         {
           "system": "SNOMED-CT",
           "code": 225337009,
-          "display": "Suicide risk assessment (procedure)",
-          "value_set": ""
+          "display": "Suicide risk assessment (procedure)"
         }
       ],
       "duration": {
@@ -715,8 +705,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736353004,
-          "display": "Inpatient care plan (record artifact)",
-          "value_set": ""
+          "display": "Inpatient care plan (record artifact)"
         }
       ],
       "direct_transition": "time delay",
@@ -791,8 +780,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185345009,
-          "display": "Encounter for symptom",
-          "value_set": ""
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "PC-PTSD Screen"
@@ -805,8 +793,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185317003,
-          "display": "Telephone encounter (procedure)",
-          "value_set": ""
+          "display": "Telephone encounter (procedure)"
         }
       ],
       "direct_transition": "Telehealth_Observations",
@@ -852,8 +839,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Therapy Note"
@@ -929,8 +915,7 @@
         {
           "system": "SNOMED-CT",
           "code": 715252007,
-          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)",
-          "value_set": ""
+          "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
         }
       ],
       "duration": {
@@ -951,8 +936,7 @@
         {
           "system": "SNOMED-CT",
           "code": 225337009,
-          "display": "Suicide risk assessment (procedure)",
-          "value_set": ""
+          "display": "Suicide risk assessment (procedure)"
         }
       ],
       "duration": {
@@ -1085,8 +1069,7 @@
         {
           "system": "SNOMED-CT",
           "code": 385892002,
-          "display": "Mental health screening (procedure)",
-          "value_set": ""
+          "display": "Mental health screening (procedure)"
         }
       ],
       "duration": {
@@ -1105,8 +1088,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan (record artifact)",
-          "value_set": ""
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "reason": "ptsd",
@@ -1172,8 +1154,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan (record artifact)",
-          "value_set": ""
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "reason": "ptsd",
@@ -1220,8 +1201,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Therapy Note"

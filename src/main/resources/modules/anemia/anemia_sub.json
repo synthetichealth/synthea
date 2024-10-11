@@ -185,7 +185,7 @@
         {
           "system": "SNOMED-CT",
           "code": 14768001,
-          "display": "Peripheral blood smear interpretation"
+          "display": "Peripheral blood smear interpretation (procedure)"
         }
       ],
       "duration": {
@@ -266,7 +266,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -1011,7 +1011,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [

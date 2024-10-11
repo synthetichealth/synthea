@@ -16,8 +16,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 770108008,
-          "display": "Excision of ectopic tissue of breast (procedure)"
+          "code": 69031006,
+          "display": "Excision of breast tissue (procedure)"
         }
       ],
       "duration": {
@@ -147,7 +147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "447759004",
+          "code": 447759004,
           "display": "Brachytherapy of breast (procedure)"
         }
       ],
@@ -438,7 +438,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -501,7 +501,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -678,7 +678,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -973,7 +973,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Advanced_drugs"
@@ -1039,7 +1039,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [

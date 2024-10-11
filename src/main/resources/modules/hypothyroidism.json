@@ -74,7 +74,7 @@
         {
           "system": "SNOMED-CT",
           "code": 83664006,
-          "display": "Idiopathic atrophic hypothyroidism"
+          "display": "Idiopathic atrophic hypothyroidism (disorder)"
         }
       ],
       "direct_transition": "Hypothyroidism Encounter Workup"

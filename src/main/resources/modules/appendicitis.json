@@ -221,8 +221,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "47693006",
-          "display": "Rupture of appendix"
+          "code": 47693006,
+          "display": "Rupture of appendix (disorder)"
         }
       ],
       "direct_transition": "Appendicitis_Encounter"
@@ -237,7 +237,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -262,7 +262,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
+          "code": 185347001,
           "display": "Encounter for problem (procedure)"
         }
       ],

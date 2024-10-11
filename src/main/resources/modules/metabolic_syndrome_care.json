@@ -342,7 +342,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "44054006",
+          "code": 44054006,
           "display": "Diabetes mellitus type 2 (disorder)"
         }
       ],
@@ -382,13 +382,13 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "160670007",
-          "display": "Diabetic diet"
+          "code": 160670007,
+          "display": "Diabetic diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "229065009",
-          "display": "Exercise therapy"
+          "code": 229065009,
+          "display": "Exercise therapy (regime/therapy)"
         }
       ],
       "goals": [
@@ -563,7 +563,7 @@
                   "codes": [
                     {
                       "system": "SNOMED-CT",
-                      "code": "368581000119106",
+                      "code": 368581000119106,
                       "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
@@ -587,7 +587,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "368581000119106",
+                    "code": 368581000119106,
                     "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
@@ -606,7 +606,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "368581000119106",
+          "code": 368581000119106,
           "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -618,7 +618,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "368581000119106",
+          "code": 368581000119106,
           "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -652,7 +652,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "368581000119106",
+                "code": 368581000119106,
                 "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
               }
             ]

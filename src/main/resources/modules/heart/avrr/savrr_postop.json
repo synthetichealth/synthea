@@ -115,7 +115,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "271280005",
+          "code": 271280005,
           "display": "Removal of endotracheal tube (procedure)"
         }
       ],

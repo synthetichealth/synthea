@@ -47,7 +47,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "265764009",
+          "code": 265764009,
           "display": "Renal dialysis (procedure)"
         }
       ],

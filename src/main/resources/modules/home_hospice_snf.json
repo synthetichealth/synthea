@@ -60,8 +60,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 68566005,
-                    "display": "Urinary tract infectious disease (disorder)"
+                    "code": 38822007,
+                    "display": "Cystitis (disorder)"
                   }
                 ]
               },
@@ -86,7 +86,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "86406008",
+                    "code": 86406008,
                     "display": "Human immunodeficiency virus infection (disorder)"
                   }
                 ]
@@ -122,8 +122,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 399068003,
-                    "display": "Malignant tumor of prostate (disorder)"
+                    "code": 126906006,
+                    "display": "Neoplasm of prostate (disorder)"
                   }
                 ]
               },
@@ -198,8 +198,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "399211009",
-                    "display": "History of myocardial infarction"
+                    "code": 399211009,
+                    "display": "History of myocardial infarction (situation)"
                   }
                 ]
               },
@@ -208,8 +208,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "234466008",
-                    "display": "Acquired coagulation disorder"
+                    "code": 234466008,
+                    "display": "Acquired coagulation disorder (disorder)"
                   }
                 ]
               },
@@ -293,8 +293,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "110030002",
-                    "display": "Concussion injury of brain"
+                    "code": 110030002,
+                    "display": "Concussion injury of brain (disorder)"
                   }
                 ]
               },
@@ -338,7 +338,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "65710008",
+                    "code": 65710008,
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]

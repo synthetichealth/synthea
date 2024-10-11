@@ -43,7 +43,7 @@
         {
           "system": "SNOMED-CT",
           "code": 52765003,
-          "display": "Intubation"
+          "display": "Intubation (procedure)"
         }
       ],
       "direct_transition": "Volatile_Anesthetic"

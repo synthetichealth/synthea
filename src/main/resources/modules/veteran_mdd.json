@@ -317,7 +317,7 @@
         {
           "system": "SNOMED-CT",
           "code": 36923009,
-          "display": "Major depression, single episode"
+          "display": "Major depression, single episode (disorder)"
         }
       ],
       "direct_transition": "Time Gate"
@@ -336,7 +336,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan"
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "assign_to_attribute": "MDD care plan",
@@ -345,7 +345,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial psychiatric interview with mental status and evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "direct_transition": "end_MDD_Encounter"
@@ -427,7 +427,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736254008,
-          "display": "Psychiatry care plan"
+          "display": "Psychiatry care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -468,7 +468,7 @@
         {
           "system": "SNOMED-CT",
           "code": 425680009,
-          "display": "Cognitive behavioral therapy by multidisciplinary team"
+          "display": "Cognitive behavioral therapy by multidisciplinary team (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -483,7 +483,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736254008,
-          "display": "Psychiatry care plan"
+          "display": "Psychiatry care plan (record artifact)"
         }
       ],
       "direct_transition": "end_Psych_encounter",
@@ -515,7 +515,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "distributed_transition": [
@@ -570,7 +570,7 @@
         {
           "system": "SNOMED-CT",
           "code": 737434004,
-          "display": "Major depressive disorder clinical management plan"
+          "display": "Major depressive disorder clinical management plan (record artifact)"
         }
       ],
       "conditional_transition": [

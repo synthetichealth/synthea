@@ -185,7 +185,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "225338004",
+          "code": 225338004,
           "display": "Risk assessment (procedure)"
         }
       ],

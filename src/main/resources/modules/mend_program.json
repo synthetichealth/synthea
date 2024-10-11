@@ -66,8 +66,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "718361005",
-          "display": "Weight management program"
+          "code": 718361005,
+          "display": "Weight management program (regime/therapy)"
         }
       ],
       "activities": [
@@ -78,8 +78,8 @@
         },
         {
           "system": "SNOMED-CT",
-          "code": "1171000175109",
-          "display": "Increased physical activity"
+          "code": 1171000175109,
+          "display": "Increased physical activity (finding)"
         }
       ],
       "direct_transition": "End_Wellness_Encounter"

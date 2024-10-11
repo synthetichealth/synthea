@@ -185,8 +185,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 168172001,
-          "display": "Sweat test (procedure)"
+          "code": 86964003,
+          "display": "Cystic fibrosis sweat test (procedure)"
         }
       ],
       "duration": {
@@ -737,7 +737,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185349003,
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "conditional_transition": [
@@ -839,8 +839,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 104184002,
-          "display": "Sputum culture for mycobacterium (procedure)"
+          "code": 104173009,
+          "display": "Microbial culture of sputum (procedure)"
         }
       ],
       "duration": {
@@ -955,7 +955,7 @@
         {
           "system": "SNOMED-CT",
           "code": 703040004,
-          "display": "Agreeing on diabetes care plan"
+          "display": "Agreeing on diabetes care plan (procedure)"
         }
       ],
       "direct_transition": "Oropharyngeal_Culture",
@@ -1056,8 +1056,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 313334002,
-          "display": "Blood sample taken (situation)"
+          "code": 82078001,
+          "display": "Collection of blood specimen for laboratory (procedure)"
         }
       ],
       "duration": {
@@ -1479,7 +1479,7 @@
         {
           "system": "SNOMED-CT",
           "code": 281790008,
-          "display": "Intravenous antibiotic therapy"
+          "display": "Intravenous antibiotic therapy (procedure)"
         }
       ],
       "duration": {
@@ -1610,8 +1610,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 57485005,
-          "display": "Oxygen therapy (procedure)"
+          "code": 65710008,
+          "display": "Acute respiratory failure (disorder)"
         }
       ],
       "duration": {
@@ -1723,7 +1723,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "16602611000119108",
+          "code": 16602611000119108,
           "display": "Awaiting transplantation of lung (situation)"
         }
       ],

@@ -839,7 +839,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "230690007",
+          "code": 230690007,
           "display": "Cerebrovascular accident (disorder)"
         }
       ],

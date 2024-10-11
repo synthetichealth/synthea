@@ -14,8 +14,7 @@
         {
           "system": "SNOMED-CT",
           "code": 183444007,
-          "display": "Referral for further care (procedure)",
-          "value_set": ""
+          "display": "Referral for further care (procedure)"
         }
       ],
       "distribution": {
@@ -35,8 +34,7 @@
         {
           "system": "SNOMED-CT",
           "code": 67879005,
-          "display": "History and physical examination, limited (procedure)",
-          "value_set": ""
+          "display": "History and physical examination, limited (procedure)"
         }
       ],
       "distribution": {
@@ -151,8 +149,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "UTI_Lab_FollowUp"
@@ -174,8 +171,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Set UTI_ED"
@@ -204,8 +200,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185345009,
-          "display": "Encounter for symptom",
-          "value_set": ""
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "UTI_HPI"

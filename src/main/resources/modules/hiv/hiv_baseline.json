@@ -1950,8 +1950,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410293007,
-          "display": "Food education, guidance, and counseling (procedure)"
+          "code": 409066002,
+          "display": "Education, guidance and counseling (procedure)"
         }
       ],
       "distribution": {

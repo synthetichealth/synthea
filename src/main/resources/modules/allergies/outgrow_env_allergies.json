@@ -24,8 +24,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "419263009",
-                "display": "Allergy to tree pollen"
+                "code": 419263009,
+                "display": "Allergy to tree pollen (finding)"
               }
             ]
           },
@@ -55,8 +55,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "419263009",
-          "display": "Allergy to tree pollen"
+          "code": 419263009,
+          "display": "Allergy to tree pollen (finding)"
         }
       ],
       "direct_transition": "Grass_Allergy"
@@ -75,8 +75,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "418689008",
-                "display": "Allergy to grass pollen"
+                "code": 418689008,
+                "display": "Allergy to grass pollen (finding)"
               }
             ]
           },
@@ -106,8 +106,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "418689008",
-          "display": "Allergy to grass pollen"
+          "code": 418689008,
+          "display": "Allergy to grass pollen (finding)"
         }
       ],
       "direct_transition": "Mold_Allergy"

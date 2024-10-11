@@ -15,8 +15,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "290045001",
-          "display": "Kitchen practice"
+          "code": 290045001,
+          "display": "Kitchen practice (regime/therapy)"
         }
       ],
       "direct_transition": "Exercise_Intervention_Procedure",
@@ -55,8 +55,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "MEND_Vitals"

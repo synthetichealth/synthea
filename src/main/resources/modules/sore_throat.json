@@ -79,7 +79,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "195662009",
+          "code": 195662009,
           "display": "Acute viral pharyngitis (disorder)"
         }
       ],
@@ -182,7 +182,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "43878008",
+          "code": 43878008,
           "display": "Streptococcal sore throat (disorder)"
         }
       ],
@@ -236,8 +236,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185345009",
-          "display": "Encounter for symptom"
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "conditional_transition": [
@@ -247,7 +247,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "43878008",
+                "code": 43878008,
                 "display": "Streptococcal sore throat (disorder)"
               }
             ]
@@ -480,7 +480,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "117015009",
+          "code": 117015009,
           "display": "Throat culture (procedure)"
         }
       ],
@@ -491,7 +491,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "43878008",
+                "code": 43878008,
                 "display": "Streptococcal sore throat (disorder)"
               }
             ]

@@ -216,7 +216,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "46177005",
+          "code": 46177005,
           "display": "End-stage renal disease (disorder)"
         }
       ],
