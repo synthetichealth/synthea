@@ -186,7 +186,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "87433001",
+          "code": 87433001,
           "display": "Pulmonary emphysema (disorder)"
         }
       ],
@@ -199,7 +199,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185086009",
+          "code": 185086009,
           "display": "Chronic obstructive bronchitis (disorder)"
         }
       ],
@@ -280,7 +280,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "127783003",
+          "code": 127783003,
           "display": "Spirometry (procedure)"
         }
       ],
@@ -325,19 +325,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": 736283006,
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "229065009",
-          "display": "Exercise therapy"
+          "code": 229065009,
+          "display": "Exercise therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "15081005",
+          "code": 15081005,
           "display": "Pulmonary rehabilitation (regime/therapy)"
         }
       ],
@@ -349,19 +349,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": 736283006,
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "710081004",
-          "display": "Smoking cessation therapy"
+          "code": 710081004,
+          "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "426990007",
+          "code": 426990007,
           "display": "Home oxygen therapy (procedure)"
         }
       ],
@@ -619,7 +619,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "127783003",
+          "code": 127783003,
           "display": "Spirometry (procedure)"
         }
       ],
@@ -880,8 +880,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "305411003",
-          "display": "Admission to thoracic surgery department"
+          "code": 305411003,
+          "display": "Admission to thoracic surgery department (procedure)"
         }
       ],
       "conditional_transition": [
@@ -914,7 +914,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "88039007",
+          "code": 88039007,
           "display": "Transplant of lung (procedure)"
         }
       ],
@@ -931,7 +931,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "429609002",
+          "code": 429609002,
           "display": "Lung volume reduction surgery (procedure)"
         }
       ],
@@ -947,7 +947,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "15081005",
+          "code": 15081005,
           "display": "Pulmonary rehabilitation (regime/therapy)"
         }
       ],

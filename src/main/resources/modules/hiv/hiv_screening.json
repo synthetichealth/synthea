@@ -66,7 +66,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 165816005,
-            "display": "Human immunodeficiency virus positive (finding)"
+            "display": "Human immunodeficiency virus detected (finding)"
           }
         }
       ],
@@ -95,7 +95,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 165815009,
-            "display": "Human immunodeficiency virus negative (finding)"
+            "display": "Human immunodeficiency virus not detected (finding)"
           }
         }
       ],

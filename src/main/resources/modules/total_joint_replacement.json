@@ -54,8 +54,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "code": 183495009,
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "conditional_transition": [
@@ -88,8 +88,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "609588000",
-          "display": "Total knee replacement"
+          "code": 609588000,
+          "display": "Prosthetic total arthroplasty of knee joint (procedure)"
         }
       ],
       "direct_transition": "Post_Op_CarePlan"
@@ -99,8 +99,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "52734007",
-          "display": "Total replacement of hip"
+          "code": 52734007,
+          "display": "Total replacement of hip (procedure)"
         }
       ],
       "direct_transition": "Post_Op_CarePlan"
@@ -110,20 +110,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "737567002",
+          "code": 737567002,
           "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "91251008",
-          "display": "Physical therapy procedure"
+          "code": 91251008,
+          "display": "Physical therapy procedure (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "229070002",
-          "display": "Stretching exercises"
+          "code": 229070002,
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Post_Op_Prescribe_Pain_Reliever",
@@ -395,8 +395,8 @@
       "direct_transition": "Delay_For_Recovery",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": "609588000",
-        "display": "Total knee replacement"
+        "code": 609588000,
+        "display": "Prosthetic total arthroplasty of knee joint (procedure)"
       }
     },
     "Home Health Reason Hip": {
@@ -405,8 +405,8 @@
       "direct_transition": "Delay_For_Recovery",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": "52734007",
-        "display": "Total replacement of hip"
+        "code": 52734007,
+        "display": "Total replacement of hip (procedure)"
       }
     }
   },

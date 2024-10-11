@@ -52,7 +52,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "401303003",
+                    "code": 401303003,
                     "display": "Acute ST segment elevation myocardial infarction (disorder)"
                   }
                 ]
@@ -62,7 +62,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "401314000",
+                    "code": 401314000,
                     "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
                   }
                 ]
@@ -72,7 +72,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "4557003",
+                    "code": 4557003,
                     "display": "Preinfarction syndrome (disorder)"
                   }
                 ]

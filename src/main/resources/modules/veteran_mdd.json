@@ -317,7 +317,7 @@
         {
           "system": "SNOMED-CT",
           "code": 36923009,
-          "display": "Major depression, single episode"
+          "display": "Major depression, single episode (disorder)"
         }
       ],
       "direct_transition": "Time Gate"
@@ -336,7 +336,7 @@
         {
           "system": "SNOMED-CT",
           "code": 718347000,
-          "display": "Mental health care plan"
+          "display": "Mental health care plan (record artifact)"
         }
       ],
       "assign_to_attribute": "MDD care plan",
@@ -345,7 +345,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial psychiatric interview with mental status and evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "direct_transition": "end_MDD_Encounter"
@@ -367,7 +367,7 @@
         {
           "system": "SNOMED-CT",
           "code": 79094001,
-          "display": "Initial Psychiatric Interview with mental status evaluation"
+          "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
       "reason": "mdd",
@@ -390,7 +390,7 @@
         {
           "system": "SNOMED-CT",
           "code": 370143000,
-          "display": "Major depression disorder"
+          "display": "Major depressive disorder (disorder)"
         }
       ],
       "distributed_transition": [
@@ -427,7 +427,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736254008,
-          "display": "Psychiatry care plan"
+          "display": "Psychiatry care plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -453,27 +453,27 @@
         {
           "system": "SNOMED-CT",
           "code": 88848003,
-          "display": "Psychiatric Follow-up"
+          "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 385724002,
-          "display": "Coping Support Management"
+          "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 225337009,
-          "display": "Suicide Risk Assessment"
+          "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 425680009,
-          "display": "Cognitive behavioral therapy by multidisciplinary team"
+          "display": "Cognitive behavioral therapy by multidisciplinary team (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": 304822001,
-          "display": "Psychodynamic Interpersonal Therapy"
+          "display": "Psychodynamic-interpersonal psychotherapy (regime/therapy)"
         }
       ]
     },
@@ -483,7 +483,7 @@
         {
           "system": "SNOMED-CT",
           "code": 736254008,
-          "display": "Psychiatry care plan"
+          "display": "Psychiatry care plan (record artifact)"
         }
       ],
       "direct_transition": "end_Psych_encounter",
@@ -492,17 +492,17 @@
         {
           "system": "SNOMED-CT",
           "code": 385724002,
-          "display": "Coping Support Management"
+          "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 88848003,
-          "display": "Psychiatric Follow-up"
+          "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": 225337009,
-          "display": "Suicide Risk Assessment"
+          "display": "Suicide risk assessment (procedure)"
         }
       ]
     },
@@ -515,7 +515,7 @@
         {
           "system": "SNOMED-CT",
           "code": 390906007,
-          "display": "Follow-up encounter"
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "distributed_transition": [
@@ -570,7 +570,7 @@
         {
           "system": "SNOMED-CT",
           "code": 737434004,
-          "display": "Major depressive disorder clinical management plan"
+          "display": "Major depressive disorder clinical management plan (record artifact)"
         }
       ],
       "conditional_transition": [
@@ -599,7 +599,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112001000119100,
-          "display": "positive screening for PHQ-9"
+          "display": "Positive screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
       "direct_transition": "MDD Diagnosis",
@@ -611,7 +611,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112011000119102,
-          "display": "negative screening for PHQ9"
+          "display": "Negative screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
       "direct_transition": "Change_Dx_Not_MDD",
@@ -623,7 +623,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112001000119100,
-          "display": "positive screening for depression on phq9"
+          "display": "Positive screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
       "distributed_transition": [
@@ -647,7 +647,7 @@
         {
           "system": "SNOMED-CT",
           "code": 112011000119102,
-          "display": "negative screening for depression on phq9"
+          "display": "Negative screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
       "direct_transition": "Change_Dx_Not_MDD"

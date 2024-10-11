@@ -77,8 +77,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "90560007",
-          "display": "Gout"
+          "code": 90560007,
+          "display": "Inflammatory disorder due to increased blood urate level (disorder)"
         }
       ],
       "direct_transition": "Gout_Symptom1"
@@ -126,8 +126,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -139,25 +139,25 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "408869004",
-          "display": "Musculoskeletal care"
+          "code": 408869004,
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "183301007",
+          "code": 183301007,
           "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "229580007",
-          "display": "Ice therapy"
+          "code": 229580007,
+          "display": "Ice therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "226234005",
-          "display": "Healthy diet"
+          "code": 226234005,
+          "display": "Healthy diet (finding)"
         }
       ],
       "direct_transition": "Gout_Nonopioid_Pain_Medication"

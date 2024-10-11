@@ -126,8 +126,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 108290001,
-          "display": "Radiation oncology AND/OR radiotherapy (procedure)"
+          "code": 1287742003,
+          "display": "Radiotherapy (procedure)"
         }
       ],
       "duration": {
@@ -147,7 +147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "447759004",
+          "code": 447759004,
           "display": "Brachytherapy of breast (procedure)"
         }
       ],
@@ -438,7 +438,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -501,7 +501,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -678,7 +678,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -973,7 +973,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Advanced_drugs"
@@ -1039,7 +1039,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [

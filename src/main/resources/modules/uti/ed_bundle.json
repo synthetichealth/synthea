@@ -14,8 +14,7 @@
         {
           "system": "SNOMED-CT",
           "code": 386478007,
-          "display": "Triage emergency center (procedure)",
-          "value_set": ""
+          "display": "Triage: emergency center (procedure)"
         }
       ],
       "distribution": {
@@ -33,8 +32,7 @@
         {
           "system": "SNOMED-CT",
           "code": 61746007,
-          "display": "Taking patient vital signs (procedure)",
-          "value_set": ""
+          "display": "Taking patient vital signs (procedure)"
         }
       ],
       "distribution": {
@@ -53,7 +51,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": 45816000,
-                "display": "Pyelonephritis"
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           }
@@ -465,8 +463,7 @@
         {
           "system": "SNOMED-CT",
           "code": 14736009,
-          "display": "History and physical examination with evaluation and management of patient (procedure)",
-          "value_set": ""
+          "display": "History and physical examination with evaluation and management of patient (procedure)"
         }
       ],
       "distribution": {
@@ -735,8 +732,7 @@
         {
           "system": "SNOMED-CT",
           "code": 26604007,
-          "display": "Complete blood count (procedure)",
-          "value_set": ""
+          "display": "Complete blood count (procedure)"
         }
       ],
       "distribution": {
@@ -1332,8 +1328,7 @@
         {
           "system": "SNOMED-CT",
           "code": 441550005,
-          "display": "Urinalysis with reflex to microscopy and culture (procedure)",
-          "value_set": ""
+          "display": "Urinalysis with reflex to microscopy and culture (procedure)"
         }
       ],
       "distribution": {
@@ -1388,8 +1383,7 @@
         {
           "system": "SNOMED-CT",
           "code": 371361000119107,
-          "display": "Comprehensive metabolic panel (procedure)",
-          "value_set": ""
+          "display": "Comprehensive metabolic panel (procedure)"
         }
       ],
       "distribution": {
@@ -1453,8 +1447,7 @@
         {
           "system": "SNOMED-CT",
           "code": 866146005,
-          "display": "Serum metabolic panel (procedure)",
-          "value_set": ""
+          "display": "Serum metabolic panel (procedure)"
         }
       ],
       "distribution": {
@@ -2201,8 +2194,7 @@
         {
           "system": "SNOMED-CT",
           "code": 30088009,
-          "display": "Blood culture (procedure)",
-          "value_set": ""
+          "display": "Blood culture (procedure)"
         }
       ],
       "distribution": {
@@ -2240,7 +2232,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 708118007,
-        "display": "Microbiologic culture finding negative (finding)"
+        "display": "No organism isolated by microbiologic culture (finding)"
       }
     },
     "Positive_Blood_Culture": {
@@ -2258,7 +2250,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8730001000004107,
-        "display": "Blood culture positive for microorganism (finding)"
+        "display": "Organism isolated in blood by culture (finding)"
       },
       "direct_transition": "Set BldCx"
     },

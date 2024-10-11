@@ -160,8 +160,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "24079001",
-          "display": "Atopic dermatitis"
+          "code": 24079001,
+          "display": "Atopic dermatitis (disorder)"
         }
       ],
       "direct_transition": "PCP_Encounter"
@@ -173,8 +173,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "40275004",
-          "display": "Contact dermatitis"
+          "code": 40275004,
+          "display": "Contact dermatitis (disorder)"
         }
       ],
       "direct_transition": "PCP_Encounter"
@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Dermatitis_Symptom1"
@@ -239,15 +239,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "711282006",
-          "display": "Skin condition care"
+          "code": 711282006,
+          "display": "Skin condition care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "225130001",
-          "display": "Application of moisturizer to skin"
+          "code": 225130001,
+          "display": "Application of moisturizer to skin (procedure)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -287,8 +287,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -524,8 +524,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [

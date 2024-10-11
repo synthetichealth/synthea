@@ -122,8 +122,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "233678006",
-          "display": "Childhood asthma"
+          "code": 233678006,
+          "display": "Childhood asthma (disorder)"
         }
       ],
       "direct_transition": "Set_Childhood_Asthma"
@@ -141,8 +141,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "195967001",
-          "display": "Asthma"
+          "code": 195967001,
+          "display": "Asthma (disorder)"
         }
       ],
       "direct_transition": "Set_Adult_Asthma"
@@ -160,8 +160,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185345009",
-          "display": "Encounter for symptom"
+          "code": 185345009,
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "Asthma_Symptom1"
@@ -226,8 +226,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "171231001",
-          "display": "Asthma screening"
+          "code": 171231001,
+          "display": "Asthma screening (procedure)"
         }
       ],
       "direct_transition": "Prescribe_Maintenance_Inhaler"
@@ -277,25 +277,25 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "699728000",
-          "display": "Asthma self management"
+          "code": 699728000,
+          "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "710081004",
-          "display": "Smoking cessation therapy"
+          "code": 710081004,
+          "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "710818004",
-          "display": "Inhaled steroid therapy"
+          "code": 710818004,
+          "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "708409001",
-          "display": "Home nebulizer therapy"
+          "code": 708409001,
+          "display": "Home nebulizer therapy (procedure)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -307,25 +307,25 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "699728000",
-          "display": "Asthma self management"
+          "code": 699728000,
+          "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "710818004",
-          "display": "Inhaled steroid therapy"
+          "code": 710818004,
+          "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "708409001",
-          "display": "Home nebulizer therapy"
+          "code": 708409001,
+          "display": "Home nebulizer therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "229298005",
-          "display": "Breathing control"
+          "code": 229298005,
+          "display": "Breathing control (regime/therapy)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -411,8 +411,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "195967001",
-          "display": "Asthma"
+          "code": 195967001,
+          "display": "Asthma (disorder)"
         }
       ],
       "direct_transition": "End_Wellness_1"
@@ -467,8 +467,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "183478001",
-          "display": "Emergency hospital admission for asthma"
+          "code": 183478001,
+          "display": "Emergency hospital admission for asthma (procedure)"
         }
       ],
       "direct_transition": "End_Asthma_ED_Visit"
@@ -493,8 +493,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "394701000",
-          "display": "Asthma follow-up"
+          "code": 394701000,
+          "display": "Asthma follow-up (regime/therapy)"
         }
       ],
       "direct_transition": "Followup_End"

@@ -158,7 +158,7 @@
         {
           "system": "SNOMED-CT",
           "code": 311834001,
-          "display": "Fiberoptic Endoscopic Evaluation of Swallowing"
+          "display": "Fiberoptic endoscopic evaluation of swallowing (procedure)"
         }
       ],
       "duration": {
@@ -187,7 +187,7 @@
         {
           "system": "SNOMED-CT",
           "code": 182836005,
-          "display": "Review of Medication (procedure)"
+          "display": "Review of medication (procedure)"
         }
       ],
       "duration": {
@@ -395,7 +395,7 @@
         {
           "system": "SNOMED-CT",
           "code": 311707005,
-          "display": "Oromotor Exercises"
+          "display": "Oral motor exercises (regime/therapy)"
         }
       ],
       "duration": {
@@ -412,7 +412,7 @@
         {
           "system": "SNOMED-CT",
           "code": 312421008,
-          "display": "Radionuclide Imaging"
+          "display": "Radionuclide imaging - action (qualifier value)"
         }
       ],
       "duration": {
@@ -844,7 +844,7 @@
         {
           "system": "SNOMED-CT",
           "code": 389082000,
-          "display": "Constipation Care (regime/therapy)"
+          "display": "Constipation care (regime/therapy)"
         }
       ],
       "assign_to_attribute": "Care_Plan_Constipation",
@@ -1156,7 +1156,7 @@
         {
           "system": "SNOMED-CT",
           "code": 371883000,
-          "display": "Outpatient Procedure (procedure)"
+          "display": "Outpatient procedure (procedure)"
         }
       ],
       "direct_transition": "Surgical_Interventions"

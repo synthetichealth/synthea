@@ -591,8 +591,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261638004,
-        "display": "Stage 3A (qualifier value)"
+        "code": 1222802001,
+        "display": "American Joint Committee on Cancer stage IIIA (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -1523,7 +1523,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs",
@@ -1769,7 +1769,7 @@
         {
           "system": "SNOMED-CT",
           "code": 185347001,
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs"

@@ -65,7 +65,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "152621000119105",
+          "code": 152621000119105,
           "display": "History of allotransplantation of bone marrow (situation)"
         }
       ],
@@ -77,7 +77,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "108631000119101",
+          "code": 108631000119101,
           "display": "History of autologous bone marrow transplant (situation)"
         }
       ],
@@ -577,7 +577,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "153351000119102",
+          "code": 153351000119102,
           "display": "History of peripheral stem cell transplant (situation)"
         }
       ],

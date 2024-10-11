@@ -77,8 +77,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "200936003",
-          "display": "Lupus erythematosus"
+          "code": 200936003,
+          "display": "Lupus erythematosus (disorder)"
         }
       ],
       "direct_transition": "Lupus_Diagnosis"
@@ -90,8 +90,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Lupus_Symptom1"
@@ -139,20 +139,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "408869004",
-          "display": "Musculoskeletal care"
+          "code": 408869004,
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "440381005",
-          "display": "Behavior to prevent sun exposure"
+          "code": 440381005,
+          "display": "Behavior to prevent sun exposure (observable entity)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "226234005",
-          "display": "Healthy diet"
+          "code": 226234005,
+          "display": "Healthy diet (finding)"
         }
       ],
       "direct_transition": "Lupus_Nonopioid_Pain_Medication"
@@ -258,8 +258,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Immune_Suppressant"

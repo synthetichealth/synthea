@@ -110,7 +110,7 @@
         {
           "system": "SNOMED-CT",
           "code": 47318007,
-          "display": "Neutropenia (disorder)"
+          "display": "Drug-induced neutropenia (disorder)"
         }
       ],
       "direct_transition": "Transfer_to_Stepdown"
@@ -220,7 +220,7 @@
         {
           "system": "SNOMED-CT",
           "code": 91861009,
-          "display": "Acute myeloid leukemia, disease (disorder)"
+          "display": "Acute myeloid leukemia (disorder)"
         }
       ]
     },
@@ -447,7 +447,7 @@
         {
           "system": "SNOMED-CT",
           "code": 449214001,
-          "display": "Transfer to stepdown"
+          "display": "Transfer to stepdown unit (procedure)"
         }
       ],
       "duration": {
@@ -707,7 +707,7 @@
         {
           "system": "SNOMED-CT",
           "code": 91861009,
-          "display": "Acute myeloid leukemia, disease (disorder)"
+          "display": "Acute myeloid leukemia (disorder)"
         }
       ],
       "direct_transition": "Chemotherapy_Inpatient_Encounter"

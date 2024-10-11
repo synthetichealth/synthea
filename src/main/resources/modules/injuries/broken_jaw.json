@@ -16,8 +16,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "274474001",
-          "display": "Bone immobilization"
+          "code": 274474001,
+          "display": "Bone immobilization (procedure)"
         }
       ],
       "direct_transition": "Stabilization Check"
@@ -31,7 +31,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "64859006",
+                "code": 64859006,
                 "display": "Osteoporosis (disorder)"
               }
             ]
@@ -66,7 +66,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "312681000",
+          "code": 312681000,
           "display": "Bone density scan (procedure)"
         }
       ],
@@ -125,7 +125,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "64859006",
+          "code": 64859006,
           "display": "Osteoporosis (disorder)"
         }
       ],
@@ -136,8 +136,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "443165006",
-          "display": "Pathological fracture due to osteoporosis (disorder)"
+          "code": 443165006,
+          "display": "Osteoporotic fracture of bone (disorder)"
         }
       ],
       "direct_transition": "End Encounter"
@@ -390,8 +390,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up"
+          "code": 185349003,
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Oral examination"
@@ -410,8 +410,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "443165006",
-                "display": "Pathological fracture due to osteoporosis (disorder)"
+                "code": 443165006,
+                "display": "Osteoporotic fracture of bone (disorder)"
               }
             ]
           },
@@ -522,7 +522,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "50849002",
+          "code": 50849002,
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -536,19 +536,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "385691007",
-          "display": "Fracture care"
+          "code": 385691007,
+          "display": "Fracture care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "183051005",
-          "display": "Recommendation to rest"
+          "code": 183051005,
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": "439121000124106",
+          "code": 439121000124106,
           "display": "Pureed diet (regime/therapy)"
         }
       ],
@@ -569,7 +569,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "439101000124101",
+          "code": 439101000124101,
           "display": "Easy to chew diet (regime/therapy)"
         }
       ]

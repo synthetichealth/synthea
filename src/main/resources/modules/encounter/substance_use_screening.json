@@ -54,7 +54,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": 7200002,
-                    "display": "Alcoholism"
+                    "display": "Alcoholism (disorder)"
                   }
                 ]
               }
@@ -564,7 +564,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "10939881000119105",
+          "code": 10939881000119104,
           "display": "Unhealthy alcohol drinking behavior (finding)"
         }
       ],

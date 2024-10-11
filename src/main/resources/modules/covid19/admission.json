@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1505002",
+          "code": 1505002,
           "display": "Hospital admission for isolation (procedure)"
         }
       ],
@@ -62,7 +62,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "305351004",
+          "code": 305351004,
           "display": "Admission to intensive care unit (procedure)"
         }
       ],
@@ -251,8 +251,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "code": 399208008,
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -342,7 +342,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "65710008",
+                    "code": 65710008,
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]
@@ -352,7 +352,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "76571007",
+                    "code": 76571007,
                     "display": "Septic shock (disorder)"
                   }
                 ]
@@ -404,7 +404,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "371908008",
+          "code": 371908008,
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
@@ -431,8 +431,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "26763009",
-          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+          "code": 243150007,
+          "display": "Assist control ventilation (regime/therapy)"
         }
       ],
       "reason": "Ventilator Reason",
@@ -452,7 +452,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "112798008",
+          "code": 112798008,
           "display": "Insertion of endotracheal tube (procedure)"
         }
       ],
@@ -469,7 +469,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "371908008",
+          "code": 371908008,
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
@@ -508,7 +508,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "271280005",
+          "code": 271280005,
           "display": "Removal of endotracheal tube (procedure)"
         }
       ],
@@ -661,7 +661,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "371908008",
+          "code": 371908008,
           "display": "Oxygen administration by mask (procedure)"
         }
       ],
@@ -1037,8 +1037,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "code": 399208008,
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {

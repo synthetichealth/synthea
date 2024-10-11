@@ -80,7 +80,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {

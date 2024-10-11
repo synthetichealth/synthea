@@ -1104,7 +1104,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1120,7 +1120,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 167297006,
-            "display": "Urine blood test = negative (finding)"
+            "display": "Blood not detected in urine (finding)"
           }
         },
         {
@@ -1136,7 +1136,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
@@ -1449,7 +1449,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1465,7 +1465,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 167297006,
-            "display": "Urine blood test = negative (finding)"
+            "display": "Blood not detected in urine (finding)"
           }
         },
         {
@@ -1481,7 +1481,7 @@
           "value_code": {
             "system": "SNOMED-CT",
             "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
@@ -2142,7 +2142,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "46177005",
+          "code": 46177005,
           "display": "End-stage renal disease (disorder)"
         }
       ],

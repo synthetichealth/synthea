@@ -20,8 +20,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": 185347001,
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "reason": "diabetic_neuropathy",
@@ -95,8 +95,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "180030006",
-          "display": "Amputation of left foot"
+          "code": 180030006,
+          "display": "Amputation of the foot (procedure)"
         }
       ],
       "duration": {
@@ -136,8 +136,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "180030006",
-          "display": "Amputation of right foot"
+          "code": 180030006,
+          "display": "Amputation of the foot (procedure)"
         }
       ],
       "duration": {
@@ -168,8 +168,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "79733001",
-          "display": "Amputation of left leg"
+          "code": 79733001,
+          "display": "Amputation above-knee (procedure)"
         }
       ],
       "duration": {
@@ -200,8 +200,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "79733001",
-          "display": "Amputation of right leg"
+          "code": 79733001,
+          "display": "Amputation above-knee (procedure)"
         }
       ],
       "duration": {
@@ -217,7 +217,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "161622006",
+          "code": 161622006,
           "display": "History of lower limb amputation (situation)"
         }
       ],
@@ -229,7 +229,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "429280009",
+          "code": 429280009,
           "display": "History of amputation of foot (situation)"
         }
       ],
@@ -265,8 +265,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "46028000",
-          "display": "Amputation of left hand"
+          "code": 46028000,
+          "display": "Amputation of hand (procedure)"
         }
       ],
       "duration": {
@@ -306,8 +306,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "46028000",
-          "display": "Amputation of right hand"
+          "code": 46028000,
+          "display": "Amputation of hand (procedure)"
         }
       ],
       "duration": {
@@ -338,8 +338,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "13995008",
-          "display": "Amputation of right arm"
+          "code": 13995008,
+          "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
       "duration": {
@@ -370,8 +370,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "13995008",
-          "display": "Amputation of left arm"
+          "code": 13995008,
+          "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
       "duration": {
@@ -387,7 +387,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "161621004",
+          "code": 161621004,
           "display": "History of upper limb amputation (situation)"
         }
       ],
@@ -399,7 +399,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "698423002",
+          "code": 698423002,
           "display": "History of disarticulation at wrist (situation)"
         }
       ],

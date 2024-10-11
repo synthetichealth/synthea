@@ -17,8 +17,7 @@
         {
           "system": "SNOMED-CT",
           "code": 710824005,
-          "display": "Assessment of health and social care needs (procedure)",
-          "value_set": ""
+          "display": "Assessment of health and social care needs (procedure)"
         }
       ],
       "distribution": {
@@ -748,8 +747,7 @@
         {
           "system": "SNOMED-CT",
           "code": 160701002,
-          "display": "Social migrant (finding)",
-          "value_set": ""
+          "display": "Social migrant (finding)"
         }
       ],
       "direct_transition": "Q4"
@@ -832,9 +830,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 224355006,
-          "display": "Served in armed forces (finding)",
-          "value_set": ""
+          "code": 1187604002,
+          "display": "Serving in military service (finding)"
         }
       ],
       "direct_transition": "Q5"
@@ -986,8 +983,7 @@
         {
           "system": "SNOMED-CT",
           "code": 32911000,
-          "display": "Homeless (finding)",
-          "value_set": ""
+          "display": "Homeless (finding)"
         }
       ],
       "direct_transition": "Q8"
@@ -999,8 +995,7 @@
         {
           "system": "SNOMED-CT",
           "code": 32911000,
-          "display": "Homeless (finding)",
-          "value_set": ""
+          "display": "Homeless (finding)"
         }
       ]
     },
@@ -1040,8 +1035,7 @@
         {
           "system": "SNOMED-CT",
           "code": 105531004,
-          "display": "Housing unsatisfactory (finding)",
-          "value_set": ""
+          "display": "Housing unsatisfactory (finding)"
         }
       ],
       "direct_transition": "Q10"
@@ -1154,8 +1148,7 @@
         {
           "system": "SNOMED-CT",
           "code": 224295006,
-          "display": "Only received primary school education (finding)",
-          "value_set": ""
+          "display": "Only received primary school education (finding)"
         }
       ],
       "direct_transition": "Q11"
@@ -1166,9 +1159,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5251000175109,
-          "display": "Received certificate of high school equivalency (finding)",
-          "version": "http://snomed.info/sct/731000124108"
+          "code": 473461003,
+          "display": "Educated to high school level (finding)"
         }
       ],
       "direct_transition": "Q11"
@@ -1180,8 +1172,7 @@
         {
           "system": "SNOMED-CT",
           "code": 224299000,
-          "display": "Received higher education (finding)",
-          "value_set": ""
+          "display": "Received higher education (finding)"
         }
       ],
       "direct_transition": "Q11"
@@ -1268,8 +1259,7 @@
         {
           "system": "SNOMED-CT",
           "code": 73438004,
-          "display": "Unemployed (finding)",
-          "value_set": ""
+          "display": "Unemployed (finding)"
         }
       ],
       "direct_transition": "Q12"
@@ -1321,8 +1311,7 @@
         {
           "system": "SNOMED-CT",
           "code": 160903007,
-          "display": "Full-time employment (finding)",
-          "value_set": ""
+          "display": "Full-time employment (finding)"
         }
       ],
       "direct_transition": "Q12"
@@ -1334,8 +1323,7 @@
         {
           "system": "SNOMED-CT",
           "code": 160904001,
-          "display": "Part-time employment (finding)",
-          "value_set": ""
+          "display": "Part-time employment (finding)"
         }
       ],
       "direct_transition": "Q12"
@@ -1347,8 +1335,7 @@
         {
           "system": "SNOMED-CT",
           "code": 741062008,
-          "display": "Not in labor force (finding)",
-          "value_set": ""
+          "display": "Not in labor force (finding)"
         }
       ],
       "direct_transition": "Q12"
@@ -1957,8 +1944,7 @@
         {
           "system": "SNOMED-CT",
           "code": 266934004,
-          "display": "Transport problem (finding)",
-          "value_set": ""
+          "display": "Transport problem (finding)"
         }
       ],
       "direct_transition": "Q16"
@@ -1969,8 +1955,7 @@
         {
           "system": "SNOMED-CT",
           "code": 713458007,
-          "display": "Lack of access to transportation (finding)",
-          "value_set": ""
+          "display": "Lack of access to transportation (finding)"
         }
       ],
       "direct_transition": "Q16"
@@ -2175,8 +2160,7 @@
         {
           "system": "SNOMED-CT",
           "code": 422650009,
-          "display": "Social isolation (finding)",
-          "value_set": ""
+          "display": "Social isolation (finding)"
         }
       ],
       "direct_transition": "Q17"
@@ -2188,8 +2172,7 @@
         {
           "system": "SNOMED-CT",
           "code": 423315002,
-          "display": "Limited social contact (finding)",
-          "value_set": ""
+          "display": "Limited social contact (finding)"
         }
       ],
       "direct_transition": "Q17"
@@ -2294,8 +2277,7 @@
         {
           "system": "SNOMED-CT",
           "code": 73595000,
-          "display": "Stress (finding)",
-          "value_set": ""
+          "display": "Stress (finding)"
         }
       ],
       "direct_transition": "Q18"
@@ -2393,8 +2375,7 @@
         {
           "system": "SNOMED-CT",
           "code": 266948004,
-          "display": "Has a criminal record (finding)",
-          "value_set": ""
+          "display": "Has a criminal record (finding)"
         }
       ],
       "direct_transition": "Q19"
@@ -2457,8 +2438,7 @@
         {
           "system": "SNOMED-CT",
           "code": 446654005,
-          "display": "Refugee (person)",
-          "value_set": ""
+          "display": "Refugee (person)"
         }
       ],
       "direct_transition": "Q20"
@@ -2542,8 +2522,7 @@
         {
           "system": "SNOMED-CT",
           "code": 424393004,
-          "display": "Reports of violence in the environment (finding)",
-          "value_set": ""
+          "display": "Reports of violence in the environment (finding)"
         }
       ],
       "direct_transition": "Q21"
@@ -2583,8 +2562,7 @@
         {
           "system": "SNOMED-CT",
           "code": 706893006,
-          "display": "Victim of intimate partner abuse (finding)",
-          "value_set": ""
+          "display": "Victim of intimate partner abuse (finding)"
         }
       ],
       "direct_transition": "End Q"

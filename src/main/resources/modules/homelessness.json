@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "210098006",
-          "display": "Domiciliary or rest home patient evaluation and management"
+          "code": 210098006,
+          "display": "Domiciliary or rest home patient evaluation and management (procedure)"
         }
       ],
       "direct_transition": "Information_Gathering",
@@ -206,7 +206,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "311791003",
+          "code": 311791003,
           "display": "Information gathering (procedure)"
         }
       ],

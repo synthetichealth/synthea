@@ -45,7 +45,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "866148006",
+          "code": 866148006,
           "display": "Screening for domestic abuse (procedure)"
         }
       ],
@@ -136,7 +136,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "706893006",
+          "code": 706893006,
           "display": "Victim of intimate partner abuse (finding)"
         }
       ],

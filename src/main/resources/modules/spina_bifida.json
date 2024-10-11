@@ -388,7 +388,7 @@
         {
           "system": "SNOMED-CT",
           "code": 441763001,
-          "display": "Endoscopic third ventriculostomy (procedure)"
+          "display": "Endoscopic exteriorization of third ventricle (procedure)"
         }
       ],
       "duration": {
@@ -712,8 +712,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 300916003,
-          "display": "Allergy to latex (finding)"
+          "code": 1003755004,
+          "display": "Allergy to Hevea brasiliensis latex protein (finding)"
         }
       ],
       "direct_transition": "End_SB_Visit_1st"
@@ -791,7 +791,7 @@
         {
           "system": "SNOMED-CT",
           "code": 252895004,
-          "display": "Urodynamic studies (procedure"
+          "display": "Urodynamic studies (procedure)"
         }
       ],
       "duration": {

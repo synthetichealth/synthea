@@ -13,7 +13,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": "360064003",
+        "code": 360064003,
         "display": "Ventricular assist device (physical object)"
       },
       "direct_transition": "IABP_Check"
@@ -100,8 +100,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "232965003",
-          "display": "Implantation of ventricular assist device (procedure)"
+          "code": 232965003,
+          "display": "Implantation of cardiac ventricular assist device (procedure)"
         }
       ],
       "duration": {
@@ -116,7 +116,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "399217008",
+          "code": 399217008,
           "display": "Cardioassist by aortic balloon pump (procedure)"
         }
       ],
@@ -131,7 +131,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": "129113006",
+        "code": 129113006,
         "display": "Intra-aortic balloon pump, device (physical object)"
       },
       "direct_transition": "Intra Aortic Balloon Pump"

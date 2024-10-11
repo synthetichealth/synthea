@@ -138,7 +138,7 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": 241046008,
-        "display": "Dental X-ray bitewing (procedure)"
+        "display": "Dental plain X-ray bitewing (procedure)"
       },
       "series": [
         {
