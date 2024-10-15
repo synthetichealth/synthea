@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -139,7 +140,10 @@ import org.hl7.fhir.utilities.xhtml.XhtmlNode;
 
 import org.mitre.synthea.engine.Components;
 import org.mitre.synthea.engine.Components.Attachment;
+import org.mitre.synthea.export.rif.CodeMapper;
 import org.mitre.synthea.helpers.Config;
+import org.mitre.synthea.helpers.RandomNumberGenerator;
+import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
@@ -404,7 +408,7 @@ public class FhirR4 {
 
       if (shouldExport(Condition.class)) {
         for (HealthRecord.Entry condition : encounter.conditions) {
-          condition(personEntry, bundle, encounterEntry, condition);
+          condition(person, personEntry, bundle, encounterEntry, condition);
         }
       }
 
@@ -894,6 +898,16 @@ public class FhirR4 {
     if (encounter.reason != null) {
       encounterResource.addReasonCode().addCoding().setCode(encounter.reason.code)
           .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
+      CodeMapper mapper = Exporter.getCodeMapper("ICD10-CM");
+      if (mapper != null && mapper.canMap(encounter.reason.code)) {
+        Coding coding = new Coding();
+        Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(
+                encounter.reason, person);
+        coding.setCode(mappedCode.getKey());
+        coding.setDisplay(mappedCode.getValue());
+        coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
+        encounterResource.getReasonCodeFirstRep().addCoding(coding);
+      }
     }
 
     Provider provider = encounter.provider;
@@ -1607,6 +1621,7 @@ public class FhirR4 {
    * @return The added Entry
    */
   private static BundleEntryComponent condition(
+          RandomNumberGenerator rand,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           HealthRecord.Entry condition) {
     Condition conditionResource = new Condition();
@@ -1630,7 +1645,17 @@ public class FhirR4 {
     conditionResource.setEncounter(new Reference(encounterEntry.getFullUrl()));
 
     Code code = condition.codes.get(0);
-    conditionResource.setCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+    CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
+    CodeMapper mapper = Exporter.getCodeMapper("ICD10-CM");
+    if (mapper != null && mapper.canMap(code)) {
+      Coding coding = new Coding();
+      Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(code, rand);
+      coding.setCode(mappedCode.getKey());
+      coding.setDisplay(mappedCode.getValue());
+      coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
+      concept.addCoding(coding);
+    }
+    conditionResource.setCode(concept);
 
     CodeableConcept verification = new CodeableConcept();
     verification.getCodingFirstRep()
