@@ -35,7 +35,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399217008,
+          "code": "399217008",
           "display": "Cardioassist by aortic balloon pump (procedure)"
         }
       ],
@@ -50,7 +50,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 129113006,
+        "code": "129113006",
         "display": "Intra-aortic balloon pump, device (physical object)"
       },
       "direct_transition": "Intra Aortic Balloon Pump"
@@ -64,7 +64,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 360064003,
+        "code": "360064003",
         "display": "Ventricular assist device (physical object)"
       },
       "direct_transition": "Device"

@@ -122,7 +122,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233678006,
+          "code": "233678006",
           "display": "Childhood asthma (disorder)"
         }
       ],
@@ -141,7 +141,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 195967001,
+          "code": "195967001",
           "display": "Asthma (disorder)"
         }
       ],
@@ -160,7 +160,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -226,7 +226,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171231001,
+          "code": "171231001",
           "display": "Asthma screening (procedure)"
         }
       ],
@@ -277,24 +277,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 699728000,
+          "code": "699728000",
           "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 710081004,
+          "code": "710081004",
           "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 710818004,
+          "code": "710818004",
           "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 708409001,
+          "code": "708409001",
           "display": "Home nebulizer therapy (procedure)"
         }
       ],
@@ -307,24 +307,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 699728000,
+          "code": "699728000",
           "display": "Asthma self management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 710818004,
+          "code": "710818004",
           "display": "Inhaled steroid therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 708409001,
+          "code": "708409001",
           "display": "Home nebulizer therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 229298005,
+          "code": "229298005",
           "display": "Breathing control (regime/therapy)"
         }
       ],
@@ -411,7 +411,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 195967001,
+          "code": "195967001",
           "display": "Asthma (disorder)"
         }
       ],
@@ -467,7 +467,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183478001,
+          "code": "183478001",
           "display": "Emergency hospital admission for asthma (procedure)"
         }
       ],
@@ -493,7 +493,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 394701000,
+          "code": "394701000",
           "display": "Asthma follow-up (regime/therapy)"
         }
       ],

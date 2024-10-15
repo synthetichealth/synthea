@@ -65,7 +65,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],
@@ -143,7 +143,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76601001,
+          "code": "76601001",
           "display": "Intramuscular injection (procedure)"
         }
       ],

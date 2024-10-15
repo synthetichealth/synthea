@@ -70,7 +70,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410006001,
+          "code": "410006001",
           "display": "Digital examination of rectum (procedure)"
         }
       ],
@@ -192,7 +192,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 275302008,
+        "code": "275302008",
         "display": "Prostate enlarged on PR (finding)"
       }
     },
@@ -210,7 +210,7 @@
       "direct_transition": "detect_normal results",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 300531004,
+        "code": "300531004",
         "display": "Normal sized prostate (finding)"
       }
     },
@@ -228,7 +228,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -240,7 +240,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65575008,
+          "code": "65575008",
           "display": "Biopsy of prostate (procedure)"
         }
       ],
@@ -274,7 +274,7 @@
       "direct_transition": "Prostate_Cancer",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 165132006,
+        "code": "165132006",
         "display": "Surgical biopsy result abnormal (finding)"
       }
     },
@@ -292,7 +292,7 @@
       "direct_transition": "End_Suspected_Prostate_Cancer",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 165131004,
+        "code": "165131004",
         "display": "Surgical biopsy result normal (finding)"
       }
     },
@@ -324,7 +324,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 126906006,
+          "code": "126906006",
           "display": "Neoplasm of prostate (disorder)"
         }
       ],
@@ -335,7 +335,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736252007,
+          "code": "736252007",
           "display": "Cancer care plan (record artifact)"
         }
       ],
@@ -343,12 +343,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 408580007,
+          "code": "408580007",
           "display": "Physical activity target light exercise (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 229578001,
+          "code": "229578001",
           "display": "Ice bath treatment (regime/therapy)"
         }
       ],
@@ -359,7 +359,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736252007,
+          "code": "736252007",
           "display": "Cancer care plan (record artifact)"
         }
       ],
@@ -385,7 +385,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 90470006,
+          "code": "90470006",
           "display": "Prostatectomy (procedure)"
         }
       ],
@@ -536,7 +536,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -557,7 +557,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 94503003,
+          "code": "94503003",
           "display": "Metastatic malignant neoplasm to prostate (disorder)"
         }
       ],
@@ -569,7 +569,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 92691004,
+          "code": "92691004",
           "display": "Carcinoma in situ of prostate (disorder)"
         }
       ],
@@ -829,7 +829,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 7766007,
+            "code": "7766007",
             "display": "Cloudy urine (finding)"
           }
         },
@@ -845,7 +845,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 690701000119101,
+            "code": "690701000119101",
             "display": "Foul smelling urine (finding)"
           }
         },
@@ -861,7 +861,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 7766007,
+            "code": "7766007",
             "display": "Cloudy urine (finding)"
           }
         },
@@ -877,7 +877,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 720003003,
+            "code": "720003003",
             "display": "Reddish color urine (finding)"
           }
         },
@@ -908,7 +908,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167265006,
+            "code": "167265006",
             "display": "Urine glucose test = ++ (finding)"
           }
         },
@@ -939,7 +939,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 275778006,
+            "code": "275778006",
             "display": "Finding of bilirubin in urine (finding)"
           }
         },
@@ -970,7 +970,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167291007,
+            "code": "167291007",
             "display": "Urine ketone test = +++ (finding)"
           }
         },
@@ -1031,7 +1031,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167277001,
+            "code": "167277001",
             "display": "Urine protein test = +++ (finding)"
           }
         },
@@ -1047,7 +1047,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314138001,
+            "code": "314138001",
             "display": "Nitrite not detected in urine (finding)"
           }
         },
@@ -1063,7 +1063,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 34436003,
+            "code": "34436003",
             "display": "Blood in urine (finding)"
           }
         },
@@ -1079,7 +1079,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394717006,
+            "code": "394717006",
             "display": "Urine leukocytes not detected (finding)"
           }
         }
@@ -1271,7 +1271,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 315268008,
+          "code": "315268008",
           "display": "Suspected prostate cancer (situation)"
         }
       ],
@@ -1288,7 +1288,7 @@
       "direct_transition": "annual_wellness_visit",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 410424005,
+        "code": "410424005",
         "display": "Wellness surveillance (regime/therapy)"
       }
     },

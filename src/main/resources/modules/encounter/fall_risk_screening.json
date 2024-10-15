@@ -28,7 +28,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 65966004,
+                        "code": "65966004",
                         "display": "Fracture of forearm (disorder)"
                       }
                     ]
@@ -38,7 +38,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 263102004,
+                        "code": "263102004",
                         "display": "Fracture subluxation of wrist (disorder)"
                       }
                     ]
@@ -48,7 +48,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 16114001,
+                        "code": "16114001",
                         "display": "Fracture of ankle (disorder)"
                       }
                     ]
@@ -58,7 +58,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 33737001,
+                        "code": "33737001",
                         "display": "Fracture of rib (disorder)"
                       }
                     ]
@@ -68,7 +68,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 58150001,
+                        "code": "58150001",
                         "display": "Fracture of clavicle (disorder)"
                       }
                     ]
@@ -78,7 +78,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 359817006,
+                        "code": "359817006",
                         "display": "Closed fracture of hip (disorder)"
                       }
                     ]
@@ -88,7 +88,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 64859006,
+                        "code": "64859006",
                         "display": "Osteoporosis (disorder)"
                       }
                     ]
@@ -115,7 +115,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 762993000,
+          "code": "762993000",
           "display": "Assessment using Morse Fall Scale (procedure)"
         }
       ],

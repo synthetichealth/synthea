@@ -340,7 +340,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 40095003,
+                    "code": "40095003",
                     "display": "Injury of kidney (disorder)"
                   }
                 ]
@@ -367,7 +367,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 65710008,
+                    "code": "65710008",
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]
@@ -377,7 +377,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 76571007,
+                    "code": "76571007",
                     "display": "Septic shock (disorder)"
                   }
                 ]

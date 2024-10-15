@@ -59,7 +59,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 307426000,
+          "code": "307426000",
           "display": "Acute infective cystitis (disorder)"
         }
       ],
@@ -71,7 +71,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 45816000,
+          "code": "45816000",
           "display": "Pyelonephritis (disorder)"
         }
       ],
@@ -256,7 +256,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 197927001,
+          "code": "197927001",
           "display": "Recurrent urinary tract infection (disorder)"
         }
       ],

@@ -93,7 +93,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 162573006,
+          "code": "162573006",
           "display": "Suspected lung cancer (situation)"
         }
       ],
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -118,7 +118,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399208008,
+          "code": "399208008",
           "display": "Plain X-ray of chest (procedure)"
         }
       ],
@@ -149,7 +149,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -161,7 +161,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 418891003,
+          "code": "418891003",
           "display": "Computed tomography of chest and abdomen (procedure)"
         }
       ],
@@ -212,7 +212,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254637007,
+          "code": "254637007",
           "display": "Non-small cell lung cancer (disorder)"
         }
       ],
@@ -231,7 +231,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254632001,
+          "code": "254632001",
           "display": "Small cell carcinoma of lung (disorder)"
         }
       ],
@@ -244,7 +244,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -273,7 +273,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 167995008,
+          "code": "167995008",
           "display": "Sputum microscopy (procedure)"
         }
       ],
@@ -285,7 +285,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91602002,
+          "code": "91602002",
           "display": "Thoracentesis (procedure)"
         }
       ],
@@ -297,7 +297,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 432231006,
+          "code": "432231006",
           "display": "Fine needle aspiration biopsy of lung (procedure)"
         }
       ],
@@ -309,7 +309,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 85765000,
+          "code": "85765000",
           "display": "Fiberoptic bronchoscopy (procedure)"
         }
       ],
@@ -494,7 +494,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 424132000,
+          "code": "424132000",
           "display": "Non-small cell carcinoma of lung, TNM stage 1 (disorder)"
         }
       ],
@@ -507,7 +507,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 425048006,
+          "code": "425048006",
           "display": "Non-small cell carcinoma of lung, TNM stage 2 (disorder)"
         }
       ],
@@ -520,7 +520,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 422968005,
+          "code": "422968005",
           "display": "Non-small cell carcinoma of lung, TNM stage 3 (disorder)"
         }
       ],
@@ -533,7 +533,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 423121009,
+          "code": "423121009",
           "display": "Non-small cell carcinoma of lung, TNM stage 4 (disorder)"
         }
       ],
@@ -546,7 +546,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67811000119102,
+          "code": "67811000119102",
           "display": "Primary small cell malignant neoplasm of lung, TNM stage 1 (disorder)"
         }
       ],
@@ -559,7 +559,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67821000119109,
+          "code": "67821000119109",
           "display": "Primary small cell malignant neoplasm of lung, TNM stage 2 (disorder)"
         }
       ],
@@ -572,7 +572,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67831000119107,
+          "code": "67831000119107",
           "display": "Primary small cell malignant neoplasm of lung, TNM stage 3 (disorder)"
         }
       ],
@@ -585,7 +585,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67841000119103,
+          "code": "67841000119103",
           "display": "Primary small cell malignant neoplasm of lung, TNM stage 4 (disorder)"
         }
       ],
@@ -598,7 +598,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -610,24 +610,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182964004,
+          "code": "182964004",
           "display": "Terminal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 133918004,
+          "code": "133918004",
           "display": "Comfort measures (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 408957008,
+          "code": "408957008",
           "display": "Chronic pain control management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 243072006,
+          "code": "243072006",
           "display": "Cancer education (procedure)"
         }
       ],
@@ -639,7 +639,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698354004,
+          "code": "698354004",
           "display": "Magnetic resonance imaging for measurement of brain volume (procedure)"
         }
       ],
@@ -693,7 +693,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -755,7 +755,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 703423002,
+          "code": "703423002",
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
@@ -795,7 +795,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -859,7 +859,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 703423002,
+          "code": "703423002",
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],

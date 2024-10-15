@@ -16,7 +16,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 710824005,
+          "code": "710824005",
           "display": "Assessment of health and social care needs (procedure)"
         }
       ],
@@ -746,7 +746,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 160701002,
+          "code": "160701002",
           "display": "Social migrant (finding)"
         }
       ],
@@ -830,7 +830,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1187604002,
+          "code": "1187604002",
           "display": "Serving in military service (finding)"
         }
       ],
@@ -982,7 +982,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32911000,
+          "code": "32911000",
           "display": "Homeless (finding)"
         }
       ],
@@ -994,7 +994,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32911000,
+          "code": "32911000",
           "display": "Homeless (finding)"
         }
       ]
@@ -1034,7 +1034,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 105531004,
+          "code": "105531004",
           "display": "Housing unsatisfactory (finding)"
         }
       ],
@@ -1147,7 +1147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 224295006,
+          "code": "224295006",
           "display": "Only received primary school education (finding)"
         }
       ],
@@ -1159,7 +1159,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 473461003,
+          "code": "473461003",
           "display": "Educated to high school level (finding)"
         }
       ],
@@ -1171,7 +1171,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 224299000,
+          "code": "224299000",
           "display": "Received higher education (finding)"
         }
       ],
@@ -1258,7 +1258,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73438004,
+          "code": "73438004",
           "display": "Unemployed (finding)"
         }
       ],
@@ -1310,7 +1310,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 160903007,
+          "code": "160903007",
           "display": "Full-time employment (finding)"
         }
       ],
@@ -1322,7 +1322,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 160904001,
+          "code": "160904001",
           "display": "Part-time employment (finding)"
         }
       ],
@@ -1334,7 +1334,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 741062008,
+          "code": "741062008",
           "display": "Not in labor force (finding)"
         }
       ],
@@ -1943,7 +1943,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 266934004,
+          "code": "266934004",
           "display": "Transport problem (finding)"
         }
       ],
@@ -1954,7 +1954,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 713458007,
+          "code": "713458007",
           "display": "Lack of access to transportation (finding)"
         }
       ],
@@ -2078,7 +2078,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 423315002,
+                    "code": "423315002",
                     "display": "Limited social contact (finding)"
                   }
                 ]
@@ -2088,7 +2088,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 422650009,
+                    "code": "422650009",
                     "display": "Social isolation (finding)"
                   }
                 ]
@@ -2120,7 +2120,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 422650009,
+                    "code": "422650009",
                     "display": "Social isolation (finding)"
                   }
                 ]
@@ -2130,7 +2130,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 423315002,
+                    "code": "423315002",
                     "display": "Limited social contact (finding)"
                   }
                 ]
@@ -2159,7 +2159,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 422650009,
+          "code": "422650009",
           "display": "Social isolation (finding)"
         }
       ],
@@ -2171,7 +2171,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 423315002,
+          "code": "423315002",
           "display": "Limited social contact (finding)"
         }
       ],
@@ -2276,7 +2276,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73595000,
+          "code": "73595000",
           "display": "Stress (finding)"
         }
       ],
@@ -2374,7 +2374,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 266948004,
+          "code": "266948004",
           "display": "Has a criminal record (finding)"
         }
       ],
@@ -2437,7 +2437,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 446654005,
+          "code": "446654005",
           "display": "Refugee (person)"
         }
       ],
@@ -2521,7 +2521,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 424393004,
+          "code": "424393004",
           "display": "Reports of violence in the environment (finding)"
         }
       ],
@@ -2561,7 +2561,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 706893006,
+          "code": "706893006",
           "display": "Victim of intimate partner abuse (finding)"
         }
       ],
@@ -2582,7 +2582,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 160904001,
+                "code": "160904001",
                 "display": "Part-time employment (finding)"
               }
             ]
@@ -2633,7 +2633,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 160903007,
+                "code": "160903007",
                 "display": "Full-time employment (finding)"
               }
             ]
@@ -2667,7 +2667,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 741062008,
+                "code": "741062008",
                 "display": "Not in labor force (finding)"
               }
             ]
@@ -2701,7 +2701,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 73438004,
+                "code": "73438004",
                 "display": "Unemployed (finding)"
               }
             ]

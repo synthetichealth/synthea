@@ -77,7 +77,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 90560007,
+          "code": "90560007",
           "display": "Inflammatory disorder due to increased blood urate level (disorder)"
         }
       ],
@@ -126,7 +126,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -139,24 +139,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408869004,
+          "code": "408869004",
           "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183301007,
+          "code": "183301007",
           "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 229580007,
+          "code": "229580007",
           "display": "Ice therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 226234005,
+          "code": "226234005",
           "display": "Healthy diet (finding)"
         }
       ],

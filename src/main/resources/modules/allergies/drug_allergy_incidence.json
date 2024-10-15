@@ -56,7 +56,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -73,7 +73,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -90,7 +90,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 404640003,
+            "code": "404640003",
             "display": "Dizziness (finding)"
           },
           "possible_severities": [
@@ -107,7 +107,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -124,7 +124,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -141,7 +141,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -158,7 +158,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -175,7 +175,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -226,7 +226,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -243,7 +243,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -260,7 +260,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -277,7 +277,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 21522001,
+            "code": "21522001",
             "display": "Abdominal pain (finding)"
           },
           "possible_severities": [
@@ -345,7 +345,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 418290006,
+            "code": "418290006",
             "display": "Itching (finding)"
           },
           "possible_severities": [
@@ -362,7 +362,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -379,7 +379,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271811009,
+            "code": "271811009",
             "display": "Face goes red (finding)"
           },
           "possible_severities": [
@@ -396,7 +396,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -429,7 +429,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -446,7 +446,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -463,7 +463,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -480,7 +480,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -579,7 +579,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -596,7 +596,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -613,7 +613,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -630,7 +630,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -705,7 +705,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -722,7 +722,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -739,7 +739,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 404640003,
+            "code": "404640003",
             "display": "Dizziness (finding)"
           },
           "possible_severities": [
@@ -756,7 +756,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 236428007,
+            "code": "236428007",
             "display": "Acute kidney injury due to nephrotoxicity (disorder)"
           },
           "possible_severities": [
@@ -773,7 +773,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -790,7 +790,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 237849008,
+            "code": "237849008",
             "display": "Drug-induced hyperkalemia (disorder)"
           },
           "possible_severities": [

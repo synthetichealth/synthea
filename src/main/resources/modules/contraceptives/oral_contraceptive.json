@@ -74,7 +74,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],

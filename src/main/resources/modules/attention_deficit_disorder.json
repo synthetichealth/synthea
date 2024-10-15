@@ -61,7 +61,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 192127007,
+          "code": "192127007",
           "display": "Child attention deficit disorder (disorder)"
         }
       ],
@@ -74,7 +74,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -131,19 +131,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386522008,
+          "code": "386522008",
           "display": "Overactivity/inattention behavior management (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 409063005,
+          "code": "409063005",
           "display": "Counseling (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 405783006,
+          "code": "405783006",
           "display": "Psychological assessment (procedure)"
         }
       ],
@@ -194,7 +194,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -206,7 +206,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 228557008,
+          "code": "228557008",
           "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],

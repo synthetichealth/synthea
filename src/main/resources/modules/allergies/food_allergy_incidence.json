@@ -59,7 +59,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 762952008,
+          "code": "762952008",
           "display": "Peanut (substance)"
         }
       ],
@@ -67,7 +67,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -84,7 +84,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -101,7 +101,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -118,7 +118,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -135,7 +135,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -152,7 +152,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -169,7 +169,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -186,7 +186,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 62315008,
+            "code": "62315008",
             "display": "Diarrhea (finding)"
           },
           "possible_severities": [
@@ -203,7 +203,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 56018004,
+            "code": "56018004",
             "display": "Wheezing (finding)"
           },
           "possible_severities": [
@@ -270,7 +270,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 442571000124108,
+          "code": "442571000124108",
           "display": "Tree nut (substance)"
         }
       ],
@@ -278,7 +278,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -295,7 +295,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -312,7 +312,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -329,7 +329,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -346,7 +346,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -363,7 +363,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -380,7 +380,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -397,7 +397,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -414,7 +414,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 418290006,
+            "code": "418290006",
             "display": "Itching (finding)"
           },
           "possible_severities": [
@@ -481,7 +481,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735971005,
+          "code": "735971005",
           "display": "Fish (substance)"
         }
       ],
@@ -489,7 +489,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -506,7 +506,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -523,7 +523,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -540,7 +540,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -607,7 +607,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735029006,
+          "code": "735029006",
           "display": "Shellfish (substance)"
         }
       ],
@@ -615,7 +615,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -632,7 +632,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -649,7 +649,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -666,7 +666,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -683,7 +683,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -700,7 +700,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -717,7 +717,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -734,7 +734,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 418290006,
+            "code": "418290006",
             "display": "Itching (finding)"
           },
           "possible_severities": [
@@ -751,7 +751,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 62315008,
+            "code": "62315008",
             "display": "Diarrhea (finding)"
           },
           "possible_severities": [
@@ -768,7 +768,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 422587007,
+            "code": "422587007",
             "display": "Nausea (finding)"
           },
           "possible_severities": [
@@ -840,7 +840,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 412071004,
+          "code": "412071004",
           "display": "Wheat (substance)"
         }
       ],
@@ -848,7 +848,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -865,7 +865,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -882,7 +882,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -899,7 +899,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 62315008,
+            "code": "62315008",
             "display": "Diarrhea (finding)"
           },
           "possible_severities": [
@@ -969,7 +969,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 102263004,
+          "code": "102263004",
           "display": "Eggs (edible) (substance)"
         }
       ],
@@ -977,7 +977,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -994,7 +994,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -1011,7 +1011,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -1028,7 +1028,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -1045,7 +1045,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -1112,7 +1112,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 256355007,
+          "code": "256355007",
           "display": "Glycine max (substance)"
         }
       ],
@@ -1120,7 +1120,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -1137,7 +1137,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -1154,7 +1154,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 62315008,
+            "code": "62315008",
             "display": "Diarrhea (finding)"
           },
           "possible_severities": [
@@ -1223,7 +1223,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3718001,
+          "code": "3718001",
           "display": "Cow's milk (substance)"
         }
       ],
@@ -1231,7 +1231,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -1248,7 +1248,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -1265,7 +1265,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -1282,7 +1282,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -1299,7 +1299,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 300359004,
+            "code": "300359004",
             "display": "Finding of vomiting (finding)"
           },
           "possible_severities": [
@@ -1316,7 +1316,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 62315008,
+            "code": "62315008",
             "display": "Diarrhea (finding)"
           },
           "possible_severities": [
@@ -1333,7 +1333,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 56018004,
+            "code": "56018004",
             "display": "Wheezing (finding)"
           },
           "possible_severities": [

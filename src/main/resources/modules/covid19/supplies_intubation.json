@@ -30,7 +30,7 @@
           "quantity": 8,
           "code": {
             "system": "SNOMED-CT",
-            "code": 713779008,
+            "code": "713779008",
             "display": "Nitrile examination/treatment glove, non-powdered, sterile (physical object)"
           }
         },
@@ -38,7 +38,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 1141679000,
+            "code": "1141679000",
             "display": "Isolation gown (physical object)"
           }
         },
@@ -46,7 +46,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 463696005,
+            "code": "463696005",
             "display": "Operating room laundry bag (physical object)"
           }
         },
@@ -54,7 +54,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 736143005,
+            "code": "736143005",
             "display": "Radial surgical retractor seal cap (physical object)"
           }
         },
@@ -62,7 +62,7 @@
           "quantity": 3,
           "code": {
             "system": "SNOMED-CT",
-            "code": 409533008,
+            "code": "409533008",
             "display": "Air-purifying respirator (physical object)"
           }
         },
@@ -70,7 +70,7 @@
           "quantity": 3,
           "code": {
             "system": "SNOMED-CT",
-            "code": 38126007,
+            "code": "38126007",
             "display": "Protective glasses, device (physical object)"
           }
         },
@@ -78,7 +78,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 419343004,
+            "code": "419343004",
             "display": "Alcohol disinfectant (substance)"
           }
         },
@@ -86,7 +86,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 470618009,
+            "code": "470618009",
             "display": "Antiseptic towelette (physical object)"
           }
         },
@@ -94,7 +94,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 285698002,
+            "code": "285698002",
             "display": "Laryngoscope blade (physical object)"
           }
         },
@@ -102,7 +102,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 26412008,
+            "code": "26412008",
             "display": "Endotracheal tube, device (physical object)"
           }
         },
@@ -110,7 +110,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 725095003,
+            "code": "725095003",
             "display": "Endotracheal tube introducer (physical object)"
           }
         },
@@ -118,7 +118,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 61968008,
+            "code": "61968008",
             "display": "Syringe, device (physical object)"
           }
         },
@@ -126,7 +126,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706092000,
+            "code": "706092000",
             "display": "Suction system (physical object)"
           }
         },
@@ -134,7 +134,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706774004,
+            "code": "706774004",
             "display": "Lubricant (physical object)"
           }
         },
@@ -142,7 +142,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 468601005,
+            "code": "468601005",
             "display": "Endotracheal tube holder (physical object)"
           }
         },
@@ -150,7 +150,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 701434005,
+            "code": "701434005",
             "display": "Viral filter (physical object)"
           }
         },
@@ -158,7 +158,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 827149008,
+            "code": "827149008",
             "display": "Carbon dioxide breath analyzer (physical object)"
           }
         },
@@ -166,7 +166,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 17102003,
+            "code": "17102003",
             "display": "Nasogastric tube, device (physical object)"
           }
         }
@@ -180,7 +180,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 449071006,
+        "code": "449071006",
         "display": "Mechanical ventilator (physical object)"
       },
       "direct_transition": "Laryngoscope",
@@ -190,7 +190,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 448907002,
+        "code": "448907002",
         "display": "Videolaryngoscope (physical object)"
       },
       "direct_transition": "Supplies_Intubation",

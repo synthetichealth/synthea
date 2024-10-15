@@ -160,7 +160,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47505003,
+          "code": "47505003",
           "display": "Posttraumatic stress disorder (disorder)"
         }
       ],
@@ -171,7 +171,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736254008,
+          "code": "736254008",
           "display": "Psychiatry care plan (record artifact)"
         }
       ],
@@ -179,7 +179,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 79094001,
+          "code": "79094001",
           "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
@@ -191,7 +191,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79094001,
+          "code": "79094001",
           "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
@@ -203,7 +203,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -211,32 +211,32 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
+          "code": "406185000",
           "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 76168009,
+          "code": "76168009",
           "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 719858009,
+          "code": "719858009",
           "display": "Telehealth monitoring (regime/therapy)"
         }
       ],
@@ -269,7 +269,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -279,32 +279,32 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
+          "code": "406185000",
           "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 76168009,
+          "code": "76168009",
           "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 719858009,
+          "code": "719858009",
           "display": "Telehealth monitoring (regime/therapy)"
         }
       ]
@@ -319,7 +319,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -350,7 +350,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47505003,
+          "code": "47505003",
           "display": "Posttraumatic stress disorder (disorder)"
         }
       ],
@@ -408,7 +408,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47505003,
+          "code": "47505003",
           "display": "Posttraumatic stress disorder (disorder)"
         }
       ],
@@ -584,7 +584,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         }
       ],
@@ -614,7 +614,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 715252007,
+          "code": "715252007",
           "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
         }
       ],
@@ -646,7 +646,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225444004,
+          "code": "225444004",
           "display": "At increased risk for suicide (finding)"
         }
       ],
@@ -659,7 +659,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -671,7 +671,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183801001,
+          "code": "183801001",
           "display": "Inpatient stay 3 days (finding)"
         }
       ],
@@ -683,7 +683,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         }
       ],
@@ -704,7 +704,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736353004,
+          "code": "736353004",
           "display": "Inpatient care plan (record artifact)"
         }
       ],
@@ -713,12 +713,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183402001,
+          "code": "183402001",
           "display": "Potential suicide care (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 183401008,
+          "code": "183401008",
           "display": "Anti-suicide psychotherapy (regime/therapy)"
         }
       ]
@@ -779,7 +779,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -792,7 +792,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185317003,
+          "code": "185317003",
           "display": "Telephone encounter (procedure)"
         }
       ],
@@ -838,7 +838,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -914,7 +914,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 715252007,
+          "code": "715252007",
           "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
         }
       ],
@@ -935,7 +935,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         }
       ],
@@ -1068,7 +1068,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385892002,
+          "code": "385892002",
           "display": "Mental health screening (procedure)"
         }
       ],
@@ -1087,7 +1087,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -1095,32 +1095,32 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
+          "code": "406185000",
           "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 76168009,
+          "code": "76168009",
           "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 719858009,
+          "code": "719858009",
           "display": "Telehealth monitoring (regime/therapy)"
         }
       ],
@@ -1153,7 +1153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -1162,32 +1162,32 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 406185000,
+          "code": "406185000",
           "display": "Trauma therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 76168009,
+          "code": "76168009",
           "display": "Group psychotherapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 719858009,
+          "code": "719858009",
           "display": "Telehealth monitoring (regime/therapy)"
         }
       ],
@@ -1200,7 +1200,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

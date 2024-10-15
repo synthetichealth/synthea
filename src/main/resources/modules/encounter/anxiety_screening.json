@@ -151,7 +151,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 710841007,
+          "code": "710841007",
           "display": "Assessment of anxiety (procedure)"
         }
       ],
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 80583007,
+          "code": "80583007",
           "display": "Severe anxiety (panic) (finding)"
         }
       ],

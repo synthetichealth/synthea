@@ -96,7 +96,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 71493000,
+          "code": "71493000",
           "display": "Transfusion of packed red blood cells (procedure)"
         }
       ],
@@ -109,7 +109,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 431069006,
+            "code": "431069006",
             "display": "Packed red blood cells (product)"
           }
         }
@@ -278,7 +278,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 12719002,
+          "code": "12719002",
           "display": "Platelet transfusion (procedure)"
         }
       ],
@@ -291,7 +291,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 126261006,
+            "code": "126261006",
             "display": "Human platelets, pooled (product)"
           }
         }
@@ -303,7 +303,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 116861002,
+          "code": "116861002",
           "display": "Transfusion of fresh frozen plasma (procedure)"
         }
       ],
@@ -316,7 +316,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 346447007,
+            "code": "346447007",
             "display": "Fresh frozen plasma (product)"
           }
         }

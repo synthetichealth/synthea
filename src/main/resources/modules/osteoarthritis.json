@@ -55,7 +55,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 201834006,
+          "code": "201834006",
           "display": "Localized, primary osteoarthritis of the hand (disorder)"
         }
       ],
@@ -68,7 +68,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 239873007,
+          "code": "239873007",
           "display": "Osteoarthritis of knee (disorder)"
         }
       ],
@@ -81,7 +81,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 239872002,
+          "code": "239872002",
           "display": "Osteoarthritis of hip (disorder)"
         }
       ],
@@ -95,7 +95,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -108,19 +108,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408869004,
+          "code": "408869004",
           "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 386294003,
+          "code": "386294003",
           "display": "Joint mobility exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 266694003,
+          "code": "266694003",
           "display": "Heat therapy (procedure)"
         }
       ],

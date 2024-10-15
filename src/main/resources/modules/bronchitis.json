@@ -65,7 +65,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 10509002,
+          "code": "10509002",
           "display": "Acute bronchitis (disorder)"
         }
       ],
@@ -181,7 +181,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -210,7 +210,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399208008,
+          "code": "399208008",
           "display": "Plain X-ray of chest (procedure)"
         }
       ],
@@ -227,7 +227,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 269911007,
+          "code": "269911007",
           "display": "Sputum examination (procedure)"
         }
       ],
@@ -244,7 +244,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23426006,
+          "code": "23426006",
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
@@ -290,24 +290,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 53950000,
+          "code": "53950000",
           "display": "Respiratory therapy (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 710081004,
+          "code": "710081004",
           "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 304510005,
+          "code": "304510005",
           "display": "Recommendation to avoid exercise (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 371605008,
+          "code": "371605008",
           "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],
@@ -320,19 +320,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 53950000,
+          "code": "53950000",
           "display": "Respiratory therapy (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 304510005,
+          "code": "304510005",
           "display": "Recommendation to avoid exercise (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 371605008,
+          "code": "371605008",
           "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],

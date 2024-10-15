@@ -15,7 +15,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 290045001,
+          "code": "290045001",
           "display": "Kitchen practice (regime/therapy)"
         }
       ],
@@ -32,7 +32,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 229095001,
+          "code": "229095001",
           "display": "Exercise class (regime/therapy)"
         }
       ],
@@ -55,7 +55,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

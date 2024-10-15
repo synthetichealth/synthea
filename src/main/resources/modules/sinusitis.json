@@ -45,7 +45,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 444814009,
+          "code": "444814009",
           "display": "Viral sinusitis (disorder)"
         }
       ],
@@ -58,7 +58,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 75498004,
+          "code": "75498004",
           "display": "Acute bacterial sinusitis (disorder)"
         }
       ],
@@ -80,7 +80,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 36971009,
+          "code": "36971009",
           "display": "Sinusitis (disorder)"
         }
       ],
@@ -186,7 +186,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -247,7 +247,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 75498004,
+                    "code": "75498004",
                     "display": "Acute bacterial sinusitis (disorder)"
                   }
                 ]
@@ -262,7 +262,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 444814009,
+                "code": "444814009",
                 "display": "Viral sinusitis (disorder)"
               }
             ]
@@ -410,7 +410,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -421,7 +421,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 40055000,
+                "code": "40055000",
                 "display": "Chronic sinusitis (disorder)"
               }
             ]
@@ -457,7 +457,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 40055000,
+          "code": "40055000",
           "display": "Chronic sinusitis (disorder)"
         }
       ],
@@ -472,7 +472,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112790001,
+          "code": "112790001",
           "display": "Nasal sinus endoscopy (procedure)"
         }
       ],
@@ -487,7 +487,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 40055000,
+                "code": "40055000",
                 "display": "Chronic sinusitis (disorder)"
               }
             ]
@@ -545,7 +545,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 170615005,
+        "code": "170615005",
         "display": "Home nebulizer (physical object)"
       },
       "direct_transition": "End_Chronic_Followup"

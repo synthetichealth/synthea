@@ -31,7 +31,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33367005,
+          "code": "33367005",
           "display": "Angiography of coronary artery (procedure)"
         }
       ],
@@ -54,7 +54,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -66,7 +66,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 274531002,
+          "code": "274531002",
           "display": "Abnormal findings diagnostic imaging heart+coronary circulat (finding)"
         }
       ],
@@ -83,7 +83,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306185001,
+          "code": "306185001",
           "display": "Referral to cardiac surgery service (procedure)"
         }
       ],
@@ -122,7 +122,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306206005,
+          "code": "306206005",
           "display": "Referral to service (procedure)"
         }
       ],
@@ -148,7 +148,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183519002,
+          "code": "183519002",
           "display": "Referral to cardiology service (procedure)"
         }
       ],
@@ -262,7 +262,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -275,7 +275,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -358,7 +358,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -382,7 +382,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],
@@ -399,7 +399,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736169004,
+          "code": "736169004",
           "display": "Post anesthesia care management (procedure)"
         }
       ],
@@ -455,7 +455,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 415070008,
+          "code": "415070008",
           "display": "Percutaneous coronary intervention (procedure)"
         }
       ],
@@ -476,7 +476,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 781087000,
+          "code": "781087000",
           "display": "Medical care (regime/therapy)"
         }
       ],
@@ -489,7 +489,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 709138001,
+          "code": "709138001",
           "display": "Notification of treatment plan (procedure)"
         }
       ],
@@ -501,7 +501,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410538000,
+          "code": "410538000",
           "display": "Scheduling (procedure)"
         }
       ],

@@ -153,7 +153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 128613002,
+          "code": "128613002",
           "display": "Seizure disorder (disorder)"
         }
       ],
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -182,7 +182,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1290882004,
+          "code": "1290882004",
           "display": "History of seizure (situation)"
         }
       ],
@@ -198,7 +198,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 54550000,
+          "code": "54550000",
           "display": "Electroencephalogram (procedure)"
         }
       ],
@@ -233,7 +233,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84757009,
+          "code": "84757009",
           "display": "Epilepsy (disorder)"
         }
       ],
@@ -445,7 +445,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 95281009,
+          "code": "95281009",
           "display": "Sudden cardiac death (disorder)"
         }
       ],

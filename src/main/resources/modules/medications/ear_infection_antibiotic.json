@@ -191,7 +191,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -228,7 +228,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -281,12 +281,12 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           },
           {
             "system": "SNOMED-CT",
-            "code": 419115000,
+            "code": "419115000",
             "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine (qualifier value)"
           }
         ]
@@ -318,12 +318,12 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           },
           {
             "system": "SNOMED-CT",
-            "code": 419115000,
+            "code": "419115000",
             "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine (qualifier value)"
           }
         ]
@@ -372,7 +372,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -404,7 +404,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -453,7 +453,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -485,7 +485,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]
@@ -520,7 +520,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 418577003,
+            "code": "418577003",
             "display": "Take at regular intervals. Complete the prescribed course unless otherwise directed (qualifier value)"
           }
         ]

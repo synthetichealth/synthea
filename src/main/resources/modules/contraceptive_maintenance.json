@@ -171,7 +171,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -183,7 +183,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 46706006,
+          "code": "46706006",
           "display": "Replacement of contraceptive intrauterine device (procedure)"
         }
       ],
@@ -204,7 +204,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -216,7 +216,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1263416007,
+          "code": "1263416007",
           "display": "Removal of intrauterine contraceptive device (procedure)"
         }
       ],
@@ -313,7 +313,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -330,7 +330,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -342,7 +342,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301807007,
+          "code": "301807007",
           "display": "Removal of subcutaneous contraceptive (procedure)"
         }
       ],
@@ -440,7 +440,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -457,7 +457,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76601001,
+          "code": "76601001",
           "display": "Intramuscular injection (procedure)"
         }
       ],
@@ -475,7 +475,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 169553002,
+          "code": "169553002",
           "display": "Insertion of subcutaneous contraceptive (procedure)"
         }
       ],
@@ -491,7 +491,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301807007,
+          "code": "301807007",
           "display": "Removal of subcutaneous contraceptive (procedure)"
         }
       ],
@@ -508,7 +508,7 @@
       "direct_transition": "Contraceptive_Type_Guard",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 408969000,
+        "code": "408969000",
         "display": "Contraception care management (procedure)"
       }
     }

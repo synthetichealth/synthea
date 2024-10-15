@@ -60,7 +60,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 782576004,
+          "code": "782576004",
           "display": "Tree pollen (substance)"
         }
       ],
@@ -117,7 +117,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 256277009,
+          "code": "256277009",
           "display": "Grass pollen (substance)"
         }
       ],
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 264287008,
+          "code": "264287008",
           "display": "Animal dander (substance)"
         }
       ],
@@ -178,7 +178,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 49727002,
+            "code": "49727002",
             "display": "Cough (finding)"
           },
           "possible_severities": [
@@ -195,7 +195,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -212,7 +212,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -229,7 +229,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -246,7 +246,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -312,7 +312,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 260147004,
+          "code": "260147004",
           "display": "House dust mite (organism)"
         }
       ],
@@ -366,7 +366,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84489001,
+          "code": "84489001",
           "display": "Mold (organism)"
         }
       ],
@@ -374,7 +374,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 21626009,
+            "code": "21626009",
             "display": "Cutaneous hypersensitivity (disorder)"
           },
           "possible_severities": [
@@ -391,7 +391,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 76067001,
+            "code": "76067001",
             "display": "Sneezing (finding)"
           },
           "possible_severities": [
@@ -408,7 +408,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267101005,
+            "code": "267101005",
             "display": "Nasal discharge present (situation)"
           },
           "possible_severities": [
@@ -425,7 +425,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 56018004,
+            "code": "56018004",
             "display": "Wheezing (finding)"
           },
           "possible_severities": [
@@ -491,7 +491,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 288328004,
+          "code": "288328004",
           "display": "Bee venom (substance)"
         }
       ],
@@ -499,7 +499,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -516,7 +516,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -583,7 +583,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 111088007,
+          "code": "111088007",
           "display": "Latex (substance)"
         }
       ],
@@ -591,7 +591,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 402387002,
+            "code": "402387002",
             "display": "Allergic angioedema (disorder)"
           },
           "possible_severities": [
@@ -608,7 +608,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 267036007,
+            "code": "267036007",
             "display": "Dyspnea (finding)"
           },
           "possible_severities": [
@@ -625,7 +625,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 247472004,
+            "code": "247472004",
             "display": "Wheal (finding)"
           },
           "possible_severities": [
@@ -642,7 +642,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 39579001,
+            "code": "39579001",
             "display": "Anaphylaxis (disorder)"
           },
           "possible_severities": [
@@ -659,7 +659,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 271807003,
+            "code": "271807003",
             "display": "Eruption of skin (disorder)"
           },
           "possible_severities": [
@@ -676,7 +676,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 878820003,
+            "code": "878820003",
             "display": "Rhinoconjunctivitis (disorder)"
           },
           "possible_severities": [
@@ -693,7 +693,7 @@
         {
           "reaction": {
             "system": "SNOMED-CT",
-            "code": 418290006,
+            "code": "418290006",
             "display": "Itching (finding)"
           },
           "possible_severities": [

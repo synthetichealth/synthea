@@ -78,7 +78,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 80394007,
+          "code": "80394007",
           "display": "Hyperglycemia (disorder)"
         }
       ],
@@ -107,7 +107,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 302870006,
+          "code": "302870006",
           "display": "Hypertriglyceridemia (disorder)"
         }
       ],
@@ -162,7 +162,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 237602007,
+          "code": "237602007",
           "display": "Metabolic syndrome X (disorder)"
         }
       ],
@@ -306,7 +306,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 714628002,
+          "code": "714628002",
           "display": "Prediabetes (finding)"
         }
       ],
@@ -342,7 +342,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 44054006,
+          "code": "44054006",
           "display": "Diabetes mellitus type 2 (disorder)"
         }
       ],
@@ -358,7 +358,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 735985000,
+                "code": "735985000",
                 "display": "Diabetes self management plan (record artifact)"
               }
             ]
@@ -375,19 +375,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735985000,
+          "code": "735985000",
           "display": "Diabetes self management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 160670007,
+          "code": "160670007",
           "display": "Diabetic diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 229065009,
+          "code": "229065009",
           "display": "Exercise therapy (regime/therapy)"
         }
       ],
@@ -563,7 +563,7 @@
                   "codes": [
                     {
                       "system": "SNOMED-CT",
-                      "code": 368581000119106,
+                      "code": "368581000119106",
                       "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
@@ -587,7 +587,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 368581000119106,
+                    "code": "368581000119106",
                     "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
@@ -606,7 +606,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 368581000119106,
+          "code": "368581000119106",
           "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -618,7 +618,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 368581000119106,
+          "code": "368581000119106",
           "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
@@ -652,7 +652,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 368581000119106,
+                "code": "368581000119106",
                 "display": "Neuropathy due to type 2 diabetes mellitus (disorder)"
               }
             ]
@@ -737,7 +737,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 337414009,
+        "code": "337414009",
         "display": "Blood glucose meter (physical object)"
       },
       "direct_transition": "Prescribe_Medications"
@@ -753,7 +753,7 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 763288003,
+        "code": "763288003",
         "display": "Patient review (procedure)"
       }
     }

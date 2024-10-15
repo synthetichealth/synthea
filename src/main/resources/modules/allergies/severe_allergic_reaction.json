@@ -19,7 +19,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -32,7 +32,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 241929008,
+          "code": "241929008",
           "display": "Acute allergic reaction (disorder)"
         }
       ],
@@ -43,7 +43,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 313191000,
+          "code": "313191000",
           "display": "Injection of epinephrine (procedure)"
         }
       ],

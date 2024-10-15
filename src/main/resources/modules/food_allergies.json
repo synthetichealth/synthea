@@ -120,7 +120,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -148,19 +148,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 384758001,
+          "code": "384758001",
           "display": "Self-care interventions (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 409002,
+          "code": "409002",
           "display": "Food allergy diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 58332002,
+          "code": "58332002",
           "display": "Allergy education (procedure)"
         }
       ],

@@ -77,7 +77,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 200936003,
+          "code": "200936003",
           "display": "Lupus erythematosus (disorder)"
         }
       ],
@@ -90,7 +90,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -139,19 +139,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408869004,
+          "code": "408869004",
           "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 440381005,
+          "code": "440381005",
           "display": "Behavior to prevent sun exposure (observable entity)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 226234005,
+          "code": "226234005",
           "display": "Healthy diet (finding)"
         }
       ],
@@ -258,7 +258,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

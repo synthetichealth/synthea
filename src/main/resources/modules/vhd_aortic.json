@@ -19,7 +19,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 60573004,
+          "code": "60573004",
           "display": "Aortic valve stenosis (disorder)"
         }
       ],
@@ -31,7 +31,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 60234000,
+          "code": "60234000",
           "display": "Aortic valve regurgitation (disorder)"
         }
       ],
@@ -44,7 +44,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -56,7 +56,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 60234000,
+                "code": "60234000",
                 "display": "Aortic valve regurgitation (disorder)"
               }
             ]
@@ -131,7 +131,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 60573004,
+                    "code": "60573004",
                     "display": "Aortic valve stenosis (disorder)"
                   }
                 ]
@@ -141,7 +141,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 48724000,
+                    "code": "48724000",
                     "display": "Mitral valve regurgitation (disorder)"
                   }
                 ]
@@ -151,7 +151,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 79619009,
+                    "code": "79619009",
                     "display": "Mitral valve stenosis (disorder)"
                   }
                 ]
@@ -161,7 +161,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 56786000,
+                    "code": "56786000",
                     "display": "Pulmonic valve stenosis (disorder)"
                   }
                 ]
@@ -171,7 +171,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 91434003,
+                    "code": "91434003",
                     "display": "Pulmonic valve regurgitation (disorder)"
                   }
                 ]
@@ -181,7 +181,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 111287006,
+                    "code": "111287006",
                     "display": "Tricuspid valve regurgitation (disorder)"
                   }
                 ]
@@ -191,7 +191,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 49915006,
+                    "code": "49915006",
                     "display": "Tricuspid valve stenosis (disorder)"
                   }
                 ]
@@ -218,7 +218,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 60234000,
+                    "code": "60234000",
                     "display": "Aortic valve regurgitation (disorder)"
                   }
                 ]
@@ -228,7 +228,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 48724000,
+                    "code": "48724000",
                     "display": "Mitral valve regurgitation (disorder)"
                   }
                 ]
@@ -238,7 +238,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 79619009,
+                    "code": "79619009",
                     "display": "Mitral valve stenosis (disorder)"
                   }
                 ]
@@ -248,7 +248,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 56786000,
+                    "code": "56786000",
                     "display": "Pulmonic valve stenosis (disorder)"
                   }
                 ]
@@ -258,7 +258,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 91434003,
+                    "code": "91434003",
                     "display": "Pulmonic valve regurgitation (disorder)"
                   }
                 ]
@@ -268,7 +268,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 111287006,
+                    "code": "111287006",
                     "display": "Tricuspid valve regurgitation (disorder)"
                   }
                 ]
@@ -278,7 +278,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 49915006,
+                    "code": "49915006",
                     "display": "Tricuspid valve stenosis (disorder)"
                   }
                 ]
@@ -295,14 +295,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 433236007,
+        "code": "433236007",
         "display": "Transthoracic echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {
@@ -341,7 +341,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390791001,
+          "code": "390791001",
           "display": "Referral for echocardiography (procedure)"
         }
       ],
@@ -578,7 +578,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 1231000119100,
+                    "code": "1231000119100",
                     "display": "History of aortic valve replacement (situation)"
                   }
                 ]
@@ -588,7 +588,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 119481000119105,
+                    "code": "119481000119105",
                     "display": "History of aortic valve repair (situation)"
                   }
                 ]

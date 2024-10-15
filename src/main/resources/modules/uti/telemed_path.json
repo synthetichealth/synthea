@@ -25,7 +25,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185317003,
+          "code": "185317003",
           "display": "Telephone encounter (procedure)"
         }
       ],
@@ -39,7 +39,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 453131000124105,
+          "code": "453131000124105",
           "display": "Videotelephony encounter (procedure)"
         }
       ],
@@ -50,7 +50,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 448337001,
+          "code": "448337001",
           "display": "Telemedicine consultation with patient (procedure)"
         }
       ],
@@ -73,7 +73,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
+                "code": "45816000",
                 "display": "Pyelonephritis (disorder)"
               }
             ]
@@ -134,7 +134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183444007,
+          "code": "183444007",
           "display": "Referral for further care (procedure)"
         }
       ],
@@ -153,7 +153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386053000,
+          "code": "386053000",
           "display": "Evaluation procedure (procedure)"
         }
       ],
@@ -181,7 +181,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 266753000,
+          "code": "266753000",
           "display": "Referral for laboratory tests (procedure)"
         }
       ],
@@ -226,7 +226,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 281789004,
+          "code": "281789004",
           "display": "Antibiotic therapy (procedure)"
         }
       ],
@@ -320,7 +320,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -355,7 +355,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185316007,
+          "code": "185316007",
           "display": "Indirect encounter (procedure)"
         }
       ],
@@ -388,7 +388,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
+                    "code": "45816000",
                     "display": "Pyelonephritis (disorder)"
                   }
                 ]
@@ -424,7 +424,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -460,7 +460,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],

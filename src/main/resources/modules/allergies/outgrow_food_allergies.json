@@ -24,7 +24,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 420174000,
+                "code": "420174000",
                 "display": "Allergy to wheat (finding)"
               }
             ]
@@ -55,7 +55,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 420174000,
+          "code": "420174000",
           "display": "Allergy to wheat (finding)"
         }
       ],
@@ -75,7 +75,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 414285001,
+                "code": "414285001",
                 "display": "Allergy to food (finding)"
               }
             ]
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414285001,
+          "code": "414285001",
           "display": "Allergy to food (finding)"
         }
       ],
@@ -126,7 +126,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 213020009,
+                "code": "213020009",
                 "display": "Allergy to egg protein (finding)"
               }
             ]
@@ -157,7 +157,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 213020009,
+          "code": "213020009",
           "display": "Allergy to egg protein (finding)"
         }
       ],
@@ -177,7 +177,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 782594005,
+                "code": "782594005",
                 "display": "Allergy to soy protein (finding)"
               }
             ]
@@ -208,7 +208,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 782594005,
+          "code": "782594005",
           "display": "Allergy to soy protein (finding)"
         }
       ],
@@ -228,7 +228,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 1003755004,
+                "code": "1003755004",
                 "display": "Allergy to Hevea brasiliensis latex protein (finding)"
               }
             ]
@@ -259,7 +259,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1003755004,
+          "code": "1003755004",
           "display": "Allergy to Hevea brasiliensis latex protein (finding)"
         }
       ],
@@ -277,7 +277,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 91935009,
+                    "code": "91935009",
                     "display": "Allergy to peanut (finding)"
                   }
                 ]
@@ -287,7 +287,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 91934008,
+                    "code": "91934008",
                     "display": "Allergy to nut (finding)"
                   }
                 ]
@@ -297,7 +297,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 417532002,
+                    "code": "417532002",
                     "display": "Allergy to fish (finding)"
                   }
                 ]
@@ -307,7 +307,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 300913006,
+                    "code": "300913006",
                     "display": "Allergy to shellfish (finding)"
                   }
                 ]

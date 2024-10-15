@@ -13,7 +13,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183444007,
+          "code": "183444007",
           "display": "Referral for further care (procedure)"
         }
       ],
@@ -33,7 +33,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67879005,
+          "code": "67879005",
           "display": "History and physical examination, limited (procedure)"
         }
       ],
@@ -69,7 +69,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
+                    "code": "45816000",
                     "display": "Pyelonephritis (disorder)"
                   }
                 ]
@@ -148,7 +148,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -199,7 +199,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],

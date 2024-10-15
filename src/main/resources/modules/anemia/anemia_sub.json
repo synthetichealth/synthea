@@ -14,7 +14,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 271737000,
+          "code": "271737000",
           "display": "Anemia (disorder)"
         }
       ],
@@ -28,7 +28,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 415300000,
+          "code": "415300000",
           "display": "Review of systems (procedure)"
         }
       ],
@@ -47,7 +47,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 162676008,
+          "code": "162676008",
           "display": "Brief general examination (procedure)"
         }
       ],
@@ -168,7 +168,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 180207008,
+          "code": "180207008",
           "display": "Intravenous blood transfusion of packed cells (procedure)"
         }
       ],
@@ -184,7 +184,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 14768001,
+          "code": "14768001",
           "display": "Peripheral blood smear interpretation (procedure)"
         }
       ],
@@ -200,7 +200,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 430193006,
+          "code": "430193006",
           "display": "Medication reconciliation (procedure)"
         }
       ],
@@ -265,7 +265,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1010,7 +1010,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

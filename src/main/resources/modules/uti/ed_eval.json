@@ -27,7 +27,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
+                    "code": "45816000",
                     "display": "Pyelonephritis (disorder)"
                   }
                 ]
@@ -81,7 +81,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 281789004,
+          "code": "281789004",
           "display": "Antibiotic therapy (procedure)"
         }
       ],
@@ -104,7 +104,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 58000006,
+          "code": "58000006",
           "display": "Patient discharge (procedure)"
         }
       ],

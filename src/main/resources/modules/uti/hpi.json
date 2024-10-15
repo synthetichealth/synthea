@@ -16,7 +16,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84100007,
+          "code": "84100007",
           "display": "History taking (procedure)"
         }
       ],
@@ -88,7 +88,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
+                "code": "45816000",
                 "display": "Pyelonephritis (disorder)"
               }
             ]
@@ -104,7 +104,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223470000,
+          "code": "223470000",
           "display": "Discussion about signs and symptoms (procedure)"
         }
       ],

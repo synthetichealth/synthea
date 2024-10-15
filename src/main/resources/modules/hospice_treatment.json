@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305336008,
+          "code": "305336008",
           "display": "Admission to hospice (procedure)"
         }
       ],
@@ -67,7 +67,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 310417005,
+          "code": "310417005",
           "display": "Certification procedure (procedure)"
         }
       ],
@@ -78,7 +78,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185087000,
+          "code": "185087000",
           "display": "Notifications (procedure)"
         }
       ],
@@ -89,7 +89,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 315639002,
+          "code": "315639002",
           "display": "Initial patient assessment (procedure)"
         }
       ],
@@ -100,7 +100,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370789001,
+          "code": "370789001",
           "display": "Development of individualized plan of care (procedure)"
         }
       ],
@@ -127,7 +127,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385763009,
+          "code": "385763009",
           "display": "Hospice care (regime/therapy)"
         }
       ],
@@ -164,7 +164,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 58000006,
+          "code": "58000006",
           "display": "Patient discharge (procedure)"
         }
       ],
@@ -175,7 +175,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 876882001,
+          "code": "876882001",
           "display": "Died in hospice (finding)"
         }
       ],
@@ -246,7 +246,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 91537007,
+        "code": "91537007",
         "display": "Hospital bed, device (physical object)"
       },
       "direct_transition": "Lift Check"
@@ -255,7 +255,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706112002,
+        "code": "706112002",
         "display": "Patient lifting system (physical object)"
       },
       "direct_transition": "Commode Check"
@@ -264,7 +264,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 360008003,
+        "code": "360008003",
         "display": "Commode (physical object)"
       },
       "direct_transition": "Begin_Day"

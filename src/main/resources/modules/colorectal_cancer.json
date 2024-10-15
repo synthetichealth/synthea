@@ -105,7 +105,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -124,7 +124,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73761001,
+          "code": "73761001",
           "display": "Colonoscopy (procedure)"
         }
       ],
@@ -234,7 +234,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68496003,
+          "code": "68496003",
           "display": "Polyp of colon (disorder)"
         }
       ],
@@ -302,7 +302,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 104435004,
+          "code": "104435004",
           "display": "Screening for occult blood in feces (procedure)"
         }
       ],
@@ -367,7 +367,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 274031008,
+          "code": "274031008",
           "display": "Rectal polypectomy (procedure)"
         }
       ],
@@ -394,7 +394,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76164006,
+          "code": "76164006",
           "display": "Biopsy of colon (procedure)"
         }
       ],
@@ -421,7 +421,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -467,7 +467,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -483,7 +483,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73761001,
+          "code": "73761001",
           "display": "Colonoscopy (procedure)"
         }
       ],
@@ -499,7 +499,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 713197008,
+                "code": "713197008",
                 "display": "Recurrent rectal polyp (disorder)"
               }
             ],
@@ -561,7 +561,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 713197008,
+          "code": "713197008",
           "display": "Recurrent rectal polyp (disorder)"
         }
       ],
@@ -573,7 +573,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 274031008,
+          "code": "274031008",
           "display": "Rectal polypectomy (procedure)"
         }
       ],
@@ -614,7 +614,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 236077008,
+          "code": "236077008",
           "display": "Protracted diarrhea (finding)"
         }
       ],
@@ -626,7 +626,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 6072007,
+          "code": "6072007",
           "display": "Bleeding from anus (disorder)"
         }
       ],
@@ -640,7 +640,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -714,7 +714,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -730,7 +730,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73761001,
+          "code": "73761001",
           "display": "Colonoscopy (procedure)"
         }
       ],
@@ -840,7 +840,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 93761005,
+          "code": "93761005",
           "display": "Primary malignant neoplasm of colon (disorder)"
         }
       ],
@@ -862,7 +862,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 109838007,
+          "code": "109838007",
           "display": "Overlapping malignant neoplasm of colon (disorder)"
         }
       ],
@@ -884,7 +884,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 363406005,
+          "code": "363406005",
           "display": "Malignant neoplasm of colon (disorder)"
         }
       ],
@@ -906,7 +906,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 94260004,
+          "code": "94260004",
           "display": "Metastatic malignant neoplasm to colon (disorder)"
         }
       ],
@@ -1039,7 +1039,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1058,24 +1058,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736252007,
+          "code": "736252007",
           "display": "Cancer care plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 226234005,
+          "code": "226234005",
           "display": "Healthy diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 703993001,
+          "code": "703993001",
           "display": "Colonoscopy planned (situation)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 243072006,
+          "code": "243072006",
           "display": "Cancer education (procedure)"
         }
       ],
@@ -1192,7 +1192,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1204,7 +1204,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 43075005,
+          "code": "43075005",
           "display": "Partial resection of colon (procedure)"
         }
       ],
@@ -1224,19 +1224,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 737567002,
+          "code": "737567002",
           "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 10888001,
+          "code": "10888001",
           "display": "Liquid diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 103744005,
+          "code": "103744005",
           "display": "Administration of intravenous fluids (procedure)"
         }
       ],
@@ -1325,7 +1325,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1357,19 +1357,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 737567002,
+          "code": "737567002",
           "display": "Major surgery care management (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 10888001,
+          "code": "10888001",
           "display": "Liquid diet (finding)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 103744005,
+          "code": "103744005",
           "display": "Administration of intravenous fluids (procedure)"
         }
       ],
@@ -1455,7 +1455,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1493,7 +1493,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 703423002,
+          "code": "703423002",
           "display": "Combined chemotherapy and radiation therapy (procedure)"
         }
       ],
@@ -1550,7 +1550,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -2134,7 +2134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -2153,7 +2153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -2173,7 +2173,7 @@
       "direct_transition": "Routine_Colonoscopy_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 275978004,
+        "code": "275978004",
         "display": "Screening for malignant neoplasm of colon (procedure)"
       }
     },

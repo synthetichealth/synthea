@@ -14,7 +14,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 449868002,
+          "code": "449868002",
           "display": "Smokes tobacco daily (finding)"
         }
       ],
@@ -25,7 +25,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -33,7 +33,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 710081004,
+          "code": "710081004",
           "display": "Smoking cessation therapy (regime/therapy)"
         }
       ],
@@ -86,7 +86,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 7200002,
+          "code": "7200002",
           "display": "Alcoholism (disorder)"
         }
       ],
@@ -142,7 +142,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -150,17 +150,17 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 313071005,
+          "code": "313071005",
           "display": "Counseling for substance abuse (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 408935001,
+          "code": "408935001",
           "display": "Substance abuse prevention education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 408936000,
+          "code": "408936000",
           "display": "Substance abuse prevention management (procedure)"
         }
       ]
@@ -197,7 +197,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5602001,
+          "code": "5602001",
           "display": "Opioid abuse (disorder)"
         }
       ],
@@ -224,7 +224,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -232,7 +232,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 24165007,
+          "code": "24165007",
           "display": "Alcoholism counseling (procedure)"
         }
       ]

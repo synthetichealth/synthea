@@ -20,7 +20,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -95,7 +95,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 180030006,
+          "code": "180030006",
           "display": "Amputation of the foot (procedure)"
         }
       ],
@@ -136,7 +136,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 180030006,
+          "code": "180030006",
           "display": "Amputation of the foot (procedure)"
         }
       ],
@@ -168,7 +168,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79733001,
+          "code": "79733001",
           "display": "Amputation above-knee (procedure)"
         }
       ],
@@ -200,7 +200,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79733001,
+          "code": "79733001",
           "display": "Amputation above-knee (procedure)"
         }
       ],
@@ -217,7 +217,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 161622006,
+          "code": "161622006",
           "display": "History of lower limb amputation (situation)"
         }
       ],
@@ -229,7 +229,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 429280009,
+          "code": "429280009",
           "display": "History of amputation of foot (situation)"
         }
       ],
@@ -265,7 +265,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 46028000,
+          "code": "46028000",
           "display": "Amputation of hand (procedure)"
         }
       ],
@@ -306,7 +306,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 46028000,
+          "code": "46028000",
           "display": "Amputation of hand (procedure)"
         }
       ],
@@ -338,7 +338,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 13995008,
+          "code": "13995008",
           "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
@@ -370,7 +370,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 13995008,
+          "code": "13995008",
           "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
@@ -387,7 +387,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 161621004,
+          "code": "161621004",
           "display": "History of upper limb amputation (situation)"
         }
       ],
@@ -399,7 +399,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698423002,
+          "code": "698423002",
           "display": "History of disarticulation at wrist (situation)"
         }
       ],
@@ -411,7 +411,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386510005,
+          "code": "386510005",
           "display": "Amputation care (regime/therapy)"
         }
       ],

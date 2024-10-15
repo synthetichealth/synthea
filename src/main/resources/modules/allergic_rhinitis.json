@@ -117,7 +117,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 367498001,
+          "code": "367498001",
           "display": "Seasonal allergic rhinitis (disorder)"
         }
       ],
@@ -130,7 +130,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 446096008,
+          "code": "446096008",
           "display": "Perennial allergic rhinitis (disorder)"
         }
       ],
@@ -143,7 +143,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232353008,
+          "code": "232353008",
           "display": "Perennial allergic rhinitis with seasonal variation (disorder)"
         }
       ],
@@ -157,7 +157,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -263,7 +263,7 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": 419263009,
+                  "code": "419263009",
                   "display": "Allergy to tree pollen (finding)"
                 }
               ]
@@ -273,7 +273,7 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": 418689008,
+                  "code": "418689008",
                   "display": "Allergy to grass pollen (finding)"
                 }
               ]
@@ -283,7 +283,7 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": 717234006,
+                  "code": "717234006",
                   "display": "Allergy to animal protein (finding)"
                 }
               ]
@@ -293,7 +293,7 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": 232350006,
+                  "code": "232350006",
                   "display": "Allergy to dust mite protein (finding)"
                 }
               ]
@@ -303,7 +303,7 @@
               "codes": [
                 {
                   "system": "SNOMED-CT",
-                  "code": 419474003,
+                  "code": "419474003",
                   "display": "Allergy to mold (finding)"
                 }
               ]

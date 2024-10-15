@@ -316,7 +316,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 36923009,
+          "code": "36923009",
           "display": "Major depression, single episode (disorder)"
         }
       ],
@@ -335,7 +335,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 718347000,
+          "code": "718347000",
           "display": "Mental health care plan (record artifact)"
         }
       ],
@@ -344,7 +344,7 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 79094001,
+          "code": "79094001",
           "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
@@ -366,7 +366,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79094001,
+          "code": "79094001",
           "display": "Initial psychiatric interview with mental status and evaluation (procedure)"
         }
       ],
@@ -389,7 +389,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370143000,
+          "code": "370143000",
           "display": "Major depressive disorder (disorder)"
         }
       ],
@@ -426,7 +426,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736254008,
+          "code": "736254008",
           "display": "Psychiatry care plan (record artifact)"
         }
       ],
@@ -452,27 +452,27 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 425680009,
+          "code": "425680009",
           "display": "Cognitive behavioral therapy by multidisciplinary team (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 304822001,
+          "code": "304822001",
           "display": "Psychodynamic-interpersonal psychotherapy (regime/therapy)"
         }
       ]
@@ -482,7 +482,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736254008,
+          "code": "736254008",
           "display": "Psychiatry care plan (record artifact)"
         }
       ],
@@ -491,17 +491,17 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385724002,
+          "code": "385724002",
           "display": "Coping support management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 88848003,
+          "code": "88848003",
           "display": "Psychiatric follow-up (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225337009,
+          "code": "225337009",
           "display": "Suicide risk assessment (procedure)"
         }
       ]
@@ -514,7 +514,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -569,7 +569,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 737434004,
+          "code": "737434004",
           "display": "Major depressive disorder clinical management plan (record artifact)"
         }
       ],
@@ -598,7 +598,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112001000119100,
+          "code": "112001000119100",
           "display": "Positive screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
@@ -610,7 +610,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112011000119102,
+          "code": "112011000119102",
           "display": "Negative screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
@@ -622,7 +622,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112001000119100,
+          "code": "112001000119100",
           "display": "Positive screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
@@ -646,7 +646,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 112011000119102,
+          "code": "112011000119102",
           "display": "Negative screening for depression on Patient Health Questionnaire 9 (finding)"
         }
       ],
@@ -696,7 +696,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -719,7 +719,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

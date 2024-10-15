@@ -15,7 +15,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 228869008,
+        "code": "228869008",
         "display": "Manual wheelchair (physical object)"
       },
       "direct_transition": "Accessory Check",
@@ -39,7 +39,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705427004,
+        "code": "705427004",
         "display": "Power-assisted wheelchair (physical object)"
       },
       "direct_transition": "Accessory Check",
@@ -62,7 +62,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705417005,
+        "code": "705417005",
         "display": "Wheelchair accessory (physical object)"
       },
       "direct_transition": "Terminal",

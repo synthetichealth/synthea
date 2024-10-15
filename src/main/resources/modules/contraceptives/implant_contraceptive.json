@@ -66,7 +66,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],
@@ -182,7 +182,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 169553002,
+          "code": "169553002",
           "display": "Insertion of subcutaneous contraceptive (procedure)"
         }
       ],

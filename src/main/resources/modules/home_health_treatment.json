@@ -13,7 +13,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -26,7 +26,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 417511005,
+          "code": "417511005",
           "display": "Referral to home health care service (procedure)"
         }
       ],
@@ -59,7 +59,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 439708006,
+          "code": "439708006",
           "display": "Home visit (procedure)"
         }
       ],
@@ -72,7 +72,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 315639002,
+          "code": "315639002",
           "display": "Initial patient assessment (procedure)"
         }
       ],
@@ -83,7 +83,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 200619008,
+          "code": "200619008",
           "display": "Comprehensive interview and evaluation (procedure)"
         }
       ],
@@ -94,7 +94,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370789001,
+          "code": "370789001",
           "display": "Development of individualized plan of care (procedure)"
         }
       ],
@@ -105,7 +105,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711069006,
+          "code": "711069006",
           "display": "Coordination of care plan (procedure)"
         }
       ],
@@ -120,7 +120,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 439708006,
+          "code": "439708006",
           "display": "Home visit (procedure)"
         }
       ],
@@ -183,7 +183,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91251008,
+          "code": "91251008",
           "display": "Physical therapy procedure (regime/therapy)"
         }
       ],
@@ -199,7 +199,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84478008,
+          "code": "84478008",
           "display": "Occupational therapy (regime/therapy)"
         }
       ],
@@ -210,7 +210,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 311555007,
+          "code": "311555007",
           "display": "Speech and language therapy regime (regime/therapy)"
         }
       ],
@@ -221,7 +221,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 58000006,
+          "code": "58000006",
           "display": "Patient discharge (procedure)"
         }
       ],
@@ -232,7 +232,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410401003,
+          "code": "410401003",
           "display": "Nursing care/supplementary surveillance (regime/therapy)"
         }
       ],
@@ -256,7 +256,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385781007,
+          "code": "385781007",
           "display": "Home health aide service (regime/therapy)"
         }
       ],
@@ -267,7 +267,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183418007,
+          "code": "183418007",
           "display": "Social case work (regime/therapy)"
         }
       ],
@@ -350,7 +350,7 @@
       "direct_transition": "Face_to_Face_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 1871000124103,
+        "code": "1871000124103",
         "display": "Transition from acute care to home-health care (finding)"
       }
     },

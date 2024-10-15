@@ -179,7 +179,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 40095003,
+                    "code": "40095003",
                     "display": "Injury of kidney (disorder)"
                   }
                 ]

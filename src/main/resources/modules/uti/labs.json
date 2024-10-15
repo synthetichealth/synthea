@@ -13,7 +13,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 57617002,
+          "code": "57617002",
           "display": "Urine specimen collection (procedure)"
         }
       ],
@@ -43,7 +43,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 167226008,
+          "code": "167226008",
           "display": "Urine dipstick test (procedure)"
         }
       ],
@@ -94,7 +94,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167287002,
+            "code": "167287002",
             "display": "Urine ketones not detected (finding)"
           }
         },
@@ -155,7 +155,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314137006,
+            "code": "314137006",
             "display": "Nitrite detected in urine (finding)"
           }
         },
@@ -171,7 +171,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167300001,
+            "code": "167300001",
             "display": "Urine blood test = + (finding)"
           }
         },
@@ -187,7 +187,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394712000,
+            "code": "394712000",
             "display": "Urine leukocyte test one plus (finding)"
           }
         }
@@ -199,7 +199,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
+                "code": "45816000",
                 "display": "Pyelonephritis (disorder)"
               }
             ]
@@ -221,7 +221,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 307426000,
+                "code": "307426000",
                 "display": "Acute infective cystitis (disorder)"
               }
             ]
@@ -247,7 +247,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 441550005,
+          "code": "441550005",
           "display": "Urinalysis with reflex to microscopy and culture (procedure)"
         }
       ],
@@ -298,7 +298,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167287002,
+            "code": "167287002",
             "display": "Urine ketones not detected (finding)"
           }
         },
@@ -359,7 +359,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314137006,
+            "code": "314137006",
             "display": "Nitrite detected in urine (finding)"
           }
         },
@@ -375,7 +375,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167300001,
+            "code": "167300001",
             "display": "Urine blood test = + (finding)"
           }
         },
@@ -391,7 +391,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394712000,
+            "code": "394712000",
             "display": "Urine leukocyte test one plus (finding)"
           }
         },
@@ -452,7 +452,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167336003,
+            "code": "167336003",
             "display": "Urine microscopy: no casts (finding)"
           }
         },
@@ -468,7 +468,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 276409005,
+            "code": "276409005",
             "display": "Mucus in urine (finding)"
           }
         },
@@ -484,7 +484,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 365691004,
+            "code": "365691004",
             "display": "Finding of presence of bacteria (finding)"
           }
         }
@@ -496,7 +496,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 117010004,
+          "code": "117010004",
           "display": "Urine culture (procedure)"
         }
       ],
@@ -637,7 +637,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 264868006,
+        "code": "264868006",
         "display": "No growth (qualifier value)"
       }
     },

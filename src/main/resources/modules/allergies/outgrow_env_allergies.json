@@ -24,7 +24,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 419263009,
+                "code": "419263009",
                 "display": "Allergy to tree pollen (finding)"
               }
             ]
@@ -55,7 +55,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 419263009,
+          "code": "419263009",
           "display": "Allergy to tree pollen (finding)"
         }
       ],
@@ -75,7 +75,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 418689008,
+                "code": "418689008",
                 "display": "Allergy to grass pollen (finding)"
               }
             ]
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 418689008,
+          "code": "418689008",
           "display": "Allergy to grass pollen (finding)"
         }
       ],
@@ -126,7 +126,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 419474003,
+                "code": "419474003",
                 "display": "Allergy to mold (finding)"
               }
             ]
@@ -157,7 +157,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 419474003,
+          "code": "419474003",
           "display": "Allergy to mold (finding)"
         }
       ],
@@ -177,7 +177,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 717234006,
+                "code": "717234006",
                 "display": "Allergy to animal protein (finding)"
               }
             ]
@@ -208,7 +208,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 717234006,
+          "code": "717234006",
           "display": "Allergy to animal protein (finding)"
         }
       ],
@@ -228,7 +228,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 232350006,
+                "code": "232350006",
                 "display": "Allergy to dust mite protein (finding)"
               }
             ]
@@ -259,7 +259,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232350006,
+          "code": "232350006",
           "display": "Allergy to dust mite protein (finding)"
         }
       ],

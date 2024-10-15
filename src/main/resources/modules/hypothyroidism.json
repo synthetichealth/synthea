@@ -73,7 +73,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 83664006,
+          "code": "83664006",
           "display": "Idiopathic atrophic hypothyroidism (disorder)"
         }
       ],
@@ -86,7 +86,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -127,7 +127,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

@@ -53,7 +53,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399261000,
+          "code": "399261000",
           "display": "History of coronary artery bypass grafting (situation)"
         }
       ],
@@ -68,7 +68,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 392247006,
+          "code": "392247006",
           "display": "Insertion of catheter into artery (procedure)"
         }
       ],
@@ -89,7 +89,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65677008,
+          "code": "65677008",
           "display": "Pulmonary catheterization with Swan-Ganz catheter (procedure)"
         }
       ],
@@ -105,7 +105,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223495004,
+          "code": "223495004",
           "display": "Preparation of patient for procedure (regime/therapy)"
         }
       ],
@@ -130,7 +130,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 42825003,
+          "code": "42825003",
           "display": "Cannulation (procedure)"
         }
       ],
@@ -158,7 +158,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 63697000,
+          "code": "63697000",
           "display": "Cardiopulmonary bypass operation (procedure)"
         }
       ],
@@ -174,7 +174,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301882004,
+          "code": "301882004",
           "display": "Placement of aortic cross clamp (procedure)"
         }
       ],
@@ -190,7 +190,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 8290005,
+          "code": "8290005",
           "display": "Induced cardioplegia (procedure)"
         }
       ],
@@ -206,7 +206,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301884003,
+          "code": "301884003",
           "display": "Removal of aortic cross clamp (procedure)"
         }
       ],
@@ -222,7 +222,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233553003,
+          "code": "233553003",
           "display": "Vascular cannula removal (procedure)"
         }
       ],
@@ -266,7 +266,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232717009,
+          "code": "232717009",
           "display": "Coronary artery bypass grafting (procedure)"
         }
       ],
@@ -286,7 +286,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23745001,
+          "code": "23745001",
           "display": "Documentation procedure (procedure)"
         }
       ],
@@ -327,12 +327,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232717009,
+          "code": "232717009",
           "display": "Coronary artery bypass grafting (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 414088005,
+          "code": "414088005",
           "display": "Emergency coronary artery bypass graft (procedure)"
         }
       ],
@@ -352,7 +352,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 418824004,
+          "code": "418824004",
           "display": "Off-pump coronary artery bypass (procedure)"
         }
       ],
@@ -372,7 +372,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414088005,
+          "code": "414088005",
           "display": "Emergency coronary artery bypass graft (procedure)"
         }
       ],

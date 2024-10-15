@@ -25,7 +25,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 109989006,
+          "code": "109989006",
           "display": "Multiple myeloma (disorder)"
         }
       ],
@@ -64,7 +64,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 93143009,
+          "code": "93143009",
           "display": "Leukemia, disease (disorder)"
         }
       ],
@@ -80,7 +80,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308251003,
+          "code": "308251003",
           "display": "Admission to clinical oncology department (procedure)"
         }
       ],

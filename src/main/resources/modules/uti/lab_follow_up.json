@@ -13,7 +13,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 165355002,
+          "code": "165355002",
           "display": "Patient informed - test result (situation)"
         }
       ],
@@ -31,7 +31,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410299006,
+          "code": "410299006",
           "display": "Lab findings education, guidance, and counseling (procedure)"
         }
       ],
@@ -49,7 +49,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223484005,
+          "code": "223484005",
           "display": "Discussion about treatment (procedure)"
         }
       ],
@@ -79,7 +79,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33633005,
+          "code": "33633005",
           "display": "Prescription of drug (procedure)"
         }
       ],
@@ -102,7 +102,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225953001,
+          "code": "225953001",
           "display": "Evaluating response to treatment (procedure)"
         }
       ],
@@ -134,7 +134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 445528004,
+          "code": "445528004",
           "display": "Treatment changed (situation)"
         }
       ],

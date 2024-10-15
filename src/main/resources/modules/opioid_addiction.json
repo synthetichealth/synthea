@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 196416002,
+          "code": "196416002",
           "display": "Impacted molars (disorder)"
         }
       ],
@@ -194,7 +194,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65546002,
+          "code": "65546002",
           "display": "Extraction of wisdom tooth (procedure)"
         }
       ],
@@ -218,7 +218,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 82423001,
+          "code": "82423001",
           "display": "Chronic pain (finding)"
         }
       ],
@@ -231,7 +231,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183452005,
+          "code": "183452005",
           "display": "Emergency hospital admission (procedure)"
         }
       ],
@@ -255,7 +255,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 124171000119105,
+          "code": "124171000119105",
           "display": "Chronic intractable migraine without aura (disorder)"
         }
       ],
@@ -548,7 +548,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 56876005,
+          "code": "56876005",
           "display": "Drug rehabilitation and detoxification (regime/therapy)"
         }
       ],
@@ -586,7 +586,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -636,7 +636,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -674,7 +674,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -712,7 +712,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -745,24 +745,24 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 60112009,
+          "code": "60112009",
           "display": "Drug addiction counseling (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 61480009,
+          "code": "61480009",
           "display": "Drug detoxification (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 266707007,
+          "code": "266707007",
           "display": "Drug addiction therapy (regime/therapy)"
         }
       ],
@@ -874,7 +874,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 52052004,
+          "code": "52052004",
           "display": "Rehabilitation therapy (regime/therapy)"
         }
       ],
@@ -895,7 +895,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 6525002,
+          "code": "6525002",
           "display": "Dependent drug abuse (disorder)"
         }
       ],
@@ -908,7 +908,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 6525002,
+          "code": "6525002",
           "display": "Dependent drug abuse (disorder)"
         }
       ],

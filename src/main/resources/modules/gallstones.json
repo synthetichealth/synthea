@@ -326,7 +326,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65275009,
+          "code": "65275009",
           "display": "Acute cholecystitis (disorder)"
         }
       ],
@@ -351,7 +351,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 235919008,
+          "code": "235919008",
           "display": "Gallbladder calculus (disorder)"
         }
       ],
@@ -377,7 +377,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -486,7 +486,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 45595009,
+          "code": "45595009",
           "display": "Laparoscopic cholecystectomy (procedure)"
         }
       ],
@@ -529,7 +529,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 38102005,
+          "code": "38102005",
           "display": "Cholecystectomy (procedure)"
         }
       ],
@@ -577,7 +577,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91302008,
+          "code": "91302008",
           "display": "Sepsis (disorder)"
         }
       ]
@@ -594,7 +594,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385486001,
+          "code": "385486001",
           "display": "Postoperative complication (disorder)"
         }
       ]
@@ -610,7 +610,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -623,7 +623,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -696,14 +696,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 426701000119108,
+        "code": "426701000119108",
         "display": "Ultrasonography of abdomen, right upper quadrant and epigastrium (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 50519007,
+            "code": "50519007",
             "display": "Structure of right upper quadrant of abdomen (body structure)"
           },
           "modality": {
@@ -739,7 +739,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736372004,
+          "code": "736372004",
           "display": "Discharge care plan (record artifact)"
         }
       ],
@@ -747,17 +747,17 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 1055207008,
+          "code": "1055207008",
           "display": "Decreased fat and oil diet (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225317005,
+          "code": "225317005",
           "display": "Restriction of movement (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225358003,
+          "code": "225358003",
           "display": "Wound care (regime/therapy)"
         }
       ]
@@ -1147,7 +1147,7 @@
       "direct_transition": "ECG",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 53566005,
+        "code": "53566005",
         "display": "Murphy's sign (finding)"
       }
     },
@@ -1222,7 +1222,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -1263,7 +1263,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -1281,7 +1281,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -1364,7 +1364,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 91936005,
+                "code": "91936005",
                 "display": "Allergy to penicillin (finding)"
               }
             ]

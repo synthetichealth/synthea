@@ -38,7 +38,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 370143000,
+                    "code": "370143000",
                     "display": "Major depressive disorder (disorder)"
                   }
                 ]
@@ -48,7 +48,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 183401008,
+                    "code": "183401008",
                     "display": "Anti-suicide psychotherapy (regime/therapy)"
                   }
                 ]
@@ -66,7 +66,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171207006,
+          "code": "171207006",
           "display": "Depression screening (procedure)"
         }
       ],
@@ -107,7 +107,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171207006,
+          "code": "171207006",
           "display": "Depression screening (procedure)"
         }
       ],
@@ -212,7 +212,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 715252007,
+          "code": "715252007",
           "display": "Depression screening using Patient Health Questionnaire Nine Item score (procedure)"
         }
       ],

@@ -234,7 +234,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 127013003,
+                "code": "127013003",
                 "display": "Disorder of kidney due to diabetes mellitus (disorder)"
               }
             ]

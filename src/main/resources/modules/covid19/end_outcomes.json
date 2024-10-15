@@ -16,7 +16,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233604007,
+          "code": "233604007",
           "display": "Pneumonia (disorder)"
         }
       ],
@@ -27,7 +27,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67782005,
+          "code": "67782005",
           "display": "Acute respiratory distress syndrome (disorder)"
         }
       ],
@@ -38,7 +38,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 770349000,
+          "code": "770349000",
           "display": "Sepsis caused by virus (disorder)"
         }
       ],
@@ -49,7 +49,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76571007,
+          "code": "76571007",
           "display": "Septic shock (disorder)"
         }
       ],
@@ -60,7 +60,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84114007,
+          "code": "84114007",
           "display": "Heart failure (disorder)"
         }
       ],
@@ -71,7 +71,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 86175003,
+          "code": "86175003",
           "display": "Injury of heart (disorder)"
         }
       ],
@@ -82,7 +82,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 40095003,
+          "code": "40095003",
           "display": "Injury of kidney (disorder)"
         }
       ],
@@ -93,7 +93,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 234466008,
+          "code": "234466008",
           "display": "Acquired coagulation disorder (disorder)"
         }
       ],
@@ -104,7 +104,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 271825005,
+          "code": "271825005",
           "display": "Respiratory distress (finding)"
         }
       ],
@@ -115,7 +115,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65710008,
+          "code": "65710008",
           "display": "Acute respiratory failure (disorder)"
         }
       ],
@@ -134,7 +134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 706870000,
+          "code": "706870000",
           "display": "Acute pulmonary embolism (disorder)"
         }
       ],
@@ -145,7 +145,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 132281000119108,
+          "code": "132281000119108",
           "display": "Acute deep venous thrombosis (disorder)"
         }
       ],
@@ -157,7 +157,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 389087006,
+          "code": "389087006",
           "display": "Hypoxemia (disorder)"
         }
       ]

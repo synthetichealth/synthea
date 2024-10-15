@@ -69,7 +69,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],
@@ -302,7 +302,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -314,7 +314,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65200003,
+          "code": "65200003",
           "display": "Insertion of intrauterine contraceptive device (procedure)"
         }
       ],

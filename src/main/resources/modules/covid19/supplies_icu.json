@@ -36,7 +36,7 @@
           "quantity": 44,
           "code": {
             "system": "SNOMED-CT",
-            "code": 713779008,
+            "code": "713779008",
             "display": "Nitrile examination/treatment glove, non-powdered, sterile (physical object)"
           }
         },
@@ -44,7 +44,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 1141679000,
+            "code": "1141679000",
             "display": "Isolation gown (physical object)"
           }
         },
@@ -52,7 +52,7 @@
           "quantity": 10,
           "code": {
             "system": "SNOMED-CT",
-            "code": 1141679000,
+            "code": "1141679000",
             "display": "Isolation gown (physical object)"
           }
         },
@@ -60,7 +60,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 409533008,
+            "code": "409533008",
             "display": "Air-purifying respirator (physical object)"
           }
         },
@@ -68,7 +68,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706724001,
+            "code": "706724001",
             "display": "Face shield (physical object)"
           }
         },
@@ -76,7 +76,7 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 419343004,
+            "code": "419343004",
             "display": "Alcohol disinfectant (substance)"
           }
         },
@@ -84,7 +84,7 @@
           "quantity": 16,
           "code": {
             "system": "SNOMED-CT",
-            "code": 470618009,
+            "code": "470618009",
             "display": "Antiseptic towelette (physical object)"
           }
         }

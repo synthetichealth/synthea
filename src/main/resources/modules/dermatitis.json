@@ -160,7 +160,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 24079001,
+          "code": "24079001",
           "display": "Atopic dermatitis (disorder)"
         }
       ],
@@ -173,7 +173,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 40275004,
+          "code": "40275004",
           "display": "Contact dermatitis (disorder)"
         }
       ],
@@ -194,7 +194,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -239,14 +239,14 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711282006,
+          "code": "711282006",
           "display": "Skin condition care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 225130001,
+          "code": "225130001",
           "display": "Application of moisturizer to skin (procedure)"
         }
       ],
@@ -287,7 +287,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -524,7 +524,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
