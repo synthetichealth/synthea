@@ -42,7 +42,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 87628006,
+          "code": "87628006",
           "display": "Bacterial infectious disease (disorder)"
         }
       ],
@@ -53,7 +53,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61594008,
+          "code": "61594008",
           "display": "Microbial culture (procedure)"
         }
       ],

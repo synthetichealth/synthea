@@ -33,7 +33,7 @@
         {
           "system": "SNOMED-CT",
           "code": "430193006",
-          "display": "Medication Reconciliation (procedure)"
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "direct_transition": "End_Medication_Review_Due"
@@ -48,7 +48,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 314529007,
+          "code": "314529007",
           "display": "Medication review due (situation)"
         }
       ],

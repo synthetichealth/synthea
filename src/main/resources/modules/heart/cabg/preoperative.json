@@ -66,7 +66,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 110467000,
+          "code": "110467000",
           "display": "Pre-surgery testing (procedure)"
         }
       ],
@@ -183,14 +183,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 40701008,
+        "code": "40701008",
         "display": "Echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {
@@ -245,7 +245,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -260,14 +260,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "code": "399208008",
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -310,7 +310,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23426006,
+          "code": "23426006",
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
@@ -341,14 +341,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 709979004,
+        "code": "709979004",
         "display": "Doppler ultrasonography of artery (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51345006,
+            "code": "51345006",
             "display": "Carotid body structure (body structure)"
           },
           "modality": {
@@ -374,14 +374,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 303653007,
+        "code": "303653007",
         "display": "Computed tomography of head (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 69536005,
+            "code": "69536005",
             "display": "Head structure (body structure)"
           },
           "modality": {
@@ -721,7 +721,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 44608003,
+          "code": "44608003",
           "display": "Blood group typing (procedure)"
         }
       ],
@@ -747,7 +747,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 399261000,
+                "code": "399261000",
                 "display": "History of coronary artery bypass grafting (situation)"
               }
             ]

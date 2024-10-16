@@ -13,9 +13,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386053000,
-          "display": "Evaluation procedure (procedure)",
-          "value_set": ""
+          "code": "386053000",
+          "display": "Evaluation procedure (procedure)"
         }
       ],
       "distribution": {
@@ -59,9 +58,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 281789004,
-          "display": "Antibiotic therapy (procedure)",
-          "value_set": ""
+          "code": "281789004",
+          "display": "Antibiotic therapy (procedure)"
         }
       ],
       "distribution": {

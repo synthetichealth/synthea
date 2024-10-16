@@ -98,8 +98,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "26763009",
-          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+          "code": "243150007",
+          "display": "Assist control ventilation (regime/therapy)"
         }
       ],
       "reason": "Ventilator Reason",
@@ -141,7 +141,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306706006,
+          "code": "306706006",
           "display": "Discharge to ward (procedure)"
         }
       ],
@@ -154,7 +154,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305342007,
+          "code": "305342007",
           "display": "Admission to ward (procedure)"
         }
       ],
@@ -237,7 +237,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308283009,
+          "code": "308283009",
           "display": "Discharge from hospital (procedure)"
         }
       ],
@@ -289,7 +289,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735321000,
+          "code": "735321000",
           "display": "Surgical inpatient care plan (record artifact)"
         }
       ],
@@ -297,37 +297,37 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 736767005,
+          "code": "736767005",
           "display": "Perioperative care management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 182810003,
+          "code": "182810003",
           "display": "Intensive care monitoring (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 410207002,
+          "code": "410207002",
           "display": "Respiratory care management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 387760006,
+          "code": "387760006",
           "display": "Infusion care (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 370771002,
+          "code": "370771002",
           "display": "Maintenance of invasive device (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 15220000,
+          "code": "15220000",
           "display": "Laboratory test (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 385949008,
+          "code": "385949008",
           "display": "Dressing change management (procedure)"
         }
       ],
@@ -338,7 +338,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 268400002,
+          "code": "268400002",
           "display": "12 lead electrocardiogram (procedure)"
         }
       ],
@@ -357,14 +357,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "code": "399208008",
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -390,14 +390,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 433236007,
+        "code": "433236007",
         "display": "Transthoracic echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {
@@ -429,7 +429,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736372004,
+          "code": "736372004",
           "display": "Discharge care plan (record artifact)"
         }
       ],
@@ -438,47 +438,47 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 736767005,
+          "code": "736767005",
           "display": "Perioperative care management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 48428001,
+          "code": "48428001",
           "display": "Cardiovascular monitoring (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 718451004,
+          "code": "718451004",
           "display": "Management of vascular system care (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 370864003,
+          "code": "370864003",
           "display": "Activity care (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 422972009,
+          "code": "422972009",
           "display": "Advance diet as tolerated (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 405784000,
+          "code": "405784000",
           "display": "Pharmacological assessment (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 385949008,
+          "code": "385949008",
           "display": "Dressing change management (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 311401005,
+          "code": "311401005",
           "display": "Patient education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 1156892006,
+          "code": "1156892006",
           "display": "Scheduling of follow up appointment (procedure)"
         }
       ]
@@ -744,7 +744,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305351004,
+          "code": "305351004",
           "display": "Admission to intensive care unit (procedure)"
         }
       ],

@@ -53,7 +53,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 127295002,
+          "code": "127295002",
           "display": "Traumatic brain injury (disorder)"
         }
       ],

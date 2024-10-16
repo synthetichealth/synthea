@@ -246,7 +246,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 91537007,
+        "code": "91537007",
         "display": "Hospital bed, device (physical object)"
       },
       "direct_transition": "Lift Check"
@@ -255,7 +255,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706112002,
+        "code": "706112002",
         "display": "Patient lifting system (physical object)"
       },
       "direct_transition": "Commode Check"
@@ -264,7 +264,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 360008003,
+        "code": "360008003",
         "display": "Commode (physical object)"
       },
       "direct_transition": "Begin_Day"

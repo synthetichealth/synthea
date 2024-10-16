@@ -56,7 +56,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment"
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "Prescribe_Nuvaring",

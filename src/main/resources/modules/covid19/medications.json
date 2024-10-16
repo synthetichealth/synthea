@@ -688,7 +688,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 13569004,
+          "code": "13569004",
           "display": "Transfusion of plasma (procedure)"
         }
       ],
@@ -707,7 +707,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 84879009,
+            "code": "84879009",
             "display": "Human plasma, blood product (product)"
           }
         }
@@ -1018,7 +1018,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 261754007,
+            "code": "261754007",
             "display": "Continuous infusion (qualifier value)"
           }
         ]

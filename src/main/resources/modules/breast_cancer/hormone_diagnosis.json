@@ -16,7 +16,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 434363004,
+          "code": "434363004",
           "display": "Human epidermal growth factor receptor 2 gene detection by fluorescence in situ hybridization (procedure)"
         }
       ],
@@ -48,7 +48,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "direct_transition": "HER2 ratio less than 1point8"
@@ -66,7 +66,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "direct_transition": "HER2_ratio_greater_than_2point2"
@@ -101,7 +101,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "direct_transition": "ER-"
@@ -119,7 +119,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "direct_transition": "ER+"
@@ -154,7 +154,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "direct_transition": "PR-"
@@ -172,7 +172,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "direct_transition": "PR+"
@@ -277,7 +277,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "direct_transition": "Triple_Negative_Patient",
@@ -299,7 +299,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "remarks": [
@@ -320,7 +320,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "conditional_transition": [
@@ -347,7 +347,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 433114000,
+          "code": "433114000",
           "display": "Human epidermal growth factor receptor 2 gene detection by immunohistochemistry (procedure)"
         }
       ],

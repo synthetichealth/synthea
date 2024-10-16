@@ -14,7 +14,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 371908008,
+          "code": "371908008",
           "display": "Oxygen administration by mask (procedure)"
         }
       ],

@@ -1,8 +1,6 @@
 {
   "name": "Chronic Kidney Disease",
-  "remarks": [
-
-  ],
+  "remarks": [],
   "states": {
     "Initial": {
       "type": "Initial",
@@ -455,7 +453,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 204949001,
+          "code": "204949001",
           "display": "Renal dysplasia (disorder)"
         }
       ],

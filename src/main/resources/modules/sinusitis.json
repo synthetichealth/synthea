@@ -187,7 +187,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "distributed_transition": [
@@ -411,7 +411,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "complex_transition": [
@@ -545,7 +545,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 170615005,
+        "code": "170615005",
         "display": "Home nebulizer (physical object)"
       },
       "direct_transition": "End_Chronic_Followup"

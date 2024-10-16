@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 433112001,
+          "code": "433112001",
           "display": "Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance with contrast (procedure)"
         }
       ],
@@ -44,8 +44,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 230690007,
-          "display": "Stroke"
+          "code": "230690007",
+          "display": "Cerebrovascular accident (disorder)"
         }
       ],
       "direct_transition": "Emergency_Encounter"
@@ -57,7 +57,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -134,7 +134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 40701008,
+          "code": "40701008",
           "display": "Echocardiography (procedure)"
         }
       ],
@@ -155,8 +155,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 230690007,
-          "display": "Stroke"
+          "code": "230690007",
+          "display": "Cerebrovascular accident (disorder)"
         }
       ],
       "direct_transition": "End_Encounter"

@@ -72,7 +72,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 40095003,
+                "code": "40095003",
                 "display": "Injury of kidney (disorder)"
               }
             ]
@@ -112,7 +112,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 40095003,
+                "code": "40095003",
                 "display": "Injury of kidney (disorder)"
               }
             ]
@@ -190,12 +190,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103746007,
+          "code": "103746007",
           "display": "Heparin therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 36576007,
+          "code": "36576007",
           "display": "Infusion (procedure)"
         }
       ],

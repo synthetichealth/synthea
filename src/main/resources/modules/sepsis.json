@@ -26,7 +26,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91302008,
+          "code": "91302008",
           "display": "Sepsis (disorder)"
         }
       ],
@@ -111,7 +111,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 430701006,
+          "code": "430701006",
           "display": "Resuscitation using intravenous fluid (procedure)"
         }
       ],
@@ -189,7 +189,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 10828004,
+            "code": "10828004",
             "display": "Positive (qualifier value)"
           }
         }
@@ -260,7 +260,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76571007,
+          "code": "76571007",
           "display": "Septic shock (disorder)"
         }
       ],
@@ -280,7 +280,7 @@
       "direct_transition": "Pulse_Oximetry",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 50427001,
+        "code": "50427001",
         "display": "Increased capillary filling time (finding)"
       }
     },
@@ -325,7 +325,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67782005,
+          "code": "67782005",
           "display": "Acute respiratory distress syndrome (disorder)"
         }
       ],
@@ -355,8 +355,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 40617009,
-          "display": "Artificial respiration (procedure)"
+          "code": "40617009",
+          "display": "Artificial ventilation (regime/therapy)"
         }
       ],
       "duration": {
@@ -389,7 +389,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305351004,
+          "code": "305351004",
           "display": "Admission to intensive care unit (procedure)"
         }
       ],
@@ -406,7 +406,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 449214001,
+          "code": "449214001",
           "display": "Transfer to stepdown unit (procedure)"
         }
       ],
@@ -425,8 +425,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Blood_Cultures"
@@ -532,8 +532,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 243174005,
-          "display": "Weaning from mechanically assisted ventilation (procedure)"
+          "code": "243174005",
+          "display": "Weaning from mechanically assisted ventilation (regime/therapy)"
         }
       ],
       "duration": {
@@ -562,7 +562,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 430701006,
+          "code": "430701006",
           "display": "Resuscitation using intravenous fluid (procedure)"
         }
       ],

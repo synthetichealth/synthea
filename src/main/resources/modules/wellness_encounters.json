@@ -124,7 +124,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 162864005,
+          "code": "162864005",
           "display": "Body mass index 30+ - obesity (finding)"
         }
       ],
@@ -137,7 +137,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408512008,
+          "code": "408512008",
           "display": "Body mass index 40+ - severely obese (finding)"
         }
       ],
@@ -403,8 +403,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
+                    "code": "714628002",
+                    "display": "Prediabetes (finding)"
                   }
                 ]
               }
@@ -524,7 +524,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 449868002,
+        "code": "449868002",
         "display": "Smokes tobacco daily (finding)"
       },
       "direct_transition": "SDoH Check"
@@ -543,7 +543,7 @@
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 8517006,
+        "code": "8517006",
         "display": "Ex-smoker (finding)"
       }
     },
@@ -561,7 +561,7 @@
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 266919005,
+        "code": "266919005",
         "display": "Never smoked tobacco (finding)"
       }
     },
@@ -607,7 +607,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "38341003",
-                    "display": "Hypertension"
+                    "display": "Hypertensive disorder, systemic arterial (disorder)"
                   }
                 ]
               }
@@ -1037,7 +1037,7 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 410424005,
+        "code": "410424005",
         "display": "Wellness surveillance (regime/therapy)"
       }
     },
@@ -1064,7 +1064,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103697008,
+          "code": "103697008",
           "display": "Patient referral for dental care (procedure)"
         }
       ],
@@ -1085,7 +1085,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 66383009,
+          "code": "66383009",
           "display": "Gingivitis (disorder)"
         }
       ],
@@ -1097,7 +1097,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103697008,
+          "code": "103697008",
           "display": "Patient referral for dental care (procedure)"
         }
       ],

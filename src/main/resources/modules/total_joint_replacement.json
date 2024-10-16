@@ -55,7 +55,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "conditional_transition": [
@@ -89,7 +89,7 @@
         {
           "system": "SNOMED-CT",
           "code": "609588000",
-          "display": "Total knee replacement"
+          "display": "Prosthetic total arthroplasty of knee joint (procedure)"
         }
       ],
       "direct_transition": "Post_Op_CarePlan"
@@ -100,7 +100,7 @@
         {
           "system": "SNOMED-CT",
           "code": "52734007",
-          "display": "Total replacement of hip"
+          "display": "Total replacement of hip (procedure)"
         }
       ],
       "direct_transition": "Post_Op_CarePlan"
@@ -118,12 +118,12 @@
         {
           "system": "SNOMED-CT",
           "code": "91251008",
-          "display": "Physical therapy procedure"
+          "display": "Physical therapy procedure (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": "229070002",
-          "display": "Stretching exercises"
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Post_Op_Prescribe_Pain_Reliever",
@@ -246,7 +246,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -287,7 +287,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185389009,
+          "code": "185389009",
           "display": "Follow-up visit (procedure)"
         }
       ],
@@ -372,7 +372,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 161679004,
+          "code": "161679004",
           "display": "History of artificial joint (situation)"
         }
       ],
@@ -385,7 +385,7 @@
       "direct_transition": "Pre_Procedure_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 110466009,
+        "code": "110466009",
         "display": "Pre-surgery evaluation (procedure)"
       }
     },
@@ -396,7 +396,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": "609588000",
-        "display": "Total knee replacement"
+        "display": "Prosthetic total arthroplasty of knee joint (procedure)"
       }
     },
     "Home Health Reason Hip": {
@@ -406,7 +406,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": "52734007",
-        "display": "Total replacement of hip"
+        "display": "Total replacement of hip (procedure)"
       }
     }
   },

@@ -252,7 +252,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -293,7 +293,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 56018004,
+                        "code": "56018004",
                         "display": "Wheezing (finding)"
                       }
                     ]
@@ -431,8 +431,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "26763009",
-          "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+          "code": "243150007",
+          "display": "Assist control ventilation (regime/therapy)"
         }
       ],
       "reason": "Ventilator Reason",
@@ -749,7 +749,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 267036007,
+                        "code": "267036007",
                         "display": "Dyspnea (finding)"
                       }
                     ]
@@ -822,7 +822,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 40095003,
+                    "code": "40095003",
                     "display": "Injury of kidney (disorder)"
                   }
                 ]
@@ -841,7 +841,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 302497006,
+          "code": "302497006",
           "display": "Hemodialysis (procedure)"
         }
       ],
@@ -856,7 +856,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 36965003,
+        "code": "36965003",
         "display": "Hemodialysis machine, device (physical object)"
       },
       "direct_transition": "Hemodialysis"
@@ -876,7 +876,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76464004,
+          "code": "76464004",
           "display": "Hospital admission, for observation (procedure)"
         }
       ],
@@ -896,7 +896,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 65710008,
+                    "code": "65710008",
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]
@@ -906,7 +906,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 76571007,
+                    "code": "76571007",
                     "display": "Septic shock (disorder)"
                   }
                 ]
@@ -989,7 +989,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431182000,
+          "code": "431182000",
           "display": "Placing subject in prone position (procedure)"
         }
       ],
@@ -1009,7 +1009,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 65710008,
+                    "code": "65710008",
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]
@@ -1019,7 +1019,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 76571007,
+                    "code": "76571007",
                     "display": "Septic shock (disorder)"
                   }
                 ]
@@ -1038,7 +1038,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -1071,7 +1071,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 76571007,
+                    "code": "76571007",
                     "display": "Septic shock (disorder)"
                   }
                 ]
@@ -1094,7 +1094,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 76571007,
+                "code": "76571007",
                 "display": "Septic shock (disorder)"
               }
             ]

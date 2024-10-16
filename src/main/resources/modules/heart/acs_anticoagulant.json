@@ -19,8 +19,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 401303003,
-                "display": "STEMI"
+                "code": "401303003",
+                "display": "Acute ST segment elevation myocardial infarction (disorder)"
               }
             ]
           },

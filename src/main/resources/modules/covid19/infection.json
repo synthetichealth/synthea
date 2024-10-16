@@ -15,7 +15,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -45,8 +45,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 840539006,
-          "display": "COVID-19"
+          "code": "840539006",
+          "display": "Disease caused by severe acute respiratory syndrome coronavirus 2 (disorder)"
         }
       ],
       "complex_transition": [
@@ -89,8 +89,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 840544004,
-          "display": "Suspected COVID-19"
+          "code": "840544004",
+          "display": "Suspected disease caused by Severe acute respiratory coronavirus 2 (situation)"
         }
       ],
       "direct_transition": "Encounter for Test"
@@ -136,7 +136,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 261352009,
+          "code": "261352009",
           "display": "Face mask (physical object)"
         }
       ],
@@ -181,7 +181,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736376001,
+          "code": "736376001",
           "display": "Infectious disease care plan (record artifact)"
         }
       ],
@@ -190,17 +190,17 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 444908001,
+          "code": "444908001",
           "display": "Isolation nursing in negative pressure isolation environment (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 409524006,
+          "code": "409524006",
           "display": "Airborne precautions (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 409526008,
+          "code": "409526008",
           "display": "Personal protective equipment (physical object)"
         }
       ],
@@ -211,7 +211,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736376001,
+          "code": "736376001",
           "display": "Infectious disease care plan (record artifact)"
         }
       ],
@@ -219,12 +219,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 409524006,
+          "code": "409524006",
           "display": "Airborne precautions (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 361235007,
+          "code": "361235007",
           "display": "Isolation of infected patient (procedure)"
         }
       ],
@@ -341,7 +341,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         }
@@ -370,7 +370,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         }
@@ -479,7 +479,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736376001,
+          "code": "736376001",
           "display": "Infectious disease care plan (record artifact)"
         }
       ],
@@ -487,12 +487,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 409524006,
+          "code": "409524006",
           "display": "Airborne precautions (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 409526008,
+          "code": "409526008",
           "display": "Personal protective equipment (physical object)"
         }
       ],
@@ -530,7 +530,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         }
@@ -559,7 +559,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260373001,
+            "code": "260373001",
             "display": "Detected (qualifier value)"
           }
         }
@@ -597,7 +597,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         },
@@ -613,7 +613,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260373001,
+            "code": "260373001",
             "display": "Detected (qualifier value)"
           }
         }
@@ -642,7 +642,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260373001,
+            "code": "260373001",
             "display": "Detected (qualifier value)"
           }
         },
@@ -658,7 +658,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         }
@@ -687,7 +687,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         },
@@ -703,7 +703,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260415000,
+            "code": "260415000",
             "display": "Not detected (qualifier value)"
           }
         }
@@ -769,7 +769,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -785,7 +785,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -801,7 +801,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -817,7 +817,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -833,7 +833,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -849,7 +849,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -865,7 +865,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -881,7 +881,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -897,7 +897,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         }
@@ -926,7 +926,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 10828004,
+            "code": "10828004",
             "display": "Positive (qualifier value)"
           }
         },
@@ -942,7 +942,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -958,7 +958,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -974,7 +974,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -990,7 +990,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1006,7 +1006,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1022,7 +1022,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1038,7 +1038,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1054,7 +1054,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         }
@@ -1083,7 +1083,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1099,7 +1099,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 10828004,
+            "code": "10828004",
             "display": "Positive (qualifier value)"
           }
         },
@@ -1115,7 +1115,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1131,7 +1131,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1147,7 +1147,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1163,7 +1163,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1179,7 +1179,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1195,7 +1195,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         },
@@ -1211,7 +1211,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 260385009,
+            "code": "260385009",
             "display": "Negative (qualifier value)"
           }
         }

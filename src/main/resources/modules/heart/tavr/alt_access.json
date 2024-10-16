@@ -55,7 +55,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 715998004,
+        "code": "715998004",
         "display": "Transapical approach (qualifier value)"
       }
     },
@@ -73,7 +73,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 416896004,
+        "code": "416896004",
         "display": "Axillary approach (qualifier value)"
       }
     },
@@ -109,7 +109,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 303578004,
+        "code": "303578004",
         "display": "Subclavicular approach (qualifier value)"
       }
     },
@@ -127,8 +127,8 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260582008,
-        "display": "Via carotid artery"
+        "code": "260582008",
+        "display": "Via carotid artery (qualifier value)"
       }
     },
     "Other": {
@@ -145,7 +145,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 74964007,
+        "code": "74964007",
         "display": "Other (qualifier value)"
       },
       "remarks": [

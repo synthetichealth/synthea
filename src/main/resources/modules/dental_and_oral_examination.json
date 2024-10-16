@@ -21,7 +21,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 81733005,
+          "code": "81733005",
           "display": "Dental surgical procedure (procedure)"
         }
       ],
@@ -42,7 +42,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 427898007,
+          "code": "427898007",
           "display": "Infection of tooth (disorder)"
         }
       ],
@@ -55,7 +55,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 277183007,
+            "code": "277183007",
             "display": "Dental equipment (physical object)"
           }
         },
@@ -63,7 +63,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 1230220004,
+            "code": "1230220004",
             "display": "Conventional release periodontal gel (dose form)"
           }
         },
@@ -71,7 +71,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 469020004,
+            "code": "469020004",
             "display": "Dental floss (physical object)"
           }
         }
@@ -96,7 +96,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225362009,
+          "code": "225362009",
           "display": "Dental care (regime/therapy)"
         }
       ],
@@ -117,7 +117,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34043003,
+          "code": "34043003",
           "display": "Dental consultation and report (procedure)"
         }
       ],
@@ -137,14 +137,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 241046008,
-        "display": "Dental X-ray bitewing (procedure)"
+        "code": "241046008",
+        "display": "Dental plain X-ray bitewing (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 700016008,
+            "code": "700016008",
             "display": "Structure of region of internal part of mouth (body structure)"
           },
           "modality": {
@@ -171,7 +171,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 243085009,
+          "code": "243085009",
           "display": "Oral health education (procedure)"
         }
       ],
@@ -204,7 +204,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 243092004,
+          "code": "243092004",
           "display": "Orthodontic appliance care education (procedure)"
         }
       ],
@@ -224,7 +224,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 173291009,
+          "code": "173291009",
           "display": "Simple extraction of tooth (procedure)"
         }
       ],
@@ -245,7 +245,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68071007,
+          "code": "68071007",
           "display": "Dental fluoride treatment (procedure)"
         }
       ],
@@ -266,7 +266,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3802001,
+          "code": "3802001",
           "display": "Dental application of desensitizing medicament (procedure)"
         }
       ],
@@ -291,7 +291,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1260009003,
+          "code": "1260009003",
           "display": "Removal of supragingival plaque and calculus from all teeth using dental instrument (procedure)"
         }
       ],
@@ -339,7 +339,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1260010008,
+          "code": "1260010008",
           "display": "Removal of subgingival plaque and calculus from all teeth using dental instrument (procedure)"
         }
       ],
@@ -423,7 +423,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 225738002,
+        "code": "225738002",
         "display": "Operating room (environment)"
       },
       "direct_transition": "Dental surgical procedure"
@@ -472,7 +472,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1256042007,
+          "code": "1256042007",
           "display": "Restoration of tooth with coverage of all cusps using dental filling material (procedure)"
         }
       ],
@@ -493,7 +493,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1259293006,
+          "code": "1259293006",
           "display": "Application of composite dental filling material to dentin of tooth following fracture of tooth (procedure)"
         }
       ],
@@ -519,7 +519,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278558000,
+          "code": "278558000",
           "display": "Dental filling lost (finding)"
         }
       ],
@@ -531,7 +531,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278602001,
+          "code": "278602001",
           "display": "Loose dental filling (finding)"
         }
       ],
@@ -543,7 +543,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278598003,
+          "code": "278598003",
           "display": "Leaking dental filling (finding)"
         }
       ],
@@ -555,7 +555,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278588009,
+          "code": "278588009",
           "display": "Fractured dental filling (finding)"
         }
       ],
@@ -572,7 +572,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706298007,
+        "code": "706298007",
         "display": "Dental x-ray system (physical object)"
       },
       "direct_transition": "Dental X-ray"
@@ -626,7 +626,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 284053004,
+          "code": "284053004",
           "display": "Tooth socket procedure (procedure)"
         }
       ],
@@ -645,7 +645,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 225738002,
+        "code": "225738002",
         "display": "Operating room (environment)"
       },
       "direct_transition": "Dental_surgical_procedure"
@@ -655,7 +655,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 81733005,
+          "code": "81733005",
           "display": "Dental surgical procedure (procedure)"
         }
       ],
@@ -707,7 +707,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 243085009,
+          "code": "243085009",
           "display": "Oral health education (procedure)"
         }
       ],
@@ -728,7 +728,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61804006,
+          "code": "61804006",
           "display": "Alveolitis of jaw (disorder)"
         }
       ],
@@ -742,7 +742,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 439740005,
+          "code": "439740005",
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
@@ -754,7 +754,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34043003,
+          "code": "34043003",
           "display": "Dental consultation and report (procedure)"
         }
       ],
@@ -836,7 +836,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 109570002,
+          "code": "109570002",
           "display": "Primary dental caries (disorder)"
         }
       ],
@@ -851,7 +851,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -866,7 +866,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 18718003,
+          "code": "18718003",
           "display": "Gingival disease (disorder)"
         }
       ],
@@ -877,7 +877,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 274788003,
+          "code": "274788003",
           "display": "Examination of gingivae (procedure)"
         }
       ],
@@ -897,7 +897,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 66383009,
+                "code": "66383009",
                 "display": "Gingivitis (disorder)"
               }
             ]
@@ -931,7 +931,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 225738002,
+        "code": "225738002",
         "display": "Operating room (environment)"
       },
       "direct_transition": "Dental_surgical_procedure_2"
@@ -941,7 +941,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 81733005,
+          "code": "81733005",
           "display": "Dental surgical procedure (procedure)"
         }
       ],
@@ -962,7 +962,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3802001,
+          "code": "3802001",
           "display": "Dental application of desensitizing medicament (procedure)"
         }
       ],
@@ -1036,7 +1036,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 66383009,
+          "code": "66383009",
           "display": "Gingivitis (disorder)"
         }
       ]

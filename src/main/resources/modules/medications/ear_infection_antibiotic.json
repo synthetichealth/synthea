@@ -287,7 +287,7 @@
           {
             "system": "SNOMED-CT",
             "code": "419115000",
-            "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine"
+            "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine (qualifier value)"
           }
         ]
       },
@@ -324,7 +324,7 @@
           {
             "system": "SNOMED-CT",
             "code": "419115000",
-            "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine"
+            "display": "Do not take milk, indigestion remedies, or medicines containing iron or zinc at the same time of day as this medicine (qualifier value)"
           }
         ]
       },

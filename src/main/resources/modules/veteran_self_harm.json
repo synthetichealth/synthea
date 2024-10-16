@@ -19,7 +19,7 @@
         {
           "system": "SNOMED-CT",
           "code": "86849004",
-          "display": "Suicidal deliberate poisoning"
+          "display": "Suicidal poisoning (disorder)"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -32,7 +32,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287185009",
-          "display": "Attempted suicide - cut/stab"
+          "display": "Attempted suicide - cut/stab (event)"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -45,7 +45,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287182007",
-          "display": "Attempted suicide - suffocation"
+          "display": "Attempted suicide - suffocation (event)"
         }
       ],
       "direct_transition": "ED_Visit_For_Attempted_Suicide"
@@ -70,7 +70,7 @@
         {
           "system": "SNOMED-CT",
           "code": "90407005",
-          "display": "Evaluation of psychiatric state of patient"
+          "display": "Evaluation of psychiatric state of patient (procedure)"
         }
       ],
       "direct_transition": "Short_Hospital_Stay"
@@ -82,7 +82,7 @@
         {
           "system": "SNOMED-CT",
           "code": "74857009",
-          "display": "Hospital admission, short-term, 24 hours"
+          "display": "Hospital admission, short-term, 24 hours (procedure)"
         }
       ],
       "duration": {
@@ -118,7 +118,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Suicide_CarePlan_Selector"
@@ -147,24 +147,24 @@
         {
           "system": "SNOMED-CT",
           "code": "183401008",
-          "display": "Anti-suicide psychotherapy"
+          "display": "Anti-suicide psychotherapy (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "768835002",
-          "display": "Depression care management"
+          "display": "Depression care management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "415665002",
-          "display": "Suicide prevention"
+          "display": "Suicide prevention (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "10029008",
-          "display": "Suicide precautions"
+          "display": "Suicide precautions (procedure)"
         }
       ],
       "direct_transition": "Followup_Psychiatric_Evaluation"
@@ -176,7 +176,7 @@
         {
           "system": "SNOMED-CT",
           "code": "88848003",
-          "display": "Psychiatric follow-up"
+          "display": "Psychiatric follow-up (procedure)"
         }
       ],
       "direct_transition": "End_Followup_Encounter"
@@ -252,7 +252,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287193009",
-          "display": "Suicide - firearms"
+          "display": "Suicide - firearms (event)"
         }
       ],
       "direct_transition": "Death"
@@ -265,7 +265,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287191006",
-          "display": "Suicide - suffocation"
+          "display": "Suicide - suffocation (event)"
         }
       ],
       "direct_transition": "Death"
@@ -278,7 +278,7 @@
         {
           "system": "SNOMED-CT",
           "code": "86849004",
-          "display": "Suicidal deliberate poisoning"
+          "display": "Suicidal poisoning (disorder)"
         }
       ],
       "direct_transition": "Death"
@@ -291,7 +291,7 @@
         {
           "system": "SNOMED-CT",
           "code": "44301001",
-          "display": "Suicide"
+          "display": "Suicide (event)"
         }
       ],
       "direct_transition": "Death"
@@ -309,7 +309,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Autopsy_Examination"
@@ -321,7 +321,7 @@
         {
           "system": "SNOMED-CT",
           "code": "29240004",
-          "display": "Autopsy examination"
+          "display": "Autopsy examination (procedure)"
         }
       ],
       "direct_transition": "End_Suicide"
@@ -485,7 +485,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185317003,
+          "code": "185317003",
           "display": "Telephone encounter (procedure)"
         }
       ],
@@ -540,7 +540,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 6471006,
+          "code": "6471006",
           "display": "Suicidal thoughts (finding)"
         }
       ],

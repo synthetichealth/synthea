@@ -56,7 +56,7 @@
         {
           "system": "SNOMED-CT",
           "code": "201834006",
-          "display": "Localized, primary osteoarthritis of the hand"
+          "display": "Localized, primary osteoarthritis of the hand (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -69,7 +69,7 @@
         {
           "system": "SNOMED-CT",
           "code": "239873007",
-          "display": "Osteoarthritis of knee"
+          "display": "Osteoarthritis of knee (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -82,7 +82,7 @@
         {
           "system": "SNOMED-CT",
           "code": "239872002",
-          "display": "Osteoarthritis of hip"
+          "display": "Osteoarthritis of hip (disorder)"
         }
       ],
       "direct_transition": "OA_Diagnosis"
@@ -96,7 +96,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Pain Vital"
@@ -109,19 +109,19 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care"
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "386294003",
-          "display": "Joint mobility exercises"
+          "display": "Joint mobility exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": "266694003",
-          "display": "Heat therapy"
+          "display": "Heat therapy (procedure)"
         }
       ],
       "direct_transition": "Assign DME"
