@@ -424,6 +424,12 @@ public abstract class Actions {
       String location = (String)field.get("location");
       Object valueDef = field.get("value");
       String transform = (String)field.get("transform");
+      String ifDef = (String)field.get("if");
+
+      if (ifDef != null && !FhirPathUtils.appliesToResource(sourceResource, ifDef)) {
+        // The "if" condition returned falsy, so don't evaluate this value/set this field
+        continue;
+      }
 
       if (valueDef == null) {
         // do nothing, leave it null

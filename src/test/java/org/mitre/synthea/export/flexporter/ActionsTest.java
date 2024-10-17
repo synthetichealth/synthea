@@ -752,6 +752,32 @@ public class ActionsTest {
     assertEquals(120_000L, mr.getAuthoredOn().toInstant().toEpochMilli());
   }
 
+  @Test
+  public void testCreateResources_if() throws Exception {
+    Bundle b = new Bundle();
+    b.setType(BundleType.COLLECTION);
+
+    Procedure p1 = new Procedure();
+    p1.setPerformed(new Period().setStart(new Date(0)));
+    b.addEntry().setResource(p1);
+
+    Procedure p2 = new Procedure();
+    p2.setPerformed(new DateTimeType("2024-10-01T12:34:56"));
+    b.addEntry().setResource(p2);
+
+    Map<String, Object> action = getActionByName("testCreateResources_if");
+
+    Actions.applyAction(b, action, null, null);
+
+    assertEquals(4, b.getEntry().size());
+
+    ServiceRequest sr1 = (ServiceRequest)b.getEntry().get(2).getResource();
+    assertTrue(sr1.getAuthoredOn().getTime() == 0);
+
+    ServiceRequest sr2 = (ServiceRequest)b.getEntry().get(3).getResource();
+    DateTimeType sr2AuthoredOn = sr2.getAuthoredOnElement();
+    assertEquals("2024-10-01T12:34:56", sr2AuthoredOn.getValueAsString());
+  }
 
   @Test
   public void testGetAttribute() throws Exception {
