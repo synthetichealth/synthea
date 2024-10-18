@@ -435,7 +435,7 @@ public class FhirR4 {
 
       if (shouldExport(org.hl7.fhir.r4.model.Procedure.class)) {
         for (Procedure procedure : encounter.procedures) {
-          procedure(personEntry, bundle, encounterEntry, procedure);
+          procedure(person, personEntry, bundle, encounterEntry, procedure);
         }
       }
 
@@ -854,6 +854,27 @@ public class FhirR4 {
   }
 
   /**
+   * Add a code translation (if available) of the supplied source code to the
+   * supplied CodeableConcept.
+   * @param codeSystem the code system of the translated code
+   * @param from the source code
+   * @param to the CodeableConcept to add the translation to
+   * @param rand a source of randomness
+   */
+  private static void addTranslation(String codeSystem, Code from,
+          CodeableConcept to, RandomNumberGenerator rand) {
+    CodeMapper mapper = Exporter.getCodeMapper(codeSystem);
+    if (mapper != null && mapper.canMap(from)) {
+      Coding coding = new Coding();
+      Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(from, rand);
+      coding.setCode(mappedCode.getKey());
+      coding.setDisplay(mappedCode.getValue());
+      coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
+      to.addCoding(coding);
+    }
+  }
+
+  /**
    * Map the given Encounter into a FHIR Encounter resource, and add it to the given Bundle.
    *
    * @param personEntry Entry for the Person
@@ -898,16 +919,8 @@ public class FhirR4 {
     if (encounter.reason != null) {
       encounterResource.addReasonCode().addCoding().setCode(encounter.reason.code)
           .setDisplay(encounter.reason.display).setSystem(SNOMED_URI);
-      CodeMapper mapper = Exporter.getCodeMapper("ICD10-CM");
-      if (mapper != null && mapper.canMap(encounter.reason.code)) {
-        Coding coding = new Coding();
-        Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(
-                encounter.reason, person);
-        coding.setCode(mappedCode.getKey());
-        coding.setDisplay(mappedCode.getValue());
-        coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
-        encounterResource.getReasonCodeFirstRep().addCoding(coding);
-      }
+      addTranslation("ICD10-CM", encounter.reason,
+              encounterResource.getReasonCodeFirstRep(), person);
     }
 
     Provider provider = encounter.provider;
@@ -1646,15 +1659,7 @@ public class FhirR4 {
 
     Code code = condition.codes.get(0);
     CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
-    CodeMapper mapper = Exporter.getCodeMapper("ICD10-CM");
-    if (mapper != null && mapper.canMap(code)) {
-      Coding coding = new Coding();
-      Map.Entry<String, String> mappedCode = mapper.mapToCodeAndDescription(code, rand);
-      coding.setCode(mappedCode.getKey());
-      coding.setDisplay(mappedCode.getValue());
-      coding.setSystem(ExportHelper.getSystemURI("ICD10-CM"));
-      concept.addCoding(coding);
-    }
+    addTranslation("ICD10-CM", code, concept, rand);
     conditionResource.setCode(concept);
 
     CodeableConcept verification = new CodeableConcept();
@@ -1989,13 +1994,14 @@ public class FhirR4 {
   /**
    * Map the given Procedure into a FHIR Procedure resource, and add it to the given Bundle.
    *
+   * @param person         The Person
    * @param personEntry    The Person entry
    * @param bundle         Bundle to add to
    * @param encounterEntry The current Encounter entry
    * @param procedure      The Procedure
    * @return The added Entry
    */
-  private static BundleEntryComponent procedure(
+  private static BundleEntryComponent procedure(Person person,
           BundleEntryComponent personEntry, Bundle bundle, BundleEntryComponent encounterEntry,
           Procedure procedure) {
     org.hl7.fhir.r4.model.Procedure procedureResource = new org.hl7.fhir.r4.model.Procedure();
@@ -2038,6 +2044,7 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         procedureResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
+        addTranslation("ICD10-CM", reason, procedureResource.getReasonCodeFirstRep(), person);
       }
     }
 
@@ -2347,6 +2354,8 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
+        addTranslation("ICD10-CM", reason, medicationResource.getReasonCodeFirstRep(),
+                person);
       }
     }
 
@@ -2499,6 +2508,8 @@ public class FhirR4 {
         // we didn't find a matching Condition,
         // fallback to just reason code
         medicationResource.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
+        addTranslation("ICD10-CM", reason, medicationResource.getReasonCodeFirstRep(),
+                person);
       }
     }
 
@@ -2742,6 +2753,8 @@ public class FhirR4 {
           activityDetailComponent.addReasonReference().setReference(reasonCondition.getFullUrl());
         } else if (reason != null) {
           activityDetailComponent.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
+          addTranslation("ICD10-CM", reason, activityDetailComponent.getReasonCodeFirstRep(),
+                  person);
         }
 
         activityComponent.setDetail(activityDetailComponent);
@@ -2888,7 +2901,9 @@ public class FhirR4 {
 
     if (carePlan.reasons != null && !carePlan.reasons.isEmpty()) {
       for (Code code : carePlan.reasons) {
-        careTeam.addReasonCode(mapCodeToCodeableConcept(code, SNOMED_URI));
+        CodeableConcept concept = mapCodeToCodeableConcept(code, SNOMED_URI);
+        addTranslation("ICD10-CM", code, concept, person);
+        careTeam.addReasonCode(concept);
       }
     }
 
