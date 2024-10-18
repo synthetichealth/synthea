@@ -1,7 +1,13 @@
 {
   "name": "Anti-Amyloid-Beta Monoclonal Antibody Treatment",
   "remarks": [
-    "A blank module"
+    "This module for anti-amyloid-beta monoclonal antibody treatment for Alzheimer’s patients is modeled after the CMS protocol \"Prospective Study on Anti-Amyloid-B Monoclonal Antibodies Directed Against Amyloid for the Treatment of Alzheimer’s Disease; Coverage with Evidence Development\", Version 1.0, June 30, 2023.",
+    "",
+    "Groups that were arbitrarily selected to be \"ineffective\" are based on the exclusion criteria presented in the \"Lecanemab-irmb (LEQEMBI) Criteria for Use, August 2023\" from the VA Pharmacy Benefits Managements Services, Medical Advisory Panel, and VISN Pharmacist Executives.",
+    "",
+    "The clinical outcomes and distributions in this module are arbitrary, and may not reflect real-world outcomes or clinical evidence.",
+    "",
+    "Additional citations or comments are available in the \"remarks\" of some states."
   ],
   "states": {
     "Initial": {
@@ -112,43 +118,6 @@
         }
       ],
       "direct_transition": "Amyloid Beta Finding"
-    },
-    "Positron Emission Topography Cerebrospinal Fluid": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "396321000119104",
-        "display": "Single photon emission computed tomography of cerebrospinal fluid flow (procedure)"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": "729368005",
-            "display": "Entire brain cerebrospinal fluid pathway (body structure)"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "PT",
-            "display": "Positron emission tomography"
-          },
-          "instances": [
-            {
-              "title": "PET Cerebrospinal Fluid",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.128",
-                "display": "Positron Emission Tomography Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "Amyloid Beta Finding"
-    },
-    "Biomarker Tests": {
-      "type": "Simple",
-      "direct_transition": "Check Impairment"
     },
     "Minimal cognitive impairment": {
       "type": "ConditionOnset",
@@ -531,7 +500,7 @@
               "distribution": 0.1
             },
             {
-              "transition": "Increment Assessment",
+              "transition": "Stop Study Check",
               "distribution": 0.9
             }
           ]
@@ -543,7 +512,7 @@
               "distribution": 0.3
             },
             {
-              "transition": "Increment Assessment",
+              "transition": "Stop Study Check",
               "distribution": 0.7
             }
           ]
@@ -632,10 +601,21 @@
         {
           "transition": "Wait 6 months",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "anti-ab-mab-ced-study-assessment",
-            "operator": "<=",
-            "value": 5
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "anti-ab-mab-ced-study-assessment",
+                "operator": "<=",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "anti-ab-mab-ced-study",
+                "operator": "==",
+                "value": true
+              }
+            ]
           }
         },
         {
@@ -657,10 +637,10 @@
         {
           "condition": {
             "condition_type": "PriorState",
-            "name": "Positron Emission Topography Cerebrospinal Fluid"
+            "name": "Positron Emission Tomography Cerebrospinal Fluid"
           },
           "distributions": [],
-          "transition": "Positron Emission Topography Cerebrospinal Fluid"
+          "transition": "Positron Emission Tomography Cerebrospinal Fluid"
         },
         {
           "distributions": [
@@ -669,7 +649,7 @@
               "distribution": 0.5
             },
             {
-              "transition": "Positron Emission Topography Cerebrospinal Fluid",
+              "transition": "Positron Emission Tomography Cerebrospinal Fluid",
               "distribution": 0.5
             }
           ]
@@ -828,7 +808,7 @@
           }
         }
       ],
-      "direct_transition": "Biomarker Tests",
+      "direct_transition": "Check Impairment",
       "remarks": [
         "Ruiz A, Pesini P, Espinosa A, Pérez-Grijalba V, Valero S, Sotolongo-Grau O, Alegret M, Monleón I, Lafuente A, Buendía M, Ibarria M, Ruiz S, Hernández I, San José I, Tárraga L, Boada M, Sarasa M. Blood amyloid beta levels in healthy, mild cognitive impairment and Alzheimer's disease individuals: replication of diastolic blood pressure correlations and analysis of critical covariates. PLoS One. 2013 Nov 27;8(11):e81334. doi: 10.1371/journal.pone.0081334. PMID: 24312290; PMCID: PMC3842353."
       ]
@@ -988,7 +968,7 @@
           "display": "Abnormal magnetic resonance image of brain caused by amyloid beta peptide with edema or effusion (finding)"
         }
       ],
-      "direct_transition": "Increment Assessment"
+      "direct_transition": "Stop Study Check"
     },
     "Wellness Encounter": {
       "type": "Encounter",
@@ -1411,6 +1391,87 @@
         }
       },
       "direct_transition": "Check Enrollment"
+    },
+    "Stop Study Check": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "PriorState",
+                "name": "ARIA-E",
+                "within": {
+                  "quantity": 1,
+                  "unit": "weeks"
+                }
+              },
+              {
+                "condition_type": "PriorState",
+                "name": "ARIA-H",
+                "within": {
+                  "quantity": 1,
+                  "unit": "weeks"
+                }
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "transition": "Stop the Study",
+              "distribution": 0.8
+            },
+            {
+              "transition": "Increment Assessment",
+              "distribution": 0.2
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Increment Assessment"
+        }
+      ]
+    },
+    "Stop the Study": {
+      "type": "SetAttribute",
+      "attribute": "anti-ab-mab-ced-study",
+      "direct_transition": "End CarePlan",
+      "value": false
+    },
+    "Positron Emission Tomography Cerebrospinal Fluid": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "396321000119104",
+        "display": "Single photon emission computed tomography of cerebrospinal fluid flow (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "729368005",
+            "display": "Entire brain cerebrospinal fluid pathway (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "PT",
+            "display": "Positron emission tomography"
+          },
+          "instances": [
+            {
+              "title": "PET Cerebrospinal Fluid",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.128",
+                "display": "Positron Emission Tomography Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Amyloid Beta Finding"
     }
   },
   "gmf_version": 2
