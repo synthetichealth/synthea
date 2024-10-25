@@ -86,39 +86,6 @@
       },
       "direct_transition": "Start Assessment Encounter"
     },
-    "Positron Emission Topography Amyloid": {
-      "type": "ImagingStudy",
-      "procedure_code": {
-        "system": "SNOMED-CT",
-        "code": "764666002",
-        "display": "Positron emission tomography of brain (procedure)"
-      },
-      "series": [
-        {
-          "body_site": {
-            "system": "SNOMED-CT",
-            "code": "119235005",
-            "display": "Brain part (body structure)"
-          },
-          "modality": {
-            "system": "DICOM-DCM",
-            "code": "PT",
-            "display": "Positron emission tomography"
-          },
-          "instances": [
-            {
-              "title": "PET Amyloid",
-              "sop_class": {
-                "system": "DICOM-SOP",
-                "code": "1.2.840.10008.5.1.4.1.1.128",
-                "display": "Positron Emission Tomography Image Storage"
-              }
-            }
-          ]
-        }
-      ],
-      "direct_transition": "Amyloid Beta Finding"
-    },
     "Minimal cognitive impairment": {
       "type": "ConditionOnset",
       "codes": [
@@ -209,47 +176,20 @@
         {
           "transition": "Requires assistance with all activities of daily living",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "daily_living_impairment_level",
-                "operator": ">=",
-                "value": 1
-              },
-              {
-                "condition_type": "Not",
-                "condition": {
-                  "condition_type": "PriorState",
-                  "name": "Requires assistance with all activities of daily living"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "daily_living_impairment_level",
+            "operator": "==",
+            "value": 1
           }
         },
         {
           "transition": "End Assistance with Daily Living",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "daily_living_impairment_level",
-                "operator": ">=",
-                "value": 2
-              },
-              {
-                "condition_type": "Not",
-                "condition": {
-                  "condition_type": "PriorState",
-                  "name": "Requires continuous supervision for activities of daily living"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "daily_living_impairment_level",
+            "operator": ">=",
+            "value": 2
           }
-        },
-        {
-          "transition": "Check Enrollment"
         }
       ],
       "reason": "Type of Alzheimer's"
@@ -284,170 +224,32 @@
         {
           "transition": "Minimal cognitive impairment",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "cognitive_impairment_level",
-                "operator": ">=",
-                "value": 1
-              },
-              {
-                "condition_type": "Not",
-                "condition": {
-                  "condition_type": "PriorState",
-                  "name": "Minimal cognitive impairment"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "cognitive_impairment_level",
+            "operator": "==",
+            "value": 1
           }
         },
         {
           "transition": "End Minimal Impairment",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "cognitive_impairment_level",
-                "operator": ">=",
-                "value": 2
-              },
-              {
-                "condition_type": "Not",
-                "condition": {
-                  "condition_type": "PriorState",
-                  "name": "Moderate cognitive impairment"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "cognitive_impairment_level",
+            "operator": "==",
+            "value": 2
           }
         },
         {
           "transition": "End Moderate Impairment",
           "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "cognitive_impairment_level",
-                "operator": ">=",
-                "value": 3
-              },
-              {
-                "condition_type": "Not",
-                "condition": {
-                  "condition_type": "PriorState",
-                  "name": "Severe cognitive impairment"
-                }
-              }
-            ]
+            "condition_type": "Attribute",
+            "attribute": "cognitive_impairment_level",
+            "operator": ">=",
+            "value": 3
           }
-        },
-        {
-          "transition": "Instrumental activities of daily living assessment"
         }
       ],
       "reason": "Type of Alzheimer's"
-    },
-    "Approved mAbs": {
-      "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Aducanumab Low Dose",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Aducanumab Increased Dose",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Lecanemab Low Dose",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Lecanemab Increased Dose",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Donanemab",
-          "distribution": 0.2
-        }
-      ]
-    },
-    "Aducanumab Low Dose": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2557232",
-          "display": "1.7 ML aducanumab-avwa 100 MG/ML Injection"
-        }
-      ],
-      "direct_transition": "mAbs Administered",
-      "administration": true,
-      "reason": "Type of Alzheimer's",
-      "assign_to_attribute": "anti-amyloid-beta-mabs"
-    },
-    "Aducanumab Increased Dose": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2557224",
-          "display": "3 ML aducanumab-avwa 100 MG/ML Injection"
-        }
-      ],
-      "administration": true,
-      "reason": "Type of Alzheimer's",
-      "direct_transition": "mAbs Administered",
-      "assign_to_attribute": "anti-amyloid-beta-mabs"
-    },
-    "mAbs Administered": {
-      "type": "Simple",
-      "direct_transition": "Record Outcomes"
-    },
-    "Lecanemab Low Dose": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2626147",
-          "display": "2 ML lecanemab-irmb 100 MG/ML Injection"
-        }
-      ],
-      "administration": true,
-      "reason": "Type of Alzheimer's",
-      "assign_to_attribute": "anti-amyloid-beta-mabs",
-      "direct_transition": "mAbs Administered"
-    },
-    "Lecanemab Increased Dose": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2626155",
-          "display": "5 ML lecanemab-irmb 100 MG/ML Injection"
-        }
-      ],
-      "administration": true,
-      "reason": "Type of Alzheimer's",
-      "assign_to_attribute": "anti-amyloid-beta-mabs",
-      "direct_transition": "mAbs Administered"
-    },
-    "Donanemab": {
-      "type": "MedicationOrder",
-      "codes": [
-        {
-          "system": "RxNorm",
-          "code": "2687972",
-          "display": "20 ML donanemab-azbt 17.5 MG/ML Injection"
-        }
-      ],
-      "administration": true,
-      "reason": "Type of Alzheimer's",
-      "assign_to_attribute": "anti-amyloid-beta-mabs",
-      "direct_transition": "mAbs Administered"
     },
     "Check for ARIA-H": {
       "type": "Simple",
@@ -565,7 +367,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -597,31 +399,7 @@
     },
     "Finish Encounter": {
       "type": "EncounterEnd",
-      "conditional_transition": [
-        {
-          "transition": "Wait 6 months",
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "anti-ab-mab-ced-study-assessment",
-                "operator": "<=",
-                "value": 5
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "anti-ab-mab-ced-study",
-                "operator": "==",
-                "value": true
-              }
-            ]
-          }
-        },
-        {
-          "transition": "Wait a few months"
-        }
-      ]
+      "direct_transition": "Progression of Disease"
     },
     "Conduct Tests and Diagnostics": {
       "type": "Simple",
@@ -629,27 +407,25 @@
         {
           "condition": {
             "condition_type": "PriorState",
-            "name": "Positron Emission Topography Amyloid"
+            "name": "APOE+ABeta Alz Risk Pnl CSF"
           },
-          "distributions": [],
-          "transition": "Positron Emission Topography Amyloid"
+          "transition": "APOE+ABeta Alz Risk Pnl CSF"
         },
         {
           "condition": {
             "condition_type": "PriorState",
-            "name": "Positron Emission Tomography Cerebrospinal Fluid"
+            "name": "Positron emission tomography with computed tomography of brain"
           },
-          "distributions": [],
-          "transition": "Positron Emission Tomography Cerebrospinal Fluid"
+          "transition": "Positron emission tomography with computed tomography of brain"
         },
         {
           "distributions": [
             {
-              "transition": "Positron Emission Topography Amyloid",
+              "transition": "APOE+ABeta Alz Risk Pnl CSF",
               "distribution": 0.5
             },
             {
-              "transition": "Positron Emission Tomography Cerebrospinal Fluid",
+              "transition": "Positron emission tomography with computed tomography of brain",
               "distribution": 0.5
             }
           ]
@@ -683,7 +459,7 @@
         }
       },
       "unit": "months",
-      "direct_transition": "Adverse Events May Continue"
+      "direct_transition": "Wellness Encounter"
     },
     "Set Number of Assessments": {
       "type": "SetAttribute",
@@ -764,8 +540,29 @@
       ]
     },
     "Amyloid Beta Finding": {
-      "type": "Simple",
-      "direct_transition": "APOE+ABeta Alz Risk Pnl CSF"
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "87907-2",
+          "display": "PET+CT Brain for amyloidosis"
+        }
+      ],
+      "observations": [
+        {
+          "category": "imaging",
+          "unit": "",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18782-3",
+              "display": "Radiology Study observation (narrative)"
+            }
+          ],
+          "attribute": "amyloid_beta_narrative"
+        }
+      ],
+      "direct_transition": "Check Impairment"
     },
     "APOE+ABeta Alz Risk Pnl CSF": {
       "type": "DiagnosticReport",
@@ -827,7 +624,7 @@
       "direct_transition": "Enrollment in clinical trial",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 373066001,
+        "code": "373066001",
         "display": "Yes (qualifier value)"
       }
     },
@@ -852,10 +649,6 @@
       "direct_transition": "Administer Medications",
       "reason": "Type of Alzheimer's"
     },
-    "Adverse Events May Continue": {
-      "type": "Simple",
-      "direct_transition": "Wellness Encounter"
-    },
     "Wait Until Alzheimer's": {
       "type": "Guard",
       "allow": {
@@ -870,7 +663,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 12894003,
+          "code": "12894003",
           "display": "Functional assessment (procedure)"
         }
       ],
@@ -882,7 +675,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "FAQ Normal",
+      "direct_transition": "FAQ Report",
       "remarks": [
         "TBD"
       ],
@@ -893,7 +686,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1148423001,
+          "code": "1148423001",
           "display": "Montreal Cognitive Assessment version 8.1 (assessment scale)"
         }
       ],
@@ -905,7 +698,7 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "MoCA Normal",
+      "direct_transition": "MoCA Report",
       "remarks": [
         "TBD"
       ],
@@ -913,20 +706,33 @@
     },
     "Check for Adverse Events": {
       "type": "Simple",
-      "direct_transition": "MRI"
+      "conditional_transition": [
+        {
+          "transition": "MRI",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "End CarePlan"
+        }
+      ]
     },
     "MRI": {
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 816077007,
+        "code": "816077007",
         "display": "Magnetic resonance imaging of brain (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 119235005,
+            "code": "119235005",
             "display": "Brain part (body structure)"
           },
           "modality": {
@@ -974,61 +780,13 @@
       "type": "Encounter",
       "reason": "Type of Alzheimer's",
       "telemedicine_possibility": "none",
-      "direct_transition": "Check for Adverse Events",
+      "direct_transition": "Check Impairment",
       "wellness": true
     },
     "Receive mAbs": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Approved mAbs",
-          "condition": {
-            "condition_type": "Not",
-            "condition": {
-              "condition_type": "PriorState",
-              "name": "Approved mAbs"
-            }
-          }
-        },
-        {
-          "transition": "Aducanumab Low Dose",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Aducanumab Low Dose"
-          }
-        },
-        {
-          "transition": "Aducanumab Increased Dose",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Aducanumab Increased Dose"
-          }
-        },
-        {
-          "transition": "Lecanemab Low Dose",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Lecanemab Low Dose"
-          }
-        },
-        {
-          "transition": "Lecanemab Increased Dose",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Lecanemab Increased Dose"
-          }
-        },
-        {
-          "transition": "Donanemab",
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Donanemab"
-          }
-        },
-        {
-          "transition": "Approved mAbs"
-        }
-      ]
+      "type": "CallSubmodule",
+      "submodule": "medications/anti_ab_mabs_selection",
+      "direct_transition": "Record Outcomes"
     },
     "Check Outcome Criteria": {
       "type": "Simple",
@@ -1147,7 +905,7 @@
     },
     "Set Cognitive Impairment Level": {
       "type": "SetAttribute",
-      "attribute": "cognitive_impairment_level",
+      "attribute": "final_cognitive_impairment_level",
       "direct_transition": "Set Daily Living Impairment Level",
       "distribution": {
         "kind": "UNIFORM",
@@ -1160,7 +918,7 @@
     },
     "Set_Cognitive_Impairment_Level": {
       "type": "SetAttribute",
-      "attribute": "cognitive_impairment_level",
+      "attribute": "final_cognitive_impairment_level",
       "distribution": {
         "kind": "UNIFORM",
         "round": false,
@@ -1173,7 +931,7 @@
     },
     "Set Daily Living Impairment Level": {
       "type": "SetAttribute",
-      "attribute": "daily_living_impairment_level",
+      "attribute": "final_daily_living_impairment_level",
       "direct_transition": "Treatment Effective",
       "distribution": {
         "kind": "UNIFORM",
@@ -1186,7 +944,7 @@
     },
     "Set_Daily_Living_Impairment_Level": {
       "type": "SetAttribute",
-      "attribute": "daily_living_impairment_level",
+      "attribute": "final_daily_living_impairment_level",
       "distribution": {
         "kind": "UNIFORM",
         "round": false,
@@ -1240,65 +998,9 @@
         },
         "value": 0
       },
-      "direct_transition": "Check Inclusion Criteria",
+      "direct_transition": "Initialize Cognitive Impairment",
       "remarks": [
         "CMS issued the final NCD (CAG-00460N) for using FDA approved anti-AB mAbs for treatment of Alzheimer's on April 7th, 2022."
-      ]
-    },
-    "MoCA Normal": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "72133-2",
-          "display": "Montreal Cognitive Assessment [MoCA]"
-        }
-      ],
-      "observations": [
-        {
-          "category": "survey",
-          "unit": "{score}",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "72172-0",
-              "display": "Total score [MoCA]"
-            }
-          ],
-          "attribute": "moca_score"
-        }
-      ],
-      "direct_transition": "Check for Adverse Events",
-      "remarks": [
-        "The MoCA scores range from zero to thirty, with a LOWER score indicating great cognitive impairment."
-      ]
-    },
-    "FAQ Normal": {
-      "type": "DiagnosticReport",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "58121-5",
-          "display": "Prior Functioning ADL/IADL during assessment period [CMS Assessment]"
-        }
-      ],
-      "observations": [
-        {
-          "category": "laboratory",
-          "unit": "{score}",
-          "codes": [
-            {
-              "system": "LOINC",
-              "code": "99991-1",
-              "display": "Total Score [FAQ]"
-            }
-          ],
-          "attribute": "faq_score"
-        }
-      ],
-      "direct_transition": "Complete MoCA",
-      "remarks": [
-        "The FAQ scores range from zero to thirty, with a HIGHER score indicating greater functional impairment. A cut point of 9 indicates impairment."
       ]
     },
     "moca_score_normal": {
@@ -1307,7 +1009,7 @@
       "direct_transition": "Instrumental activities of daily living assessment",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 30,
           "low": 25
@@ -1320,7 +1022,7 @@
       "direct_transition": "Instrumental activities of daily living assessment",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 25,
           "low": 15
@@ -1333,7 +1035,7 @@
       "direct_transition": "Instrumental activities of daily living assessment",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 15,
           "low": 5
@@ -1346,7 +1048,7 @@
       "direct_transition": "Instrumental activities of daily living assessment",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 5,
           "low": 0
@@ -1359,7 +1061,7 @@
       "direct_transition": "Check Enrollment",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 8,
           "low": 0
@@ -1371,7 +1073,7 @@
       "attribute": "faq_score",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 20,
           "low": 9
@@ -1384,7 +1086,7 @@
       "attribute": "faq_score",
       "distribution": {
         "kind": "UNIFORM",
-        "round": false,
+        "round": true,
         "parameters": {
           "high": 30,
           "low": 20
@@ -1429,7 +1131,6 @@
           ]
         },
         {
-          "distributions": [],
           "transition": "Increment Assessment"
         }
       ]
@@ -1440,19 +1141,19 @@
       "direct_transition": "End CarePlan",
       "value": false
     },
-    "Positron Emission Tomography Cerebrospinal Fluid": {
+    "Positron emission tomography with computed tomography of brain": {
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "396321000119104",
-        "display": "Single photon emission computed tomography of cerebrospinal fluid flow (procedure)"
+        "code": "16554361000119106",
+        "display": "Positron emission tomography with computed tomography of brain (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": "729368005",
-            "display": "Entire brain cerebrospinal fluid pathway (body structure)"
+            "code": "258335003",
+            "display": "Entire brain (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1461,7 +1162,7 @@
           },
           "instances": [
             {
-              "title": "PET Cerebrospinal Fluid",
+              "title": "Entire brain",
               "sop_class": {
                 "system": "DICOM-SOP",
                 "code": "1.2.840.10008.5.1.4.1.1.128",
@@ -1471,7 +1172,155 @@
           ]
         }
       ],
-      "direct_transition": "Amyloid Beta Finding"
+      "direct_transition": "Narrative"
+    },
+    "Initialize Cognitive Impairment": {
+      "type": "SetAttribute",
+      "attribute": "cognitive_impairment_level",
+      "direct_transition": "Initialize Daily Living Impairment",
+      "value": 0
+    },
+    "Initialize Daily Living Impairment": {
+      "type": "SetAttribute",
+      "attribute": "daily_living_impairment_level",
+      "direct_transition": "Check Inclusion Criteria",
+      "value": 0
+    },
+    "Progression of Disease": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increase Cognitive Impairment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "cognitive_impairment_level",
+            "operator": "<",
+            "value": "final_cognitive_impairment_level"
+          }
+        },
+        {
+          "transition": "Progression of Abilities"
+        }
+      ]
+    },
+    "Next": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait 6 months",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "anti-ab-mab-ced-study-assessment",
+                "operator": "<=",
+                "value": 5
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "anti-ab-mab-ced-study",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Wait a few months"
+        }
+      ]
+    },
+    "Progression of Abilities": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Increase Functional Impairment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "daily_living_impairment_level",
+            "operator": "<",
+            "value": "final_daily_living_impairment_level"
+          }
+        },
+        {
+          "transition": "Next"
+        }
+      ]
+    },
+    "Increase Cognitive Impairment": {
+      "type": "Counter",
+      "attribute": "cognitive_impairment_level",
+      "action": "increment",
+      "direct_transition": "Progression of Abilities"
+    },
+    "Increase Functional Impairment": {
+      "type": "Counter",
+      "attribute": "daily_living_impairment_level",
+      "action": "increment",
+      "direct_transition": "Next"
+    },
+    "FAQ Report": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58121-5",
+          "display": "Prior Functioning ADL/IADL during assessment period [CMS Assessment]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "99991-1",
+              "display": "Total Score [FAQ]"
+            }
+          ],
+          "attribute": "faq_score"
+        }
+      ],
+      "direct_transition": "Complete MoCA",
+      "remarks": [
+        "The FAQ scores range from zero to thirty, with a HIGHER score indicating greater functional impairment. A cut point of 9 indicates impairment."
+      ]
+    },
+    "MoCA Report": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "72133-2",
+          "display": "Montreal Cognitive Assessment [MoCA]"
+        }
+      ],
+      "observations": [
+        {
+          "category": "survey",
+          "unit": "{score}",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "72172-0",
+              "display": "Total score [MoCA]"
+            }
+          ],
+          "attribute": "moca_score"
+        }
+      ],
+      "direct_transition": "Check for Adverse Events",
+      "remarks": [
+        "The MoCA scores range from zero to thirty, with a LOWER score indicating great cognitive impairment."
+      ]
+    },
+    "Narrative": {
+      "type": "SetAttribute",
+      "attribute": "amyloid_beta_narrative",
+      "direct_transition": "Amyloid Beta Finding",
+      "value": "Amyloid Beta Positive"
     }
   },
   "gmf_version": 2
