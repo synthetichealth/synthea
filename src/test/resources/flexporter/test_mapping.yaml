@@ -314,6 +314,7 @@ actions:
  - name: testDeleteResources
    delete_resources:
      - Provenance
+     - Condition.code.coding.where($this.code in ('15777000' | '444814009'))
 
  - name: testDeleteResourcesCascade
    delete_resources:

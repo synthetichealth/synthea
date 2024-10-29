@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import ca.uhn.fhir.parser.IParser;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +28,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Claim;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Encounter;
@@ -46,6 +45,7 @@ import org.hl7.fhir.r4.model.PositiveIntType;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.PractitionerRole.DaysOfWeek;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
@@ -59,6 +59,8 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.agents.Person;
+
+import ca.uhn.fhir.parser.IParser;
 
 public class ActionsTest {
 
@@ -486,21 +488,34 @@ public class ActionsTest {
 
   @Test
   public void testDeleteResources() throws Exception {
-    Bundle b = loadFixtureBundle("sample_complete_patient.json");
+    Bundle b = new Bundle();
+    b.addEntry().setResource(new Provenance());
 
-    long countProvenance = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
+    Condition c1 = new Condition();
+    c1.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "15777000", "Prediabetes")));
+    b.addEntry().setResource(c1);
 
-    // this is just making sure the fixture actually contains the thing we want to delete
-    assertEquals(1, countProvenance);
+    Condition c2 = new Condition();
+    c2.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "444814009", "Viral sinusitis")));
+    b.addEntry().setResource(c2);
+
+    Condition c3 = new Condition();
+    c3.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "49727002", "Cough (finding)")));
+    b.addEntry().setResource(c3);
+
     Map<String, Object> action = getActionByName("testDeleteResources");
 
     Actions.applyAction(b, action, null, null);
 
-    countProvenance = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
+    // provenance, c1, and c2 should be deleted by the rule. c3 should stay
+    assertEquals(1, b.getEntry().size());
 
-    assertEquals(0, countProvenance);
+    Resource r = b.getEntryFirstRep().getResource();
+    // this would work as of today but not guaranteed
+    // assertTrue(r == c3);
+    assertTrue(r instanceof Condition);
+    Condition cOut = (Condition)r;
+    assertEquals("49727002", cOut.getCode().getCodingFirstRep().getCode());
   }
 
   @Test
