@@ -311,7 +311,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 180178009,
+          "code": "180178009",
           "display": "Continuous subcutaneous infusion of insulin (procedure)"
         }
       ],

@@ -37,7 +37,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414667000,
+          "code": "414667000",
           "display": "Meningomyelocele (disorder)"
         }
       ],
@@ -48,7 +48,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171131006,
+          "code": "171131006",
           "display": "Meningocele (disorder)"
         }
       ],
@@ -61,7 +61,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76916001,
+          "code": "76916001",
           "display": "Spina bifida occulta (disorder)"
         }
       ],
@@ -74,7 +74,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -94,7 +94,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 42839003,
+          "code": "42839003",
           "display": "Repair of myelomeningocele (procedure)"
         }
       ],
@@ -122,7 +122,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -148,7 +148,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -191,7 +191,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 230745008,
+          "code": "230745008",
           "display": "Hydrocephalus (disorder)"
         }
       ],
@@ -202,7 +202,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47020004,
+          "code": "47020004",
           "display": "Ventriculoperitoneal shunt (procedure)"
         }
       ],
@@ -219,7 +219,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 363215001,
+          "code": "363215001",
           "display": "Musculoskeletal system physical examination (procedure)"
         }
       ],
@@ -237,7 +237,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 298382003,
+          "code": "298382003",
           "display": "Scoliosis deformity of spine (disorder)"
         }
       ],
@@ -255,7 +255,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 302297009,
+          "code": "302297009",
           "display": "Congenital deformity of foot (disorder)"
         }
       ],
@@ -325,7 +325,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 120991000119102,
+          "code": "120991000119102",
           "display": "History of undergoing in utero procedure while a fetus (situation)"
         }
       ],
@@ -345,7 +345,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84728005,
+          "code": "84728005",
           "display": "Neurological examination (procedure)"
         }
       ],
@@ -363,7 +363,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 373587001,
+          "code": "373587001",
           "display": "Chiari malformation type II (disorder)"
         }
       ],
@@ -376,7 +376,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -387,8 +387,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 441763001,
-          "display": "Endoscopic third ventriculostomy (procedure)"
+          "code": "441763001",
+          "display": "Endoscopic exteriorization of third ventricle (procedure)"
         }
       ],
       "duration": {
@@ -404,7 +404,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 17881005,
+          "code": "17881005",
           "display": "Cauterization of choroid plexus (procedure)"
         }
       ],
@@ -422,7 +422,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414564002,
+          "code": "414564002",
           "display": "Kyphosis deformity of spine (disorder)"
         }
       ],
@@ -460,7 +460,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 303653007,
+          "code": "303653007",
           "display": "Computed tomography of head (procedure)"
         }
       ],
@@ -477,7 +477,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 241645008,
+          "code": "241645008",
           "display": "Magnetic resonance imaging of spine (procedure)"
         }
       ],
@@ -494,7 +494,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 9002005,
+          "code": "9002005",
           "display": "Manual testing of muscle function (procedure)"
         }
       ],
@@ -564,7 +564,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -590,7 +590,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -712,8 +712,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 300916003,
-          "display": "Allergy to latex (finding)"
+          "code": "1003755004",
+          "display": "Allergy to Hevea brasiliensis latex protein (finding)"
         }
       ],
       "direct_transition": "End_SB_Visit_1st"
@@ -738,7 +738,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -763,7 +763,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414667000,
+          "code": "414667000",
           "display": "Meningomyelocele (disorder)"
         }
       ],
@@ -790,8 +790,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 252895004,
-          "display": "Urodynamic studies (procedure"
+          "code": "252895004",
+          "display": "Urodynamic studies (procedure)"
         }
       ],
       "duration": {
@@ -807,7 +807,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 709640007,
+          "code": "709640007",
           "display": "Doppler ultrasonography of renal vein (procedure)"
         }
       ],
@@ -877,7 +877,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68566005,
+          "code": "68566005",
           "display": "Urinary tract infectious disease (disorder)"
         }
       ],
@@ -890,7 +890,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68566005,
+          "code": "68566005",
           "display": "Urinary tract infectious disease (disorder)"
         }
       ],
@@ -935,7 +935,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68566005,
+          "code": "68566005",
           "display": "Urinary tract infectious disease (disorder)"
         }
       ],

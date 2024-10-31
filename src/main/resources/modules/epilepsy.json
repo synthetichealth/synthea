@@ -154,7 +154,7 @@
         {
           "system": "SNOMED-CT",
           "code": "128613002",
-          "display": "Seizure disorder"
+          "display": "Seizure disorder (disorder)"
         }
       ],
       "direct_transition": "Seizure_Encounter",
@@ -182,8 +182,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "703151001",
-          "display": "History of single seizure (situation)"
+          "code": "1290882004",
+          "display": "History of seizure (situation)"
         }
       ],
       "direct_transition": "EEG_Test"
@@ -234,7 +234,7 @@
         {
           "system": "SNOMED-CT",
           "code": "84757009",
-          "display": "Epilepsy"
+          "display": "Epilepsy (disorder)"
         }
       ],
       "distributed_transition": [
@@ -446,7 +446,7 @@
         {
           "system": "SNOMED-CT",
           "code": "95281009",
-          "display": "Sudden Cardiac Death"
+          "display": "Sudden cardiac death (disorder)"
         }
       ],
       "direct_transition": "Terminal"

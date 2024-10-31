@@ -25,9 +25,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185317003,
-          "display": "Telephone encounter (procedure)",
-          "value_set": ""
+          "code": "185317003",
+          "display": "Telephone encounter (procedure)"
         }
       ],
       "direct_transition": "Telemed_Procedure"
@@ -40,9 +39,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 453131000124105,
-          "display": "Videotelephony encounter (procedure)",
-          "value_set": ""
+          "code": "453131000124105",
+          "display": "Videotelephony encounter (procedure)"
         }
       ],
       "direct_transition": "Telemed_Procedure"
@@ -52,9 +50,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 448337001,
-          "display": "Telemedicine consultation with patient (procedure)",
-          "value_set": ""
+          "code": "448337001",
+          "display": "Telemedicine consultation with patient (procedure)"
         }
       ],
       "distribution": {
@@ -76,8 +73,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
-                "display": "Pyelonephritis"
+                "code": "45816000",
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           },
@@ -137,9 +134,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183444007,
-          "display": "Referral for further care (procedure)",
-          "value_set": ""
+          "code": "183444007",
+          "display": "Referral for further care (procedure)"
         }
       ],
       "distribution": {
@@ -157,9 +153,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386053000,
-          "display": "Evaluation procedure (procedure)",
-          "value_set": ""
+          "code": "386053000",
+          "display": "Evaluation procedure (procedure)"
         }
       ],
       "distribution": {
@@ -186,9 +181,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 266753000,
-          "display": "Referral for laboratory tests (procedure)",
-          "value_set": ""
+          "code": "266753000",
+          "display": "Referral for laboratory tests (procedure)"
         }
       ],
       "distribution": {
@@ -232,9 +226,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 281789004,
-          "display": "Antibiotic therapy (procedure)",
-          "value_set": ""
+          "code": "281789004",
+          "display": "Antibiotic therapy (procedure)"
         }
       ],
       "distribution": {
@@ -327,9 +320,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Labs Sub"
@@ -363,9 +355,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185316007,
-          "display": "Indirect encounter (procedure)",
-          "value_set": ""
+          "code": "185316007",
+          "display": "Indirect encounter (procedure)"
         }
       ],
       "direct_transition": "Follow Up"
@@ -397,8 +388,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
-                    "display": "Pyelonephritis"
+                    "code": "45816000",
+                    "display": "Pyelonephritis (disorder)"
                   }
                 ]
               }
@@ -433,9 +424,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter (procedure)",
-          "value_set": ""
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Set UTI_Ambulatory"
@@ -470,9 +460,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter (procedure)",
-          "value_set": ""
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Set UTI_ED"

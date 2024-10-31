@@ -266,7 +266,7 @@
         {
           "system": "SNOMED-CT",
           "code": "386257007",
-          "display": "Dementia management"
+          "display": "Dementia management (regime/therapy)"
         }
       ],
       "activities": [
@@ -278,12 +278,12 @@
         {
           "system": "SNOMED-CT",
           "code": "710125008",
-          "display": "Promotion of use of memory skills"
+          "display": "Promotion of use of memory skills (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "315043002",
-          "display": "Long term social support"
+          "display": "Long term social support (regime/therapy)"
         }
       ],
       "direct_transition": "FirstPrescription"
@@ -689,7 +689,7 @@
         {
           "system": "SNOMED-CT",
           "code": "233604007",
-          "display": "Pneumonia"
+          "display": "Pneumonia (disorder)"
         }
       ],
       "remarks": [
@@ -706,7 +706,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 4525004,
+          "code": "4525004",
           "display": "Emergency department patient visit (procedure)"
         }
       ],

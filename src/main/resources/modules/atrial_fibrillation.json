@@ -37,7 +37,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 49436004,
+          "code": "49436004",
           "display": "Atrial fibrillation (disorder)"
         }
       ],
@@ -129,7 +129,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 18286008,
+          "code": "18286008",
           "display": "Catheter ablation of tissue of heart (procedure)"
         }
       ],
@@ -158,7 +158,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 180325003,
+          "code": "180325003",
           "display": "Direct current cardioversion (procedure)"
         }
       ],
@@ -181,7 +181,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706004007,
+        "code": "706004007",
         "display": "Implantable cardiac pacemaker (physical object)"
       },
       "direct_transition": "End Encounter"

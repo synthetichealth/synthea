@@ -13,9 +13,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 165355002,
-          "display": "Patient informed - test result (situation)",
-          "value_set": ""
+          "code": "165355002",
+          "display": "Patient informed - test result (situation)"
         }
       ],
       "distribution": {
@@ -32,9 +31,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410299006,
-          "display": "Lab findings education, guidance, and counseling (procedure)",
-          "value_set": ""
+          "code": "410299006",
+          "display": "Lab findings education, guidance, and counseling (procedure)"
         }
       ],
       "distribution": {
@@ -51,9 +49,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223484005,
-          "display": "Discussion about treatment (procedure)",
-          "value_set": ""
+          "code": "223484005",
+          "display": "Discussion about treatment (procedure)"
         }
       ],
       "distribution": {
@@ -82,9 +79,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33633005,
-          "display": "Prescription of drug (procedure)",
-          "value_set": ""
+          "code": "33633005",
+          "display": "Prescription of drug (procedure)"
         }
       ],
       "distribution": {
@@ -106,9 +102,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225953001,
-          "display": "Evaluating response to treatment (procedure)",
-          "value_set": ""
+          "code": "225953001",
+          "display": "Evaluating response to treatment (procedure)"
         }
       ],
       "distribution": {
@@ -139,9 +134,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 445528004,
-          "display": "Treatment changed (situation)",
-          "value_set": ""
+          "code": "445528004",
+          "display": "Treatment changed (situation)"
         }
       ],
       "distribution": {

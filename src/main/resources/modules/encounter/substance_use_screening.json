@@ -43,7 +43,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 5602001,
+                    "code": "5602001",
                     "display": "Opioid abuse (disorder)"
                   }
                 ]
@@ -53,8 +53,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 7200002,
-                    "display": "Alcoholism"
+                    "code": "7200002",
+                    "display": "Alcoholism (disorder)"
                   }
                 ]
               }
@@ -114,7 +114,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 428211000124100,
+          "code": "428211000124100",
           "display": "Assessment of substance use (procedure)"
         }
       ],
@@ -147,7 +147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 868187001,
+          "code": "868187001",
           "display": "Assessment using Car, Relax, Alone, Forget, Friends, Trouble Screening Test (procedure)"
         }
       ],
@@ -175,7 +175,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 160968000,
+          "code": "160968000",
           "display": "Risk activity involvement (finding)"
         }
       ],
@@ -186,7 +186,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 370995009,
+          "code": "370995009",
           "display": "Health risks education (procedure)"
         }
       ],
@@ -206,7 +206,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386516004,
+          "code": "386516004",
           "display": "Anticipatory guidance (procedure)"
         }
       ],
@@ -230,7 +230,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 763302001,
+          "code": "763302001",
           "display": "Assessment using Alcohol Use Disorders Identification Test - Consumption (procedure)"
         }
       ],
@@ -433,7 +433,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 713106006,
+          "code": "713106006",
           "display": "Screening for drug abuse (procedure)"
         }
       ],
@@ -807,7 +807,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 361055000,
+          "code": "361055000",
           "display": "Misuses drugs (finding)"
         }
       ],

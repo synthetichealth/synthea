@@ -78,7 +78,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 80394007,
+          "code": "80394007",
           "display": "Hyperglycemia (disorder)"
         }
       ],
@@ -107,7 +107,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 302870006,
+          "code": "302870006",
           "display": "Hypertriglyceridemia (disorder)"
         }
       ],
@@ -162,7 +162,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 237602007,
+          "code": "237602007",
           "display": "Metabolic syndrome X (disorder)"
         }
       ],
@@ -306,8 +306,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "15777000",
-          "display": "Prediabetes"
+          "code": "714628002",
+          "display": "Prediabetes (finding)"
         }
       ],
       "assign_to_attribute": "diabetes_stage",
@@ -358,8 +358,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "698360004",
-                "display": "Diabetes self management plan"
+                "code": "735985000",
+                "display": "Diabetes self management plan (record artifact)"
               }
             ]
           },
@@ -375,20 +375,20 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "698360004",
-          "display": "Diabetes self management plan"
+          "code": "735985000",
+          "display": "Diabetes self management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "160670007",
-          "display": "Diabetic diet"
+          "display": "Diabetic diet (finding)"
         },
         {
           "system": "SNOMED-CT",
           "code": "229065009",
-          "display": "Exercise therapy"
+          "display": "Exercise therapy (regime/therapy)"
         }
       ],
       "goals": [
@@ -402,7 +402,7 @@
               }
             ],
             "operator": "<",
-            "value": 7.0
+            "value": 7
           },
           "addresses": [
             "diabetes_stage"
@@ -737,7 +737,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 337414009,
+        "code": "337414009",
         "display": "Blood glucose meter (physical object)"
       },
       "direct_transition": "Prescribe_Medications"
@@ -753,7 +753,7 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 763288003,
+        "code": "763288003",
         "display": "Patient review (procedure)"
       }
     }

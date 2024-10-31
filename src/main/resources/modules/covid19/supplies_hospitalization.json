@@ -45,8 +45,8 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 409534002,
-            "display": "Disposable air-purifying respirator (physical object)"
+            "code": "409533008",
+            "display": "Air-purifying respirator (physical object)"
           }
         },
         {
@@ -61,15 +61,15 @@
           "quantity": 12,
           "code": {
             "system": "SNOMED-CT",
-            "code": "469673003",
-            "display": "Isolation gown, single-use (physical object)"
+            "code": "1141679000",
+            "display": "Isolation gown (physical object)"
           }
         },
         {
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706724001,
+            "code": "706724001",
             "display": "Face shield (physical object)"
           }
         },
@@ -85,7 +85,7 @@
           "quantity": 8,
           "code": {
             "system": "SNOMED-CT",
-            "code": 470618009,
+            "code": "470618009",
             "display": "Antiseptic towelette (physical object)"
           }
         }

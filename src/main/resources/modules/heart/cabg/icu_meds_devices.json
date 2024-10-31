@@ -64,7 +64,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 360064003,
+        "code": "360064003",
         "display": "Ventricular assist device (physical object)"
       },
       "direct_transition": "Device"

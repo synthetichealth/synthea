@@ -22,7 +22,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment"
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "Consultation",
@@ -48,7 +48,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305408004",
-          "display": "Admission to surgical department"
+          "display": "Admission to surgical department (procedure)"
         }
       ],
       "direct_transition": "Tubal_Ligation_Procedure",
@@ -60,7 +60,7 @@
         {
           "system": "SNOMED-CT",
           "code": "287664005",
-          "display": "Bilateral tubal ligation"
+          "display": "Ligation of bilateral fallopian tubes (procedure)"
         }
       ],
       "duration": {
@@ -90,12 +90,12 @@
         {
           "system": "SNOMED-CT",
           "code": "183051005",
-          "display": "Recommendation to rest"
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "243077000",
-          "display": "Recommendation to limit sexual activity"
+          "display": "Recommendation to limit sexual activity (procedure)"
         }
       ],
       "direct_transition": "Postoperative Care",
@@ -127,7 +127,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 268533009,
+          "code": "268533009",
           "display": "Sterilization education (procedure)"
         }
       ],
@@ -146,7 +146,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -166,7 +166,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 267020005,
+          "code": "267020005",
           "display": "History of tubal ligation (situation)"
         }
       ],
@@ -177,7 +177,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183996000,
+          "code": "183996000",
           "display": "Sterilization requested (situation)"
         }
       ],

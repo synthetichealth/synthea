@@ -18,7 +18,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399211009,
+          "code": "399211009",
           "display": "History of myocardial infarction (situation)"
         }
       ],
@@ -75,7 +75,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 710839006,
+          "code": "710839006",
           "display": "Assessment of cardiac status using monitoring device (procedure)"
         }
       ],
@@ -91,7 +91,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 15220000,
+          "code": "15220000",
           "display": "Laboratory test (procedure)"
         }
       ],
@@ -107,7 +107,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 433236007,
+          "code": "433236007",
           "display": "Transthoracic echocardiography (procedure)"
         }
       ],
@@ -123,7 +123,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736372004,
+          "code": "736372004",
           "display": "Discharge care plan (record artifact)"
         }
       ],
@@ -152,8 +152,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399208008,
-          "display": "Plain chest X-ray (procedure)"
+          "code": "399208008",
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -170,7 +170,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -185,7 +185,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 401303003,
+          "code": "401303003",
           "display": "Acute ST segment elevation myocardial infarction (disorder)"
         }
       ]
@@ -259,7 +259,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 165197003,
+          "code": "165197003",
           "display": "Diagnostic assessment (procedure)"
         }
       ],
@@ -279,7 +279,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -296,7 +296,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 22298006,
+          "code": "22298006",
           "display": "Myocardial infarction (disorder)"
         }
       ],

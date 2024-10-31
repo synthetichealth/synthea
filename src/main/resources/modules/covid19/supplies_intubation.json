@@ -38,32 +38,32 @@
           "quantity": 2,
           "code": {
             "system": "SNOMED-CT",
-            "code": "469673003",
-            "display": "Isolation gown, single-use (physical object)"
+            "code": "1141679000",
+            "display": "Isolation gown (physical object)"
           }
         },
         {
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": "463983006",
-            "display": "Operating room gown, single-use (physical object)"
+            "code": "463696005",
+            "display": "Operating room laundry bag (physical object)"
           }
         },
         {
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": "465668002",
-            "display": "Surgical cap, single-use (physical object)"
+            "code": "736143005",
+            "display": "Radial surgical retractor seal cap (physical object)"
           }
         },
         {
           "quantity": 3,
           "code": {
             "system": "SNOMED-CT",
-            "code": "409534002",
-            "display": "Disposable air-purifying respirator (physical object)"
+            "code": "409533008",
+            "display": "Air-purifying respirator (physical object)"
           }
         },
         {
@@ -86,7 +86,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 470618009,
+            "code": "470618009",
             "display": "Antiseptic towelette (physical object)"
           }
         },
@@ -94,24 +94,24 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": "470609007",
-            "display": "Laryngoscope blade, single-use (physical object)"
+            "code": "285698002",
+            "display": "Laryngoscope blade (physical object)"
           }
         },
         {
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": "467053003",
-            "display": "Basic endotracheal tube, single-use (physical object)"
+            "code": "26412008",
+            "display": "Endotracheal tube, device (physical object)"
           }
         },
         {
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": "468507004",
-            "display": "Endotracheal tube stylet, single-use (physical object)"
+            "code": "725095003",
+            "display": "Endotracheal tube introducer (physical object)"
           }
         },
         {
@@ -180,7 +180,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 449071006,
+        "code": "449071006",
         "display": "Mechanical ventilator (physical object)"
       },
       "direct_transition": "Laryngoscope",

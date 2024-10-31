@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -60,7 +60,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 401314000,
+          "code": "401314000",
           "display": "Acute non-ST segment elevation myocardial infarction (disorder)"
         }
       ],
@@ -72,7 +72,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 4557003,
+          "code": "4557003",
           "display": "Preinfarction syndrome (disorder)"
         }
       ],
@@ -83,7 +83,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225338004,
+          "code": "225338004",
           "display": "Risk assessment (procedure)"
         }
       ],
@@ -110,7 +110,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76746007,
+          "code": "76746007",
           "display": "Cardiovascular stress testing (procedure)"
         }
       ],
@@ -136,7 +136,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 415070008,
+          "code": "415070008",
           "display": "Percutaneous coronary intervention (procedure)"
         }
       ],
@@ -155,7 +155,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -275,7 +275,7 @@
       "direct_transition": "Angiography",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 439590007,
+        "code": "439590007",
         "display": "Cardiovascular stress test abnormal (finding)"
       }
     },
@@ -284,7 +284,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33367005,
+          "code": "33367005",
           "display": "Angiography of coronary artery (procedure)"
         }
       ],

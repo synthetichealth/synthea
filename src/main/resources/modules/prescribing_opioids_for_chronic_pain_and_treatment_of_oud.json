@@ -71,7 +71,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 276239002,
+          "code": "276239002",
           "display": "Therapy (regime/therapy)"
         }
       ],
@@ -79,12 +79,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 91251008,
+          "code": "91251008",
           "display": "Physical therapy procedure (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 228557008,
+          "code": "228557008",
           "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
@@ -161,7 +161,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -194,7 +194,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 307468000,
+            "code": "307468000",
             "display": "Every six hours (qualifier value)"
           }
         ],
@@ -228,7 +228,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -261,7 +261,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -347,7 +347,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278860009,
+          "code": "278860009",
           "display": "Chronic low back pain (finding)"
         }
       ],
@@ -442,7 +442,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 228557008,
+          "code": "228557008",
           "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
@@ -460,7 +460,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1121000119107,
+          "code": "1121000119107",
           "display": "Chronic neck pain (finding)"
         }
       ],
@@ -473,7 +473,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 203082005,
+          "code": "203082005",
           "display": "Fibromyalgia (disorder)"
         }
       ],
@@ -486,7 +486,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278860009,
+          "code": "278860009",
           "display": "Chronic low back pain (finding)"
         }
       ],
@@ -499,7 +499,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1121000119107,
+          "code": "1121000119107",
           "display": "Chronic neck pain (finding)"
         }
       ],
@@ -512,7 +512,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 203082005,
+          "code": "203082005",
           "display": "Fibromyalgia (disorder)"
         }
       ],
@@ -524,7 +524,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 427419006,
+          "code": "427419006",
           "display": "Transformed migraine (disorder)"
         }
       ],
@@ -538,7 +538,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 427419006,
+          "code": "427419006",
           "display": "Transformed migraine (disorder)"
         }
       ],
@@ -550,7 +550,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -613,7 +613,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 1831000175103,
+            "code": "1831000175103",
             "display": "Every twelve hours as required (qualifier value)"
           }
         ],
@@ -672,7 +672,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 396143001,
+            "code": "396143001",
             "display": "Every seventy two hours (qualifier value)"
           }
         ],
@@ -718,7 +718,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -752,7 +752,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -764,19 +764,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 276239002,
+          "code": "276239002",
           "display": "Therapy (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 91251008,
+          "code": "91251008",
           "display": "Physical therapy procedure (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 228557008,
+          "code": "228557008",
           "display": "Cognitive and behavioral therapy (regime/therapy)"
         }
       ],
@@ -822,7 +822,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 229064008,
+          "code": "229064008",
           "display": "Movement therapy (regime/therapy)"
         }
       ],
@@ -847,7 +847,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -903,7 +903,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308335008,
+          "code": "308335008",
           "display": "Patient encounter procedure (procedure)"
         }
       ],
@@ -1072,7 +1072,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -1104,7 +1104,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 307468000,
+            "code": "307468000",
             "display": "Every six hours (qualifier value)"
           }
         ],
@@ -1222,7 +1222,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -1255,7 +1255,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225756002,
+            "code": "225756002",
             "display": "Every four hours (qualifier value)"
           }
         ],
@@ -1292,7 +1292,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225757006,
+            "code": "225757006",
             "display": "Every four to six hours (qualifier value)"
           }
         ],
@@ -1325,7 +1325,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 225756002,
+            "code": "225756002",
             "display": "Every four hours (qualifier value)"
           }
         ],
@@ -1492,7 +1492,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "direct_transition": "PEG_Assessment_Score_3"
@@ -1510,7 +1510,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "direct_transition": "PEG_Assessment_Score_2"
@@ -1528,7 +1528,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       },
       "distributed_transition": [
@@ -1560,7 +1560,7 @@
       "direct_transition": "End initial encounter with positive result",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       }
     },
@@ -1570,7 +1570,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -1687,7 +1687,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1121000119107,
+          "code": "1121000119107",
           "display": "Chronic neck pain (finding)"
         }
       ],
@@ -1698,7 +1698,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1121000119107,
+          "code": "1121000119107",
           "display": "Chronic neck pain (finding)"
         }
       ],
@@ -1710,7 +1710,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278860009,
+          "code": "278860009",
           "display": "Chronic low back pain (finding)"
         }
       ],
@@ -1773,7 +1773,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 50849002,
+          "code": "50849002",
           "display": "Emergency room admission (procedure)"
         }
       ],
@@ -2015,7 +2015,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -2036,7 +2036,7 @@
       "direct_transition": "DSM-5_OUD_Diagnostic_Criteria",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       }
     },
@@ -2507,7 +2507,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -2524,7 +2524,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -2568,7 +2568,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5602001,
+          "code": "5602001",
           "display": "Opioid abuse (disorder)"
         }
       ],
@@ -2628,7 +2628,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -2640,7 +2640,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5602001,
+          "code": "5602001",
           "display": "Opioid abuse (disorder)"
         }
       ],
@@ -2781,7 +2781,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -2823,7 +2823,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -3048,7 +3048,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -3123,7 +3123,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408919008,
+          "code": "408919008",
           "display": "Psychosocial care (regime/therapy)"
         }
       ],
@@ -3215,7 +3215,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 82423001,
+          "code": "82423001",
           "display": "Chronic pain (finding)"
         }
       ],

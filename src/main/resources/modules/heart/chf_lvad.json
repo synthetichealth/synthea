@@ -17,8 +17,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232967006,
-          "display": "Implantation of left ventricular assist device (procedure)"
+          "code": "232967006",
+          "display": "Implantation of left cardiac ventricular assist device (procedure)"
         }
       ],
       "duration": {
@@ -33,7 +33,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 360066001,
+        "code": "360066001",
         "display": "Left ventricular assist device (physical object)"
       },
       "direct_transition": "Recovery"
@@ -63,7 +63,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 387713003,
+          "code": "387713003",
           "display": "Surgical procedure (procedure)"
         }
       ],
@@ -74,7 +74,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 423475008,
+          "code": "423475008",
           "display": "Heart failure education (procedure)"
         }
       ],

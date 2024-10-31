@@ -39,7 +39,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 414545008,
+          "code": "414545008",
           "display": "Ischemic heart disease (disorder)"
         }
       ],
@@ -90,7 +90,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410429000,
+          "code": "410429000",
           "display": "Cardiac arrest (disorder)"
         }
       ]

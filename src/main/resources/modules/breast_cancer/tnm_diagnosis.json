@@ -531,7 +531,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260413007,
+        "code": "260413007",
         "display": "None (qualifier value)"
       }
     },

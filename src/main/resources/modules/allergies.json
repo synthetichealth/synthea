@@ -102,7 +102,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -131,7 +131,7 @@
         {
           "system": "SNOMED-CT",
           "code": "395142003",
-          "display": "Allergy screening test"
+          "display": "Allergy screening test (procedure)"
         }
       ],
       "direct_transition": "Allergy_Panel"
@@ -166,7 +166,7 @@
         {
           "system": "SNOMED-CT",
           "code": "58332002",
-          "display": "Allergy education"
+          "display": "Allergy education (procedure)"
         }
       ],
       "conditional_transition": [

@@ -29,7 +29,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "65966004",
-                        "display": "Fracture of forearm"
+                        "display": "Fracture of forearm (disorder)"
                       }
                     ]
                   },
@@ -39,7 +39,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "263102004",
-                        "display": "Fracture subluxation of wrist"
+                        "display": "Fracture subluxation of wrist (disorder)"
                       }
                     ]
                   },
@@ -49,7 +49,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "16114001",
-                        "display": "Fracture of ankle"
+                        "display": "Fracture of ankle (disorder)"
                       }
                     ]
                   },
@@ -59,7 +59,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "33737001",
-                        "display": "Fracture of rib"
+                        "display": "Fracture of rib (disorder)"
                       }
                     ]
                   },
@@ -69,7 +69,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "58150001",
-                        "display": "Fracture of clavicle"
+                        "display": "Fracture of clavicle (disorder)"
                       }
                     ]
                   },
@@ -79,7 +79,7 @@
                       {
                         "system": "SNOMED-CT",
                         "code": "359817006",
-                        "display": "Closed fracture of hip"
+                        "display": "Closed fracture of hip (disorder)"
                       }
                     ]
                   },

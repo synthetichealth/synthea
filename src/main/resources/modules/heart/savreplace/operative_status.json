@@ -21,7 +21,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 60573004,
+                "code": "60573004",
                 "display": "Aortic valve stenosis (disorder)"
               }
             ]

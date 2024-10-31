@@ -161,7 +161,7 @@
         {
           "system": "SNOMED-CT",
           "code": "24079001",
-          "display": "Atopic dermatitis"
+          "display": "Atopic dermatitis (disorder)"
         }
       ],
       "direct_transition": "PCP_Encounter"
@@ -174,7 +174,7 @@
         {
           "system": "SNOMED-CT",
           "code": "40275004",
-          "display": "Contact dermatitis"
+          "display": "Contact dermatitis (disorder)"
         }
       ],
       "direct_transition": "PCP_Encounter"
@@ -195,7 +195,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Dermatitis_Symptom1"
@@ -240,14 +240,14 @@
         {
           "system": "SNOMED-CT",
           "code": "711282006",
-          "display": "Skin condition care"
+          "display": "Skin condition care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "225130001",
-          "display": "Application of moisturizer to skin"
+          "display": "Application of moisturizer to skin (procedure)"
         }
       ],
       "direct_transition": "End_Diagnosis_Encounter"
@@ -288,7 +288,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -525,7 +525,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [

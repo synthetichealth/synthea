@@ -111,7 +111,7 @@
         {
           "system": "SNOMED-CT",
           "code": "65363002",
-          "display": "Otitis media"
+          "display": "Otitis media (disorder)"
         }
       ],
       "direct_transition": "Ear_Infection_Encounter"
@@ -124,7 +124,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "distributed_transition": [

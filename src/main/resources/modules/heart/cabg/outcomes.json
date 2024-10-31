@@ -809,7 +809,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312157006,
+          "code": "312157006",
           "display": "Infectious mediastinitis (disorder)"
         }
       ],
@@ -827,7 +827,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 129574000,
+          "code": "129574000",
           "display": "Postoperative myocardial infarction (disorder)"
         }
       ],
@@ -851,7 +851,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698819004,
+          "code": "698819004",
           "display": "Postoperative sepsis (disorder)"
         }
       ],
@@ -863,7 +863,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 275408006,
+          "code": "275408006",
           "display": "Postoperative renal failure (disorder)"
         }
       ],
@@ -875,7 +875,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 129721000119106,
+          "code": "129721000119106",
           "display": "Acute renal failure on dialysis (disorder)"
         }
       ],
@@ -887,8 +887,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 111282000,
-          "display": "Acute respiratory insufficiency (disorder)"
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
         }
       ],
       "target_encounter": "CABG_Postop",

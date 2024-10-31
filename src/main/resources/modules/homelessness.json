@@ -195,7 +195,7 @@
         {
           "system": "SNOMED-CT",
           "code": "210098006",
-          "display": "Domiciliary or rest home patient evaluation and management"
+          "display": "Domiciliary or rest home patient evaluation and management (procedure)"
         }
       ],
       "direct_transition": "Information_Gathering",
@@ -240,7 +240,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 86406008,
+                "code": "86406008",
                 "display": "Human immunodeficiency virus infection (disorder)"
               }
             ]
@@ -432,7 +432,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32911000,
+          "code": "32911000",
           "display": "Homeless (finding)"
         }
       ],

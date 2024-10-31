@@ -325,15 +325,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": "736283006",
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "229065009",
-          "display": "Exercise therapy"
+          "display": "Exercise therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -349,15 +349,15 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "412776001",
-          "display": "Chronic obstructive pulmonary disease clinical management plan"
+          "code": "736283006",
+          "display": "Chronic obstructive pulmonary disease clinical management plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "710081004",
-          "display": "Smoking cessation therapy"
+          "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
@@ -881,7 +881,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305411003",
-          "display": "Admission to thoracic surgery department"
+          "display": "Admission to thoracic surgery department (procedure)"
         }
       ],
       "conditional_transition": [
@@ -1100,7 +1100,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 170615005,
+        "code": "170615005",
         "display": "Home nebulizer (physical object)"
       },
       "direct_transition": "Check Oxygen"
@@ -1109,7 +1109,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 336621006,
+        "code": "336621006",
         "display": "Oxygen concentrator (physical object)"
       },
       "distributed_transition": [
@@ -1131,7 +1131,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 464173000,
+        "code": "464173000",
         "display": "Portable oxygen concentrator (physical object)"
       },
       "direct_transition": "Wheelchair Check"
@@ -1140,7 +1140,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 261323006,
+        "code": "261323006",
         "display": "Portable oxygen cylinder (physical object)"
       },
       "direct_transition": "Wheelchair Check"
@@ -1164,7 +1164,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 336621006,
+          "code": "336621006",
           "display": "Oxygen concentrator (physical object)"
         }
       ]
@@ -1175,7 +1175,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 261323006,
+          "code": "261323006",
           "display": "Portable oxygen cylinder (physical object)"
         }
       ]
@@ -1186,7 +1186,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 464173000,
+          "code": "464173000",
           "display": "Portable oxygen concentrator (physical object)"
         }
       ]
@@ -1197,7 +1197,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 170615005,
+          "code": "170615005",
           "display": "Home nebulizer (physical object)"
         }
       ]
@@ -1225,7 +1225,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -1244,7 +1244,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225415001,
+          "code": "225415001",
           "display": "Close observation (regime/therapy)"
         }
       ],

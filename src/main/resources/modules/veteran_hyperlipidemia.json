@@ -74,8 +74,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 55822004,
-          "display": "Hyperlipidemia"
+          "code": "55822004",
+          "display": "Hyperlipidemia (disorder)"
         }
       ],
       "direct_transition": "Hyperlipidemia initial workup encounter"
@@ -168,8 +168,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter"
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "hyperlipidemia careplan"
@@ -179,8 +179,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736285004,
-          "display": "Hyperlipidemia clinical management plan"
+          "code": "736285004",
+          "display": "Hyperlipidemia clinical management plan (record artifact)"
         }
       ],
       "direct_transition": "Hyperlipidemia medication start",
@@ -188,12 +188,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183063000,
-          "display": "Low salt diet education"
+          "code": "183063000",
+          "display": "Low salt diet education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 183301007,
+          "code": "183301007",
           "display": "Physical exercises (regime/therapy)"
         }
       ]
@@ -471,8 +471,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
-          "display": "Follow-up encounter"
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
         }
       ],
       "direct_transition": "Record_CMP_2"
