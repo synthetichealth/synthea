@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import ca.uhn.fhir.parser.IParser;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -59,8 +61,6 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.agents.Person;
-
-import ca.uhn.fhir.parser.IParser;
 
 public class ActionsTest {
 
@@ -514,8 +514,8 @@ public class ActionsTest {
     // this would work as of today but not guaranteed
     // assertTrue(r == c3);
     assertTrue(r instanceof Condition);
-    Condition cOut = (Condition)r;
-    assertEquals("49727002", cOut.getCode().getCodingFirstRep().getCode());
+    Condition conditionOut = (Condition)r;
+    assertEquals("49727002", conditionOut.getCode().getCodingFirstRep().getCode());
   }
 
   @Test
