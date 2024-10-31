@@ -30,6 +30,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Claim;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DateType;
 import org.hl7.fhir.r4.model.Encounter;
@@ -46,6 +47,7 @@ import org.hl7.fhir.r4.model.PositiveIntType;
 import org.hl7.fhir.r4.model.PractitionerRole;
 import org.hl7.fhir.r4.model.PractitionerRole.DaysOfWeek;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Provenance;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
@@ -486,21 +488,34 @@ public class ActionsTest {
 
   @Test
   public void testDeleteResources() throws Exception {
-    Bundle b = loadFixtureBundle("sample_complete_patient.json");
+    Bundle b = new Bundle();
+    b.addEntry().setResource(new Provenance());
 
-    long countProvenance = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
+    Condition c1 = new Condition();
+    c1.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "15777000", "Prediabetes")));
+    b.addEntry().setResource(c1);
 
-    // this is just making sure the fixture actually contains the thing we want to delete
-    assertEquals(1, countProvenance);
+    Condition c2 = new Condition();
+    c2.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "444814009", "Viral sinusitis")));
+    b.addEntry().setResource(c2);
+
+    Condition c3 = new Condition();
+    c3.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "49727002", "Cough (finding)")));
+    b.addEntry().setResource(c3);
+
     Map<String, Object> action = getActionByName("testDeleteResources");
 
     Actions.applyAction(b, action, null, null);
 
-    countProvenance = b.getEntry().stream()
-        .filter(bec -> bec.getResource().getResourceType() == ResourceType.Provenance).count();
+    // provenance, c1, and c2 should be deleted by the rule. c3 should stay
+    assertEquals(1, b.getEntry().size());
 
-    assertEquals(0, countProvenance);
+    Resource r = b.getEntryFirstRep().getResource();
+    // this would work as of today but not guaranteed
+    // assertTrue(r == c3);
+    assertTrue(r instanceof Condition);
+    Condition conditionOut = (Condition)r;
+    assertEquals("49727002", conditionOut.getCode().getCodingFirstRep().getCode());
   }
 
   @Test
@@ -752,6 +767,32 @@ public class ActionsTest {
     assertEquals(120_000L, mr.getAuthoredOn().toInstant().toEpochMilli());
   }
 
+  @Test
+  public void testCreateResources_if() throws Exception {
+    Bundle b = new Bundle();
+    b.setType(BundleType.COLLECTION);
+
+    Procedure p1 = new Procedure();
+    p1.setPerformed(new Period().setStart(new Date(0)));
+    b.addEntry().setResource(p1);
+
+    Procedure p2 = new Procedure();
+    p2.setPerformed(new DateTimeType("2024-10-01T12:34:56"));
+    b.addEntry().setResource(p2);
+
+    Map<String, Object> action = getActionByName("testCreateResources_if");
+
+    Actions.applyAction(b, action, null, null);
+
+    assertEquals(4, b.getEntry().size());
+
+    ServiceRequest sr1 = (ServiceRequest)b.getEntry().get(2).getResource();
+    assertTrue(sr1.getAuthoredOn().getTime() == 0);
+
+    ServiceRequest sr2 = (ServiceRequest)b.getEntry().get(3).getResource();
+    DateTimeType sr2AuthoredOn = sr2.getAuthoredOnElement();
+    assertEquals("2024-10-01T12:34:56", sr2AuthoredOn.getValueAsString());
+  }
 
   @Test
   public void testGetAttribute() throws Exception {
