@@ -4,8 +4,6 @@ For a current csv run the outputs are stored in the `outputs/csv` folder.   Thes
 
 - allergies.csv 
 - careplans.csv
-- claims_transactions.csv 
-- claims.csv 
 - conditions.csv 
 - devices.csv 
 - encounters.csv 
