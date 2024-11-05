@@ -1,4 +1,4 @@
-# UK Adaptations to Synthe<sup>TM</sup>
+# UK Adaptations to Synthea<sup>TM</sup>
 
 **Stage 1: Removing non-English NHS functions and simplifying the Java to an MVP**
 
@@ -38,4 +38,4 @@ There are still many US-based nuances that need to be dealt with such as payer c
 
 The Hypertension module and the Hypertension medication module have been made based on the [NICE guidelines](https://www.nice.org.uk/guidance/ng136) for hypertension diagnosis, management and medication, together with some clinical input. However, they are still waiting on further clinical input, in particular for the choice of specific medications prescribed. 
 
-Find documentation on the differences between NICE and the original version of these modules at: ```/docs/compare_hypertension_to_nice.pdf```
+Find documentation on the differences between NICE and the original US version of these modules at: ```/docs/compare_hypertension_to_nice.pdf```.

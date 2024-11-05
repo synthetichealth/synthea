@@ -1,22 +1,22 @@
-# Dev setup
-Dev setup can be found in the [README](https://github.com/nhsengland/swpc_synthea).
+# Resources in swpc_synthea
 
-# Development
-There are two types of development for the code:
-
-- To develop the underlying engine see java.md.
-
-- To develop the underlying information that the simulation works on read below about the resources and data sources
-
-## Resource in swpc_synthea
+The structure of the resources in swpc_synthea is as below:
 
 ```
 ├── src/main/resources
 |   ├── export
 |   ├── geography
+|   |   ├── demographics.csv
+|   |   ├── foreign_birthplace.json
+|   |   ├── postcodes.csv
+|   |   ├── sdoh.csv
+|   |   ├── timezones.csv
 |   ├── keep_modules
 |   ├── modules
 |   ├── physiology
+|   |   ├── hospitals.csv
+|   |   ├── primary_care_facilities.csv
+|   |   ├── urgent_care_facilities.csv
 |   ├── providers
 |   ├── templates
 |   biometrics.yml
@@ -39,10 +39,10 @@ There are two types of development for the code:
 
 We'll now highlight a few key files for the simulation inputs
 
-### geography/demographics.csv
-This file sets the general demographics for the population created during this simulation, such as age distributions and town populations. The meanings of the different columns in this file can be found [here](https://github.com/synthetichealth/synthea/wiki/Demographics-for-Other-Areas). 
+## geography/demographics.csv
+This file sets the general demographics for the population created during this simulation, such as age distributions and town populations. The meanings of the different columns in this file can be found in the table below. 
 
-The demographics breakdowns are done by the full region rather than per town as information per town was not available. 
+The demographics breakdowns for the UK version have been done by the full region rather than per town as information per town was not available. 
 
 | Column Name | Contains | Data Sources for UK Version |
 | ----------- | ---------|---------------------------- |
@@ -74,13 +74,13 @@ This file contains information on social determinants of health for the differen
 | NO_VEHICLE_ACCESS | percentage of the population with no access to a vehicle | ONS census [data](https://www.ons.gov.uk/census/maps/choropleth/housing/number-of-cars-or-vans/number-of-cars-3a/no-cars-or-vans-in-household?geoLock=lad&lad=E07000042) |
 
 ## geography/postcodes.csv
-Originally called zipcodes.csv but changed to use the English word. Postcode information found [here](https://www.freemaptools.com/download-uk-postcode-lat-lng.htm). 
+Originally called zipcodes.csv but changed to use the English word. Postcode data was found [here](https://www.freemaptools.com/download-uk-postcode-lat-lng.htm). 
 
 ## modules/ 
 Store for the clinical modules saved as jsons.  Most of these are currently based on the original US Synthea<sup>TM</sup> version.  See index.md for a list of changed modules.
 
 ## providers/
-These file sets different medical facilities for patients to attend in the simulation. 
+These files set different medical facilities for patients to attend in the simulation. 
 
 GP practices in the South West were found in the [NHS digital GP Practice Data](https://digital.nhs.uk/services/organisation-data-service/export-data-files/csv-downloads/gp-and-gp-practice-related-data), and the conversion from postcode to latitude and longitude was done using the [grid reference finder](https://gridreferencefinder.com/postcodeBatchConverter/). 
 

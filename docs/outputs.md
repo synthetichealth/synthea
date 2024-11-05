@@ -17,9 +17,13 @@ For a current csv run the outputs are stored in the `outputs/csv` folder.   Thes
 - providers.csv 
 - supplies.csv
 
-## Showing blood test reading for an individual
+## Showing blood test reading history for an individual
 
-See [this](https://github.com/nhsengland/swpc_synthea/blob/Minor-aib-improve-docs/notebooks/ht_analysis.ipynb?short_path=1f58092) notebook for a walkthrough of an example.
+See [this](https://github.com/nhsengland/swpc_synthea/blob/master/notebooks/ht_analysis.ipynb) notebook for a walkthrough of an example.
+
+It will produce plots like this one: 
+
+![Blood pressure Measurements for one patient over time, including a vertical line for when they got diagnosed with hypertension](images/hypertension_diagnosis.png)
 
 ## Showing total activity by provider and location
 PLACEHOLDER
