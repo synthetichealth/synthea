@@ -50,6 +50,25 @@ public class CodeMapperTest {
     assertTrue(defCount > abcCount);
   }
 
+  @Test
+  public void testCodeMapperMerge() {
+    Config.set("exporter.bfd.require_code_maps", "true");
+    CodeMapper mapper = new CodeMapper("export/unweighted_code_map.json");
+    mapper.merge(new CodeMapper("export/weighted_code_map.json"));
+    assertTrue(mapper.canMap("10509002"));
+    int abcCount = 0;
+    int defCount = 0;
+    for (int i = 0; i < 10; i++) {
+      String code = mapper.map("10509002", random);
+      if (code.equals("ABC20.9")) {
+        abcCount++;
+      } else if (code.equals("DEF20.9")) {
+        defCount++;
+      }
+    }
+    assertTrue(defCount > abcCount);
+  }
+
   @Test(expected = MissingResourceException.class)
   public void testThrowsExceptionWhenMapFileMissing() {
     Config.set("exporter.bfd.require_code_maps", "true");

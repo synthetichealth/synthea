@@ -218,6 +218,7 @@ public class Generator {
       CDWExporter.getInstance().setKeyStart((stateIndex * 1_000_000) + 1);
     }
     Exporter.loadCustomExporters();
+    Exporter.loadCodeMappers();
 
     this.populationRandom = new DefaultRandomNumberGenerator(options.seed);
     this.clinicianRandom = new DefaultRandomNumberGenerator(options.clinicianSeed);

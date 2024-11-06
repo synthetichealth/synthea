@@ -2,7 +2,6 @@ package org.mitre.synthea.helpers;
 
 import java.io.Serializable;
 import java.util.Map.Entry;
-import java.util.NavigableMap;
 import java.util.TreeMap;
 
 /**
@@ -10,7 +9,7 @@ import java.util.TreeMap;
  * gem. Adapted from https://stackoverflow.com/a/6409791/630384
  */
 public class RandomCollection<E> implements Serializable {
-  private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
+  private final TreeMap<Double, E> map = new TreeMap<Double, E>();
   private double total = 0;
 
   /**
@@ -26,6 +25,18 @@ public class RandomCollection<E> implements Serializable {
     }
     total += weight;
     map.put(total, result);
+  }
+
+  /**
+   * Add all of the entries from the supplied RandomCollection.
+   * @param other the collection from which to copy entries.
+   */
+  public void addAll(RandomCollection<E> other) {
+    Double weightAdj = 0.0;
+    for (Entry<Double, E> e: other.map.entrySet()) {
+      add(e.getKey() - weightAdj, e.getValue());
+      weightAdj = e.getKey();
+    }
   }
 
   /**
