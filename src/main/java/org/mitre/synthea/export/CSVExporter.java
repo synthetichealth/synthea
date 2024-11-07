@@ -1255,7 +1255,7 @@ public class CSVExporter {
     s.append(org.getResourceID()).append(',');
     s.append(clean(org.name)).append(',');
     s.append(clean(org.address)).append(',');
-    s.append(org.city).append(',');
+    s.append(clean(org.city)).append(',');
     s.append(org.state).append(',');
     s.append(org.postcode).append(',');
     s.append(org.getY()).append(',');
