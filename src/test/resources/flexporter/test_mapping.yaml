@@ -280,6 +280,17 @@ actions:
            location: ServiceRequest.authoredOn
            value: $getField([Procedure.performed]) # datetime choice type
 
+ - name: testRandomCode
+   create_resource: 
+     - resourceType: Encounter
+       fields:
+         - location: Encounter.status
+           value: $randomCode([http://example.org/encounterStatus,code])
+         - location: Encounter.class
+           value: $randomCode([http://example.org/encounterClass])
+         - location: Encounter.type
+           value: $randomCode([http://example.org/encounterType,CodeableConcept])
+
 
  - name: testExecuteScript
    execute_script:

@@ -26,6 +26,7 @@ import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Meta;
@@ -822,7 +823,7 @@ public abstract class Actions {
     } else if (flag.equals("getAttribute")) {
       return getAttribute(person, flagValues);
     } else if (flag.equals("randomCode")) {
-      return randomCode(flagValues[0]);
+      return randomCode(flagValues);
     }
 
     return null;
@@ -900,13 +901,22 @@ public abstract class Actions {
     return fieldValues.get(0);
   }
 
-  private static Map<String, String> randomCode(String valueSetUrl) {
+  private static Object randomCode(String... args) {
+    String valueSetUrl = args[0];
+    String outputType = (args.length > 1) ? args[1] : "Coding";
     Code code = RandomCodeGenerator.getCode(valueSetUrl,
         (int) (Math.random() * Integer.MAX_VALUE));
-    Map<String, String> codeAsMap = Map.of(
-         "system", code.system,
-         "code", code.code,
-         "display", code.display == null ? "" : code.display);
-    return codeAsMap;
+
+    if (outputType.equalsIgnoreCase("code")) {
+      return code.code;
+    } else if (outputType.equalsIgnoreCase("Coding")) {
+      return new Coding(code.system, code.code, code.display);
+    } else if (outputType.equalsIgnoreCase("CodeableConcept")) {
+      return FhirR4.mapCodeToCodeableConcept(code, null);
+    } else {
+      throw new IllegalArgumentException("Unexpected output type for randomCode: " + outputType
+          + ". Valid values are: code, Coding, CodeableConcept");
+    }
+
   }
 }

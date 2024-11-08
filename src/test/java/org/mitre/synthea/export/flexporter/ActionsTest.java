@@ -54,12 +54,15 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.TimeType;
 import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
 public class ActionsTest {
@@ -815,6 +818,67 @@ public class ActionsTest {
     assertEquals("Robert", name.getGivenAsSingleString());
     assertEquals("Rainbow", name.getFamily());
     assertEquals("Robert Rainbow", name.getText());
+  }
+
+  @Test
+  public void testRandomCode() {
+    Bundle b = new Bundle();
+    b.setType(BundleType.COLLECTION);
+
+    ValueSet statusVs = constructValueSet(
+        "http://hl7.org/fhir/encounter-status",
+        "planned", "finished", "cancelled");
+    RandomCodeGenerator.loadValueSet("http://example.org/encounterStatus", statusVs);
+
+    ValueSet classVs = constructValueSet(
+        "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+        "AMB", "EMER", "ACUTE");
+    RandomCodeGenerator.loadValueSet("http://example.org/encounterClass", classVs);
+
+    ValueSet typeVs = constructValueSet(
+        "http://terminology.hl7.org/CodeSystem/encounter-type",
+        "ADMS", "OKI");
+    RandomCodeGenerator.loadValueSet("http://example.org/encounterType", typeVs);
+
+    Map<String, Object> action = getActionByName("testRandomCode");
+    Actions.applyAction(b, action, null, null);
+
+    Encounter e = (Encounter) b.getEntryFirstRep().getResource();
+
+    Encounter.EncounterStatus status = e.getStatus();
+    assertNotNull(status);
+    assertTrue(status == Encounter.EncounterStatus.PLANNED
+        || status == Encounter.EncounterStatus.FINISHED
+        || status == Encounter.EncounterStatus.CANCELLED);
+
+    Coding encClass = e.getClass_();
+    assertNotNull(encClass);
+    assertEquals("http://terminology.hl7.org/CodeSystem/v3-ActCode", encClass.getSystem());
+    String code = encClass.getCode();
+    assertTrue(code.equals("AMB") || code.equals("EMER") || code.equals("ACUTE"));
+
+    CodeableConcept type = e.getTypeFirstRep();
+    assertNotNull(type);
+    Coding typeCoding = type.getCodingFirstRep();
+    assertNotNull(typeCoding);
+    assertEquals("http://terminology.hl7.org/CodeSystem/encounter-type", typeCoding.getSystem());
+    code = typeCoding.getCode();
+    assertTrue(code.equals("ADMS") || code.equals("OKI"));
+  }
+
+  private ValueSet constructValueSet(String system, String... codes) {
+    ValueSet vs = new ValueSet();
+
+    // populates the codes so that they can be read in RandomCodeGenerator.loadValueSet
+    ConceptSetComponent csc = new ConceptSetComponent();
+    csc.setSystem(system);
+    for (String code : codes) {
+      csc.addConcept().setCode(code).setDisplay(code);
+    }
+
+    vs.getCompose().getInclude().add(csc);
+
+    return vs;
   }
 
 }
