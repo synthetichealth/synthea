@@ -220,6 +220,8 @@ public class App {
             if (flexporterMappingFile.exists()) {
               Mapping mapping = Mapping.parseMapping(flexporterMappingFile);
               exportOptions.addFlexporterMapping(mapping);
+              mapping.loadValueSets();
+
               // disable the graalVM warning when FlexporterJavascriptContext is instantiated
               System.getProperties().setProperty("polyglot.engine.WarnInterpreterOnly", "false");
             } else {

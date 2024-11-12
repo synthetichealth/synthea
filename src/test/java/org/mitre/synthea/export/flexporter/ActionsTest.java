@@ -54,12 +54,15 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.TimeType;
 import org.hl7.fhir.r4.model.Type;
+import org.hl7.fhir.r4.model.ValueSet;
+import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.export.FhirR4;
+import org.mitre.synthea.helpers.RandomCodeGenerator;
 import org.mitre.synthea.world.agents.Person;
 
 public class ActionsTest {
@@ -82,6 +85,7 @@ public class ActionsTest {
     File file = new File(classLoader.getResource("flexporter/test_mapping.yaml").getFile());
 
     testMapping = Mapping.parseMapping(file);
+    testMapping.loadValueSets();
   }
 
   @AfterClass
@@ -817,4 +821,34 @@ public class ActionsTest {
     assertEquals("Robert Rainbow", name.getText());
   }
 
+  @Test
+  public void testRandomCode() {
+    Bundle b = new Bundle();
+    b.setType(BundleType.COLLECTION);
+
+    Map<String, Object> action = getActionByName("testRandomCode");
+    Actions.applyAction(b, action, null, null);
+
+    Encounter e = (Encounter) b.getEntryFirstRep().getResource();
+
+    Encounter.EncounterStatus status = e.getStatus();
+    assertNotNull(status);
+    assertTrue(status == Encounter.EncounterStatus.PLANNED
+        || status == Encounter.EncounterStatus.FINISHED
+        || status == Encounter.EncounterStatus.CANCELLED);
+
+    Coding encClass = e.getClass_();
+    assertNotNull(encClass);
+    assertEquals("http://terminology.hl7.org/CodeSystem/v3-ActCode", encClass.getSystem());
+    String code = encClass.getCode();
+    assertTrue(code.equals("AMB") || code.equals("EMER") || code.equals("ACUTE"));
+
+    CodeableConcept type = e.getTypeFirstRep();
+    assertNotNull(type);
+    Coding typeCoding = type.getCodingFirstRep();
+    assertNotNull(typeCoding);
+    assertEquals("http://terminology.hl7.org/CodeSystem/encounter-type", typeCoding.getSystem());
+    code = typeCoding.getCode();
+    assertTrue(code.equals("ADMS") || code.equals("OKI"));
+  }
 }

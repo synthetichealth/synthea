@@ -3385,7 +3385,7 @@ public class FhirR4 {
    * @param system The system identifier, such as a URI. Optional; may be null.
    * @return The converted CodeableConcept
    */
-  private static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
+  public static CodeableConcept mapCodeToCodeableConcept(Code from, String system) {
     CodeableConcept to = new CodeableConcept();
     system = system == null ? null : ExportHelper.getSystemURI(system);
     from.system = ExportHelper.getSystemURI(from.system);

@@ -18,6 +18,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.hl7.fhir.r4.model.ValueSet.ConceptReferenceComponent;
 import org.hl7.fhir.r4.model.ValueSet.ConceptSetComponent;
@@ -117,8 +119,25 @@ public abstract class RandomCodeGenerator {
         ResponseBody body = response.body();
         if (body != null) {
           IParser parser = FhirR4.getContext().newJsonParser();
-          ValueSet valueSet = (ValueSet) parser.parseResource(body.charStream());
-          loadValueSet(valueSetUri, valueSet);
+          Resource resource = (Resource) parser.parseResource(body.charStream());
+          if (resource instanceof ValueSet) {
+            loadValueSet(valueSetUri, (ValueSet)resource);
+          } else if (resource instanceof OperationOutcome) {
+            OperationOutcome oo = (OperationOutcome)resource;
+            parser.setPrettyPrint(true);
+            System.err.println(parser.encodeResourceToString(oo));
+            String details = oo.getIssueFirstRep().getDetails().getText();
+
+            throw new RuntimeException(
+                "Received OperationOutcome in ValueSet expand response. Detail: "
+                + details + ". See log for full resource");
+          } else {
+            parser.setPrettyPrint(true);
+            System.err.println(parser.encodeResourceToString(resource));
+            throw new RuntimeException(
+                "Unexpected resourceType received in expand ValueSet response: "
+                + resource.getResourceType() + ". See log for full resource");
+          }
         } else {
           throw new RuntimeException("Value Set Expansion contained no body");
         }
