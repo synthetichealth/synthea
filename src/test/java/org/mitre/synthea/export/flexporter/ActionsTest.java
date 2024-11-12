@@ -85,6 +85,7 @@ public class ActionsTest {
     File file = new File(classLoader.getResource("flexporter/test_mapping.yaml").getFile());
 
     testMapping = Mapping.parseMapping(file);
+    testMapping.loadValueSets();
   }
 
   @AfterClass
@@ -825,21 +826,6 @@ public class ActionsTest {
     Bundle b = new Bundle();
     b.setType(BundleType.COLLECTION);
 
-    ValueSet statusVs = constructValueSet(
-        "http://hl7.org/fhir/encounter-status",
-        "planned", "finished", "cancelled");
-    RandomCodeGenerator.loadValueSet("http://example.org/encounterStatus", statusVs);
-
-    ValueSet classVs = constructValueSet(
-        "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-        "AMB", "EMER", "ACUTE");
-    RandomCodeGenerator.loadValueSet("http://example.org/encounterClass", classVs);
-
-    ValueSet typeVs = constructValueSet(
-        "http://terminology.hl7.org/CodeSystem/encounter-type",
-        "ADMS", "OKI");
-    RandomCodeGenerator.loadValueSet("http://example.org/encounterType", typeVs);
-
     Map<String, Object> action = getActionByName("testRandomCode");
     Actions.applyAction(b, action, null, null);
 
@@ -865,20 +851,4 @@ public class ActionsTest {
     code = typeCoding.getCode();
     assertTrue(code.equals("ADMS") || code.equals("OKI"));
   }
-
-  private ValueSet constructValueSet(String system, String... codes) {
-    ValueSet vs = new ValueSet();
-
-    // populates the codes so that they can be read in RandomCodeGenerator.loadValueSet
-    ConceptSetComponent csc = new ConceptSetComponent();
-    csc.setSystem(system);
-    for (String code : codes) {
-      csc.addConcept().setCode(code).setDisplay(code);
-    }
-
-    vs.getCompose().getInclude().add(csc);
-
-    return vs;
-  }
-
 }

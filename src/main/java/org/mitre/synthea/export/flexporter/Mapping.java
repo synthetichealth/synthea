@@ -1,5 +1,7 @@
 package org.mitre.synthea.export.flexporter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,6 +9,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.hl7.fhir.r4.model.ValueSet;
+import org.mitre.synthea.helpers.RandomCodeGenerator;
+import org.mitre.synthea.helpers.Utilities;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -15,6 +20,7 @@ public class Mapping {
   public String applicability;
 
   public Map<String, Object> variables;
+  public List<Map<String, Object>> customValueSets;
 
   /**
    * Each action is a {@code Map>String,?>}. Nested fields within the YAML become ArrayLists and
@@ -33,5 +39,21 @@ public class Mapping {
     Yaml yaml = new Yaml(new Constructor(Mapping.class));
 
     return yaml.loadAs(selectorInputSteam, Mapping.class);
+  }
+
+  /**
+   * Load the custom ValueSets that this mapping defines, so that the codes can be selected
+   * in RandomCodeGenerator.
+   */
+  public void loadValueSets() {
+    try {
+      if (this.customValueSets != null) {
+        List<ValueSet> valueSets =
+            Utilities.parseYamlToResources(this.customValueSets, ValueSet.class);
+        valueSets.forEach(vs -> RandomCodeGenerator.loadValueSet(null, vs));
+      }
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

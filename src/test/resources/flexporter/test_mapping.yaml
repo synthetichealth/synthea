@@ -6,6 +6,49 @@ name: Random Testing
 # for now the assumption is 1 file = 1 synthea patient bundle.
 applicability: true
 
+# Not a huge fan of this format, but it's better than defining yet another custom syntax
+customValueSets:
+ - url: whats-for-dinner
+   compose:
+     include:
+       - system: http://snomed.info/sct
+         concept:
+           - code: 227360002
+             display: Pinto beans (substance)
+           - code: 227319009
+             display: Baked beans canned in tomato sauce with burgers (substance) 
+ - url: http://example.org/encounterStatus
+   compose:
+     include:
+       - system: http://hl7.org/fhir/encounter-status
+         concept:
+           - code: planned
+             display: Planned
+           - code: finished
+             display: Finished
+           - code: cancelled
+             display: Cancelled
+ - url: http://example.org/encounterClass
+   compose:
+     include:
+       - system: http://terminology.hl7.org/CodeSystem/v3-ActCode
+         concept:
+           - code: AMB
+             display: ambulatory
+           - code: EMER
+             display: emergency
+           - code: ACUTE
+             display: inpatient acute
+ - url: http://example.org/encounterType
+   compose:
+     include:
+       - system: http://terminology.hl7.org/CodeSystem/encounter-type
+         concept:
+           - code: ADMS
+             display: Annual diabetes mellitus screening
+           - code: OKI
+             display: Outpatient Kenacort injection
+
 actions:
  - name: Apply Profiles
    # v1: define specific profiles and an applicability statement on when to apply them
