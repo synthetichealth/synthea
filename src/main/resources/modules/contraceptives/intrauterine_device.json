@@ -70,7 +70,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment"
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "Prescribe_IUD",
@@ -303,7 +303,7 @@
         {
           "system": "SNOMED-CT",
           "code": "308335008",
-          "display": "Patient encounter procedure"
+          "display": "Patient encounter procedure (procedure)"
         }
       ],
       "direct_transition": "IUD_Insertion",
@@ -315,7 +315,7 @@
         {
           "system": "SNOMED-CT",
           "code": "65200003",
-          "display": "Insertion of intrauterine contraceptive device"
+          "display": "Insertion of intrauterine contraceptive device (procedure)"
         }
       ],
       "duration": {

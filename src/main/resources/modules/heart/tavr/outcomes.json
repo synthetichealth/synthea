@@ -171,12 +171,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 232816009,
+          "code": "232816009",
           "display": "Aortic valve and adjacent structure operations (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 261554009,
+          "code": "261554009",
           "display": "Reoperation (qualifier value)"
         }
       ],
@@ -196,7 +196,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 129721000119106,
+          "code": "129721000119106",
           "display": "Acute renal failure on dialysis (disorder)"
         }
       ],
@@ -207,8 +207,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 111282000,
-          "display": "Acute respiratory insufficiency (disorder)"
+          "code": "65710008",
+          "display": "Acute respiratory failure (disorder)"
         }
       ],
       "direct_transition": "End insufficiency"
@@ -299,7 +299,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 116863004,
+          "code": "116863004",
           "display": "Transfusion of red blood cells (procedure)"
         }
       ],
@@ -473,7 +473,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233174007,
+          "code": "233174007",
           "display": "Cardiac pacemaker procedure (procedure)"
         }
       ],
@@ -492,7 +492,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 14106009,
+        "code": "14106009",
         "display": "Cardiac pacemaker, device (physical object)"
       },
       "direct_transition": "Check postop bleeding",
@@ -580,7 +580,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 278365007,
+          "code": "278365007",
           "display": "Anticoagulant-induced bleeding (disorder)"
         }
       ],
@@ -668,7 +668,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 129574000,
+          "code": "129574000",
           "display": "Postoperative myocardial infarction (disorder)"
         }
       ],
@@ -844,7 +844,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 275408006,
+          "code": "275408006",
           "display": "Postoperative renal failure (disorder)"
         }
       ],

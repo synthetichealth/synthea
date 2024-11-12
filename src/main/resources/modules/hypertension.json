@@ -204,7 +204,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 59621000,
+          "code": "59621000",
           "display": "Essential hypertension (disorder)"
         }
       ],
@@ -219,7 +219,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -283,7 +283,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -296,7 +296,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -356,30 +356,30 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 443402002,
-          "display": "Lifestyle education regarding hypertension"
+          "code": "443402002",
+          "display": "Lifestyle education regarding hypertension (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 386463000,
-          "display": "Prescribed activity/exercise education"
+          "code": "386463000",
+          "display": "Prescribed activity/exercise education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 413473000,
-          "display": "Counseling about alcohol consumption"
+          "code": "413473000",
+          "display": "Counseling about alcohol consumption (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 1151000175103,
-          "display": "Dietary approaches to stop hypertension diet"
+          "code": "1151000175103",
+          "display": "Dietary Approaches to Stop Hypertension diet (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225323000,
-          "display": "Smoking cessation education"
+          "code": "225323000",
+          "display": "Smoking cessation education (procedure)"
         }
       ],
       "goals": [
@@ -452,8 +452,8 @@
                                     "codes": [
                                       {
                                         "system": "SNOMED-CT",
-                                        "code": 22298006,
-                                        "display": "Myocardial Infarction"
+                                        "code": "22298006",
+                                        "display": "Myocardial infarction (disorder)"
                                       }
                                     ]
                                   },
@@ -462,7 +462,7 @@
                                     "codes": [
                                       {
                                         "system": "SNOMED-CT",
-                                        "code": 399211009,
+                                        "code": "399211009",
                                         "display": "History of myocardial infarction (situation)"
                                       }
                                     ]
@@ -745,8 +745,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183856001,
-          "display": "Referral to hypertension clinic"
+          "code": "183856001",
+          "display": "Referral to hypertension clinic (procedure)"
         }
       ],
       "direct_transition": "End_Hypertension_Followup_Encounter_3"
@@ -891,7 +891,7 @@
       "direct_transition": "Set_Yearly_Risk",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 171222001,
+        "code": "171222001",
         "display": "Hypertension screening (procedure)"
       }
     }

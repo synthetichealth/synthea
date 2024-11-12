@@ -317,7 +317,7 @@
         "instructions": [
           {
             "system": "SNOMED-CT",
-            "code": 421399004,
+            "code": "421399004",
             "display": "Dilute - dosing instruction imperative (qualifier value)"
           }
         ]

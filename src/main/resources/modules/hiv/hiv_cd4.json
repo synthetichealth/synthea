@@ -1513,7 +1513,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 62479008,
+                "code": "62479008",
                 "display": "Acquired immune deficiency syndrome (disorder)"
               }
             ]
@@ -1529,7 +1529,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 313660005,
+          "code": "313660005",
           "display": "Absolute CD4 count procedure (procedure)"
         }
       ],

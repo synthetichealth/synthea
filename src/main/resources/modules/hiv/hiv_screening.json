@@ -16,7 +16,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171121004,
+          "code": "171121004",
           "display": "Human immunodeficiency virus screening (procedure)"
         }
       ],
@@ -65,8 +65,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 165816005,
-            "display": "Human immunodeficiency virus positive (finding)"
+            "code": "165816005",
+            "display": "Human immunodeficiency virus detected (finding)"
           }
         }
       ],
@@ -94,8 +94,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 165815009,
-            "display": "Human immunodeficiency virus negative (finding)"
+            "code": "165815009",
+            "display": "Human immunodeficiency virus not detected (finding)"
           }
         }
       ],
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 313077009,
+          "code": "313077009",
           "display": "Human immunodeficiency virus counseling (procedure)"
         }
       ],
@@ -125,7 +125,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3457005,
+          "code": "3457005",
           "display": "Patient referral (procedure)"
         }
       ],

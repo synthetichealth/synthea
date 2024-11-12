@@ -245,8 +245,8 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 313423004,
-        "display": "At risk of osteoporosis (finding)"
+        "code": "313423004",
+        "display": "At increased risk of osteoporosis (finding)"
       }
     }
   },

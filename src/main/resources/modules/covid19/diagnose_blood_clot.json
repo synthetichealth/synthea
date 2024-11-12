@@ -82,7 +82,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 706870000,
+          "code": "706870000",
           "display": "Acute pulmonary embolism (disorder)"
         }
       ],
@@ -94,7 +94,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 132281000119108,
+          "code": "132281000119108",
           "display": "Acute deep venous thrombosis (disorder)"
         }
       ],

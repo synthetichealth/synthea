@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133900002,
+          "code": "133900002",
           "display": "Intraoperative care (regime/therapy)"
         }
       ],
@@ -29,7 +29,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34896006,
+          "code": "34896006",
           "display": "Incision (procedure)"
         }
       ],
@@ -72,7 +72,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410011004,
+          "code": "410011004",
           "display": "Administration of anesthesia AND/OR sedation (procedure)"
         }
       ],
@@ -94,7 +94,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 58828004,
+          "code": "58828004",
           "display": "Application of dressing, sterile (procedure)"
         }
       ],
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 37729005,
+          "code": "37729005",
           "display": "Patient transfer, in-hospital (procedure)"
         }
       ],
@@ -122,7 +122,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1231000119100,
+          "code": "1231000119100",
           "display": "History of aortic valve replacement (situation)"
         }
       ],
@@ -134,8 +134,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 725351001,
-          "display": "Transcatheter aortic valve replacement (procedure)"
+          "code": "773996000",
+          "display": "Transcatheter aortic valve implantation (procedure)"
         }
       ],
       "distribution": {
@@ -154,8 +154,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 725351001,
-          "display": "Transcatheter aortic valve replacement (procedure)"
+          "code": "773996000",
+          "display": "Transcatheter aortic valve implantation (procedure)"
         }
       ],
       "distribution": {

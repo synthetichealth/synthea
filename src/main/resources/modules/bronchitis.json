@@ -182,7 +182,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "distributed_transition": [
@@ -211,7 +211,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -291,24 +291,24 @@
         {
           "system": "SNOMED-CT",
           "code": "53950000",
-          "display": "Respiratory therapy"
+          "display": "Respiratory therapy (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "710081004",
-          "display": "Smoking cessation therapy"
+          "display": "Smoking cessation therapy (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": "304510005",
-          "display": "Recommendation to avoid exercise"
+          "display": "Recommendation to avoid exercise (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "371605008",
-          "display": "Deep breathing and coughing exercises"
+          "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],
       "direct_transition": "OTC_Medicine"
@@ -321,19 +321,19 @@
         {
           "system": "SNOMED-CT",
           "code": "53950000",
-          "display": "Respiratory therapy"
+          "display": "Respiratory therapy (procedure)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "304510005",
-          "display": "Recommendation to avoid exercise"
+          "display": "Recommendation to avoid exercise (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "371605008",
-          "display": "Deep breathing and coughing exercises"
+          "display": "Deep breathing and coughing exercises (regime/therapy)"
         }
       ],
       "direct_transition": "OTC_Medicine"

@@ -48,7 +48,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -59,7 +59,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34043003,
+          "code": "34043003",
           "display": "Dental consultation and report (procedure)"
         }
       ],
@@ -79,7 +79,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706298007,
+        "code": "706298007",
         "display": "Dental x-ray system (physical object)"
       },
       "direct_transition": "Dental_X_ray"
@@ -88,14 +88,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 241046008,
-        "display": "Dental X-ray bitewing (procedure)"
+        "code": "241046008",
+        "display": "Dental plain X-ray bitewing (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 700016008,
+            "code": "700016008",
             "display": "Structure of region of internal part of mouth (body structure)"
           },
           "modality": {
@@ -129,7 +129,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706390002,
+            "code": "706390002",
             "display": "Dental impression material (physical object)"
           }
         },
@@ -137,7 +137,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 468277001,
+            "code": "468277001",
             "display": "Dental impression tray material (physical object)"
           }
         }
@@ -149,12 +149,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 234745004,
+          "code": "234745004",
           "display": "Take oral or dental impression (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 234754001,
+          "code": "234754001",
           "display": "Take impression for orthodontic appliance (procedure)"
         }
       ],
@@ -247,7 +247,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -268,7 +268,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 8060009,
+        "code": "8060009",
         "display": "Denture, device (physical object)"
       },
       "direct_transition": "Fitting of dentures",
@@ -279,7 +279,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1269321004,
+          "code": "1269321004",
           "display": "Fitting of denture (procedure)"
         }
       ],
@@ -315,7 +315,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 37320007,
+          "code": "37320007",
           "display": "Loss of teeth (disorder)"
         }
       ],
@@ -331,7 +331,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67787004,
+          "code": "67787004",
           "display": "Tongue tie (disorder)"
         }
       ],
@@ -344,7 +344,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 46752004,
+          "code": "46752004",
           "display": "Torus palatinus (disorder)"
         }
       ],
@@ -357,7 +357,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 11625007,
+          "code": "11625007",
           "display": "Torus mandibularis (disorder)"
         }
       ],
@@ -370,7 +370,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1255252008,
+          "code": "1255252008",
           "display": "Resorption of alveolar process due to dental trauma (disorder)"
         }
       ],
@@ -395,7 +395,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79345008,
+          "code": "79345008",
           "display": "Excision of maxillary torus palatinus (procedure)"
         }
       ],
@@ -415,7 +415,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23183008,
+          "code": "23183008",
           "display": "Excision of lingual torus (procedure)"
         }
       ],
@@ -438,7 +438,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -516,7 +516,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 225738002,
+        "code": "225738002",
         "display": "Operating room (environment)"
       },
       "direct_transition": "Dental_Anesthesia"
@@ -552,7 +552,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3802001,
+          "code": "3802001",
           "display": "Dental application of desensitizing medicament (procedure)"
         }
       ],
@@ -573,7 +573,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 81733005,
+          "code": "81733005",
           "display": "Dental surgical procedure (procedure)"
         }
       ],
@@ -594,7 +594,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23933004,
+          "code": "23933004",
           "display": "Excision of lingual frenum (procedure)"
         }
       ],
@@ -614,7 +614,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 234687006,
+          "code": "234687006",
           "display": "Grafting of periodontal bone defect (procedure)"
         }
       ],

@@ -280,14 +280,15 @@ public class App {
    * Reset the fields of the provided options to the current values in the Config.
    */
   private static void resetOptionsFromConfig(Generator.GeneratorOptions options,
-		  Exporter.ExporterRuntimeOptions exportOptions) {
-      // Any options that are automatically set by reading the configuration
-      // file during options initialization need to be reset here.
-      options.population = Config.getAsInteger("generate.default_population", 1);
-      options.threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
+      Exporter.ExporterRuntimeOptions exportOptions) {
+    // Any options that are automatically set by reading the configuration
+    // file during options initialization need to be reset here.
+    options.population = Config.getAsInteger("generate.default_population", 1);
+    options.threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
 
-      exportOptions.yearsOfHistory = Config.getAsInteger("exporter.years_of_history", 10);
-      exportOptions.terminologyService = !Config.get("generate.terminology_service_url", "").isEmpty();
+    exportOptions.yearsOfHistory = Config.getAsInteger("exporter.years_of_history", 10);
+    exportOptions.terminologyService = !Config.get("generate.terminology_service_url", "")
+            .isEmpty();
   }
 
   private static boolean validateConfig(Generator.GeneratorOptions options,

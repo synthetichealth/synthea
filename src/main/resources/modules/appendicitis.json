@@ -194,7 +194,7 @@
         {
           "system": "SNOMED-CT",
           "code": "74400008",
-          "display": "Appendicitis"
+          "display": "Appendicitis (disorder)"
         }
       ],
       "distributed_transition": [
@@ -222,7 +222,7 @@
         {
           "system": "SNOMED-CT",
           "code": "47693006",
-          "display": "Rupture of appendix"
+          "display": "Rupture of appendix (disorder)"
         }
       ],
       "direct_transition": "Appendicitis_Encounter"
@@ -250,7 +250,7 @@
         {
           "system": "SNOMED-CT",
           "code": "428251008",
-          "display": "History of appendectomy"
+          "display": "History of appendectomy (situation)"
         }
       ],
       "direct_transition": "Transfer_To_Inpatient"
@@ -275,7 +275,7 @@
         {
           "system": "SNOMED-CT",
           "code": "80146002",
-          "display": "Appendectomy"
+          "display": "Excision of appendix (procedure)"
         }
       ],
       "duration": {

@@ -326,8 +326,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 65275009,
-          "display": "Acute Cholecystitis"
+          "code": "65275009",
+          "display": "Acute cholecystitis (disorder)"
         }
       ],
       "distributed_transition": [
@@ -351,8 +351,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 235919008,
-          "display": "Cholelithiasis"
+          "code": "235919008",
+          "display": "Gallbladder calculus (disorder)"
         }
       ],
       "remarks": [
@@ -486,8 +486,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 45595009,
-          "display": "Laparoscopic Removal of Gall Bladder"
+          "code": "45595009",
+          "display": "Laparoscopic cholecystectomy (procedure)"
         }
       ],
       "duration": {
@@ -529,8 +529,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 38102005,
-          "display": "Open Removal of Gall Bladder"
+          "code": "38102005",
+          "display": "Cholecystectomy (procedure)"
         }
       ],
       "duration": {
@@ -577,8 +577,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91302008,
-          "display": "Death due to sepsis"
+          "code": "91302008",
+          "display": "Sepsis (disorder)"
         }
       ]
     },
@@ -594,8 +594,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385486001,
-          "display": "Postoperative complication"
+          "code": "385486001",
+          "display": "Postoperative complication (disorder)"
         }
       ]
     },
@@ -610,8 +610,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
-          "display": "Encounter for check up"
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Postoperative_Follow-up",
@@ -623,8 +623,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185349003,
-          "display": "Encounter for check up"
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "reason": "Open_Cholecystectomy",
@@ -696,15 +696,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 426701000119108,
-        "display": "Ultrasonography of abdomen, right upper quadrant and epigastrium"
+        "code": "426701000119108",
+        "display": "Ultrasonography of abdomen, right upper quadrant and epigastrium (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 50519007,
-            "display": "Structure of right upper quadrant of abdomen"
+            "code": "50519007",
+            "display": "Structure of right upper quadrant of abdomen (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -739,7 +739,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736372004,
+          "code": "736372004",
           "display": "Discharge care plan (record artifact)"
         }
       ],
@@ -747,18 +747,18 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 436861000124104,
-          "display": "Decreased fat diet"
+          "code": "1055207008",
+          "display": "Decreased fat and oil diet (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225317005,
-          "display": "Restriction of movement"
+          "code": "225317005",
+          "display": "Restriction of movement (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225358003,
-          "display": "Wound care"
+          "code": "225358003",
+          "display": "Wound care (regime/therapy)"
         }
       ]
     },
@@ -1147,8 +1147,8 @@
       "direct_transition": "ECG",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 53566005,
-        "display": "Positive Murphy's Sign"
+        "code": "53566005",
+        "display": "Murphy's sign (finding)"
       }
     },
     "Chole_Symptom4_Ends": {
@@ -1222,8 +1222,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": "29303009",
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {
@@ -1263,8 +1263,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": "29303009",
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "sampled_data": {
@@ -1281,8 +1281,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": "29303009",
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "attachment": {
@@ -1364,8 +1364,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 91936005,
-                "display": "Allergy to Penicillin"
+                "code": "91936005",
+                "display": "Allergy to penicillin (finding)"
               }
             ]
           }

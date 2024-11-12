@@ -56,9 +56,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 252160004,
-          "display": "Standard pregnancy test (procedure)",
-          "value_set": ""
+          "code": "252160004",
+          "display": "Standard pregnancy test (procedure)"
         }
       ],
       "distribution": {
@@ -88,9 +87,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 440546007,
-          "display": "Discussion about pregnancy (procedure)",
-          "value_set": ""
+          "code": "440546007",
+          "display": "Discussion about pregnancy (procedure)"
         }
       ],
       "distribution": {
@@ -117,7 +115,7 @@
       "direct_transition": "Terminal",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 260385009,
+        "code": "260385009",
         "display": "Negative (qualifier value)"
       }
     },
@@ -135,7 +133,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 10828004,
+        "code": "10828004",
         "display": "Positive (qualifier value)"
       },
       "direct_transition": "Terminal"

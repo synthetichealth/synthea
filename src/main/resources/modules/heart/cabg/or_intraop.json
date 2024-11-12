@@ -101,7 +101,7 @@
         {
           "system": "SNOMED-CT",
           "code": "232965003",
-          "display": "Implantation of ventricular assist device (procedure)"
+          "display": "Implantation of cardiac ventricular assist device (procedure)"
         }
       ],
       "duration": {

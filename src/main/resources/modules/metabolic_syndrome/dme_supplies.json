@@ -18,7 +18,7 @@
           "quantity": 50,
           "code": {
             "system": "SNOMED-CT",
-            "code": 337388004,
+            "code": "337388004",
             "display": "Blood glucose testing strips (physical object)"
           }
         }
@@ -32,7 +32,7 @@
           "quantity": 100,
           "code": {
             "system": "SNOMED-CT",
-            "code": 1137596000,
+            "code": "1137596000",
             "display": "Blood lancet (physical object)"
           }
         }
@@ -46,7 +46,7 @@
           "quantity": 100,
           "code": {
             "system": "SNOMED-CT",
-            "code": 8537005,
+            "code": "8537005",
             "display": "Solution (substance)"
           }
         }

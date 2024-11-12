@@ -33,7 +33,7 @@
         {
           "system": "SNOMED-CT",
           "code": "241929008",
-          "display": "Acute allergic reaction"
+          "display": "Acute allergic reaction (disorder)"
         }
       ],
       "direct_transition": "ED_Visit_For_Allergic_Reaction"

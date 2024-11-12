@@ -346,7 +346,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 275408006,
+                        "code": "275408006",
                         "display": "Postoperative renal failure (disorder)"
                       }
                     ]
@@ -358,7 +358,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 40095003,
+                    "code": "40095003",
                     "display": "Injury of kidney (disorder)"
                   }
                 ]
@@ -385,7 +385,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 65710008,
+                    "code": "65710008",
                     "display": "Acute respiratory failure (disorder)"
                   }
                 ]
@@ -398,7 +398,7 @@
                     "codes": [
                       {
                         "system": "SNOMED-CT",
-                        "code": 76571007,
+                        "code": "76571007",
                         "display": "Septic shock (disorder)"
                       }
                     ]
@@ -411,7 +411,7 @@
                         "codes": [
                           {
                             "system": "SNOMED-CT",
-                            "code": 409623005,
+                            "code": "409623005",
                             "display": "Respiratory insufficiency (disorder)"
                           }
                         ]
@@ -421,8 +421,8 @@
                         "codes": [
                           {
                             "system": "SNOMED-CT",
-                            "code": 26763009,
-                            "display": "Controlled ventilation procedure and therapy, initiation and management (procedure)"
+                            "code": "243150007",
+                            "display": "Assist control ventilation (regime/therapy)"
                           }
                         ]
                       }
@@ -1012,7 +1012,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 399211009,
+                    "code": "399211009",
                     "display": "History of myocardial infarction (situation)"
                   }
                 ]

@@ -201,7 +201,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 702566000,
+        "code": "702566000",
         "display": "Suspected non-compliance of drug therapy (situation)"
       },
       "conditional_transition": [

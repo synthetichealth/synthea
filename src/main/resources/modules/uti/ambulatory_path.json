@@ -13,9 +13,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183444007,
-          "display": "Referral for further care (procedure)",
-          "value_set": ""
+          "code": "183444007",
+          "display": "Referral for further care (procedure)"
         }
       ],
       "distribution": {
@@ -34,9 +33,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67879005,
-          "display": "History and physical examination, limited (procedure)",
-          "value_set": ""
+          "code": "67879005",
+          "display": "History and physical examination, limited (procedure)"
         }
       ],
       "distribution": {
@@ -71,8 +69,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
-                    "display": "Pyelonephritis"
+                    "code": "45816000",
+                    "display": "Pyelonephritis (disorder)"
                   }
                 ]
               }
@@ -150,9 +148,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "UTI_Lab_FollowUp"
@@ -173,9 +170,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)",
-          "value_set": ""
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Set UTI_ED"
@@ -203,9 +199,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
-          "display": "Encounter for symptom",
-          "value_set": ""
+          "code": "185345009",
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "UTI_HPI"

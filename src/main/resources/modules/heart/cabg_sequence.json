@@ -61,7 +61,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -72,7 +72,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183519002,
+          "code": "183519002",
           "display": "Referral to cardiology service (procedure)"
         }
       ],
@@ -136,7 +136,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399211009,
+          "code": "399211009",
           "display": "History of myocardial infarction (situation)"
         }
       ],

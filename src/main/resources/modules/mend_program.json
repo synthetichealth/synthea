@@ -67,19 +67,19 @@
         {
           "system": "SNOMED-CT",
           "code": "718361005",
-          "display": "Weight management program"
+          "display": "Weight management program (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "77806000",
-          "display": "Low calorie diet"
+          "display": "Calorie restricted diet (finding)"
         },
         {
           "system": "SNOMED-CT",
           "code": "1171000175109",
-          "display": "Increased physical activity"
+          "display": "Increased physical activity (finding)"
         }
       ],
       "direct_transition": "End_Wellness_Encounter"
@@ -157,7 +157,7 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 763288003,
+        "code": "763288003",
         "display": "Patient review (procedure)"
       }
     }

@@ -17,7 +17,7 @@
         {
           "system": "SNOMED-CT",
           "code": "274474001",
-          "display": "Bone immobilization"
+          "display": "Bone immobilization (procedure)"
         }
       ],
       "direct_transition": "Stabilization Check"
@@ -137,7 +137,7 @@
         {
           "system": "SNOMED-CT",
           "code": "443165006",
-          "display": "Pathological fracture due to osteoporosis (disorder)"
+          "display": "Osteoporotic fracture of bone (disorder)"
         }
       ],
       "direct_transition": "End Encounter"
@@ -153,7 +153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 81629009,
+          "code": "81629009",
           "display": "Traumatic dislocation of temporomandibular joint (disorder)"
         }
       ],
@@ -166,7 +166,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 263172003,
+          "code": "263172003",
           "display": "Fracture of mandible (disorder)"
         }
       ],
@@ -184,7 +184,7 @@
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 91609006,
+            "code": "91609006",
             "display": "Bone structure of mandible (body structure)"
           },
           "modality": {
@@ -228,7 +228,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 37542007,
+          "code": "37542007",
           "display": "Posttreatment stabilization, orthodontic device (procedure)"
         }
       ],
@@ -248,7 +248,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 179632003,
+          "code": "179632003",
           "display": "Closed reduction of dislocation of temporomandibular joint (procedure)"
         }
       ],
@@ -268,7 +268,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 24832002,
+          "code": "24832002",
           "display": "Closed reduction of mandibular fracture (procedure)"
         }
       ],
@@ -391,7 +391,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Oral examination"
@@ -411,7 +411,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "443165006",
-                "display": "Pathological fracture due to osteoporosis (disorder)"
+                "display": "Osteoporotic fracture of bone (disorder)"
               }
             ]
           },
@@ -481,7 +481,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 69212005,
+          "code": "69212005",
           "display": "Range of motion testing (procedure)"
         }
       ],
@@ -501,7 +501,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 122856003,
+          "code": "122856003",
           "display": "Oral examination (procedure)"
         }
       ],
@@ -537,14 +537,14 @@
         {
           "system": "SNOMED-CT",
           "code": "385691007",
-          "display": "Fracture care"
+          "display": "Fracture care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "183051005",
-          "display": "Recommendation to rest"
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
@@ -559,7 +559,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 208748005,
+          "code": "208748005",
           "display": "Open dislocation of jaw (disorder)"
         }
       ],
