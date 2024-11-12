@@ -28,18 +28,22 @@ Patient currently has ${ehr_insurance?replace("_", " ")}.
 
 # Assessment and Plan
 <#if ehr_conditions?has_content>Patient is presenting with <#list ehr_conditions as entry>${entry.codes[0].display?lower_case}<#sep>, </#list>. </#if><#if ehr_allergies?has_content>Patient is presenting with <#list ehr_allergies as entry>${entry.codes[0].display?lower_case}<#sep>, </#list>. </#if>
+<#if ehr_note??>${ehr_note}</#if>
 
 ## Plan
 <#if ehr_immunizations?has_content>Patient was given the following immunizations: <#list ehr_immunizations as entry>${entry.codes[0].display?lower_case}<#sep>, </#list>. </#if>
 <#if ehr_procedures?has_content>The following procedures were conducted:
 <#list ehr_procedures as entry>
-- ${entry.codes[0].display?lower_case}
+- ${entry.codes[0].display?lower_case}<#if entry.note??>
+  - ${entry.note} </#if>
 </#list></#if>
 <#if ehr_medications?has_content>The patient was prescribed the following medications:
 <#list ehr_medications as entry>
-- ${entry.codes[0].display?lower_case}
+- ${entry.codes[0].display?lower_case}<#if entry.note??>
+  - ${entry.note}</#if>
 </#list></#if>
 <#if ehr_careplans?has_content>The patient was placed on a careplan:
 <#list ehr_careplans as entry>
-- ${entry.codes[0].display?lower_case}
+- ${entry.codes[0].display?lower_case}<#if entry.note??>
+  - ${entry.note}</#if>
 </#list></#if>
