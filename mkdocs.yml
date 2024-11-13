@@ -1,11 +1,15 @@
 site_name: Artificial Primary Care Data 
 nav:
   - Home: index.md
-  - Users: users.md
-  - Devs: dev.md
-  - Java: java.md
-  - Example Outputs: outputs.md
+  - Generating Data: users.md
+  - Developer Information: 
+    - devs/dev.md
+    - Resources: devs/resources.md
+    - Java: devs/java.md
   - UK Adaptations: ukadaptions.md
+  - Example Outputs: outputs.md
+  - Hypertension Dataset: hypertensiondataset.md
+  
 theme: 
   name: material
   features:
@@ -13,3 +17,7 @@ theme:
 markdown_extensions:
   - tables
   - footnotes
+  - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

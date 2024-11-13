@@ -1,8 +1,8 @@
-# Java Src Code
+# Java Source Code
 
-### App.java
+## App.java
 
-The engine behind the simualtion is built in Java and can be seen in `src/main/java`
+The engine behind the simualtion is built in Java and can be seen in `src/main/java`.
 
 ```
 ├── src/main/java 
@@ -34,7 +34,7 @@ The rest of the Java code has the following structure and documentation is provi
 |   |   |   |   |   ├── quadtree
 ```
 
-A couple of key files to note include
+A couple of key files to note include:
 
 ### engine/Generator.java
 The Generator class is responsible for simulating the creation of a population of people and their health records over time. The population is generated according to configurable options such as population size, seed for random number generation, location, and demographic criteria. The Generator supports multithreaded execution to speed up the simulation process.
