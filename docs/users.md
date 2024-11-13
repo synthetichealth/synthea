@@ -1,16 +1,12 @@
-# Setup swpc_Synthea
-See [Readme](https://github.com/nhsengland/swpc_synthea/blob/master/README.md)
+# Generating a patient dataset with personalised configuration
 
-# Creating a patient dataset
+## Set up swpc_synthea
+See [Readme](https://github.com/nhsengland/swpc_synthea/blob/master/README.md).
+
+## Creating a patient dataset
 See the original Synthea documentation that can be found [here](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running).
 
-# Integrating a patient dataset
-PLACEHOLDER
-
-
-# Configuration
-
-## Synthea Properties
+### Synthea Properties
 The `src/main/resources/synthea.properties` file controls the main configuration of the simulation
 
 Here is a reduced view of the file for the main configuration options used in swpc_synthea and their default values
@@ -154,4 +150,6 @@ physiology.state.enabled = false
 growtherrors = false
 ```
 
+## Integrating a patient dataset
+PLACEHOLDER
 
