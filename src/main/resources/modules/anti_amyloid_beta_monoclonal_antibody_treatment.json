@@ -18,7 +18,7 @@
       "type": "Simple",
       "conditional_transition": [
         {
-          "transition": "Included",
+          "transition": "Not Everyone",
           "condition": {
             "condition_type": "Age",
             "operator": ">=",
@@ -652,9 +652,24 @@
     "Wait Until Alzheimer's": {
       "type": "Guard",
       "allow": {
-        "condition_type": "Attribute",
-        "attribute": "Type of Alzheimer's",
-        "operator": "is not nil"
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "Type of Alzheimer's",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Active CarePlan",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": 386257007,
+                "display": "Dementia management (regime/therapy)"
+              }
+            ]
+          }
+        ]
       },
       "direct_transition": "Wait for Approval"
     },
@@ -1321,6 +1336,19 @@
       "attribute": "amyloid_beta_narrative",
       "direct_transition": "Amyloid Beta Finding",
       "value": "Amyloid Beta Positive"
+    },
+    "Not Everyone": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Included",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Excluded",
+          "distribution": 0.5
+        }
+      ]
     }
   },
   "gmf_version": 2
