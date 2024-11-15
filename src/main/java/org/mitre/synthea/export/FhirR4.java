@@ -2726,9 +2726,11 @@ public class FhirR4 {
       reason = carePlan.reasons.get(0);
       narrative += "<br/>Care plan is meant to treat " + reason.display + ".";
 
+      Reference reasonRef = careplanResource.addAddresses();
+      reasonRef.setDisplay(reason.display);
       reasonCondition = findConditionResourceByCode(bundle, reason.code);
       if (reasonCondition != null) {
-        careplanResource.addAddresses().setReference(reasonCondition.getFullUrl());
+        reasonRef.setReference(reasonCondition.getFullUrl());
       }
     }
 
@@ -2750,7 +2752,9 @@ public class FhirR4 {
         activityDetailComponent.setCode(mapCodeToCodeableConcept(activity, SNOMED_URI));
 
         if (reasonCondition != null) {
-          activityDetailComponent.addReasonReference().setReference(reasonCondition.getFullUrl());
+          activityDetailComponent.addReasonReference()
+            .setReference(reasonCondition.getFullUrl())
+            .setDisplay(reason.display);
         } else if (reason != null) {
           activityDetailComponent.addReasonCode(mapCodeToCodeableConcept(reason, SNOMED_URI));
           addTranslation("ICD10-CM", reason, activityDetailComponent.getReasonCodeFirstRep(),
@@ -2768,7 +2772,11 @@ public class FhirR4 {
     for (JsonObject goal : carePlan.goals) {
       BundleEntryComponent goalEntry =
           careGoal(person, bundle, personEntry, carePlan.start, goalStatus, goal);
-      careplanResource.addGoal().setReference(goalEntry.getFullUrl());
+      String display = ((Goal) goalEntry.getResource())
+          .getDescription().getCoding().get(0).getDisplay();
+      careplanResource.addGoal()
+        .setReference(goalEntry.getFullUrl())
+        .setDisplay(display);
     }
 
     careplanResource.setText(new Narrative().setStatus(NarrativeStatus.GENERATED)
