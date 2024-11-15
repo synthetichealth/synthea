@@ -938,11 +938,11 @@
       "distribution": {
         "kind": "GAUSSIAN",
         "parameters": {
-          "mean": 12,
-          "standardDeviation": 3
+          "mean": 1,
+          "standardDeviation": 2
         }
       },
-      "unit": "months",
+      "unit": "days",
       "name": "Pre_Diagnosis_Delay",
       "direct_transition": "increase_pre_hypertension_step"
     },
@@ -1059,45 +1059,45 @@
       "direct_transition": "Wellness_Encounter"
     },
     "Post_Diagnosis_BP_record": {
-    "type": "MultiObservation",
-    "category": "vital-signs",
-    "codes": [
-      {
-        "system": "LOINC",
-        "code": "85354-9",
-        "display": "Blood pressure panel with all children optional",
-        "value_set": ""
-      }
-    ],
-    "observations": [
-      {
-        "category": "vital-signs",
-        "codes": [
-          {
-            "system": "LOINC",
-            "code": "8480-6",
-            "display": "Systolic Blood Pressure"
-          }
-        ],
-        "unit": "mm[Hg]",
-        "vital_sign": "Systolic Blood Pressure"
-      },
-      {
-        "category": "vital-signs",
-        "codes": [
-          {
-            "system": "LOINC",
-            "code": "8462-4",
-            "display": "Diastolic Blood Pressure"
-          }
-        ],
-        "unit": "mm[Hg]",
-        "vital_sign": "Diastolic Blood Pressure"
-      }
-    ],
-    "name": "Post_Diagnosis_BP_record",
-    "direct_transition": "Set_BP_Not Controlled"
-  }
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "name": "Post_Diagnosis_BP_record",
+      "direct_transition": "Set_BP_Not Controlled"
+    }
   },
   "gmf_version": 1
 }
