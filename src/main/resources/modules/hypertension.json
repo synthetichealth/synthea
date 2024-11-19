@@ -29,16 +29,11 @@
       "type": "Simple",
       "remarks": [
         "By age 55 years, cumulative incidence of hypertension was 75.5% in black men, 75.7% in black women, 54.5% in white men, and 40.0% in white women -- https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007988",
-        "",
-        "",
         "Cumulative Incidence  = 1 - e(-IR x D)",
         "e^(-IRxD) = 1 - CI",
         "-IR x D = ln(1-CI)",
         "IR = -ln(1-CI)/D",
-        "",
         "Assuming 0% at age 18, and per the chart the increase is roughly linear, use the following yearly incidence rates:",
-        "",
-        "",
         "black men - 3.8%",
         "black women - 3.8%",
         "white men - 2.1%",
@@ -120,7 +115,7 @@
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "Wellness_Encounter",
+      "direct_transition": "Post_Onset_BP_record",
       "name": "Onset_Hypertension"
     },
     "Black": {
@@ -201,7 +196,7 @@
         }
       ],
       "assign_to_attribute": "hypertension_dx",
-      "direct_transition": "Set_BP_Not Controlled",
+      "direct_transition": "Post_Diagnosis_BP_record",
       "name": "Diagnose_Hypertension"
     },
     "Hypertension_Followup_Encounter": {
@@ -1022,7 +1017,87 @@
       "action": "increment",
       "direct_transition": "Check_step",
       "name": "increase_pre_hypertension_step"
-    }
+    },
+    "Post_Onset_BP_record": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "name": "Post_Onset_BP_record",
+      "direct_transition": "Wellness_Encounter"
+    },
+    "Post_Diagnosis_BP_record": {
+    "type": "MultiObservation",
+    "category": "vital-signs",
+    "codes": [
+      {
+        "system": "LOINC",
+        "code": "85354-9",
+        "display": "Blood pressure panel with all children optional",
+        "value_set": ""
+      }
+    ],
+    "observations": [
+      {
+        "category": "vital-signs",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "8480-6",
+            "display": "Systolic Blood Pressure"
+          }
+        ],
+        "unit": "mm[Hg]",
+        "vital_sign": "Systolic Blood Pressure"
+      },
+      {
+        "category": "vital-signs",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "8462-4",
+            "display": "Diastolic Blood Pressure"
+          }
+        ],
+        "unit": "mm[Hg]",
+        "vital_sign": "Diastolic Blood Pressure"
+      }
+    ],
+    "name": "Post_Diagnosis_BP_record",
+    "direct_transition": "Set_BP_Not Controlled"
+  }
   },
   "gmf_version": 1
 }
