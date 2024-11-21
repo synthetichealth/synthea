@@ -408,14 +408,15 @@ public class PayerTest {
     Calendar c = Calendar.getInstance();
     c.setTimeInMillis(birthTime);
 
-    // Below Poverty Level and Over 65, thus Dual Eligble.
+    // Below Poverty Level and Over 65, thus Dual Eligible
     Person person = new Person(0L);
     person.attributes.put(Person.BIRTHDATE, birthTime);
     person.attributes.put(Person.GENDER, "M");
     person.attributes.put(Person.OCCUPATION_LEVEL, 1.0);
-    // Below Medicaid Income Level.
+    // Below Medicaid Income Level
     person.attributes.put(Person.INCOME, (int) medicaidLevel - 1);
-    // Process the person's health insurance for 64 years, should have Medicaid for all.
+    
+    // Process the person's health insurance for 64 years, should have Medicaid for all
     for (int age = 0; age < 65; age++) {
       long currentTime = Utilities.convertCalendarYearsToTime(birthYear + age);
       assertTrue("Expected " + age + " but got " + person.age(currentTime),
@@ -424,19 +425,14 @@ public class PayerTest {
       assertEquals(getGovernmentPayer(PayerManager.MEDICAID),
           person.coverage.getPlanAtTime(currentTime).getPayer());
     }
-    c.setTimeInMillis(birthTime);
-    c.add(Calendar.YEAR, 64);
-    long age64Time = c.getTimeInMillis();
-    assertEquals(PayerManager.MEDICAID,
-        person.coverage.getPlanAtTime(age64Time).getPayer().getName());
-    // The person is now 65 and qualifies for Medicare in addition to Medicaid.
-    c.add(Calendar.YEAR, 1);
-    long age65Time = c.getTimeInMillis();
+
+    // Process insurance at age 65 - should transition to Dual Eligible
+    long age65Time = Utilities.convertCalendarYearsToTime(birthYear + 65);
     healthInsModule.process(person, age65Time);
-    assertEquals(PayerManager.DUAL_ELIGIBLE,
+    assertEquals("Person should transition to Dual Eligible at age 65",
+        PayerManager.DUAL_ELIGIBLE,
         person.coverage.getPlanAtTime(age65Time).getPayer().getName());
-    assertTrue(person.coverage.getPlanAtTime(age65Time)
-        .accepts(person, age65Time));
+    assertTrue(person.coverage.getPlanAtTime(age65Time).accepts(person, age65Time));
   }
 
   @Test
