@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
+import plotly.graph_objects as go
+
 def date_format(date_str):
     truncated_str = date_str[:10]
     return pd.to_datetime(truncated_str)
@@ -38,3 +40,44 @@ def plot_bp(patient_id, obs_df, conds, meds):
     plt.xticks(rotation = 45)
     plt.legend()
     st.pyplot(fig, use_container_width=False)
+
+def create_sankey_diagram(df=None):
+    total_hypertension_patients = 800
+    total_no_hypertension_patients = 200
+    total_medicated = 750
+    total_unmedicated = 50
+    medicated_dead = 20
+    medicated_alive = 730
+    unmedicated_dead = 10
+    unmedicated_alive = 40
+    no_hypertension_alive = 190
+    no_hypertension_dead = 10
+
+    fig = go.Figure(data=[go.Sankey(
+        node = dict(
+            pad = 75,
+            thickness = 10,
+            line = dict(color = "black", width = 0.5),
+            label = ["All patients", "Hypertension", "No Hypertension", "Medication", "No Medication", "Dead", "Alive"],
+            # x = [0, 0, 0, 1, 1, 2, 2],
+            # y = [0, 1, 2, 1, 2, 1, 2],
+            color = "green"
+        ),
+            link = dict(
+            source = [0, 0, 1, 1, 3, 3, 4, 4, 2, 2],
+            target = [1, 2, 3, 4, 5, 6, 5, 6, 6, 5],
+            value = [total_hypertension_patients, total_no_hypertension_patients,
+                     total_medicated, total_unmedicated, medicated_dead,
+                     medicated_alive, unmedicated_dead, unmedicated_alive,
+                     no_hypertension_alive, no_hypertension_dead]
+    ),
+    arrangement="fixed")] 
+    )
+
+    
+
+    fig.update_layout(
+        font=dict(size=15, color='black')
+    )
+
+    return fig

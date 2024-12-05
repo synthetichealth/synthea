@@ -19,4 +19,14 @@ plt.xticks(rotation=0)
 
 ax.set_title("Distribution of patients by ethnicity.")
 
-st.pyplot(fig)  
+st.pyplot(fig) 
+
+patient_number = st.number_input(
+        f"Pick a patient to see their route through healthcare over time, \
+            there are 1000 patients to choose from.",
+        min_value=0,
+        max_value=1000
+        )
+
+df_chosen_patient = df[(df['field name']=='PATIENT') & (df['value']=='b54acf7e-a725-9fc7-0a14-8a5e298c4e69')]
+st.write(df_chosen_patient)
