@@ -49,8 +49,11 @@ A Synthea module consists of states and transitions. Here is a basic structure:
 ### 3. Add States and Transitions
 Define the states and transitions that represent the progression of the disease. Common states include `ConditionOnset`, `Symptom`, `Encounter`, and `MedicationOrder`. If wanting to define these in a more visual way without needing to write out all the json, try using the Synthea [Module Builder](https://synthetichealth.github.io/module-builder/) and exporting out the json when you're done. 
 
-### 4. Validate the Module
-Use the Synthea module validation and testing tool to ensure your module is correctly formatted:
+### 4. Check & Test the Module
+Run the simulation with only your module and the base modules active, to check it's all doing the right thing. 
+
+The easiest setting for being able to observe the data is going into `synthea.properties` and set the `exporter.csv.export = true`, so that the data exports in csvs, before running the command below. 
+
 ```sh
 ./run_synthea -m my_new_disease
 ```
