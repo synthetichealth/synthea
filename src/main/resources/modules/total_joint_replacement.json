@@ -246,8 +246,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up (procedure)"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "Functional_Status_Assessments",

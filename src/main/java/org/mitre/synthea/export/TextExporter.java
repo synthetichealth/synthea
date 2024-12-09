@@ -71,9 +71,9 @@ import org.mitre.synthea.world.concepts.HealthRecord.Report;
  * 2017-11-01 : Body Height                              181.6 cm
  * --------------------------------------------------------------------------------
  * ENCOUNTERS:
- * 2017-11-01 : Encounter for check up (procedure)
+ * 2017-11-01 : Periodic reevaluation and management of healthy individual (procedure)
  * 2016-12-28 : Encounter for Viral sinusitis (disorder)
- * 2016-10-26 : Encounter for check up (procedure)
+ * 2016-10-26 : Periodic reevaluation and management of healthy individual (procedure)
  * </pre>
 
  * Exporter for a simple human-readable text format per encounter.

@@ -437,8 +437,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "conditional_transition": [
@@ -500,8 +500,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "complex_transition": [
@@ -677,8 +677,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "complex_transition": [
@@ -972,8 +972,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Advanced_drugs"
@@ -1038,8 +1038,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "conditional_transition": [

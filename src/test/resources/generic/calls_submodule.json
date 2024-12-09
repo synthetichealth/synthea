@@ -17,7 +17,7 @@
         {
           "system": "SNOMED-CT",
           "code": "12345678",
-          "display": "Encounter for problem"
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Examplitis"

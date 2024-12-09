@@ -44,8 +44,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "conditional_transition": [

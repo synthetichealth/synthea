@@ -900,7 +900,7 @@ public class FhirR4 {
     encounterResource.setStatus(EncounterStatus.FINISHED);
     if (encounter.codes.isEmpty()) {
       // wellness encounter
-      encounterResource.addType().addCoding().setCode("185349003")
+      encounterResource.addType().addCoding().setCode("86013001")
           .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
     } else {
       Code code = encounter.codes.get(0);

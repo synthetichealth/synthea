@@ -53,8 +53,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Recorded Symptom 1"
@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Oxygen_Saturation",
@@ -938,8 +938,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Echocardiography"
