@@ -105,8 +105,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up (procedure)"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "Routine_Colonoscopy_Procedure",
@@ -421,8 +421,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "End_Biopsy_Followup"
@@ -467,8 +467,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up (procedure)"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "Followup_Colonoscopy_Procedure",
@@ -714,8 +714,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up (procedure)"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "Diagnostic_Colonoscopy_Procedure",
@@ -1039,8 +1039,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Colorectal_Cancer_CarePlan"
@@ -1192,8 +1192,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Partial_Colectomy_Procedure"
@@ -1325,8 +1325,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Diverting_Colostomy_Procedure"
@@ -1455,8 +1455,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_4"
@@ -1550,8 +1550,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "185349003",
-          "display": "Encounter for check up (procedure)"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
       "direct_transition": "End_Colorectal_Cancer_CarePlan"
