@@ -6,8 +6,8 @@ Dev setup can be found in the original Synthea [instructions](https://github.com
 ## Development types
 There are several types of development for the code:
 
-- To develop the underlying engine see java.md.
+- To develop the underlying engine, refer to `java.md`.
 
-- To develop the underlying information that the simulation works on read the [resources page](resources.md).
+- To update the foundational data driving the simulation, see the [resources page](resources.md)].
 
-- To create new disease modules read the [module creation page](modules.md)
+- To design new disease modules, check out [module creation page](modules.md)

@@ -9,7 +9,7 @@ This guide will walk you through the steps to create a new disease module in the
 - [NICE guidelines](https://www.nice.org.uk/guidance) for the pathway you want a module for 
 
 ## Pre-work 
-We would recommend creating a flow diagram of the NICE pathway, thinking about every condition that would send you down different routes, every situation where you'd interact with the health system (e.g. get a measurement, test, appointment, diagnosis etc.), to base yourself off when it comes to making the module. You can see some example flow charts [here](#example-flowchart).
+We recommend starting by creating a flow diagram of the NICE pathway. Consider every condition that might lead to different pathways, and every interaction with the healthcare system (e.g., measurements, tests, appointments, diagnoses, etc.). This will serve as a foundation for developing your module. You can find example flow charts [here](#example-flowchart).
 
 ## Steps
 
@@ -50,9 +50,10 @@ A Synthea module consists of states and transitions. Here is a basic structure:
 Define the states and transitions that represent the progression of the disease. Common states include `ConditionOnset`, `Symptom`, `Encounter`, and `MedicationOrder`. If wanting to define these in a more visual way without needing to write out all the json, try using the Synthea [Module Builder](https://synthetichealth.github.io/module-builder/) and exporting out the json when you're done. 
 
 ### 4. Check & Test the Module
-Run the simulation with only your module and the base modules active, to check it's all doing the right thing. 
 
-The easiest setting for being able to observe the data is going into `synthea.properties` and set the `exporter.csv.export = true`, so that the data exports in csvs, before running the command below. 
+Run the simulation with only your module and the base modules active to ensure everything is functioning correctly.
+
+To easily observe the data, modify the `synthea.properties` file by setting `exporter.csv.export = true`. This enables data export in CSV format. Once done, execute the command below to run the simulation.
 
 ```sh
 ./run_synthea -m my_new_disease
