@@ -583,8 +583,8 @@ public class FhirStu3 {
     encounterResource.setStatus(EncounterStatus.FINISHED);
     if (encounter.codes.isEmpty()) {
       // wellness encounter
-      encounterResource.addType().addCoding().setCode("185349003")
-          .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
+      encounterResource.addType().addCoding().setCode("86013001")
+          .setDisplay("Periodic reevaluation and management of healthy individual (procedure)").setSystem(SNOMED_URI);
 
     } else {
       Code code = encounter.codes.get(0);
