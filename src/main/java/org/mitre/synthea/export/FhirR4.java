@@ -901,7 +901,7 @@ public class FhirR4 {
     if (encounter.codes.isEmpty()) {
       // wellness encounter
       encounterResource.addType().addCoding().setCode("86013001")
-          .setDisplay("Encounter for check up").setSystem(SNOMED_URI);
+          .setDisplay("Periodic reevaluation and management of healthy individual (procedure)").setSystem(SNOMED_URI);
     } else {
       Code code = encounter.codes.get(0);
       encounterResource.addType(mapCodeToCodeableConcept(code, SNOMED_URI));
