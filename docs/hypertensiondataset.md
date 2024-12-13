@@ -1,6 +1,12 @@
 # Sample Hypertension Dataset 
 
-This dataset contains 1000 patients, run only through the hypertension module. This means the patients will have gone only through routine appointments, routine vaccinations, and hypertension diagnosis and treatment (if applicable to that specific patient). It can be found at `Sample_data/csv_hypertension_1000` or download it as a zip file [here](images/csv_hypertension_1000.zip){:download="csv_hypertension_1000.zip"}. 
+
+!!! warning 
+    This sample dataset is a work in progress and not yet available.
+
+This dataset contains 1000 patients, run only through the hypertension module. This means the patients will have gone only through routine appointments, routine vaccinations, and hypertension diagnosis and treatment (if applicable to that specific patient). 
+
+<!-- It can be found at `Sample_data/csv_hypertension_1000` or download it as a zip file [here](images/csv_hypertension_1000.zip){:download="csv_hypertension_1000.zip"}.  -->
 
 ## Data set tables descriptions 
 Details on this dataset can be found in the attached technical output specification. 

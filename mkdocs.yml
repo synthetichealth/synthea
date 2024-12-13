@@ -6,6 +6,9 @@ nav:
     - devs/dev.md
     - Resources: devs/resources.md
     - Java: devs/java.md
+
+    - Module Creation: devs/modules.md
+
   - UK Adaptations: ukadaptions.md
   - Example Outputs: outputs.md
   - Hypertension Dataset: hypertensiondataset.md
@@ -18,3 +21,8 @@ markdown_extensions:
   - tables
   - footnotes
   - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+
