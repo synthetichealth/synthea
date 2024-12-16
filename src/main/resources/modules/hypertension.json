@@ -27,39 +27,71 @@
     },
     "Set_Yearly_Risk": {
       "type": "Simple",
-      "remarks": [
-        "By age 55 years, cumulative incidence of hypertension was 75.5% in black men, 75.7% in black women, 54.5% in white men, and 40.0% in white women -- https://www.ahajournals.org/doi/full/10.1161/JAHA.117.007988",
-        "Cumulative Incidence  = 1 - e(-IR x D)",
-        "e^(-IRxD) = 1 - CI",
-        "-IR x D = ln(1-CI)",
-        "IR = -ln(1-CI)/D",
-        "Assuming 0% at age 18, and per the chart the increase is roughly linear, use the following yearly incidence rates:",
-        "black men - 3.8%",
-        "black women - 3.8%",
-        "white men - 2.1%",
-        "white women - 1.4%",
-        "others - 2.5% (just a value in the middle, no source)"
-      ],
-      "conditional_transition": [
+      "name": "Set_Yearly_Risk",
+      "complex_transition": [
         {
-          "transition": "Black",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Race",
+                "race": "White"
+              },
+              {
+                "condition_type": "Gender",
+                "gender": "F"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "White_Female"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Race",
+                "race": "White"
+              }
+            ]
+          },
+          "distributions": [],
+          "transition": "White_Male"
+        },
+        {
           "condition": {
             "condition_type": "Race",
             "race": "Black"
-          }
+          },
+          "distributions": [],
+          "transition": "Black"
         },
         {
-          "transition": "White",
           "condition": {
-            "condition_type": "Race",
-            "race": "White"
-          }
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Gender",
+                "gender": "M"
+              },
+              {
+                "condition_type": "Race",
+                "race": "Black"
+              }
+            ]
+          },
+          "distributions": []
         },
         {
+          "distributions": [],
           "transition": "Others"
         }
-      ],
-      "name": "Set_Yearly_Risk"
+      ]
     },
     "Chance_of_Hypertension": {
       "type": "Simple",
@@ -115,75 +147,35 @@
       "type": "SetAttribute",
       "attribute": "hypertension",
       "value": true,
-      "direct_transition": "Post_Onset_BP_record",
+      "direct_transition": "Wellness_Encounter",
       "name": "Onset_Hypertension"
-    },
-    "Black": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Black_Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "Black_Male"
-        }
-      ],
-      "name": "Black"
-    },
-    "White": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "White_Female",
-          "condition": {
-            "condition_type": "Gender",
-            "gender": "F"
-          }
-        },
-        {
-          "transition": "White_Male"
-        }
-      ],
-      "name": "White"
-    },
-    "Others": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.025,
-      "name": "Others"
-    },
-    "Black_Female": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038,
-      "name": "Black_Female"
-    },
-    "Black_Male": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.038,
-      "name": "Black_Male"
-    },
-    "White_Male": {
-      "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
-      "direct_transition": "Chance_of_Hypertension",
-      "value": 0.021,
-      "name": "White_Male"
     },
     "White_Female": {
       "type": "SetAttribute",
-      "attribute": "risk_of_hypertension",
+      "attribute": "hypertension_risk",
       "direct_transition": "Chance_of_Hypertension",
-      "value": 0.014,
-      "name": "White_Female"
+      "name": "White_Female",
+      "value": 0.014
+    },
+    "White_Male": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_risk",
+      "name": "White_Male",
+      "value": 0.021,
+      "direct_transition": "Chance_of_Hypertension"
+    },
+    "Others": {
+      "type": "SetAttribute",
+      "attribute": "",
+      "name": "Others",
+      "direct_transition": "Chance_of_Hypertension"
+    },
+    "Black": {
+      "type": "SetAttribute",
+      "attribute": "hypertension_risk",
+      "direct_transition": "Chance_of_Hypertension",
+      "name": "Black",
+      "value": 0.038
     },
     "Diagnose_Hypertension": {
       "type": "ConditionOnset",
@@ -196,7 +188,7 @@
         }
       ],
       "assign_to_attribute": "hypertension_dx",
-      "direct_transition": "Post_Diagnosis_BP_record",
+      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
       "name": "Diagnose_Hypertension"
     },
     "Hypertension_Followup_Encounter": {
@@ -226,7 +218,7 @@
             "value": true
           },
           "distributions": [],
-          "transition": "Delay 2_Month"
+          "transition": "Annual_checkup_delay"
         },
         {
           "condition": {
@@ -310,7 +302,7 @@
             "value": true
           },
           "distributions": [],
-          "transition": "Delay_2_Month_2"
+          "transition": "Annual_checkup_delay_2"
         },
         {
           "condition": {
@@ -346,11 +338,6 @@
         }
       ],
       "name": "End_Hypertension_Followup_Encounter_2"
-    },
-    "End_Hypertension_Followup_Encounter_3": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal",
-      "name": "End_Hypertension_Followup_Encounter_3"
     },
     "LifeStyle_Modifications_Hypertension_CarePlan": {
       "type": "CarePlanStart",
@@ -399,7 +386,7 @@
         }
       ],
       "reason": "hypertension_dx",
-      "direct_transition": "Prescribe_Medication",
+      "direct_transition": "End_Wellness_Encounter",
       "name": "LifeStyle_Modifications_Hypertension_CarePlan"
     },
     "Wellness_Encounter": {
@@ -492,9 +479,17 @@
           "transition": "Included"
         }
       ],
-      "wellness": true,
       "reason": "hypertension_screening_reason",
-      "name": "Wellness_Encounter"
+      "name": "Wellness_Encounter",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 1287707002,
+          "display": "Consultation for Hypertension",
+          "value_set": ""
+        }
+      ],
+      "encounter_class": "ambulatory"
     },
     "End_Wellness_Encounter": {
       "type": "EncounterEnd",
@@ -639,7 +634,7 @@
             "operator": "==",
             "value": false
           },
-          "transition": "Prescribe_Medication_2"
+          "transition": "Prescribe_Medication"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter"
@@ -692,7 +687,7 @@
             "operator": "==",
             "value": false
           },
-          "transition": "Prescribe_Medication_3"
+          "transition": "Prescribe_Medication_2"
         },
         {
           "transition": "End_Hypertension_Followup_Encounter_2"
@@ -739,7 +734,7 @@
       ],
       "conditional_transition": [
         {
-          "transition": "Referral To Hypertension Clinic",
+          "transition": "Prescribe_Medication_3",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "blood_pressure_controlled",
@@ -763,13 +758,13 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Prescribe_Medication_4",
-      "name": "Referral To Hypertension Clinic"
+      "name": "Referral To Hypertension Clinic",
+      "direct_transition": "Prescribe_Medication_4"
     },
     "Set_BP_Not Controlled": {
       "type": "SetAttribute",
       "attribute": "blood_pressure_controlled",
-      "direct_transition": "LifeStyle_Modifications_Hypertension_CarePlan",
+      "direct_transition": "Hypertension_Symptoms_Encounter",
       "value": false,
       "name": "Set_BP_Not Controlled"
     },
@@ -856,24 +851,6 @@
       "direct_transition": "Wait Until Next Checkup",
       "name": "Excluded"
     },
-    "Prescribe_Medication_3": {
-      "type": "CallSubmodule",
-      "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Hypertension_Followup_Encounter_2",
-      "name": "Prescribe_Medication_3"
-    },
-    "Prescribe_Medication_2": {
-      "type": "CallSubmodule",
-      "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Hypertension_Followup_Encounter",
-      "name": "Prescribe_Medication_2"
-    },
-    "Prescribe_Medication": {
-      "type": "CallSubmodule",
-      "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Wellness_Encounter",
-      "name": "Prescribe_Medication"
-    },
     "Terminal": {
       "type": "Terminal",
       "name": "Terminal"
@@ -908,7 +885,7 @@
     },
     "Wait Until Next Checkup": {
       "type": "EncounterEnd",
-      "direct_transition": "Wellness_Encounter",
+      "direct_transition": "Hypertension_Symptoms_Encounter",
       "name": "Wait Until Next Checkup"
     },
     "Drop Outs": {
@@ -930,8 +907,8 @@
     "Prescribe_Medication_4": {
       "type": "CallSubmodule",
       "submodule": "medications/hypertension_medication",
-      "direct_transition": "End_Hypertension_Followup_Encounter_3",
-      "name": "Prescribe_Medication_4"
+      "name": "Prescribe_Medication_4",
+      "direct_transition": "Terminal"
     },
     "Pre_Diagnosis_Delay": {
       "type": "Delay",
@@ -942,14 +919,17 @@
           "standardDeviation": 3
         }
       },
-      "unit": "months",
+      "unit": "hours",
       "name": "Pre_Diagnosis_Delay",
-      "direct_transition": "increase_pre_hypertension_step"
+      "direct_transition": "increase_pre_hypertension_step",
+      "remarks": [
+        "source for frequency of measurements: https://bihsoc.org/wp-content/uploads/2017/09/Protocol.pdf"
+      ]
     },
     "Initialize_Prehypertension": {
       "type": "SetAttribute",
       "attribute": "pre_hypertension_step",
-      "direct_transition": "Pre_Diagnosis_BP_record",
+      "direct_transition": "Set_BP_Not Controlled",
       "name": "Initialize_Prehypertension",
       "value": 1
     },
@@ -958,16 +938,16 @@
       "name": "Check_step",
       "conditional_transition": [
         {
-          "transition": "Pre_Diagnosis_BP_record",
+          "transition": "Pre_Diagnosis_Home_BP_record",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "pre_hypertension_step",
             "operator": "<=",
-            "value": 5
+            "value": 14
           }
         },
         {
-          "transition": "Onset_Hypertension"
+          "transition": "check_for_dropouts"
         }
       ]
     },
@@ -993,7 +973,11 @@
             }
           ],
           "unit": "mm[Hg]",
-          "vital_sign": "Systolic Blood Pressure"
+          "vital_sign": "Systolic Blood Pressure",
+          "range": {
+            "low": 1,
+            "high": 2
+          }
         },
         {
           "category": "vital-signs",
@@ -1009,7 +993,7 @@
         }
       ],
       "name": "Pre_Diagnosis_BP_record",
-      "direct_transition": "Pre_Diagnosis_Delay"
+      "direct_transition": "Home_Blood_Pressure_Monitoring"
     },
     "increase_pre_hypertension_step": {
       "type": "Counter",
@@ -1018,7 +1002,24 @@
       "direct_transition": "Check_step",
       "name": "increase_pre_hypertension_step"
     },
-    "Post_Onset_BP_record": {
+    "Home_Blood_Pressure_Monitoring": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 990201000000104,
+        "display": "Blood Pressure Cuff"
+      },
+      "direct_transition": "End_Hypertension_Symptoms_Encounter",
+      "name": "Home_Blood_Pressure_Monitoring"
+    },
+    "Hypertension_Symptoms_Encounter": {
+      "type": "Encounter",
+      "telemedicine_possibility": "none",
+      "direct_transition": "Pre_Diagnosis_BP_record",
+      "name": "Hypertension_Symptoms_Encounter",
+      "wellness": true
+    },
+    "Pre_Diagnosis_Home_BP_record": {
       "type": "MultiObservation",
       "category": "vital-signs",
       "codes": [
@@ -1055,49 +1056,218 @@
           "vital_sign": "Diastolic Blood Pressure"
         }
       ],
-      "name": "Post_Onset_BP_record",
-      "direct_transition": "Wellness_Encounter"
+      "name": "Pre_Diagnosis_Home_BP_record",
+      "direct_transition": "Pre_Diagnosis_Delay"
     },
-    "Post_Diagnosis_BP_record": {
-    "type": "MultiObservation",
-    "category": "vital-signs",
-    "codes": [
-      {
-        "system": "LOINC",
-        "code": "85354-9",
-        "display": "Blood pressure panel with all children optional",
-        "value_set": ""
-      }
-    ],
-    "observations": [
-      {
-        "category": "vital-signs",
-        "codes": [
-          {
-            "system": "LOINC",
-            "code": "8480-6",
-            "display": "Systolic Blood Pressure"
-          }
-        ],
-        "unit": "mm[Hg]",
-        "vital_sign": "Systolic Blood Pressure"
+    "End_Hypertension_Symptoms_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Pre_Diagnosis_Delay",
+      "name": "End_Hypertension_Symptoms_Encounter"
+    },
+    "Prescribe_Medication": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter",
+      "name": "Prescribe_Medication"
+    },
+    "Prescribe_Medication_2": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "direct_transition": "End_Hypertension_Followup_Encounter_2",
+      "name": "Prescribe_Medication_2"
+    },
+    "Prescribe_Medication_3": {
+      "type": "CallSubmodule",
+      "submodule": "medications/hypertension_medication",
+      "name": "Prescribe_Medication_3",
+      "direct_transition": "End_Hypertension_Followup_Encounter_3"
+    },
+    "Delay_Month_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
       },
-      {
-        "category": "vital-signs",
-        "codes": [
-          {
-            "system": "LOINC",
-            "code": "8462-4",
-            "display": "Diastolic Blood Pressure"
+      "name": "Delay_Month_2",
+      "direct_transition": "Hypertension_Followup_Encounter_4"
+    },
+    "Set_BP_Controlled_4": {
+      "type": "SetAttribute",
+      "attribute": "blood_pressure_controlled",
+      "value": true,
+      "name": "Set_BP_Controlled_4",
+      "direct_transition": "Delay_Month_2"
+    },
+    "Hypertension_Followup_Encounter_4": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "telemedicine_possibility": "possible",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 390906007,
+          "display": "Follow-up encounter (procedure)",
+          "value_set": ""
+        }
+      ],
+      "reason": "hypertension_dx",
+      "name": "Hypertension_Followup_Encounter_4",
+      "direct_transition": "Record_BP_4"
+    },
+    "End_Hypertension_Followup_Encounter_3": {
+      "type": "EncounterEnd",
+      "name": "End_Hypertension_Followup_Encounter_3",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_controlled",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [
+            {
+              "transition": "Annual_checkup_delay_3",
+              "distribution": 1
+            }
+          ]
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Delay_Month_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_severe",
+            "operator": "==",
+            "value": false
+          },
+          "distributions": [
+            {
+              "transition": "Delay_Month_2",
+              "distribution": {
+                "attribute": "attribute",
+                "default": 0.365
+              }
+            },
+            {
+              "transition": "Set_BP_Controlled_4",
+              "distribution": 0.635
+            }
+          ]
+        }
+      ]
+    },
+    "Record_BP_4": {
+      "type": "MultiObservation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "85354-9",
+          "display": "Blood pressure panel with all children optional",
+          "value_set": ""
+        }
+      ],
+      "observations": [
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8480-6",
+              "display": "Systolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Systolic Blood Pressure"
+        },
+        {
+          "category": "vital-signs",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "8462-4",
+              "display": "Diastolic Blood Pressure"
+            }
+          ],
+          "unit": "mm[Hg]",
+          "vital_sign": "Diastolic Blood Pressure"
+        }
+      ],
+      "name": "Record_BP_4",
+      "conditional_transition": [
+        {
+          "transition": "Referral To Hypertension Clinic",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hypertension_controlled",
+            "operator": "==",
+            "value": false
           }
-        ],
-        "unit": "mm[Hg]",
-        "vital_sign": "Diastolic Blood Pressure"
-      }
-    ],
-    "name": "Post_Diagnosis_BP_record",
-    "direct_transition": "Set_BP_Not Controlled"
-  }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Annual_checkup_delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 8
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Delay 2_Month",
+      "name": "Annual_checkup_delay"
+    },
+    "Annual_checkup_delay_2": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 8
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Delay_2_Month_2",
+      "name": "Annual_checkup_delay_2"
+    },
+    "Annual_checkup_delay_3": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 8
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Delay_Month_2",
+      "name": "Annual_checkup_delay_3"
+    },
+    "check_for_dropouts": {
+      "type": "Simple",
+      "name": "check_for_dropouts",
+      "distributed_transition": [
+        {
+          "transition": "Onset_Hypertension",
+          "distribution": 0.67
+        },
+        {
+          "transition": "Drop Outs",
+          "distribution": 0.33000000000000007
+        }
+      ]
+    }
   },
   "gmf_version": 1
 }

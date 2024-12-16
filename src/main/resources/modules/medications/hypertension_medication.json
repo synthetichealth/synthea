@@ -127,8 +127,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 214354,
-          "display": "candesartan",
+          "code": 153822,
+          "display": "Candesartan",
           "value_set": ""
         }
       ],
@@ -163,8 +163,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1091643,
-          "display": "azilsartan",
+          "code": 1091646,
+          "display": "Azilsartan",
           "value_set": ""
         }
       ],
@@ -259,7 +259,7 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": 1091643,
+                "code": 1091646,
                 "display": "azilsartan"
               }
             ]
@@ -272,7 +272,7 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": 17767,
+                "code": 197361,
                 "display": "amlodipine"
               }
             ]
@@ -285,7 +285,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 17767,
+          "code": 197361,
           "display": "amlodipine",
           "value_set": ""
         }
@@ -338,7 +338,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": "1234",
+          "code": "313096",
           "display": "spironolactone 25 MG [Aldactone]",
           "value_set": ""
         }
@@ -353,7 +353,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 49276,
+          "code": 197626,
           "display": "Doxazosin",
           "value_set": ""
         }
@@ -368,8 +368,8 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 372553,
-          "display": "Labetalol Oral Tablet",
+          "code": 896758,
+          "display": "Labetalol",
           "value_set": ""
         }
       ],
@@ -416,7 +416,7 @@
             "codes": [
               {
                 "system": "RxNorm",
-                "code": 1091643,
+                "code": 1091646,
                 "display": "azilsartan"
               }
             ]
@@ -448,7 +448,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1091643,
+          "code": 1091646,
           "display": "azilsartan",
           "value_set": ""
         }
@@ -477,7 +477,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 17767,
+          "code": 197361,
           "display": "amlodipine",
           "value_set": ""
         }
@@ -517,7 +517,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 1091643,
+          "code": 1091646,
           "display": "azilsartan",
           "value_set": ""
         }
@@ -566,7 +566,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 5487,
+          "code": 310798,
           "display": "hydrochlorothiazide",
           "value_set": ""
         }
@@ -610,7 +610,7 @@
       "codes": [
         {
           "system": "RxNorm",
-          "code": 17767,
+          "code": 197361,
           "display": "amlodipine",
           "value_set": ""
         }
@@ -633,7 +633,7 @@
               "codes": [
                 {
                   "system": "RxNorm",
-                  "code": 5487,
+                  "code": 310798,
                   "display": "hydrochlorothiazide"
                 }
               ]
@@ -665,7 +665,7 @@
               "codes": [
                 {
                   "system": "RxNorm",
-                  "code": 17767,
+                  "code": 197361,
                   "display": "amlodipine"
                 }
               ]

@@ -94,8 +94,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
     cachedValue = baseline
       + getMedicationImpacts(person)
       + getLifestyleImpacts(person, baseline, time)
-      + getVariation(person, time)
-      + getPreHypertensionImpacts(person);
+      + getVariation(person, time);
 
     cacheTime = time;
     return cachedValue;
@@ -133,7 +132,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
   private double calculateBaseline(Person person) {
     boolean hypertension = (boolean) person.attributes.getOrDefault("hypertension", false);
     boolean severe = (boolean) person.attributes.getOrDefault("hypertension_severe", false);
-
+    int pre_hypertension_step = ((Number) person.attributes.getOrDefault("pre_hypertension_step", 0)).intValue();
     double baseline;
 
     String bpBaselineKey = "bp_baseline_" + hypertension + "_" + sysDias.toString();
@@ -144,7 +143,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
 
     } else {
       if (sysDias == SysDias.SYSTOLIC) {
-        if (hypertension) {
+        if (hypertension && pre_hypertension_step > 0) {
           if (severe) {
             // this leaves fewer people at the upper end of the spectrum
             baseline = person.rand(HYPERTENSIVE_SYS_BP_RANGE[1], HYPERTENSIVE_SYS_BP_RANGE[2]);
@@ -157,7 +156,7 @@ public class BloodPressureValueGenerator extends ValueGenerator {
           baseline = person.rand(NORMAL_SYS_BP_RANGE);
         }
       } else {
-        if (hypertension) {
+        if (hypertension && pre_hypertension_step > 0) {
           baseline = person.rand(HYPERTENSIVE_DIA_BP_RANGE);
         } else {
           baseline = person.rand(NORMAL_DIA_BP_RANGE);
