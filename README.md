@@ -53,13 +53,14 @@ Generating the population one at a time...
 ```
 
 Command-line arguments may be provided to specify a state, city, population size, or seed for randomization.
+
 ```
 run_synthea [-s seed] [-p populationSize] [state [city]]
 ```
 
 Full usage info can be printed by passing the `-h` option.
 ```
-$ ./run_synthea -h     
+$ ./run_synthea -h
 
 > Task :run
 Usage: run_synthea [options] [state [city]]
