@@ -15,12 +15,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-# If using OpenAI or other modules, set that up...
-# from openai import OpenAI
-# client = OpenAI(api_key=OPENAI_API_KEY)
 
 # ------------------------------------------
-# 1. GOOGLE SHEETS FUNCTIONS (as you had)
+# 1. GOOGLE SHEETS FUNCTIONS
 # ------------------------------------------
 def setup_google_sheets():
     """Set up connection to Google Sheets with exponential backoff."""
@@ -52,7 +49,6 @@ def get_worksheets(gc):
         try:
             spreadsheet = gc.open('Medhack')
             source_worksheet = spreadsheet.worksheet('Encounters')
-            # If 'time-series' sheet doesn’t exist yet, you can create it:
             try:
                 target_worksheet = spreadsheet.worksheet('time-series')
             except gspread.WorksheetNotFound:
@@ -66,16 +62,137 @@ def get_worksheets(gc):
             time.sleep(retry_delay)
             retry_delay *= 2
 
+# ------------------------------------------
+# 2. MODIFIER FUNCTIONS
+# ------------------------------------------
+def reason_modifiers(reason_description):
+    """Returns a dict of baseline offsets for each vital sign based on admission reason."""
+    reason = reason_description.lower()
+    offsets = {
+        'heart_rate': 0.0,
+        'systolic_bp': 0.0,
+        'diastolic_bp': 0.0,
+        'respiratory_rate': 0.0,
+        'oxygen_saturation': 0.0
+    }
+    
+    if "laceration" in reason or "sprain" in reason or "burn injury" in reason:
+        offsets['heart_rate'] += 5
+        offsets['systolic_bp'] += 3
+        offsets['diastolic_bp'] += 2
+    
+    elif "myocardial infarction" in reason:
+        offsets['heart_rate'] += 10
+        offsets['systolic_bp'] -= 5
+        offsets['diastolic_bp'] -= 3
+        offsets['oxygen_saturation'] -= 2
+    
+    elif "asthma" in reason:
+        offsets['respiratory_rate'] += 4
+        offsets['oxygen_saturation'] -= 3
+    
+    elif "seizure" in reason:
+        offsets['heart_rate'] += 6
+    
+    elif "drug overdose" in reason:
+        offsets['respiratory_rate'] -= 3
+        offsets['oxygen_saturation'] -= 5
+        offsets['heart_rate'] -= 5
+    
+    elif "chronic congestive heart failure" in reason:
+        offsets['heart_rate'] += 5
+        offsets['systolic_bp'] -= 5
+        offsets['diastolic_bp'] -= 3
+        offsets['oxygen_saturation'] -= 2
+    
+    return offsets
+
+def pain_modifiers(pain_score):
+    """Return offsets based on pain 0-10 scale."""
+    try:
+        p = float(pain_score)
+    except:
+        p = 0
+    
+    offsets = {
+        'heart_rate': p * 1.0,
+        'systolic_bp': p * 0.5,
+        'diastolic_bp': p * 0.3,
+        'respiratory_rate': p * 0.2,
+        'oxygen_saturation': 0.0
+    }
+    
+    return offsets
+
+def patient_characteristics_modifiers(height_cm, weight_kg, body_temp_c):
+    """Adjust baseline vitals based on body metrics."""
+    offsets = {
+        'heart_rate': 0.0,
+        'systolic_bp': 0.0,
+        'diastolic_bp': 0.0,
+        'respiratory_rate': 0.0,
+        'oxygen_saturation': 0.0
+    }
+    
+    try:
+        h_m = float(height_cm) / 100.0
+        w_kg = float(weight_kg)
+        bmi = w_kg / (h_m * h_m)
+        
+        if bmi >= 30:
+            offsets['heart_rate'] += 5
+            offsets['systolic_bp'] += 5
+            offsets['diastolic_bp'] += 3
+        elif bmi <= 18.5:
+            offsets['heart_rate'] -= 2
+            offsets['systolic_bp'] -= 3
+            offsets['diastolic_bp'] -= 2
+    except:
+        pass
+    
+    try:
+        t = float(body_temp_c)
+        if t >= 38.0:
+            offsets['heart_rate'] += 10
+            offsets['respiratory_rate'] += 2
+        elif t <= 35.0:
+            offsets['heart_rate'] -= 5
+            offsets['respiratory_rate'] -= 1
+    except:
+        pass
+    
+    return offsets
+
+def apply_modifiers(baseline_dict, reason_description, pain_score, height, weight, temperature):
+    """Apply all modifiers to baseline vitals."""
+    reason_offs = reason_modifiers(reason_description)
+    pain_offs = pain_modifiers(pain_score)
+    char_offs = patient_characteristics_modifiers(height, weight, temperature)
+    
+    final_offsets = {
+        'heart_rate': (reason_offs['heart_rate'] + pain_offs['heart_rate'] + char_offs['heart_rate']),
+        'systolic_bp': (reason_offs['systolic_bp'] + pain_offs['systolic_bp'] + char_offs['systolic_bp']),
+        'diastolic_bp': (reason_offs['diastolic_bp'] + pain_offs['diastolic_bp'] + char_offs['diastolic_bp']),
+        'respiratory_rate': (reason_offs['respiratory_rate'] + pain_offs['respiratory_rate'] + char_offs['respiratory_rate']),
+        'oxygen_saturation': (reason_offs['oxygen_saturation'] + pain_offs['oxygen_saturation'] + char_offs['oxygen_saturation']),
+    }
+    
+    modified_baseline = {}
+    for key in baseline_dict.keys():
+        base_val = baseline_dict[key]
+        offset_val = final_offsets.get(key, 0.0)
+        modified_baseline[key] = base_val + offset_val
+    
+    return modified_baseline
+
 # ------------------------------------------------
-# 2. VITAL SIGNS GENERATOR CLASS (unchanged except
-#    we add a 'start_time' parameter for convenience)
+# 3. VITAL SIGNS GENERATOR CLASS
 # ------------------------------------------------
 class VitalSignsGenerator:
     def __init__(self, seed=None):
         if seed is not None:
             np.random.seed(seed)
         
-        # Normal ranges (from your previous script)
         self.normal_ranges = {
             'heart_rate': (60, 100),
             'systolic_bp': (90, 120),
@@ -105,7 +222,7 @@ class VitalSignsGenerator:
             return np.minimum(100, baseline + noise)
         
         else:
-            return np.array([baseline]*len(time_points))  # fallback
+            return np.array([baseline]*len(time_points))
 
     def generate_patient_series(
         self, 
@@ -114,10 +231,6 @@ class VitalSignsGenerator:
         interval_seconds=5,
         start_time=None
     ):
-        """
-        Generate a DataFrame of vital sign time series for one patient.
-        If start_time is not provided, default to now.
-        """
         if start_time is None:
             start_time = datetime.now()
         
@@ -131,74 +244,45 @@ class VitalSignsGenerator:
         
         data = {'timestamp': timestamps}
         
-        # For each vital sign in the baseline:
         for vital_sign, baseline_val in patient_baseline.items():
             if np.isnan(baseline_val):
-                # If we don't have a baseline from sheet, use middle of normal range
                 low, high = self.normal_ranges.get(vital_sign, (60, 100))
                 baseline_val = (low + high) / 2.0
             
-            # Add variation
             values = self.add_natural_variation(baseline_val, time_points, vital_sign)
             data[vital_sign] = values
         
         return pd.DataFrame(data)
 
 # ---------------------------------------------
-# 3. MAIN LOGIC: READ ENCOUNTERS, GENERATE DATA
+# 4. MAIN LOGIC
 # ---------------------------------------------
 def main():
     gc = setup_google_sheets()
     source_ws, time_series_ws = get_worksheets(gc)
     
-    # 3.1. Load the "Encounters" sheet into a Pandas DataFrame
-    #     You can also do get_all_values() / get_all_records() 
-    #     if your sheet’s top row is headers.
     encounters_data = source_ws.get_all_records()
     encounters_df = pd.DataFrame(encounters_data)
     
-    # The columns we expect (based on your sample):
-    # ID, PATIENT, START, STOP, ...,
-    # Diastolic Blood Pressure, Systolic Blood Pressure, Heart rate, 
-    # Respiratory rate, Oxygen saturation in Arterial blood, ...
-    
-    # 3.2. Prepare the VitalSignsGenerator
     generator = VitalSignsGenerator(seed=42)
     
-    # 3.3. We will generate 1 hour of 5-second data for each row 
-    #      (i.e. each "encounter" or patient).
-    # 
-    # "One hospital bed" logic: 
-    #   - The first patient starts at 7:00:00 pm
-    #   - Next patient starts exactly 1 hour later, etc.
-    # 
-    #   That means patient i starts at 7:00 pm + i hours.
-    
-    base_time = datetime(2025, 1, 1, 19, 0, 0)  # e.g. Jan 1, 2025 at 7:00 PM
-    
-    # 3.4. Create a header row for the "time-series" sheet
-    #      We'll define the columns for the new sheet
-    headers = [
-        "timestamp",
-        "patient_id",
-        "diastolic_bp",
-        "systolic_bp",
-        "heart_rate",
-        "respiratory_rate",
-        "oxygen_saturation"
-    ]
-    
-    # Clear the "time-series" sheet or just overwrite from the top:
     time_series_ws.clear()
+    headers = [
+        "timestamp", "patient_id", "diastolic_bp", "systolic_bp",
+        "heart_rate", "respiratory_rate", "oxygen_saturation"
+    ]
     time_series_ws.append_row(headers)
     
-    # 3.5. For each encounter row, parse the baseline vitals,
-    #      generate the time series, and append to the sheet.
+    base_time = datetime(2025, 1, 1, 19, 0, 0)
     
     for i, row in encounters_df.iterrows():
         patient_id = row.get("PATIENT", f"Unknown_{i}")
+        reason_desc = row.get("REASONDESCRIPTION", "")
+        pain_score = row.get("Pain severity - 0-10 verbal numeric rating [Score] - Reported", "0")
+        body_height = row.get("Body Height", "")
+        body_weight = row.get("Body Weight", "")
+        body_temp = row.get("Body temperature", "")
         
-        # baseline extraction from columns (handle missing / blank)
         def safe_float(x):
             try:
                 return float(x)
@@ -213,19 +297,25 @@ def main():
             'oxygen_saturation': safe_float(row.get("Oxygen saturation in Arterial blood", np.nan)),
         }
         
-        # Start time for this patient’s 1-hour chunk
+        # Apply the modifiers to the baseline
+        pbaseline_mod = apply_modifiers(
+            baseline_dict=pbaseline,
+            reason_description=reason_desc,
+            pain_score=pain_score,
+            height=body_height,
+            weight=body_weight,
+            temperature=body_temp
+        )
+        
         patient_start_time = base_time + timedelta(hours=i)
         
-        # Generate the 1-hour data
         ts_data = generator.generate_patient_series(
-            patient_baseline=pbaseline, 
-            duration_minutes=60, 
+            patient_baseline=pbaseline_mod,
+            duration_minutes=60,
             interval_seconds=5,
             start_time=patient_start_time
         )
         
-        # Convert to rows that match the “headers” format
-        # e.g., each row: [timestamp, patient_id, diastolic, systolic, hr, rr, sat]
         output_rows = []
         for idx, ts_row in ts_data.iterrows():
             output_rows.append([
@@ -238,15 +328,9 @@ def main():
                 round(ts_row['oxygen_saturation'], 1),
             ])
         
-        # Append to the "time-series" sheet
-        # Note: If you have many thousands of rows per patient, 
-        # you may need batch appends or chunking. 
         time_series_ws.append_rows(output_rows, value_input_option='RAW')
     
-    print("Time-series data generation complete. Check the 'time-series' sheet.")
+    print("Time-series data with modifiers generated successfully.")
 
-# ---------------------------------------------
-# 4. RUN IT
-# ---------------------------------------------
 if __name__ == "__main__":
     main()
