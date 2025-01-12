@@ -52,3 +52,21 @@ src/main/resources/export/outpatient_rev_cntr_code_map.json
 # VS Code plugin files
 .history
 .env
+src/main/data/allergies.csv
+src/main/data/allergies_cleaned.csv
+src/main/data/conditions.csv
+src/main/data/conditions_cleaned.csv
+src/main/data/devices.csv
+src/main/data/encounters.csv
+src/main/data/final_ed_patients.csv
+src/main/data/imaging_cleaned.csv
+src/main/data/imaging_studies.csv
+src/main/data/immunizations.csv
+src/main/data/medications.csv
+src/main/data/medications_cleaned.csv
+src/main/data/observations.csv
+src/main/data/observations_cleaned.csv
+src/main/data/patients.csv
+src/main/data/patients_cleaned.csv
+src/main/data/procedures.csv
+src/main/data/procedures_cleaned.csv

@@ -50,9 +50,9 @@ def get_worksheets(gc):
             spreadsheet = gc.open('Medhack')
             source_worksheet = spreadsheet.worksheet('Encounters')
             try:
-                target_worksheet = spreadsheet.worksheet('time-series')
+                target_worksheet = spreadsheet.worksheet('train')
             except gspread.WorksheetNotFound:
-                target_worksheet = spreadsheet.add_worksheet(title='time-series', rows='1000', cols='10')
+                target_worksheet = spreadsheet.add_worksheet(title='train', rows='1000', cols='10')
             
             return source_worksheet, target_worksheet
         except Exception as e:
