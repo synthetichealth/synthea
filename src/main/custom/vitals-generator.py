@@ -48,11 +48,11 @@ def get_worksheets(gc):
     for attempt in range(max_retries):
         try:
             spreadsheet = gc.open('Medhack')
-            source_worksheet = spreadsheet.worksheet('Encounters')
+            source_worksheet = spreadsheet.worksheet('[Train] Full')
             try:
-                target_worksheet = spreadsheet.worksheet('train')
+                target_worksheet = spreadsheet.worksheet('[Train] Vitals')
             except gspread.WorksheetNotFound:
-                target_worksheet = spreadsheet.add_worksheet(title='train', rows='1000', cols='10')
+                target_worksheet = spreadsheet.add_worksheet(title='[Train] Vitals', rows='1000', cols='10')
             
             return source_worksheet, target_worksheet
         except Exception as e:
@@ -181,13 +181,53 @@ def apply_modifiers(baseline_dict, reason_description, pain_score, height, weigh
     for key in baseline_dict.keys():
         base_val = baseline_dict[key]
         offset_val = final_offsets.get(key, 0.0)
+        # If base_val is NaN, we'll just treat it as 0 or normal. Let's do 0 for now:
+        if np.isnan(base_val):
+            base_val = 0.0
         modified_baseline[key] = base_val + offset_val
     
     return modified_baseline
 
 # -------------------------------------------------------------
-# 2a. Additional conditions: AF, COPD, Hypertension, Anxiety...
+# 2a. Parse medical history / procedures -> condition flags
 # -------------------------------------------------------------
+def parse_conditions_from_history(history_str, procedures_str):
+    """
+    Look for keywords in PREVIOUS_MEDICAL_HISTORY / PREVIOUS_MEDICAL_PROCEDURES 
+    to decide if a patient has certain conditions.
+    Adjust / expand as needed to capture more conditions.
+    """
+    text_combined = (history_str + " " + procedures_str).lower()
+
+    conditions = []
+
+    if "atrial fibrillation" in text_combined or "af" in text_combined:
+        conditions.append("atrial_fibrillation")
+    
+    if "copd" in text_combined:
+        conditions.append("copd")
+    
+    if "hypertension" in text_combined or "high blood pressure" in text_combined:
+        conditions.append("chronic_hypertension")
+    
+    if "anxiety" in text_combined:
+        conditions.append("severe_anxiety")
+    
+    # If it explicitly says arrhythmia
+    if "arrhythmia" in text_combined:
+        conditions.append("arrhythmia")
+    
+    if "sleep apnea" in text_combined:
+        conditions.append("sleep_apnea")
+
+    # Add more if you want to detect other conditions 
+    # e.g. "heart failure," "diabetes," etc.
+
+    return conditions
+
+# ------------------------------------------------
+# 2b. Additional condition-based baseline changes
+# ------------------------------------------------
 def apply_condition_baseline(df, condition_list=None):
     """
     Applies baseline changes for each condition to the time-series
@@ -223,7 +263,7 @@ def apply_condition_baseline(df, condition_list=None):
         n = len(df)
         df['systolic_bp_baseline'] += 20
         df['diastolic_bp_baseline'] += 20
-        # Possibly we also allow bigger random variation
+        # Possibly also allow bigger random variation
         bigger_noise_s = np.random.normal(0, 3, n)
         bigger_noise_d = np.random.normal(0, 2, n)
         df['systolic_bp_baseline'] += bigger_noise_s
@@ -232,8 +272,7 @@ def apply_condition_baseline(df, condition_list=None):
     # Severe Anxiety: sporadic HR, RR bumps that might look like mini-crises
     if 'severe_anxiety' in condition_list:
         n = len(df)
-        # let's do random short bursts in heart_rate & respiratory_rate
-        # We'll define "bursts" of length ~10 intervals
+        # random short bursts in heart_rate & respiratory_rate
         bursts = np.random.choice([0, 1], size=n, p=[0.95, 0.05])  # 5% chance each row starts a burst
         for i in range(n):
             if bursts[i] == 1:
@@ -246,8 +285,7 @@ def apply_condition_baseline(df, condition_list=None):
     # Arrhythmia: short sudden HR drops or spikes
     if 'arrhythmia' in condition_list:
         n = len(df)
-        # We'll define occasional random "drops" or "spikes"
-        # Let's say 2% chance each row is a small drop or spike
+        # occasional random "drops" or "spikes"
         arr_events = np.random.choice([0, 1], size=n, p=[0.98, 0.02])
         for i in range(n):
             if arr_events[i] == 1:
@@ -258,8 +296,6 @@ def apply_condition_baseline(df, condition_list=None):
     # Sleep Apnea: periodic O2 dips, irregular RR spikes
     if 'sleep_apnea' in condition_list:
         n = len(df)
-        # Example: every 200 intervals, we do a 20-interval dip in O2
-        # This is just one simplistic approach
         i = 0
         while i < n:
             if np.random.rand() < 0.02:  # 2% chance to start an apnea event
@@ -271,7 +307,7 @@ def apply_condition_baseline(df, condition_list=None):
             else:
                 i += 1
 
-    # Now that we've changed baseline columns, we overwrite the actual vitals
+    # Finally, overwrite the actual columns with the new baseline
     for vital in ['heart_rate','systolic_bp','diastolic_bp','respiratory_rate','oxygen_saturation']:
         df[vital] = df[f"{vital}_baseline"]
     
@@ -337,7 +373,8 @@ class VitalSignsGenerator:
         data = {'timestamp': timestamps}
         
         for vital_sign, baseline_val in patient_baseline.items():
-            if np.isnan(baseline_val):
+            # If we have no baseline (NaN or 0), pick a midpoint of normal range
+            if baseline_val == 0 or np.isnan(baseline_val):
                 low, high = self.normal_ranges.get(vital_sign, (60, 100))
                 baseline_val = (low + high) / 2.0
             
@@ -367,8 +404,7 @@ def inject_states_and_crisis(df,
 
     df['state_label'] = 0
 
-    # Create "baseline" columns if they don't exist, 
-    # so we can always refer back to them
+    # Create "baseline" columns if they don't exist
     for col in ['heart_rate','systolic_bp','diastolic_bp','respiratory_rate','oxygen_saturation']:
         base_col = f"{col}_baseline"
         if base_col not in df.columns:
@@ -424,10 +460,9 @@ def apply_state_offsets(df, start_w, end_w, start_c, end_c):
     crisis_rr_amp    = 5
     crisis_o2_amp    = -5
 
-    # For convenience, define our vital sign columns
     vitals = ['heart_rate','systolic_bp','diastolic_bp','respiratory_rate','oxygen_saturation']
 
-    # 1) Apply the WARNING offsets if we have a warning range
+    # 1) Apply the WARNING offsets
     if start_w is not None and end_w is not None:
         length_w = end_w - start_w + 1
         for i, idx in enumerate(range(start_w, end_w + 1)):
@@ -447,28 +482,24 @@ def apply_state_offsets(df, start_w, end_w, start_c, end_c):
                 elif vital == 'oxygen_saturation':
                     df.at[idx, vital] = val_base + warn_o2_amp * fraction
 
-    # 2) If we have a crisis range, we want to build on top of 
-    #    the final offset from the warning (if it existed).
+    # 2) CRISIS offsets
     if start_c is not None and end_c is not None:
         length_c = end_c - start_c + 1
         
-        # If no warning preceded it, we assume the offset starts at 0
-        # (i.e. going from baseline straight to crisis).
+        # If no warning preceded it, we assume offset starts at 0
         warn_offset = {v: 0.0 for v in vitals}  
         
         if start_w is not None and end_w is not None:
-            # We look at the last row of the warning to see how much offset we ended with
-            # final_warning_offset = df[vital] - df[vital_baseline]
+            # Look at the last row of the warning to see the final offset
             for vital in vitals:
                 base_col = f"{vital}_baseline"
-                val_final = df.at[end_w, vital]  # actual final
+                val_final = df.at[end_w, vital]
                 val_base  = df.at[end_w, base_col]
                 warn_offset[vital] = val_final - val_base
         
         for i, idx in enumerate(range(start_c, end_c + 1)):
             fraction = i / (length_c - 1) if length_c > 1 else 1.0
-            # We'll do a smooth sinusoidal from 0..1 => the crisis wave
-            # but we start from the offset that was left by the warning
+            # smooth sinusoidal from 0..1 => the crisis wave
             ramp = np.sin(np.pi * fraction)
             
             for vital in vitals:
@@ -478,7 +509,7 @@ def apply_state_offsets(df, start_w, end_w, start_c, end_c):
                 if vital == 'heart_rate':
                     df.at[idx, vital] = (
                         val_base 
-                        + warn_offset[vital]    # continue from warning's final offset
+                        + warn_offset[vital]
                         + crisis_heart_amp * ramp
                     )
                 elif vital == 'systolic_bp':
@@ -515,11 +546,14 @@ def main():
     gc = setup_google_sheets()
     source_ws, time_series_ws = get_worksheets(gc)
     
+    # Pull data from 'Encounters' sheet.
+    # Make sure the Google Sheet columns match your new CSV columns (PATIENT, REASONDESCRIPTION, etc.)
     encounters_data = source_ws.get_all_records()
     encounters_df = pd.DataFrame(encounters_data)
     
     generator = VitalSignsGenerator(seed=42)
     
+    # Clear out existing data in 'train' sheet, then set up column headers
     time_series_ws.clear()
     headers = [
         "timestamp", "patient_id", "diastolic_bp", "systolic_bp",
@@ -533,18 +567,23 @@ def main():
 
     for i, row in encounters_df.iterrows():
         patient_id = row.get("PATIENT", f"Unknown_{i}")
-        reason_desc = row.get("REASONDESCRIPTION", "")
+        reason_desc = row.get("REASONDESCRIPTION", "")  # e.g. "Injury of knee (disorder)"
         pain_score = row.get("Pain severity - 0-10 verbal numeric rating [Score] - Reported", "0")
         body_height = row.get("Body Height", "")
         body_weight = row.get("Body Weight", "")
         body_temp = row.get("Body temperature", "")
-        
+
+        # Grab the big text fields so we can parse them:
+        pmh = row.get("PREVIOUS_MEDICAL_HISTORY", "")        # e.g. "Risk activity involvement..."
+        pmp = row.get("PREVIOUS_MEDICAL_PROCEDURES", "")     # e.g. "Medication reconciliation..."
+
         def safe_float(x):
             try:
                 return float(x)
             except:
                 return np.nan
         
+        # Grab baseline vitals
         pbaseline = {
             'diastolic_bp':      safe_float(row.get("Diastolic Blood Pressure", np.nan)),
             'systolic_bp':       safe_float(row.get("Systolic Blood Pressure", np.nan)),
@@ -553,7 +592,7 @@ def main():
             'oxygen_saturation': safe_float(row.get("Oxygen saturation in Arterial blood", np.nan)),
         }
         
-        # Apply the static modifiers (reason, pain, etc.)
+        # Apply the static modifiers (reason, pain, BMI, fever, etc.)
         pbaseline_mod = apply_modifiers(
             baseline_dict=pbaseline,
             reason_description=reason_desc,
@@ -563,9 +602,10 @@ def main():
             temperature=body_temp
         )
         
+        # Build a start time offset for each patient (so each patient starts 1 hour apart)
         patient_start_time = base_time + timedelta(hours=i)
         
-        # Generate the patient's 1-hour time-series
+        # 1-hour time-series at 5-second intervals
         ts_data = generator.generate_patient_series(
             patient_baseline=pbaseline_mod,
             duration_minutes=60,
@@ -573,25 +613,32 @@ def main():
             start_time=patient_start_time
         )
         
-        # Randomly assign conditions
-        conditions = []
-        if np.random.rand() < 0.2:
-            conditions.append('atrial_fibrillation')
-        if np.random.rand() < 0.1:
-            conditions.append('copd')
-        if np.random.rand() < 0.15:
-            conditions.append('chronic_hypertension')
-        if np.random.rand() < 0.15:
-            conditions.append('severe_anxiety')
-        if np.random.rand() < 0.1:
-            conditions.append('arrhythmia')
-        if np.random.rand() < 0.08:
-            conditions.append('sleep_apnea')
+        # Parse actual conditions from PMH + Procedures
+        history_conditions = parse_conditions_from_history(pmh, pmp)
         
-        # Apply those conditions to the baseline
+        # If you still want to randomize some, union them with random picks
+        # so there's a chance of adding more conditions beyond what's in the data:
+        random_conditions = []
+        if np.random.rand() < 0.2:
+            random_conditions.append('atrial_fibrillation')
+        if np.random.rand() < 0.1:
+            random_conditions.append('copd')
+        if np.random.rand() < 0.15:
+            random_conditions.append('chronic_hypertension')
+        if np.random.rand() < 0.15:
+            random_conditions.append('severe_anxiety')
+        if np.random.rand() < 0.1:
+            random_conditions.append('arrhythmia')
+        if np.random.rand() < 0.08:
+            random_conditions.append('sleep_apnea')
+        
+        # Combine the two lists (set() to avoid duplicates)
+        conditions = list(set(history_conditions + random_conditions))
+        
+        # 1) Apply condition-based baseline changes
         ts_data = apply_condition_baseline(ts_data, condition_list=conditions)
         
-        # Inject the multi-state logic (baseline->warning->crisis)
+        # 2) Inject the multi-state logic (baseline->warning->crisis)
         ts_data = inject_states_and_crisis(ts_data, 
                                            p_warning=0.3,
                                            p_crisis=0.5,
@@ -616,7 +663,7 @@ def main():
         rows = ts_data.values.tolist()
         all_rows_to_write.extend(rows)
 
-    # BATCH WRITE to avoid Google Sheets quotas
+    # BATCH WRITE to Google Sheets
     BATCH_SIZE = 500
     for start_idx in range(0, len(all_rows_to_write), BATCH_SIZE):
         end_idx = start_idx + BATCH_SIZE
