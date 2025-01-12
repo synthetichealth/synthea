@@ -8,14 +8,14 @@ def main():
     # 1. LOAD THE CSV FILES
     # =======================
     print("Loading CSVs...")
-    patients_df       = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/patients.csv")
-    encounters_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/encounters.csv")
-    observations_df   = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/observations.csv")
-    allergies_df      = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/allergies.csv")
-    conditions_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/conditions.csv")
-    imaging_df        = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/imaging_studies.csv")
-    medications_df    = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/medications.csv")
-    procedures_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/procedures.csv")
+    patients_df       = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/patients.csv")
+    encounters_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/encounters.csv")
+    observations_df   = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/observations.csv")
+    allergies_df      = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/allergies.csv")
+    conditions_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/conditions.csv")
+    imaging_df        = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/imaging_studies.csv")
+    medications_df    = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/medications.csv")
+    procedures_df     = pd.read_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/procedures.csv")
 
     # -------------------------------------------------------------------------
     # For date/time columns, convert them to datetime objects for easier math.
@@ -548,17 +548,17 @@ def main():
     # 6. (Optional) SAVE RESULTS
     # ================================
     # 6A. Save cleaned versions of each table (encounters_cleaned, etc.)
-    encounters_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/allergies.csv", index=False)
-    observations_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/observations_cleaned.csv", index=False)
-    allergies_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/allergies_cleaned.csv", index=False)
-    conditions_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/conditions_cleaned.csv", index=False)
-    imaging_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/imaging_cleaned.csv", index=False)
-    medications_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/medications_cleaned.csv", index=False)
-    procedures_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/procedures_cleaned.csv", index=False)
-    patients_df.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/patients_cleaned.csv", index=False)
+    encounters_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/allergies.csv", index=False)
+    observations_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/observations_cleaned.csv", index=False)
+    allergies_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/allergies_cleaned.csv", index=False)
+    conditions_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/conditions_cleaned.csv", index=False)
+    imaging_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/imaging_cleaned.csv", index=False)
+    medications_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/medications_cleaned.csv", index=False)
+    procedures_cleaned.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/procedures_cleaned.csv", index=False)
+    patients_df.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/patients_cleaned.csv", index=False)
 
     # 6B. Save the final big table
-    final_df.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/final_ed_patients.csv", index=False)
+    final_df.to_csv("/Users/samdonegan/Documents/GitHub/synthea/src/main/data/test/final_ed_patients.csv", index=False)
 
     print("Done! Final ED patient data saved to 'final_ed_patients.csv'.")
 
