@@ -255,7 +255,72 @@ class VitalSignsGenerator:
         return pd.DataFrame(data)
 
 # ---------------------------------------------
-# 4. MAIN LOGIC
+# 4. CRISIS INJECTION FUNCTION
+# ---------------------------------------------
+def inject_crisis_event(df, crisis_duration_minutes=10):
+    """
+    Adds a 'heart attack' crisis to the timeseries with 50% chance.
+    The crisis lasts for `crisis_duration_minutes`, 
+    not starting in the last `crisis_duration_minutes`.
+    
+    - We'll create a new column 'crisis_label' = 0 by default, 
+      and set it to 1 during the crisis.
+    - The crisis has a smooth (sinusoidal) ramp up and down 
+      for HR, BP, O2 sat, and respiratory rate.
+    """
+    # Each row is 5 seconds => 12 rows per minute
+    rows_per_minute = 60 // 5  # = 12
+    df_length = len(df)
+    crisis_length = crisis_duration_minutes * rows_per_minute  # 10 min * 12 = 120 rows
+    
+    df['crisis_label'] = 0  # default
+
+    # 50% chance for a crisis
+    if np.random.rand() < 0.5:
+        # We don't want it to start in the last 10 minutes
+        max_start_idx = df_length - crisis_length
+        if max_start_idx <= 0:
+            return df  # Not enough data to place a crisis
+
+        # Choose a random start within allowable range
+        crisis_start = np.random.randint(0, max_start_idx)
+        crisis_end = crisis_start + crisis_length
+        
+        # Define amplitude offsets for the crisis
+        # (Feel free to adjust these values)
+        hr_amp = 30
+        sbp_amp = 10
+        dbp_amp = 10
+        rr_amp = 5
+        o2_amp = -5  # negative => O2 sat goes down
+
+        # Mark the label for crisis
+        df.loc[crisis_start:crisis_end, 'crisis_label'] = 1
+
+        # Apply a sinusoidal pattern from start to end
+        for i in range(crisis_start, crisis_end):
+            # fraction goes from 0 -> 1 across the crisis window
+            fraction = (i - crisis_start) / (crisis_length - 1)
+            # smooth ramp up & down using sine wave from 0 -> pi
+            # at fraction=0 => sin(0)=0, fraction=0.5 => sin(pi/2)=1, fraction=1 => sin(pi)=0
+            ramp = np.sin(np.pi * fraction)
+            
+            # Apply offsets
+            # heart rate
+            df.at[i, 'heart_rate'] = df.at[i, 'heart_rate'] + hr_amp * ramp
+            # systolic
+            df.at[i, 'systolic_bp'] = df.at[i, 'systolic_bp'] + sbp_amp * ramp
+            # diastolic
+            df.at[i, 'diastolic_bp'] = df.at[i, 'diastolic_bp'] + dbp_amp * ramp
+            # resp rate
+            df.at[i, 'respiratory_rate'] = df.at[i, 'respiratory_rate'] + rr_amp * ramp
+            # O2 sat (subtract if amplitude is negative)
+            df.at[i, 'oxygen_saturation'] = df.at[i, 'oxygen_saturation'] + o2_amp * ramp
+
+    return df
+
+# ---------------------------------------------
+# 5. MAIN LOGIC
 # ---------------------------------------------
 def main():
     gc = setup_google_sheets()
@@ -269,7 +334,7 @@ def main():
     time_series_ws.clear()
     headers = [
         "timestamp", "patient_id", "diastolic_bp", "systolic_bp",
-        "heart_rate", "respiratory_rate", "oxygen_saturation"
+        "heart_rate", "respiratory_rate", "oxygen_saturation", "crisis_label"
     ]
     time_series_ws.append_row(headers)
     
@@ -309,6 +374,7 @@ def main():
         
         patient_start_time = base_time + timedelta(hours=i)
         
+        # Generate the patient's 1-hour time-series
         ts_data = generator.generate_patient_series(
             patient_baseline=pbaseline_mod,
             duration_minutes=60,
@@ -316,21 +382,30 @@ def main():
             start_time=patient_start_time
         )
         
-        output_rows = []
-        for idx, ts_row in ts_data.iterrows():
-            output_rows.append([
-                ts_row['timestamp'].isoformat(timespec='seconds'),
-                patient_id,
-                round(ts_row['diastolic_bp'], 1),
-                round(ts_row['systolic_bp'], 1),
-                round(ts_row['heart_rate'], 1),
-                round(ts_row['respiratory_rate'], 1),
-                round(ts_row['oxygen_saturation'], 1),
-            ])
+        # Inject a crisis event with 50% chance
+        ts_data = inject_crisis_event(ts_data, crisis_duration_minutes=10)
         
+        # Add patient_id to the DF
+        ts_data['patient_id'] = patient_id
+        
+        # Round numeric columns
+        numeric_cols = ['diastolic_bp','systolic_bp','heart_rate','respiratory_rate','oxygen_saturation']
+        for c in numeric_cols:
+            ts_data[c] = ts_data[c].round(1)
+        
+        # Reorder columns to match your header
+        ts_data = ts_data[['timestamp', 'patient_id', 
+                           'diastolic_bp', 'systolic_bp', 'heart_rate',
+                           'respiratory_rate', 'oxygen_saturation', 'crisis_label']]
+        
+        # Convert timestamps to ISO string
+        ts_data['timestamp'] = ts_data['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+        
+        # Append rows to your Google sheet
+        output_rows = ts_data.values.tolist()
         time_series_ws.append_rows(output_rows, value_input_option='RAW')
     
-    print("Time-series data with modifiers generated successfully.")
+    print("Time-series data with crisis events generated successfully.")
 
 if __name__ == "__main__":
     main()
