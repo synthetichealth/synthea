@@ -5,7 +5,7 @@ import streamlit as st
 import matplotlib.pyplot as plt 
 
 # Point this to the csv subfolder of the output directory created by Synthea
-output_path = "../Sample_data/csv_hypertension_1000"
+output_path = "../Sample_Data/csv_hypertension_1000"
 
 conds = pd.read_csv(f"{output_path}/conditions.csv")
 obs = pd.read_csv(f"{output_path}/observations.csv")
