@@ -658,7 +658,7 @@ public class Graphviz {
         } else if (logic.has("date")) {
           JsonObject date = logic.get("date").getAsJsonObject();
           ZonedDateTime testDate = ZonedDateTime.of(date.get("year").getAsInt(),
-              date.get("month").getAsInt() - 1, date.get("day").getAsInt(),
+              date.get("month").getAsInt(), date.get("day").getAsInt(),
               date.get("hour").getAsInt(), date.get("minute").getAsInt(),
               date.get("second").getAsInt(), date.get("millisecond").getAsInt(),
               ZoneId.of("UTC"));
