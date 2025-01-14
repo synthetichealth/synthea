@@ -9,10 +9,11 @@ bin/**
 
 /.gradle/
 /bin/
-
+.venv/**
 /failed_exports/
 /output/
 /out/
+__pycache__
 
 **/*.log
 

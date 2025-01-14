@@ -497,12 +497,12 @@ public class Demographics implements Comparable<Demographics>, Serializable {
       // and mixed race responses, and responses
       // that chose not to answer the race question.
       double percentageRemainder = (1.0 - percentageTotal);
-      double hawaiian = 0.5 * percentageRemainder;
-      double other = percentageRemainder - hawaiian;
-      d.race.put("hawaiian", hawaiian);
+      // double hawaiian = 0.5 * percentageRemainder;
+      double other = percentageRemainder;
+      // d.race.put("hawaiian", hawaiian);
       d.race.put("other", other);
     } else {
-      d.race.put("hawaiian", 0.0);
+      // d.race.put("hawaiian", 0.0);
       d.race.put("other", 0.0);
     }
     nonZeroDefaults(d.race);
