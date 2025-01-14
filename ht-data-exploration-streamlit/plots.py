@@ -91,11 +91,11 @@ final_df = final_df[~(final_df["DESCRIPTION"].isin(
 fig, ax = plt.subplots(figsize=(8, 4))
 
 # Drop rows with missing START or DESCRIPTION
-final_df['DATE'] = pd.to_datetime(final_df['DATE'], errors='coerce')
+final_df['DATE'] = pd.to_datetime(final_df['DATE'], errors='coerce', utc=True)
 
 final_df['START'] = final_df['START'].fillna(final_df['DATE'])
 
-final_df['START'] = pd.to_datetime(final_df['START'], errors='coerce')
+final_df['START'] = pd.to_datetime(final_df['START'], errors='coerce', utc=True)
 
 
 timeline_df = final_df.dropna(subset=['START', 'DESCRIPTION'])
