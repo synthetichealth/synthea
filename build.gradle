@@ -41,7 +41,7 @@ repositories {
 // }
 
 checkstyle {
-  toolVersion '8.4'
+  toolVersion '8.11'
   //showViolations = true
 }
 
