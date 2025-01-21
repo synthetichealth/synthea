@@ -10,7 +10,7 @@ See the [data science website](https://nhsengland.github.io/datascience/our_work
 
 The aim of Synthea is to produce data that is "Realistic but not real." This means that data produced by Synthea can be used to trial systems, and to test software and procedures, but it should not be relied upon for every kind of statistical insight or analysis.
 
-The UK adaptation of Synthea has removed several features which were US specific, and integrates UK statistics. Details of the UK adaptations implemented can be found [here](https://github.com/nhsengland/swpc_synthea/blob/Adds_acceptible_usage/docs/ukadaptions.md).
+The UK adaptation of Synthea has removed several features which were US specific, and integrates UK statistics. Details of the UK adaptations implemented can be found [here](ukadaptions).
 
 ### Evaluation
 
