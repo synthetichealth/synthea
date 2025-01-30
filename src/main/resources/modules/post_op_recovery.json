@@ -1,0 +1,16 @@
+{
+  "name": "Post-Operative Recovery",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Assess_Patient_Recovery"
+    },
+    "Assess_Patient_Recovery": {
+      "type": "Simple",
+      "direct_transition": "End"
+    },
+    "End": {
+      "type": "Terminal"
+    }
+  }
+}
