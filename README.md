@@ -1,10 +1,17 @@
-# Synthea Fork
-Holds a snapshot fork and helper scripts to generate synthetic data using the great Synthea<sup>TM</sup> resource.
+# Yet Another Synthea Fork
+Holds a snapshot fork and helper scripts to generate synthetic data using the great Synthea<sup>TM</sup> resource.  Particularly handling notes and take aways from generating for different products and use cases in my ventures.
 
 ## Generate Bundles for InterSystems OMOP Server
 This generates FHIR Resources, that we _convert_ into FHIR Bulk Export format (.zip) in a process.  It will generate about a 100-150 for all states, and also generate a .zip for the organizations, practitioners, and the population.
 
-We construct Bulk FHIR Export as there seems to be this issue every time I try to post bundles, bulk fhir imports with InterSystems FHIR Related products.  This way, as seen in the script below, we can grep out problematic references so they post
+We construct Bulk FHIR Export as there seems to be this issue every time I try to post bundles, bulk fhir imports with InterSystems FHIR Related products.  This way, as seen in the script below, we can grep out problematic references so they post wihtout issue... a simple pre loading data quality step before loading to Bronze.
+
+Fixing reference format...
+
+```
+  find . -type f -exec sed -i s#"?identifier=https:\/\/github.com\/synthetichealth\/synthea|"#/\#g {} +
+  find . -type f -exec sed -i s#"?identifier=http:\/\/hl7.org\/fhir\/sid\/us-npi|"#/\#g {} +
+```
 
 ![alt text](image.png)
 
@@ -23,9 +30,8 @@ Each state had very good coverage with varying resource counts using the default
 
 ![alt text](image-2.png)
 
+## Samples
 Included in the `upload` folder is example output for the state of Michigan.
-
-
 
 
 Here is the script below to get an idea on how I use it to iterate and generate fhir for testing.
