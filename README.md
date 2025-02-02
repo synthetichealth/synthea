@@ -1,3 +1,65 @@
+# Synthea Fork
+Holds a snapshot fork and helper scripts to generate synthetic data using the great Synthea<sup>TM</sup> resource.
+
+## Generate Bundles for InterSystems OMOP Server
+This generates FHIR Resources, that we _convert_ into FHIR Bulk Export format (.zip) in a process.  It will generate about a 100-150 for all states, and also generate a .zip for the organizations, practitioners, and the population.
+
+We construct Bulk FHIR Export as there seems to be this issue every time I try to post bundles, bulk fhir imports with InterSystems FHIR Related products.  This way, as seen in the script below, we can grep out problematic references so they post
+
+![alt text](image.png)
+
+## Load Order
+
+Load the org-State.zip First.
+Load the prac-$State.zip Second.
+Then load the pop-$state Last.
+
+## Attestation
+When loading the InterSystems OMOP Server (with FHIR Conversion capabilities), the entire generated data set loaded each state at about 10 minutes a shot...
+
+![alt text](image-1.png)
+
+Each state had very good coverage with varying resource counts using the default modules included in this repo.
+
+![alt text](image-2.png)
+
+Included in the `upload` folder is example output for the state of Michigan.
+
+
+
+
+Here is the script below to get an idea on how I use it to iterate and generate fhir for testing.
+
+`intersystems_omop_data.sh`
+
+```bash
+rm -rf output
+rm -rf upload
+mkdir upload
+
+declare -a states=("Alabama" "Alaska" "Arizona" "Arkansas" "California" "Colorado" "Connecticut" "Delaware" "Florida" "Georgia" "Hawaii" "Idaho" "Illinois" "Indiana" "Iowa" "Kansas" "Kentucky" "Louisiana" "Maine" "Maryland" "Massachusetts" "Michigan" "Minnesota" "Mississippi" "Missouri" "Montana" "Nebraska" "Nevada" "Ohio" "Oklahoma" "Oregon" "Pennsylvania" "Tennessee" "Texas" "Utah" "Vermont" "Virginia" "Washington" "Wisconsin" "Wyoming")
+
+
+for state in ${!states[@]}; do
+  echo ${states[$state]}
+  count=`shuf -i 100-150 -n 1`
+  ./run_synthea -s 234 -p $count ${states[$state]} --exporter.baseDirectory="./output/output_${states[$state]}/"
+  cd output/output_${states[$state]}/fhir
+  find . -type f -exec sed -i s#"?identifier=https:\/\/github.com\/synthetichealth\/synthea|"#/\#g {} +
+  find . -type f -exec sed -i s#"?identifier=http:\/\/hl7.org\/fhir\/sid\/us-npi|"#/\#g {} +
+  jq -c . hospital*.json > hospital.ndjson
+  zip -r hosp-${states[$state]}.zip hospital.ndjson
+  jq -c . practitioner*.json > practitioner.ndjson
+  zip -r prac-${states[$state]}.zip practitioner.ndjson
+  jq -c . *.json > pop-${states[$state]}.ndjson
+  zip -r pop-${states[$state]}.zip pop-${states[$state]}.ndjson
+  cp *.zip ../../../upload
+  cd ../../../
+  pwd
+done
+```
+
+
 # Synthea<sup>TM</sup> Patient Generator ![Build Status](https://github.com/synthetichealth/synthea/workflows/.github/workflows/ci-build-test.yml/badge.svg?branch=master) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
