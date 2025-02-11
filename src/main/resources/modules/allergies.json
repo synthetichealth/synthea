@@ -261,8 +261,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 419199007,
-          "display": "Allergy to substance (finding)"
+          "code": "609328004",
+          "display": "Allergic disposition (finding)"
         }
       ],
       "reactions": [],

@@ -378,8 +378,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 456191000124101,
-          "display": "Postoperative care for dental procedure (regime/therapy)"
+          "code": "133899007",
+          "display": "Postoperative care (regime/therapy)"
         }
       ],
       "distribution": {
@@ -681,8 +681,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 456191000124101,
-          "display": "Postoperative care for dental procedure (regime/therapy)"
+          "code": "133899007",
+          "display": "Postoperative care (regime/therapy)"
         }
       ],
       "distribution": {
@@ -988,8 +988,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 456191000124101,
-          "display": "Postoperative care for dental procedure (regime/therapy)"
+          "code": "133899007",
+          "display": "Postoperative care (regime/therapy)"
         }
       ],
       "distribution": {

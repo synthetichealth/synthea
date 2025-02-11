@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3"
@@ -268,8 +268,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 182813001,
-          "display": "Emergency treatment (procedure)"
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -623,8 +623,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": "1149222004",
+          "display": "Overdose (disorder)"
         }
       ],
       "direct_transition": "Directed_Use_Overdose_Encounter"
@@ -661,8 +661,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": "1149222004",
+          "display": "Overdose (disorder)"
         }
       ],
       "direct_transition": "Misuse_Overdose_Encounter"
@@ -699,8 +699,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": "1149222004",
+          "display": "Overdose (disorder)"
         }
       ],
       "direct_transition": "Addiction_Overdose_Encounter"
@@ -777,8 +777,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "55680006",
-          "display": "Drug overdose"
+          "code": "1149222004",
+          "display": "Overdose (disorder)"
         }
       ],
       "direct_transition": "Terminal"

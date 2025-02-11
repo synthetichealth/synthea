@@ -911,8 +911,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399912005,
-          "display": "Pressure ulcer (disorder)"
+          "code": "1163220007",
+          "display": "Pressure injury stage II (disorder)"
         }
       ],
       "direct_transition": "End_SB_Visit_Under_Age_5"
@@ -923,8 +923,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399912005,
-          "display": "Pressure ulcer (disorder)"
+          "code": "1163220007",
+          "display": "Pressure injury stage II (disorder)"
         }
       ],
       "direct_transition": "End_SB_Visit_Under_Age_5"
@@ -956,8 +956,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399912005,
-          "display": "Pressure ulcer (disorder)"
+          "code": "1163220007",
+          "display": "Pressure injury stage II (disorder)"
         }
       ],
       "direct_transition": "End_SB_Visit_After_Age_5"
@@ -968,8 +968,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 399912005,
-          "display": "Pressure ulcer (disorder)"
+          "code": "1163220007",
+          "display": "Pressure injury stage II (disorder)"
         }
       ],
       "direct_transition": "End_SB_Visit_After_Age_5"

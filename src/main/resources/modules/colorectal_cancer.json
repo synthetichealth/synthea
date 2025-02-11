@@ -1337,8 +1337,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "387607004",
-          "display": "Construction of diverting colostomy"
+          "code": "9905009",
+          "display": "Loop colostomy (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_2",
