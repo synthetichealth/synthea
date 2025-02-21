@@ -214,6 +214,14 @@ task rifBeneSplit(type: JavaExec) {
   args cmdLineArgs.split()
 }
 
+task convertPlanDef(type: JavaExec) {
+  group 'Application'
+  description 'Convert a FHIR PlanDefinition into a Synthea module'
+  classpath sourceSets.main.runtimeClasspath
+  mainClass = "org.mitre.synthea.convert.fhir.PlanDefinition"
+  args cmdLineArgs.split()
+}
+
 shadowJar {
   zip64 true
   def versionFile = new File("$projectDir/src/main/resources/version.txt")

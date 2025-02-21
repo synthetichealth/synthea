@@ -73,6 +73,36 @@ public class Utilities {
   }
 
   /**
+   * Convert a quantity of time in a specified UCUM unit into milliseconds.
+   *
+   * @param units
+   *          : "h", "min", "s", "d", "wk", "a", or "mo"
+   * @param value
+   *          : quantity of units
+   * @return milliseconds
+   */
+  public static long convertUcumTime(String units, long value) {
+    switch (units) {
+      case "h":
+        return TimeUnit.HOURS.toMillis(value);
+      case "min":
+        return TimeUnit.MINUTES.toMillis(value);
+      case "s":
+        return TimeUnit.SECONDS.toMillis(value);
+      case "d":
+        return TimeUnit.DAYS.toMillis(value);
+      case "a":
+        return TimeUnit.DAYS.toMillis((long) 365.25 * value);
+      case "mo":
+        return TimeUnit.DAYS.toMillis(30 * value);
+      case "wk":
+        return TimeUnit.DAYS.toMillis(7 * value);
+      default:
+        throw new RuntimeException("Unexpected UCUM time unit: " + units);
+    }
+  }
+
+  /**
    * Convert a quantity of time in a specified units into milliseconds.
    *
    * @param units
@@ -99,6 +129,36 @@ public class Utilities {
         return TimeUnit.DAYS.toMillis((long)(7.0 * value));
       default:
         throw new RuntimeException("Unexpected time unit: " + units);
+    }
+  }
+
+  /**
+   * Convert a quantity of time in a specified UCUM unit into milliseconds.
+   *
+   * @param units
+   *          : "h", "min", "s", "d", "wk", "a", or "mo"
+   * @param value
+   *          : quantity of units
+   * @return milliseconds
+   */
+  public static long convertUcumTime(String units, double value) {
+    switch (units) {
+      case "h":
+        return TimeUnit.MINUTES.toMillis((long)(60.0 * value));
+      case "min":
+        return TimeUnit.SECONDS.toMillis((long)(60.0 * value));
+      case "s":
+        return (long)(1000.0 * value);
+      case "d":
+        return TimeUnit.HOURS.toMillis((long)(24.0 * value));
+      case "a":
+        return TimeUnit.DAYS.toMillis((long)(365.25 * value));
+      case "mo":
+        return TimeUnit.DAYS.toMillis((long)(30.0 * value));
+      case "wk":
+        return TimeUnit.DAYS.toMillis((long)(7.0 * value));
+      default:
+        throw new RuntimeException("Unexpected UCUM time unit: " + units);
     }
   }
 
