@@ -172,6 +172,16 @@ public class Location implements Serializable {
         averages.put(determinant, (probability / socialDeterminantsOfHealth.keySet().size()));
       }
       socialDeterminantsOfHealth.put("AVERAGE", averages);
+    } else {
+      // An SDoH file was not provided, and a non-fatal exception was caught above.
+      // This can occur with older synthea-international configurations.
+      String[] determinants = { Person.FOOD_INSECURITY, Person.SEVERE_HOUSING_COST_BURDEN,
+          Person.UNEMPLOYED, Person.NO_VEHICLE_ACCESS, Person.UNINSURED };
+      Map<String, Double> averages = new HashMap<String, Double>();
+      for (String determinant : determinants) {
+        averages.put(determinant, 0.5);
+      }
+      socialDeterminantsOfHealth.put("AVERAGE", averages);
     }
   }
 
