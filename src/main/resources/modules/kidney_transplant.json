@@ -28,7 +28,7 @@
         }
       },
       "unit": "years",
-      "direct_transition": "Transplant Encounter"
+      "direct_transition": "Initiate Dental Cleaning"
     },
     "Reset Kidney Damage": {
       "type": "SetAttribute",
@@ -44,7 +44,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305432006,
+          "code": "305432006",
           "display": "Admission to surgical transplant department (procedure)"
         }
       ],
@@ -73,7 +73,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 439740005,
+          "code": "439740005",
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
@@ -113,7 +113,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431855005,
+          "code": "431855005",
           "display": "Chronic kidney disease stage 1 (disorder)"
         }
       ],
@@ -124,7 +124,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431856006,
+          "code": "431856006",
           "display": "Chronic kidney disease stage 2 (disorder)"
         }
       ],
@@ -135,7 +135,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 433144002,
+          "code": "433144002",
           "display": "Chronic kidney disease stage 3 (disorder)"
         }
       ],
@@ -146,7 +146,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 473231009,
+          "code": "473231009",
           "display": "Renal disorder medication review (procedure)"
         }
       ],
@@ -179,7 +179,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 70536003,
+          "code": "70536003",
           "display": "Transplant of kidney (procedure)"
         }
       ],
@@ -202,7 +202,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -217,11 +217,12 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698306007,
+          "code": "698306007",
           "display": "Awaiting transplantation of kidney (situation)"
         }
       ],
-      "direct_transition": "Referral"
+      "direct_transition": "Referral",
+      "assign_to_attribute": "kidney_transplant_dental_reason"
     },
     "Wait for Consultation": {
       "type": "Delay",
@@ -240,7 +241,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 161665007,
+          "code": "161665007",
           "display": "History of renal transplant (situation)"
         }
       ],
@@ -700,7 +701,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 428830000,
+          "code": "428830000",
           "display": "Pretransplant evaluation of kidney recipient (procedure)"
         }
       ],
@@ -720,7 +721,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306316000,
+          "code": "306316000",
           "display": "Referral to transplant surgeon (procedure)"
         }
       ],
@@ -884,7 +885,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 7766007,
+            "code": "7766007",
             "display": "Cloudy urine (finding)"
           }
         },
@@ -900,7 +901,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167248002,
+            "code": "167248002",
             "display": "Urine smell ammoniacal (finding)"
           }
         },
@@ -916,7 +917,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 300828005,
+            "code": "300828005",
             "display": "Translucent (qualifier value)"
           }
         },
@@ -932,7 +933,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 371254008,
+            "code": "371254008",
             "display": "Brown color (qualifier value)"
           }
         },
@@ -963,7 +964,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167265006,
+            "code": "167265006",
             "display": "Urine glucose test = ++ (finding)"
           }
         },
@@ -994,7 +995,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 275778006,
+            "code": "275778006",
             "display": "Finding of bilirubin in urine (finding)"
           }
         },
@@ -1025,7 +1026,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167291007,
+            "code": "167291007",
             "display": "Urine ketone test = +++ (finding)"
           }
         },
@@ -1086,7 +1087,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167277001,
+            "code": "167277001",
             "display": "Urine protein test = +++ (finding)"
           }
         },
@@ -1102,8 +1103,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "code": "314138001",
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1118,8 +1119,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167297006,
-            "display": "Urine blood test = negative (finding)"
+            "code": "167297006",
+            "display": "Blood not detected in urine (finding)"
           }
         },
         {
@@ -1134,8 +1135,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "code": "394717006",
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
@@ -1146,7 +1147,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711446003,
+          "code": "711446003",
           "display": "Transplantation of kidney regime (regime/therapy)"
         }
       ],
@@ -1166,7 +1167,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -1174,22 +1175,22 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 711446003,
+          "code": "711446003",
           "display": "Transplantation of kidney regime (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 226007004,
+          "code": "226007004",
           "display": "Post-surgical wound care (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 182809008,
+          "code": "182809008",
           "display": "Renal function monitoring (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 226164007,
+          "code": "226164007",
           "display": "Very low sodium diet (finding)"
         }
       ],
@@ -1229,7 +1230,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 7766007,
+            "code": "7766007",
             "display": "Cloudy urine (finding)"
           }
         },
@@ -1245,7 +1246,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167248002,
+            "code": "167248002",
             "display": "Urine smell ammoniacal (finding)"
           }
         },
@@ -1261,7 +1262,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 300828005,
+            "code": "300828005",
             "display": "Translucent (qualifier value)"
           }
         },
@@ -1277,7 +1278,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 371254008,
+            "code": "371254008",
             "display": "Brown color (qualifier value)"
           }
         },
@@ -1308,7 +1309,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167265006,
+            "code": "167265006",
             "display": "Urine glucose test = ++ (finding)"
           }
         },
@@ -1339,7 +1340,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 275778006,
+            "code": "275778006",
             "display": "Finding of bilirubin in urine (finding)"
           }
         },
@@ -1370,7 +1371,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167291007,
+            "code": "167291007",
             "display": "Urine ketone test = +++ (finding)"
           }
         },
@@ -1431,7 +1432,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167277001,
+            "code": "167277001",
             "display": "Urine protein test = +++ (finding)"
           }
         },
@@ -1447,8 +1448,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "code": "314138001",
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1463,8 +1464,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167297006,
-            "display": "Urine blood test = negative (finding)"
+            "code": "167297006",
+            "display": "Blood not detected in urine (finding)"
           }
         },
         {
@@ -1479,8 +1480,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "code": "394717006",
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
@@ -1963,7 +1964,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711446003,
+          "code": "711446003",
           "display": "Transplantation of kidney regime (regime/therapy)"
         }
       ],
@@ -2012,7 +2013,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 119219003,
+            "code": "119219003",
             "display": "Kidney part (body structure)"
           }
         }
@@ -2065,7 +2066,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 213150003,
+          "code": "213150003",
           "display": "Kidney transplant failure and rejection (disorder)"
         }
       ],
@@ -2120,7 +2121,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 204949001,
+          "code": "204949001",
           "display": "Renal dysplasia (disorder)"
         }
       ]
@@ -2130,7 +2131,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431857002,
+          "code": "431857002",
           "display": "Chronic kidney disease stage 4 (disorder)"
         }
       ],
@@ -2151,6 +2152,40 @@
       "type": "ConditionEnd",
       "direct_transition": "Begin Post Surgical Stay",
       "referenced_by_attribute": "dialysis_reason"
+    },
+    "Initiate Dental Cleaning": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "direct_transition": "Wait for Cleaning",
+      "value_attribute": "kidney_transplant_dental_reason"
+    },
+    "Wait for Cleaning": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Check Cleaning Status"
+    },
+    "Check Cleaning Status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Cleaning",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_referral",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Transplant Encounter"
+        }
+      ]
     }
   },
   "gmf_version": 2

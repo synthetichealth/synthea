@@ -176,38 +176,88 @@
       ],
       "reactions": [
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "49727002", "display":  "Cough (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "49727002",
+            "display": "Cough (finding)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value": 0.23},
-            {"level":  "none", "value":  0.77}
+            {
+              "level": "moderate",
+              "value": 0.23
+            },
+            {
+              "level": "none",
+              "value": 0.77
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "267036007",
+            "display": "Dyspnea (finding)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.2},
-            {"level":  "none", "value":  0.8}
+            {
+              "level": "mild",
+              "value": 0.2
+            },
+            {
+              "level": "none",
+              "value": 0.8
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "247472004",
+            "display": "Wheal (finding)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.36},
-            {"level":  "none", "value":  0.64}
+            {
+              "level": "mild",
+              "value": 0.36
+            },
+            {
+              "level": "none",
+              "value": 0.64
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "271807003",
+            "display": "Eruption of skin (disorder)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.53},
-            {"level":  "none", "value":  0.47}
+            {
+              "level": "mild",
+              "value": 0.53
+            },
+            {
+              "level": "none",
+              "value": 0.47
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "878820003",
+            "display": "Rhinoconjunctivitis (disorder)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value": 0.8},
-            {"level":  "none", "value":  0.19999999999999996}
+            {
+              "level": "moderate",
+              "value": 0.8
+            },
+            {
+              "level": "none",
+              "value": 0.19999999999999996
+            }
           ]
         }
       ],
@@ -322,31 +372,71 @@
       ],
       "reactions": [
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "21626009", "display":  "Allergic skin rash"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "21626009",
+            "display": "Cutaneous hypersensitivity (disorder)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value":  0.292},
-            {"level":  "none", "value":  0.70}
+            {
+              "level": "mild",
+              "value": 0.292
+            },
+            {
+              "level": "none",
+              "value": 0.7
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "76067001", "display":  "Sneezing"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "76067001",
+            "display": "Sneezing (finding)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value":  0.139},
-            {"level":  "none", "value":  0.86}
+            {
+              "level": "mild",
+              "value": 0.139
+            },
+            {
+              "level": "none",
+              "value": 0.86
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "267101005", "display":  "Nose running"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "267101005",
+            "display": "Nasal discharge present (situation)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value":  0.183},
-            {"level":  "none", "value":  0.81}
+            {
+              "level": "mild",
+              "value": 0.183
+            },
+            {
+              "level": "none",
+              "value": 0.81
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "56018004", "display":  "Wheezing"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "56018004",
+            "display": "Wheezing (finding)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value":  0.075},
-            {"level":  "none", "value":  0.92}
+            {
+              "level": "mild",
+              "value": 0.075
+            },
+            {
+              "level": "none",
+              "value": 0.92
+            }
           ]
         }
       ],
@@ -407,17 +497,37 @@
       ],
       "reactions": [
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "39579001",
+            "display": "Anaphylaxis (disorder)"
+          },
           "possible_severities": [
-            {"level":  "severe", "value":  0.03},
-            {"level":  "none", "value":  0.96}
+            {
+              "level": "severe",
+              "value": 0.03
+            },
+            {
+              "level": "none",
+              "value": 0.96
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "271807003",
+            "display": "Eruption of skin (disorder)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value":  0.264},
-            {"level":  "none", "value":  0.73}
+            {
+              "level": "moderate",
+              "value": 0.264
+            },
+            {
+              "level": "none",
+              "value": 0.73
+            }
           ]
         }
       ],
@@ -479,52 +589,122 @@
       ],
       "reactions": [
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "402387002", "display":  "Allergic angioedema (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "402387002",
+            "display": "Allergic angioedema (disorder)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value": 0.17},
-            {"level":  "none", "value":  0.83}
+            {
+              "level": "moderate",
+              "value": 0.17
+            },
+            {
+              "level": "none",
+              "value": 0.83
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "267036007", "display":  "Dyspnea (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "267036007",
+            "display": "Dyspnea (finding)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value": 0.1},
-            {"level":  "none", "value":  0.9}
+            {
+              "level": "moderate",
+              "value": 0.1
+            },
+            {
+              "level": "none",
+              "value": 0.9
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "247472004", "display":  "Wheal (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "247472004",
+            "display": "Wheal (finding)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.8},
-            {"level":  "none", "value":  0.19999999999999996}
+            {
+              "level": "mild",
+              "value": 0.8
+            },
+            {
+              "level": "none",
+              "value": 0.19999999999999996
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "39579001", "display":  "Anaphylaxis (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "39579001",
+            "display": "Anaphylaxis (disorder)"
+          },
           "possible_severities": [
-            {"level":  "severe", "value": 0.13},
-            {"level":  "none", "value":  0.87}
+            {
+              "level": "severe",
+              "value": 0.13
+            },
+            {
+              "level": "none",
+              "value": 0.87
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "271807003", "display":  "Eruption of skin (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "271807003",
+            "display": "Eruption of skin (disorder)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.06},
-            {"level":  "none", "value":  0.94}
+            {
+              "level": "mild",
+              "value": 0.06
+            },
+            {
+              "level": "none",
+              "value": 0.94
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "878820003", "display":  "Rhinoconjunctivitis (disorder)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "878820003",
+            "display": "Rhinoconjunctivitis (disorder)"
+          },
           "possible_severities": [
-            {"level":  "mild", "value": 0.16},
-            {"level":  "none", "value":  0.84}
+            {
+              "level": "mild",
+              "value": 0.16
+            },
+            {
+              "level": "none",
+              "value": 0.84
+            }
           ]
         },
         {
-          "reaction": {"system":  "SNOMED-CT", "code": "418290006", "display":  "Itching (finding)"},
+          "reaction": {
+            "system": "SNOMED-CT",
+            "code": "418290006",
+            "display": "Itching (finding)"
+          },
           "possible_severities": [
-            {"level":  "moderate", "value": 0.11},
-            {"level":  "none", "value":  0.89}
+            {
+              "level": "moderate",
+              "value": 0.11
+            },
+            {
+              "level": "none",
+              "value": 0.89
+            }
           ]
         }
       ],

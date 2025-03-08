@@ -18,7 +18,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -30,7 +30,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 709010006,
+          "code": "709010006",
           "display": "Liaising with referral source (procedure)"
         }
       ],
@@ -43,7 +43,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312853008,
+          "code": "312853008",
           "display": "Medical records review (procedure)"
         }
       ],
@@ -56,7 +56,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711069006,
+          "code": "711069006",
           "display": "Coordination of care plan (procedure)"
         }
       ],
@@ -69,7 +69,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -77,18 +77,18 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 266753000,
+          "code": "266753000",
           "display": "Referral for laboratory tests (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 308461008,
+          "code": "308461008",
           "display": "Referral to radiology service (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 183835003,
-          "display": "Refer for angiogram (procedure)"
+          "code": "183835003",
+          "display": "Referral for angiography (procedure)"
         }
       ],
       "assign_to_attribute": "avrr_careplan",
@@ -142,7 +142,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -155,7 +155,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 390906007,
+          "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
       ],
@@ -164,7 +164,7 @@
     },
     "Set_Immediate_Admission_False": {
       "type": "SetAttribute",
-      "attribute": "cabg_immediate_admission",
+      "attribute": "avrr_immediate_admission",
       "direct_transition": "AVRr Preop",
       "value": false
     },
@@ -178,7 +178,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312384001,
+          "code": "312384001",
           "display": "Multidisciplinary assessment (procedure)"
         }
       ],
@@ -200,7 +200,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 384682003,
+          "code": "384682003",
           "display": "Multidisciplinary care conference (procedure)"
         }
       ],
@@ -213,7 +213,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 709138001,
+          "code": "709138001",
           "display": "Notification of treatment plan (procedure)"
         }
       ],
@@ -235,7 +235,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410538000,
+          "code": "410538000",
           "display": "Scheduling (procedure)"
         }
       ],
@@ -261,7 +261,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 3457005,
+          "code": "3457005",
           "display": "Patient referral (procedure)"
         }
       ],
@@ -282,25 +282,37 @@
       "type": "EncounterEnd",
       "conditional_transition": [
         {
-          "transition": "Priority_2_Next_Encounter_2",
+          "transition": "Initiate Dental Cleaning",
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 2
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "cardiac_surgery",
+                    "operator": "==",
+                    "value": "savreplace"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "cardiac_surgery",
+                    "operator": "==",
+                    "value": "tavr"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "dental_referral",
+                "operator": "is nil"
+              }
+            ]
           }
         },
         {
-          "transition": "Priority_3_Next_Encounter_2",
-          "condition": {
-            "condition_type": "Attribute",
-            "attribute": "care_priority_level",
-            "operator": "==",
-            "value": 3
-          }
-        },
-        {
-          "transition": "Priority_4_Next_Encounter_2"
+          "transition": "Check Cleaning Status"
         }
       ]
     },
@@ -320,7 +332,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -383,7 +395,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306237005,
+          "code": "306237005",
           "display": "Referral to palliative care service (procedure)"
         }
       ],
@@ -432,6 +444,66 @@
         },
         {
           "transition": "Priority_4_Next_Encounter"
+        }
+      ]
+    },
+    "Wait_for_Cleaning": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Check Cleaning Status"
+    },
+    "Schedule the Surgery": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Priority_2_Next_Encounter_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 2
+          }
+        },
+        {
+          "transition": "Priority_3_Next_Encounter_2",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "care_priority_level",
+            "operator": "==",
+            "value": 3
+          }
+        },
+        {
+          "transition": "Priority_4_Next_Encounter_2"
+        }
+      ]
+    },
+    "Initiate Dental Cleaning": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "value_attribute": "vhd_diagnosis",
+      "direct_transition": "Wait_for_Cleaning"
+    },
+    "Check Cleaning Status": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait_for_Cleaning",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_referral",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Schedule the Surgery"
         }
       ]
     }

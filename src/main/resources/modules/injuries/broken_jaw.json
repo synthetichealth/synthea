@@ -1,0 +1,591 @@
+{
+  "name": "broken jaw",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Fracture Check"
+    },
+    "Broken_Bone_Immobilization": {
+      "type": "Procedure",
+      "reason": "Broken Jaw",
+      "duration": {
+        "low": 20,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274474001",
+          "display": "Bone immobilization (procedure)"
+        }
+      ],
+      "direct_transition": "Stabilization Check"
+    },
+    "Consider_Osteoporosis": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "64859006",
+                "display": "Osteoporosis (disorder)"
+              }
+            ]
+          },
+          "transition": "Diagnose_Fracture_Due_to_Osteoporosis"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Osteoporosis_Workup"
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.02,
+              "transition": "Osteoporosis_Workup"
+            },
+            {
+              "distribution": 0.98,
+              "transition": "End Encounter"
+            }
+          ]
+        }
+      ]
+    },
+    "Osteoporosis_Workup": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "312681000",
+          "display": "Bone density scan (procedure)"
+        }
+      ],
+      "reason": "broken_bone",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "osteoporosis",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Low_Bone_Density"
+        },
+        {
+          "transition": "High_Bone_Density"
+        }
+      ]
+    },
+    "High_Bone_Density": {
+      "type": "Observation",
+      "category": "procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38265-5",
+          "display": "DXA Radius and Ulna [T-score] Bone density"
+        }
+      ],
+      "range": {
+        "low": -0.5,
+        "high": 0.5
+      },
+      "unit": "{T-score}",
+      "direct_transition": "End Encounter"
+    },
+    "Low_Bone_Density": {
+      "type": "Observation",
+      "category": "procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "38265-5",
+          "display": "DXA Radius and Ulna [T-score] Bone density"
+        }
+      ],
+      "range": {
+        "low": -3.8,
+        "high": -2.5
+      },
+      "unit": "{T-score}",
+      "direct_transition": "Diagnose_Osteoporosis"
+    },
+    "Diagnose_Osteoporosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "64859006",
+          "display": "Osteoporosis (disorder)"
+        }
+      ],
+      "direct_transition": "Diagnose_Fracture_Due_to_Osteoporosis"
+    },
+    "Diagnose_Fracture_Due_to_Osteoporosis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "443165006",
+          "display": "Osteoporotic fracture of bone (disorder)"
+        }
+      ],
+      "direct_transition": "End Encounter"
+    },
+    "End_Osteoporosis_Fracture": {
+      "type": "ConditionEnd",
+      "condition_onset": "Diagnose_Fracture_Due_to_Osteoporosis",
+      "direct_transition": "End Followup"
+    },
+    "Dislocated Jaw": {
+      "type": "ConditionOnset",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "81629009",
+          "display": "Traumatic dislocation of temporomandibular joint (disorder)"
+        }
+      ],
+      "direct_transition": "Emergency Visit",
+      "assign_to_attribute": "jaw_injury"
+    },
+    "Broken Jaw": {
+      "type": "ConditionOnset",
+      "target_encounter": "Emergency Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "263172003",
+          "display": "Fracture of mandible (disorder)"
+        }
+      ],
+      "direct_transition": "Emergency Visit",
+      "assign_to_attribute": "jaw_injury"
+    },
+    "Radiography of mandible": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": 19589009,
+        "display": "Radiography of mandible (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "91609006",
+            "display": "Bone structure of mandible (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Image of mandible",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "Closed Reduction of Fracture",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Broken Jaw",
+            "since": "Fracture Check"
+          }
+        },
+        {
+          "transition": "Closed Reduction of Dislocation",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Dislocated Jaw",
+            "since": "Fracture Check"
+          }
+        }
+      ]
+    },
+    "Posttreatment stabilization, orthodontic device": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "37542007",
+          "display": "Posttreatment stabilization, orthodontic device (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Prescribe_Pain_Medication",
+      "reason": "jaw_injury"
+    },
+    "Closed Reduction of Dislocation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "179632003",
+          "display": "Closed reduction of dislocation of temporomandibular joint (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Dislocated Jaw",
+      "direct_transition": "Stabilization Check"
+    },
+    "Closed Reduction of Fracture": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "24832002",
+          "display": "Closed reduction of mandibular fracture (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Broken Jaw",
+      "direct_transition": "Broken_Bone_Immobilization"
+    },
+    "Fracture Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Broken Jaw",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Dislocated Jaw",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Stabilization Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Posttreatment stabilization, orthodontic device",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Prescribe_Pain_Medication",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Prescribe_Pain_Medication": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Broken Jaw",
+            "since": "Fracture Check"
+          },
+          "distributions": [
+            {
+              "distribution": 0.8,
+              "transition": "Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.2,
+              "transition": "Prescribe_Non_Opioid"
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "distribution": 0.3,
+              "transition": "Prescribe_Opioid"
+            },
+            {
+              "distribution": 0.7,
+              "transition": "Prescribe_Non_Opioid"
+            }
+          ]
+        }
+      ]
+    },
+    "Prescribe_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/moderate_opioid_pain_reliever",
+      "direct_transition": "Prescribe_Non_Opioid"
+    },
+    "Prescribe_Non_Opioid": {
+      "type": "CallSubmodule",
+      "submodule": "medications/otc_pain_reliever",
+      "conditional_transition": [
+        {
+          "transition": "Broken Jaw CarePlan",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Broken Jaw",
+            "since": "Fracture Check"
+          }
+        },
+        {
+          "transition": "Dislocated Jaw CarePlan"
+        }
+      ]
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Dental Referral"
+    },
+    "SNF": {
+      "type": "CallSubmodule",
+      "submodule": "snf/skilled_nursing_facility",
+      "direct_transition": "Recovery Period"
+    },
+    "Recovery Period": {
+      "type": "Delay",
+      "range": {
+        "low": 4,
+        "high": 6,
+        "unit": "weeks"
+      },
+      "direct_transition": "Followup"
+    },
+    "Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "jaw_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Oral examination"
+    },
+    "End Followup": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "End Injury": {
+      "type": "ConditionEnd",
+      "referenced_by_attribute": "jaw_injury",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "443165006",
+                "display": "Osteoporotic fracture of bone (disorder)"
+              }
+            ]
+          },
+          "transition": "End_Osteoporosis_Fracture"
+        },
+        {
+          "transition": "End Followup"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Dental Referral": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "value_attribute": "jaw_injury",
+      "direct_transition": "Wait for Dental Visit"
+    },
+    "Wait for Dental Visit": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 7,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Check for Dental Visit"
+    },
+    "Check for Dental Visit": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Dental Visit",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_referral",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Check Osteoporosis"
+        }
+      ]
+    },
+    "Check Osteoporosis": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "SNF",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "osteoporosis",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Recovery Period"
+        }
+      ]
+    },
+    "Range_of_motion_testing": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "69212005",
+          "display": "Range of motion testing (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "reason": "jaw_injury",
+      "direct_transition": "End Injury"
+    },
+    "Oral examination": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "122856003",
+          "display": "Oral examination (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Range_of_motion_testing",
+      "reason": "jaw_injury"
+    },
+    "Emergency Visit": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "50849002",
+          "display": "Emergency room admission (procedure)"
+        }
+      ],
+      "reason": "jaw_injury",
+      "direct_transition": "Radiography of mandible"
+    },
+    "Broken Jaw CarePlan": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "jaw_injury",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385691007",
+          "display": "Fracture care (regime/therapy)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183051005",
+          "display": "Recommendation to rest (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "439121000124106",
+          "display": "Pureed diet (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Consider_Osteoporosis"
+    },
+    "Dislocated Jaw CarePlan": {
+      "type": "CarePlanStart",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "208748005",
+          "display": "Open dislocation of jaw (disorder)"
+        }
+      ],
+      "direct_transition": "End Encounter",
+      "assign_to_attribute": "injury_careplan",
+      "reason": "jaw_injury",
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439101000124101",
+          "display": "Easy to chew diet (regime/therapy)"
+        }
+      ]
+    }
+  },
+  "gmf_version": 1,
+  "remarks": [
+    "Annual rate of 130 per 100K in USA (98 per 100K globally).",
+    "Diagnosis with x-ray or CT.",
+    "60% of cases have 2 breaks.",
+    "Jaw wiring requires 4-6 weeks recovery.",
+    "Typically male:female ratio ranges from 4:1 to 6:1, but that is not modeled here.",
+    "Some things like care plan and medications are ended in the top-level injuries module.",
+    "",
+    "References:",
+    "- http://dx.doi.org/10.1016/j.joms.2015.04.032",
+    "- http://dx.doi.org/10.1136/ injuryprev-2019-043297"
+  ]
+}

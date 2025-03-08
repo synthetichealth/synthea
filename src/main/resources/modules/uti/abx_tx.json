@@ -33,8 +33,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
-                "display": "Pyelonephritis"
+                "code": "45816000",
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           }
@@ -46,7 +46,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 307426000,
+                "code": "307426000",
                 "display": "Acute infective cystitis (disorder)"
               }
             ]
@@ -83,7 +83,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 307426000,
+                "code": "307426000",
                 "display": "Acute infective cystitis (disorder)"
               }
             ]
@@ -96,8 +96,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 45816000,
-                "display": "Pyelonephritis"
+                "code": "45816000",
+                "display": "Pyelonephritis (disorder)"
               }
             ]
           }
@@ -747,8 +747,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 45816000,
-                    "display": "Pyelonephritis"
+                    "code": "45816000",
+                    "display": "Pyelonephritis (disorder)"
                   }
                 ]
               }

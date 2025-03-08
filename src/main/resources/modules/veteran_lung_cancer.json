@@ -119,7 +119,7 @@
         {
           "system": "SNOMED-CT",
           "code": "399208008",
-          "display": "Plain chest X-ray (procedure)"
+          "display": "Plain X-ray of chest (procedure)"
         }
       ],
       "duration": {
@@ -150,7 +150,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chest CT Scan"
@@ -162,7 +162,7 @@
         {
           "system": "SNOMED-CT",
           "code": "418891003",
-          "display": "Computed tomography of chest and abdomen"
+          "display": "Computed tomography of chest and abdomen (procedure)"
         }
       ],
       "duration": {
@@ -245,7 +245,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "distributed_transition": [
@@ -599,7 +599,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Lung_Cancer_CarePlan"
@@ -611,24 +611,24 @@
         {
           "system": "SNOMED-CT",
           "code": "182964004",
-          "display": "Terminal care"
+          "display": "Terminal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "133918004",
-          "display": "Comfort measures"
+          "display": "Comfort measures (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
           "code": "408957008",
-          "display": "Chronic pain control management"
+          "display": "Chronic pain control management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "243072006",
-          "display": "Cancer education"
+          "display": "Cancer education (procedure)"
         }
       ],
       "direct_transition": "MRI Brain"
@@ -648,7 +648,16 @@
         "high": 120,
         "unit": "minutes"
       },
-      "direct_transition": "End_Diagnosis_Encounter_IV"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cells",
+          "distribution": 0.01
+        },
+        {
+          "transition": "End_Diagnosis_Encounter_IV",
+          "distribution": 0.99
+        }
+      ]
     },
     "End_Diagnosis_Encounter_IV": {
       "type": "EncounterEnd",
@@ -685,7 +694,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Set_SCLC_LOS"
@@ -787,7 +796,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Set_NSCLC_LOS",
@@ -1058,6 +1067,12 @@
       "action": "increment",
       "amount": 2,
       "direct_transition": "Begin_NSCLC_Day"
+    },
+    "Stem Cells": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "End_Diagnosis_Encounter_IV",
+      "value": true
     }
   },
   "gmf_version": 1

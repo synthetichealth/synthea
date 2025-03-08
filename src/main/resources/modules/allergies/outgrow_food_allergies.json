@@ -25,7 +25,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "420174000",
-                "display": "Allergy to wheat"
+                "display": "Allergy to wheat (finding)"
               }
             ]
           },
@@ -56,7 +56,7 @@
         {
           "system": "SNOMED-CT",
           "code": "420174000",
-          "display": "Allergy to wheat"
+          "display": "Allergy to wheat (finding)"
         }
       ],
       "direct_transition": "Dairy_Allergy"
@@ -75,8 +75,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "425525006",
-                "display": "Allergy to dairy product"
+                "code": "414285001",
+                "display": "Allergy to food (finding)"
               }
             ]
           },
@@ -106,8 +106,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "425525006",
-          "display": "Allergy to dairy product"
+          "code": "414285001",
+          "display": "Allergy to food (finding)"
         }
       ],
       "direct_transition": "Eggs_Allergy"
@@ -126,8 +126,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "91930004",
-                "display": "Allergy to eggs"
+                "code": "213020009",
+                "display": "Allergy to egg protein (finding)"
               }
             ]
           },
@@ -157,8 +157,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "91930004",
-          "display": "Allergy to eggs"
+          "code": "213020009",
+          "display": "Allergy to egg protein (finding)"
         }
       ],
       "direct_transition": "Soy_Allergy"
@@ -177,8 +177,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "714035009",
-                "display": "Allergy to soya"
+                "code": "782594005",
+                "display": "Allergy to soy protein (finding)"
               }
             ]
           },
@@ -208,8 +208,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "714035009",
-          "display": "Allergy to soya"
+          "code": "782594005",
+          "display": "Allergy to soy protein (finding)"
         }
       ],
       "direct_transition": "Latex_Allergy"
@@ -228,8 +228,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": "300916003",
-                "display": "Latex allergy"
+                "code": "1003755004",
+                "display": "Allergy to Hevea brasiliensis latex protein (finding)"
               }
             ]
           },
@@ -259,8 +259,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "300916003",
-          "display": "Latex allergy"
+          "code": "1003755004",
+          "display": "Allergy to Hevea brasiliensis latex protein (finding)"
         }
       ],
       "direct_transition": "Check_For_Other_Food_Allergies"
@@ -278,7 +278,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "91935009",
-                    "display": "Allergy to peanuts"
+                    "display": "Allergy to peanut (finding)"
                   }
                 ]
               },
@@ -288,7 +288,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "91934008",
-                    "display": "Allergy to nut"
+                    "display": "Allergy to nut (finding)"
                   }
                 ]
               },
@@ -298,7 +298,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "417532002",
-                    "display": "Allergy to fish"
+                    "display": "Allergy to fish (finding)"
                   }
                 ]
               },
@@ -308,7 +308,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "300913006",
-                    "display": "Shellfish allergy"
+                    "display": "Allergy to shellfish (finding)"
                   }
                 ]
               }

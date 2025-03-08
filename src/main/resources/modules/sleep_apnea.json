@@ -92,7 +92,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -137,7 +137,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -148,7 +148,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103750000,
+          "code": "103750000",
           "display": "Sleep apnea assessment (procedure)"
         }
       ],
@@ -168,22 +168,22 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 82808001,
+          "code": "82808001",
           "display": "Sleep apnea monitoring with alarm (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 60554003,
+          "code": "60554003",
           "display": "Polysomnography (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 108243003,
-          "display": "Sleep disorder test AND/OR procedure (procedure)"
+          "code": "10563004",
+          "display": "Sleep disorder function test (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 446573003,
+          "code": "446573003",
           "display": "Continuous positive airway pressure titration (procedure)"
         }
       ],
@@ -202,7 +202,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 701077002,
+        "code": "701077002",
         "display": "Respiratory apnea monitoring system (physical object)"
       },
       "direct_transition": "Polysomnography Device"
@@ -217,7 +217,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 78275009,
+          "code": "78275009",
           "display": "Obstructive sleep apnea syndrome (disorder)"
         }
       ],
@@ -230,7 +230,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 39898005,
+          "code": "39898005",
           "display": "Sleep disorder (disorder)"
         }
       ],
@@ -249,7 +249,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 720253003,
+        "code": "720253003",
         "display": "Home-use sleep apnea recording system (physical object)"
       },
       "direct_transition": "Sleep Specialist Encounter End"
@@ -258,7 +258,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 701100002,
+        "code": "701100002",
         "display": "Polysomnography analyzer (physical object)"
       },
       "direct_transition": "Sleep Study"
@@ -290,7 +290,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 73430006,
+          "code": "73430006",
           "display": "Sleep apnea (disorder)"
         }
       ],
@@ -302,7 +302,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103750000,
+          "code": "103750000",
           "display": "Sleep apnea assessment (procedure)"
         }
       ],
@@ -330,7 +330,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
+          "code": "734163000",
           "display": "Care plan (record artifact)"
         }
       ],
@@ -338,17 +338,17 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 388976009,
+          "code": "388976009",
           "display": "Weight reduction regimen (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 419822006,
+          "code": "419822006",
           "display": "Warning. Avoid alcoholic drink (qualifier value)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 47545007,
+          "code": "47545007",
           "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)"
         }
       ],
@@ -397,7 +397,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 272265001,
+        "code": "272265001",
         "display": "Appliance for sleep apnea (physical object)"
       },
       "direct_transition": "Set Visit Count"
@@ -406,7 +406,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 702172008,
+        "code": "702172008",
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
       "distributed_transition": [
@@ -425,7 +425,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103750000,
+          "code": "103750000",
           "display": "Sleep apnea assessment (procedure)"
         }
       ],
@@ -445,7 +445,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698560000,
+          "code": "698560000",
           "display": "Referral to sleep apnea clinic (procedure)"
         }
       ],
@@ -466,7 +466,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -508,7 +508,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103750000,
+          "code": "103750000",
           "display": "Sleep apnea assessment (procedure)"
         }
       ],
@@ -537,7 +537,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698560000,
+          "code": "698560000",
           "display": "Referral to sleep apnea clinic (procedure)"
         }
       ],
@@ -568,7 +568,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 446573003,
+          "code": "446573003",
           "display": "Continuous positive airway pressure titration (procedure)"
         }
       ],
@@ -589,7 +589,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185389009,
+          "code": "185389009",
           "display": "Follow-up visit (procedure)"
         }
       ],
@@ -657,7 +657,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 103750000,
+          "code": "103750000",
           "display": "Sleep apnea assessment (procedure)"
         }
       ],
@@ -754,7 +754,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 702172008,
+        "code": "702172008",
         "display": "Home continuous positive airway pressure unit (physical object)"
       },
       "direct_transition": "Stop_previous_humidifier"
@@ -763,7 +763,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 272265001,
+        "code": "272265001",
         "display": "Appliance for sleep apnea (physical object)"
       },
       "direct_transition": "Reset Counter"
@@ -772,7 +772,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706180003,
+        "code": "706180003",
         "display": "Respiratory humidifier (physical object)"
       },
       "direct_transition": "Set Visit Count"
@@ -784,7 +784,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 467645007,
+            "code": "467645007",
             "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
           }
         },
@@ -792,7 +792,7 @@
           "quantity": 5,
           "code": {
             "system": "SNOMED-CT",
-            "code": 972002,
+            "code": "972002",
             "display": "Air filter, device (physical object)"
           }
         },
@@ -800,7 +800,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 463659001,
+            "code": "463659001",
             "display": "Medical air low pressure tubing (physical object)"
           }
         },
@@ -808,7 +808,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706226000,
+            "code": "706226000",
             "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
           }
         }
@@ -822,7 +822,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 704718009,
+            "code": "704718009",
             "display": "CPAP/BPAP oral mask (physical object)"
           }
         },
@@ -830,7 +830,7 @@
           "quantity": 5,
           "code": {
             "system": "SNOMED-CT",
-            "code": 972002,
+            "code": "972002",
             "display": "Air filter, device (physical object)"
           }
         },
@@ -838,7 +838,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 463659001,
+            "code": "463659001",
             "display": "Medical air low pressure tubing (physical object)"
           }
         },
@@ -846,7 +846,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706226000,
+            "code": "706226000",
             "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
           }
         }
@@ -873,7 +873,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 467645007,
+            "code": "467645007",
             "display": "Continuous positive airway pressure nasal oxygen cannula (physical object)"
           }
         },
@@ -881,7 +881,7 @@
           "quantity": 5,
           "code": {
             "system": "SNOMED-CT",
-            "code": 972002,
+            "code": "972002",
             "display": "Air filter, device (physical object)"
           }
         },
@@ -889,7 +889,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 463659001,
+            "code": "463659001",
             "display": "Medical air low pressure tubing (physical object)"
           }
         },
@@ -897,7 +897,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706226000,
+            "code": "706226000",
             "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
           }
         }
@@ -911,7 +911,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 704718009,
+            "code": "704718009",
             "display": "CPAP/BPAP oral mask (physical object)"
           }
         },
@@ -919,7 +919,7 @@
           "quantity": 5,
           "code": {
             "system": "SNOMED-CT",
-            "code": 972002,
+            "code": "972002",
             "display": "Air filter, device (physical object)"
           }
         },
@@ -927,7 +927,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 463659001,
+            "code": "463659001",
             "display": "Medical air low pressure tubing (physical object)"
           }
         },
@@ -935,7 +935,7 @@
           "quantity": 1,
           "code": {
             "system": "SNOMED-CT",
-            "code": 706226000,
+            "code": "706226000",
             "display": "Continuous positive airway pressure/Bilevel positive airway pressure mask (physical object)"
           }
         }
@@ -946,7 +946,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706180003,
+        "code": "706180003",
         "display": "Respiratory humidifier (physical object)"
       },
       "direct_transition": "CPAP Supply Renewal"
@@ -957,7 +957,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 272265001,
+          "code": "272265001",
           "display": "Appliance for sleep apnea (physical object)"
         }
       ]
@@ -968,7 +968,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 702172008,
+          "code": "702172008",
           "display": "Home continuous positive airway pressure unit (physical object)"
         }
       ]
@@ -979,7 +979,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 706180003,
+          "code": "706180003",
           "display": "Respiratory humidifier (physical object)"
         }
       ]

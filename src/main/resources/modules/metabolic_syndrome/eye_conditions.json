@@ -105,7 +105,7 @@
                     {
                       "system": "SNOMED-CT",
                       "code": "1551000119108",
-                      "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                      "display": "Nonproliferative retinopathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
                 }
@@ -129,7 +129,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "1551000119108",
-                    "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+                    "display": "Nonproliferative retinopathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
               }
@@ -148,7 +148,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1551000119108",
-          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+          "display": "Nonproliferative retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Proliferative_Retinopathy"
@@ -159,7 +159,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1551000119108",
-          "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+          "display": "Nonproliferative retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Proliferative_Retinopathy"
@@ -184,7 +184,7 @@
                     {
                       "system": "SNOMED-CT",
                       "code": "1501000119109",
-                      "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                      "display": "Proliferative retinopathy due to type 2 diabetes mellitus (disorder)"
                     }
                   ]
                 }
@@ -208,7 +208,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "1501000119109",
-                    "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+                    "display": "Proliferative retinopathy due to type 2 diabetes mellitus (disorder)"
                   }
                 ]
               }
@@ -227,7 +227,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1501000119109",
-          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+          "display": "Proliferative retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Macular_Edema"
@@ -238,7 +238,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1501000119109",
-          "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
+          "display": "Proliferative retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
       "direct_transition": "Check_Macular_Edema"

@@ -234,3 +234,2847 @@ CODE,MIN,MODE,MAX,COMMENTS
 271280005,138,239,239,Removal of endotracheal tube (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/31502
 36576007,389,447.5,506,Infusion (procedure) - https://www.medicare.gov/procedure-price-lookup/cost/77750
 706004007,7817,9034,10251,Implantable cardiac pacemaker (physical object) - https://www.medicare.gov/procedure-price-lookup/cost/33208
+D0100,0.00,8.90,500.00,oral evaluation - unknown
+D0101,0.00,0.19,2328.00,oral evaluation - unknown
+D0102,0.00,0.23,6906.44,oral evaluation - unknown
+D0103,0.00,0.38,15080.00,oral evaluation - unknown
+D0104,0.00,0.42,5575.00,oral evaluation - unknown
+D0105,0.00,0.53,34257.00,oral evaluation - unknown
+D0106,0.00,0.52,8560.00,oral evaluation - unknown
+D0107,0.00,0.49,5575.00,oral evaluation - unknown
+D0108,0.00,0.11,1800.00,oral evaluation - unknown
+D0109,0.00,0.40,1639.00,oral evaluation - unknown
+D0110,0.00,0.95,49410.00,oral evaluation - unknown
+D0111,0.00,5.69,40.00,oral evaluation - unknown
+D0112,0.00,0.00,0.00,oral evaluation - unknown
+D0113,0.00,0.00,0.00,oral evaluation - unknown
+D0114,0.00,6.47,85.00,oral evaluation - unknown
+D0115,0.00,69.23,900.00,oral evaluation - unknown
+D0116,0.00,0.00,0.00,oral evaluation - unknown
+D0117,0.00,0.00,0.00,oral evaluation - unknown
+D0119,0.00,0.00,0.00,oral evaluation - unknown
+D0120,0.00,14.56,14724.75,periodic oral evaluation - established patient
+D0121,0.00,39.58,950.00,oral evaluation - unknown
+D0122,0.00,0.00,0.00,oral evaluation - unknown
+D0123,0.00,0.00,0.00,oral evaluation - unknown
+D0124,0.00,0.00,0.00,oral evaluation - unknown
+D0125,0.00,0.00,0.00,oral evaluation - unknown
+D0127,35.00,35.00,35.00,oral evaluation - unknown
+D0130,0.00,6.05,375.00,oral evaluation - unknown
+D0133,0.00,0.00,0.00,oral evaluation - unknown
+D0140,0.00,10.20,28629.00,limited oral evaluation - problem focused
+D0141,0.00,0.00,0.00,oral evaluation - unknown
+D0142,0.00,5.64,23.33,oral evaluation - unknown
+D0143,0.00,4.74,45.00,oral evaluation - unknown
+D0144,0.00,0.00,0.00,oral evaluation - unknown
+D0145,0.00,3.17,100.00,oral evaluation for a patient under three years of age and counseling with primary caregiver
+D0149,0.00,0.00,0.00,oral evaluation - unknown
+D0150,0.00,271.18,45404.00,comprehensive oral evaluation - new or established patient
+D0151,0.00,54.59,286.00,oral evaluation - unknown
+D0152,0.00,25.33,60.50,oral evaluation - unknown
+D0153,0.00,23.81,82.50,oral evaluation - unknown
+D0154,0.00,82.61,2700.00,oral evaluation - unknown
+D0155,0.00,161.20,1120.00,oral evaluation - unknown
+D0156,0.00,17.75,354.60,oral evaluation - unknown
+D0157,0.00,31.10,91.67,oral evaluation - unknown
+D0158,0.00,22.50,62.50,oral evaluation - unknown
+D0159,0.00,0.00,0.00,oral evaluation - unknown
+D0160,0.00,16.01,5908.75,detailed and extensive oral evaluation - problem focused by report
+D0161,0.00,25.00,50.00,oral evaluation - unknown
+D0162,0.00,46.04,92.50,oral evaluation - unknown
+D0163,0.00,10.65,42.61,oral evaluation - unknown
+D0164,37.50,77.95,180.00,oral evaluation - unknown
+D0168,0.00,0.00,0.00,oral evaluation - unknown
+D0170,0.00,5.81,347.26,re-evaluation - limited problem focused (established patient; not post-operative visit)
+D0171,0.00,9.27,103.00,re-evaluation - post-operative office visit
+D0173,0.00,0.00,0.00,oral evaluation - unknown
+D0177,0.00,37.50,150.00,oral evaluation - unknown
+D0178,0.00,0.00,0.00,oral evaluation - unknown
+D0179,0.00,0.00,0.00,oral evaluation - unknown
+D0180,0.00,70.51,25169.00,comprehensive periodontal evaluation - new or established patient
+D0181,0.00,0.00,0.00,oral evaluation - unknown
+D0182,152.00,152.00,152.00,oral evaluation - unknown
+D0183,0.00,0.00,0.00,oral evaluation - unknown
+D0184,0.00,0.00,0.00,oral evaluation - unknown
+D0185,0.00,0.00,0.00,oral evaluation - unknown
+D0187,0.00,0.00,0.00,oral evaluation - unknown
+D0188,0.00,0.00,0.00,oral evaluation - unknown
+D0189,0.00,0.00,0.00,oral evaluation - unknown
+D0190,0.00,12.92,4072.20,screening of a patient
+D0191,0.00,1.23,169.00,assessment of a patient
+D0193,0.01,6.76,13.51,oral evaluation - unknown
+D0194,0.00,0.00,0.00,oral evaluation - unknown
+D0195,0.00,0.00,0.00,oral evaluation - unknown
+D0199,0.00,4.17,25.00,oral evaluation - unknown
+D0200,0.00,22.76,430.00,radiographic imagery - unknown
+D0201,0.00,1.56,1288.00,radiographic imagery - unknown
+D0202,0.00,0.41,2915.00,radiographic imagery - unknown
+D0203,0.00,0.00,1.00,radiographic imagery - unknown
+D0204,0.00,2.41,65759.83,radiographic imagery - unknown
+D0205,0.00,0.86,1669.00,radiographic imagery - unknown
+D0206,0.00,0.00,1.00,radiographic imagery - unknown
+D0207,0.00,0.88,3411.00,radiographic imagery - unknown
+D0208,0.00,0.00,0.00,radiographic imagery - unknown
+D0209,0.00,2.86,20.00,radiographic imagery - unknown
+D0210,0.00,118.44,58471.00,intraoral - comprehensive series of radiographic images
+D0211,0.00,0.00,0.00,radiographic imagery - unknown
+D0213,0.00,0.00,0.00,radiographic imagery - unknown
+D0214,0.00,35.50,71.00,radiographic imagery - unknown
+D0216,0.00,0.00,0.00,radiographic imagery - unknown
+D0219,202.00,202.00,202.00,radiographic imagery - unknown
+D0220,0.00,62.12,47253.00,intraoral - periapical first radiographic image
+D0221,0.00,0.00,0.00,radiographic imagery - unknown
+D0222,0.00,0.00,0.00,radiographic imagery - unknown
+D0223,0.00,0.00,0.00,radiographic imagery - unknown
+D0224,0.00,0.00,0.00,radiographic imagery - unknown
+D0229,0.00,0.00,0.00,radiographic imagery - unknown
+D0230,0.00,18.17,16073.00,intraoral - periapical each additional radiographic image
+D0231,0.00,0.00,0.00,radiographic imagery - unknown
+D0232,0.00,0.00,0.00,radiographic imagery - unknown
+D0233,0.00,57.13,450.00,radiographic imagery - unknown
+D0235,0.00,0.00,0.00,radiographic imagery - unknown
+D0237,0.00,0.00,0.00,radiographic imagery - unknown
+D0238,17.00,17.00,17.00,radiographic imagery - unknown
+D0240,0.00,43.51,5998.50,intraoral - occlusal radiographic image
+D0241,0.00,0.00,0.00,radiographic imagery - unknown
+D0247,0.00,550.00,1100.00,radiographic imagery - unknown
+D0249,0.00,0.00,0.00,radiographic imagery - unknown
+D0250,0.00,14.15,3231.00,extra-oral - 2D projection radiographic image created using a stationary radiation source and detector
+D0251,0.00,5.54,72.00,extra-oral posterior dental radiographic image
+D0257,1034.77,1626.85,2811.00,radiographic imagery - unknown
+D0260,0.00,25.67,2314.00,radiographic imagery - unknown
+D0261,0.00,0.00,0.00,radiographic imagery - unknown
+D0263,0.00,0.00,0.00,radiographic imagery - unknown
+D0265,0.00,0.00,0.00,radiographic imagery - unknown
+D0270,0.00,142.88,24816.00,bitewing - single radiographic image
+D0271,0.00,0.00,0.00,radiographic imagery - unknown
+D0272,0.00,115.27,16848.00,bitewings - two radiographic images
+D0273,0.00,68.60,6174.52,bitewings - three radiographic images
+D0274,0.00,116.49,29639.00,bitewings - four radiographic images
+D0275,0.00,0.00,0.00,radiographic imagery - unknown
+D0277,0.00,300.14,6034.00,vertical bitewings - 7 to 8 radiographic images
+D0279,0.00,108.24,180.40,radiographic imagery - unknown
+D0280,0.00,0.00,0.00,radiographic imagery - unknown
+D0281,26.88,26.88,26.88,radiographic imagery - unknown
+D0283,0.00,28.74,145.00,radiographic imagery - unknown
+D0288,0.00,0.00,0.00,radiographic imagery - unknown
+D0289,0.00,0.00,0.00,radiographic imagery - unknown
+D0290,0.00,7.74,500.00,radiographic imagery - unknown
+D0293,0.00,0.00,0.00,radiographic imagery - unknown
+D0294,0.00,0.00,0.00,radiographic imagery - unknown
+D0295,0.00,0.00,0.00,radiographic imagery - unknown
+D0299,0.00,132.90,4960.00,radiographic imagery - unknown
+D0300,0.00,397.47,14823.63,other imagery - unknown
+D0301,0.00,0.07,2400.00,other imagery - unknown
+D0302,0.00,0.54,26412.34,other imagery - unknown
+D0303,0.00,0.43,21117.04,other imagery - unknown
+D0304,0.00,0.29,34977.58,other imagery - unknown
+D0305,0.00,0.12,2773.27,other imagery - unknown
+D0306,0.00,0.00,0.00,other imagery - unknown
+D0307,0.00,0.00,0.00,other imagery - unknown
+D0308,0.00,3.50,7.00,other imagery - unknown
+D0310,0.00,0.00,0.00,sialography
+D0311,0.00,0.00,0.00,other imagery - unknown
+D0313,0.00,0.00,0.00,other imagery - unknown
+D0317,0.00,0.00,0.00,other imagery - unknown
+D0320,0.00,103.77,6610.00,temporomandibular joint arthrogram including injection
+D0321,0.00,18.97,2421.00,other temporomandibular joint radiographic images by report
+D0322,0.00,15.85,600.00,tomographic survey
+D0323,0.00,0.00,0.00,other imagery - unknown
+D0324,0.00,0.00,0.00,other imagery - unknown
+D0325,0.00,0.00,0.00,other imagery - unknown
+D0328,0.00,0.00,0.00,other imagery - unknown
+D0330,0.00,11.01,22248.00,panoramic radiographic image
+D0331,0.00,33.57,85.00,other imagery - unknown
+D0332,0.00,0.00,0.00,other imagery - unknown
+D0333,0.00,525.00,2100.00,other imagery - unknown
+D0334,0.00,0.00,0.00,other imagery - unknown
+D0335,0.00,0.00,0.00,other imagery - unknown
+D0340,0.00,9.09,250.00,2D cephalometric radiographic image - acquisition measurement and analysis
+D0343,0.00,0.00,0.00,other imagery - unknown
+D0345,0.00,0.00,0.00,other imagery - unknown
+D0347,0.00,0.00,0.00,other imagery - unknown
+D0350,0.00,1.52,929.60,2D oral/facial photographic image obtained intra-orally or extra-orally
+D0351,0.00,0.00,0.00,other imagery - unknown
+D0353,0.00,0.00,0.00,other imagery - unknown
+D0354,0.00,0.00,0.00,other imagery - unknown
+D0355,0.00,5.43,125.00,other imagery - unknown
+D0357,0.00,0.00,0.00,other imagery - unknown
+D0359,0.00,0.00,0.00,other imagery - unknown
+D0360,0.00,4.23,1213.00,other imagery - unknown
+D0361,0.00,26.67,80.00,other imagery - unknown
+D0362,0.00,0.00,0.00,other imagery - unknown
+D0363,0.00,1.68,500.00,other imagery - unknown
+D0364,0.00,1.90,387.00,cone beam CT capture and interpretation with limited field of view - less than one whole jaw
+D0365,0.00,3.95,350.00,cone beam CT capture and interpretation with field of view of one full dental arch - mandible
+D0366,0.00,3.09,398.21,cone beam CT capture and interpretation with field of view of one full dental arch - maxilla with or without cranium
+D0367,0.00,5.11,818.79,cone beam CT capture and interpretation with field of view of both jaws; with or without cranium
+D0368,0.00,1.10,350.00,cone beam CT capture and interpretation for TMJ series including two or more exposures
+D0369,0.00,0.00,0.00,maxillofacial MRI capture and interpretation
+D0370,0.00,0.00,0.00,maxillofacial ultrasound capture and interpretation
+D0371,0.00,932.30,14871.00,sialoendoscopy capture and interpretation
+D0372,0.00,0.00,0.00,intraoral tomosynthesis - comprehensive series of radiographic images
+D0373,0.00,0.00,0.00,intraoral tomosynthesis - bitewing radiographic image
+D0374,0.00,0.00,0.00,intraoral tomosynthesis - periapical radiographic image
+D0376,0.00,131.50,263.00,other imagery - unknown
+D0377,0.00,0.00,0.00,other imagery - unknown
+D0378,0.00,18.19,46.24,other imagery - unknown
+D0380,0.00,4.56,340.00,cone beam CT image capture with limited field of view - less than one whole jaw
+D0381,0.00,1.68,350.00,cone beam CT image capture with field of view of one full dental arch - mandible
+D0382,0.00,5.22,1000.00,cone beam CT image capture with field of view of one full dental arch - maxilla with or without cranium
+D0383,0.00,2.43,350.00,cone beam CT image capture with field of view of both jaws; with or without cranium
+D0384,0.00,4.83,328.30,cone beam CT image capture for TMJ series including two or more exposures
+D0385,0.00,0.00,0.00,maxillofacial MRI image capture
+D0386,0.00,0.00,0.00,maxillofacial ultrasound image capture
+D0387,0.00,0.00,0.00,intraoral tomosynthesis - comprehensive series of radiographic images - image capture only
+D0388,0.00,45.45,136.36,intraoral tomosynthesis - bitewing radiographic image - image capture only
+D0389,0.00,0.00,0.00,intraoral tomosynthesis - periapical radiographic image - image capture only
+D0390,0.00,0.00,0.00,other imagery - unknown
+D0391,0.00,2.82,175.00,interpretation of diagnostic image by a practitioner not associated with capture of the image including report
+D0392,0.00,0.00,0.00,other imagery - unknown
+D0393,0.00,2.48,495.00,virtual treatment simulation using 3D image volume or surface scan
+D0394,0.00,0.00,0.00,digital subtraction of two or more images or image volumes of the same modality
+D0395,0.00,0.00,0.00,fusion of two or more 3D image volumes of one or more modalities
+D0397,0.00,0.00,0.00,other imagery - unknown
+D0399,0.00,75.00,100.00,other imagery - unknown
+D0400,0.00,0.55,6.00,lab test - unknown
+D0401,0.00,0.00,0.00,lab test - unknown
+D0402,0.00,0.19,412.00,lab test - unknown
+D0403,0.00,0.05,731.50,lab test - unknown
+D0404,0.00,0.86,1800.00,lab test - unknown
+D0405,0.00,0.01,55.00,lab test - unknown
+D0406,0.00,0.00,0.00,lab test - unknown
+D0407,0.00,0.00,0.00,lab test - unknown
+D0410,0.00,34.00,242.00,lab test - unknown
+D0411,0.00,0.00,0.00,HbA1c in-office point of service testing
+D0412,0.00,0.49,10.00,blood glucose level test - in-office using a glucose meter
+D0413,0.00,0.00,0.00,lab test - unknown
+D0414,0.00,0.00,0.00,laboratory processing of microbial specimen to include culture and sensitivity studies preparation and transmission of written report
+D0415,0.00,0.04,10.00,collection of microorganisms for culture and sensitivity
+D0416,0.00,1.65,200.00,viral culture
+D0417,0.00,1.02,40.00,collection and preparation of saliva sample for laboratory diagnostic testing
+D0418,0.00,3.42,152.37,analysis of saliva sample
+D0419,0.00,0.00,0.00,assessment of salivary flow by measurement
+D0420,0.00,22.50,90.00,lab test - unknown
+D0421,0.00,0.00,0.00,lab test - unknown
+D0422,0.00,0.00,0.00,collection and preparation of genetic sample material for laboratory analysis and report
+D0423,0.00,0.00,0.00,genetic test for susceptibility to diseases - specimen analysis
+D0424,0.00,110.89,331.00,lab test - unknown
+D0425,0.00,2.26,31.59,caries susceptibility tests
+D0426,0.00,0.00,0.00,lab test - unknown
+D0427,0.00,0.00,0.00,lab test - unknown
+D0428,0.00,0.00,0.00,lab test - unknown
+D0429,0.00,0.00,0.00,lab test - unknown
+D0430,0.00,0.00,0.00,lab test - unknown
+D0431,0.00,1.19,212.30,adjunctive pre-diagnostic test that aids in detection of mucosal abnormalities including premalignant and malignant lesions not to include cytology or biopsy procedures
+D0432,0.00,0.00,0.00,lab test - unknown
+D0434,0.00,64.19,378.50,lab test - unknown
+D0436,0.00,0.00,0.00,lab test - unknown
+D0438,0.00,125.05,396.66,lab test - unknown
+D0439,0.00,100.38,693.00,lab test - unknown
+D0440,10.00,10.00,10.00,lab test - unknown
+D0441,0.00,0.00,0.00,lab test - unknown
+D0442,0.00,30.00,60.00,lab test - unknown
+D0443,0.00,0.00,0.00,lab test - unknown
+D0444,0.00,43.50,87.00,lab test - unknown
+D0447,160.00,160.00,160.00,lab test - unknown
+D0450,0.00,300.00,750.00,lab test - unknown
+D0455,0.00,113.00,226.00,lab test - unknown
+D0459,0.00,0.00,0.00,lab test - unknown
+D0460,0.00,21.19,3451.63,pulp vitality tests
+D0461,225.00,225.00,225.00,lab test - unknown
+D0462,0.00,60.12,120.24,lab test - unknown
+D0463,0.00,163.65,952.24,lab test - unknown
+D0466,150.00,201.54,229.33,lab test - unknown
+D0467,123.00,160.50,179.00,lab test - unknown
+D0469,0.00,0.00,0.00,lab test - unknown
+D0470,0.00,9.39,5002.33,diagnostic casts
+D0471,0.00,1.99,63.00,lab test - unknown
+D0472,0.00,5.95,78.15,accession of tissue gross examination preparation and transmission of written report
+D0473,0.00,9.14,319.00,accession of tissue gross and microscopic examination preparation and transmission of written report
+D0474,0.00,1.78,212.00,accession of tissue gross and microscopic examination including assessment of surgical margins for presence of disease preparation and transmission of written report
+D0475,0.00,938.87,6604.30,decalcification procedure
+D0476,0.00,5.25,42.00,special stains for microorganisms
+D0477,0.00,0.00,0.00,special stains not for microorganisms
+D0478,0.00,26.46,172.00,immunohistochemical stains
+D0480,0.00,39.70,370.20,accession of exfoliative cytologic smears microscopic examination preparation and transmission of written report
+D0481,0.00,31.75,254.00,electron microscopy
+D0482,0.00,0.00,0.00,direct immunofluorescence
+D0483,0.00,0.00,0.00,indirect immunofluorescence
+D0484,0.00,0.91,20.00,consultation on slides prepared elsewhere
+D0485,0.00,0.00,0.00,consultation including preparation of slides from biopsy material supplied by referring source
+D0486,0.00,0.00,0.00,laboratory accession of transepithelial cytologic sample microscopic examination preparation and transmission of written report
+D0488,0.00,0.00,0.00,lab test - unknown
+D0490,0.00,0.00,0.00,lab test - unknown
+D0491,0.00,181.50,363.00,lab test - unknown
+D0493,35.00,35.00,35.00,lab test - unknown
+D0494,50.00,50.00,50.00,lab test - unknown
+D0495,37.50,37.50,37.50,lab test - unknown
+D0496,37.50,715.30,1732.00,lab test - unknown
+D0498,0.00,1000.00,1500.00,lab test - unknown
+D0499,0.00,50.00,250.00,lab test - unknown
+D0500,0.00,0.00,0.00,oral pathology - unknown
+D0501,0.00,2.92,1590.00,oral pathology - unknown
+D0502,0.00,1.77,8155.00,other oral pathology procedures by report
+D0503,0.00,0.73,6875.00,oral pathology - unknown
+D0504,0.00,0.00,1.00,oral pathology - unknown
+D0505,0.00,2.96,30030.00,oral pathology - unknown
+D0506,0.00,0.82,22847.14,oral pathology - unknown
+D0508,0.00,0.00,0.00,oral pathology - unknown
+D0510,0.00,0.00,0.00,oral pathology - unknown
+D0512,0.00,0.00,0.00,oral pathology - unknown
+D0513,0.00,0.00,0.00,oral pathology - unknown
+D0514,0.00,0.00,0.00,oral pathology - unknown
+D0515,0.00,0.00,0.00,oral pathology - unknown
+D0516,0.00,0.00,0.00,oral pathology - unknown
+D0519,0.00,13.33,40.00,oral pathology - unknown
+D0520,0.00,0.00,0.00,oral pathology - unknown
+D0522,0.00,0.00,0.00,oral pathology - unknown
+D0524,0.00,0.00,0.00,oral pathology - unknown
+D0525,0.00,0.00,0.00,oral pathology - unknown
+D0530,0.00,0.00,0.00,oral pathology - unknown
+D0531,0.00,0.00,0.00,oral pathology - unknown
+D0532,0.00,0.00,0.00,oral pathology - unknown
+D0550,0.00,0.00,0.00,oral pathology - unknown
+D0551,0.00,0.00,0.00,oral pathology - unknown
+D0552,0.00,5.28,95.00,oral pathology - unknown
+D0553,0.00,0.00,0.00,oral pathology - unknown
+D0555,0.00,0.00,0.00,oral pathology - unknown
+D0562,0.00,0.00,0.00,oral pathology - unknown
+D0570,0.00,0.00,0.00,oral pathology - unknown
+D0571,0.00,0.00,0.00,oral pathology - unknown
+D0574,0.00,0.00,0.00,oral pathology - unknown
+D0582,0.00,0.00,0.00,oral pathology - unknown
+D0589,0.00,0.00,0.00,oral pathology - unknown
+D0590,0.00,0.00,0.00,oral pathology - unknown
+D0592,0.00,0.00,0.00,oral pathology - unknown
+D0599,0.00,0.00,0.00,oral pathology - unknown
+D0600,0.00,0.00,0.00,non-ionizing diagnostic procedure capable of quantifying monitoring and recording changes in structure of enamel dentin and cementum
+D0601,0.00,0.50,2448.00,caries risk assessment and documentation with a finding of low risk
+D0602,0.00,0.22,6255.00,caries risk assessment and documentation with a finding of moderate risk
+D0603,0.00,0.13,2800.00,caries risk assessment and documentation with a finding of high risk
+D0604,0.00,0.24,5826.00,antigen testing for a public health related pathogen including coronavirus
+D0605,0.00,0.00,0.00,antibody testing for a public health related pathogen including coronavirus
+D0606,0.00,0.00,0.00,molecular testing for a public health related pathogen including coronavirus
+D0607,0.00,0.00,0.00,caries risk assessment - unknown
+D0608,0.00,0.00,0.00,caries risk assessment - unknown
+D0610,0.00,193.97,3000.00,caries risk assessment - unknown
+D0612,0.00,0.00,0.00,caries risk assessment - unknown
+D0614,0.00,0.00,0.00,caries risk assessment - unknown
+D0623,0.00,0.00,0.00,caries risk assessment - unknown
+D0624,552.00,552.00,552.00,caries risk assessment - unknown
+D0625,0.00,0.00,0.00,caries risk assessment - unknown
+D0627,0.00,0.00,0.00,caries risk assessment - unknown
+D0628,0.00,0.00,0.00,caries risk assessment - unknown
+D0629,0.00,0.00,0.00,caries risk assessment - unknown
+D0630,0.00,0.00,0.00,caries risk assessment - unknown
+D0632,0.00,0.00,0.00,caries risk assessment - unknown
+D0635,0.00,0.00,0.00,caries risk assessment - unknown
+D0636,0.00,0.00,0.00,caries risk assessment - unknown
+D0637,0.00,0.00,0.00,caries risk assessment - unknown
+D0643,0.00,0.00,0.00,caries risk assessment - unknown
+D0650,0.00,0.00,0.00,caries risk assessment - unknown
+D0651,0.00,0.00,0.00,caries risk assessment - unknown
+D0654,0.00,0.00,0.00,caries risk assessment - unknown
+D0656,0.00,173.91,795.00,caries risk assessment - unknown
+D0657,0.00,65.67,788.00,caries risk assessment - unknown
+D0658,0.00,0.00,0.00,caries risk assessment - unknown
+D0659,0.00,0.00,0.00,caries risk assessment - unknown
+D0662,0.00,0.00,0.00,caries risk assessment - unknown
+D0666,0.00,0.00,0.00,caries risk assessment - unknown
+D0667,0.00,0.00,0.00,caries risk assessment - unknown
+D0670,0.00,1591.20,4500.00,caries risk assessment - unknown
+D0674,0.00,137.14,960.00,caries risk assessment - unknown
+D0675,552.00,552.00,552.00,caries risk assessment - unknown
+D0680,0.00,0.00,0.00,caries risk assessment - unknown
+D0684,0.00,0.00,0.00,caries risk assessment - unknown
+D0686,20.00,20.00,20.00,caries risk assessment - unknown
+D0690,0.00,0.00,0.00,caries risk assessment - unknown
+D0694,0.00,0.00,0.00,caries risk assessment - unknown
+D0699,0.00,0.00,0.00,caries risk assessment - unknown
+D0700,0.00,0.00,0.00,image capture only - unknown
+D0701,0.00,0.42,1653.00,panoramic radiographic image - image capture only
+D0702,0.00,3.84,80117.00,2-D cephalometric radiographic image - image capture only
+D0703,0.00,0.10,2899.00,2-D oral/facial photographic image obtained intra-orally or extra-orally - image capture only
+D0704,0.00,1.79,81016.00,image capture only - unknown
+D0705,0.00,0.00,0.00,extra-oral posterior dental radiographic image - image capture only
+D0706,0.00,0.00,0.00,intraoral - occlusal radiographic image - image capture only
+D0707,0.00,0.00,0.00,intraoral - periapical radiographic image - image capture only
+D0708,0.00,2008.04,5579.33,intraoral - bitewing radiographic image - image capture only
+D0709,0.00,1165.80,9624.50,intraoral - comprehensive series of radiographic images - image capture only
+D0710,0.00,0.00,0.00,image capture only - unknown
+D0714,0.00,0.00,0.00,image capture only - unknown
+D0719,137.00,137.00,137.00,image capture only - unknown
+D0720,0.00,0.00,0.00,image capture only - unknown
+D0721,0.00,0.00,0.00,image capture only - unknown
+D0722,0.00,0.00,0.00,image capture only - unknown
+D0725,0.00,1750.00,3500.00,image capture only - unknown
+D0728,0.00,0.00,0.00,image capture only - unknown
+D0730,0.00,0.00,0.00,image capture only - unknown
+D0731,0.00,0.00,0.00,image capture only - unknown
+D0732,0.00,38.33,115.00,image capture only - unknown
+D0738,0.00,0.00,0.00,image capture only - unknown
+D0739,0.00,0.00,0.00,image capture only - unknown
+D0740,0.00,189.82,750.00,image capture only - unknown
+D0741,0.00,0.00,0.00,image capture only - unknown
+D0743,0.00,0.00,0.00,image capture only - unknown
+D0745,0.00,0.00,0.00,image capture only - unknown
+D0746,0.00,0.00,0.00,image capture only - unknown
+D0747,270.00,555.18,1125.55,image capture only - unknown
+D0748,0.00,0.00,0.00,image capture only - unknown
+D0750,0.00,0.00,0.00,image capture only - unknown
+D0751,0.00,0.00,0.00,image capture only - unknown
+D0753,0.00,0.00,0.00,image capture only - unknown
+D0760,0.00,0.00,0.00,image capture only - unknown
+D0762,0.00,0.00,0.00,image capture only - unknown
+D0772,0.00,0.00,0.00,image capture only - unknown
+D0774,0.00,0.00,0.00,image capture only - unknown
+D0776,0.00,0.00,0.00,image capture only - unknown
+D0781,0.00,36.00,144.00,image capture only - unknown
+D0784,0.00,0.00,0.00,image capture only - unknown
+D0788,0.00,0.00,0.00,image capture only - unknown
+D0790,0.00,958.89,1764.00,image capture only - unknown
+D0791,0.00,57.60,288.00,image capture only - unknown
+D0792,0.00,0.00,0.00,image capture only - unknown
+D0795,0.00,0.00,0.00,image capture only - unknown
+D0800,0.00,0.00,0.00,3D scan - unknown
+D0801,0.00,0.00,0.00,3D dental surface scan - direct
+D0802,0.00,0.35,2859.00,3D dental surface scan - indirect
+D0803,0.00,0.48,1288.00,3D facial surface scan - direct
+D0804,0.00,2.73,1972.00,3D facial surface scan - indirect
+D0805,0.00,0.35,11640.00,3D scan - unknown
+D0806,0.00,0.00,0.01,3D scan - unknown
+D0807,0.00,0.00,0.00,3D scan - unknown
+D0808,0.00,21.56,345.00,3D scan - unknown
+D0809,0.00,0.00,0.00,3D scan - unknown
+D0810,0.00,228.54,950.00,3D scan - unknown
+D0812,0.00,0.00,0.00,3D scan - unknown
+D0816,0.00,125.00,625.00,3D scan - unknown
+D0817,0.00,0.00,0.00,3D scan - unknown
+D0820,14.67,14.67,14.67,3D scan - unknown
+D0821,0.00,0.00,0.00,3D scan - unknown
+D0823,0.00,0.00,0.00,3D scan - unknown
+D0828,0.00,0.00,0.00,3D scan - unknown
+D0829,0.00,0.00,0.00,3D scan - unknown
+D0830,0.00,0.00,0.00,3D scan - unknown
+D0831,0.00,0.00,0.00,3D scan - unknown
+D0832,0.00,25.00,50.00,3D scan - unknown
+D0833,0.00,0.00,0.00,3D scan - unknown
+D0834,150.00,150.00,150.00,3D scan - unknown
+D0837,0.00,57.40,150.00,3D scan - unknown
+D0838,0.00,0.00,0.00,3D scan - unknown
+D0840,0.00,162.50,650.00,3D scan - unknown
+D0846,0.00,0.00,0.00,3D scan - unknown
+D0851,0.00,162.50,325.00,3D scan - unknown
+D0855,0.00,0.00,0.00,3D scan - unknown
+D0859,0.00,0.00,0.00,3D scan - unknown
+D0862,0.00,0.00,0.00,3D scan - unknown
+D0863,0.00,0.00,0.00,3D scan - unknown
+D0864,69.50,69.50,69.50,3D scan - unknown
+D0867,0.00,0.00,0.00,3D scan - unknown
+D0869,0.00,0.00,0.00,3D scan - unknown
+D0870,0.00,0.00,0.00,3D scan - unknown
+D0873,0.00,151.60,379.00,3D scan - unknown
+D0880,0.00,0.92,5.50,3D scan - unknown
+D0882,10.04,10.04,10.04,3D scan - unknown
+D0883,0.00,0.00,0.00,3D scan - unknown
+D0885,0.00,0.00,0.00,3D scan - unknown
+D0888,0.00,0.00,0.00,3D scan - unknown
+D0899,0.00,0.00,0.00,3D scan - unknown
+D0900,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0901,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0902,0.00,0.05,1840.00,unspecified diagnostic procedure - unknown
+D0903,0.00,0.33,7289.00,unspecified diagnostic procedure - unknown
+D0904,0.00,0.12,7200.00,unspecified diagnostic procedure - unknown
+D0905,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0906,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0908,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0910,0.00,16.43,115.00,unspecified diagnostic procedure - unknown
+D0911,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0912,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0914,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0916,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0918,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0922,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0924,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0928,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0930,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0931,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0940,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0941,0.00,7.50,15.00,unspecified diagnostic procedure - unknown
+D0942,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0945,89.68,89.68,89.68,unspecified diagnostic procedure - unknown
+D0955,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0956,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0957,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0958,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0960,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0963,0.00,3.86,18.00,unspecified diagnostic procedure - unknown
+D0964,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0967,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0968,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0969,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0971,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0973,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0989,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0990,0.00,0.06,1.00,unspecified diagnostic procedure - unknown
+D0991,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0992,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0994,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0996,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0997,0.00,0.00,0.00,unspecified diagnostic procedure - unknown
+D0998,0.00,79.86,150.00,unspecified diagnostic procedure - unknown
+D0999,0.00,68.43,6291.01,unspecified diagnostic procedure by report
+D1000,0.00,0.00,0.00,diagnostic procedure - unknown
+D1001,0.00,0.00,50.00,preventive procedure - unknown
+D1002,0.00,0.00,1.00,preventive procedure - unknown
+D1003,0.00,0.16,2897.00,preventive procedure - unknown
+D1004,0.00,5.11,111147.35,preventive procedure - unknown
+D1005,0.00,0.00,0.00,preventive procedure - unknown
+D1006,0.00,0.00,0.00,preventive procedure - unknown
+D1007,0.00,0.00,0.01,preventive procedure - unknown
+D1008,0.00,0.00,0.00,preventive procedure - unknown
+D1009,0.00,0.00,0.00,preventive procedure - unknown
+D1010,0.00,0.00,0.00,preventive procedure - unknown
+D1011,0.00,0.00,0.00,preventive procedure - unknown
+D1012,0.00,0.00,0.00,preventive procedure - unknown
+D1013,0.00,0.00,0.00,preventive procedure - unknown
+D1014,0.00,0.00,0.00,preventive procedure - unknown
+D1017,0.00,0.00,0.00,preventive procedure - unknown
+D1019,0.00,0.00,0.00,preventive procedure - unknown
+D1020,0.00,5.05,48.00,preventive procedure - unknown
+D1022,0.00,1270.32,3387.53,preventive procedure - unknown
+D1023,0.00,27.50,165.00,preventive procedure - unknown
+D1024,0.00,0.00,0.00,preventive procedure - unknown
+D1025,0.00,0.00,0.00,preventive procedure - unknown
+D1026,0.00,0.00,0.00,preventive procedure - unknown
+D1027,0.00,0.00,0.00,preventive procedure - unknown
+D1028,0.00,0.00,0.00,preventive procedure - unknown
+D1029,0.00,0.00,0.00,preventive procedure - unknown
+D1030,0.00,74.17,445.00,preventive procedure - unknown
+D1031,0.00,0.00,0.00,preventive procedure - unknown
+D1033,0.00,0.00,0.00,preventive procedure - unknown
+D1034,0.00,0.00,0.00,preventive procedure - unknown
+D1038,0.00,0.00,0.00,preventive procedure - unknown
+D1040,0.00,10.51,115.57,preventive procedure - unknown
+D1042,0.00,327.25,1309.00,preventive procedure - unknown
+D1043,0.00,0.00,0.00,preventive procedure - unknown
+D1046,0.00,0.00,0.00,preventive procedure - unknown
+D1050,0.00,18.00,90.00,preventive procedure - unknown
+D1056,0.00,0.00,0.00,preventive procedure - unknown
+D1059,0.00,0.00,0.00,preventive procedure - unknown
+D1060,18.63,18.63,18.63,preventive procedure - unknown
+D1073,0.00,0.00,0.00,preventive procedure - unknown
+D1075,0.00,0.00,0.00,preventive procedure - unknown
+D1076,0.00,0.00,0.00,preventive procedure - unknown
+D1079,0.00,0.00,0.00,preventive procedure - unknown
+D1080,0.00,0.00,0.00,preventive procedure - unknown
+D1085,0.00,0.00,0.00,preventive procedure - unknown
+D1089,0.00,0.00,0.00,preventive procedure - unknown
+D1092,0.00,0.00,0.00,preventive procedure - unknown
+D1093,0.00,0.00,0.00,preventive procedure - unknown
+D1095,0.00,0.00,0.00,preventive procedure - unknown
+D1099,0.00,0.00,0.00,preventive procedure - unknown
+D1100,0.00,4.10,82.00,prophylaxis - unknown
+D1101,0.00,0.00,1.00,prophylaxis - unknown
+D1102,0.00,0.00,0.00,prophylaxis - unknown
+D1103,0.00,0.00,0.00,prophylaxis - unknown
+D1104,0.00,0.00,0.00,prophylaxis - unknown
+D1105,0.00,0.00,0.00,prophylaxis - unknown
+D1108,0.00,0.00,0.00,prophylaxis - unknown
+D1110,0.00,81.39,137608.24,prophylaxis - adult
+D1111,0.00,2.83,68.00,prophylaxis - unknown
+D1112,0.00,0.00,0.00,prophylaxis - unknown
+D1113,0.00,39.00,234.00,prophylaxis - unknown
+D1115,0.00,0.00,0.00,prophylaxis - unknown
+D1116,0.00,0.00,0.00,prophylaxis - unknown
+D1118,0.00,0.00,0.00,prophylaxis - unknown
+D1119,0.00,0.00,0.00,prophylaxis - unknown
+D1120,0.00,128.76,48323.71,prophylaxis - child
+D1123,0.00,0.00,0.00,prophylaxis - unknown
+D1127,0.00,0.00,0.00,prophylaxis - unknown
+D1130,0.00,0.00,0.00,prophylaxis - unknown
+D1131,0.00,0.00,0.00,prophylaxis - unknown
+D1139,0.00,0.00,0.00,prophylaxis - unknown
+D1140,0.00,69.75,203.00,prophylaxis - unknown
+D1146,0.00,0.00,0.00,prophylaxis - unknown
+D1151,0.00,0.00,0.00,prophylaxis - unknown
+D1155,0.00,0.00,0.00,prophylaxis - unknown
+D1158,0.00,0.00,0.00,prophylaxis - unknown
+D1161,0.00,0.00,0.00,prophylaxis - unknown
+D1170,13.50,13.50,13.50,prophylaxis - unknown
+D1173,0.00,0.00,0.00,prophylaxis - unknown
+D1180,0.00,0.00,0.00,prophylaxis - unknown
+D1190,0.00,0.00,0.00,prophylaxis - unknown
+D1198,0.00,520.00,1300.00,prophylaxis - unknown
+D1200,0.00,200.00,2000.00,topical application of fluoride - unknown
+D1201,0.00,0.00,0.01,topical application of fluoride - unknown
+D1202,0.00,0.00,0.00,topical application of fluoride - unknown
+D1203,0.00,2.00,7612.50,topical application of fluoride - unknown
+D1204,0.00,30.44,8286.00,topical application of fluoride - unknown
+D1205,0.00,3.79,251.80,topical application of fluoride - unknown
+D1206,0.00,165.69,39312.00,topical application of fluoride varnish
+D1207,12.00,12.00,12.00,topical application of fluoride - unknown
+D1208,0.00,145.45,13946.00,topical application of fluoride - excluding varnish
+D1210,0.00,5.41,265.00,topical application of fluoride - unknown
+D1213,0.00,0.00,0.00,topical application of fluoride - unknown
+D1214,0.00,0.00,0.00,topical application of fluoride - unknown
+D1215,0.00,0.00,0.00,topical application of fluoride - unknown
+D1220,0.00,0.00,0.00,topical application of fluoride - unknown
+D1223,0.00,0.00,0.00,topical application of fluoride - unknown
+D1226,0.00,0.00,0.00,topical application of fluoride - unknown
+D1230,0.00,0.00,0.00,topical application of fluoride - unknown
+D1232,0.00,0.00,0.00,topical application of fluoride - unknown
+D1233,0.00,0.00,0.00,topical application of fluoride - unknown
+D1235,0.00,0.00,0.00,topical application of fluoride - unknown
+D1237,0.00,0.00,0.00,topical application of fluoride - unknown
+D1240,0.00,56.59,282.94,topical application of fluoride - unknown
+D1246,0.00,0.00,0.00,topical application of fluoride - unknown
+D1248,0.00,0.00,0.00,topical application of fluoride - unknown
+D1249,0.00,0.00,0.00,topical application of fluoride - unknown
+D1250,0.00,150.42,227.00,topical application of fluoride - unknown
+D1256,300.00,300.00,300.00,topical application of fluoride - unknown
+D1260,0.00,0.00,0.00,topical application of fluoride - unknown
+D1267,250.03,250.03,250.03,topical application of fluoride - unknown
+D1274,0.00,0.00,0.00,topical application of fluoride - unknown
+D1275,3134.40,3134.40,3134.40,topical application of fluoride - unknown
+D1291,0.00,0.00,0.00,topical application of fluoride - unknown
+D1299,0.00,343.75,1375.00,topical application of fluoride - unknown
+D1300,0.00,54.61,163.82,preventative measure - unknown
+D1301,0.00,0.00,1.00,preventative measure - unknown
+D1302,0.00,0.00,0.00,preventative measure - unknown
+D1303,0.00,0.00,1.00,preventative measure - unknown
+D1304,0.00,0.00,0.00,preventative measure - unknown
+D1305,0.00,0.00,0.00,preventative measure - unknown
+D1307,0.00,0.00,0.00,preventative measure - unknown
+D1310,0.00,25.16,5666.84,nutritional counseling for control of dental disease
+D1312,0.00,0.00,0.00,preventative measure - unknown
+D1320,0.00,0.70,479.00,tobacco counseling for the control and prevention of oral disease
+D1330,0.00,13.64,5666.82,oral hygiene instructions
+D1331,0.00,0.00,0.00,preventative measure - unknown
+D1332,0.00,59.09,250.00,preventative measure - unknown
+D1333,0.00,0.00,0.00,preventative measure - unknown
+D1340,0.00,0.00,0.00,preventative measure - unknown
+D1351,0.00,186.19,10926.75,sealant - per tooth
+D1352,0.00,92.08,1077.67,preventive resin restoration in a moderate to high caries risk patient - permanent tooth
+D1353,0.00,150.69,9958.00,sealant repair - per tooth
+D1354,0.00,66.89,3939.18,application of caries arresting medicament - per tooth
+D1355,0.00,0.00,0.00,caries preventive medicament application - per tooth
+D1357,0.00,0.00,0.00,preventative measure - unknown
+D1360,0.00,0.00,0.00,preventative measure - unknown
+D1382,0.00,0.00,0.00,preventative measure - unknown
+D1390,0.00,0.00,0.00,preventative measure - unknown
+D1392,0.00,0.00,0.00,preventative measure - unknown
+D1399,0.00,0.00,0.00,preventative measure - unknown
+D1400,0.00,145.78,1312.00,preventive procedure - unknown
+D1401,0.00,1.90,6662.00,preventive procedure - unknown
+D1402,0.00,0.20,1520.00,preventive procedure - unknown
+D1403,0.00,0.59,5981.33,preventive procedure - unknown
+D1404,0.00,0.43,5375.23,preventive procedure - unknown
+D1407,0.00,0.00,0.00,preventive procedure - unknown
+D1408,0.00,0.00,0.00,preventive procedure - unknown
+D1409,0.00,0.00,0.00,preventive procedure - unknown
+D1410,0.00,42.38,339.00,preventive procedure - unknown
+D1414,0.00,0.00,0.00,preventive procedure - unknown
+D1415,0.00,0.00,0.00,preventive procedure - unknown
+D1425,0.00,0.00,0.00,preventive procedure - unknown
+D1440,0.00,117.50,352.51,preventive procedure - unknown
+D1441,0.00,0.00,0.00,preventive procedure - unknown
+D1442,0.00,0.00,0.00,preventive procedure - unknown
+D1450,0.00,0.00,0.00,preventive procedure - unknown
+D1467,262.00,262.00,262.00,preventive procedure - unknown
+D1470,0.00,0.00,0.00,preventive procedure - unknown
+D1474,1000.00,1000.00,1000.00,preventive procedure - unknown
+D1479,0.00,13.45,296.00,preventive procedure - unknown
+D1480,0.00,248.27,2296.00,preventive procedure - unknown
+D1482,0.00,0.00,0.00,preventive procedure - unknown
+D1497,0.00,0.00,0.00,preventive procedure - unknown
+D1499,0.00,0.00,0.00,preventive procedure - unknown
+D1500,0.00,0.00,0.00,space maintainer - unknown
+D1501,0.00,3.19,12052.73,space maintainer - unknown
+D1502,0.00,0.37,6410.00,space maintainer - unknown
+D1503,0.00,0.00,0.01,space maintainer - unknown
+D1504,0.00,0.31,1198.00,space maintainer - unknown
+D1509,0.00,0.00,0.00,space maintainer - unknown
+D1510,0.00,0.00,0.00,space maintainer - fixed unilateral - per quadrant
+D1511,0.00,0.00,0.00,space maintainer - unknown
+D1513,0.00,0.00,0.00,space maintainer - unknown
+D1515,0.00,0.00,0.00,space maintainer - unknown
+D1516,0.00,0.00,0.00,space maintainer - fixed - bilateral maxillary
+D1517,0.00,0.00,0.00,space maintainer - fixed - bilateral mandibular
+D1520,0.00,22.93,172.00,space maintainer - removable unilateral - per quadrant
+D1525,0.00,132.50,265.00,space maintainer - unknown
+D1526,0.00,0.00,0.00,space maintainer - removable - bilateral maxillary
+D1530,0.00,0.00,0.00,space maintainer - unknown
+D1548,0.00,0.00,0.00,space maintainer - unknown
+D1550,0.00,0.00,0.00,space maintainer - unknown
+D1551,0.00,0.00,0.00,re-cement or re-bond bilateral space maintainer - maxillary
+D1555,0.00,0.00,0.00,space maintainer - unknown
+D1560,0.00,0.00,0.00,space maintainer - unknown
+D1573,0.00,0.00,0.00,space maintainer - unknown
+D1574,0.00,0.00,0.00,space maintainer - unknown
+D1600,0.00,0.00,0.00,preventive procedure - unknown
+D1601,0.00,0.00,0.00,preventive procedure - unknown
+D1602,0.00,0.00,1.00,preventive procedure - unknown
+D1603,0.00,0.62,1288.00,preventive procedure - unknown
+D1604,0.00,0.00,0.00,preventive procedure - unknown
+D1619,0.00,0.00,0.00,preventive procedure - unknown
+D1620,40.00,40.00,40.00,preventive procedure - unknown
+D1628,0.00,0.00,0.00,preventive procedure - unknown
+D1630,19.76,19.76,19.76,preventive procedure - unknown
+D1642,0.21,0.21,0.21,preventive procedure - unknown
+D1644,1.20,1.20,1.20,preventive procedure - unknown
+D1646,0.00,0.00,0.00,preventive procedure - unknown
+D1688,0.00,0.00,0.00,preventive procedure - unknown
+D1701,0.00,0.27,1181.71,Pfizer-BioNTech Covid-19 vaccine administration - first dose
+D1702,0.00,0.74,6696.00,Pfizer-BioNTech Covid-19 vaccine administration - second dose
+D1703,0.00,0.66,2917.91,Moderna Covid-19 vaccine administration - first dose
+D1704,0.00,0.13,2098.11,Moderna Covid-19 vaccine administration - second dose
+D1705,0.00,0.20,1936.00,AstraZeneca Covid-19 vaccine administration - first dose
+D1707,50.00,50.00,50.00,Janssen Covid-19 vaccine administration
+D1709,0.00,0.00,0.00,Pfizer-BioNTech Covid-19 vaccine administration - booster dose
+D1710,0.00,0.00,0.00,Moderna Covid-19 vaccine administration - third dose
+D1711,0.00,0.00,0.00,Moderna Covid-19 vaccine administration - booster dose
+D1713,1737.50,1737.50,1737.50,Pfizer-BioNTech Covid-19 vaccine administration tris-sucrose pediatric - first dose
+D1714,0.00,25.71,180.00,Pfizer-BioNTech Covid-19 vaccine administration tris-sucrose pediatric - second dose
+D1716,0.00,0.00,0.00,vaccine administration - unknown
+D1720,0.00,0.00,0.00,vaccine administration - unknown
+D1721,0.00,0.00,0.00,vaccine administration - unknown
+D1723,0.00,0.00,0.00,vaccine administration - unknown
+D1729,615.60,615.60,615.60,vaccine administration - unknown
+D1730,0.00,0.00,0.00,vaccine administration - unknown
+D1732,21469.00,21469.00,21469.00,vaccine administration - unknown
+D1740,0.00,581.34,27100.00,vaccine administration - unknown
+D1741,0.00,0.00,0.00,vaccine administration - unknown
+D1758,72.31,72.31,72.31,vaccine administration - unknown
+D1760,682.00,682.00,682.00,vaccine administration - unknown
+D1769,100.00,880.00,1559.40,vaccine administration - unknown
+D1778,2723.00,2723.00,2723.00,vaccine administration - unknown
+D1799,0.00,0.00,0.00,vaccine administration - unknown
+D1801,0.00,0.20,171.00,preventive procedure - unknown
+D1802,0.00,0.00,0.00,preventive procedure - unknown
+D1803,0.00,0.19,775.00,preventive procedure - unknown
+D1804,0.00,0.00,0.00,preventive procedure - unknown
+D1805,0.00,0.00,0.00,preventive procedure - unknown
+D1806,0.00,0.00,0.00,preventive procedure - unknown
+D1810,0.00,112.84,656.00,preventive procedure - unknown
+D1819,0.00,0.00,0.00,preventive procedure - unknown
+D1820,0.00,202.83,811.33,preventive procedure - unknown
+D1830,0.00,90.81,984.00,preventive procedure - unknown
+D1844,0.00,0.00,0.00,preventive procedure - unknown
+D1851,0.00,0.00,0.00,preventive procedure - unknown
+D1874,0.00,92.50,462.50,preventive procedure - unknown
+D1880,0.00,0.00,0.00,preventive procedure - unknown
+D1885,0.00,0.00,0.00,preventive procedure - unknown
+D1887,2012.50,2012.50,2012.50,preventive procedure - unknown
+D1894,182.00,182.00,182.00,preventive procedure - unknown
+D1895,12490.00,12490.00,12490.00,preventive procedure - unknown
+D1897,5285.00,5285.00,5285.00,preventive procedure - unknown
+D1898,1033.00,1033.00,1033.00,preventive procedure - unknown
+D1899,0.00,0.00,0.00,preventive procedure - unknown
+D1900,0.00,37.50,75.00,unspecified preventive procedure - unknown
+D1901,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1902,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1903,0.00,0.00,0.33,unspecified preventive procedure - unknown
+D1904,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1916,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1919,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1922,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1944,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1953,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1961,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1970,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1971,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1975,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1989,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1991,0.00,375.00,750.00,unspecified preventive procedure - unknown
+D1992,0.00,251.01,2065.00,unspecified preventive procedure - unknown
+D1996,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1998,0.00,0.00,0.00,unspecified preventive procedure - unknown
+D1999,0.00,3.63,937.09,unspecified preventive procedure by report
+D2000,0.00,0.00,0.00,preventive procedure - unknown
+D2001,0.00,0.16,2204.00,restorative procedure - unknown
+D2002,0.00,0.59,43425.03,restorative procedure - unknown
+D2003,0.00,0.55,47139.07,restorative procedure - unknown
+D2004,0.00,0.44,17082.12,restorative procedure - unknown
+D2005,0.00,0.45,2859.00,restorative procedure - unknown
+D2006,0.00,0.00,0.00,restorative procedure - unknown
+D2007,0.00,0.00,0.00,restorative procedure - unknown
+D2008,0.00,0.00,0.00,restorative procedure - unknown
+D2010,0.00,0.00,0.00,restorative procedure - unknown
+D2011,0.00,27.67,83.00,restorative procedure - unknown
+D2012,0.00,5.25,42.00,restorative procedure - unknown
+D2014,0.00,0.00,0.00,restorative procedure - unknown
+D2020,0.00,0.00,0.00,restorative procedure - unknown
+D2021,0.00,0.00,0.00,restorative procedure - unknown
+D2022,0.00,0.00,0.00,restorative procedure - unknown
+D2023,0.00,0.00,0.00,restorative procedure - unknown
+D2024,0.00,12.73,25.46,restorative procedure - unknown
+D2025,0.00,43.64,138.00,restorative procedure - unknown
+D2027,0.00,0.00,0.00,restorative procedure - unknown
+D2033,0.00,0.00,0.00,restorative procedure - unknown
+D2035,0.00,0.00,0.00,restorative procedure - unknown
+D2036,0.00,15.00,25.00,restorative procedure - unknown
+D2037,0.00,37.37,84.50,restorative procedure - unknown
+D2038,0.00,15.66,41.89,restorative procedure - unknown
+D2039,20.00,20.00,20.00,restorative procedure - unknown
+D2043,37.30,66.53,125.00,restorative procedure - unknown
+D2044,0.00,0.00,0.00,restorative procedure - unknown
+D2050,0.00,0.00,0.00,restorative procedure - unknown
+D2052,0.00,0.00,0.00,restorative procedure - unknown
+D2055,0.00,0.00,0.00,restorative procedure - unknown
+D2066,0.00,0.00,0.00,restorative procedure - unknown
+D2070,0.00,0.00,0.00,restorative procedure - unknown
+D2072,0.00,0.00,0.00,restorative procedure - unknown
+D2074,0.00,37.50,75.00,restorative procedure - unknown
+D2083,0.00,0.00,0.00,restorative procedure - unknown
+D2090,0.00,466.67,750.00,restorative procedure - unknown
+D2099,0.00,0.00,0.00,restorative procedure - unknown
+D2100,0.00,0.00,0.00,amalgam - unknown
+D2101,0.00,0.00,0.50,amalgam - unknown
+D2102,0.00,0.00,0.00,amalgam - unknown
+D2103,0.00,0.00,0.00,amalgam - unknown
+D2104,0.00,0.00,0.00,amalgam - unknown
+D2105,0.00,0.00,0.00,amalgam - unknown
+D2106,0.00,0.00,0.00,amalgam - unknown
+D2108,0.00,0.00,0.00,amalgam - unknown
+D2110,0.00,54.05,1250.00,amalgam - unknown
+D2111,0.00,0.00,0.00,amalgam - unknown
+D2112,0.00,0.00,0.00,amalgam - unknown
+D2115,0.00,0.00,0.00,amalgam - unknown
+D2119,0.00,0.00,0.00,amalgam - unknown
+D2120,0.00,22.57,158.00,amalgam - unknown
+D2121,0.00,150.00,1200.00,amalgam - unknown
+D2122,0.00,0.00,0.00,amalgam - unknown
+D2123,0.00,0.00,0.00,amalgam - unknown
+D2124,0.00,0.00,0.00,amalgam - unknown
+D2127,0.00,0.00,0.00,amalgam - unknown
+D2129,0.00,0.00,0.00,amalgam - unknown
+D2130,0.00,0.00,0.00,amalgam - unknown
+D2131,0.00,0.00,0.00,amalgam - unknown
+D2134,79.00,79.00,79.00,amalgam - unknown
+D2136,0.00,0.00,0.00,amalgam - unknown
+D2140,0.00,169.73,58134.00,amalgam - one surface primary or permanent
+D2141,0.00,0.00,0.00,amalgam - unknown
+D2145,0.00,0.00,0.00,amalgam - unknown
+D2146,0.00,0.00,0.00,amalgam - unknown
+D2150,0.00,121.51,27223.33,amalgam - two surfaces primary or permanent
+D2151,0.00,0.00,0.00,amalgam - unknown
+D2154,0.00,0.00,0.00,amalgam - unknown
+D2160,0.00,132.82,48988.80,amalgam - three surfaces primary or permanent
+D2161,0.00,224.23,32236.00,amalgam - four or more surfaces primary or permanent
+D2163,0.00,0.00,0.00,amalgam - unknown
+D2166,0.00,0.00,0.00,amalgam - unknown
+D2180,0.00,0.00,0.00,amalgam - unknown
+D2199,0.00,0.00,0.00,amalgam - unknown
+D2200,0.00,0.00,0.00,restorative procedure - unknown
+D2203,0.00,0.00,0.00,restorative procedure - unknown
+D2204,0.00,0.00,0.00,restorative procedure - unknown
+D2210,0.00,0.00,0.00,restorative procedure - unknown
+D2211,0.00,0.00,0.00,restorative procedure - unknown
+D2212,0.00,0.00,0.00,restorative procedure - unknown
+D2217,0.00,0.00,0.00,restorative procedure - unknown
+D2220,0.00,24.56,442.00,restorative procedure - unknown
+D2221,0.00,20.78,187.00,restorative procedure - unknown
+D2222,0.00,0.00,0.00,restorative procedure - unknown
+D2223,0.00,0.00,0.00,restorative procedure - unknown
+D2225,0.00,0.00,0.00,restorative procedure - unknown
+D2230,0.00,494.17,4004.00,restorative procedure - unknown
+D2231,0.00,35.51,532.66,restorative procedure - unknown
+D2233,0.00,0.00,0.00,restorative procedure - unknown
+D2235,0.00,1187.85,6165.66,restorative procedure - unknown
+D2248,0.00,0.00,0.00,restorative procedure - unknown
+D2250,0.00,20.49,71.70,restorative procedure - unknown
+D2261,0.00,0.00,0.00,restorative procedure - unknown
+D2270,0.00,74.47,572.00,restorative procedure - unknown
+D2274,0.00,0.00,0.00,restorative procedure - unknown
+D2275,0.00,0.00,0.00,restorative procedure - unknown
+D2293,0.00,0.00,0.00,restorative procedure - unknown
+D2300,0.00,0.00,0.00,resin-based composite - unknown
+D2302,0.00,0.00,0.00,resin-based composite - unknown
+D2306,0.00,0.00,0.00,resin-based composite - unknown
+D2309,0.00,0.00,0.00,resin-based composite - unknown
+D2310,0.00,0.00,0.00,resin-based composite - unknown
+D2311,0.00,118.55,268.00,resin-based composite - unknown
+D2314,0.00,0.00,0.00,resin-based composite - unknown
+D2318,0.00,0.00,0.00,resin-based composite - unknown
+D2322,0.00,0.00,0.00,resin-based composite - unknown
+D2323,0.00,0.00,0.00,resin-based composite - unknown
+D2325,0.00,0.00,0.00,resin-based composite - unknown
+D2328,0.00,0.00,0.00,resin-based composite - unknown
+D2329,0.00,0.00,0.00,resin-based composite - unknown
+D2330,0.00,121.44,25470.50,resin-based composite - one surface anterior
+D2331,0.00,99.23,19964.00,resin-based composite - two surfaces anterior
+D2332,0.00,88.01,10394.00,resin-based composite - three surfaces anterior
+D2333,0.00,49.57,347.00,resin-based composite - unknown
+D2335,0.00,146.45,19000.00,resin-based composite - four or more surfaces or involving incisal angle (anterior)
+D2336,0.00,142.50,285.00,resin-based composite - unknown
+D2337,0.00,0.00,0.00,resin-based composite - unknown
+D2340,0.00,0.00,0.00,resin-based composite - unknown
+D2343,0.00,183.75,245.00,resin-based composite - unknown
+D2347,0.00,0.00,0.00,resin-based composite - unknown
+D2350,0.00,0.00,0.00,resin-based composite - unknown
+D2351,0.00,0.00,0.00,resin-based composite - unknown
+D2352,0.00,0.00,0.00,resin-based composite - unknown
+D2355,0.00,0.00,0.00,resin-based composite - unknown
+D2362,0.00,0.00,0.00,resin-based composite - unknown
+D2365,0.00,0.00,0.00,resin-based composite - unknown
+D2367,0.00,0.00,0.00,resin-based composite - unknown
+D2370,0.00,0.00,0.00,resin-based composite - unknown
+D2374,28.00,28.00,28.00,resin-based composite - unknown
+D2375,97.00,97.00,97.00,resin-based composite - unknown
+D2380,0.00,0.00,0.00,resin-based composite - unknown
+D2381,0.00,0.42,5.00,resin-based composite - unknown
+D2382,0.00,0.00,0.00,resin-based composite - unknown
+D2383,0.00,0.00,0.00,resin-based composite - unknown
+D2385,0.00,3.62,69.69,resin-based composite - unknown
+D2386,0.00,2.66,100.96,resin-based composite - unknown
+D2387,0.00,0.00,0.00,resin-based composite - unknown
+D2388,0.00,0.00,0.00,resin-based composite - unknown
+D2390,0.00,431.16,13175.00,resin-based composite crown anterior
+D2391,0.00,174.32,24903.00,resin-based composite - one surface posterior
+D2392,0.00,145.87,35421.00,resin-based composite - two surfaces posterior
+D2393,0.00,145.68,19556.61,resin-based composite - three surfaces posterior
+D2394,0.00,254.96,29784.25,resin-based composite - four or more surfaces posterior
+D2397,0.00,0.00,0.00,resin-based composite - unknown
+D2400,0.00,0.00,0.00,gold foil - unknown
+D2401,0.00,0.00,0.00,gold foil - unknown
+D2402,0.00,0.00,0.00,gold foil - unknown
+D2403,0.00,0.00,0.00,gold foil - unknown
+D2404,0.00,0.00,0.00,gold foil - unknown
+D2405,0.00,4.17,9.92,gold foil - unknown
+D2406,0.00,0.00,0.00,gold foil - unknown
+D2407,0.00,0.00,0.00,gold foil - unknown
+D2410,0.00,630.27,4727.00,gold foil - one surface
+D2426,0.00,0.00,0.00,gold foil - unknown
+D2430,0.00,0.00,0.00,gold foil - three surfaces
+D2432,0.00,0.00,0.00,gold foil - unknown
+D2438,0.00,0.00,0.00,gold foil - unknown
+D2450,0.00,0.00,0.00,gold foil - unknown
+D2455,0.00,0.00,0.00,gold foil - unknown
+D2461,0.00,0.00,0.00,gold foil - unknown
+D2463,0.00,0.00,0.00,gold foil - unknown
+D2465,0.00,0.00,0.00,gold foil - unknown
+D2466,0.00,0.00,0.00,gold foil - unknown
+D2470,0.00,0.00,0.00,gold foil - unknown
+D2490,0.00,0.00,0.00,gold foil - unknown
+D2491,0.00,0.00,0.00,gold foil - unknown
+D2496,0.00,0.00,0.00,gold foil - unknown
+D2499,0.00,0.00,0.00,gold foil - unknown
+D2501,0.00,78.98,315.91,inlay or onlay - metallic - unknown
+D2507,117.25,117.25,117.25,inlay or onlay - metallic - unknown
+D2510,0.00,1530.17,8160.00,inlay - metallic - one surface
+D2511,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2514,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2520,0.00,0.00,0.00,inlay - metallic - two surfaces
+D2526,160.00,219.50,279.00,inlay or onlay - metallic - unknown
+D2532,585.90,585.90,585.90,inlay or onlay - metallic - unknown
+D2537,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2540,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2542,0.00,0.00,0.00,onlay - metallic - two surfaces
+D2543,0.00,273.00,1365.00,onlay - metallic - three surfaces
+D2544,0.00,3351.40,32148.00,onlay - metallic - four or more surfaces
+D2550,0.00,36.06,131.00,inlay or onlay - metallic - unknown
+D2553,0.00,8.80,44.00,inlay or onlay - metallic - unknown
+D2557,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2565,168.62,168.62,168.62,inlay or onlay - metallic - unknown
+D2570,6.85,6.85,6.85,inlay or onlay - metallic - unknown
+D2571,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2572,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2574,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2576,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2579,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2591,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2592,0.00,0.00,0.00,inlay or onlay - metallic - unknown
+D2603,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2605,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2607,0.00,281.54,492.69,inlay or onlay - porcelain/ceramic/resin - unknown
+D2610,0.00,226.47,2750.17,inlay - porcelain/ceramic - one surface
+D2611,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2613,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2620,0.00,0.00,0.01,inlay - porcelain/ceramic - two surfaces
+D2622,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2630,0.00,68.93,1567.14,inlay - porcelain/ceramic - three or more surfaces
+D2632,300.00,300.00,300.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2642,0.00,0.00,0.00,onlay - porcelain/ceramic - two surfaces
+D2643,0.00,0.08,1.00,onlay - porcelain/ceramic - three surfaces
+D2644,0.00,148.10,7792.50,onlay - porcelain/ceramic - four or more surfaces
+D2650,0.00,678.81,20081.00,inlay - resin-based composite - one surface
+D2651,0.00,26.25,1575.00,inlay - resin-based composite - two surfaces
+D2652,0.00,663.67,4550.00,inlay - resin-based composite - three or more surfaces
+D2654,0.00,144.00,288.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2662,0.00,529.74,8620.32,onlay - resin-based composite - two surfaces
+D2663,0.00,147.57,1442.00,onlay - resin-based composite - three surfaces
+D2664,0.00,130.73,1548.00,onlay - resin-based composite - four or more surfaces
+D2677,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2691,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2692,0.00,70.00,350.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2699,0.00,0.00,0.00,inlay or onlay - porcelain/ceramic/resin - unknown
+D2700,0.00,3.90,63.00,crown - unknown
+D2701,0.00,0.00,0.00,crown - unknown
+D2703,0.00,10.00,25.00,crown - unknown
+D2704,0.00,0.00,0.00,crown - unknown
+D2706,0.00,0.00,0.00,crown - unknown
+D2709,0.00,0.00,0.00,crown - unknown
+D2710,0.00,165.11,13552.00,crown - resin-based composite (indirect)
+D2711,0.00,0.00,0.00,crown - unknown
+D2712,0.00,0.00,0.00,crown - ¬æ resin-based composite (indirect)
+D2713,0.00,0.00,0.00,crown - unknown
+D2715,0.00,0.00,0.00,crown - unknown
+D2718,0.00,0.00,0.00,crown - unknown
+D2720,0.00,114.55,1260.00,crown - resin with high noble metal
+D2721,0.00,0.00,0.00,crown - resin with predominantly base metal
+D2722,0.00,0.50,1.00,crown - resin with noble metal
+D2728,367.25,367.25,367.25,crown - unknown
+D2729,0.00,0.00,0.00,crown - unknown
+D2730,0.00,0.00,0.00,crown - unknown
+D2739,0.00,0.00,0.00,crown - unknown
+D2740,0.00,33.00,18577.00,crown - porcelain/ceramic
+D2741,0.00,110.67,664.00,crown - unknown
+D2744,0.00,0.00,0.00,crown - unknown
+D2745,0.00,0.00,0.00,crown - unknown
+D2746,0.00,65.50,131.00,crown - unknown
+D2749,0.00,0.00,0.00,crown - unknown
+D2750,0.00,35.52,3200.00,crown - porcelain fused to high noble metal
+D2751,0.00,52.07,2190.51,crown - porcelain fused to predominantly base metal
+D2752,0.00,40.62,11872.04,crown - porcelain fused to noble metal
+D2753,0.00,0.00,0.00,crown - porcelain fused to titanium and titanium alloys
+D2754,0.00,0.00,0.00,crown - unknown
+D2755,0.00,0.00,0.00,crown - unknown
+D2756,0.00,0.00,0.00,crown - unknown
+D2760,0.00,0.00,0.00,crown - unknown
+D2761,0.00,0.00,0.00,crown - unknown
+D2764,0.00,0.00,0.00,crown - unknown
+D2771,0.00,0.00,0.00,crown - unknown
+D2777,0.00,0.00,0.00,crown - unknown
+D2780,0.00,218.51,1311.07,crown - 3/4 cast high noble metal
+D2781,0.00,0.00,0.00,crown - 3/4 cast predominantly base metal
+D2782,0.00,0.00,0.00,crown - 3/4 cast noble metal
+D2783,0.00,0.00,0.00,crown - 3/4 porcelain/ceramic
+D2784,0.00,0.00,0.00,crown - unknown
+D2786,0.00,0.00,0.00,crown - unknown
+D2788,0.00,0.00,0.00,crown - unknown
+D2790,0.00,11.38,1162.37,crown - full cast high noble metal
+D2791,0.00,21.62,600.00,crown - full cast predominantly base metal
+D2792,0.00,50.51,1240.05,crown - full cast noble metal
+D2794,0.00,0.00,0.00,crown - titanium and titanium alloys
+D2795,0.00,0.00,0.00,crown - unknown
+D2798,0.00,0.00,0.00,crown - unknown
+D2799,0.00,50.37,3248.40,interim crown - further treatment or completion of diagnosis necessary prior to final impression
+D2820,0.00,0.00,0.00,restorative procedure - unknown
+D2837,0.00,0.00,0.00,restorative procedure - unknown
+D2840,0.00,8.57,120.00,restorative procedure - unknown
+D2841,0.00,0.00,0.00,restorative procedure - unknown
+D2846,0.00,0.00,0.00,restorative procedure - unknown
+D2849,0.00,0.00,0.00,restorative procedure - unknown
+D2850,0.00,0.00,0.00,restorative procedure - unknown
+D2886,0.00,0.00,0.00,restorative procedure - unknown
+D2889,0.00,0.00,0.00,restorative procedure - unknown
+D2890,0.00,0.00,0.00,restorative procedure - unknown
+D2891,0.00,0.00,0.00,restorative procedure - unknown
+D2892,0.00,0.00,0.00,restorative procedure - unknown
+D2899,0.00,0.00,0.00,restorative procedure - unknown
+D2900,0.00,0.00,0.00,restoration or repair - unknown
+D2910,0.00,591.30,15008.50,re-cement or re-bond inlay onlay veneer or partial coverage restoration
+D2911,0.00,0.00,0.00,restoration or repair - unknown
+D2915,0.00,263.88,1440.00,re-cement or re-bond indirectly fabricated or prefabricated post and core
+D2920,0.00,15.79,10734.50,re-cement or re-bond crown
+D2921,0.00,73.98,641.20,reattachment of tooth fragment incisal edge or cusp
+D2922,0.00,0.00,0.00,restoration or repair - unknown
+D2928,0.00,1.20,2.00,prefabricated porcelain/ceramic crown - permanent tooth
+D2929,0.00,0.00,0.00,prefabricated porcelain/ceramic crown - primary tooth
+D2930,0.00,320.24,15627.50,prefabricated stainless steel crown - primary tooth
+D2931,0.00,226.26,16000.00,prefabricated stainless steel crown - permanent tooth
+D2932,0.00,87.32,5249.33,prefabricated resin crown
+D2933,0.00,224.94,7557.73,prefabricated stainless steel crown with resin window
+D2934,0.00,0.08,1.00,prefabricated esthetic coated stainless steel crown - primary tooth
+D2935,0.00,0.00,0.00,restoration or repair - unknown
+D2939,0.00,52.50,210.00,restoration or repair - unknown
+D2940,0.00,546.34,26863.00,protective restoration
+D2941,0.00,916.84,7896.67,interim therapeutic restoration - primary dentition
+D2944,0.00,0.00,0.00,restoration or repair - unknown
+D2945,0.00,0.00,0.00,restoration or repair - unknown
+D2947,0.00,44.22,108.88,restoration or repair - unknown
+D2948,0.00,0.00,0.00,restoration or repair - unknown
+D2949,0.00,0.00,0.00,restorative foundation for an indirect restoration
+D2950,0.00,10.17,11716.00,core buildup including any pins when required
+D2951,0.00,10.99,275.00,pin retention - per tooth in addition to restoration
+D2952,0.00,10.96,1883.33,post and core in addition to crown indirectly fabricated
+D2953,0.00,96.11,480.55,each additional indirectly fabricated post - same tooth
+D2954,0.00,8.70,718.00,prefabricated post and core in addition to crown
+D2955,0.00,47.04,4422.00,post removal
+D2957,0.00,28.18,155.00,each additional prefabricated post - same tooth
+D2959,0.00,0.00,0.00,restoration or repair - unknown
+D2960,0.00,27.48,1211.75,labial veneer (resin laminate) - direct
+D2961,0.00,29.06,177.00,labial veneer (resin laminate) - indirect
+D2962,0.00,9.88,1822.00,labial veneer (porcelain laminate) - indirect
+D2964,0.00,0.00,0.00,restoration or repair - unknown
+D2965,0.00,21.43,300.00,restoration or repair - unknown
+D2970,0.00,42.01,3843.35,restoration or repair - unknown
+D2971,0.00,0.01,1.00,additional procedures to customize a crown to fit under an existing partial denture framework
+D2975,0.00,0.00,0.00,coping
+D2979,0.00,0.00,0.00,restoration or repair - unknown
+D2980,0.00,11.63,305.00,crown repair necessitated by restorative material failure
+D2981,0.00,0.00,0.00,inlay repair necessitated by restorative material failure
+D2982,0.00,0.00,0.00,onlay repair necessitated by restorative material failure
+D2983,0.00,0.00,0.00,veneer repair necessitated by restorative material failure
+D2990,0.00,62.72,2320.66,resin infiltration of incipient smooth surface lesions
+D2991,0.00,0.00,0.00,restoration or repair - unknown
+D2992,0.00,0.00,0.00,restoration or repair - unknown
+D2997,0.00,50.00,75.00,restoration or repair - unknown
+D2998,0.00,0.00,0.00,restoration or repair - unknown
+D2999,0.00,466.28,45200.00,unspecified restorative procedure by report
+D3000,0.00,0.00,0.00,restorative procedure - unknown
+D3001,0.00,0.00,0.00,endodontics procedure - unknown
+D3002,0.00,45.00,90.00,endodontics procedure - unknown
+D3003,0.00,0.00,0.00,endodontics procedure - unknown
+D3005,0.00,116.00,145.00,endodontics procedure - unknown
+D3010,0.00,12.86,64.48,endodontics procedure - unknown
+D3016,0.00,0.00,0.00,endodontics procedure - unknown
+D3020,0.00,0.00,0.00,endodontics procedure - unknown
+D3024,0.00,0.00,0.00,endodontics procedure - unknown
+D3026,0.00,0.00,0.00,endodontics procedure - unknown
+D3027,0.00,0.00,0.00,endodontics procedure - unknown
+D3029,0.00,0.00,0.00,endodontics procedure - unknown
+D3030,0.00,0.00,0.00,endodontics procedure - unknown
+D3031,0.00,0.00,0.00,endodontics procedure - unknown
+D3036,0.00,0.00,0.00,endodontics procedure - unknown
+D3037,0.00,0.00,0.00,endodontics procedure - unknown
+D3044,0.00,0.00,0.00,endodontics procedure - unknown
+D3058,0.00,0.00,0.00,endodontics procedure - unknown
+D3059,0.00,0.00,0.00,endodontics procedure - unknown
+D3065,0.00,0.00,0.00,endodontics procedure - unknown
+D3067,0.00,0.00,0.00,endodontics procedure - unknown
+D3072,0.00,0.00,0.00,endodontics procedure - unknown
+D3090,0.00,0.00,0.00,endodontics procedure - unknown
+D3100,0.00,0.00,0.00,pulp cap - unknown
+D3102,0.00,0.00,0.00,pulp cap - unknown
+D3109,0.00,0.00,0.00,pulp cap - unknown
+D3110,0.00,88.70,5361.50,pulp cap - direct (excluding final restoration)
+D3120,0.00,33.11,1248.18,pulp cap - indirect (excluding final restoration)
+D3125,0.00,0.00,0.00,pulp cap - unknown
+D3140,0.00,0.00,0.00,pulp cap - unknown
+D3160,0.00,84.50,169.00,pulp cap - unknown
+D3170,0.00,0.00,0.00,pulp cap - unknown
+D3179,0.00,0.00,0.00,pulp cap - unknown
+D3199,0.00,0.00,0.00,pulp cap - unknown
+D3200,0.00,162.50,325.00,pulpal procedure - unknown
+D3210,0.00,0.00,0.00,pulpal procedure - unknown
+D3211,13211.89,13211.89,13211.89,pulpal procedure - unknown
+D3220,0.00,159.65,5808.00,therapeutic pulpotomy (excluding final restoration) - removal of pulp coronal to the dentinocemental junction and application of medicament
+D3221,0.00,236.74,9504.00,pulpal debridement primary and permanent teeth
+D3222,0.00,0.00,0.00,partial pulpotomy for apexogenesis - permanent tooth with incomplete root development
+D3223,250.00,250.00,250.00,pulpal procedure - unknown
+D3224,0.00,0.00,0.00,pulpal procedure - unknown
+D3226,0.00,0.00,0.00,pulpal procedure - unknown
+D3229,0.00,0.00,0.00,pulpal procedure - unknown
+D3230,0.00,16.21,891.60,pulpal therapy (resorbable filling) - anterior primary tooth (excluding final restoration)
+D3240,0.00,46.42,382.00,pulpal therapy (resorbable filling) - posterior primary tooth (excluding final restoration)
+D3241,0.00,337.50,450.00,pulpal procedure - unknown
+D3242,0.00,0.00,0.00,pulpal procedure - unknown
+D3244,0.00,0.00,0.00,pulpal procedure - unknown
+D3246,0.00,0.00,0.00,pulpal procedure - unknown
+D3255,0.00,0.00,0.00,pulpal procedure - unknown
+D3258,0.00,0.00,0.00,pulpal procedure - unknown
+D3260,0.00,0.00,0.00,pulpal procedure - unknown
+D3273,859.00,859.00,859.00,pulpal procedure - unknown
+D3292,0.00,0.00,0.00,pulpal procedure - unknown
+D3299,0.00,0.00,0.00,pulpal procedure - unknown
+D3300,0.00,0.00,0.00,endodontic procedure - unknown
+D3301,0.00,0.00,0.00,endodontic procedure - unknown
+D3303,0.00,0.00,0.00,endodontic procedure - unknown
+D3307,0.00,0.00,0.00,endodontic procedure - unknown
+D3308,0.00,0.00,0.00,endodontic procedure - unknown
+D3310,0.00,54.92,20779.56,endodontic therapy anterior tooth (excluding final restoration)
+D3311,0.00,0.00,0.00,endodontic procedure - unknown
+D3312,0.00,0.00,0.00,endodontic procedure - unknown
+D3314,0.00,0.00,0.00,endodontic procedure - unknown
+D3315,0.00,0.00,0.00,endodontic procedure - unknown
+D3318,0.00,0.00,0.00,endodontic procedure - unknown
+D3320,0.00,77.26,22248.00,endodontic therapy premolar tooth (excluding final restoration)
+D3325,358.30,358.30,358.30,endodontic procedure - unknown
+D3330,0.00,52.95,5602.00,endodontic therapy molar tooth (excluding final restoration)
+D3331,0.00,237.58,31255.00,treatment of root canal obstruction; non-surgical access
+D3332,0.00,16.99,691.26,incomplete endodontic therapy; inoperable unrestorable or fractured tooth
+D3333,0.00,0.00,0.00,internal root repair of perforation defects
+D3339,0.00,915.00,1950.00,endodontic procedure - unknown
+D3340,0.00,0.00,0.00,endodontic procedure - unknown
+D3342,0.00,0.00,0.00,endodontic procedure - unknown
+D3346,0.00,20.24,1376.25,retreatment of previous root canal therapy - anterior
+D3347,0.00,43.10,1680.00,retreatment of previous root canal therapy - premolar
+D3348,0.00,16.57,1550.00,retreatment of previous root canal therapy - molar
+D3350,0.00,0.00,0.00,endodontic procedure - unknown
+D3351,0.00,0.00,0.00,apexification/recalcification - initial visit (apical closure/calcific repair of perforations root resorption etc.)
+D3352,0.00,0.00,0.00,apexification/recalcification - interim medication replacement
+D3353,0.00,204.29,1430.00,apexification/recalcification - final visit (includes completed root canal therapy - apical closure/calcific repair of perforations root resorption etc.)
+D3356,0.00,0.00,0.00,pulpal regeneration - interim medication replacement
+D3370,0.00,0.00,0.00,endodontic procedure - unknown
+D3373,0.00,0.00,0.00,endodontic procedure - unknown
+D3380,0.00,0.00,0.00,endodontic procedure - unknown
+D3382,0.00,0.00,0.00,endodontic procedure - unknown
+D3384,0.00,0.00,0.00,endodontic procedure - unknown
+D3389,0.00,0.00,0.00,endodontic procedure - unknown
+D3390,0.00,0.00,0.00,endodontic procedure - unknown
+D3392,0.00,0.00,0.00,endodontic procedure - unknown
+D3402,0.00,0.00,0.00,endodontic procedure - unknown
+D3408,0.00,5.00,20.00,endodontic procedure - unknown
+D3410,0.00,36.43,5755.50,apicoectomy - anterior
+D3411,0.00,0.00,0.00,endodontic procedure - unknown
+D3420,0.00,0.00,0.00,endodontic procedure - unknown
+D3421,0.00,17.43,5817.66,apicoectomy - premolar (first root)
+D3422,0.00,0.00,0.00,endodontic procedure - unknown
+D3425,0.00,8.90,2904.00,apicoectomy - molar (first root)
+D3426,0.00,0.00,1.00,apicoectomy (each additional root)
+D3427,0.00,0.00,0.00,endodontic procedure - unknown
+D3428,0.00,0.00,0.00,bone graft in conjunction with periradicular surgery - per tooth single site
+D3429,0.00,0.00,0.00,bone graft in conjunction with periradicular surgery - each additional contiguous tooth in the same surgical site
+D3430,0.00,2.74,2488.18,retrograde filling - per root
+D3431,0.00,84.95,3313.10,biologic materials to aid in soft and osseous tissue regeneration in conjunction with periradicular surgery
+D3432,0.00,0.00,0.00,guided tissue regeneration resorbable barrier per site in conjunction with periradicular surgery
+D3433,0.00,0.00,0.00,endodontic procedure - unknown
+D3434,0.00,0.00,0.00,endodontic procedure - unknown
+D3435,0.00,0.00,0.00,endodontic procedure - unknown
+D3440,0.00,0.00,0.00,endodontic procedure - unknown
+D3441,0.00,0.00,0.00,endodontic procedure - unknown
+D3450,0.00,0.00,0.00,root amputation - per root
+D3460,0.00,1480.78,7330.00,endodontic endosseous implant
+D3470,0.00,0.00,0.00,intentional re-implantation (including necessary splinting)
+D3472,0.00,0.00,0.00,surgical repair of root resorption - premolar
+D3473,0.00,0.00,0.00,surgical repair of root resorption - molar
+D3485,0.00,0.00,0.00,endodontic procedure - unknown
+D3489,1732.21,1732.21,1732.21,endodontic procedure - unknown
+D3490,0.00,1.40,35.00,endodontic procedure - unknown
+D3499,0.00,0.00,0.00,endodontic procedure - unknown
+D3500,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3501,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - anterior
+D3510,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3516,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3525,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3526,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3530,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3533,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3560,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3562,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3587,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3590,0.00,0.00,0.00,surgical exposure of root surface without apicoectomy or repair of root resorption - unknown
+D3610,0.00,0.00,0.00,endodontics procedure - unknown
+D3615,0.00,68.10,136.20,endodontics procedure - unknown
+D3620,723.14,723.14,723.14,endodontics procedure - unknown
+D3641,0.00,0.00,0.00,endodontics procedure - unknown
+D3642,1447.00,1447.00,1447.00,endodontics procedure - unknown
+D3659,0.00,0.00,0.00,endodontics procedure - unknown
+D3661,0.00,0.00,0.00,endodontics procedure - unknown
+D3711,0.00,0.00,0.00,endodontics procedure - unknown
+D3718,0.00,0.00,0.00,endodontics procedure - unknown
+D3721,0.00,0.00,0.00,endodontics procedure - unknown
+D3730,0.00,50.00,400.00,endodontics procedure - unknown
+D3731,0.00,0.00,0.00,endodontics procedure - unknown
+D3732,0.00,0.00,0.00,endodontics procedure - unknown
+D3733,0.00,0.00,0.00,endodontics procedure - unknown
+D3734,0.00,0.00,0.00,endodontics procedure - unknown
+D3735,0.00,24.25,97.00,endodontics procedure - unknown
+D3739,0.00,0.00,0.00,endodontics procedure - unknown
+D3798,525.00,525.00,525.00,endodontics procedure - unknown
+D3799,0.00,49.25,197.00,endodontics procedure - unknown
+D3810,0.00,0.00,0.00,endodontics procedure - unknown
+D3825,47.00,47.00,47.00,endodontics procedure - unknown
+D3830,0.00,0.00,0.00,endodontics procedure - unknown
+D3880,0.00,0.00,0.00,endodontics procedure - unknown
+D3901,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3902,0.00,7394.17,14145.00,unspecified endodontic procedure - unknown
+D3910,0.00,0.00,0.00,surgical procedure for isolation of tooth with rubber dam
+D3911,0.00,0.00,0.00,intraorifice barrier
+D3920,0.00,0.00,0.00,hemisection (including any root removal) not including root canal therapy
+D3930,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3940,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3950,0.00,0.00,0.00,canal preparation and fitting of preformed dowel or post
+D3960,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3961,0.00,11.50,69.00,unspecified endodontic procedure - unknown
+D3962,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3963,0.00,50.00,100.00,unspecified endodontic procedure - unknown
+D3965,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3970,40.00,40.00,40.00,unspecified endodontic procedure - unknown
+D3971,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3981,31900.00,31900.00,31900.00,unspecified endodontic procedure - unknown
+D3992,0.00,0.00,0.00,unspecified endodontic procedure - unknown
+D3999,0.00,371.91,4245.81,unspecified endodontic procedure by report
+D4000,0.00,2.00,30.00,endodontics procedure - unknown
+D4001,0.00,0.00,0.00,periodontics procedure - unknown
+D4002,0.00,0.00,0.00,periodontics procedure - unknown
+D4003,0.00,0.00,0.00,periodontics procedure - unknown
+D4005,0.00,0.00,0.00,periodontics procedure - unknown
+D4006,0.00,0.00,0.00,periodontics procedure - unknown
+D4010,0.00,0.00,0.00,periodontics procedure - unknown
+D4011,0.00,0.00,0.00,periodontics procedure - unknown
+D4013,0.00,0.00,0.00,periodontics procedure - unknown
+D4018,0.00,75.00,225.00,periodontics procedure - unknown
+D4020,0.00,0.00,0.00,periodontics procedure - unknown
+D4021,0.00,0.00,0.00,periodontics procedure - unknown
+D4022,0.00,0.00,0.00,periodontics procedure - unknown
+D4023,0.00,0.00,0.00,periodontics procedure - unknown
+D4024,0.00,0.00,0.00,periodontics procedure - unknown
+D4025,0.00,0.00,0.00,periodontics procedure - unknown
+D4026,0.00,0.00,0.00,periodontics procedure - unknown
+D4028,0.00,0.00,0.00,periodontics procedure - unknown
+D4034,0.00,19.60,39.20,periodontics procedure - unknown
+D4035,0.00,0.00,0.00,periodontics procedure - unknown
+D4037,0.00,0.00,0.00,periodontics procedure - unknown
+D4038,0.00,0.00,0.00,periodontics procedure - unknown
+D4046,0.00,0.00,0.00,periodontics procedure - unknown
+D4048,0.00,0.00,0.00,periodontics procedure - unknown
+D4049,0.00,0.00,0.00,periodontics procedure - unknown
+D4050,0.00,0.00,0.00,periodontics procedure - unknown
+D4051,0.00,0.00,0.00,periodontics procedure - unknown
+D4052,0.00,0.00,0.00,periodontics procedure - unknown
+D4055,0.00,0.00,0.00,periodontics procedure - unknown
+D4060,0.00,0.00,0.00,periodontics procedure - unknown
+D4061,0.00,0.00,0.00,periodontics procedure - unknown
+D4062,0.00,0.00,0.00,periodontics procedure - unknown
+D4070,0.00,0.00,0.00,periodontics procedure - unknown
+D4080,0.00,32.86,460.00,periodontics procedure - unknown
+D4081,0.00,27.56,200.00,periodontics procedure - unknown
+D4082,0.00,0.00,0.00,periodontics procedure - unknown
+D4086,0.00,0.00,0.00,periodontics procedure - unknown
+D4087,0.00,0.00,0.00,periodontics procedure - unknown
+D4100,0.00,12.87,127.96,periodontics procedure - unknown
+D4101,0.00,0.00,0.00,periodontics procedure - unknown
+D4102,0.00,10.87,21.60,periodontics procedure - unknown
+D4103,0.00,0.00,0.00,periodontics procedure - unknown
+D4104,0.00,0.00,0.00,periodontics procedure - unknown
+D4110,0.00,1.62,30.00,periodontics procedure - unknown
+D4111,0.00,0.00,0.00,periodontics procedure - unknown
+D4112,0.00,0.00,0.00,periodontics procedure - unknown
+D4120,0.00,0.00,0.00,periodontics procedure - unknown
+D4132,0.00,7.00,14.00,periodontics procedure - unknown
+D4140,0.00,0.00,0.00,periodontics procedure - unknown
+D4150,0.00,0.00,0.00,periodontics procedure - unknown
+D4152,0.00,6.55,65.52,periodontics procedure - unknown
+D4154,0.00,0.00,0.00,periodontics procedure - unknown
+D4155,118.50,118.50,118.50,periodontics procedure - unknown
+D4162,0.00,0.00,0.00,periodontics procedure - unknown
+D4165,124.00,124.00,124.00,periodontics procedure - unknown
+D4166,187.50,187.50,187.50,periodontics procedure - unknown
+D4172,0.00,0.00,0.00,periodontics procedure - unknown
+D4176,3886.00,3886.00,3886.00,periodontics procedure - unknown
+D4182,0.00,0.00,0.00,periodontics procedure - unknown
+D4185,0.00,0.00,0.00,periodontics procedure - unknown
+D4187,0.00,0.00,0.00,periodontics procedure - unknown
+D4189,0.00,266.67,400.00,periodontics procedure - unknown
+D4193,0.00,0.00,0.00,periodontics procedure - unknown
+D4199,133.33,266.67,400.00,periodontics procedure - unknown
+D4200,0.00,0.00,0.00,tissue procedure - unknown
+D4203,0.00,0.00,0.00,tissue procedure - unknown
+D4205,0.00,0.00,0.00,tissue procedure - unknown
+D4209,0.00,0.00,0.00,tissue procedure - unknown
+D4210,0.00,208.22,9887.50,gingivectomy or gingivoplasty - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4211,0.00,155.67,9504.00,gingivectomy or gingivoplasty - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4212,0.00,72.04,4523.33,gingivectomy or gingivoplasty to allow access for restorative procedure per tooth
+D4215,0.00,0.00,0.00,tissue procedure - unknown
+D4220,0.00,0.00,0.00,tissue procedure - unknown
+D4221,0.00,0.00,0.00,tissue procedure - unknown
+D4226,0.00,0.00,0.00,tissue procedure - unknown
+D4227,0.00,0.00,0.00,tissue procedure - unknown
+D4230,0.00,1696.85,5090.55,anatomical crown exposure - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4231,0.00,0.00,0.00,anatomical crown exposure - one to three teeth or tooth bounded spaces per quadrant
+D4237,0.00,0.00,0.00,tissue procedure - unknown
+D4239,0.00,0.00,0.00,tissue procedure - unknown
+D4240,0.00,54.64,4318.80,gingival flap procedure including root planing - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4241,0.00,18.96,936.00,gingival flap procedure including root planing - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4242,0.00,0.00,0.00,tissue procedure - unknown
+D4245,0.00,0.02,1.00,apically positioned flap
+D4248,0.00,0.00,0.00,tissue procedure - unknown
+D4249,0.00,15.12,1122.00,clinical crown lengthening - hard tissue
+D4250,0.00,0.00,0.00,tissue procedure - unknown
+D4251,0.00,0.00,0.00,tissue procedure - unknown
+D4252,0.00,0.00,0.00,tissue procedure - unknown
+D4253,0.00,0.00,0.00,tissue procedure - unknown
+D4254,0.00,0.00,0.00,tissue procedure - unknown
+D4256,0.00,0.00,0.00,tissue procedure - unknown
+D4257,0.00,0.00,0.00,tissue procedure - unknown
+D4258,0.00,0.00,0.00,tissue procedure - unknown
+D4259,0.00,0.00,0.00,tissue procedure - unknown
+D4260,0.00,129.17,10414.50,osseous surgery (including elevation of a full thickness flap and closure) - four or more contiguous teeth or tooth bounded spaces per quadrant
+D4261,0.00,10.77,1685.00,osseous surgery (including elevation of a full thickness flap and closure) - one to three contiguous teeth or tooth bounded spaces per quadrant
+D4262,0.00,0.00,0.00,tissue procedure - unknown
+D4263,0.00,25.86,3604.36,bone replacement graft - retained natural tooth - first site in quadrant
+D4264,0.00,70.52,2878.00,bone replacement graft - retained natural tooth - each additional site in quadrant
+D4265,0.00,6.42,4394.66,biologic materials to aid in soft and osseous tissue regeneration per site
+D4266,0.00,25.33,10311.00,guided tissue regeneration natural teeth - resorbable barrier per site
+D4267,0.00,2.72,1297.85,guided tissue regeneration natural teeth - non-resorbable barrier per site
+D4268,0.00,90.43,1457.00,surgical revision procedure per tooth
+D4269,0.00,0.00,0.00,tissue procedure - unknown
+D4270,0.00,104.36,4245.81,pedicle soft tissue graft procedure
+D4271,0.00,40.00,8278.00,tissue procedure - unknown
+D4273,0.00,54.16,8783.00,autogenous connective tissue graft procedure (including donor and recipient surgical sites) first tooth implant or edentulous tooth position in graft
+D4274,0.00,0.06,1.00,mesial/distal wedge procedure single tooth (when not performed in conjunction with surgical procedures in the same anatomical area)
+D4275,0.00,6.49,1585.29,non-autogenous connective tissue graft (including recipient site and donor material) first tooth implant or edentulous tooth position in graft
+D4276,0.00,0.00,0.00,combined connective tissue and pedicle graft per tooth
+D4277,0.00,0.87,412.43,free soft tissue graft procedure (including recipient and donor surgical sites) first tooth implant or edentulous tooth position in graft
+D4278,0.00,0.00,0.00,free soft tissue graft procedure (including recipient and donor surgical sites) each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4280,0.00,0.00,0.00,tissue procedure - unknown
+D4281,0.00,0.00,0.00,tissue procedure - unknown
+D4283,0.00,7.33,462.05,autogenous connective tissue graft procedure (including donor and recipient surgical sites) - each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4285,0.00,0.00,0.00,non-autogenous connective tissue graft procedure (including recipient surgical site and donor material) - each additional contiguous tooth implant or edentulous tooth position in same graft site
+D4286,0.00,13.89,250.00,removal of non-resorbable barrier
+D4287,0.00,0.00,0.00,tissue procedure - unknown
+D4289,0.00,0.00,0.00,tissue procedure - unknown
+D4291,0.00,0.00,0.00,tissue procedure - unknown
+D4292,0.00,0.00,0.00,tissue procedure - unknown
+D4293,0.00,0.00,0.00,tissue procedure - unknown
+D4295,0.00,0.00,0.00,tissue procedure - unknown
+D4299,0.00,0.00,0.00,tissue procedure - unknown
+D4300,0.00,0.00,0.00,periodontic procedure - unknown
+D4310,0.00,17.14,30.00,periodontic procedure - unknown
+D4314,0.00,0.00,0.00,periodontic procedure - unknown
+D4320,0.00,1.61,123.00,periodontic procedure - unknown
+D4321,0.00,15.10,736.00,periodontic procedure - unknown
+D4322,0.00,46.88,187.50,splint - intra-coronal; natural teeth or prosthetic crowns
+D4323,0.00,176.89,1080.00,splint - extra-coronal; natural teeth or prosthetic crowns
+D4324,0.00,0.00,0.00,periodontic procedure - unknown
+D4325,0.00,0.00,0.00,periodontic procedure - unknown
+D4326,0.00,0.00,0.00,periodontic procedure - unknown
+D4327,0.00,0.00,0.00,periodontic procedure - unknown
+D4330,0.00,0.00,0.00,periodontic procedure - unknown
+D4331,0.00,0.00,0.00,periodontic procedure - unknown
+D4332,0.00,0.00,0.00,periodontic procedure - unknown
+D4333,0.00,0.00,0.00,periodontic procedure - unknown
+D4335,0.00,0.00,0.00,periodontic procedure - unknown
+D4337,0.00,0.00,0.00,periodontic procedure - unknown
+D4338,0.00,0.00,0.00,periodontic procedure - unknown
+D4340,0.00,0.00,0.00,periodontic procedure - unknown
+D4341,0.00,156.56,76205.00,periodontal scaling and root planing - four or more teeth per quadrant
+D4342,0.00,126.04,10598.25,periodontal scaling and root planing - one to three teeth per quadrant
+D4344,0.00,0.00,0.00,periodontic procedure - unknown
+D4345,0.00,0.00,0.00,periodontic procedure - unknown
+D4346,0.00,1110.66,24191.00,scaling in presence of generalized moderate or severe gingival inflammation - full mouth after oral evaluation
+D4347,0.00,0.00,0.00,periodontic procedure - unknown
+D4349,0.00,0.00,0.00,periodontic procedure - unknown
+D4350,0.00,0.00,0.00,periodontic procedure - unknown
+D4355,0.00,735.12,24255.00,full mouth debridement to enable a comprehensive periodontal evaluation and diagnosis on a subsequent visit
+D4359,0.00,0.00,0.00,periodontic procedure - unknown
+D4360,0.00,0.00,0.00,periodontic procedure - unknown
+D4361,0.00,0.00,0.00,periodontic procedure - unknown
+D4362,0.00,0.00,0.00,periodontic procedure - unknown
+D4364,0.00,31.00,62.00,periodontic procedure - unknown
+D4365,0.00,0.00,0.00,periodontic procedure - unknown
+D4367,0.00,0.00,0.00,periodontic procedure - unknown
+D4371,0.00,267.47,300.90,periodontic procedure - unknown
+D4376,0.00,0.00,0.00,periodontic procedure - unknown
+D4380,0.00,0.00,0.00,periodontic procedure - unknown
+D4381,0.00,2.68,2718.54,localized delivery of antimicrobial agents via a controlled release vehicle into diseased crevicular tissue per tooth
+D4382,0.00,0.00,0.00,periodontic procedure - unknown
+D4396,0.00,0.00,0.00,periodontic procedure - unknown
+D4397,0.00,0.00,0.00,periodontic procedure - unknown
+D4399,0.00,0.00,0.00,periodontic procedure - unknown
+D4400,0.00,25.00,50.00,periodontics procedure - unknown
+D4403,0.00,0.00,0.00,periodontics procedure - unknown
+D4404,0.00,0.00,0.00,periodontics procedure - unknown
+D4407,0.00,0.00,0.00,periodontics procedure - unknown
+D4414,0.00,0.00,0.00,periodontics procedure - unknown
+D4419,0.00,0.00,0.00,periodontics procedure - unknown
+D4438,0.00,0.00,0.00,periodontics procedure - unknown
+D4439,25.45,25.45,25.45,periodontics procedure - unknown
+D4443,0.00,28.70,114.81,periodontics procedure - unknown
+D4449,0.00,0.00,0.00,periodontics procedure - unknown
+D4450,0.00,0.00,0.00,periodontics procedure - unknown
+D4455,0.00,0.00,0.00,periodontics procedure - unknown
+D4460,0.00,0.00,0.00,periodontics procedure - unknown
+D4478,77.87,77.87,77.87,periodontics procedure - unknown
+D4480,0.00,0.00,0.00,periodontics procedure - unknown
+D4481,0.00,0.00,0.00,periodontics procedure - unknown
+D4482,0.00,0.00,0.00,periodontics procedure - unknown
+D4484,0.00,0.00,0.00,periodontics procedure - unknown
+D4486,0.00,0.00,0.00,periodontics procedure - unknown
+D4489,0.00,0.00,0.00,periodontics procedure - unknown
+D4499,0.00,0.00,0.00,periodontics procedure - unknown
+D4500,0.00,0.00,0.00,periodontics procedure - unknown
+D4502,0.00,0.00,0.00,periodontics procedure - unknown
+D4520,0.00,0.00,0.00,periodontics procedure - unknown
+D4525,0.00,0.00,0.00,periodontics procedure - unknown
+D4533,0.00,108.13,216.25,periodontics procedure - unknown
+D4550,0.00,0.00,0.00,periodontics procedure - unknown
+D4580,0.00,72.00,180.00,periodontics procedure - unknown
+D4596,0.00,0.00,0.00,periodontics procedure - unknown
+D4609,0.00,0.00,0.00,periodontics procedure - unknown
+D4610,0.00,0.00,0.00,periodontics procedure - unknown
+D4612,0.00,0.00,0.00,periodontics procedure - unknown
+D4621,0.00,0.00,0.00,periodontics procedure - unknown
+D4625,0.00,0.00,0.00,periodontics procedure - unknown
+D4626,0.00,0.00,0.00,periodontics procedure - unknown
+D4640,0.00,0.00,0.00,periodontics procedure - unknown
+D4641,0.00,0.00,0.00,periodontics procedure - unknown
+D4648,0.00,0.00,0.00,periodontics procedure - unknown
+D4649,0.00,0.00,0.00,periodontics procedure - unknown
+D4653,0.00,0.00,0.00,periodontics procedure - unknown
+D4657,8.39,8.39,8.39,periodontics procedure - unknown
+D4685,0.00,0.00,0.00,periodontics procedure - unknown
+D4700,0.00,0.00,0.00,periodontics procedure - unknown
+D4710,0.00,0.00,0.00,periodontics procedure - unknown
+D4711,0.00,0.00,0.00,periodontics procedure - unknown
+D4721,0.00,0.00,0.00,periodontics procedure - unknown
+D4725,0.00,375.00,750.00,periodontics procedure - unknown
+D4726,0.00,0.00,0.00,periodontics procedure - unknown
+D4735,0.00,0.00,0.00,periodontics procedure - unknown
+D4739,0.00,0.00,0.00,periodontics procedure - unknown
+D4760,0.00,0.00,0.00,periodontics procedure - unknown
+D4803,0.00,0.00,0.00,periodontics procedure - unknown
+D4808,0.00,0.00,0.00,periodontics procedure - unknown
+D4815,0.00,0.00,0.00,periodontics procedure - unknown
+D4859,0.00,0.00,0.00,periodontics procedure - unknown
+D4860,0.00,0.00,0.00,periodontics procedure - unknown
+D4882,0.00,0.00,0.00,periodontics procedure - unknown
+D4900,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4904,0.00,60.00,120.00,unspecified periodontal procedure - unknown
+D4908,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4910,0.00,3.91,5216.64,periodontal maintenance
+D4911,0.00,70.00,175.00,unspecified periodontal procedure - unknown
+D4912,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4915,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4920,0.00,0.10,42.50,unscheduled dressing change (by someone other than treating dentist or their staff)
+D4921,0.00,0.22,22.00,gingival irrigation with a medicinal agent - per quadrant
+D4922,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4931,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4936,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4940,0.00,11.11,50.00,unspecified periodontal procedure - unknown
+D4950,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4968,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4990,0.00,16.25,65.00,unspecified periodontal procedure - unknown
+D4991,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4994,0.00,160.00,400.00,unspecified periodontal procedure - unknown
+D4997,0.00,10.89,32.50,unspecified periodontal procedure - unknown
+D4998,0.00,0.00,0.00,unspecified periodontal procedure - unknown
+D4999,0.00,13.75,2644.50,unspecified periodontal procedure by report
+D5000,0.00,0.95,21.00,periodontics procedure - unknown
+D5001,0.00,22.83,189.48,prosthodontics - removable procedure - unknown
+D5002,0.00,49.13,229.40,prosthodontics - removable procedure - unknown
+D5003,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5004,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5005,0.00,127.28,636.38,prosthodontics - removable procedure - unknown
+D5006,600.00,600.00,600.00,prosthodontics - removable procedure - unknown
+D5007,500.00,500.00,500.00,prosthodontics - removable procedure - unknown
+D5010,0.00,461.54,2400.00,prosthodontics - removable procedure - unknown
+D5011,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5018,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5022,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5025,0.00,46.95,190.67,prosthodontics - removable procedure - unknown
+D5030,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5040,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5041,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5043,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5045,0.00,30.00,75.00,prosthodontics - removable procedure - unknown
+D5049,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5055,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5056,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5057,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5060,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5061,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5063,3.00,3.00,3.00,prosthodontics - removable procedure - unknown
+D5080,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5088,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5100,0.00,0.00,0.00,denture - unknown
+D5101,0.00,0.00,0.00,denture - unknown
+D5102,0.00,0.00,0.00,denture - unknown
+D5103,0.00,0.00,0.00,denture - unknown
+D5104,0.00,0.00,0.00,denture - unknown
+D5107,0.00,0.00,0.00,denture - unknown
+D5108,0.00,0.00,0.00,denture - unknown
+D5109,0.00,0.00,0.00,denture - unknown
+D5110,0.00,88.98,5027.90,complete denture - maxillary
+D5111,0.00,0.00,0.00,denture - unknown
+D5112,0.00,419.40,629.10,denture - unknown
+D5115,0.00,438.65,1652.00,denture - unknown
+D5117,0.00,0.00,0.00,denture - unknown
+D5118,0.00,0.00,0.00,denture - unknown
+D5120,0.00,81.52,4251.38,complete denture - mandibular
+D5124,0.00,0.00,0.00,denture - unknown
+D5125,0.00,0.00,0.00,denture - unknown
+D5130,0.00,37.83,3216.00,immediate denture - maxillary
+D5131,0.00,0.00,0.00,denture - unknown
+D5132,0.00,313.37,1099.00,denture - unknown
+D5134,0.00,0.00,0.00,denture - unknown
+D5135,0.00,61.91,1981.00,denture - unknown
+D5138,0.00,0.00,0.00,denture - unknown
+D5139,0.00,0.00,0.00,denture - unknown
+D5140,0.00,25.97,2649.78,immediate denture - mandibular
+D5141,359.00,359.00,359.00,denture - unknown
+D5142,0.00,180.67,1099.00,denture - unknown
+D5144,0.00,0.00,0.00,denture - unknown
+D5145,0.00,232.12,1981.00,denture - unknown
+D5146,516.00,516.00,516.00,denture - unknown
+D5147,516.00,516.00,516.00,denture - unknown
+D5149,0.00,0.00,0.00,denture - unknown
+D5150,0.00,0.00,0.00,denture - unknown
+D5164,325.00,325.00,325.00,denture - unknown
+D5165,25.00,25.00,25.00,denture - unknown
+D5166,0.00,0.00,0.00,denture - unknown
+D5190,0.00,0.00,0.00,denture - unknown
+D5199,0.00,0.00,0.00,denture - unknown
+D5200,0.00,47.80,478.00,denture - unknown
+D5202,0.00,0.00,0.00,denture - unknown
+D5203,0.00,0.00,0.00,denture - unknown
+D5204,0.00,0.00,0.00,denture - unknown
+D5210,0.00,0.00,0.00,denture - unknown
+D5211,0.00,63.80,3568.00,maxillary partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5212,0.00,43.66,3925.00,mandibular partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5213,0.00,94.35,3568.00,maxillary partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5214,0.00,102.32,3925.00,mandibular partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5215,0.00,0.00,0.00,denture - unknown
+D5220,0.00,0.00,0.00,denture - unknown
+D5221,0.00,0.00,0.00,immediate maxillary partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5222,0.00,0.00,0.00,immediate mandibular partial denture - resin base (including retentive/clasping materials rests and teeth)
+D5223,0.00,31.25,250.00,immediate maxillary partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5224,0.00,0.00,0.00,immediate mandibular partial denture - cast metal framework with resin denture bases (including retentive/clasping materials rests and teeth)
+D5225,0.00,148.01,2632.77,maxillary partial denture - flexible base (including retentive/clasping materials rests and teeth)
+D5226,0.00,65.36,2426.14,mandibular partial denture - flexible base (including retentive/clasping materials rests and teeth)
+D5227,0.00,0.00,0.00,immediate maxillary partial denture - flexible base (including any clasps rests and teeth)
+D5228,0.00,0.00,0.00,immediate mandibular partial denture - flexible base (including any clasps rests and teeth)
+D5232,0.00,0.00,0.00,denture - unknown
+D5241,0.00,0.00,0.00,denture - unknown
+D5242,0.00,0.00,0.00,denture - unknown
+D5254,0.00,0.00,0.00,denture - unknown
+D5261,0.00,0.00,0.00,denture - unknown
+D5262,0.00,0.00,0.00,denture - unknown
+D5264,0.00,0.00,0.00,denture - unknown
+D5266,0.00,0.00,0.00,denture - unknown
+D5276,0.00,0.00,0.00,denture - unknown
+D5280,0.00,270.83,675.00,denture - unknown
+D5281,0.00,17.24,350.00,denture - unknown
+D5282,0.00,0.00,0.00,removable unilateral partial denture - one piece cast metal (including retentive/clasping materials rests and teeth) maxillary
+D5283,0.00,0.00,0.00,removable unilateral partial denture - one piece cast metal (including rententive/clasping materias rests and teeth) mandibular
+D5290,0.00,0.00,0.00,denture - unknown
+D5291,0.00,0.00,0.00,denture - unknown
+D5293,0.00,0.00,0.00,denture - unknown
+D5298,0.00,0.00,0.00,denture - unknown
+D5299,0.00,0.00,0.00,denture - unknown
+D5303,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5306,200.00,200.00,200.00,prosthodontics - removable procedure - unknown
+D5310,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5335,49.00,49.00,49.00,prosthodontics - removable procedure - unknown
+D5362,82.35,82.35,82.35,prosthodontics - removable procedure - unknown
+D5379,43.00,43.00,43.00,prosthodontics - removable procedure - unknown
+D5380,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5383,139.00,139.00,139.00,prosthodontics - removable procedure - unknown
+D5385,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5396,0.00,0.00,0.00,prosthodontics - removable procedure - unknown
+D5400,0.00,0.00,0.00,adjust denture - unknown
+D5401,0.00,0.00,0.00,adjust denture - unknown
+D5409,0.00,0.00,0.00,adjust denture - unknown
+D5410,0.00,30.33,360.00,adjust complete denture - maxillary
+D5411,0.00,13.04,367.00,adjust complete denture - mandibular
+D5414,0.00,0.00,0.00,adjust denture - unknown
+D5421,0.00,9.88,255.00,adjust partial denture - maxillary
+D5422,0.00,12.22,360.00,adjust partial denture - mandibular
+D5424,0.00,0.00,0.00,adjust denture - unknown
+D5425,0.00,0.00,0.00,adjust denture - unknown
+D5426,0.00,0.00,0.00,adjust denture - unknown
+D5473,0.00,0.00,0.00,adjust denture - unknown
+D5490,0.00,0.00,0.00,adjust denture - unknown
+D5497,0.00,0.00,0.00,adjust denture - unknown
+D5500,0.00,0.00,0.00,repair denture - unknown
+D5510,0.00,17.66,375.00,repair denture - unknown
+D5511,0.00,29.69,375.00,repair broken complete denture base mandibular
+D5512,0.00,23.15,246.75,repair broken complete denture base maxillary
+D5515,0.00,0.00,0.00,repair denture - unknown
+D5520,0.00,9.93,718.00,replace missing or broken teeth - complete denture (each tooth)
+D5559,0.00,0.00,0.00,repair denture - unknown
+D5591,0.00,0.00,0.00,repair denture - unknown
+D5600,0.00,0.00,0.00,repair denture - unknown
+D5606,0.00,0.00,0.00,repair denture - unknown
+D5610,0.00,11.53,327.00,repair denture - unknown
+D5611,0.00,41.80,257.00,repair resin partial denture base mandibular
+D5612,0.00,35.96,205.00,repair resin partial denture base maxillary
+D5620,0.00,8.59,210.48,repair denture - unknown
+D5621,0.00,44.10,308.70,repair cast partial framework mandibular
+D5622,0.00,0.00,0.00,repair cast partial framework maxillary
+D5630,0.00,18.67,400.00,repair or replace broken retentive clasping materials - per tooth
+D5640,0.00,20.65,410.64,replace broken teeth - per tooth
+D5650,0.00,11.62,431.00,add tooth to existing partial denture
+D5652,31.89,31.89,31.89,repair denture - unknown
+D5660,0.00,32.25,2906.50,add clasp to existing partial denture - per tooth
+D5668,0.00,0.00,0.00,repair denture - unknown
+D5670,0.00,4.55,300.00,replace all teeth and acrylic on cast metal framework (maxillary)
+D5671,0.00,0.00,0.00,replace all teeth and acrylic on cast metal framework (mandibular)
+D5682,0.00,0.00,0.00,repair denture - unknown
+D5698,0.00,0.00,0.00,repair denture - unknown
+D5709,0.00,136.00,272.00,rebase or reline denture - unknown
+D5710,0.00,0.02,1.00,rebase complete maxillary denture
+D5711,0.00,34.87,638.89,rebase complete mandibular denture
+D5720,0.00,0.00,0.00,rebase maxillary partial denture
+D5721,0.00,0.00,0.00,rebase mandibular partial denture
+D5725,0.00,0.00,0.00,rebase hybrid prosthesis
+D5726,0.00,0.00,0.00,rebase or reline denture - unknown
+D5730,0.00,33.83,4698.75,reline complete maxillary denture (direct)
+D5731,0.00,16.30,378.29,reline complete mandibular denture (direct)
+D5740,0.00,28.72,550.00,reline maxillary partial denture (direct)
+D5741,0.00,8.18,373.70,reline mandibular partial denture (direct)
+D5750,0.00,17.21,696.00,reline complete maxillary denture (indirect)
+D5751,0.00,15.25,696.00,reline complete mandibular denture (indirect)
+D5753,0.00,0.00,0.00,rebase or reline denture - unknown
+D5756,0.00,0.00,0.00,rebase or reline denture - unknown
+D5760,0.00,22.85,623.23,reline maxillary partial denture (indirect)
+D5761,0.00,47.80,626.71,reline mandibular partial denture (indirect)
+D5786,0.00,0.00,0.00,rebase or reline denture - unknown
+D5788,0.00,0.00,0.00,rebase or reline denture - unknown
+D5798,0.00,1.83,5.95,rebase or reline denture - unknown
+D5807,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5810,0.00,5.15,518.00,interim complete denture (maxillary)
+D5811,0.00,8.19,795.00,interim complete denture (mandibular)
+D5819,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5820,0.00,82.64,52000.00,interim partial denture (including retentive/clasping materials rests and teeth) maxillary
+D5821,0.00,24.55,1118.00,interim partial denture (including retentive/clasping materials rests and teeth) mandibular
+D5822,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5828,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5831,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5832,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5840,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5850,0.00,3.02,315.00,tissue conditioning maxillary
+D5851,0.00,1.96,315.00,tissue conditioning mandibular
+D5853,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5854,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5858,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5860,0.00,62.92,1400.00,unspecified removable prosthodontic procedure - unknown
+D5861,0.00,113.47,1928.98,unspecified removable prosthodontic procedure - unknown
+D5862,0.00,3.03,450.00,precision attachment by report
+D5863,0.00,0.00,0.00,overdenture - complete maxillary
+D5864,0.00,246.25,985.00,overdenture - partial maxillary
+D5865,0.00,0.00,0.00,overdenture - complete mandibular
+D5866,0.00,0.00,0.00,overdenture - partial mandibular
+D5867,0.00,12.45,1095.90,replacement of replaceable part of semi-precision or precision attachment per attachment
+D5868,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5875,0.00,23.06,582.39,modification of removable prosthesis following implant surgery
+D5876,0.00,0.00,0.00,add metal substructure to acrylic full denture (per arch)
+D5885,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5886,0.00,22.03,66.08,unspecified removable prosthodontic procedure - unknown
+D5888,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5889,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5896,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5897,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5898,0.00,0.00,0.00,unspecified removable prosthodontic procedure - unknown
+D5899,0.00,62.62,4370.00,unspecified removable prosthodontic procedure by report
+D5900,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5910,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5911,0.00,20.00,70.00,facial moulage (sectional)
+D5913,0.00,1039.63,5000.00,nasal prosthesis
+D5914,0.00,753.33,2260.00,auricular prosthesis
+D5915,0.00,0.00,0.00,orbital prosthesis
+D5916,0.00,0.00,0.00,ocular prosthesis
+D5919,0.00,0.00,0.00,facial prosthesis
+D5922,0.00,25.73,975.00,nasal septal prosthesis
+D5923,0.00,833.33,5000.00,ocular prosthesis interim
+D5924,0.00,0.00,0.00,cranial prosthesis
+D5925,0.00,132.67,398.00,facial augmentation implant prosthesis
+D5927,0.00,0.00,0.00,auricular prosthesis replacement
+D5928,0.00,0.00,0.00,orbital prosthesis replacement
+D5929,0.00,0.00,0.00,facial prosthesis replacement
+D5930,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5931,0.00,259.98,14300.00,obturator prosthesis surgical
+D5932,0.00,123.60,10318.00,obturator prosthesis definitive
+D5933,0.00,8.22,440.00,obturator prosthesis modification
+D5934,0.00,0.00,0.00,mandibular resection prosthesis with guide flange
+D5935,0.00,0.00,0.00,mandibular resection prosthesis without guide flange
+D5936,0.00,137.92,6885.00,obturator prosthesis interim
+D5937,0.00,0.00,0.00,trismus appliance (not for TMD treatment)
+D5951,0.00,8.11,55.00,feeding aid
+D5952,0.00,0.00,0.00,speech aid prosthesis pediatric
+D5953,0.00,0.00,0.00,speech aid prosthesis adult
+D5954,0.00,970.69,4019.00,palatal augmentation prosthesis
+D5955,0.00,0.00,0.00,palatal lift prosthesis definitive
+D5956,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5958,0.00,0.00,0.00,palatal lift prosthesis interim
+D5959,0.00,0.00,0.00,palatal lift prosthesis modification
+D5960,0.00,0.00,0.00,speech aid prosthesis modification
+D5975,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5978,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5981,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5982,0.00,9.08,1998.00,surgical stent
+D5983,0.00,0.00,0.00,radiation carrier
+D5984,0.00,21.46,1251.06,radiation shield
+D5985,0.00,49.28,1500.00,radiation cone locator
+D5986,0.00,1.83,525.00,fluoride gel carrier
+D5987,0.00,0.00,0.00,commissure splint
+D5988,0.00,20.10,950.00,surgical splint
+D5989,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5991,0.00,11.48,389.00,vesiculobullous disease medicament carrier
+D5992,0.00,0.00,0.00,adjust maxillofacial prosthetic appliance by report
+D5993,0.00,0.00,0.00,maintenance and cleaning of a maxillofacial prosthesis (extra- or intra-oral) other than required adjustments by report
+D5994,0.00,751.36,16530.00,unspecified maxillofacial prosthesis - unknown
+D5995,0.00,0.00,0.00,periodontal medicament carrier with peripheral seal - laboratory processed - maxillary
+D5996,0.00,0.00,0.00,periodontal medicament carrier with peripheral seal - laboratory processed - mandibular
+D5997,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5998,0.00,0.00,0.00,unspecified maxillofacial prosthesis - unknown
+D5999,0.00,139.33,2800.00,unspecified maxillofacial prosthesis by report
+D6000,0.00,0.00,0.00,implant - unknown
+D6001,0.00,0.00,0.00,implant - unknown
+D6002,0.00,0.00,0.00,implant - unknown
+D6003,0.00,0.00,0.00,implant - unknown
+D6004,0.00,0.00,0.00,implant - unknown
+D6005,0.00,0.00,0.00,implant - unknown
+D6009,0.00,22.11,398.00,implant - unknown
+D6010,0.00,110.62,38012.00,surgical placement of implant body: endosteal implant
+D6011,0.00,36.83,19617.00,surgical access to an implant body (second stage implant surgery)
+D6012,0.00,5.49,607.00,surgical placement of interim implant body for transitional prosthesis: endosteal implant
+D6013,0.00,73.63,4200.00,surgical placement of mini implant
+D6014,0.00,36.67,220.00,implant - unknown
+D6015,0.00,0.00,0.00,implant - unknown
+D6017,1600.00,1600.00,1600.00,implant - unknown
+D6019,1900.00,1900.00,1900.00,implant - unknown
+D6020,0.00,40.06,2200.00,implant - unknown
+D6021,0.00,0.00,0.00,implant - unknown
+D6024,0.00,604.00,1208.00,implant - unknown
+D6025,0.00,0.00,0.00,implant - unknown
+D6026,0.00,0.00,0.00,implant - unknown
+D6027,0.00,0.00,0.00,implant - unknown
+D6030,0.00,0.00,0.00,implant - unknown
+D6031,0.00,0.00,0.00,implant - unknown
+D6034,0.00,0.00,0.00,implant - unknown
+D6040,0.00,325.47,6968.40,surgical placement: eposteal implant
+D6042,0.00,0.00,0.00,implant - unknown
+D6050,0.00,0.00,0.00,surgical placement: transosteal implant
+D6051,0.00,43.90,11900.00,interim implant abutment placement
+D6052,0.00,0.00,0.00,implant - unknown
+D6053,0.00,109.28,10581.00,implant - unknown
+D6054,0.00,229.17,3243.06,implant - unknown
+D6055,0.00,142.50,7000.00,connecting bar - implant supported or abutment supported
+D6056,0.00,95.14,6353.00,prefabricated abutment - includes modification and placement
+D6057,0.00,11.01,1698.00,custom fabricated abutment - includes placement
+D6058,0.00,16.77,1778.20,abutment supported porcelain/ceramic crown
+D6059,0.00,26.99,2976.22,abutment supported porcelain fused to metal crown (high noble metal)
+D6060,0.00,149.69,1280.00,abutment supported porcelain fused to metal crown (predominantly base metal)
+D6061,0.00,36.30,1716.74,abutment supported porcelain fused to metal crown (noble metal)
+D6062,0.00,96.33,1711.09,abutment supported cast metal crown (high noble metal)
+D6063,0.00,0.00,0.00,abutment supported cast metal crown (predominantly base metal)
+D6064,0.00,0.00,0.00,abutment supported cast metal crown (noble metal)
+D6065,0.00,68.21,2889.00,implant supported porcelain/ceramic crown
+D6066,0.00,43.21,2889.00,implant supported crown - porcelain fused to high noble alloys
+D6067,0.00,90.40,1717.65,implant supported crown - high noble alloys
+D6068,0.00,0.00,0.00,abutment supported retainer for porcelain/ceramic FPD
+D6069,0.00,4.75,1530.00,abutment supported retainer for porcelain fused to metal FPD (high noble metal)
+D6070,0.00,0.00,0.00,abutment supported retainer for porcelain fused to metal FPD (predominantly base metal)
+D6071,0.00,0.00,0.00,abutment supported retainer for porcelain fused to metal FPD (noble metal)
+D6072,0.00,0.00,0.00,abutment supported retainer for cast metal FPD (high noble metal)
+D6074,0.00,0.00,0.00,abutment supported retainer for cast metal FPD (noble metal)
+D6075,0.00,40.64,2330.86,implant supported retainer for ceramic FPD
+D6076,0.00,0.00,0.00,implant supported retainer for FPD - porcelain fused to high noble alloys
+D6077,0.00,0.00,0.00,implant supported retainer for metal FPD - high noble alloys
+D6078,0.00,46.73,5000.00,implant - unknown
+D6079,0.00,0.00,0.00,implant - unknown
+D6080,0.00,19.91,2000.00,implant maintenance procedures when prostheses are removed and reinserted including cleansing of prostheses and abutments
+D6081,0.00,0.00,0.00,scaling and debridement in the presence of inflammation or mucositis of a single implant including cleaning of the implant surfaces without flap entry and closure
+D6082,0.00,19.23,250.00,implant supported crown - porcelain fused to predominantly base alloys
+D6083,0.00,0.00,0.00,implant supported crown - porcelain fused to noble alloys
+D6085,0.00,0.00,0.00,interim implant crown
+D6086,0.00,0.00,0.00,implant supported crown - predominantly base alloys
+D6088,0.00,1155.07,2310.13,implant supported crown - titanium and titanium alloys
+D6090,0.00,12.39,250.00,repair implant supported prosthesis by report
+D6091,0.00,156.34,839.40,replacement of replaceable part of semi-precision or precision attachment of implant/abutment supported prosthesis per attachment
+D6092,0.00,140.01,2798.50,re-cement or re-bond implant/abutment supported crown
+D6093,0.00,44.64,244.44,re-cement or re-bond implant/abutment supported fixed partial denture
+D6094,0.00,0.00,0.00,abutment supported crown - titanium and titanium alloys
+D6095,0.00,7.14,250.00,repair implant abutment by report
+D6096,0.00,0.00,0.00,remove broken implant retaining screw
+D6099,0.00,0.00,0.00,implant supported retainer for FPD - porcelain fused to noble alloys
+D6100,0.00,90.64,14576.00,surgical removal of implant body
+D6101,0.00,15.56,2325.75,debridement of a peri-implant defect or defects surrounding a single implant and surface cleaning of the exposed implant surfaces including flap entry and closure
+D6102,0.00,17.82,1532.50,debridement and osseous contouring of a peri-implant defect or defects surrounding a single implant and includes surface cleaning of the exposed implant surfaces including flap entry and closure
+D6103,0.00,0.46,100.00,bone graft for repair of peri-implant defect - does not include flap entry and closure
+D6104,0.00,15.40,4651.50,bone graft at time of implant placement
+D6105,0.00,3334.29,7780.00,removal of implant body not requiring bone removal or flap elevation
+D6106,0.00,0.00,0.00,guided tissue regeneration - resorbable barrier per implant
+D6110,0.00,36.55,3984.00,implant /abutment supported removable denture for edentulous arch - maxillary
+D6111,0.00,0.00,0.00,implant /abutment supported removable denture for edentulous arch - mandibular
+D6112,0.00,0.00,0.00,implant /abutment supported removable denture for partially edentulous arch - maxillary
+D6113,0.00,0.00,0.00,implant /abutment supported removable denture for partially edentulous arch - mandibular
+D6114,0.00,146.17,6679.00,implant /abutment supported fixed denture for edentulous arch - maxillary
+D6115,0.00,26.04,2943.72,implant /abutment supported fixed denture for edentulous arch - mandibular
+D6116,0.00,2100.00,21000.00,implant /abutment supported fixed denture for partially edentulous arch - maxillary
+D6117,0.00,395.46,9886.50,implant /abutment supported fixed denture for partially edentulous arch - mandibular
+D6118,0.00,0.00,0.00,implant/abutment supported interim fixed denture for edentulous arch - mandibular
+D6119,0.00,0.00,0.00,implant/abutment supported interim fixed denture for edentulous arch - maxillary
+D6120,0.00,3.51,52.61,implant supported retainer - porcelain fused to titanium and titanium alloys
+D6122,0.00,0.00,0.00,implant supported retainer for metal FPD - noble alloys
+D6125,0.00,0.00,0.00,unspecified implant procedure - unknown
+D6140,0.00,181.25,725.00,unspecified implant procedure - unknown
+D6151,0.00,0.00,0.00,unspecified implant procedure - unknown
+D6152,0.00,0.00,0.00,unspecified implant procedure - unknown
+D6156,269.00,269.00,269.00,unspecified implant procedure - unknown
+D6157,35.00,35.00,35.00,unspecified implant procedure - unknown
+D6170,0.00,0.00,0.00,unspecified implant procedure - unknown
+D6190,0.00,5.01,611.00,radiographic/surgical implant index by report
+D6191,0.00,0.00,0.00,semi-precision abutment - placement
+D6192,0.00,0.00,0.00,semi-precision attachment - placement
+D6194,0.00,0.00,0.00,abutment supported retainer crown for FPD - titanium and titanium alloys
+D6195,0.00,0.00,0.00,abutment supported retainer - porcelain fused to titanium and titanium alloys
+D6197,0.00,0.00,0.00,replacement of restorative material used to close an access opening of a screw-retained implant supported prosthesis per implant
+D6198,0.00,75.00,150.00,remove interim implant component
+D6199,0.00,61.46,6180.00,unspecified implant procedure by report
+D6200,0.00,0.00,0.00,pontic - unknown
+D6201,0.00,0.00,0.00,pontic - unknown
+D6204,0.00,0.00,0.00,pontic - unknown
+D6205,0.00,0.00,0.00,pontic - indirect resin based composite
+D6210,0.00,0.00,0.00,pontic - cast high noble metal
+D6211,0.00,0.00,0.00,pontic - cast predominantly base metal
+D6212,0.00,0.07,1.00,pontic - cast noble metal
+D6213,0.00,0.00,0.00,pontic - unknown
+D6223,0.00,0.00,0.00,pontic - unknown
+D6240,0.00,17.84,2340.00,pontic - porcelain fused to high noble metal
+D6241,0.00,6.65,963.00,pontic - porcelain fused to predominantly base metal
+D6242,0.00,13.48,4370.00,pontic - porcelain fused to noble metal
+D6243,0.00,0.00,0.00,pontic - porcelain fused to titanium and titanium alloys
+D6245,0.00,35.57,5799.50,pontic - porcelain/ceramic
+D6246,0.00,49.29,1183.00,pontic - unknown
+D6250,0.00,0.00,0.00,pontic - resin with high noble metal
+D6251,0.00,0.00,0.00,pontic - resin with predominantly base metal
+D6252,0.00,0.00,0.00,pontic - resin with noble metal
+D6253,0.00,6.16,350.00,interim pontic - further treatment or completion of diagnosis necessary prior to final impression
+D6254,0.00,0.00,0.00,pontic - unknown
+D6270,0.00,0.00,0.00,pontic - unknown
+D6279,0.00,0.00,0.00,pontic - unknown
+D6301,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6319,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6322,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6351,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6356,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6360,320.00,406.00,449.00,prosthodontics - fixed procedure - unknown
+D6365,194.00,194.00,194.00,prosthodontics - fixed procedure - unknown
+D6372,0.00,27.00,81.00,prosthodontics - fixed procedure - unknown
+D6374,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6375,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6376,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6377,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6390,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6393,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6400,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6413,608.00,608.00,608.00,prosthodontics - fixed procedure - unknown
+D6415,0.00,10.00,32.00,prosthodontics - fixed procedure - unknown
+D6431,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6444,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6455,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6460,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6470,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6475,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6496,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6498,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6499,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6506,0.00,0.00,0.00,retainer - unknown
+D6507,0.00,0.00,0.00,retainer - unknown
+D6510,0.00,0.00,0.00,retainer - unknown
+D6513,128.53,128.53,128.53,retainer - unknown
+D6536,0.00,0.00,0.00,retainer - unknown
+D6544,0.00,0.00,0.00,retainer - unknown
+D6545,0.00,10.71,600.00,retainer - cast metal for resin bonded fixed prosthesis
+D6548,0.00,0.00,0.00,retainer - porcelain/ceramic for resin bonded fixed prosthesis
+D6549,0.00,0.00,0.00,retainer - for resin bonded fixed prosthesis
+D6550,0.00,0.00,0.00,retainer - unknown
+D6560,0.00,0.00,0.00,retainer - unknown
+D6567,0.00,0.00,0.00,retainer - unknown
+D6569,0.00,0.00,0.00,retainer - unknown
+D6571,0.00,0.00,0.00,retainer - unknown
+D6579,0.00,0.00,0.00,retainer - unknown
+D6589,0.00,0.00,0.00,retainer - unknown
+D6600,0.00,0.00,0.00,retainer inlay - porcelain/ceramic two surfaces
+D6605,0.00,0.00,0.00,retainer inlay - cast predominantly base metal three or more surfaces
+D6606,0.00,190.20,951.00,retainer inlay - cast noble metal two surfaces
+D6608,0.00,0.00,0.00,retainer onlay - porcelain/ceramic two surfaces
+D6609,0.00,0.00,0.00,retainer onlay - porcelain/ceramic three or more surfaces
+D6610,0.00,0.00,0.00,retainer onlay - cast high noble metal two surfaces
+D6615,0.00,0.00,0.00,retainer onlay - cast noble metal three or more surfaces
+D6624,0.00,0.00,0.00,retainer inlay - titanium
+D6666,0.00,0.00,0.00,retainer inlay or onlay - unknown
+D6682,0.00,0.00,0.00,retainer inlay or onlay - unknown
+D6698,0.00,0.00,0.00,retainer inlay or onlay - unknown
+D6701,0.00,0.00,0.00,retainer crown - unknown
+D6704,315.36,315.36,315.36,retainer crown - unknown
+D6707,52.00,52.00,52.00,retainer crown - unknown
+D6710,0.00,0.00,0.00,retainer crown - indirect resin based composite
+D6720,0.00,0.00,0.00,retainer crown - resin with high noble metal
+D6721,0.00,0.00,0.00,retainer crown - resin with predominantly base metal
+D6722,0.00,0.00,0.00,retainer crown - resin with noble metal
+D6740,0.00,27.28,5799.50,retainer crown - porcelain/ceramic
+D6741,0.00,0.00,0.00,retainer crown - unknown
+D6742,0.00,170.00,850.00,retainer crown - unknown
+D6745,0.00,342.60,1247.00,retainer crown - unknown
+D6750,0.00,14.46,4680.00,retainer crown - porcelain fused to high noble metal
+D6751,0.00,19.17,1514.00,retainer crown - porcelain fused to predominantly base metal
+D6752,0.00,24.84,1820.00,retainer crown - porcelain fused to noble metal
+D6754,0.00,0.00,0.00,retainer crown - unknown
+D6757,0.00,0.00,0.00,retainer crown - unknown
+D6760,0.00,0.00,0.00,retainer crown - unknown
+D6761,0.00,0.00,0.00,retainer crown - unknown
+D6775,0.00,0.00,0.00,retainer crown - unknown
+D6780,0.00,0.00,0.00,retainer crown - 3/4 cast high noble metal
+D6781,0.00,0.00,0.00,retainer crown - 3/4 cast predominantly base metal
+D6782,0.00,0.00,0.00,retainer crown - 3/4 cast noble metal
+D6783,0.00,38.86,1155.53,retainer crown - 3/4 porcelain/ceramic
+D6790,0.00,0.03,1.00,retainer crown - full cast high noble metal
+D6792,0.00,161.15,2094.00,retainer crown - full cast noble metal
+D6793,0.00,5.40,350.00,interim retainer crown - further treatment or completion of diagnosis necessary prior to final impression
+D6794,0.00,0.00,0.00,retainer crown - titanium and titanium alloys
+D6795,0.00,0.00,0.00,retainer crown - unknown
+D6811,0.00,179.00,358.00,prosthodontics - fixed procedure - unknown
+D6819,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D6821,0.00,427.33,641.00,prosthodontics - fixed procedure - unknown
+D6850,259.00,259.00,259.00,prosthodontics - fixed procedure - unknown
+D6900,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6901,54.83,88.62,190.00,unspecified fixed prosthodontic procedur - unknown
+D6904,16.00,16.00,16.00,unspecified fixed prosthodontic procedur - unknown
+D6910,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6920,0.00,104.00,650.00,connector bar
+D6921,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6930,0.00,55.79,6995.00,re-cement or re-bond fixed partial denture
+D6931,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6932,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6938,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6940,0.00,0.00,0.01,stress breaker
+D6949,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6950,0.00,0.00,0.01,precision attachment
+D6953,0.00,119.00,238.00,unspecified fixed prosthodontic procedur - unknown
+D6970,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6971,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6972,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6973,0.00,3.19,238.00,unspecified fixed prosthodontic procedur - unknown
+D6975,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6976,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6980,0.00,5.20,473.27,fixed partial denture repair necessitated by restorative material failure
+D6981,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6984,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6985,0.00,0.00,0.00,pediatric partial denture fixed
+D6990,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6992,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6997,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6998,0.00,0.00,0.00,unspecified fixed prosthodontic procedur - unknown
+D6999,0.00,51.16,3600.00,unspecified fixed prosthodontic procedure by report
+D7000,0.00,0.00,0.00,prosthodontics - fixed procedure - unknown
+D7001,0.00,30.92,68.02,oral & maxillofacial surgery procedure - unknown
+D7002,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7005,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7007,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7010,22.00,22.00,22.00,oral & maxillofacial surgery procedure - unknown
+D7012,0.00,26.20,104.80,oral & maxillofacial surgery procedure - unknown
+D7014,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7020,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7026,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7030,0.00,91.02,170.75,oral & maxillofacial surgery procedure - unknown
+D7031,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7032,0.00,3.44,86.00,oral & maxillofacial surgery procedure - unknown
+D7033,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7034,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7035,0.00,23.30,99.00,oral & maxillofacial surgery procedure - unknown
+D7038,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7040,0.00,38.35,83.55,oral & maxillofacial surgery procedure - unknown
+D7046,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7048,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7049,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7050,44.89,44.89,44.89,oral & maxillofacial surgery procedure - unknown
+D7051,0.00,219.67,659.00,oral & maxillofacial surgery procedure - unknown
+D7053,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7057,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7063,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7070,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7071,88.00,88.00,88.00,oral & maxillofacial surgery procedure - unknown
+D7077,0.00,43.94,55.00,oral & maxillofacial surgery procedure - unknown
+D7080,0.00,156.14,509.00,oral & maxillofacial surgery procedure - unknown
+D7086,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7090,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7096,0.00,0.00,0.00,oral & maxillofacial surgery procedure - unknown
+D7100,0.00,0.00,0.00,extraction of tooth - unknown
+D7102,180.00,180.00,180.00,extraction of tooth - unknown
+D7104,0.00,0.00,0.00,extraction of tooth - unknown
+D7110,0.00,3.08,300.00,extraction of tooth - unknown
+D7111,0.00,378.54,24791.00,extraction coronal remnants - primary tooth
+D7112,0.00,16.00,40.29,extraction of tooth - unknown
+D7115,0.00,0.00,0.00,extraction of tooth - unknown
+D7116,35.00,35.00,35.00,extraction of tooth - unknown
+D7118,0.00,0.00,0.00,extraction of tooth - unknown
+D7120,0.00,19.07,2899.00,extraction of tooth - unknown
+D7124,0.00,0.00,0.00,extraction of tooth - unknown
+D7130,0.00,69.49,3046.00,extraction of tooth - unknown
+D7136,0.00,0.00,0.00,extraction of tooth - unknown
+D7139,0.00,0.00,0.00,extraction of tooth - unknown
+D7140,0.00,155.56,164247.00,extraction erupted tooth or exposed root (elevation and/or forceps removal)
+D7142,0.00,0.00,0.00,extraction of tooth - unknown
+D7144,0.00,13.52,150.00,extraction of tooth - unknown
+D7146,0.00,0.00,0.00,extraction of tooth - unknown
+D7147,0.00,0.00,0.00,extraction of tooth - unknown
+D7148,0.00,0.00,0.00,extraction of tooth - unknown
+D7149,0.00,0.00,0.00,extraction of tooth - unknown
+D7150,0.00,0.00,0.00,extraction of tooth - unknown
+D7160,0.00,0.00,0.00,extraction of tooth - unknown
+D7161,0.00,0.00,0.00,extraction of tooth - unknown
+D7162,91.33,95.92,114.28,extraction of tooth - unknown
+D7170,0.00,0.00,0.00,extraction of tooth - unknown
+D7180,0.00,0.00,0.00,extraction of tooth - unknown
+D7182,0.00,0.00,0.00,extraction of tooth - unknown
+D7186,57.00,57.00,57.00,extraction of tooth - unknown
+D7190,0.00,96.67,145.00,extraction of tooth - unknown
+D7192,0.00,0.00,0.00,extraction of tooth - unknown
+D7199,0.00,0.00,0.00,extraction of tooth - unknown
+D7200,0.00,374.52,1872.59,oral surgery - unknown
+D7201,0.00,0.00,0.00,oral surgery - unknown
+D7204,0.00,0.00,0.00,oral surgery - unknown
+D7205,0.00,15.93,31.85,oral surgery - unknown
+D7206,0.00,295.20,600.00,oral surgery - unknown
+D7208,0.00,0.00,0.00,oral surgery - unknown
+D7210,0.00,138.02,154559.00,extraction erupted tooth requiring removal of bone and/or sectioning of tooth and including elevation of mucoperiosteal flap if indicated
+D7211,0.00,521.15,3240.00,oral surgery - unknown
+D7212,0.00,0.00,0.00,oral surgery - unknown
+D7214,0.00,14.71,250.00,oral surgery - unknown
+D7215,0.00,0.00,0.00,oral surgery - unknown
+D7216,0.00,0.00,0.00,oral surgery - unknown
+D7218,0.00,0.00,0.00,oral surgery - unknown
+D7220,0.00,587.78,32228.16,removal of impacted tooth - soft tissue
+D7221,220.00,220.00,220.00,oral surgery - unknown
+D7225,0.00,0.00,0.00,oral surgery - unknown
+D7228,0.00,0.00,0.00,oral surgery - unknown
+D7230,0.00,352.93,56169.19,removal of impacted tooth - partially bony
+D7232,0.00,0.00,0.00,oral surgery - unknown
+D7238,0.00,0.00,0.00,oral surgery - unknown
+D7240,0.00,480.49,60450.00,removal of impacted tooth - completely bony
+D7241,0.00,195.94,11625.02,removal of impacted tooth - completely bony with unusual surgical complications
+D7242,0.00,0.00,0.00,oral surgery - unknown
+D7243,0.00,0.00,0.00,oral surgery - unknown
+D7245,0.00,0.00,0.00,oral surgery - unknown
+D7246,0.00,0.00,0.00,oral surgery - unknown
+D7248,0.00,0.00,0.00,oral surgery - unknown
+D7249,0.00,187.50,375.00,oral surgery - unknown
+D7250,0.00,151.51,40834.00,removal of residual tooth roots (cutting procedure)
+D7251,0.00,111.02,23877.00,coronectomy - intentional partial tooth removal impacted teeth only
+D7252,0.00,0.00,0.00,oral surgery - unknown
+D7253,0.00,0.00,0.00,oral surgery - unknown
+D7255,0.00,0.00,0.00,oral surgery - unknown
+D7258,0.00,0.00,0.00,oral surgery - unknown
+D7260,0.00,392.22,8900.00,oroantral fistula closure
+D7261,0.00,196.91,26380.00,primary closure of a sinus perforation
+D7264,0.00,0.00,0.00,oral surgery - unknown
+D7265,0.00,0.00,0.00,oral surgery - unknown
+D7266,0.00,8.85,407.00,oral surgery - unknown
+D7268,0.00,0.00,0.00,oral surgery - unknown
+D7270,0.00,21.76,6293.00,tooth re-implantation and/or stabilization of accidentally evulsed or displaced tooth
+D7271,0.00,0.00,0.00,oral surgery - unknown
+D7272,0.00,12.31,320.00,tooth transplantation (includes re-implantation from one site to another and splinting and/or stabilization)
+D7273,0.00,0.00,0.00,oral surgery - unknown
+D7274,0.00,0.00,0.00,oral surgery - unknown
+D7275,0.00,0.00,0.00,oral surgery - unknown
+D7276,0.00,0.00,0.00,oral surgery - unknown
+D7279,0.00,0.00,0.00,oral surgery - unknown
+D7280,0.00,0.00,0.00,exposure of an unerupted tooth
+D7281,0.00,0.00,0.00,oral surgery - unknown
+D7282,0.00,25.61,550.00,mobilization of erupted or malpositioned tooth to aid eruption
+D7283,0.00,1.61,100.00,placement of device to facilitate eruption of impacted tooth
+D7284,0.00,41.86,293.00,oral surgery - unknown
+D7285,0.00,38.55,1500.00,incisional biopsy of oral tissue-hard (bone tooth)
+D7286,0.00,28.44,6029.00,incisional biopsy of oral tissue-soft
+D7287,0.00,8.34,433.00,exfoliative cytological sample collection
+D7288,0.00,10.57,650.00,brush biopsy - transepithelial sample collection
+D7289,0.00,37.75,375.00,oral surgery - unknown
+D7290,0.00,255.01,36655.00,surgical repositioning of teeth
+D7291,0.00,5.36,96.50,transseptal fiberotomy/supra crestal fiberotomy by report
+D7292,0.00,273.23,2945.00,placement of temporary anchorage device [screw retained plate] requiring flap
+D7293,0.00,0.00,0.00,placement of temporary anchorage device requiring flap
+D7294,0.00,3.94,149.86,placement of temporary anchorage device without flap
+D7295,0.00,326.10,5704.24,harvest of bone for use in autogenous grafting procedure
+D7296,0.00,1055.00,5275.00,corticotomy - one to three teeth or tooth spaces per quadrant
+D7297,0.00,0.00,0.00,corticotomy - four or more teeth or tooth spaces per quadrant
+D7299,0.00,0.00,0.00,removal of temporary anchorage device requiring flap
+D7301,0.00,101.60,400.00,oral surgery - unknown
+D7302,0.00,0.00,0.00,oral surgery - unknown
+D7304,0.00,0.00,0.00,oral surgery - unknown
+D7305,0.00,0.00,0.00,oral surgery - unknown
+D7310,0.00,173.18,35526.00,alveoloplasty in conjunction with extractions - four or more teeth or tooth spaces per quadrant
+D7311,0.00,267.26,38012.00,alveoloplasty in conjunction with extractions - one to three teeth or tooth spaces per quadrant
+D7312,0.00,0.00,0.00,oral surgery - unknown
+D7320,0.00,82.28,21316.00,alveoloplasty not in conjunction with extractions - four or more teeth or tooth spaces per quadrant
+D7321,0.00,355.85,123480.00,alveoloplasty not in conjunction with extractions - one to three teeth or tooth spaces per quadrant
+D7324,0.00,0.00,0.00,oral surgery - unknown
+D7330,0.00,0.00,0.00,oral surgery - unknown
+D7337,0.00,0.00,0.00,oral surgery - unknown
+D7340,0.00,168.37,3702.00,vestibuloplasty - ridge extension (secondary epithelialization)
+D7341,0.00,0.00,0.00,oral surgery - unknown
+D7350,0.00,47.92,1250.00,vestibuloplasty - ridge extension (including soft tissue grafts muscle reattachment revision of soft tissue attachment and management of hypertrophied and hyperplastic tissue)
+D7353,0.00,0.00,0.00,oral surgery - unknown
+D7355,0.00,0.00,0.00,oral surgery - unknown
+D7360,0.00,0.00,0.00,oral surgery - unknown
+D7365,0.00,0.00,0.00,oral surgery - unknown
+D7373,0.00,0.00,0.00,oral surgery - unknown
+D7380,0.00,0.00,0.00,oral surgery - unknown
+D7381,0.00,0.00,0.00,oral surgery - unknown
+D7385,0.00,0.00,0.00,oral surgery - unknown
+D7386,0.00,225.00,475.00,oral surgery - unknown
+D7392,0.00,0.00,0.00,oral surgery - unknown
+D7399,0.00,0.00,0.00,oral surgery - unknown
+D7400,0.00,0.00,0.00,excision or removal - unknown
+D7402,0.00,0.00,0.00,excision or removal - unknown
+D7409,0.00,0.00,0.00,excision or removal - unknown
+D7410,0.00,54.19,6490.50,excision of benign lesion up to 1.25 cm
+D7411,0.00,61.40,17712.67,excision of benign lesion greater than 1.25 cm
+D7412,0.00,54.24,3000.00,excision of benign lesion complicated
+D7413,0.00,95.76,6912.00,excision of malignant lesion up to 1.25 cm
+D7414,0.00,101.43,8037.00,excision of malignant lesion greater than 1.25 cm
+D7415,0.00,0.00,0.00,excision of malignant lesion complicated
+D7416,0.00,0.00,0.00,excision or removal - unknown
+D7419,0.00,0.00,0.00,excision or removal - unknown
+D7420,0.00,0.00,0.00,excision or removal - unknown
+D7421,0.00,187.20,468.00,excision or removal - unknown
+D7422,0.00,0.00,0.00,excision or removal - unknown
+D7424,0.00,0.00,0.00,excision or removal - unknown
+D7425,0.00,0.00,0.00,excision or removal - unknown
+D7426,0.00,0.00,0.00,excision or removal - unknown
+D7427,0.00,0.00,0.00,excision or removal - unknown
+D7428,0.00,0.00,0.00,excision or removal - unknown
+D7430,0.00,5.41,535.00,excision or removal - unknown
+D7431,0.00,65.84,1000.00,excision or removal - unknown
+D7432,0.00,750.00,3000.00,excision or removal - unknown
+D7433,0.00,0.00,0.00,excision or removal - unknown
+D7434,0.00,0.00,0.00,excision or removal - unknown
+D7436,0.00,0.00,0.00,excision or removal - unknown
+D7440,0.00,22.05,542.00,excision of malignant tumor - lesion diameter up to 1.25 cm
+D7441,0.00,176.55,3752.50,excision of malignant tumor - lesion diameter greater than 1.25 cm
+D7443,0.00,0.00,0.00,excision or removal - unknown
+D7450,0.00,77.64,13680.00,removal of benign odontogenic cyst or tumor - lesion diameter up to 1.25 cm
+D7451,0.00,336.35,9283.33,removal of benign odontogenic cyst or tumor - lesion diameter greater than 1.25 cm
+D7452,0.00,0.00,0.00,excision or removal - unknown
+D7453,0.00,225.00,450.00,excision or removal - unknown
+D7460,0.00,46.92,2337.66,removal of benign nonodontogenic cyst or tumor - lesion diameter up to 1.25 cm
+D7461,0.00,81.09,3527.00,removal of benign nonodontogenic cyst or tumor - lesion diameter greater than 1.25 cm
+D7465,0.00,18.18,1200.00,destruction of lesion(s) by physical or chemical method by report
+D7466,0.00,40.00,120.00,excision or removal - unknown
+D7470,0.00,16.83,875.00,excision or removal - unknown
+D7471,0.00,74.32,5175.50,removal of lateral exostosis (maxilla or mandible)
+D7472,0.00,190.10,7619.75,removal of torus palatinus
+D7473,0.00,67.80,7014.66,removal of torus mandibularis
+D7474,0.00,0.00,0.00,excision or removal - unknown
+D7480,0.00,60.71,850.00,excision or removal - unknown
+D7481,275.98,275.98,275.98,excision or removal - unknown
+D7485,0.00,69.54,5979.50,reduction of osseous tuberosity
+D7486,0.00,0.00,0.00,excision or removal - unknown
+D7488,0.00,0.00,0.00,excision or removal - unknown
+D7490,0.00,1734.11,15010.00,radical resection of maxilla or mandible
+D7510,0.00,27.76,4188.00,incision and drainage of abscess - intraoral soft tissue
+D7511,0.00,18.17,1675.75,incision and drainage of abscess - intraoral soft tissue - complicated (includes drainage of multiple fascial spaces)
+D7518,0.00,0.00,0.00,incision drainage or removal - unknown
+D7520,0.00,169.48,7833.33,incision and drainage of abscess - extraoral soft tissue
+D7521,0.00,3.33,315.00,incision and drainage of abscess - extraoral soft tissue - complicated (includes drainage of multiple fascial spaces)
+D7530,0.00,14.00,525.00,removal of foreign body from mucosa skin or subcutaneous alveolar tissue
+D7535,32.25,40.75,45.00,incision drainage or removal - unknown
+D7540,0.00,323.59,9272.00,removal of reaction producing foreign bodies musculoskeletal system
+D7541,0.00,492.50,985.00,incision drainage or removal - unknown
+D7542,28.11,28.11,28.11,incision drainage or removal - unknown
+D7550,0.00,23.13,1012.00,partial ostectomy/sequestrectomy for removal of non-vital bone
+D7551,0.00,0.00,0.00,incision drainage or removal - unknown
+D7553,0.00,0.00,0.00,incision drainage or removal - unknown
+D7560,0.00,55.87,2060.00,maxillary sinusotomy for removal of tooth fragment or foreign body
+D7562,0.00,0.00,0.00,incision drainage or removal - unknown
+D7580,0.00,0.00,0.00,incision drainage or removal - unknown
+D7586,0.00,0.00,0.00,incision drainage or removal - unknown
+D7590,0.00,0.00,0.00,incision drainage or removal - unknown
+D7591,0.00,0.00,0.00,incision drainage or removal - unknown
+D7593,0.00,0.00,0.00,incision drainage or removal - unknown
+D7597,0.00,103.16,257.90,incision drainage or removal - unknown
+D7605,0.00,0.00,0.00,reduction - unknown
+D7607,14.88,14.88,14.88,reduction - unknown
+D7609,0.00,0.00,0.00,reduction - unknown
+D7610,0.00,0.00,0.00,maxilla - open reduction (teeth immobilized if present)
+D7612,0.00,0.00,0.00,reduction - unknown
+D7613,0.00,0.00,0.00,reduction - unknown
+D7614,0.00,0.00,0.00,reduction - unknown
+D7616,0.00,0.00,0.00,reduction - unknown
+D7620,0.00,108.02,3812.00,maxilla - closed reduction (teeth immobilized if present)
+D7621,0.00,0.00,0.00,reduction - unknown
+D7626,0.00,0.00,0.00,reduction - unknown
+D7630,0.00,244.47,7796.00,mandible - open reduction (teeth immobilized if present)
+D7632,0.00,0.00,0.00,reduction - unknown
+D7635,0.00,0.00,0.00,reduction - unknown
+D7637,0.00,0.00,0.00,reduction - unknown
+D7640,0.00,227.18,7287.00,mandible - closed reduction (teeth immobilized if present)
+D7644,0.00,0.00,0.00,reduction - unknown
+D7650,0.00,211.01,1038.13,malar and/or zygomatic arch - open reduction
+D7653,0.00,0.00,0.00,reduction - unknown
+D7660,0.00,0.00,0.00,malar and/or zygomatic arch - closed reduction
+D7670,0.00,136.99,6695.20,alveolus - closed reduction may include stabilization of teeth
+D7671,0.00,293.22,4175.00,alveolus - open reduction may include stabilization of teeth
+D7680,0.00,14.90,293.36,facial bones - complicated reduction with fixation and multiple surgical approaches
+D7686,0.00,0.00,0.00,reduction - unknown
+D7703,0.00,0.00,0.00,reduction - unknown
+D7706,0.00,0.00,0.00,reduction - unknown
+D7710,0.00,24.70,604.94,maxilla - open reduction
+D7720,0.00,234.28,1363.95,maxilla - closed reduction
+D7730,0.00,337.47,6412.00,mandible - open reduction
+D7740,0.00,70.19,706.20,mandible - closed reduction
+D7746,0.00,0.00,0.00,reduction - unknown
+D7750,0.00,0.00,0.00,malar and/or zygomatic arch - open reduction
+D7760,0.00,32.57,38.00,malar and/or zygomatic arch - closed reduction
+D7762,0.00,2.79,67.00,reduction - unknown
+D7770,0.00,0.00,0.00,alveolus - open reduction stabilization of teeth
+D7771,0.00,0.00,0.00,alveolus closed reduction stabilization of teeth
+D7777,0.00,0.00,0.00,reduction - unknown
+D7780,0.00,0.00,0.00,facial bones - complicated reduction with fixation and multiple approaches
+D7781,0.00,0.00,0.00,reduction - unknown
+D7791,0.00,0.00,0.00,reduction - unknown
+D7799,0.00,0.00,0.00,reduction - unknown
+D7800,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7802,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7803,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7810,0.00,0.00,0.00,open reduction of dislocation
+D7820,0.00,15.33,570.00,closed reduction of dislocation
+D7826,0.00,102.86,240.00,unspecified TMD therapy - unknown
+D7830,0.00,62.03,4280.00,manipulation under anesthesia
+D7838,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7840,0.00,0.00,0.00,condylectomy
+D7850,0.00,0.00,0.00,surgical discectomy with/without implant
+D7853,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7854,0.00,0.00,0.00,synovectomy
+D7856,0.00,0.00,0.00,myotomy
+D7859,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7860,0.00,0.00,0.00,arthrotomy
+D7865,0.00,2022.22,9100.00,arthroplasty
+D7870,0.00,6.80,711.00,arthrocentesis
+D7871,0.00,9.75,832.00,non-arthroscopic lysis and lavage
+D7872,0.00,0.00,0.00,arthroscopy - diagnosis with or without biopsy
+D7873,0.00,0.00,0.00,arthroscopy: lavage and lysis of adhesions
+D7874,0.00,0.00,0.00,arthroscopy: disc repositioning and stabilization
+D7875,0.00,0.00,0.00,arthroscopy: synovectomy
+D7877,0.00,0.00,0.00,arthroscopy: debridement
+D7880,0.00,71.54,6500.00,occlusal orthotic device by report
+D7881,0.00,36.61,2892.00,occlusal orthotic device adjustment
+D7882,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7883,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7884,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7886,0.00,0.00,0.00,unspecified TMD therapy - unknown
+D7889,0.00,70.45,775.00,unspecified TMD therapy - unknown
+D7890,0.00,16.67,100.00,unspecified TMD therapy - unknown
+D7895,3100.00,3100.00,3100.00,unspecified TMD therapy - unknown
+D7898,0.00,125.00,250.00,unspecified TMD therapy - unknown
+D7899,0.00,19.12,4000.00,unspecified TMD therapy by report
+D7900,0.00,20.00,40.00,unspecified oral surgery procedure - unknown
+D7902,0.00,180.00,900.00,unspecified oral surgery procedure - unknown
+D7904,0.00,150.00,299.99,unspecified oral surgery procedure - unknown
+D7910,0.00,25.89,1450.00,suture of recent small wounds up to 5 cm
+D7911,0.00,92.18,2500.00,complicated suture - up to 5 cm
+D7912,0.00,74.42,1079.00,complicated suture - greater than 5 cm
+D7916,0.00,3.66,12.00,unspecified oral surgery procedure - unknown
+D7920,0.00,0.00,0.00,skin graft (identify defect covered location and type of graft)
+D7921,0.00,2.85,506.00,collection and application of autologous blood concentrate product
+D7922,0.00,0.10,30.00,placement of intra-socket biological dressing to aid in hemostasis or clot stabilization per site
+D7931,0.00,0.00,0.00,unspecified oral surgery procedure - unknown
+D7940,0.00,13.20,264.00,osteoplasty - for orthognathic deformities
+D7941,0.00,0.00,0.00,osteotomy - mandibular rami
+D7943,0.00,0.00,0.00,osteotomy - mandibular rami with bone graft; includes obtaining the graft
+D7944,0.00,0.00,0.00,osteotomy - segmented or subapical
+D7945,0.00,205.16,3898.00,osteotomy - body of mandible
+D7946,0.00,0.00,0.00,LeFort I (maxilla - total)
+D7947,0.00,0.00,0.00,LeFort I (maxilla - segmented)
+D7948,0.00,0.00,0.00,LeFort II or LeFort III (osteoplasty of facial bones for midface hypoplasia or retrusion) - without bone graft
+D7949,0.00,0.00,0.00,LeFort II or LeFort III - with bone graft
+D7950,0.00,95.45,4807.00,osseous osteoperiosteal or cartilage graft of the mandible or maxilla - autogenous or nonautogenous by report
+D7951,0.00,84.90,11408.48,sinus augmentation with bone or bone substitutes via a lateral open approach
+D7952,0.00,27.42,4977.42,sinus augmentation via a vertical approach
+D7953,0.00,16.81,10551.25,bone replacement graft for ridge preservation - per site
+D7955,0.00,58.02,3500.00,repair of maxillofacial soft and/or hard tissue defect
+D7956,0.00,36.89,900.00,guided tissue regeneration edentulous area - resorbable barrier per site
+D7957,0.00,0.00,0.00,guided tissue regeneration edentulous area - non-resorbable barrier per site
+D7958,0.00,0.00,0.00,unspecified oral surgery procedure - unknown
+D7959,0.00,0.00,0.00,unspecified oral surgery procedure - unknown
+D7960,0.00,41.82,5979.50,unspecified oral surgery procedure - unknown
+D7961,0.00,71.25,5014.80,buccal / labial frenectomy (frenulectomy)
+D7962,0.00,378.91,6840.00,lingual frenectomy (frenulectomy)
+D7963,0.00,0.01,1.00,frenuloplasty
+D7970,0.00,149.55,13232.00,excision of hyperplastic tissue - per arch
+D7971,0.00,55.89,3297.74,excision of pericoronal gingiva
+D7972,0.00,22.13,622.00,surgical reduction of fibrous tuberosity
+D7979,0.00,0.00,0.00,non - surgical sialolithotomy
+D7980,0.00,2.57,355.00,surgical sialolithotomy
+D7981,0.00,0.00,0.00,excision of salivary gland by report
+D7982,0.00,0.00,0.00,sialodochoplasty
+D7983,0.00,0.00,0.00,closure of salivary fistula
+D7986,0.00,0.00,0.00,unspecified oral surgery procedure - unknown
+D7989,0.00,0.00,0.00,unspecified oral surgery procedure - unknown
+D7990,0.00,0.00,0.00,emergency tracheotomy
+D7993,0.00,0.00,0.00,surgical placement of craniofacial implant - extra oral
+D7994,0.00,3201.27,15000.00,surgical placement: zygomatic implant
+D7995,0.00,0.00,0.00,synthetic graft - mandible or facial bones by report
+D7996,0.00,0.00,0.00,implant-mandible for augmentation purposes (excluding alveolar ridge) by report
+D7997,0.00,41.70,5185.00,appliance removal (not by dentist who placed appliance) includes removal of archbar
+D7998,0.00,139.77,2376.00,intraoral placement of a fixation device not in conjunction with a fracture
+D7999,0.00,41.16,9738.00,unspecified oral surgery procedure by report
+D8000,0.00,0.00,0.00,orthodontic treatment - unknown
+D8001,0.00,0.00,0.00,orthodontic treatment - unknown
+D8010,0.00,0.00,0.00,limited orthodontic treatment of the primary dentition
+D8020,0.00,0.00,0.00,limited orthodontic treatment of the transitional dentition
+D8040,0.00,0.00,0.00,limited orthodontic treatment of the adult dentition
+D8042,0.00,0.00,0.00,orthodontic treatment - unknown
+D8048,0.00,0.00,0.00,orthodontic treatment - unknown
+D8056,0.00,0.00,0.00,orthodontic treatment - unknown
+D8057,0.00,0.00,0.00,orthodontic treatment - unknown
+D8060,0.00,0.00,0.00,orthodontic treatment - unknown
+D8070,0.00,0.00,0.00,comprehensive orthodontic treatment of the transitional dentition
+D8076,0.00,0.00,0.00,orthodontic treatment - unknown
+D8080,0.00,0.00,0.00,comprehensive orthodontic treatment of the adolescent dentition
+D8081,0.00,0.00,0.00,orthodontic treatment - unknown
+D8090,0.00,115.91,8180.00,comprehensive orthodontic treatment of the adult dentition
+D8104,0.00,0.00,0.00,orthodontics procedure - unknown
+D8108,0.00,0.00,0.00,orthodontics procedure - unknown
+D8110,0.00,0.00,0.00,orthodontics procedure - unknown
+D8112,450.00,450.00,450.00,orthodontics procedure - unknown
+D8114,0.00,0.00,0.00,orthodontics procedure - unknown
+D8121,0.00,0.00,0.00,orthodontics procedure - unknown
+D8142,133.00,133.00,133.00,orthodontics procedure - unknown
+D8189,0.00,0.00,0.00,orthodontics procedure - unknown
+D8200,0.00,0.00,0.00,appliance therapy - unknown
+D8210,0.00,0.00,1.00,removable appliance therapy
+D8211,0.00,0.00,0.00,appliance therapy - unknown
+D8220,0.00,0.00,0.00,fixed appliance therapy
+D8221,0.00,1324.29,1545.00,appliance therapy - unknown
+D8222,450.00,450.00,450.00,appliance therapy - unknown
+D8227,0.00,0.00,0.00,appliance therapy - unknown
+D8230,0.00,0.00,0.00,appliance therapy - unknown
+D8241,0.00,0.00,0.00,appliance therapy - unknown
+D8243,375.00,375.00,375.00,appliance therapy - unknown
+D8246,0.00,0.00,0.00,appliance therapy - unknown
+D8260,0.00,0.00,0.00,appliance therapy - unknown
+D8262,0.00,9.85,325.00,appliance therapy - unknown
+D8271,153.84,153.84,153.84,appliance therapy - unknown
+D8275,162.00,162.00,162.00,appliance therapy - unknown
+D8286,0.00,0.00,0.00,appliance therapy - unknown
+D8297,0.00,240.58,2042.00,appliance therapy - unknown
+D8300,0.00,0.00,0.00,orthodontics procedure - unknown
+D8304,0.00,0.00,0.00,orthodontics procedure - unknown
+D8305,0.00,97.00,194.00,orthodontics procedure - unknown
+D8310,0.00,0.00,0.00,orthodontics procedure - unknown
+D8312,0.00,0.00,0.00,orthodontics procedure - unknown
+D8337,0.00,0.00,0.00,orthodontics procedure - unknown
+D8380,0.00,0.00,0.00,orthodontics procedure - unknown
+D8385,0.00,0.00,0.00,orthodontics procedure - unknown
+D8391,0.00,0.00,0.00,orthodontics procedure - unknown
+D8403,0.00,0.00,0.00,orthodontics procedure - unknown
+D8410,0.00,0.00,0.00,orthodontics procedure - unknown
+D8420,0.00,0.00,0.00,orthodontics procedure - unknown
+D8425,0.00,0.00,0.00,orthodontics procedure - unknown
+D8427,0.00,0.00,0.00,orthodontics procedure - unknown
+D8428,0.00,0.00,0.00,orthodontics procedure - unknown
+D8430,0.00,0.00,0.00,orthodontics procedure - unknown
+D8431,0.00,0.01,0.01,orthodontics procedure - unknown
+D8437,0.00,0.00,0.00,orthodontics procedure - unknown
+D8443,0.00,0.00,0.00,orthodontics procedure - unknown
+D8445,0.00,0.00,0.00,orthodontics procedure - unknown
+D8447,0.00,0.00,0.00,orthodontics procedure - unknown
+D8499,0.00,33.33,50.00,orthodontics procedure - unknown
+D8500,0.00,0.00,0.00,orthodontics procedure - unknown
+D8501,254.24,254.24,254.24,orthodontics procedure - unknown
+D8502,0.00,0.00,0.00,orthodontics procedure - unknown
+D8505,0.00,0.00,0.00,orthodontics procedure - unknown
+D8539,0.00,0.00,0.00,orthodontics procedure - unknown
+D8540,0.00,0.00,0.01,orthodontics procedure - unknown
+D8553,0.00,0.17,2.00,orthodontics procedure - unknown
+D8562,0.00,0.00,0.00,orthodontics procedure - unknown
+D8622,0.00,0.00,0.00,orthodontic treatment - unknown
+D8630,0.00,0.00,0.00,orthodontic treatment - unknown
+D8640,0.00,0.00,0.00,orthodontic treatment - unknown
+D8660,0.00,0.00,0.00,pre-orthodontic treatment examination to monitor growth and development
+D8670,0.00,9.10,456.36,periodic orthodontic treatment visit
+D8680,0.00,58.68,3685.50,orthodontic retention (removal of appliances construction and placement of retainer(s))
+D8681,0.00,0.00,0.00,removable orthodontic retainer adjustment
+D8690,0.00,205.49,4726.25,orthodontic treatment - unknown
+D8691,0.00,0.00,0.00,orthodontic treatment - unknown
+D8692,0.00,0.00,0.00,orthodontic treatment - unknown
+D8693,0.00,0.00,0.00,orthodontic treatment - unknown
+D8694,0.00,0.00,0.00,orthodontic treatment - unknown
+D8695,0.00,0.00,0.00,removal of fixed orthodontic appliances for reasons other than completion of treatment
+D8698,0.00,0.00,0.00,re-cement or re-bond fixed retainer - maxillary
+D8699,0.00,4330.92,19489.15,re-cement or re-bond fixed retainer - mandibular
+D8701,0.00,0.00,0.00,repair of fixed retainer includes reattachment - maxillary
+D8702,0.00,0.00,0.00,repair of fixed retainer includes reattachment - mandibular
+D8703,0.00,0.00,0.00,replacement of lost or broken retainer - maxillary
+D8704,0.00,0.00,0.00,replacement of lost or broken retainer - mandibular
+D8730,0.00,0.00,0.01,retainer replacement or repair - unknown
+D8731,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8740,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8750,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8751,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8768,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8769,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8783,0.00,0.00,0.00,retainer replacement or repair - unknown
+D8816,0.00,0.00,0.00,orthodontics procedure - unknown
+D8861,0.00,0.00,0.00,orthodontics procedure - unknown
+D8888,0.00,43.75,350.00,orthodontics procedure - unknown
+D8895,0.00,0.00,0.00,orthodontics procedure - unknown
+D8898,0.00,0.00,0.00,orthodontics procedure - unknown
+D8907,0.00,0.10,1.00,unspecified orthodontic procedure - unknown
+D8910,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8918,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8929,1549.00,1820.33,2363.00,unspecified orthodontic procedure - unknown
+D8930,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8940,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8941,0.00,1.38,40.00,unspecified orthodontic procedure - unknown
+D8942,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8943,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8948,0.00,3.66,80.00,unspecified orthodontic procedure - unknown
+D8950,2175.00,2175.00,2175.00,unspecified orthodontic procedure - unknown
+D8953,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8978,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8979,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8980,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8981,0.01,0.01,0.01,unspecified orthodontic procedure - unknown
+D8982,0.00,0.00,0.01,unspecified orthodontic procedure - unknown
+D8983,0.00,0.00,0.00,unspecified orthodontic procedure - unknown
+D8984,0.01,0.01,0.01,unspecified orthodontic procedure - unknown
+D8985,0.01,0.01,0.01,unspecified orthodontic procedure - unknown
+D8987,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8988,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8989,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8990,0.00,22.98,45.00,unspecified orthodontic procedure - unknown
+D8991,0.00,0.00,0.01,unspecified orthodontic procedure - unknown
+D8992,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8996,0.01,0.01,0.01,unspecified orthodontic procedure - unknown
+D8997,0.00,0.01,0.01,unspecified orthodontic procedure - unknown
+D8998,0.01,0.01,0.01,unspecified orthodontic procedure - unknown
+D8999,0.00,62.05,8856.00,unspecified orthodontic procedure by report
+D9000,0.00,0.00,0.00,orthodontics procedure - unknown
+D9001,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9002,0.00,25.00,175.00,adjunctive general services procedure - unknown
+D9003,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9004,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9005,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9006,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9009,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9010,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9011,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9012,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9013,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9015,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9018,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9020,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9024,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9035,211.60,211.60,211.60,adjunctive general services procedure - unknown
+D9050,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9057,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9058,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9068,0.00,558.33,1675.00,adjunctive general services procedure - unknown
+D9070,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9079,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9080,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9082,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9083,0.00,2698.87,26828.66,adjunctive general services procedure - unknown
+D9088,0.00,30.00,60.00,adjunctive general services procedure - unknown
+D9090,0.00,280.63,6460.00,adjunctive general services procedure - unknown
+D9100,0.00,4.50,12.00,unspecified adjunctive procedure - unknown
+D9106,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9110,0.00,24.85,9534.00,palliative treatment of dental pain - per visit
+D9111,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9112,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9113,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9114,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9115,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9116,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9120,0.00,21.44,11803.41,fixed partial denture sectioning
+D9121,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9122,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9123,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9124,0.00,28.67,43.00,unspecified adjunctive procedure - unknown
+D9125,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9129,40.80,40.80,40.80,unspecified adjunctive procedure - unknown
+D9130,0.00,0.00,0.00,temporomandibular joint dysfunction - non-invasive physical therapies
+D9140,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9141,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9145,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9152,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9158,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9160,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9163,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9166,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9171,11.72,11.72,11.72,unspecified adjunctive procedure - unknown
+D9186,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9190,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9191,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9197,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9199,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9200,0.00,50.00,450.00,anesthesia or sedation - unknown
+D9201,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9202,0.00,18.29,128.00,anesthesia or sedation - unknown
+D9203,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9204,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9205,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9210,0.00,8.73,15336.00,local anesthesia not in conjunction with operative or surgical procedures
+D9211,0.00,6.17,691.00,regional block anesthesia
+D9212,0.00,5.98,195.00,trigeminal division block anesthesia
+D9213,0.00,19.79,160.00,anesthesia or sedation - unknown
+D9214,0.00,53.16,244.00,anesthesia or sedation - unknown
+D9215,0.00,5.40,200.00,local anesthesia in conjunction with operative or surgical procedures
+D9217,0.00,978.39,1630.66,anesthesia or sedation - unknown
+D9218,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9219,0.00,5.10,150.00,evaluation for moderate sedation deep sedation or general anesthesia
+D9220,0.00,27.85,7867.52,anesthesia or sedation - unknown
+D9221,0.00,12.23,2622.50,anesthesia or sedation - unknown
+D9222,0.00,36.38,6106.00,deep sedation/general anesthesia - first 15 minutes
+D9223,0.00,10.75,2945.00,deep sedation/general anesthesia - each subsequent 15 minute increment
+D9224,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9225,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9228,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9229,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9230,0.00,4.84,730.00,inhalation of nitrous oxide/analgesia anxiolysis
+D9231,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9232,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9233,0.00,31.75,254.00,anesthesia or sedation - unknown
+D9234,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9235,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9238,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9239,0.00,7.92,3100.00,intravenous moderate (conscious) sedation/analgesia- first 15 minutes
+D9240,0.00,56.65,2500.00,anesthesia or sedation - unknown
+D9241,0.00,6.94,2970.00,anesthesia or sedation - unknown
+D9242,0.00,1.37,2970.00,anesthesia or sedation - unknown
+D9243,0.00,5.05,3000.00,intravenous moderate (conscious) sedation/analgesia - each subsequent 15 minute increment
+D9244,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9246,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9248,0.00,3.68,415.00,non-intravenous conscious sedation
+D9249,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9250,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9251,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9252,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9253,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9255,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9257,9.34,9.34,9.34,anesthesia or sedation - unknown
+D9266,200.00,200.00,200.00,anesthesia or sedation - unknown
+D9267,2.24,2.24,2.24,anesthesia or sedation - unknown
+D9270,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9278,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9281,16.68,23.85,38.18,anesthesia or sedation - unknown
+D9283,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9284,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9285,649.30,649.30,649.30,anesthesia or sedation - unknown
+D9286,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9290,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9291,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9293,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9298,0.00,0.00,0.00,anesthesia or sedation - unknown
+D9300,0.00,0.00,0.00,consultation - unknown
+D9301,0.00,65.76,233.00,consultation - unknown
+D9304,0.00,0.00,0.00,consultation - unknown
+D9307,0.00,0.00,0.00,consultation - unknown
+D9308,0.00,0.00,0.00,consultation - unknown
+D9309,0.00,0.00,0.00,consultation - unknown
+D9310,0.00,9.70,893.00,consultation - diagnostic service provided by dentist or physician other than requesting dentist or physician
+D9311,0.00,5.63,150.00,consultation with a medical health care professional
+D9312,0.00,0.00,0.00,consultation - unknown
+D9313,0.00,0.00,0.00,consultation - unknown
+D9316,0.00,0.00,0.00,consultation - unknown
+D9320,0.00,96.25,1200.00,consultation - unknown
+D9327,0.00,0.00,0.00,consultation - unknown
+D9329,0.00,0.00,0.00,consultation - unknown
+D9330,0.00,0.00,0.00,consultation - unknown
+D9335,0.00,0.00,0.00,consultation - unknown
+D9336,0.00,0.00,0.00,consultation - unknown
+D9340,71.00,71.00,71.00,consultation - unknown
+D9341,0.00,0.00,0.00,consultation - unknown
+D9345,0.00,0.00,0.00,consultation - unknown
+D9346,0.00,0.00,0.00,consultation - unknown
+D9348,0.00,0.00,0.00,consultation - unknown
+D9349,0.00,0.00,0.00,consultation - unknown
+D9350,0.00,72.77,145.53,consultation - unknown
+D9354,0.00,0.00,0.00,consultation - unknown
+D9355,0.00,130.17,171.07,consultation - unknown
+D9360,0.00,0.00,0.00,consultation - unknown
+D9361,0.00,0.00,0.00,consultation - unknown
+D9362,0.00,0.00,0.00,consultation - unknown
+D9364,0.00,0.00,0.00,consultation - unknown
+D9371,0.00,0.00,0.00,consultation - unknown
+D9380,0.00,0.00,0.00,consultation - unknown
+D9384,0.00,0.00,0.00,consultation - unknown
+D9388,0.00,0.00,0.00,consultation - unknown
+D9392,0.00,0.00,0.00,consultation - unknown
+D9397,0.00,0.00,0.00,consultation - unknown
+D9399,23486.40,38285.60,45685.20,consultation - unknown
+D9410,0.00,2.87,107.00,house/extended care facility call
+D9412,0.00,0.00,0.00,encounter - unknown
+D9413,0.00,0.00,0.00,encounter - unknown
+D9420,0.00,73.43,15210.00,hospital or ambulatory surgical center call
+D9421,0.00,0.00,0.00,encounter - unknown
+D9422,0.00,0.00,0.00,encounter - unknown
+D9423,0.00,0.00,0.00,encounter - unknown
+D9430,0.00,11.84,410.64,office visit for observation (during regularly scheduled hours) - no other services performed
+D9431,0.00,0.00,0.00,encounter - unknown
+D9432,0.00,0.00,0.00,encounter - unknown
+D9433,0.00,0.00,0.00,encounter - unknown
+D9440,0.00,6.52,363.00,office visit - after regularly scheduled hours
+D9443,0.00,0.00,0.00,encounter - unknown
+D9450,0.00,24.09,1666.00,case presentation subsequent to detailed and extensive treatment planning
+D9452,0.00,19.00,38.00,encounter - unknown
+D9460,0.00,0.00,0.00,encounter - unknown
+D9462,0.00,0.00,0.00,encounter - unknown
+D9463,130.00,130.00,130.00,encounter - unknown
+D9466,0.00,225.00,450.00,encounter - unknown
+D9473,0.00,0.00,0.00,encounter - unknown
+D9480,0.00,175.00,350.00,encounter - unknown
+D9490,0.00,0.00,0.00,encounter - unknown
+D9491,0.00,0.00,0.00,encounter - unknown
+D9499,0.00,0.00,0.00,encounter - unknown
+D9500,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9503,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9504,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9506,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9510,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9512,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9516,1.23,1.23,1.23,adjunctive general services procedure - unknown
+D9527,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9530,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9531,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9532,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9533,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9537,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9540,303.00,303.00,303.00,adjunctive general services procedure - unknown
+D9541,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9542,0.00,16.29,153.00,adjunctive general services procedure - unknown
+D9550,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9552,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9555,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9559,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9560,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9561,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9574,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9580,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9583,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9584,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9585,0.93,1.11,1.29,adjunctive general services procedure - unknown
+D9586,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9596,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9599,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9603,0.00,0.00,0.00,medication administration - unknown
+D9604,0.00,0.69,2.75,medication administration - unknown
+D9605,0.00,0.00,0.00,medication administration - unknown
+D9607,0.00,0.00,0.00,medication administration - unknown
+D9608,0.00,0.00,0.00,medication administration - unknown
+D9610,0.00,2.01,175.00,therapeutic parenteral drug single administration
+D9611,0.00,0.00,0.00,medication administration - unknown
+D9612,0.00,1.54,386.00,therapeutic parenteral drugs two or more administrations different medications
+D9613,0.00,25.26,3289.33,infiltration of sustained release therapeutic drug per quadrant
+D9615,0.00,0.00,0.00,medication administration - unknown
+D9616,0.00,0.00,0.00,medication administration - unknown
+D9617,0.00,0.00,0.00,medication administration - unknown
+D9620,468.00,468.00,468.00,medication administration - unknown
+D9625,0.00,0.00,0.00,medication administration - unknown
+D9628,20.00,20.00,20.00,medication administration - unknown
+D9629,0.00,0.00,0.00,medication administration - unknown
+D9630,0.00,30.71,4673.45,drugs or medicaments dispensed in the office for home use
+D9631,0.00,2.50,20.00,medication administration - unknown
+D9632,0.00,5.14,18.00,medication administration - unknown
+D9633,12.00,12.00,12.00,medication administration - unknown
+D9634,0.00,0.00,0.00,medication administration - unknown
+D9635,0.00,0.00,0.00,medication administration - unknown
+D9636,165.00,165.00,165.00,medication administration - unknown
+D9637,0.00,38.84,116.51,medication administration - unknown
+D9638,0.00,0.00,0.00,medication administration - unknown
+D9640,0.00,0.00,0.00,medication administration - unknown
+D9645,0.00,0.00,0.00,medication administration - unknown
+D9650,0.00,23.75,95.00,medication administration - unknown
+D9679,218.00,218.00,218.00,medication administration - unknown
+D9694,0.00,0.00,0.00,medication administration - unknown
+D9697,0.00,0.00,0.00,medication administration - unknown
+D9700,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9701,0.00,17.81,55.00,adjunctive general services procedure - unknown
+D9703,0.00,8.33,25.00,adjunctive general services procedure - unknown
+D9704,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9710,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9711,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9712,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9714,0.00,39.00,65.00,adjunctive general services procedure - unknown
+D9720,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9721,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9750,0.00,437.50,1200.00,adjunctive general services procedure - unknown
+D9751,0.00,112.50,900.00,adjunctive general services procedure - unknown
+D9752,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9753,0.00,119.60,950.00,adjunctive general services procedure - unknown
+D9755,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9757,0.00,325.00,650.00,adjunctive general services procedure - unknown
+D9760,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9770,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9776,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9777,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9784,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9786,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9799,0.00,320.00,1600.00,adjunctive general services procedure - unknown
+D9803,0.00,66.25,137.88,adjunctive general services procedure - unknown
+D9810,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9812,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9830,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9871,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9880,425.00,425.00,425.00,adjunctive general services procedure - unknown
+D9894,0.00,61.00,75.00,adjunctive general services procedure - unknown
+D9898,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9899,0.00,0.00,0.00,adjunctive general services procedure - unknown
+D9900,0.00,2.11,35.00,unspecified adjunctive procedure - unknown
+D9901,0.00,90.00,180.00,unspecified adjunctive procedure - unknown
+D9902,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9905,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9907,0.00,5.43,38.00,unspecified adjunctive procedure - unknown
+D9908,12.00,12.00,12.00,unspecified adjunctive procedure - unknown
+D9909,0.00,13.33,20.00,unspecified adjunctive procedure - unknown
+D9910,0.00,83.27,4048.00,application of desensitizing medicament
+D9911,0.00,5.14,109.95,application of desensitizing resin for cervical and/or root surface per tooth
+D9912,0.00,0.00,0.00,pre-visit patient screening
+D9913,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9915,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9916,0.00,18.00,90.00,unspecified adjunctive procedure - unknown
+D9919,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9920,0.00,2.31,5358.33,behavior management by report
+D9921,0.00,7.22,187.00,unspecified adjunctive procedure - unknown
+D9922,10.83,10.83,10.83,unspecified adjunctive procedure - unknown
+D9923,0.00,2.42,70.07,unspecified adjunctive procedure - unknown
+D9924,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9928,0.00,122.80,1228.00,unspecified adjunctive procedure - unknown
+D9929,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9930,0.00,247.13,5775.00,treatment of complications (post-surgical) - unusual circumstances by report
+D9931,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9932,0.00,0.00,0.00,cleaning and inspection of removable complete denture maxillary
+D9933,0.00,0.00,0.00,cleaning and inspection of removable complete denture mandibular
+D9934,0.00,0.00,0.00,cleaning and inspection of removable partial denture maxillary
+D9935,0.00,0.00,0.00,cleaning and inspection of removable partial denture mandibular
+D9938,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9939,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9940,0.00,73.50,3176.72,unspecified adjunctive procedure - unknown
+D9941,0.00,0.01,1.00,fabrication of athletic mouthguard
+D9942,0.00,2.84,250.00,repair and/or reline of occlusal guard
+D9943,0.00,0.00,0.00,occlusal guard adjustment
+D9944,0.00,23.42,3267.00,occlusal guard - hard appliance full arch
+D9945,0.00,5.08,354.00,occlusal guard - soft appliance full arch
+D9946,0.00,66.76,1313.00,occlusal guard - hard appliance partial arch
+D9947,0.00,24.62,2599.00,custom sleep apnea appliance fabrication and placement
+D9948,0.00,0.00,0.00,adjustment of custom sleep apnea appliance
+D9949,0.00,28.75,340.00,repair of custom sleep apnea appliance
+D9950,0.00,8.57,615.00,occlusion analysis - mounted case
+D9951,0.00,48.84,4946.62,occlusal adjustment - limited
+D9952,0.00,36.45,2840.72,occlusal adjustment - complete
+D9953,0.00,0.00,0.00,reline custom sleep apnea appliance (indirect)
+D9954,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9957,0.00,63.33,95.00,unspecified adjunctive procedure - unknown
+D9960,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9961,0.00,0.00,0.00,duplicate/copy patient's records
+D9962,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9963,0.00,77.86,109.00,unspecified adjunctive procedure - unknown
+D9966,0.00,41.37,82.74,unspecified adjunctive procedure - unknown
+D9967,3.53,177.27,351.00,unspecified adjunctive procedure - unknown
+D9970,0.00,0.03,1.00,enamel microabrasion
+D9971,0.00,65.70,2376.50,odontoplasty - per tooth
+D9972,0.00,15.33,374.00,external bleaching - per arch - performed in office
+D9973,0.00,0.00,0.00,external bleaching - per tooth
+D9974,0.00,34.32,79.55,internal bleaching - per tooth
+D9975,0.00,0.00,0.00,external bleaching for home application per arch; includes materials and fabrication of custom trays
+D9976,0.00,21.50,129.00,unspecified adjunctive procedure - unknown
+D9977,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9978,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9979,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9980,0.00,1.67,22.38,unspecified adjunctive procedure - unknown
+D9981,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9982,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9983,0.00,0.09,1.00,unspecified adjunctive procedure - unknown
+D9984,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9985,0.00,0.00,0.00,sales tax
+D9986,0.00,0.00,0.00,missed appointment
+D9987,0.00,0.00,0.00,cancelled appointment
+D9988,0.00,0.00,0.00,unspecified adjunctive procedure - unknown
+D9990,0.00,4.40,22.00,certified translation or sign-language services - per visit
+D9991,0.00,3.18,70.00,dental case management - addressing appointment compliance barriers
+D9992,0.00,2.18,125.00,dental case management - care coordination
+D9993,0.00,19.00,133.00,dental case management - motivational interviewing
+D9994,0.00,0.00,0.00,dental case management - patient education to improve oral health literacy
+D9995,0.00,69.65,125.00,teledentistry - synchronous; real-time encounter
+D9996,0.00,0.00,0.00,teledentistry - asynchronous; information stored and forwarded to dentist for subsequent review
+D9997,0.00,2.63,250.00,dental case management - patients with special health care needs
+D9998,0.00,12.58,375.00,unspecified adjunctive procedure - unknown
+D9999,0.00,108.31,17000.00,unspecified adjunctive procedure by report

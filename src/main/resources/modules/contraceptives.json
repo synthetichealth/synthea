@@ -149,7 +149,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 389095005,
+        "code": "389095005",
         "display": "Contraception care (regime/therapy)"
       }
     },

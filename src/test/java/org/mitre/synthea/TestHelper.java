@@ -130,6 +130,7 @@ public abstract class TestHelper {
     Config.set("exporter.bfd.export", "false");
     Config.set("exporter.cdw.export", "false");
     Config.set("exporter.text.export", "false");
+    Config.set("exporter.custom.export", "false");
     Config.set("exporter.text.per_encounter_export", "false");
     Config.set("exporter.clinical_note.export", "false");
     Config.set("exporter.symptoms.csv.export", "false");

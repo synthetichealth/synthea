@@ -578,7 +578,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 246677007,
+          "code": "246677007",
           "display": "Passive conjunctival congestion (finding)"
         }
       ],
@@ -645,7 +645,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68235000,
+          "code": "68235000",
           "display": "Nasal congestion (finding)"
         }
       ],
@@ -666,7 +666,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 25064002,
+          "code": "25064002",
           "display": "Headache (finding)"
         }
       ],
@@ -687,7 +687,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 49727002,
+          "code": "49727002",
           "display": "Cough (finding)"
         }
       ],
@@ -708,8 +708,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 267102003,
-          "display": "Sore throat symptom (finding)"
+          "code": "267102003",
+          "display": "Sore throat (finding)"
         }
       ],
       "direct_transition": "Determine Sputum Production"
@@ -729,7 +729,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 248595008,
+          "code": "248595008",
           "display": "Sputum finding (finding)"
         }
       ],
@@ -750,7 +750,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 84229001,
+          "code": "84229001",
           "display": "Fatigue (finding)"
         }
       ],
@@ -771,7 +771,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 66857006,
+          "code": "66857006",
           "display": "Hemoptysis (finding)"
         }
       ],
@@ -792,7 +792,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 267036007,
+          "code": "267036007",
           "display": "Dyspnea (finding)"
         }
       ],
@@ -813,7 +813,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 422587007,
+          "code": "422587007",
           "display": "Nausea (finding)"
         }
       ],
@@ -834,7 +834,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 249497008,
+          "code": "249497008",
           "display": "Vomiting symptom (finding)"
         }
       ],
@@ -855,7 +855,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 267060006,
+          "code": "267060006",
           "display": "Diarrhea symptom (finding)"
         }
       ],
@@ -876,7 +876,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 68962001,
+          "code": "68962001",
           "display": "Muscle pain (finding)"
         }
       ],
@@ -897,7 +897,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 57676002,
+          "code": "57676002",
           "display": "Joint pain (finding)"
         }
       ],
@@ -918,7 +918,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 43724002,
+          "code": "43724002",
           "display": "Chill (finding)"
         }
       ],
@@ -985,7 +985,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386661006,
+          "code": "386661006",
           "display": "Fever (finding)"
         }
       ],
@@ -1025,7 +1025,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 36955009,
+          "code": "36955009",
           "display": "Loss of taste (finding)"
         }
       ],
@@ -1039,7 +1039,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 56018004,
+          "code": "56018004",
           "display": "Wheezing (finding)"
         }
       ],

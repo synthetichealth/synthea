@@ -92,6 +92,8 @@ dependencies {
   implementation 'info.cqframework:elm-jackson:2.1.0'
 
   implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+  implementation 'org.reflections:reflections:0.10.2'
+  implementation 'net.lingala.zip4j:zip4j:2.11.5'
 
   // Java 9 no longer includes these APIs by default
   implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
@@ -213,6 +215,7 @@ task rifBeneSplit(type: JavaExec) {
 }
 
 shadowJar {
+  zip64 true
   def versionFile = new File("$projectDir/src/main/resources/version.txt")
   def versionText = "N/A"
   if (versionFile.exists()) {
@@ -361,7 +364,7 @@ artifacts {
 }
 
 def mavenGroup = 'org.mitre.synthea'
-def mavenVersion = '3.2.2-SNAPSHOT'
+def mavenVersion = '3.3.1-SNAPSHOT'
 
 publishing {
     publications {
@@ -408,8 +411,8 @@ publishing {
             def releaseUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
             url mavenVersion.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
-                def user = project.hasProperty('sonatypeUsername') ? sonatypeUsername : ''
-                def pw = project.hasProperty('sonatypePassword') ? sonatypePassword : ''
+                def user = project.hasProperty('ossToken') ? ossToken : ''
+                def pw = project.hasProperty('ossTokenPassword') ? ossTokenPassword : ''
                 username user
                 password pw
             }

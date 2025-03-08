@@ -24,7 +24,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 /**
  * Utility class for dealing with code mapping configuration writers.
  */
-class CodeMapper {
+public class CodeMapper {
 
   private final boolean requireCodeMaps; // initialize in ctor to simplify unit testing
   private static final String WEIGHT_KEY = "weight";
@@ -173,7 +173,7 @@ class CodeMapper {
    * {@code map(codeToMap, "code", rand)}.
    * @param codeToMap the Synthea code to look for
    * @param rand a source of random numbers used to pick one of the list of BFD codes
-   * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+   * @param stripDots whether to remove dots in codes (e.g. J39.45 becomes J3945)
    * @return the BFD code or null if the code can't be mapped
    */
   public String map(String codeToMap, RandomNumberGenerator rand, boolean stripDots) {
@@ -185,7 +185,7 @@ class CodeMapper {
    * {@code map(codeToMap, "code", rand)}.
    * @param codeToMap the Synthea code to look for
    * @param rand a source of random numbers used to pick one of the list of BFD codes
-   * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+   * @param stripDots whether to remove dots in codes (e.g. J39.45 becomes J3945)
    * @return the BFD code or null if the code can't be mapped
    */
   public String map(Code codeToMap, RandomNumberGenerator rand, boolean stripDots) {
@@ -219,7 +219,7 @@ class CodeMapper {
    * @param codeToMap the Synthea code to look for
    * @param bfdCodeType the type of BFD code to map to
    * @param rand a source of random numbers used to pick one of the list of BFD codes
-   * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+   * @param stripDots whether to remove dots in codes (e.g. J39.45 becomes J3945)
    * @return the BFD code or null if the code can't be mapped
    */
   public String map(String codeToMap, String bfdCodeType, RandomNumberGenerator rand,
@@ -241,7 +241,7 @@ class CodeMapper {
    * @param codeToMap the Synthea code to look for
    * @param bfdCodeType the type of BFD code to map to
    * @param rand a source of random numbers used to pick one of the list of BFD codes
-   * @param stripDots whether to remove dots in codes (e.g. J39.45 -> J3945)
+   * @param stripDots whether to remove dots in codes (e.g. J39.45 becomes J3945)
    * @return the BFD code or null if the code can't be mapped
    */
   public String map(Code codeToMap, String bfdCodeType, RandomNumberGenerator rand,
@@ -263,7 +263,7 @@ class CodeMapper {
       row.put("count", count.toString());
       missingCodeList.add(row);
     });
-    // sort in decending order by count
+    // sort in descending order by count
     Collections.sort(missingCodeList, (o1, o2) -> {
       return (int)(Long.parseLong(o2.get("count")) - Long.parseLong(o1.get("count")));
     });

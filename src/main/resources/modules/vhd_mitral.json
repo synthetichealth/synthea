@@ -19,7 +19,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 48724000,
+          "code": "48724000",
           "display": "Mitral valve regurgitation (disorder)"
         }
       ],
@@ -29,14 +29,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 433236007,
+        "code": "433236007",
         "display": "Transthoracic echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -78,7 +78,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -137,7 +137,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 79619009,
+          "code": "79619009",
           "display": "Mitral valve stenosis (disorder)"
         }
       ],
@@ -150,7 +150,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],

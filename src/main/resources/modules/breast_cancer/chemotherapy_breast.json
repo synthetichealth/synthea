@@ -119,7 +119,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 367336001,
+          "code": "367336001",
           "display": "Chemotherapy (procedure)"
         }
       ],
@@ -163,8 +163,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Choose Chemo Drug"

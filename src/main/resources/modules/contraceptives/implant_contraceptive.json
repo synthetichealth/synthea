@@ -67,7 +67,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698314001",
-          "display": "Consultation for treatment"
+          "display": "Consultation for treatment (procedure)"
         }
       ],
       "direct_transition": "Prescribe_Implant_Contraceptive",
@@ -183,7 +183,7 @@
         {
           "system": "SNOMED-CT",
           "code": "169553002",
-          "display": "Insertion of subcutaneous contraceptive"
+          "display": "Insertion of subcutaneous contraceptive (procedure)"
         }
       ],
       "duration": {

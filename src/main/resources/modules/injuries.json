@@ -21,6 +21,7 @@
     "8.  'sprain'       - a sprained ankle or wrist ",
     "9.  'knee'         - a torn ligament (ACL, MCL, meniscus) ",
     "10. 'shoulder'     - a torn rotator cuff ",
+    "11. 'broken jaw' - broken jaw",
     "Sources are included throughout the module where supplemental information was needed.",
     "Every injury pathway in this module assigns a care plan for the patient. This care ",
     "plan is referenced by the 'injury_careplan' attribute and is ended at the conclusion ",
@@ -157,13 +158,17 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.5,
-          "transition": "Wait_For_Injury",
+          "distribution": 0.000159184,
+          "transition": "Broken Jaw",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
             "out of 1.0 if none of the other transitions are taken, see: ",
             "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
           ]
+        },
+        {
+          "transition": "Wait_For_Injury",
+          "distribution": 0.911749816
         }
       ]
     },
@@ -224,13 +229,17 @@
           "transition": "Shoulder_Injury"
         },
         {
-          "distribution": 0.5,
-          "transition": "Wait_For_Injury",
+          "distribution": 0.001034694,
+          "transition": "Broken Jaw",
           "remarks": [
             "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
             "out of 1.0 if none of the other transitions are taken, see: ",
             "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
           ]
+        },
+        {
+          "transition": "Wait_For_Injury",
+          "distribution": 0.943824306
         }
       ]
     },
@@ -298,13 +307,17 @@
               "transition": "Shoulder_Injury"
             },
             {
-              "distribution": 0.5,
-              "transition": "Wait_For_Injury",
+              "distribution": 0.000212245,
+              "transition": "Broken Jaw",
               "remarks": [
                 "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
                 "out of 1.0 if none of the other transitions are taken, see: ",
                 "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
               ]
+            },
+            {
+              "transition": "Wait_For_Injury",
+              "distribution": 0.8941967550000001
             }
           ]
         },
@@ -360,13 +373,17 @@
               "transition": "Shoulder_Injury"
             },
             {
-              "distribution": 0.5,
-              "transition": "Wait_For_Injury",
+              "distribution": 0.000106122,
+              "transition": "Broken Jaw",
               "remarks": [
                 "The GMF's distributed transition will take this transition and automatically adjust the distribution ",
                 "out of 1.0 if none of the other transitions are taken, see: ",
                 "https://github.com/synthetichealth/synthea/wiki/Generic-Module-Framework%3A-Transitions#distributed"
               ]
+            },
+            {
+              "transition": "Wait_For_Injury",
+              "distribution": 0.9193028780000001
             }
           ]
         }
@@ -378,7 +395,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 262521009,
+          "code": "262521009",
           "display": "Traumatic injury of spinal cord and/or vertebral column (disorder)"
         }
       ],
@@ -424,14 +441,14 @@
         {
           "system": "SNOMED-CT",
           "code": "75162002",
-          "display": "Spinal cord injury rehabilitation"
+          "display": "Spinal cord injury rehabilitation (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "77476009",
-          "display": "Application of back brace"
+          "display": "Application of back brace (procedure)"
         }
       ],
       "direct_transition": "Delay_After_Spinal_Surgery"
@@ -444,7 +461,7 @@
         {
           "system": "SNOMED-CT",
           "code": "1734006",
-          "display": "Fracture of the vertebral column with spinal cord injury"
+          "display": "Fracture of vertebral column with spinal cord injury (disorder)"
         }
       ],
       "distributed_transition": [
@@ -469,7 +486,7 @@
         {
           "system": "SNOMED-CT",
           "code": "698754002",
-          "display": "Chronic paralysis due to lesion of spinal cord"
+          "display": "Chronic paralysis due to lesion of spinal cord (disorder)"
         }
       ],
       "direct_transition": "Wheelchair for Spine"
@@ -482,7 +499,7 @@
         {
           "system": "SNOMED-CT",
           "code": "15724005",
-          "display": "Fracture of vertebral column without spinal cord injury"
+          "display": "Fracture of vertebral column without spinal cord injury (disorder)"
         }
       ],
       "direct_transition": "Spinal_Injury_CarePlan"
@@ -494,7 +511,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305425002",
-          "display": "Admission to neurosurgical department"
+          "display": "Admission to neurosurgical department (procedure)"
         }
       ],
       "direct_transition": "Spinal_Injury_CarePlan"
@@ -507,7 +524,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Spinal_Injury_Prescribe_Opioid"
@@ -538,7 +555,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Spinal_Injury"
@@ -562,7 +579,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 283545005,
+          "code": "283545005",
           "display": "Gunshot wound (disorder)"
         }
       ],
@@ -599,7 +616,7 @@
         {
           "system": "SNOMED-CT",
           "code": "262574004",
-          "display": "Bullet wound"
+          "display": "Bullet wound (disorder)"
         }
       ],
       "distributed_transition": [
@@ -643,7 +660,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305433001",
-          "display": "Admission to trauma surgery department"
+          "display": "Admission to trauma surgery department (procedure)"
         }
       ],
       "direct_transition": "Gunshot_Wound_Prescribe_Pain_Medication"
@@ -679,19 +696,19 @@
         {
           "system": "SNOMED-CT",
           "code": "225358003",
-          "display": "Wound care"
+          "display": "Wound care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "385949008",
-          "display": "Dressing change management"
+          "display": "Dressing change management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "439830001",
-          "display": "Behavior to prevent infection"
+          "display": "Behavior to prevent infection (observable entity)"
         }
       ],
       "direct_transition": "End_Gunshot_Encounter"
@@ -718,7 +735,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Gunshot_Wound_Ends"
@@ -738,7 +755,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 110030002,
+          "code": "110030002",
           "display": "Concussion injury of brain (disorder)"
         }
       ],
@@ -787,7 +804,7 @@
         {
           "system": "SNOMED-CT",
           "code": "62106007",
-          "display": "Concussion with no loss of consciousness"
+          "display": "Concussion with no loss of consciousness (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -800,7 +817,7 @@
         {
           "system": "SNOMED-CT",
           "code": "62564004",
-          "display": "Concussion with loss of consciousness"
+          "display": "Concussion with loss of consciousness (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -813,7 +830,7 @@
         {
           "system": "SNOMED-CT",
           "code": "110030002",
-          "display": "Concussion injury of brain"
+          "display": "Concussion injury of brain (disorder)"
         }
       ],
       "remarks": [
@@ -844,8 +861,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "275272006",
-          "display": "Brain damage - traumatic"
+          "code": "127294003",
+          "display": "Traumatic or nontraumatic brain injury (disorder)"
         }
       ],
       "direct_transition": "Concussion_CarePlan"
@@ -858,19 +875,19 @@
         {
           "system": "SNOMED-CT",
           "code": "47387005",
-          "display": "Head injury rehabilitation"
+          "display": "Head injury rehabilitation (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "183051005",
-          "display": "Recommendation to rest"
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "226138001",
-          "display": "Alcohol-free diet"
+          "display": "Alcohol-free diet (finding)"
         }
       ],
       "direct_transition": "End_Concussion_Encounter"
@@ -897,7 +914,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Concussion_Injury"
@@ -917,7 +934,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 90460009,
+          "code": "90460009",
           "display": "Injury of neck (disorder)"
         }
       ],
@@ -955,7 +972,7 @@
         {
           "system": "SNOMED-CT",
           "code": "39848009",
-          "display": "Whiplash injury to neck"
+          "display": "Whiplash injury to neck (disorder)"
         }
       ],
       "direct_transition": "Whiplash_Injury_Prescribe_Non_Opioid"
@@ -973,19 +990,19 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care"
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "266694003",
-          "display": "Heat therapy"
+          "display": "Heat therapy (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "183051005",
-          "display": "Recommendation to rest"
+          "display": "Recommendation to rest (procedure)"
         }
       ],
       "direct_transition": "End_Whiplash_Encounter"
@@ -1014,7 +1031,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 125605004,
+          "code": "125605004",
           "display": "Fracture of bone (disorder)"
         }
       ],
@@ -1137,7 +1154,7 @@
         {
           "system": "SNOMED-CT",
           "code": "58150001",
-          "display": "Fracture of clavicle"
+          "display": "Fracture of clavicle (disorder)"
         }
       ],
       "direct_transition": "Clavicle_X_Ray"
@@ -1147,14 +1164,14 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": "168594001",
-        "display": "Clavicle X-ray"
+        "display": "Plain X-ray of clavicle (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "51299004",
-            "display": "Clavicle"
+            "display": "Bone structure of clavicle (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1183,7 +1200,7 @@
         {
           "system": "SNOMED-CT",
           "code": "65966004",
-          "display": "Fracture of forearm"
+          "display": "Fracture of forearm (disorder)"
         }
       ],
       "direct_transition": "Arm_X_Ray"
@@ -1192,8 +1209,8 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "1225002",
-        "display": "Upper arm X-ray"
+        "code": "713026007",
+        "display": "Plain X-ray of humerus (procedure)"
       },
       "series": [
         {
@@ -1229,7 +1246,7 @@
         {
           "system": "SNOMED-CT",
           "code": "263102004",
-          "display": "Fracture subluxation of wrist"
+          "display": "Fracture subluxation of wrist (disorder)"
         }
       ],
       "direct_transition": "Wrist_X_Ray"
@@ -1238,15 +1255,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "60027007",
-        "display": "Radiography of wrist (procedure)"
+        "code": "713024005",
+        "display": "Plain X-ray of wrist region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "8205005",
-            "display": "Wrist"
+            "display": "Wrist region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1275,7 +1292,7 @@
         {
           "system": "SNOMED-CT",
           "code": "16114001",
-          "display": "Fracture of ankle"
+          "display": "Fracture of ankle (disorder)"
         }
       ],
       "direct_transition": "Ankle_X_Ray"
@@ -1284,15 +1301,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "19490002",
-        "display": "Ankle X-ray"
+        "code": "1290459008",
+        "display": "Plain X-ray of ankle region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "344001",
-            "display": "Ankle"
+            "display": "Ankle region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1330,7 +1347,7 @@
         {
           "system": "SNOMED-CT",
           "code": "33737001",
-          "display": "Fracture of rib"
+          "display": "Fracture of rib (disorder)"
         }
       ],
       "direct_transition": "Chest_X_Ray"
@@ -1340,14 +1357,14 @@
       "procedure_code": {
         "system": "SNOMED-CT",
         "code": "399208008",
-        "display": "Chest X-ray"
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "51185008",
-            "display": "Chest"
+            "display": "Thoracic structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1376,7 +1393,7 @@
         {
           "system": "SNOMED-CT",
           "code": "359817006",
-          "display": "Closed fracture of hip"
+          "display": "Closed fracture of hip (disorder)"
         }
       ],
       "direct_transition": "Pelvic_X_Ray"
@@ -1385,15 +1402,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "268425006",
-        "display": "Pelvis X-ray"
+        "code": "713021002",
+        "display": "Plain X-ray of pelvis (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "12921003",
-            "display": "Pelvis"
+            "display": "Structure of pelvis (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -1439,7 +1456,7 @@
         {
           "system": "SNOMED-CT",
           "code": "274474001",
-          "display": "Bone immobilization"
+          "display": "Bone immobilization (procedure)"
         }
       ],
       "direct_transition": "Broken_Bone_Injury_Prescribe_Pain_Medication"
@@ -1456,7 +1473,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305428000",
-          "display": "Admission to orthopedic department"
+          "display": "Admission to orthopedic department (procedure)"
         }
       ],
       "direct_transition": "Broken_Bone_Injury_Prescribe_Pain_Medication"
@@ -1512,25 +1529,19 @@
         {
           "system": "SNOMED-CT",
           "code": "385691007",
-          "display": "Fracture care"
+          "display": "Fracture care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "183051005",
-          "display": "Recommendation to rest",
-          "remarks": [
-            "Until the broken bone heals"
-          ]
+          "display": "Recommendation to rest (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "408580007",
-          "display": "Physical activity target light exercise",
-          "remarks": [
-            "After the broken bone heals"
-          ]
+          "display": "Physical activity target light exercise (finding)"
         }
       ],
       "direct_transition": "Consider_Osteoporosis"
@@ -1663,7 +1674,7 @@
         {
           "system": "SNOMED-CT",
           "code": "443165006",
-          "display": "Pathological fracture due to osteoporosis (disorder)"
+          "display": "Osteoporotic fracture of bone (disorder)"
         }
       ],
       "direct_transition": "End_Broken_Bone_Encounter"
@@ -1702,7 +1713,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End DME"
@@ -1718,7 +1729,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "443165006",
-                "display": "Pathological fracture due to osteoporosis (disorder)"
+                "display": "Osteoporotic fracture of bone (disorder)"
               }
             ]
           },
@@ -1744,7 +1755,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 48333001,
+          "code": "48333001",
           "display": "Burn injury (morphologic abnormality)"
         }
       ],
@@ -1823,7 +1834,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403191005",
-          "display": "Second degree burn"
+          "display": "Partial thickness burn (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1836,7 +1847,7 @@
         {
           "system": "SNOMED-CT",
           "code": "403192003",
-          "display": "Third degree burn"
+          "display": "Full thickness burn (disorder)"
         }
       ],
       "direct_transition": "Burn_CarePlan"
@@ -1849,24 +1860,24 @@
         {
           "system": "SNOMED-CT",
           "code": "133901003",
-          "display": "Burn care"
+          "display": "Burn care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "385949008",
-          "display": "Dressing change management"
+          "display": "Dressing change management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "440381005",
-          "display": "Behavior to prevent sun exposure"
+          "display": "Behavior to prevent sun exposure (observable entity)"
         },
         {
           "system": "SNOMED-CT",
           "code": "439830001",
-          "display": "Behavior to prevent infection"
+          "display": "Behavior to prevent infection (observable entity)"
         }
       ],
       "conditional_transition": [
@@ -1890,7 +1901,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "403191005",
-                "display": "Second degree burn"
+                "display": "Partial thickness burn (disorder)"
               }
             ]
           },
@@ -1903,7 +1914,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "403192003",
-                "display": "Third degree burn"
+                "display": "Full thickness burn (disorder)"
               }
             ]
           },
@@ -1918,7 +1929,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183450002",
-          "display": "Admission to burn unit"
+          "display": "Admission to burn unit (procedure)"
         }
       ],
       "direct_transition": "Severe_Burn_Hospitalization"
@@ -1935,7 +1946,7 @@
         {
           "system": "SNOMED-CT",
           "code": "305340004",
-          "display": "Admission to long stay hospital"
+          "display": "Admission to long stay hospital (procedure)"
         }
       ],
       "direct_transition": "Burn_Injury_Prescribe_Antibiotic"
@@ -1980,7 +1991,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Burn_Injury"
@@ -2000,7 +2011,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312608009,
+          "code": "312608009",
           "display": "Laceration - injury (disorder)"
         }
       ],
@@ -2061,7 +2072,7 @@
         {
           "system": "SNOMED-CT",
           "code": "284549007",
-          "display": "Laceration of hand"
+          "display": "Laceration of hand (disorder)"
         }
       ],
       "direct_transition": "Laceration_CarePlan"
@@ -2074,7 +2085,7 @@
         {
           "system": "SNOMED-CT",
           "code": "283371005",
-          "display": "Laceration of forearm"
+          "display": "Laceration of forearm (disorder)"
         }
       ],
       "direct_transition": "Laceration_CarePlan"
@@ -2087,7 +2098,7 @@
         {
           "system": "SNOMED-CT",
           "code": "283385000",
-          "display": "Laceration of thigh"
+          "display": "Laceration of thigh (disorder)"
         }
       ],
       "direct_transition": "Laceration_CarePlan"
@@ -2100,7 +2111,7 @@
         {
           "system": "SNOMED-CT",
           "code": "370247008",
-          "display": "Facial laceration"
+          "display": "Facial laceration (disorder)"
         }
       ],
       "direct_transition": "Laceration_CarePlan"
@@ -2113,7 +2124,7 @@
         {
           "system": "SNOMED-CT",
           "code": "284551006",
-          "display": "Laceration of foot"
+          "display": "Laceration of foot (disorder)"
         }
       ],
       "direct_transition": "Laceration_CarePlan"
@@ -2126,19 +2137,19 @@
         {
           "system": "SNOMED-CT",
           "code": "225358003",
-          "display": "Wound care"
+          "display": "Wound care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "385949008",
-          "display": "Dressing change management"
+          "display": "Dressing change management (procedure)"
         },
         {
           "system": "SNOMED-CT",
           "code": "439830001",
-          "display": "Behavior to prevent infection"
+          "display": "Behavior to prevent infection (observable entity)"
         }
       ],
       "direct_transition": "Suture_Laceration"
@@ -2155,7 +2166,7 @@
         {
           "system": "SNOMED-CT",
           "code": "288086009",
-          "display": "Suture open wound"
+          "display": "Suture open wound (procedure)"
         }
       ],
       "remarks": [
@@ -2187,7 +2198,7 @@
         {
           "system": "SNOMED-CT",
           "code": "384700001",
-          "display": "Injection of tetanus antitoxin"
+          "display": "Injection of tetanus antitoxin (procedure)"
         }
       ],
       "direct_transition": "Laceration_Injury_Prescribe_Non_Opioid"
@@ -2221,7 +2232,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 384709000,
+          "code": "384709000",
           "display": "Sprain (morphologic abnormality)"
         }
       ],
@@ -2263,7 +2274,7 @@
         {
           "system": "SNOMED-CT",
           "code": "44465007",
-          "display": "Sprain of ankle"
+          "display": "Sprain of ankle (disorder)"
         }
       ],
       "direct_transition": "Sprain_CarePlan"
@@ -2276,7 +2287,7 @@
         {
           "system": "SNOMED-CT",
           "code": "70704007",
-          "display": "Sprain of wrist"
+          "display": "Sprain of wrist (disorder)"
         }
       ],
       "direct_transition": "Sprain_CarePlan"
@@ -2288,7 +2299,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 773513001,
+          "code": "773513001",
           "display": "Physiotherapy care plan (record artifact)"
         }
       ],
@@ -2301,7 +2312,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229070002",
-          "display": "Stretching exercises"
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Sprain_Prescribe_Non_Opioid"
@@ -2335,7 +2346,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 125601008,
+          "code": "125601008",
           "display": "Injury of knee (disorder)"
         }
       ],
@@ -2390,15 +2401,15 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": "74016001",
-        "display": "Knee X-ray"
+        "code": "1290407002",
+        "display": "Plain X-ray of knee region (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
             "code": "72696002",
-            "display": "Knee"
+            "display": "Knee region structure (body structure)"
           },
           "modality": {
             "system": "DICOM-DCM",
@@ -2426,7 +2437,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 773513001,
+          "code": "773513001",
           "display": "Physiotherapy care plan (record artifact)"
         }
       ],
@@ -2439,7 +2450,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229070002",
-          "display": "Stretching exercises"
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "Knee_X_Ray"
@@ -2452,7 +2463,7 @@
         {
           "system": "SNOMED-CT",
           "code": "444470001",
-          "display": "Injury of anterior cruciate ligament"
+          "display": "Injury of anterior cruciate ligament (disorder)"
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
@@ -2465,7 +2476,7 @@
         {
           "system": "SNOMED-CT",
           "code": "444448004",
-          "display": "Injury of medial collateral ligament of knee"
+          "display": "Injury of medial collateral ligament of knee (disorder)"
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
@@ -2481,7 +2492,7 @@
         {
           "system": "SNOMED-CT",
           "code": "239720000",
-          "display": "Tear of meniscus of knee"
+          "display": "Tear of meniscus of knee (disorder)"
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
@@ -2494,7 +2505,7 @@
         {
           "system": "SNOMED-CT",
           "code": "30832001",
-          "display": "Rupture of patellar tendon"
+          "display": "Rupture of patellar tendon (disorder)"
         }
       ],
       "direct_transition": "Knee_Injury_CarePlan"
@@ -2530,7 +2541,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "direct_transition": "Knee_Surgery_Procedure"
@@ -2547,7 +2558,7 @@
         {
           "system": "SNOMED-CT",
           "code": "699253003",
-          "display": "Surgical manipulation of joint of knee"
+          "display": "Surgical manipulation of joint of knee (procedure)"
         }
       ],
       "direct_transition": "Knee_Injury_Prescribe_Opioid"
@@ -2601,7 +2612,7 @@
         {
           "system": "SNOMED-CT",
           "code": "307731004",
-          "display": "Injury of tendon of the rotator cuff of shoulder"
+          "display": "Injury of tendon of the rotator cuff of shoulder (disorder)"
         }
       ],
       "direct_transition": "Encounter_For_Shoulder_Injury"
@@ -2614,7 +2625,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Shoulder_Injury_CarePlan"
@@ -2626,7 +2637,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 773513001,
+          "code": "773513001",
           "display": "Physiotherapy care plan (record artifact)"
         }
       ],
@@ -2639,7 +2650,7 @@
         {
           "system": "SNOMED-CT",
           "code": "229070002",
-          "display": "Stretching exercises"
+          "display": "Stretching exercises (regime/therapy)"
         }
       ],
       "direct_transition": "End_Shoulder_Injury_Encounter"
@@ -2673,7 +2684,7 @@
         {
           "system": "SNOMED-CT",
           "code": "183495009",
-          "display": "Non-urgent orthopedic admission"
+          "display": "Non-urgent orthopedic admission (procedure)"
         }
       ],
       "direct_transition": "Shoulder_Surgery_Procedure"
@@ -2690,7 +2701,7 @@
         {
           "system": "SNOMED-CT",
           "code": "387685009",
-          "display": "Surgical manipulation of shoulder joint"
+          "display": "Surgical manipulation of shoulder joint (procedure)"
         }
       ],
       "direct_transition": "Shoulder_Surgery_Prescribe_Opioid"
@@ -2726,7 +2737,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Shoulder_Injury"
@@ -2823,7 +2834,7 @@
         {
           "system": "SNOMED-CT",
           "code": "48333001",
-          "display": "Burn injury(morphologic abnormality)"
+          "display": "Burn injury (morphologic abnormality)"
         }
       ],
       "direct_transition": "Death_Severe_Burn"
@@ -2855,8 +2866,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 363753007,
-        "display": "Crutches (physical object)"
+        "code": "74566002",
+        "display": "Crutch, device (physical object)"
       },
       "direct_transition": "Broken_Bone_Immobilization",
       "assign_to_attribute": "injury_dme"
@@ -2895,8 +2906,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 363753007,
-        "display": "Crutches (physical object)"
+        "code": "74566002",
+        "display": "Crutch, device (physical object)"
       },
       "direct_transition": "Broken_Bone_Surgery",
       "assign_to_attribute": "injury_dme"
@@ -2967,7 +2978,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -2986,7 +2997,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -3055,6 +3066,11 @@
       "type": "ConditionEnd",
       "direct_transition": "End_Gunshot_Followup",
       "condition_onset": "Gunshot_Injury"
+    },
+    "Broken Jaw": {
+      "type": "CallSubmodule",
+      "submodule": "injuries/broken_jaw",
+      "direct_transition": "Conclude_Injury"
     }
   },
   "gmf_version": 1

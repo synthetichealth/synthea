@@ -124,7 +124,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 162864005,
+          "code": "162864005",
           "display": "Body mass index 30+ - obesity (finding)"
         }
       ],
@@ -137,7 +137,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 408512008,
+          "code": "408512008",
           "display": "Body mass index 40+ - severely obese (finding)"
         }
       ],
@@ -403,8 +403,8 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": "15777000",
-                    "display": "Prediabetes"
+                    "code": "714628002",
+                    "display": "Prediabetes (finding)"
                   }
                 ]
               }
@@ -524,7 +524,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 449868002,
+        "code": "449868002",
         "display": "Smokes tobacco daily (finding)"
       },
       "direct_transition": "SDoH Check"
@@ -543,7 +543,7 @@
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 8517006,
+        "code": "8517006",
         "display": "Ex-smoker (finding)"
       }
     },
@@ -561,7 +561,7 @@
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 266919005,
+        "code": "266919005",
         "display": "Never smoked tobacco (finding)"
       }
     },
@@ -607,7 +607,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "38341003",
-                    "display": "Hypertension"
+                    "display": "Hypertensive disorder, systemic arterial (disorder)"
                   }
                 ]
               }
@@ -1007,7 +1007,7 @@
           "distribution": 0.7
         },
         {
-          "transition": "End_Of_Wellness_Encounter",
+          "transition": "Dental Referral?",
           "distribution": 0.3
         }
       ]
@@ -1015,7 +1015,7 @@
     "Substance Use Screening": {
       "type": "CallSubmodule",
       "submodule": "encounter/substance_use_screening",
-      "direct_transition": "End_Of_Wellness_Encounter"
+      "direct_transition": "Dental Referral?"
     },
     "Record_Head_Circumference_Percentile": {
       "type": "Observation",
@@ -1037,9 +1037,126 @@
       "direct_transition": "Wellness_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 410424005,
+        "code": "410424005",
         "display": "Wellness surveillance (regime/therapy)"
       }
+    },
+    "Dental Referral?": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Pediatric Dentist",
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<=",
+            "quantity": 6,
+            "unit": "years",
+            "value": 0
+          }
+        },
+        {
+          "transition": "Refer to Dentist"
+        }
+      ]
+    },
+    "Patient referral for dental care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "103697008",
+          "display": "Patient referral for dental care (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Of_Wellness_Encounter",
+      "reason": "dental_referral"
+    },
+    "Gingivitis": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "66383009",
+          "display": "Gingivitis (disorder)"
+        }
+      ],
+      "direct_transition": "Patient referral for dental care",
+      "assign_to_attribute": "dental_referral"
+    },
+    "Go see a Dentist": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "103697008",
+          "display": "Patient referral for dental care (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End_Of_Wellness_Encounter",
+      "assign_to_attribute": "dental_referral"
+    },
+    "Refer to Dentist": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Gingivitis",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Go see a Dentist",
+          "distribution": 0.25
+        },
+        {
+          "transition": "End_Of_Wellness_Encounter",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Pediatric Dentist": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 2,
+            "unit": "years",
+            "value": 0
+          },
+          "distributions": [],
+          "transition": "End_Of_Wellness_Encounter"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Go see a Dentist",
+              "distribution": 0.25
+            },
+            {
+              "transition": "End_Of_Wellness_Encounter",
+              "distribution": 0.75
+            }
+          ]
+        }
+      ]
     }
   },
   "gmf_version": 1

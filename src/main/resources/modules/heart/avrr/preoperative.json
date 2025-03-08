@@ -48,7 +48,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 110467000,
+          "code": "110467000",
           "display": "Pre-surgery testing (procedure)"
         }
       ],
@@ -64,7 +64,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
+          "code": "29303009",
           "display": "Electrocardiographic procedure (procedure)"
         }
       ],
@@ -79,14 +79,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "code": "399208008",
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -140,7 +140,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 23426006,
+          "code": "23426006",
           "display": "Measurement of respiratory function (procedure)"
         }
       ],
@@ -171,14 +171,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 709979004,
+        "code": "709979004",
         "display": "Doppler ultrasonography of artery (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51345006,
+            "code": "51345006",
             "display": "Carotid body structure (body structure)"
           },
           "modality": {
@@ -204,14 +204,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 303653007,
+        "code": "303653007",
         "display": "Computed tomography of head (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 69536005,
+            "code": "69536005",
             "display": "Head structure (body structure)"
           },
           "modality": {
@@ -243,7 +243,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 44608003,
+          "code": "44608003",
           "display": "Blood group typing (procedure)"
         }
       ],
@@ -258,7 +258,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33367005,
+          "code": "33367005",
           "display": "Angiography of coronary artery (procedure)"
         }
       ],
@@ -315,7 +315,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225338004,
+          "code": "225338004",
           "display": "Risk assessment (procedure)"
         }
       ],
@@ -327,7 +327,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 252480006,
+          "code": "252480006",
           "display": "Simple walk test (procedure)"
         }
       ],
@@ -339,19 +339,19 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34043003,
-          "display": "Dental consultation and report (procedure)"
+          "code": "772071006",
+          "display": "Referral to dentist (procedure)"
         }
       ],
       "unit": "minutes",
-      "direct_transition": "Gait-Speed Assessment"
+      "direct_transition": "Initiate_Dental_Cleaning"
     },
     "Clinical Fragility Scale": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 763228001,
+          "code": "763228001",
           "display": "Assessment using Canadian Study of Health and Aging Clinical Frailty Scale (procedure)"
         }
       ],
@@ -363,7 +363,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 445988008,
+          "code": "445988008",
           "display": "Assessment using health assessment questionnaire (procedure)"
         }
       ],
@@ -405,7 +405,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 762998009,
+          "code": "762998009",
           "display": "Assessment using New York Heart Association Classification (procedure)"
         }
       ],
@@ -556,14 +556,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 418023006,
+        "code": "418023006",
         "display": "Computed tomography of chest, abdomen and pelvis (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 732167000,
+            "code": "732167000",
             "display": "Entire chest and abdomen and pelvis (body structure)"
           },
           "modality": {
@@ -584,6 +584,12 @@
         }
       ],
       "direct_transition": "Priority 3+"
+    },
+    "Initiate_Dental_Cleaning": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "value_attribute": "vhd_diagnosis",
+      "direct_transition": "Gait-Speed Assessment"
     }
   },
   "gmf_version": 2

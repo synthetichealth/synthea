@@ -14,8 +14,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 449868002,
-          "display": "Smokes tobacco daily"
+          "code": "449868002",
+          "display": "Smokes tobacco daily (finding)"
         }
       ],
       "direct_transition": "Smoking_Careplan"
@@ -25,16 +25,16 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
-          "display": "Care Plan"
+          "code": "734163000",
+          "display": "Care plan (record artifact)"
         }
       ],
       "reason": "Smoking_Condition",
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 710081004,
-          "display": "smoking cessation therapy"
+          "code": "710081004",
+          "display": "Smoking cessation therapy (regime/therapy)"
         }
       ],
       "conditional_transition": [
@@ -86,8 +86,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 7200002,
-          "display": "Alcoholism"
+          "code": "7200002",
+          "display": "Alcoholism (disorder)"
         }
       ],
       "direct_transition": "Alcoholism_Care_Plan"
@@ -142,25 +142,25 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
-          "display": "Care Plan"
+          "code": "734163000",
+          "display": "Care plan (record artifact)"
         }
       ],
       "direct_transition": "Opioid Abuse Diagnosis",
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 313071005,
+          "code": "313071005",
           "display": "Counseling for substance abuse (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 408935001,
+          "code": "408935001",
           "display": "Substance abuse prevention education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 408936000,
+          "code": "408936000",
           "display": "Substance abuse prevention management (procedure)"
         }
       ]
@@ -197,7 +197,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5602001,
+          "code": "5602001",
           "display": "Opioid abuse (disorder)"
         }
       ],
@@ -224,16 +224,16 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 734163000,
-          "display": "Care Plan"
+          "code": "734163000",
+          "display": "Care plan (record artifact)"
         }
       ],
       "direct_transition": "SUD check",
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 24165007,
-          "display": "Alcoholism counseling"
+          "code": "24165007",
+          "display": "Alcoholism counseling (procedure)"
         }
       ]
     },

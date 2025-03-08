@@ -18,7 +18,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 32485007,
+          "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
       ],
@@ -30,7 +30,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 415070008,
+          "code": "415070008",
           "display": "Percutaneous coronary intervention (procedure)"
         }
       ],
@@ -48,7 +48,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 401303003,
+          "code": "401303003",
           "display": "Acute ST segment elevation myocardial infarction (disorder)"
         }
       ],
@@ -93,7 +93,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 698314001,
+          "code": "698314001",
           "display": "Consultation for treatment (procedure)"
         }
       ],
@@ -173,7 +173,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33367005,
+          "code": "33367005",
           "display": "Angiography of coronary artery (procedure)"
         }
       ],

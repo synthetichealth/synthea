@@ -603,9 +603,11 @@ public class Utilities {
    *        (topLevelModulesFolderPath, currentModulePath) -&gt; {...}
    */
   public static void walkAllModules(BiConsumer<Path, Path> action) throws Exception {
-    Path modulesPath = Module.getModulesPath();
+    List<Path> modulePaths = Module.getModulePaths();
 
-    walkAllModules(modulesPath, p -> action.accept(modulesPath, p));
+    for (Path path : modulePaths) {
+      walkAllModules(path, p -> action.accept(path, p));
+    }
   }
 
   /**

@@ -106,7 +106,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Routine_Colonoscopy_Procedure",
@@ -125,7 +125,7 @@
         {
           "system": "SNOMED-CT",
           "code": "73761001",
-          "display": "Colonoscopy"
+          "display": "Colonoscopy (procedure)"
         }
       ],
       "duration": {
@@ -235,7 +235,7 @@
         {
           "system": "SNOMED-CT",
           "code": "68496003",
-          "display": "Polyp of colon"
+          "display": "Polyp of colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -368,7 +368,7 @@
         {
           "system": "SNOMED-CT",
           "code": "274031008",
-          "display": "Rectal polypectomy"
+          "display": "Rectal polypectomy (procedure)"
         }
       ],
       "conditional_transition": [
@@ -395,7 +395,7 @@
         {
           "system": "SNOMED-CT",
           "code": "76164006",
-          "display": "Biopsy of colon"
+          "display": "Biopsy of colon (procedure)"
         }
       ],
       "direct_transition": "End_Routine_Colonoscopy_with_Malignant_Adenoma"
@@ -422,7 +422,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "End_Biopsy_Followup"
@@ -468,7 +468,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Followup_Colonoscopy_Procedure",
@@ -484,7 +484,7 @@
         {
           "system": "SNOMED-CT",
           "code": "73761001",
-          "display": "Colonoscopy"
+          "display": "Colonoscopy (procedure)"
         }
       ],
       "duration": {
@@ -500,7 +500,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "713197008",
-                "display": "Recurrent rectal polyp"
+                "display": "Recurrent rectal polyp (disorder)"
               }
             ],
             "remarks": [
@@ -562,7 +562,7 @@
         {
           "system": "SNOMED-CT",
           "code": "713197008",
-          "display": "Recurrent rectal polyp"
+          "display": "Recurrent rectal polyp (disorder)"
         }
       ],
       "direct_transition": "Recurrent_Adenoma_Removal"
@@ -574,7 +574,7 @@
         {
           "system": "SNOMED-CT",
           "code": "274031008",
-          "display": "Rectal polypectomy"
+          "display": "Rectal polypectomy (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital"
@@ -615,7 +615,7 @@
         {
           "system": "SNOMED-CT",
           "code": "236077008",
-          "display": "Protracted diarrhea"
+          "display": "Protracted diarrhea (finding)"
         }
       ],
       "direct_transition": "Colorectal_Cancer_Symptom_2"
@@ -627,7 +627,7 @@
         {
           "system": "SNOMED-CT",
           "code": "6072007",
-          "display": "Bleeding from anus"
+          "display": "Bleeding from anus (disorder)"
         }
       ],
       "direct_transition": "Symptom_Encounter"
@@ -641,7 +641,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "direct_transition": "End_Symptom_Encounter"
@@ -715,7 +715,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "Diagnostic_Colonoscopy_Procedure",
@@ -731,7 +731,7 @@
         {
           "system": "SNOMED-CT",
           "code": "73761001",
-          "display": "Colonoscopy"
+          "display": "Colonoscopy (procedure)"
         }
       ],
       "duration": {
@@ -841,7 +841,7 @@
         {
           "system": "SNOMED-CT",
           "code": "93761005",
-          "display": "Primary malignant neoplasm of colon"
+          "display": "Primary malignant neoplasm of colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -863,7 +863,7 @@
         {
           "system": "SNOMED-CT",
           "code": "109838007",
-          "display": "Overlapping malignant neoplasm of colon"
+          "display": "Overlapping malignant neoplasm of colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -885,7 +885,7 @@
         {
           "system": "SNOMED-CT",
           "code": "363406005",
-          "display": "Malignant tumor of colon"
+          "display": "Malignant neoplasm of colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -907,7 +907,7 @@
         {
           "system": "SNOMED-CT",
           "code": "94260004",
-          "display": "Secondary malignant neoplasm of colon"
+          "display": "Metastatic malignant neoplasm to colon (disorder)"
         }
       ],
       "distributed_transition": [
@@ -1040,7 +1040,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Colorectal_Cancer_CarePlan"
@@ -1058,25 +1058,25 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "395082007",
-          "display": "Cancer care plan"
+          "code": "736252007",
+          "display": "Cancer care plan (record artifact)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "226234005",
-          "display": "Healthy diet"
+          "display": "Healthy diet (finding)"
         },
         {
           "system": "SNOMED-CT",
           "code": "703993001",
-          "display": "Colonoscopy planned"
+          "display": "Colonoscopy planned (situation)"
         },
         {
           "system": "SNOMED-CT",
           "code": "243072006",
-          "display": "Cancer education"
+          "display": "Cancer education (procedure)"
         }
       ],
       "direct_transition": "End_Oncologist_Encounter"
@@ -1193,7 +1193,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Partial_Colectomy_Procedure"
@@ -1205,7 +1205,7 @@
         {
           "system": "SNOMED-CT",
           "code": "43075005",
-          "display": "Partial resection of colon"
+          "display": "Partial resection of colon (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_3",
@@ -1232,12 +1232,12 @@
         {
           "system": "SNOMED-CT",
           "code": "10888001",
-          "display": "Liquid diet"
+          "display": "Liquid diet (finding)"
         },
         {
           "system": "SNOMED-CT",
           "code": "103744005",
-          "display": "Administration of intravenous fluids"
+          "display": "Administration of intravenous fluids (procedure)"
         }
       ],
       "direct_transition": "Postoperative Care"
@@ -1326,7 +1326,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Diverting_Colostomy_Procedure"
@@ -1365,12 +1365,12 @@
         {
           "system": "SNOMED-CT",
           "code": "10888001",
-          "display": "Liquid diet"
+          "display": "Liquid diet (finding)"
         },
         {
           "system": "SNOMED-CT",
           "code": "103744005",
-          "display": "Administration of intravenous fluids"
+          "display": "Administration of intravenous fluids (procedure)"
         }
       ],
       "direct_transition": "Postoperative_Care"
@@ -1409,7 +1409,16 @@
       "type": "SetAttribute",
       "attribute": "cr_chemo_count",
       "value": 0,
-      "direct_transition": "Chemotherapy_Treatment_Path"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Chemotherapy_Treatment_Path",
+          "distribution": 0.99
+        }
+      ]
     },
     "Chemotherapy_Treatment_Path": {
       "type": "Simple",
@@ -1447,7 +1456,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_4"
@@ -1542,7 +1551,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185349003",
-          "display": "Encounter for check up"
+          "display": "Encounter for check up (procedure)"
         }
       ],
       "direct_transition": "End_Colorectal_Cancer_CarePlan"
@@ -2125,7 +2134,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -2144,7 +2153,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133899007,
+          "code": "133899007",
           "display": "Postoperative care (regime/therapy)"
         }
       ],
@@ -2164,9 +2173,15 @@
       "direct_transition": "Routine_Colonoscopy_Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 275978004,
+        "code": "275978004",
         "display": "Screening for malignant neoplasm of colon (procedure)"
       }
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Chemotherapy_Treatment_Path",
+      "value": true
     }
   },
   "gmf_version": 1

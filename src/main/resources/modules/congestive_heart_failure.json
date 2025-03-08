@@ -40,7 +40,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 88805009,
+          "code": "88805009",
           "display": "Chronic congestive heart failure (disorder)"
         }
       ],
@@ -53,8 +53,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Recorded Symptom 1"
@@ -64,8 +64,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735984001,
-          "display": "Heart failure self management plan"
+          "code": "735984001",
+          "display": "Heart failure self management plan (record artifact)"
         }
       ],
       "direct_transition": "Wrap up follow-up encounter",
@@ -73,12 +73,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183063000,
-          "display": "Low salt diet education"
+          "code": "183063000",
+          "display": "Low salt diet education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 183301007,
+          "code": "183301007",
           "display": "Physical exercises (regime/therapy)"
         }
       ]
@@ -183,8 +183,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for Problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Oxygen_Saturation",
@@ -194,14 +194,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "code": "399208008",
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -296,7 +296,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736353004,
+          "code": "736353004",
           "display": "Inpatient care plan (record artifact)"
         }
       ],
@@ -304,12 +304,12 @@
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 385715006,
+          "code": "385715006",
           "display": "Cardiac care (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 386619000,
+          "code": "386619000",
           "display": "Low sodium diet (finding)"
         }
       ],
@@ -408,26 +408,26 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 735984001,
-          "display": "Heart failure self management plan"
+          "code": "735984001",
+          "display": "Heart failure self management plan (record artifact)"
         }
       ],
       "reason": "chf",
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": 183063000,
-          "display": "Low salt diet education"
+          "code": "183063000",
+          "display": "Low salt diet education (procedure)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 183301007,
+          "code": "183301007",
           "display": "Physical exercises (regime/therapy)"
         },
         {
           "system": "SNOMED-CT",
-          "code": 225323000,
-          "display": "Smoking cessation education"
+          "code": "225323000",
+          "display": "Smoking cessation education (procedure)"
         }
       ],
       "direct_transition": "Wrap up follow-up encounter"
@@ -442,8 +442,8 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 735984001,
-                "display": "Heart failure self management plan"
+                "code": "735984001",
+                "display": "Heart failure self management plan (record artifact)"
               }
             ]
           }
@@ -670,8 +670,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 448337001,
-          "display": "Telemedicine consultation with patient"
+          "code": "448337001",
+          "display": "Telemedicine consultation with patient (procedure)"
         }
       ],
       "direct_transition": "Daily self-measurement",
@@ -815,7 +815,7 @@
       "direct_transition": "Recorded Symptom 2",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 60845006,
+        "code": "60845006",
         "display": "Dyspnea on exertion (finding)"
       }
     },
@@ -832,7 +832,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 267036007,
+        "code": "267036007",
         "display": "Dyspnea (finding)"
       },
       "direct_transition": "Recorded Symptom 3"
@@ -850,7 +850,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 59265000,
+        "code": "59265000",
         "display": "Paroxysmal dyspnea (finding)"
       },
       "direct_transition": "Recorded Symptom 4"
@@ -868,7 +868,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 62744007,
+        "code": "62744007",
         "display": "Orthopnea (finding)"
       },
       "direct_transition": "Recorded Symptom 5"
@@ -886,7 +886,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 267038008,
+        "code": "267038008",
         "display": "Edema (finding)"
       },
       "direct_transition": "Recorded Symptom 6"
@@ -938,8 +938,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Echocardiography"
@@ -1045,14 +1045,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 40701008,
+        "code": "40701008",
         "display": "Echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {
@@ -1186,7 +1186,7 @@
         {
           "system": "SNOMED-CT",
           "code": "430193006",
-          "display": "Medication Reconciliation (procedure)"
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "direct_transition": "Stop Ibuprofen"
@@ -1335,7 +1335,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305351004,
+          "code": "305351004",
           "display": "Admission to intensive care unit (procedure)"
         }
       ],
@@ -1348,7 +1348,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 308540004,
+          "code": "308540004",
           "display": "Inpatient stay (finding)"
         }
       ],
@@ -1494,7 +1494,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431182000,
+          "code": "431182000",
           "display": "Placing subject in prone position (procedure)"
         }
       ],
@@ -1505,7 +1505,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 27942005,
+          "code": "27942005",
           "display": "Shock (disorder)"
         }
       ],
@@ -1562,7 +1562,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 431182000,
+          "code": "431182000",
           "display": "Placing subject in prone position (procedure)"
         }
       ],
@@ -1573,8 +1573,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": "29303009",
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {
@@ -1603,7 +1603,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 76746007,
+          "code": "76746007",
           "display": "Cardiovascular stress testing (procedure)"
         }
       ],
@@ -1632,14 +1632,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 399208008,
-        "display": "Plain chest X-ray (procedure)"
+        "code": "399208008",
+        "display": "Plain X-ray of chest (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 51185008,
+            "code": "51185008",
             "display": "Thoracic structure (body structure)"
           },
           "modality": {
@@ -1665,14 +1665,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 40701008,
+        "code": "40701008",
         "display": "Echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {
@@ -1724,8 +1724,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 29303009,
-          "display": "Electrocardiographic procedure"
+          "code": "29303009",
+          "display": "Electrocardiographic procedure (procedure)"
         }
       ],
       "duration": {
@@ -1768,7 +1768,7 @@
         {
           "system": "SNOMED-CT",
           "code": "430193006",
-          "display": "Medication Reconciliation (procedure)"
+          "display": "Medication reconciliation (procedure)"
         }
       ],
       "direct_transition": "Inpatient_ECG"
@@ -1778,7 +1778,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 423475008,
+          "code": "423475008",
           "display": "Heart failure education (procedure)"
         }
       ],
@@ -1795,7 +1795,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 762998009,
+          "code": "762998009",
           "display": "Assessment using New York Heart Association Classification (procedure)"
         }
       ],
@@ -1829,7 +1829,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305336008,
+          "code": "305336008",
           "display": "Admission to hospice (procedure)"
         }
       ],

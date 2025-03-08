@@ -78,7 +78,7 @@
         {
           "system": "SNOMED-CT",
           "code": "200936003",
-          "display": "Lupus erythematosus"
+          "display": "Lupus erythematosus (disorder)"
         }
       ],
       "direct_transition": "Lupus_Diagnosis"
@@ -91,7 +91,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Lupus_Symptom1"
@@ -140,19 +140,19 @@
         {
           "system": "SNOMED-CT",
           "code": "408869004",
-          "display": "Musculoskeletal care"
+          "display": "Musculoskeletal care (regime/therapy)"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
           "code": "440381005",
-          "display": "Behavior to prevent sun exposure"
+          "display": "Behavior to prevent sun exposure (observable entity)"
         },
         {
           "system": "SNOMED-CT",
           "code": "226234005",
-          "display": "Healthy diet"
+          "display": "Healthy diet (finding)"
         }
       ],
       "direct_transition": "Lupus_Nonopioid_Pain_Medication"
@@ -259,7 +259,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Immune_Suppressant"
@@ -312,7 +312,16 @@
     "Anemia_Submodule": {
       "type": "CallSubmodule",
       "submodule": "anemia/anemia_sub",
-      "direct_transition": "Corticosteroid_Treatment"
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Corticosteroid_Treatment",
+          "distribution": 0.99
+        }
+      ]
     },
     "Check_Anemia_Exist": {
       "type": "Simple",
@@ -329,6 +338,12 @@
           "transition": "Corticosteroid_Treatment"
         }
       ]
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Corticosteroid_Treatment",
+      "value": true
     }
   },
   "gmf_version": 1

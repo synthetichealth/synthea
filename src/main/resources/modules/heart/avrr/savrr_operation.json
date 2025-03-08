@@ -17,7 +17,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 133900002,
+          "code": "133900002",
           "display": "Intraoperative care (regime/therapy)"
         }
       ],
@@ -39,7 +39,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 34896006,
+          "code": "34896006",
           "display": "Incision (procedure)"
         }
       ],
@@ -51,7 +51,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 42825003,
+          "code": "42825003",
           "display": "Cannulation (procedure)"
         }
       ],
@@ -67,7 +67,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 63697000,
+          "code": "63697000",
           "display": "Cardiopulmonary bypass operation (procedure)"
         }
       ],
@@ -83,7 +83,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301882004,
+          "code": "301882004",
           "display": "Placement of aortic cross clamp (procedure)"
         }
       ],
@@ -99,7 +99,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 8290005,
+          "code": "8290005",
           "display": "Induced cardioplegia (procedure)"
         }
       ],
@@ -128,7 +128,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 301884003,
+          "code": "301884003",
           "display": "Removal of aortic cross clamp (procedure)"
         }
       ],
@@ -144,7 +144,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 233553003,
+          "code": "233553003",
           "display": "Vascular cannula removal (procedure)"
         }
       ],
@@ -160,7 +160,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 392247006,
+          "code": "392247006",
           "display": "Insertion of catheter into artery (procedure)"
         }
       ],
@@ -192,7 +192,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705991002,
+        "code": "705991002",
         "display": "Mechanical cardiac valve prosthesis (physical object)"
       },
       "direct_transition": "AV Replacement Procedure",
@@ -202,7 +202,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 860577005,
+        "code": "860577005",
         "display": "Aortic valve bioprosthesis (physical object)"
       },
       "direct_transition": "AV Replacement Procedure",
@@ -212,7 +212,7 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 706449001,
+        "code": "706449001",
         "display": "Valve (physical object)"
       },
       "direct_transition": "AV Replacement Procedure"
@@ -222,7 +222,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 26212005,
+          "code": "26212005",
           "display": "Replacement of aortic valve (procedure)"
         }
       ],
@@ -242,7 +242,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1155885007,
+          "code": "1155885007",
           "display": "Repair of aortic valve (procedure)"
         }
       ],
@@ -261,7 +261,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 58828004,
+          "code": "58828004",
           "display": "Application of dressing, sterile (procedure)"
         }
       ],
@@ -273,7 +273,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 37729005,
+          "code": "37729005",
           "display": "Patient transfer, in-hospital (procedure)"
         }
       ],
@@ -302,7 +302,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1231000119100,
+          "code": "1231000119100",
           "display": "History of aortic valve replacement (situation)"
         }
       ],
@@ -314,7 +314,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 119481000119105,
+          "code": "119481000119105",
           "display": "History of aortic valve repair (situation)"
         }
       ],
@@ -325,14 +325,14 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 105376000,
+        "code": "105376000",
         "display": "Transesophageal echocardiography (procedure)"
       },
       "series": [
         {
           "body_site": {
             "system": "SNOMED-CT",
-            "code": 80891009,
+            "code": "80891009",
             "display": "Heart structure (body structure)"
           },
           "modality": {

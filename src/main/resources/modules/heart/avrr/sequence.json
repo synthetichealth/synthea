@@ -19,7 +19,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -30,7 +30,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 63332003,
+          "code": "63332003",
           "display": "History AND physical examination (procedure)"
         }
       ],
@@ -50,9 +50,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 452331000124102,
-          "display": "Review of imaging finding (procedure)",
-          "version": "http://snomed.info/sct/731000124108"
+          "code": "365853002",
+          "display": "Imaging finding (finding)"
         }
       ],
       "distribution": {
@@ -71,7 +70,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 183976008,
+          "code": "183976008",
           "display": "Operative procedure planned (situation)"
         }
       ],
@@ -108,7 +107,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 60234000,
+                "code": "60234000",
                 "display": "Aortic valve regurgitation (disorder)"
               }
             ]
@@ -141,7 +140,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 60573004,
+                    "code": "60573004",
                     "display": "Aortic valve stenosis (disorder)"
                   }
                 ]
@@ -175,7 +174,7 @@
                 "codes": [
                   {
                     "system": "SNOMED-CT",
-                    "code": 60573004,
+                    "code": "60573004",
                     "display": "Aortic valve stenosis (disorder)"
                   }
                 ]
@@ -218,7 +217,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 60234000,
+                "code": "60234000",
                 "display": "Aortic valve regurgitation (disorder)"
               }
             ]
@@ -259,7 +258,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 306185001,
+          "code": "306185001",
           "display": "Referral to cardiac surgery service (procedure)"
         }
       ],

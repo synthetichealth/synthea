@@ -50,7 +50,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 392021009,
+          "code": "392021009",
           "display": "Lumpectomy of breast (procedure)"
         }
       ],
@@ -86,7 +86,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 33195004,
+          "code": "33195004",
           "display": "External beam radiation therapy procedure (procedure)"
         }
       ],
@@ -106,7 +106,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 385798007,
+          "code": "385798007",
           "display": "Radiation therapy care (regime/therapy)"
         }
       ],
@@ -126,8 +126,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 108290001,
-          "display": "Radiation oncology AND/OR radiotherapy (procedure)"
+          "code": "1287742003",
+          "display": "Radiotherapy (procedure)"
         }
       ],
       "duration": {
@@ -177,7 +177,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 113120007,
+          "code": "113120007",
           "display": "Interstitial brachytherapy (procedure)"
         }
       ],
@@ -197,7 +197,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 384692006,
+          "code": "384692006",
           "display": "Intracavitary brachytherapy (procedure)"
         }
       ],
@@ -335,7 +335,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 396487001,
+          "code": "396487001",
           "display": "Sentinel lymph node biopsy (procedure)"
         }
       ],
@@ -352,7 +352,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 234262008,
+          "code": "234262008",
           "display": "Excision of axillary lymph node (procedure)"
         }
       ],
@@ -437,8 +437,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -500,8 +500,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -527,7 +527,7 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 258215001,
+              "code": "258215001",
               "display": "Stage 1 (qualifier value)"
             }
           },
@@ -551,7 +551,7 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 258228008,
+              "code": "258228008",
               "display": "Stage 4 (qualifier value)"
             }
           },
@@ -677,8 +677,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "complex_transition": [
@@ -704,7 +704,7 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 258215001,
+              "code": "258215001",
               "display": "Stage 1 (qualifier value)"
             }
           },
@@ -740,7 +740,7 @@
             "operator": "==",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 258228008,
+              "code": "258228008",
               "display": "Stage 4 (qualifier value)"
             }
           },
@@ -886,7 +886,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 43060002,
+          "code": "43060002",
           "display": "Intravenous injection (procedure)"
         }
       ],
@@ -907,7 +907,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 43060002,
+          "code": "43060002",
           "display": "Intravenous injection (procedure)"
         }
       ],
@@ -972,8 +972,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Advanced_drugs"
@@ -1038,8 +1038,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "conditional_transition": [
@@ -1072,7 +1072,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 443497002,
+          "code": "443497002",
           "display": "Excision of sentinel lymph node (procedure)"
         }
       ],

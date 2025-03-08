@@ -1,0 +1,125 @@
+{
+  "name": "trigger_bone_marrow_transplant",
+  "remarks": [
+    "The purpose of this module is to drive bone marrow and stem cell transplants.",
+    "",
+    "Multiple myeloma is a relatively uncommon cancer. In the United States, the lifetime risk of getting multiple myeloma is 1 in 132 (0.76%).",
+    "",
+    "https://www.cancer.org/cancer/types/multiple-myeloma/about/key-statistics.html",
+    "",
+    "Approximately 1.6 percent of men and women will be diagnosed with leukemia at some point during their lifetime, based on 2017–2019 data.",
+    "",
+    "https://seer.cancer.gov/statfacts/html/leuks.html",
+    ""
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Delay"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    },
+    "Multiple Myeloma": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "109989006",
+          "display": "Multiple myeloma (disorder)"
+        }
+      ],
+      "direct_transition": "Admission",
+      "assign_to_attribute": "trigger_reason",
+      "target_encounter": "Admission"
+    },
+    "Check Multiple Myeloma": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Multiple Myeloma",
+          "distribution": 0.0076
+        },
+        {
+          "transition": "Check Leukemia",
+          "distribution": 0.9924
+        }
+      ]
+    },
+    "Check Leukemia": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Leukemia",
+          "distribution": 0.016
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.984
+        }
+      ]
+    },
+    "Leukemia": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "93143009",
+          "display": "Leukemia, disease (disorder)"
+        }
+      ],
+      "direct_transition": "Admission",
+      "assign_to_attribute": "trigger_reason",
+      "target_encounter": "Admission"
+    },
+    "Admission": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "trigger_reason",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308251003",
+          "display": "Admission to clinical oncology department (procedure)"
+        }
+      ],
+      "direct_transition": "Stem Cells"
+    },
+    "Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 70,
+          "low": 65
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Check Multiple Myeloma"
+    },
+    "Stem Cells": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Care",
+      "value": true
+    },
+    "Care": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 5,
+          "low": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Discharge"
+    },
+    "Discharge": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

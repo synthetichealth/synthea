@@ -237,7 +237,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185345009",
-          "display": "Encounter for symptom"
+          "display": "Encounter for symptom (procedure)"
         }
       ],
       "conditional_transition": [

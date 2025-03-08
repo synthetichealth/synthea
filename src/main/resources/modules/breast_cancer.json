@@ -297,7 +297,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254837009,
+          "code": "254837009",
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
@@ -310,7 +310,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 241055006,
+          "code": "241055006",
           "display": "Mammogram - symptomatic (procedure)"
         }
       ],
@@ -342,7 +342,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 1571000087109,
+          "code": "1571000087109",
           "display": "Ultrasonography of bilateral breasts (procedure)"
         }
       ],
@@ -364,7 +364,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185345009,
+          "code": "185345009",
           "display": "Encounter for symptom (procedure)"
         }
       ],
@@ -376,7 +376,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 241615005,
+          "code": "241615005",
           "display": "Magnetic resonance imaging of breast (procedure)"
         }
       ],
@@ -442,7 +442,7 @@
       "direct_transition": "End the Initial Encounter",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 258228008,
+        "code": "258228008",
         "display": "Stage 4 (qualifier value)"
       }
     },
@@ -537,7 +537,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 258224005,
+        "code": "258224005",
         "display": "Stage 3 (qualifier value)"
       },
       "direct_transition": "End the Initial Encounter"
@@ -555,7 +555,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 258215001,
+        "code": "258215001",
         "display": "Stage 1 (qualifier value)"
       },
       "direct_transition": "End the Initial Encounter"
@@ -591,8 +591,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261638004,
-        "display": "Stage 3A (qualifier value)"
+        "code": "1222802001",
+        "display": "American Joint Committee on Cancer stage IIIA (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -841,7 +841,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 258219007,
+        "code": "258219007",
         "display": "Stage 2 (qualifier value)"
       },
       "direct_transition": "End the Initial Encounter"
@@ -962,7 +962,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 71651007,
+          "code": "71651007",
           "display": "Mammography (procedure)"
         }
       ],
@@ -987,7 +987,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 410410006,
+          "code": "410410006",
           "display": "Screening surveillance (regime/therapy)"
         }
       ],
@@ -1064,7 +1064,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 310061009,
+          "code": "310061009",
           "display": "Gynecology service (qualifier value)"
         }
       ],
@@ -1152,7 +1152,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 35025007,
+          "code": "35025007",
           "display": "Manual pelvic examination (procedure)"
         }
       ],
@@ -1174,7 +1174,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 90226004,
+          "code": "90226004",
           "display": "Cytopathology procedure, preparation of smear, genital source (procedure)"
         }
       ],
@@ -1198,7 +1198,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 312681000,
+          "code": "312681000",
           "display": "Bone density scan (procedure)"
         }
       ],
@@ -1221,7 +1221,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185389009,
+          "code": "185389009",
           "display": "Follow-up visit (procedure)"
         }
       ],
@@ -1285,7 +1285,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 439740005,
+          "code": "439740005",
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
@@ -1313,7 +1313,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 86013001,
+          "code": "86013001",
           "display": "Periodic reevaluation and management of healthy individual (procedure)"
         }
       ],
@@ -1325,7 +1325,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 254837009,
+          "code": "254837009",
           "display": "Malignant neoplasm of breast (disorder)"
         }
       ],
@@ -1337,7 +1337,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 122548005,
+          "code": "122548005",
           "display": "Biopsy of breast (procedure)"
         }
       ],
@@ -1388,7 +1388,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223484005,
+          "code": "223484005",
           "display": "Discussion about treatment (procedure)"
         }
       ],
@@ -1507,7 +1507,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 445528004,
+        "code": "445528004",
         "display": "Treatment changed (situation)"
       }
     },
@@ -1522,8 +1522,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs",
@@ -1709,15 +1709,24 @@
     "Set pre-surgery chemo counter": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_neoCount",
-      "direct_transition": "Neoadjuvant Chemo Before Surgery",
-      "value": 0
+      "value": 0,
+      "distributed_transition": [
+        {
+          "transition": "Stem Cell Treatment",
+          "distribution": 0.01
+        },
+        {
+          "transition": "Neoadjuvant Chemo Before Surgery",
+          "distribution": 0.99
+        }
+      ]
     },
     "Neoadjuvant chemotherapy procedure": {
       "type": "Procedure",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 367336001,
+          "code": "367336001",
           "display": "Chemotherapy (procedure)"
         }
       ],
@@ -1759,8 +1768,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Chemotherapy Drugs"
@@ -1786,7 +1795,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 24623002,
+          "code": "24623002",
           "display": "Screening mammography (procedure)"
         }
       ],
@@ -1944,7 +1953,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
+        "code": "385633008",
         "display": "Improving (qualifier value)"
       }
     },
@@ -1964,7 +1973,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
+        "code": "385633008",
         "display": "Improving (qualifier value)"
       },
       "direct_transition": "Post-Treatment Surveillance"
@@ -1985,7 +1994,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 230993007,
+        "code": "230993007",
         "display": "Worsening (qualifier value)"
       },
       "direct_transition": "Post-Treatment Surveillance"
@@ -2025,7 +2034,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 230993007,
+        "code": "230993007",
         "display": "Worsening (qualifier value)"
       },
       "direct_transition": "4 Months between Initial Follow-Ups"
@@ -2046,7 +2055,7 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 385633008,
+        "code": "385633008",
         "display": "Improving (qualifier value)"
       },
       "direct_transition": "4 Months between Initial Follow-Ups"
@@ -2132,7 +2141,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 223487003,
+          "code": "223487003",
           "display": "Discussion about options (procedure)"
         }
       ],
@@ -2152,7 +2161,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 25656009,
+          "code": "25656009",
           "display": "Physical examination, complete (procedure)"
         }
       ],
@@ -2173,9 +2182,15 @@
       "direct_transition": "Regular Mammogram Visit",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 268547008,
+        "code": "268547008",
         "display": "Screening for malignant neoplasm of breast (procedure)"
       }
+    },
+    "Stem Cell Treatment": {
+      "type": "SetAttribute",
+      "attribute": "bone_marrow",
+      "direct_transition": "Neoadjuvant Chemo Before Surgery",
+      "value": true
     }
   },
   "gmf_version": 1

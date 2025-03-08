@@ -30,7 +30,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -116,7 +116,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -390,7 +390,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185317003,
+          "code": "185317003",
           "display": "Telephone encounter (procedure)"
         }
       ],
@@ -413,7 +413,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67879005,
+          "code": "67879005",
           "display": "History and physical examination, limited (procedure)"
         }
       ],
@@ -445,7 +445,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 9564003,
+          "code": "9564003",
           "display": "Complete blood count with white cell differential, automated (procedure)"
         }
       ],
@@ -478,7 +478,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 67879005,
+          "code": "67879005",
           "display": "History and physical examination, limited (procedure)"
         }
       ],
@@ -520,7 +520,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 9564003,
+          "code": "9564003",
           "display": "Complete blood count with white cell differential, automated (procedure)"
         }
       ],
@@ -711,7 +711,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 373786007,
+          "code": "373786007",
           "display": "Reasons for treatment delay (finding)"
         }
       ],

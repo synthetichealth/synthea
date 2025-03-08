@@ -18,7 +18,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 63332003,
+          "code": "63332003",
           "display": "History AND physical examination (procedure)"
         }
       ],
@@ -38,7 +38,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 15220000,
+          "code": "15220000",
           "display": "Laboratory test (procedure)"
         }
       ],
@@ -1234,7 +1234,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 86406008,
+                "code": "86406008",
                 "display": "Human immunodeficiency virus infection (disorder)"
               }
             ]
@@ -1246,7 +1246,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 62479008,
+                "code": "62479008",
                 "display": "Acquired immune deficiency syndrome (disorder)"
               }
             ]
@@ -1273,7 +1273,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 271737000,
+          "code": "271737000",
           "display": "Anemia (disorder)"
         }
       ],
@@ -1320,7 +1320,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 7766007,
+            "code": "7766007",
             "display": "Cloudy urine (finding)"
           }
         },
@@ -1336,7 +1336,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167248002,
+            "code": "167248002",
             "display": "Urine smell ammoniacal (finding)"
           }
         },
@@ -1352,7 +1352,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 300828005,
+            "code": "300828005",
             "display": "Translucent (qualifier value)"
           }
         },
@@ -1368,7 +1368,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 371254008,
+            "code": "371254008",
             "display": "Brown color (qualifier value)"
           }
         },
@@ -1399,7 +1399,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167265006,
+            "code": "167265006",
             "display": "Urine glucose test = ++ (finding)"
           }
         },
@@ -1430,7 +1430,7 @@
           "unit": "{nominal}",
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 275778006,
+            "code": "275778006",
             "display": "Finding of bilirubin in urine (finding)"
           }
         },
@@ -1461,7 +1461,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167290008,
+            "code": "167290008",
             "display": "Urine ketone test = ++ (finding)"
           }
         },
@@ -1522,7 +1522,7 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167276005,
+            "code": "167276005",
             "display": "Urine protein test = ++ (finding)"
           }
         },
@@ -1538,8 +1538,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 314138001,
-            "display": "Urine nitrite negative (finding)"
+            "code": "314138001",
+            "display": "Nitrite not detected in urine (finding)"
           }
         },
         {
@@ -1554,8 +1554,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 167297006,
-            "display": "Urine blood test = negative (finding)"
+            "code": "167297006",
+            "display": "Blood not detected in urine (finding)"
           }
         },
         {
@@ -1570,8 +1570,8 @@
           ],
           "value_code": {
             "system": "SNOMED-CT",
-            "code": 394717006,
-            "display": "Urine leukocyte test negative (finding)"
+            "code": "394717006",
+            "display": "Urine leukocytes not detected (finding)"
           }
         }
       ],
@@ -1655,7 +1655,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 167252002,
+          "code": "167252002",
           "display": "Urine pregnancy test (procedure)"
         }
       ],
@@ -1675,7 +1675,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 412809002,
+          "code": "412809002",
           "display": "Viral hepatitis screening test (procedure)"
         }
       ],
@@ -1695,7 +1695,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171122006,
+          "code": "171122006",
           "display": "Hepatitis B screening (procedure)"
         }
       ],
@@ -1725,7 +1725,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 61977001,
+          "code": "61977001",
           "display": "Chronic type B viral hepatitis (disorder)"
         }
       ],
@@ -1736,7 +1736,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 413107006,
+          "code": "413107006",
           "display": "Hepatitis C screening (procedure)"
         }
       ],
@@ -1766,7 +1766,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 128302006,
+          "code": "128302006",
           "display": "Chronic hepatitis C (disorder)"
         }
       ],
@@ -1777,8 +1777,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 313613002,
-          "display": "Hepatitis A antibody test (procedure)"
+          "code": "313398001",
+          "display": "Hepatitis antibody test (procedure)"
         }
       ],
       "distribution": {
@@ -1797,7 +1797,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171126009,
+          "code": "171126009",
           "display": "Tuberculosis screening (procedure)"
         }
       ],
@@ -1817,7 +1817,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 171128005,
+          "code": "171128005",
           "display": "Venereal disease screening (procedure)"
         }
       ],
@@ -1837,7 +1837,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 104308009,
+          "code": "104308009",
           "display": "Serologic test for Toxoplasma gondii (procedure)"
         }
       ],
@@ -1875,8 +1875,8 @@
       "direct_transition": "TG+ Condition",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 428915008,
-        "display": "Toxoplasma gondii antibody positive (finding)"
+        "code": "428915008",
+        "display": "Toxoplasma gondii antibody detected (finding)"
       }
     },
     "Toxoplasma Positive": {
@@ -1891,8 +1891,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 428915008,
-          "display": "Toxoplasma gondii antibody positive (finding)"
+          "code": "428915008",
+          "display": "Toxoplasma gondii antibody detected (finding)"
         }
       ],
       "direct_transition": "Viral Load Check"
@@ -1925,7 +1925,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 446987006,
+          "code": "446987006",
           "display": "Determination of susceptibility of Human immunodeficiency virus 1 to panel of antiretroviral drugs using genotypic technique (procedure)"
         }
       ],
@@ -1970,7 +1970,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 225297008,
+          "code": "225297008",
           "display": "Care planning and problem solving actions (procedure)"
         }
       ],
@@ -1990,7 +1990,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711069006,
+          "code": "711069006",
           "display": "Coordination of care plan (procedure)"
         }
       ],
@@ -2010,7 +2010,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 736376001,
+          "code": "736376001",
           "display": "Infectious disease care plan (record artifact)"
         }
       ],
@@ -2058,7 +2058,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 711018006,
+          "code": "711018006",
           "display": "Assessment of social support (procedure)"
         }
       ],
@@ -2078,7 +2078,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 709506004,
+          "code": "709506004",
           "display": "Assessment of readiness for disclosure of health status (procedure)"
         }
       ],
@@ -2098,7 +2098,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 733863009,
+          "code": "733863009",
           "display": "Assessment of readiness for self-management (procedure)"
         }
       ],

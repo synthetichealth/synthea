@@ -64,8 +64,7 @@
         "duration": {
           "quantity": 1,
           "unit": "days"
-        },
-        "instructions": []
+        }
       },
       "direct_transition": "Absolute_Neutrophil_Count_ANC"
     },
@@ -97,7 +96,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 409089005,
+          "code": "409089005",
           "display": "Febrile neutropenia (disorder)"
         }
       ],
@@ -110,8 +109,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 47318007,
-          "display": "Neutropenia (disorder)"
+          "code": "47318007",
+          "display": "Drug-induced neutropenia (disorder)"
         }
       ],
       "direct_transition": "Transfer_to_Stepdown"
@@ -123,7 +122,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 5758002,
+          "code": "5758002",
           "display": "Bacteremia (finding)"
         }
       ],
@@ -220,8 +219,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91861009,
-          "display": "Acute myeloid leukemia, disease (disorder)"
+          "code": "91861009",
+          "display": "Acute myeloid leukemia (disorder)"
         }
       ]
     },
@@ -316,7 +315,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 367336001,
+          "code": "367336001",
           "display": "Chemotherapy (procedure)"
         }
       ],
@@ -333,7 +332,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 305351004,
+          "code": "305351004",
           "display": "Admission to intensive care unit (procedure)"
         }
       ],
@@ -349,7 +348,7 @@
             "codes": [
               {
                 "system": "SNOMED-CT",
-                "code": 5758002,
+                "code": "5758002",
                 "display": "Bacteremia (finding)"
               }
             ]
@@ -387,7 +386,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
+          "code": "185347001",
           "display": "Encounter for problem (procedure)"
         }
       ],
@@ -398,7 +397,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 16983000,
+          "code": "16983000",
           "display": "Death in hospital (event)"
         }
       ],
@@ -447,8 +446,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 449214001,
-          "display": "Transfer to stepdown"
+          "code": "449214001",
+          "display": "Transfer to stepdown unit (procedure)"
         }
       ],
       "duration": {
@@ -707,8 +706,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 91861009,
-          "display": "Acute myeloid leukemia, disease (disorder)"
+          "code": "91861009",
+          "display": "Acute myeloid leukemia (disorder)"
         }
       ],
       "direct_transition": "Chemotherapy_Inpatient_Encounter"

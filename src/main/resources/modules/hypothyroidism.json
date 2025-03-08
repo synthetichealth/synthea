@@ -73,8 +73,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 83664006,
-          "display": "Idiopathic atrophic hypothyroidism"
+          "code": "83664006",
+          "display": "Idiopathic atrophic hypothyroidism (disorder)"
         }
       ],
       "direct_transition": "Hypothyroidism Encounter Workup"
@@ -86,8 +86,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for Problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "fT4 panel results"
@@ -127,8 +127,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for Problem"
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "direct_transition": "Synthroid Medication Order"

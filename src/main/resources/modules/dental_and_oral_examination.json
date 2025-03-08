@@ -1,0 +1,1089 @@
+{
+  "name": "Dental and Oral Examination",
+  "remarks": [
+    "Medicare policy allows for payment for inpatient hospital services in connection with the provision of dental services if the individual, because of the individual’s underlying medical condition and clinical status or because of the severity of the dental procedure, requires hospitalization in connection with the provision of such services.",
+    "",
+    "Services could include dental and oral examinations as well as medically necessary diagnostic and treatment services to eliminate an oral or dental infection, including, but not limited to the administration of anesthesia, diagnostic x-rays, use of operating room, and other related, otherwise covered procedures.",
+    "",
+    "It is estimated that 13% of adults seek dental care for dental infection or toothache within four years (or about 3.25% per year). https://www.ncbi.nlm.nih.gov/books/NBK542165/",
+    "",
+    "Nearly half of adults over 30, and nearly 70% of adults over 65, have gingivitis.  https://www.cdc.gov/oralhealth/conditions/periodontal-disease.html",
+    "",
+    "The percentage of adults with untreated dental caries (i.e., cavities) ranges from 20-25% depending on age group. https://www.cdc.gov/nchs/fastats/dental.htm"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Pause for Override"
+    },
+    "Dental surgical procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "81733005",
+          "display": "Dental surgical procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dental Anesthesia",
+      "reason": "Infection of tooth"
+    },
+    "Infection of tooth": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "427898007",
+          "display": "Infection of tooth (disorder)"
+        }
+      ],
+      "direct_transition": "Operating room"
+    },
+    "Dental Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "277183007",
+            "display": "Dental equipment (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "1230220004",
+            "display": "Conventional release periodontal gel (dose form)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "469020004",
+            "display": "Dental floss (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Cleaning"
+    },
+    "Fluoride": {
+      "type": "MedicationOrder",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": 1535362,
+          "display": "sodium fluoride 0.0272 MG/MG Oral Gel"
+        }
+      ],
+      "administration": true,
+      "direct_transition": "Dental fluoride treatment",
+      "reason": "dental_referral"
+    },
+    "Dental care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225362009",
+          "display": "Dental care (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dental Supplies",
+      "reason": "dental_referral"
+    },
+    "Dental consultation and report": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "34043003",
+          "display": "Dental consultation and report (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dental care",
+      "reason": "dental_referral"
+    },
+    "Dental X-ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241046008",
+        "display": "Dental plain X-ray bitewing (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "700016008",
+            "display": "Structure of region of internal part of mouth (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Digital Intra-Oral X-Ray Image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.3",
+                "display": "Digital Intra-Oral X-Ray Image Storage - For Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Finish Dental x-ray system"
+    },
+    "Oral health education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "243085009",
+          "display": "Oral health education (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 15,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "conditional_transition": [
+        {
+          "transition": "Orthodontic appliance care education",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "orthodontic_appliance",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "End Primary Dental Visit"
+        }
+      ],
+      "reason": "dental_referral"
+    },
+    "Orthodontic appliance care education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "243092004",
+          "display": "Orthodontic appliance care education (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 15,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Primary Dental Visit"
+    },
+    "Extraction of tooth": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "173291009",
+          "display": "Simple extraction of tooth (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Infection",
+      "reason": "Infection of tooth"
+    },
+    "Dental fluoride treatment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "68071007",
+          "display": "Dental fluoride treatment (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Oral health education",
+      "reason": "dental_referral"
+    },
+    "Dental Anesthesia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "3802001",
+          "display": "Dental application of desensitizing medicament (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Extraction of tooth",
+      "reason": "Infection of tooth"
+    },
+    "Cleaning": {
+      "type": "Simple",
+      "direct_transition": "Supragingival Cleaning"
+    },
+    "Supragingival Cleaning": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1260009003",
+          "display": "Removal of supragingival plaque and calculus from all teeth using dental instrument (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Subgingival Cleaning",
+      "reason": "dental_referral"
+    },
+    "Infection?": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tooth_infection",
+            "operator": "==",
+            "value": true
+          },
+          "distributions": [],
+          "transition": "Infection of tooth"
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Infection of tooth",
+              "distribution": 0.0325
+            },
+            {
+              "transition": "Gingivitis?",
+              "distribution": 0.9675
+            }
+          ]
+        }
+      ]
+    },
+    "Subgingival Cleaning": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1260010008",
+          "display": "Removal of subgingival plaque and calculus from all teeth using dental instrument (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "X-Ray?",
+      "reason": "dental_referral"
+    },
+    "X-Ray?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Dental x-ray system",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Infection?",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "End Infection": {
+      "type": "ConditionEnd",
+      "direct_transition": "End Infection Attribute",
+      "condition_onset": "Infection of tooth"
+    },
+    "Postoperative care for dental procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 456191000124101,
+          "display": "Postoperative care for dental procedure (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "Infection of tooth",
+      "conditional_transition": [
+        {
+          "transition": "Initialize Missing Teeth",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "missing_teeth",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Increase Missing Teeth"
+        }
+      ]
+    },
+    "Administer Fluoride?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Fluoride",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Oral health education",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Operating room": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "225738002",
+        "display": "Operating room (environment)"
+      },
+      "direct_transition": "Dental surgical procedure"
+    },
+    "Exit Operating room": {
+      "type": "DeviceEnd",
+      "direct_transition": "Postoperative care for dental procedure",
+      "device": "Operating room"
+    },
+    "Require Filling?": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "New or Repair?",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Administer Fluoride?",
+          "distribution": 0.8
+        }
+      ]
+    },
+    "Filling Reason": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Dental filling lost",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Loose dental filling",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Leaking dental filling",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Fractured dental filling",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "Restoration of tooth with coverage of all cusps using dental filling material": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1256042007",
+          "display": "Restoration of tooth with coverage of all cusps using dental filling material (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Filling Reason",
+      "reason": "dental_filling_reason"
+    },
+    "Application of composite dental filling material to dentin of tooth following fracture of tooth": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1259293006",
+          "display": "Application of composite dental filling material to dentin of tooth following fracture of tooth (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Filling Reason",
+      "reason": "dental_filling_reason"
+    },
+    "End Filling Reason": {
+      "type": "ConditionEnd",
+      "direct_transition": "Administer Fluoride?",
+      "referenced_by_attribute": "dental_filling_reason"
+    },
+    "Dental filling lost": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "278558000",
+          "display": "Dental filling lost (finding)"
+        }
+      ],
+      "direct_transition": "Perform Repair",
+      "assign_to_attribute": "dental_filling_reason"
+    },
+    "Loose dental filling": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "278602001",
+          "display": "Loose dental filling (finding)"
+        }
+      ],
+      "assign_to_attribute": "dental_filling_reason",
+      "direct_transition": "Perform Repair"
+    },
+    "Leaking dental filling": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "278598003",
+          "display": "Leaking dental filling (finding)"
+        }
+      ],
+      "assign_to_attribute": "dental_filling_reason",
+      "direct_transition": "Perform Repair"
+    },
+    "Fractured dental filling": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "278588009",
+          "display": "Fractured dental filling (finding)"
+        }
+      ],
+      "assign_to_attribute": "dental_filling_reason",
+      "direct_transition": "Perform Repair"
+    },
+    "End Infection Attribute": {
+      "type": "SetAttribute",
+      "attribute": "tooth_infection",
+      "direct_transition": "Exit Operating room",
+      "value": false
+    },
+    "Dental x-ray system": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "706298007",
+        "display": "Dental x-ray system (physical object)"
+      },
+      "direct_transition": "Dental X-ray"
+    },
+    "Finish Dental x-ray system": {
+      "type": "DeviceEnd",
+      "direct_transition": "Infection?",
+      "device": "Dental x-ray system"
+    },
+    "Follow-up?": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Extraction of tooth",
+            "since": "Dental Encounter"
+          },
+          "distributions": [
+            {
+              "transition": "Dry Socket Delay",
+              "distribution": 0.2
+            },
+            {
+              "transition": "Reset Dental Referral",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "Reset Dental Referral"
+        }
+      ]
+    },
+    "Dry Socket Delay": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 3,
+          "standardDeviation": 1
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Dry_Tooth_Socket"
+    },
+    "Tooth socket procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "284053004",
+          "display": "Tooth socket procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Dry Tooth Socket",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "Operating_room": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "225738002",
+        "display": "Operating room (environment)"
+      },
+      "direct_transition": "Dental_surgical_procedure"
+    },
+    "Dental_surgical_procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "81733005",
+          "display": "Dental surgical procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Tooth socket procedure",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "Exit_Operating_room": {
+      "type": "DeviceEnd",
+      "device": "Operating room",
+      "direct_transition": "Postoperative_care_for_dental_procedure"
+    },
+    "Postoperative_care_for_dental_procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 456191000124101,
+          "display": "Postoperative care for dental procedure (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Oral_health_education",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "End Dry Tooth Socket": {
+      "type": "ConditionEnd",
+      "direct_transition": "Exit_Operating_room",
+      "condition_onset": "Dry_Tooth_Socket"
+    },
+    "Oral_health_education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "243085009",
+          "display": "Oral health education (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 15,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Follow-up",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "Dry_Tooth_Socket": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "61804006",
+          "display": "Alveolitis of jaw (disorder)"
+        }
+      ],
+      "direct_transition": "Follow-up for Dry Tooth Socket",
+      "target_encounter": "Follow-up for Dry Tooth Socket"
+    },
+    "Follow-up for Dry Tooth Socket": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439740005",
+          "display": "Postoperative follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Dental_consultation_and_report",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "Dental_consultation_and_report": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "34043003",
+          "display": "Dental consultation and report (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Operating_room",
+      "reason": "Dry_Tooth_Socket"
+    },
+    "End Follow-up": {
+      "type": "EncounterEnd",
+      "direct_transition": "Reset Dental Referral"
+    },
+    "End Primary Dental Visit": {
+      "type": "EncounterEnd",
+      "direct_transition": "Follow-up?"
+    },
+    "Wait for Dental Referral": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "dental_referral",
+        "operator": "is not nil"
+      },
+      "direct_transition": "Dental Encounter"
+    },
+    "Reset Dental Referral": {
+      "type": "SetAttribute",
+      "attribute": "dental_referral",
+      "direct_transition": "Wait for Dental Referral",
+      "value": null
+    },
+    "New or Repair?": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "New Cavity"
+          },
+          "distributions": [
+            {
+              "transition": "New Cavity",
+              "distribution": 0.5
+            },
+            {
+              "transition": "Filling Reason",
+              "distribution": 0.5
+            }
+          ]
+        },
+        {
+          "distributions": [],
+          "transition": "New Cavity"
+        }
+      ]
+    },
+    "Perform Repair": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Restoration of tooth with coverage of all cusps using dental filling material",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Application of composite dental filling material to dentin of tooth following fracture of tooth",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "New Cavity": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "109570002",
+          "display": "Primary dental caries (disorder)"
+        }
+      ],
+      "assign_to_attribute": "dental_filling_reason",
+      "direct_transition": "Perform Repair"
+    },
+    "Dental Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "dental_referral",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Dental consultation and report"
+    },
+    "Gingivitis?": {
+      "type": "Simple",
+      "direct_transition": "Examination of gingivae"
+    },
+    "Gingival disease": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "18718003",
+          "display": "Gingival disease (disorder)"
+        }
+      ],
+      "direct_transition": "Operating_room_2"
+    },
+    "Examination of gingivae": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "274788003",
+          "display": "Examination of gingivae (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "dental_referral",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "66383009",
+                "display": "Gingivitis (disorder)"
+              }
+            ]
+          },
+          "distributions": [
+            {
+              "distribution": 0.2,
+              "transition": "Gingival disease"
+            },
+            {
+              "transition": "End Gingivitis from Wellness",
+              "distribution": 0.8
+            }
+          ]
+        },
+        {
+          "distributions": [
+            {
+              "transition": "Gingival disease",
+              "distribution": 0.09
+            },
+            {
+              "transition": "End Gingivitis from Wellness",
+              "distribution": 0.91
+            }
+          ]
+        }
+      ]
+    },
+    "Operating_room_2": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "225738002",
+        "display": "Operating room (environment)"
+      },
+      "direct_transition": "Dental_surgical_procedure_2"
+    },
+    "Dental_surgical_procedure_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "81733005",
+          "display": "Dental surgical procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "reason": "Gingival disease",
+      "direct_transition": "Dental_Anesthesia"
+    },
+    "Dental_Anesthesia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "3802001",
+          "display": "Dental application of desensitizing medicament (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "Gingival disease",
+      "direct_transition": "Gingivectomy or gingivoplasty"
+    },
+    "Exit_Operating_room_2": {
+      "type": "DeviceEnd",
+      "device": "Operating room",
+      "direct_transition": "Postoperative_care_for_dental_procedure_2"
+    },
+    "Postoperative_care_for_dental_procedure_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 456191000124101,
+          "display": "Postoperative care for dental procedure (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Gingivitis from Wellness",
+      "reason": "Gingival disease"
+    },
+    "End Gingival Disease": {
+      "type": "ConditionEnd",
+      "condition_onset": "Gingival disease",
+      "direct_transition": "Exit_Operating_room_2"
+    },
+    "Gingivectomy or gingivoplasty": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 64544008,
+          "display": "Gingivectomy or gingivoplasty, per tooth (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 45,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "Gingival disease",
+      "direct_transition": "End Gingival Disease"
+    },
+    "End Gingivitis from Wellness": {
+      "type": "ConditionEnd",
+      "direct_transition": "Require Filling?",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "66383009",
+          "display": "Gingivitis (disorder)"
+        }
+      ]
+    },
+    "Initialize Missing Teeth": {
+      "type": "SetAttribute",
+      "attribute": "missing_teeth",
+      "direct_transition": "Increase Missing Teeth",
+      "value": 0
+    },
+    "Increase Missing Teeth": {
+      "type": "Counter",
+      "attribute": "missing_teeth",
+      "action": "increment",
+      "direct_transition": "Gingivitis?"
+    },
+    "Pause for Override": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 1
+        }
+      },
+      "unit": "months",
+      "direct_transition": "Check for Override"
+    },
+    "Check for Override": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "dental_module_override",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Dental Referral"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

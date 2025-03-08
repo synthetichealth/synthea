@@ -1,0 +1,719 @@
+{
+  "name": "Dentures",
+  "remarks": [
+    "This model may be triggered based upon the number of 'missing_teeth' a person has. Missing teeth are set in the 'dental_and_oral_examination' module.",
+    "",
+    "A number of \"comorbid\" conditions are included, because the related surgeries to address these conditions are not covered by Medicare reimbursement in 2023 when it is related the are related to dentures: frenectomy (effects 5% of population), ridge reconstruction, palate bone growth (effects 30% of the population), and mandible bone growth (effects 2.7% of the population).",
+    "",
+    "Dentures last 7-10 years before replacement.",
+    "",
+    "References:",
+    "- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1949218/",
+    "- https://my.clevelandclinic.org/health/articles/10900-dentures",
+    "- https://my.clevelandclinic.org/health/diseases/24829-torus-palatinus",
+    "- https://my.clevelandclinic.org/health/diseases/24830-mandibular-tori",
+    "- https://www.centerfordentalreconstruction.com/oral-surgery-services/bone-grafting/ridge-augmentation",
+    "- https://www.cms.gov/Regulations-and-Guidance/Guidance/Manuals/Downloads/bp102c15.pdf"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait for Missing Teeth"
+    },
+    "Wait for Missing Teeth": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "missing_teeth",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "missing_teeth",
+            "operator": ">=",
+            "value": 2
+          }
+        ]
+      },
+      "direct_transition": "Check A"
+    },
+    "Initial Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Loss of teeth",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Dental_consultation_and_report"
+    },
+    "Dental_consultation_and_report": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "34043003",
+          "display": "Dental consultation and report (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 30,
+          "standardDeviation": 10
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "Dental_x_ray_system",
+      "reason": "Loss of teeth"
+    },
+    "Dental_x_ray_system": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "706298007",
+        "display": "Dental x-ray system (physical object)"
+      },
+      "direct_transition": "Dental_X_ray"
+    },
+    "Dental_X_ray": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241046008",
+        "display": "Dental plain X-ray bitewing (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "700016008",
+            "display": "Structure of region of internal part of mouth (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Digital Intra-Oral X-Ray Image",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.3",
+                "display": "Digital Intra-Oral X-Ray Image Storage - For Presentation"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Finish_Dental_x_ray_system"
+    },
+    "Finish_Dental_x_ray_system": {
+      "type": "DeviceEnd",
+      "device": "Dental x-ray system",
+      "direct_transition": "Dental Impression Supplies"
+    },
+    "Dental Impression Supplies": {
+      "type": "SupplyList",
+      "supplies": [
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "706390002",
+            "display": "Dental impression material (physical object)"
+          }
+        },
+        {
+          "quantity": 1,
+          "code": {
+            "system": "SNOMED-CT",
+            "code": "468277001",
+            "display": "Dental impression tray material (physical object)"
+          }
+        }
+      ],
+      "direct_transition": "Dental Impression"
+    },
+    "Dental Impression": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "234745004",
+          "display": "Take oral or dental impression (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "234754001",
+          "display": "Take impression for orthodontic appliance (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Initial Encounter",
+      "reason": "Loss of teeth"
+    },
+    "End Initial Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Check for Related Surgeries"
+    },
+    "Check for Related Surgeries": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Wait for Surgery",
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "PriorState",
+                  "name": "Wait for Surgery"
+                }
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Needs Frenectomy"
+                      },
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Needs Torus Palatinus Removed"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Needs Torus Mandibularis Removed"
+                      },
+                      {
+                        "condition_type": "PriorState",
+                        "name": "Needs Ridge Reconstruction"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "transition": "No Surgery"
+        }
+      ]
+    },
+    "No Surgery": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 4,
+          "low": 2
+        }
+      },
+      "unit": "weeks",
+      "direct_transition": "Fitting Encounter"
+    },
+    "Fitting Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Loss of teeth",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "conditional_transition": [
+        {
+          "transition": "End Previous Dentures",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Dentures"
+          }
+        },
+        {
+          "transition": "Dentures"
+        }
+      ]
+    },
+    "Dentures": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "8060009",
+        "display": "Denture, device (physical object)"
+      },
+      "direct_transition": "Fitting of dentures",
+      "assign_to_attribute": "dentures"
+    },
+    "Fitting of dentures": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1269321004",
+          "display": "Fitting of denture (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 15
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Fitting",
+      "reason": "Loss of teeth"
+    },
+    "End Fitting": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Replacement"
+    },
+    "Wait for Replacement": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 10,
+          "low": 7
+        }
+      },
+      "unit": "years",
+      "direct_transition": "Initial Encounter"
+    },
+    "Loss of teeth": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "37320007",
+          "display": "Loss of teeth (disorder)"
+        }
+      ],
+      "direct_transition": "Initial Encounter",
+      "target_encounter": "Initial Encounter"
+    },
+    "End Comorbidity Checks": {
+      "type": "Simple",
+      "direct_transition": "Loss of teeth"
+    },
+    "Needs Frenectomy": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "67787004",
+          "display": "Tongue tie (disorder)"
+        }
+      ],
+      "direct_transition": "Check D",
+      "target_encounter": "Initial Encounter",
+      "assign_to_attribute": "denture_surgery_reason"
+    },
+    "Needs Torus Palatinus Removed": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "46752004",
+          "display": "Torus palatinus (disorder)"
+        }
+      ],
+      "direct_transition": "Check B",
+      "target_encounter": "Initial Encounter",
+      "assign_to_attribute": "denture_surgery_reason"
+    },
+    "Needs Torus Mandibularis Removed": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "11625007",
+          "display": "Torus mandibularis (disorder)"
+        }
+      ],
+      "direct_transition": "End Comorbidity Checks",
+      "target_encounter": "Initial Encounter",
+      "assign_to_attribute": "denture_surgery_reason"
+    },
+    "Needs Ridge Reconstruction": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1255252008",
+          "display": "Resorption of alveolar process due to dental trauma (disorder)"
+        }
+      ],
+      "direct_transition": "Check C",
+      "target_encounter": "Initial Encounter",
+      "assign_to_attribute": "denture_surgery_reason"
+    },
+    "Wait for Surgery": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 21,
+          "low": 7
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Surgery Encounter"
+    },
+    "Excision of maxillary torus palatinus": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "79345008",
+          "display": "Excision of maxillary torus palatinus (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Torus Palatinus",
+      "reason": "Needs Torus Palatinus Removed"
+    },
+    "Excision of lingual torus": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "23183008",
+          "display": "Excision of lingual torus (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Needs Torus Mandibularis Removed",
+      "direct_transition": "End Torus Mandibularis"
+    },
+    "Surgery Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "denture_surgery_reason",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Operating_room"
+    },
+    "Check A": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Needs Torus Palatinus Removed",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Check B",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Check B": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Needs Ridge Reconstruction",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Check C",
+          "distribution": 0.7
+        }
+      ]
+    },
+    "Check D": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Needs Torus Mandibularis Removed",
+          "distribution": 0.027
+        },
+        {
+          "transition": "End Comorbidity Checks",
+          "distribution": 0.973
+        }
+      ]
+    },
+    "Check C": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Needs Frenectomy",
+          "distribution": 0.05
+        },
+        {
+          "transition": "Check D",
+          "distribution": 0.95
+        }
+      ]
+    },
+    "End_Surgery": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Fitting"
+    },
+    "Wait for Fitting": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 14,
+          "low": 3
+        }
+      },
+      "unit": "days",
+      "direct_transition": "Fitting Encounter"
+    },
+    "Operating_room": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": "225738002",
+        "display": "Operating room (environment)"
+      },
+      "direct_transition": "Dental_Anesthesia"
+    },
+    "Exit_Operating_room": {
+      "type": "DeviceEnd",
+      "device": "Operating room",
+      "direct_transition": "Postoperative_care_for_dental_procedure"
+    },
+    "Postoperative_care_for_dental_procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 456191000124101,
+          "display": "Postoperative care for dental procedure (regime/therapy)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "dental_surgery_reason",
+      "direct_transition": "End_Surgery"
+    },
+    "Dental_Anesthesia": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "3802001",
+          "display": "Dental application of desensitizing medicament (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 60,
+          "standardDeviation": 15
+        }
+      },
+      "unit": "minutes",
+      "reason": "dental_surgery_reason",
+      "direct_transition": "Dental_surgical_procedure"
+    },
+    "Dental_surgical_procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "81733005",
+          "display": "Dental surgical procedure (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "GAUSSIAN",
+        "parameters": {
+          "min": 5,
+          "mean": 10,
+          "standardDeviation": 5
+        }
+      },
+      "unit": "minutes",
+      "reason": "dental_surgery_reason",
+      "direct_transition": "Surgery A"
+    },
+    "Excision of lingual frenum": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "23933004",
+          "display": "Excision of lingual frenum (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "reason": "Needs Frenectomy",
+      "direct_transition": "End Tongue Tied"
+    },
+    "Grafting of periodontal bone defect": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "234687006",
+          "display": "Grafting of periodontal bone defect (procedure)"
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "End Ridge Defect",
+      "reason": "Needs Ridge Reconstruction"
+    },
+    "Surgery A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Excision of maxillary torus palatinus",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Needs Torus Palatinus Removed"
+          }
+        },
+        {
+          "transition": "Surgery B"
+        }
+      ]
+    },
+    "Surgery B": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Grafting of periodontal bone defect",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Needs Ridge Reconstruction"
+          }
+        },
+        {
+          "transition": "Surgery C"
+        }
+      ]
+    },
+    "Surgery C": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Excision of lingual frenum",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Needs Frenectomy"
+          }
+        },
+        {
+          "transition": "Surgery D"
+        }
+      ]
+    },
+    "Surgery D": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Excision of lingual torus",
+          "condition": {
+            "condition_type": "PriorState",
+            "name": "Needs Torus Mandibularis Removed"
+          }
+        },
+        {
+          "transition": "Exit_Operating_room"
+        }
+      ]
+    },
+    "End Torus Palatinus": {
+      "type": "ConditionEnd",
+      "direct_transition": "Surgery B",
+      "condition_onset": "Needs Torus Palatinus Removed"
+    },
+    "End Ridge Defect": {
+      "type": "ConditionEnd",
+      "direct_transition": "Surgery C",
+      "condition_onset": "Needs Ridge Reconstruction"
+    },
+    "End Tongue Tied": {
+      "type": "ConditionEnd",
+      "direct_transition": "Surgery D",
+      "condition_onset": "Needs Frenectomy"
+    },
+    "End Torus Mandibularis": {
+      "type": "ConditionEnd",
+      "direct_transition": "Exit_Operating_room",
+      "condition_onset": "Needs Torus Mandibularis Removed"
+    },
+    "End Previous Dentures": {
+      "type": "DeviceEnd",
+      "direct_transition": "Dentures",
+      "device": "Dentures"
+    }
+  },
+  "gmf_version": 2
+}

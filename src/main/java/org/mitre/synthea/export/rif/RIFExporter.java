@@ -35,9 +35,9 @@ public abstract class RIFExporter {
   protected static final AtomicLong nextClaimGroupId = new AtomicLong(
           Config.getAsLong("exporter.bfd.clm_grp_id_start", -1));
   protected static final String BB2_BENE_ID = "BB2_BENE_ID";
-  protected static final String BB2_HIC_ID = "BB2_HIC_ID";
-  protected static final String BB2_MBI = "BB2_MBI";
-  protected static final String COVERAGE_START_DATE = "BB2_COVERAGE_START_DATE";
+  public static final String BB2_HIC_ID = "BB2_HIC_ID";
+  public static final String BB2_MBI = "BB2_MBI";
+  public static final String COVERAGE_START_DATE = "BB2_COVERAGE_START_DATE";
   protected static final CLIA[] cliaLabNumbers = initCliaLabNumbers();
   protected static final long CLAIM_CUTOFF = parseSimpleDate(
           Config.get("exporter.bfd.cutoff_date", "20140529"));
@@ -66,7 +66,7 @@ public abstract class RIFExporter {
     return dateFormat.format(new Date(time));
   }
 
-  enum ClaimType {
+  public enum ClaimType {
     CARRIER,
     OUTPATIENT,
     INPATIENT,
@@ -85,7 +85,12 @@ public abstract class RIFExporter {
     return isVA || isIHSCenter;
   }
 
-  static Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
+  /**
+   * Get the types of claim for the supplied encounter.
+   * @param encounter the encounter
+   * @return the applicable types of claim
+   */
+  public static Set<ClaimType> getClaimTypes(HealthRecord.Encounter encounter) {
     Set<ClaimType> types = new HashSet<>();
     boolean isSNF = encounter.type.equals(HealthRecord.EncounterType.SNF.toString());
     boolean isHome = encounter.type.equals(HealthRecord.EncounterType.HOME.toString());
@@ -183,7 +188,11 @@ public abstract class RIFExporter {
       if (encounter.start <= time) {
         for (HealthRecord.Entry dx : encounter.conditions) {
           if (dx.start <= time && (dx.stop == 0L || dx.stop > time)) {
-            if (exporter.conditionCodeMapper.canMap(dx.codes.get(0))) {
+            if (dx.codes.get(0).system.startsWith("ICD10")) {
+              // Temporarily duplicate the code... we'll remove it later.
+              dx.codes.add(dx.codes.get(0));
+              diagnoses.add(dx);
+            } else if (exporter.conditionCodeMapper.canMap(dx.codes.get(0))) {
               String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0), person, true);
               // Temporarily add the mapped code... we'll remove it later.
               HealthRecord.Code mappedCode = new HealthRecord.Code("ICD10", mapped,
@@ -229,7 +238,9 @@ public abstract class RIFExporter {
     List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       for (HealthRecord.Entry dx : encounter.conditions) {
-        if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
+        if (dx.codes.get(0).system.startsWith("ICD10")) {
+          diagnoses.add(dx);
+        } else if (exporter.conditionCodeMapper.canMap(dx.codes.get(0).code)) {
           String mapped = exporter.conditionCodeMapper.map(dx.codes.get(0).code, person, true);
           if (mapped.equals(code)) {
             diagnoses.add(dx);
@@ -251,7 +262,7 @@ public abstract class RIFExporter {
    * @param codes the condition codes
    * @return the earliest diagnosis time stamp or Long.MAX_VALUE if not diagnosed
    */
-  protected long getEarliestUnmappedDiagnosis(Person person, String[] codes) {
+  protected static long getEarliestUnmappedDiagnosis(Person person, String[] codes) {
     long earliest = Long.MAX_VALUE;
     for (String code : codes) {
       long diagnosisTime = getEarliestUnmappedDiagnosis(person, code);
@@ -266,7 +277,7 @@ public abstract class RIFExporter {
    * @param code the condition code
    * @return the diagnosis time stamp or Long.MAX_VALUE if not diagnosed
    */
-  protected long getEarliestUnmappedDiagnosis(Person person, String code) {
+  protected static long getEarliestUnmappedDiagnosis(Person person, String code) {
     List<HealthRecord.Entry> diagnoses = new ArrayList<HealthRecord.Entry>();
     for (HealthRecord.Encounter encounter : person.record.encounters) {
       for (HealthRecord.Entry dx : encounter.conditions) {
@@ -373,7 +384,7 @@ public abstract class RIFExporter {
    * @param person the person
    * @return the date of disability or Long.MAX_VALUE if never disabled
    */
-  protected long getDateOfDisability(Person person) {
+  protected static long getDateOfDisability(Person person) {
     boolean disabled = isDisabled(person);
     long dateOfDisability = Long.MAX_VALUE;
     if (disabled) {

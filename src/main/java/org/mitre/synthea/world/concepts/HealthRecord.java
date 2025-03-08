@@ -98,7 +98,7 @@ public class HealthRecord implements Serializable {
      *
      * @param system  the URI identifier of the code system
      * @param code    the code itself
-     * @param display human-readable description of the coe
+     * @param display human-readable description of the code
      */
     public Code(String system, String code, String display) {
       this.system = system;

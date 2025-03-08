@@ -21,7 +21,7 @@
         {
           "system": "SNOMED-CT",
           "code": "185347001",
-          "display": "Encounter for problem"
+          "display": "Encounter for problem (procedure)"
         }
       ],
       "reason": "diabetic_neuropathy",
@@ -96,7 +96,7 @@
         {
           "system": "SNOMED-CT",
           "code": "180030006",
-          "display": "Amputation of left foot"
+          "display": "Amputation of the foot (procedure)"
         }
       ],
       "duration": {
@@ -137,7 +137,7 @@
         {
           "system": "SNOMED-CT",
           "code": "180030006",
-          "display": "Amputation of right foot"
+          "display": "Amputation of the foot (procedure)"
         }
       ],
       "duration": {
@@ -169,7 +169,7 @@
         {
           "system": "SNOMED-CT",
           "code": "79733001",
-          "display": "Amputation of left leg"
+          "display": "Amputation above-knee (procedure)"
         }
       ],
       "duration": {
@@ -201,7 +201,7 @@
         {
           "system": "SNOMED-CT",
           "code": "79733001",
-          "display": "Amputation of right leg"
+          "display": "Amputation above-knee (procedure)"
         }
       ],
       "duration": {
@@ -266,7 +266,7 @@
         {
           "system": "SNOMED-CT",
           "code": "46028000",
-          "display": "Amputation of left hand"
+          "display": "Amputation of hand (procedure)"
         }
       ],
       "duration": {
@@ -307,7 +307,7 @@
         {
           "system": "SNOMED-CT",
           "code": "46028000",
-          "display": "Amputation of right hand"
+          "display": "Amputation of hand (procedure)"
         }
       ],
       "duration": {
@@ -339,7 +339,7 @@
         {
           "system": "SNOMED-CT",
           "code": "13995008",
-          "display": "Amputation of right arm"
+          "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
       "duration": {
@@ -371,7 +371,7 @@
         {
           "system": "SNOMED-CT",
           "code": "13995008",
-          "display": "Amputation of left arm"
+          "display": "Amputation of arm through shoulder (procedure)"
         }
       ],
       "duration": {
@@ -411,7 +411,7 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 386510005,
+          "code": "386510005",
           "display": "Amputation care (regime/therapy)"
         }
       ],
