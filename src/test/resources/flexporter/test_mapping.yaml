@@ -267,6 +267,20 @@ actions:
          - location: Patient.name.family
            value: $getAttribute([last_name])
 
+ - name: testCreateResources_if
+   create_resource:
+     - resourceType: ServiceRequest
+       based_on:
+         resource: Procedure
+       fields:
+         - if: Procedure.performed.ofType(Period)
+           location: ServiceRequest.authoredOn
+           value: $getField([Procedure.performed.start]) # period choice type
+         - if: Procedure.performed.ofType(dateTime)
+           location: ServiceRequest.authoredOn
+           value: $getField([Procedure.performed]) # datetime choice type
+
+
  - name: testExecuteScript
    execute_script:
      - apply_to: bundle
@@ -300,6 +314,7 @@ actions:
  - name: testDeleteResources
    delete_resources:
      - Provenance
+     - Condition.code.coding.where($this.code in ('15777000' | '444814009'))
 
  - name: testDeleteResourcesCascade
    delete_resources:

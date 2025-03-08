@@ -424,6 +424,12 @@ public abstract class Actions {
       String location = (String)field.get("location");
       Object valueDef = field.get("value");
       String transform = (String)field.get("transform");
+      String ifDef = (String)field.get("if");
+
+      if (ifDef != null && !FhirPathUtils.appliesToResource(sourceResource, ifDef)) {
+        // The "if" condition returned falsy, so don't evaluate this value/set this field
+        continue;
+      }
 
       if (valueDef == null) {
         // do nothing, leave it null
@@ -457,12 +463,15 @@ public abstract class Actions {
       } else if (valueDef instanceof Map<?,?>) {
         Map<String,Object> valueMap = (Map<String, Object>) valueDef;
 
-        populateFhirPathMapping(fhirPathMapping, location, valueMap);
+        populateFhirPathMapping(fhirPathMapping, location, valueMap, sourceBundle, sourceResource,
+            person, fjContext);
 
       } else if (valueDef instanceof List<?>) {
         List<Object> valueList = (List<Object>) valueDef;
 
-        populateFhirPathMapping(fhirPathMapping, location, valueList);
+        populateFhirPathMapping(fhirPathMapping, location, valueList, sourceBundle, sourceResource,
+            person, fjContext);
+
       } else {
         // unexpected type here - is it even possible to get anything else?
         String type = valueDef == null ? "null" : valueDef.getClass().toGenericString();
@@ -474,7 +483,8 @@ public abstract class Actions {
   }
 
   private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath,
-      Map<String, Object> valueMap) {
+      Map<String, Object> valueMap, Bundle sourceBundle, Resource sourceResource, Person person,
+      FlexporterJavascriptContext fjContext) {
     for (Map.Entry<String,Object> entry : valueMap.entrySet()) {
       String key = entry.getKey();
       Object value = entry.getValue();
@@ -482,13 +492,23 @@ public abstract class Actions {
       String path = basePath + "." + key;
 
       if (value instanceof String) {
+        String valueString = (String)value;
+
+        if (valueString.startsWith("$")) {
+          value = getValue(sourceBundle, valueString, sourceResource, person, fjContext);
+        }
+      }
+
+      if (value instanceof String || value instanceof Base) {
         fhirPathMapping.put(path, value);
       } else if (value instanceof Number) {
         fhirPathMapping.put(path, value.toString());
       } else if (value instanceof Map<?,?>) {
-        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
+        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value, sourceBundle,
+            sourceResource, person, fjContext);
       } else if (value instanceof List<?>) {
-        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value);
+        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value, sourceBundle,
+            sourceResource, person, fjContext);
       } else if (value != null) {
         System.err
             .println("Unexpected class found in populateFhirPathMapping[map]: " + value.getClass());
@@ -497,20 +517,23 @@ public abstract class Actions {
   }
 
   private static void populateFhirPathMapping(Map<String, Object> fhirPathMapping, String basePath,
-      List<Object> valueList) {
+      List<Object> valueList, Bundle sourceBundle, Resource sourceResource, Person person,
+      FlexporterJavascriptContext fjContext) {
     for (int i = 0; i < valueList.size(); i++) {
       Object value = valueList.get(i);
 
       String path = basePath + "[" + i + "]";
 
-      if (value instanceof String) {
+      if (value instanceof String || value instanceof Base) {
         fhirPathMapping.put(path, value);
       } else if (value instanceof Number) {
         fhirPathMapping.put(path, value.toString());
       } else if (value instanceof Map<?,?>) {
-        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value);
+        populateFhirPathMapping(fhirPathMapping, path, (Map<String, Object>) value, sourceBundle,
+            sourceResource, person, fjContext);
       } else if (value instanceof List<?>) {
-        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value);
+        populateFhirPathMapping(fhirPathMapping, path, (List<Object>) value, sourceBundle,
+            sourceResource, person, fjContext);
       } else if (value != null) {
         System.err
             .println("Unexpected class found in populateFhirPathMapping[list]:" + value.getClass());
@@ -649,13 +672,9 @@ public abstract class Actions {
    * Cascade (current), Delete reference field but leave object, Do nothing
    *
    * @param bundle FHIR Bundle to filter
-   * @param list List of resource types to delete, other types not listed will be kept
+   * @param list List of resource types or FHIRPath to delete, other types not listed will be kept
    */
   public static void deleteResources(Bundle bundle, List<String> list) {
-    // TODO: make this FHIRPath instead of just straight resource types
-
-    Set<String> resourceTypesToDelete = new HashSet<>(list);
-
     Set<String> deletedResourceIDs = new HashSet<>();
 
     Iterator<BundleEntryComponent> itr = bundle.getEntry().iterator();
@@ -665,9 +684,14 @@ public abstract class Actions {
 
       Resource resource = entry.getResource();
       String resourceType = resource.getResourceType().toString();
-      if (resourceTypesToDelete.contains(resourceType)) {
-        deletedResourceIDs.add(resource.getId());
-        itr.remove();
+
+      for (String applicability : list) {
+        if (applicability.equals(resourceType)
+            || FhirPathUtils.appliesToResource(resource, applicability)) {
+          deletedResourceIDs.add(resource.getId());
+          itr.remove();
+          break;
+        }
       }
     }
 
