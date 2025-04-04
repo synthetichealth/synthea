@@ -1,15 +1,10 @@
 package org.mitre.synthea.world.agents.behaviors.providerfinder;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import java.util.Map;
-import java.util.Set;
-
-import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
