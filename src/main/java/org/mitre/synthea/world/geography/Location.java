@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mitre.synthea.export.JSONSkip;
@@ -435,6 +436,18 @@ public class Location implements Serializable {
    */
   public static String getAbbreviation(String state) {
     return stateAbbreviations.get(state);
+  }
+
+  /**
+   * Get the state for an abbreviation.
+   * @param abbreviation State abbreviation. e.g. "MA"
+   * @return state name. e.g. "Massachusetts"
+   */
+  public static String getStateNameFromAbbreviation(String abbreviation) {
+    for(Entry<String, String> entry : stateAbbreviations.entrySet()) {
+      if (entry.getValue().equals(abbreviation)) return entry.getKey();
+    }
+    return null;
   }
 
   /**

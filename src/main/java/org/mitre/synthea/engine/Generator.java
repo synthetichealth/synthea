@@ -43,6 +43,7 @@ import org.mitre.synthea.modules.LifecycleModule;
 import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
+import org.mitre.synthea.world.agents.behaviors.providerfinder.ProviderFinderPreferOne;
 import org.mitre.synthea.world.concepts.Costs;
 import org.mitre.synthea.world.concepts.HealthRecord.Encounter;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
@@ -211,7 +212,11 @@ public class Generator {
 
   private void init() {
     if (options.state == null) {
-      options.state = DEFAULT_STATE;
+      if (ProviderFinderPreferOne.isUsingPreferredProvider()) {
+        options.state = Provider.findProviderStateByNPI(ProviderFinderPreferOne.getPreferredNPI());
+      } else {
+        options.state = DEFAULT_STATE;
+      }
     }
     int stateIndex = Location.getIndex(options.state);
     if (Config.getAsBoolean("exporter.cdw.export")) {
@@ -646,6 +651,10 @@ public class Generator {
     // Initialize person.
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
+
+    // Check if we need to override demographics based on preferred provider setting
+    ProviderFinderPreferOne.overrideDemographicsIfPreferredProvider(demoAttributes);
+
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, this.location);
     person.lastUpdated = (long) demoAttributes.get(Person.BIRTHDATE);
