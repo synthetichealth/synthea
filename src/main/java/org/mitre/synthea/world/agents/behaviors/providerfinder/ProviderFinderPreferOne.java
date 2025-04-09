@@ -33,7 +33,7 @@ public class ProviderFinderPreferOne implements IProviderFinder {
   }
 
   public static String getPreferredNPI() {
-    return Config.get(PREFER_ONE_NPI, null);
+    return isUsingPreferredProvider() ? Config.get(PREFER_ONE_NPI, null) : null;
   }
 
   public static Provider getPreferredProvider() {
