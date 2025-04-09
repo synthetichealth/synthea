@@ -438,19 +438,7 @@ public class Location implements Serializable {
     return stateAbbreviations.get(state);
   }
 
-  /**
-   * Get the state for an abbreviation.
-   * @param abbreviation State abbreviation. e.g. "MA"
-   * @return state name. e.g. "Massachusetts"
-   */
-  public static String getStateNameFromAbbreviation(String abbreviation) {
-    for(Entry<String, String> entry : stateAbbreviations.entrySet()) {
-      if (entry.getValue().equals(abbreviation)) return entry.getKey();
-    }
-    return null;
-  }
-
-  /**
+   /**
    * Get the index for a state. This maybe useful for
    * exporters where you want to generate a list of unique
    * identifiers that do not collide across state-boundaries.

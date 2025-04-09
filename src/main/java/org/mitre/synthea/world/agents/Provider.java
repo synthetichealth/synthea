@@ -754,7 +754,7 @@ public class Provider implements QuadTreeElement, Serializable {
     return new ArrayList<Provider>(providerByUuid.values());
   }
 
-  public static String findProviderStateByNPI(String npi) {
+  public static String findProviderStateByNPI(String npi) throws ExceptionInInitializerError {
 
     for (String filename : PROVIDER_SOURCE_FILES) {
 
@@ -767,10 +767,10 @@ public class Provider implements QuadTreeElement, Serializable {
           Map<String,String> row = csv.next();
           String currNpi = row.get("npi");
 
-          if (npi.equals(currNpi) && row.get("state") != null) return Location.getStateNameFromAbbreviation(row.get("state"));
+          if (npi.equals(currNpi) && row.get("state") != null) return Location.getStateName(row.get("state"));
         }
       } catch (IOException e) {
-        System.err.println("ERROR: unable to find state for provider by NPI: " + e.getMessage());
+        throw new ExceptionInInitializerError("ERROR: unable to find state for provider by NPI: '" + npi + "' configured but provider not found in loaded list. Using demographic location." + e.getMessage());
       }
 
     }
@@ -861,6 +861,6 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   public Point2D.Double getLonLat() {
-          return coordinates;
+    return coordinates;
   }
 }

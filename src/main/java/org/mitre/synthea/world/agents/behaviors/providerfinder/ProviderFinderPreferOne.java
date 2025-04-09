@@ -19,6 +19,10 @@ public class ProviderFinderPreferOne implements IProviderFinder {
   private static final String PREFER_ONE_IGNORE_SUITABLE = "generate.providers.prefer_one.ignore_suitable";
   // Fallback finder if the preferred one isn't suitable during encounter finding
   private final IProviderFinder fallbackFinder = new ProviderFinderNearest();
+  // Cache for the preferred provider to avoid repeated lookups
+  private static Provider cachedPreferredProvider = null;
+  // Track the NPI that was used to find the cached provider
+  private static String cachedNpi = null;
 
   public static boolean isUsingPreferredProvider() {
     return Config.get("generate.providers.selection_behavior", "nearest").equals(Provider.PREFER_ONE);
@@ -33,14 +37,17 @@ public class ProviderFinderPreferOne implements IProviderFinder {
   }
 
   public static Provider getPreferredProvider() {
-
     if (!isUsingPreferredProvider()) return null;
-
 
     String preferredNpi = getPreferredNPI();
     if (preferredNpi == null || preferredNpi.isEmpty()) {
       System.err.println("WARNING: generate.providers.selection_behavior=PreferOne but " + PREFER_ONE_NPI + " is not set. Using demographic location.");
       return null; // NPI not configured, do nothing.
+    }
+
+    // Check if we already have a cached provider with the correct NPI
+    if (cachedPreferredProvider != null && preferredNpi.equals(cachedNpi)) {
+      return cachedPreferredProvider;
     }
 
     Provider preferredProvider = null;
@@ -52,6 +59,11 @@ public class ProviderFinderPreferOne implements IProviderFinder {
         break;
       }
     }
+    
+    // Cache the result for future calls
+    cachedPreferredProvider = preferredProvider;
+    cachedNpi = preferredNpi;
+    
     return preferredProvider;
   }
 
@@ -62,8 +74,9 @@ public class ProviderFinderPreferOne implements IProviderFinder {
    * Logs warnings if the provider or its location data is not found.
    *
    * @param demoAttributes The map of demographic attributes to potentially modify.
+   * @throws ExceptionInInitializerError 
    */
-  public static void overrideDemographicsIfPreferredProvider(Map<String, Object> demoAttributes) {
+  public static void overrideDemographicsIfPreferredProvider(Map<String, Object> demoAttributes) throws ExceptionInInitializerError {
 
     Provider preferredProvider = getPreferredProvider();
 
@@ -96,11 +109,10 @@ public class ProviderFinderPreferOne implements IProviderFinder {
             + ", State: " + preferredProvider.state + ", Coords: " + providerCoords
             + "). Not all location attributes were overridden.");
       }
-      // TODO: Consider updating Person.COUNTY if available? Provider doesn't store it.
 
     } else {
-      // Log a warning if the provider wasn't found
-      System.err.println("WARNING: Preferred provider NPI '" + getPreferredNPI() + "' configured but provider not found in loaded list. Using demographic location.");
+      // provider wasn't found exit
+      throw new ExceptionInInitializerError("WARNING: Preferred provider NPI '" + getPreferredNPI() + "' configured but provider not found in loaded list. Using demographic location.");
     }
   }
 
@@ -109,8 +121,6 @@ public class ProviderFinderPreferOne implements IProviderFinder {
   public Provider find(List<Provider> providers, Person person, EncounterType service, long time) {
 
     String preferredNpi = Config.get(PREFER_ONE_NPI, null);
-
-    System.out.println("PreferredNpi: " + preferredNpi);
 
     if (preferredNpi != null && !preferredNpi.isEmpty()) {
       // first check the list passed in (if the states line up with the detault state, e.g., MA, then it may be found in the list)
@@ -128,8 +138,6 @@ public class ProviderFinderPreferOne implements IProviderFinder {
     for (Provider provider : providers) { // Iterate the passed-in list
         // Check if this provider matches the preferred NPI
         if (preferredNpi.equals(provider.npi)) {
-            System.out.println("FOUND PROVIDER: " + provider.npi + " -- " + preferredNpi);
-
             // Check if the preferred provider offers the service and accepts the patient
             if (provider.hasService(service) && provider.accepts(person, time)) {
                 return provider;
