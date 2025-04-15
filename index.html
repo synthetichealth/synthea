@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthea Patient Generator</title>
+</head>
+<body>
+    <h1>Synthea Patient Generator</h1>
+    
+    <form id="syntheaForm">
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" placeholder="Enter state" /><br><br>
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" placeholder="Enter city" /><br><br>
+
+        <label for="populationSize">Population Size (-p):</label>
+        <input type="number" id="populationSize" name="populationSize" min="1" placeholder="Enter population size" /><br><br>
+
+        <label for="seed">Random Seed (-s):</label>
+        <input type="number" id="seed" name="seed" placeholder="Enter seed value" /><br><br>
+
+        <label for="clinicianSeed">Clinician Seed (-cs):</label>
+        <input type="number" id="clinicianSeed" name="clinicianSeed" placeholder="Enter clinician seed" /><br><br>
+
+        <label for="referenceDate">Reference Date (-r) (Format: YYYYMMDD):</label>
+        <input type="text" id="referenceDate" name="referenceDate" placeholder="Enter reference date" /><br><br>
+
+        <label for="gender">Gender (-g):</label>
+        <select id="gender" name="gender">
+            <option value="">Any</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select><br><br>
+
+        <label for="ageRange">Age Range (-a) (minAge-maxAge):</label>
+        <input type="text" id="ageRange" name="ageRange" placeholder="Enter age range (e.g., 30-40)" /><br><br>
+
+        <label for="overflowPopulation">Overflow Population (-o):</label>
+        <input type="number" id="overflowPopulation" name="overflowPopulation" placeholder="Enter overflow population" /><br><br>
+
+        <label for="configFilePath">Local Config File Path (-c):</label>
+        <input type="text" id="configFilePath" name="configFilePath" placeholder="Enter config file path" /><br><br>
+
+        <label for="modulesDirPath">Local Modules Directory Path (-d):</label>
+        <input type="text" id="modulesDirPath" name="modulesDirPath" placeholder="Enter modules directory path" /><br><br>
+
+        <label for="initialSnapshotPath">Initial Population Snapshot Path (-i):</label>
+        <input type="text" id="initialSnapshotPath" name="initialSnapshotPath" placeholder="Enter initial snapshot path" /><br><br>
+
+        <label for="updatedSnapshotPath">Updated Population Snapshot Path (-u):</label>
+        <input type="text" id="updatedSnapshotPath" name="updatedSnapshotPath" placeholder="Enter updated snapshot path" /><br><br>
+
+        <label for="updateTimePeriod">Update Time Period (-t) (in days):</label>
+        <input type="number" id="updateTimePeriod" name="updateTimePeriod" placeholder="Enter update time period in days" /><br><br>
+
+        <label for="fixedRecordPath">Fixed Record Path (-f):</label>
+        <input type="text" id="fixedRecordPath" name="fixedRecordPath" placeholder="Enter fixed record path" /><br><br>
+
+        <label for="keepMatchingPatientsPath">Keep Matching Patients Path (-k):</label>
+        <input type="text" id="keepMatchingPatientsPath" name="keepMatchingPatientsPath" placeholder="Enter keep matching patients path" /><br><br>
+
+        <label for="saveDirectory">Save Directory (--exporter.baseDirectory=):</label>
+        <input type="text" id="saveDirectory" name="saveDirectory" placeholder="Enter directory path" /><br><br>
+
+        <label for="configValue">Additional Config:</label>
+        <input type="text" id="configValue" name="configValue" placeholder="--exporter.fhir.export=true" /><br><br>
+
+        <button type="submit">Generate</button>
+    </form>
+
+    <script>
+        document.getElementById('syntheaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            let command = './run_synthea';
+
+            // Append form data to command
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    if (key === 'state' || key === 'city' || key === 'configFilePath' || key === 'modulesDirPath' ||
+                        key === 'initialSnapshotPath' || key === 'updatedSnapshotPath' || key === 'keepMatchingPatientsPath') {
+                        value = `"${value}"`;
+                        command += ` -${key.charAt(0)} ${value}`;
+                    } else if (key === 'clinicianSeed') {
+                        // Explicitly handle clinicianSeed to use -cs
+                        command += ` -cs ${value}`;
+                    } else if (key === 'saveDirectory') {
+                        // Append save directory path with --exporter.baseDirectory=
+                        command += ` --exporter.baseDirectory="${value}"`;
+                    } else if (key === 'configValue') {
+                        // Directly append the additional config value without modification
+                        command += ` ${value}`;
+                    } else {
+                        command += ` -${key.charAt(0)} ${value}`;
+                    }
+                }
+            }
+
+            // Show the command in an alert
+            alert(`Command to run: ${command}`);
+        });
+    </script>
+</body>
+</html>
