@@ -2193,6 +2193,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">A simple enum to diffirentiate between types of FHIRPaths in the special use case of generating
  FHIR Resources.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#customValueSets">customValueSets</a></span> - Variable in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/modules/calculators/Framingham.html#cvd10Year(org.mitre.synthea.world.agents.Person,long,boolean)">cvd10Year(Person, long, boolean)</a></span> - Static method in class org.mitre.synthea.modules.calculators.<a href="org/mitre/synthea/modules/calculators/Framingham.html" title="class in org.mitre.synthea.modules.calculators">Framingham</a></dt>
 <dd>
 <div class="block">Calculates a patient's risk of cardiovascular disease,
@@ -7099,6 +7101,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Load the given value set into our cache.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/flexporter/Mapping.html#loadValueSets()">loadValueSets()</a></span> - Method in class org.mitre.synthea.export.flexporter.<a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter">Mapping</a></dt>
+<dd>
+<div class="block">Load the custom ValueSets that this mapping defines, so that the codes can be selected
+ in RandomCodeGenerator.</div>
+</dd>
 <dt><a href="org/mitre/synthea/identity/LocalDateDeserializer.html" title="class in org.mitre.synthea.identity"><span class="typeNameLink">LocalDateDeserializer</span></a> - Class in <a href="org/mitre/synthea/identity/package-summary.html">org.mitre.synthea.identity</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/identity/LocalDateDeserializer.html#%3Cinit%3E()">LocalDateDeserializer()</a></span> - Constructor for class org.mitre.synthea.identity.<a href="org/mitre/synthea/identity/LocalDateDeserializer.html" title="class in org.mitre.synthea.identity">LocalDateDeserializer</a></dt>
@@ -7396,6 +7403,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/CodeMapper.html#map(org.mitre.synthea.world.concepts.HealthRecord.Code,org.mitre.synthea.helpers.RandomNumberGenerator,boolean)">map(HealthRecord.Code, RandomNumberGenerator, boolean)</a></span> - Method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/CodeMapper.html" title="class in org.mitre.synthea.export.rif">CodeMapper</a></dt>
 <dd>
 <div class="block">Get one of the BFD codes for the supplied Synthea code.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/export/FhirR4.html#mapCodeToCodeableConcept(org.mitre.synthea.world.concepts.HealthRecord.Code,java.lang.String)">mapCodeToCodeableConcept(HealthRecord.Code, String)</a></span> - Static method in class org.mitre.synthea.export.<a href="org/mitre/synthea/export/FhirR4.html" title="class in org.mitre.synthea.export">FhirR4</a></dt>
+<dd>
+<div class="block">Helper function to convert a Code into a CodeableConcept.</div>
 </dd>
 <dt><a href="org/mitre/synthea/export/flexporter/Mapping.html" title="class in org.mitre.synthea.export.flexporter"><span class="typeNameLink">Mapping</span></a> - Class in <a href="org/mitre/synthea/export/flexporter/package-summary.html">org.mitre.synthea.export.flexporter</a></dt>
 <dd>&nbsp;</dd>
@@ -8259,6 +8270,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/mitre/synthea/export/rif/RIFExporter.html#parseSimpleDate(java.lang.String)">parseSimpleDate(String)</a></span> - Static method in class org.mitre.synthea.export.rif.<a href="org/mitre/synthea/export/rif/RIFExporter.html" title="class in org.mitre.synthea.export.rif">RIFExporter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/mitre/synthea/helpers/Utilities.html#parseYamlToResources(java.util.List,java.lang.Class)">parseYamlToResources(List&lt;Map&lt;String, Object&gt;&gt;, Class&lt;T&gt;)</a></span> - Static method in class org.mitre.synthea.helpers.<a href="org/mitre/synthea/helpers/Utilities.html" title="class in org.mitre.synthea.helpers">Utilities</a></dt>
+<dd>
+<div class="block">Helper method to parse FHIR resources from YAML.</div>
+</dd>
 <dt><a href="org/mitre/synthea/export/rif/enrollment/PartCContractHistory.html" title="class in org.mitre.synthea.export.rif.enrollment"><span class="typeNameLink">PartCContractHistory</span></a> - Class in <a href="org/mitre/synthea/export/rif/enrollment/package-summary.html">org.mitre.synthea.export.rif.enrollment</a></dt>
 <dd>
 <div class="block">Utility class to manage a beneficiary's part C contract history.</div>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -351,13 +351,21 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i19" class="rowColor">
+<td class="colFirst"><code>static &lt;T extends org.hl7.fhir.r4.model.Resource&gt;<br>java.util.List&lt;T&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseYamlToResources(java.util.List,java.lang.Class)">parseYamlToResources</a></span>&#8203;(java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;yaml,
+                    java.lang.Class&lt;T&gt;&nbsp;resourceClass)</code></th>
+<td class="colLast">
+<div class="block">Helper method to parse FHIR resources from YAML.</div>
+</td>
+</tr>
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#primitive(com.google.gson.JsonPrimitive)">primitive</a></span>&#8203;(com.google.gson.JsonPrimitive&nbsp;p)</code></th>
 <td class="colLast">
 <div class="block">Converts a JsonPrimitive into a primitive Boolean, Double, or String.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#randomDicomUid(org.mitre.synthea.helpers.RandomNumberGenerator,long,int,int)">randomDicomUid</a></span>&#8203;(<a href="RandomNumberGenerator.html" title="interface in org.mitre.synthea.helpers">RandomNumberGenerator</a>&nbsp;random,
               long&nbsp;time,
@@ -367,14 +375,14 @@ extends java.lang.Object</pre>
 <div class="block">Generate a random DICOM UID to uniquely identify an ImagingStudy, Series, or Instance.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResource(java.lang.String)">readResource</a></span>&#8203;(java.lang.String&nbsp;filename)</code></th>
 <td class="colLast">
 <div class="block">Read the entire contents of a file in resources into a String.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResource(java.lang.String,boolean,boolean)">readResource</a></span>&#8203;(java.lang.String&nbsp;filename,
             boolean&nbsp;stripBOM,
@@ -383,21 +391,21 @@ extends java.lang.Object</pre>
 <div class="block">Read the entire contents of a file into a String.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResourceAndStripBOM(java.lang.String)">readResourceAndStripBOM</a></span>&#8203;(java.lang.String&nbsp;filename)</code></th>
 <td class="colLast">
 <div class="block">Read the entire contents of a file in resources into a String and strip the BOM if present.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readResourceOrPath(java.lang.String)">readResourceOrPath</a></span>&#8203;(java.lang.String&nbsp;filename)</code></th>
 <td class="colLast">
 <div class="block">Read the entire contents of a file into a String.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#strToObject(java.lang.Class,java.lang.String)">strToObject</a></span>&#8203;(java.lang.Class&lt;?&gt;&nbsp;clazz,
            java.lang.String&nbsp;value)</code></th>
@@ -405,14 +413,14 @@ extends java.lang.Object</pre>
 <div class="block">Utility function to convert from string to a base Java object type.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static java.time.LocalDate</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#timestampToLocalDate(long)">timestampToLocalDate</a></span>&#8203;(long&nbsp;timestamp)</code></th>
 <td class="colLast">
 <div class="block">Convert the given Unix timestamp into a LocalDate.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#walkAllModules(java.nio.file.Path,java.util.function.Consumer)">walkAllModules</a></span>&#8203;(java.nio.file.Path&nbsp;modulesPath,
               java.util.function.Consumer&lt;java.nio.file.Path&gt;&nbsp;action)</code></th>
@@ -421,7 +429,7 @@ extends java.lang.Object</pre>
  function for every module underneath.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#walkAllModules(java.util.function.BiConsumer)">walkAllModules</a></span>&#8203;(java.util.function.BiConsumer&lt;java.nio.file.Path,&#8203;java.nio.file.Path&gt;&nbsp;action)</code></th>
 <td class="colLast">
@@ -953,7 +961,7 @@ extends java.lang.Object</pre>
 <a id="enableReadingURIFromJar(java.net.URI)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>enableReadingURIFromJar</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;enableReadingURIFromJar&#8203;(java.net.URI&nbsp;uri)
@@ -968,6 +976,30 @@ extends java.lang.Object</pre>
 <dd><code>uri</code> - URI to be accessed</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd>
+</dl>
+</li>
+</ul>
+<a id="parseYamlToResources(java.util.List,java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>parseYamlToResources</h4>
+<pre class="methodSignature">public static&nbsp;&lt;T extends org.hl7.fhir.r4.model.Resource&gt;&nbsp;java.util.List&lt;T&gt;&nbsp;parseYamlToResources&#8203;(java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;yaml,
+                                                                                                java.lang.Class&lt;T&gt;&nbsp;resourceClass)
+                                                                                         throws com.fasterxml.jackson.core.JsonProcessingException</pre>
+<div class="block">Helper method to parse FHIR resources from YAML.
+ This is a workaround since the FHIR model classes don't work with our YAML parser.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - Resource type contained in the YAML</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>yaml</code> - List of pre-parsed YAML as Map&lt;String, Object&gt;</dd>
+<dd><code>resourceClass</code> - Specific resource class, must not be Resource</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>List of parsed resources</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code> - (should never happen)</dd>
 </dl>
 </li>
 </ul>
