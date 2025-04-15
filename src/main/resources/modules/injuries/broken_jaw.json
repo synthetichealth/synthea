@@ -177,8 +177,8 @@
       "type": "ImagingStudy",
       "procedure_code": {
         "system": "SNOMED-CT",
-        "code": 19589009,
-        "display": "Radiography of mandible (procedure)"
+        "code": "1290789000",
+        "display": "Plain X-ray of mandible (procedure)"
       },
       "series": [
         {

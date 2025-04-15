@@ -574,8 +574,8 @@
       "direct_transition": "Stage III",
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261639007,
-        "display": "Stage 3B (qualifier value)"
+        "code": "1222805004",
+        "display": "American Joint Committee on Cancer stage IIIB (qualifier value)"
       }
     },
     "IIIA": {
@@ -725,8 +725,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261640009,
-        "display": "Stage 3C (qualifier value)"
+        "code": "1222806003",
+        "display": "American Joint Committee on Cancer stage IIIC (qualifier value)"
       },
       "direct_transition": "Stage III"
     },
@@ -743,8 +743,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261615002,
-        "display": "Stage 2B (qualifier value)"
+        "code": "1222769001",
+        "display": "American Joint Committee on Cancer stage IIB (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -761,8 +761,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261614003,
-        "display": "Stage 2A (qualifier value)"
+        "code": "1222766008",
+        "display": "American Joint Committee on Cancer stage IIA (qualifier value)"
       },
       "direct_transition": "Stage II"
     },
@@ -779,8 +779,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261634002,
-        "display": "Stage 1A (qualifier value)"
+        "code": "1222724007",
+        "display": "American Joint Committee on Cancer stage IA (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -797,8 +797,8 @@
       ],
       "value_code": {
         "system": "SNOMED-CT",
-        "code": 261635001,
-        "display": "Stage 1B (qualifier value)"
+        "code": "1222728005",
+        "display": "American Joint Committee on Cancer stage IB (qualifier value)"
       },
       "direct_transition": "Stage I"
     },
@@ -943,8 +943,8 @@
             "operator": "!=",
             "value_code": {
               "system": "SNOMED-CT",
-              "code": 261635001,
-              "display": "Stage 1B (qualifier value)"
+              "code": "1222728005",
+              "display": "American Joint Committee on Cancer stage IB (qualifier value)"
             }
           }
         },

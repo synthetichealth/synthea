@@ -515,8 +515,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "167271000",
-          "display": "Urine protein test"
+          "code": "60218003",
+          "display": "Urinalysis, protein, qualitative (procedure)"
         }
       ],
       "direct_transition": "Physical_Exam"
@@ -1625,8 +1625,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "66348005",
-          "display": "Childbirth"
+          "code": "386216000",
+          "display": "Human parturition, function (observable entity)"
         }
       ],
       "direct_transition": "Normal_Pregnancy_Completion"

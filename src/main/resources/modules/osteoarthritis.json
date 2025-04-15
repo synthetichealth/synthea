@@ -473,8 +473,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705406009,
-        "display": "Walker (physical object)"
+        "code": "1255320005",
+        "display": "Wheeled walker (physical object)"
       },
       "assign_to_attribute": "osteoarthritis_dme",
       "direct_transition": "Finish DME"

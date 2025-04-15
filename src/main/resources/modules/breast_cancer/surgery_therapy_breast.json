@@ -16,8 +16,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 69031006,
-          "display": "Excision of breast tissue (procedure)"
+          "code": "392023007",
+          "display": "Excision of lesion of breast (procedure)"
         }
       ],
       "duration": {

@@ -2916,8 +2916,8 @@
       "type": "Device",
       "code": {
         "system": "SNOMED-CT",
-        "code": 705406009,
-        "display": "Walker (physical object)"
+        "code": "1255320005",
+        "display": "Wheeled walker (physical object)"
       },
       "direct_transition": "Broken_Bone_Surgery",
       "assign_to_attribute": "injury_dme"
