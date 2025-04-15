@@ -1,5 +1,9 @@
 package org.mitre.synthea.helpers;
 
+import ca.uhn.fhir.parser.IParser;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.FieldNamingPolicy;
@@ -36,9 +40,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.Range;
+import org.hl7.fhir.r4.model.Resource;
 import org.mitre.synthea.engine.Logic;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
+import org.mitre.synthea.export.FhirR4;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
 public class Utilities {
@@ -668,5 +674,37 @@ public class Utilities {
         }
       }
     }
+  }
+
+  /**
+   * Helper method to parse FHIR resources from YAML.
+   * This is a workaround since the FHIR model classes don't work with our YAML parser.
+   *
+   * @param <T> Resource type contained in the YAML
+   * @param yaml List of pre-parsed YAML as Map&lt;String, Object&gt;
+   * @param resourceClass Specific resource class, must not be Resource
+   * @return List of parsed resources
+   * @throws JsonProcessingException (should never happen)
+   */
+  public static <T extends Resource> List<T> parseYamlToResources(
+      List<Map<String, Object>> yaml, Class<T> resourceClass)
+          throws JsonProcessingException {
+    if (yaml.isEmpty()) {
+      return Collections.emptyList();
+    }
+    ObjectMapper jsonMapper = new ObjectMapper();
+    IParser jsonParser = FhirR4.getContext().newJsonParser();
+    List<T> results = new ArrayList<>();
+    for (Map<String, Object> singleYaml : yaml) {
+      if (!singleYaml.containsKey("resourceType")) {
+        // allows the YAML to be cleaner by letting the resourceType be implied
+        singleYaml.put("resourceType", resourceClass.getSimpleName());
+      }
+      String resourceJson = jsonMapper.writeValueAsString(singleYaml);
+      @SuppressWarnings("unchecked")
+      T resource = (T) jsonParser.parseResource(resourceJson);
+      results.add(resource);
+    }
+    return results;
   }
 }
