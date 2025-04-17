@@ -283,6 +283,9 @@ public abstract class Logic implements Serializable {
     @Override
     public boolean test(Person person, long time) {
       try {
+        if (value instanceof String) {
+          value = person.attributes.getOrDefault(value, value);
+        }
         return Utilities.compare(person.attributes.get(attribute), value, operator);
       } catch (Exception e) {
         String message = "Attribute Logic error: " + attribute + " " + operator + " " + value;
