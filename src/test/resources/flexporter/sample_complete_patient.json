@@ -1352,10 +1352,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         } ],
-        "text": "Encounter for problem"
+        "text": "Follow-up consultation (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -1485,10 +1485,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185347001",
-            "display": "Encounter for problem"
+            "code": "281036007",
+            "display": "Follow-up consultation (procedure)"
           } ],
-          "text": "Encounter for problem"
+          "text": "Follow-up consultation (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:ece9e706-21d8-e2bc-02fd-6df6a7e90c5a"
@@ -1671,10 +1671,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185347001",
-            "display": "Encounter for problem"
+            "code": "281036007",
+            "display": "Follow-up consultation (procedure)"
           } ],
-          "text": "Encounter for problem"
+          "text": "Follow-up consultation (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:ece9e706-21d8-e2bc-02fd-6df6a7e90c5a"
@@ -1794,10 +1794,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185347001",
-            "display": "Encounter for problem"
+            "code": "281036007",
+            "display": "Follow-up consultation (procedure)"
           } ],
-          "text": "Encounter for problem"
+          "text": "Follow-up consultation (procedure)"
         },
         "servicedPeriod": {
           "start": "1985-01-09T14:59:56-05:00",
@@ -4744,10 +4744,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "185347001",
-          "display": "Encounter for problem (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         } ],
-        "text": "Encounter for problem (procedure)"
+        "text": "Follow-up consultation (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -5019,10 +5019,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185347001",
-            "display": "Encounter for problem (procedure)"
+            "code": "281036007",
+            "display": "Follow-up consultation (procedure)"
           } ],
-          "text": "Encounter for problem (procedure)"
+          "text": "Follow-up consultation (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:51a99f1e-54c9-160e-0023-693a55c9a6d2"
@@ -5165,10 +5165,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185347001",
-            "display": "Encounter for problem (procedure)"
+            "code": "281036007",
+            "display": "Follow-up consultation (procedure)"
           } ],
-          "text": "Encounter for problem (procedure)"
+          "text": "Follow-up consultation (procedure)"
         },
         "servicedPeriod": {
           "start": "2006-12-10T21:36:43-05:00",
@@ -13859,10 +13859,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         } ],
-        "text": "Encounter for 'check-up'"
+        "text": "Periodic reevaluation and management of healthy individual (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -14115,10 +14115,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185349003",
-            "display": "Encounter for 'check-up'"
+            "code": "86013001",
+            "display": "Periodic reevaluation and management of healthy individual (procedure)"
           } ],
-          "text": "Encounter for 'check-up'"
+          "text": "Periodic reevaluation and management of healthy individual (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:4194a4b1-ab19-d741-b807-a9e5d81778e3"
@@ -14253,10 +14253,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185349003",
-            "display": "Encounter for 'check-up'"
+            "code": "86013001",
+            "display": "Periodic reevaluation and management of healthy individual (procedure)"
           } ],
-          "text": "Encounter for 'check-up'"
+          "text": "Periodic reevaluation and management of healthy individual (procedure)"
         },
         "servicedPeriod": {
           "start": "2012-01-26T13:13:18-05:00",
@@ -18808,10 +18808,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "185349003",
-          "display": "Encounter for 'check-up'"
+          "code": "86013001",
+          "display": "Periodic reevaluation and management of healthy individual (procedure)"
         } ],
-        "text": "Encounter for 'check-up'"
+        "text": "Periodic reevaluation and management of healthy individual (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -19064,10 +19064,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185349003",
-            "display": "Encounter for 'check-up'"
+            "code": "86013001",
+            "display": "Periodic reevaluation and management of healthy individual (procedure)"
           } ],
-          "text": "Encounter for 'check-up'"
+          "text": "Periodic reevaluation and management of healthy individual (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:ef0d56f0-bc71-e944-941f-1a3aef63996a"
@@ -19202,10 +19202,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "185349003",
-            "display": "Encounter for 'check-up'"
+            "code": "86013001",
+            "display": "Periodic reevaluation and management of healthy individual (procedure)"
           } ],
-          "text": "Encounter for 'check-up'"
+          "text": "Periodic reevaluation and management of healthy individual (procedure)"
         },
         "servicedPeriod": {
           "start": "2017-01-24T13:52:24-05:00",

@@ -34,8 +34,8 @@ public final class EncounterModule extends Module {
   public static final int EMERGENCY_SYMPTOM_THRESHOLD = 500;
   public static final String LAST_VISIT_SYMPTOM_TOTAL = "last_visit_symptom_total";
 
-  public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "185349003",
-      "Encounter for check up (procedure)");
+  public static final Code ENCOUNTER_CHECKUP = new Code("SNOMED-CT", "86013001",
+      "Periodic reevaluation and management of healthy individual (procedure)");
   public static final Code ENCOUNTER_EMERGENCY = new Code("SNOMED-CT", "50849002",
       "Emergency room admission (procedure)");
   public static final Code WELL_CHILD_VISIT = new Code("SNOMED-CT", "410620009",
