@@ -55,7 +55,7 @@ public interface RandomNumberGenerator {
    * @param choices The options to be returned.
    * @return One of the options randomly selected.
    */
-  public default String rand(String[] choices) {
+  public default String rand(String... choices) {
     int value = randInt(choices.length);
     return choices[value];
   }

@@ -2089,7 +2089,7 @@ public abstract class State implements Cloneable, Serializable {
 
           // Create the new instances
           for (int j = 0; j < s.instances.size(); j++) {
-            instanceClones.add(s.instances.get(i).clone());
+            instanceClones.add(s.instances.get(j).clone());
           }
           s.instances = instanceClones;
         }
