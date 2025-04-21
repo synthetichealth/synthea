@@ -5,7 +5,7 @@ import json
 class SyntheaGenerator:
     def __init__(self, state="Massachusetts", gender=None, age=None, patients=1, module=None, synth_path=None):
         if synth_path is None:
-            synth_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            synth_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
         self.state = state
         self.gender = gender
@@ -22,7 +22,8 @@ class SyntheaGenerator:
                     os.remove(os.path.join(self.output_path, f))
 
     def _build_command(self):
-        cmd = ["./run_synthea", self.state, "-p", str(self.patients)]
+        script = "run_synthea.bat" if os.name == "nt" else "./run_synthea"
+        cmd = [script, self.state, "-p", str(self.patients)]
         if self.age:
             cmd += ["-a", self.age]
         if self.gender:
@@ -30,6 +31,7 @@ class SyntheaGenerator:
         if self.module:
             cmd += ["-m", self.module]
         return cmd
+
 
     def generate(self):
         self._clear_output()
