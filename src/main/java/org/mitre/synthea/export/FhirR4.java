@@ -2336,7 +2336,7 @@ public class FhirR4 {
     medicationResource.setRequester(encounterResource.getParticipantFirstRep().getIndividual());
 
     if (medication.stop != 0L) {
-      medicationResource.setStatus(MedicationRequestStatus.STOPPED);
+      medicationResource.setStatus(MedicationRequestStatus.COMPLETED);
     } else {
       medicationResource.setStatus(MedicationRequestStatus.ACTIVE);
     }
