@@ -1103,7 +1103,7 @@ public class FhirDstu2 {
 
     medicationResource.setDateWritten(new DateTimeDt(new Date(medication.start)));
     if (medication.stop != 0L) {
-      medicationResource.setStatus(MedicationOrderStatusEnum.STOPPED);
+      medicationResource.setStatus(MedicationOrderStatusEnum.COMPLETED);
     } else {
       medicationResource.setStatus(MedicationOrderStatusEnum.ACTIVE);
     }
