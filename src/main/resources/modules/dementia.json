@@ -428,8 +428,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "270427003",
-          "display": "Patient-initiated encounter (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "ModeratelySevere_MMSE_Score"
@@ -574,8 +574,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "270427003",
-          "display": "Patient-initiated encounter (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "Severe_MMSE_Score"
@@ -625,8 +625,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "270427003",
-          "display": "Patient-initiated encounter (procedure)"
+          "code": "281036007",
+          "display": "Follow-up consultation (procedure)"
         }
       ],
       "direct_transition": "VerySevere_MMSE_Score"
