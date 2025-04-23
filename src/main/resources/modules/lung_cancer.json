@@ -249,8 +249,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Chest CT Scan"
@@ -344,8 +344,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "distributed_transition": [
@@ -711,8 +711,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Lung_Cancer_CarePlan"
@@ -806,8 +806,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Record_CMP_2"
@@ -908,8 +908,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Record_CMP",

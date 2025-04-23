@@ -1352,10 +1352,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         } ],
-        "text": "Follow-up consultation (procedure)"
+        "text": "Patient-initiated encounter (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -1485,10 +1485,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "281036007",
-            "display": "Follow-up consultation (procedure)"
+            "code": "270427003",
+            "display": "Patient-initiated encounter (procedure)"
           } ],
-          "text": "Follow-up consultation (procedure)"
+          "text": "Patient-initiated encounter (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:ece9e706-21d8-e2bc-02fd-6df6a7e90c5a"
@@ -1671,10 +1671,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "281036007",
-            "display": "Follow-up consultation (procedure)"
+            "code": "270427003",
+            "display": "Patient-initiated encounter (procedure)"
           } ],
-          "text": "Follow-up consultation (procedure)"
+          "text": "Patient-initiated encounter (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:ece9e706-21d8-e2bc-02fd-6df6a7e90c5a"
@@ -1794,10 +1794,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "281036007",
-            "display": "Follow-up consultation (procedure)"
+            "code": "270427003",
+            "display": "Patient-initiated encounter (procedure)"
           } ],
-          "text": "Follow-up consultation (procedure)"
+          "text": "Patient-initiated encounter (procedure)"
         },
         "servicedPeriod": {
           "start": "1985-01-09T14:59:56-05:00",
@@ -4744,10 +4744,10 @@
       "type": [ {
         "coding": [ {
           "system": "http://snomed.info/sct",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         } ],
-        "text": "Follow-up consultation (procedure)"
+        "text": "Patient-initiated encounter (procedure)"
       } ],
       "subject": {
         "reference": "urn:uuid:d5582579-7193-4866-5560-a01e723b6552",
@@ -5019,10 +5019,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "281036007",
-            "display": "Follow-up consultation (procedure)"
+            "code": "270427003",
+            "display": "Patient-initiated encounter (procedure)"
           } ],
-          "text": "Follow-up consultation (procedure)"
+          "text": "Patient-initiated encounter (procedure)"
         },
         "encounter": [ {
           "reference": "urn:uuid:51a99f1e-54c9-160e-0023-693a55c9a6d2"
@@ -5165,10 +5165,10 @@
         "productOrService": {
           "coding": [ {
             "system": "http://snomed.info/sct",
-            "code": "281036007",
-            "display": "Follow-up consultation (procedure)"
+            "code": "270427003",
+            "display": "Patient-initiated encounter (procedure)"
           } ],
-          "text": "Follow-up consultation (procedure)"
+          "text": "Patient-initiated encounter (procedure)"
         },
         "servicedPeriod": {
           "start": "2006-12-10T21:36:43-05:00",

@@ -117,8 +117,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Suicide_CarePlan_Selector"
@@ -308,8 +308,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Autopsy_Examination"

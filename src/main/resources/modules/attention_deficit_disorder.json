@@ -74,8 +74,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "ADD_Symptom1"
@@ -194,8 +194,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Behavior_Treatment_Procedure"

@@ -265,8 +265,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "conditional_transition": [
@@ -1010,8 +1010,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "conditional_transition": [

@@ -421,8 +421,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "End_Biopsy_Followup"
@@ -1039,8 +1039,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Colorectal_Cancer_CarePlan"
@@ -1192,8 +1192,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Partial_Colectomy_Procedure"
@@ -1325,8 +1325,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Diverting_Colostomy_Procedure"
@@ -1455,8 +1455,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "281036007",
-          "display": "Follow-up consultation (procedure)"
+          "code": "270427003",
+          "display": "Patient-initiated encounter (procedure)"
         }
       ],
       "direct_transition": "Pain_Vital_4"
