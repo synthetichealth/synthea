@@ -1,7 +1,7 @@
 
 # Data and charts will be placed in output/physiology/{name}/
 # Data file will always be output/physiology/{name}/{name}.csv
-name: ECG
+name: ecg
 
 # Name of the model file
 model: circulation/McSharry2003_Synthetic_ECG.xml

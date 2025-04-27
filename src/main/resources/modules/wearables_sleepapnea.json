@@ -1,0 +1,437 @@
+{
+  "name": "Wearables_SleepApnea",
+  "remarks": [
+    "The regulation of sleep is processed by the homeostatic physiology of the circadian rhythm, the sleep/wake cycle. Circadian rhythm is the 24-hour internal clock in our brain that regulates cycles of alertness and sleepiness by responding to light changes in our environment. ",
+    "",
+    "References",
+    "https://www.ncbi.nlm.nih.gov/books/NBK519507/",
+    "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/",
+    "",
+    "Known model limitations:",
+    "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test.  Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
+    "This model can be interected with another function (i.e. a line), to produce a sleep/wake cycle.  Additional information on how to do this is provided in the Wiki.",
+    "This model me be useful in generating cyclical daily habits, such as taking medicaitons in the morning, exercising at certain times of the day, and so forth.  Please see the Wiki for additional details."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "direct_transition": "Sleep Apnea Guard"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Symptom_Onset_Delay": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 5,
+        "unit": "years"
+      },
+      "name": "Symptom_Onset_Delay",
+      "distributed_transition": [
+        {
+          "transition": "Snoring",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Insomia_Symptom",
+          "distribution": 1
+        }
+      ]
+    },
+    "Insomia_Symptom": {
+      "type": "Symptom",
+      "symptom": "Insomnia",
+      "cause": "Sleep_Apnea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 193462001,
+          "display": "Insomnia (disorder)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Insomia_Symptom_Ends",
+      "name": "Insomia_Symptom"
+    },
+    "Insomia_Symptom_Ends": {
+      "type": "Symptom",
+      "symptom": "Insomnia",
+      "cause": "Sleep_Apnea",
+      "direct_transition": "Physical_Activity_Resumes",
+      "name": "Insomia_Symptom_Ends"
+    },
+    "Physical_Activity_Resumes": {
+      "type": "ConditionEnd",
+      "condition_onset": "Sleep Apnea Guard",
+      "direct_transition": "Terminal",
+      "name": "Physical_Activity_Resumes"
+    },
+    "SleepStudy_Baseline_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "SleepStudy_Baseline",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 453701000124103,
+          "display": "In-person encounter (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "SleepStudy_Baseline",
+      "name": "SleepStudy_Baseline_Encounter"
+    },
+    "Monitor_iWatch": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 13288007,
+        "display": "Monitor, device (physical object)"
+      },
+      "direct_transition": "Monitor_CPAP",
+      "assign_to_attribute": "o2_data_iwatch",
+      "name": "Monitor_iWatch"
+    },
+    "SleepStudy_Baseline_Encounter_End": {
+      "type": "EncounterEnd",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "name": "SleepStudy_Baseline_Encounter_End",
+      "distributed_transition": [
+        {
+          "transition": "Terminal",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Monitor_iWatch",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "SleepStudy_Baseline": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 60554003,
+          "display": "Polysomnography (procedure)",
+          "value_set": ""
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "CircadianClock_Sim",
+      "name": "SleepStudy_Baseline"
+    },
+    "CircadianClock_Sim": {
+      "type": "Physiology",
+      "model": "Hong2009_CircadianClock.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 24,
+      "lead_time": 0,
+      "inputs": [
+        {
+          "from_exp": "#{BMI}",
+          "to": "kica"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "CPtot",
+          "to": "sleep_monitor_data",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "SleepMonitor_Data",
+      "alt_direct_transition": "SleepAnalysis",
+      "name": "CircadianClock_Sim"
+    },
+    "SleepMonitor_Data": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "28633-6",
+          "display": "Polysomnography (sleep) study",
+          "value_set": ""
+        }
+      ],
+      "sampled_data": {
+        "attributes": [
+          "sleep_monitor_data"
+        ]
+      },
+      "direct_transition": "SleepMonitor_Chart",
+      "name": "SleepMonitor_Data"
+    },
+    "SleepMonitor_Chart": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "28633-6",
+          "display": "Polysomnography (sleep) study",
+          "value_set": ""
+        }
+      ],
+      "attachment": {
+        "chart": {
+          "type": "line",
+          "title": "Sleep Monitor - Circadium Rhythm",
+          "axis_attribute_x": "time",
+          "axis_attribute_y": "f(t)",
+          "width": 400,
+          "height": 200,
+          "series": [
+            {
+              "attribute": "sleep_monitor_data"
+            }
+          ]
+        }
+      },
+      "direct_transition": "Clear_SleepMonitor_result",
+      "name": "SleepMonitor_Chart"
+    },
+    "Clear_SleepMonitor_result": {
+      "type": "SetAttribute",
+      "attribute": "sleep_monitor_data",
+      "direct_transition": "SleepStudy_Baseline_Encounter_End",
+      "name": "Clear_SleepMonitor_result"
+    },
+    "SleepAnalysis": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "h",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration.",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Terminal",
+      "name": "SleepAnalysis",
+      "remarks": [
+        "2"
+      ]
+    },
+    "Sleep Apnea Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Active Condition",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": 73430006,
+            "display": "Sleep apnea"
+          }
+        ]
+      },
+      "name": "Sleep Apnea Guard",
+      "distributed_transition": [
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Wellness_Baseline_Encounter",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Snoring": {
+      "type": "Symptom",
+      "symptom": "Snoring",
+      "cause": "Sleep_Apnea",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 72863001,
+          "display": "Snoring (finding)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Snoring_Ends",
+      "name": "Snoring"
+    },
+    "Snoring_Ends": {
+      "type": "Symptom",
+      "symptom": "Snoring",
+      "cause": "Sleep_Apnea",
+      "direct_transition": "Sleep_Apnea_Resolved",
+      "name": "Snoring_Ends"
+    },
+    "Sleep_Apnea_Resolved": {
+      "type": "ConditionEnd",
+      "condition_onset": "Sleep Apnea Guard",
+      "direct_transition": "Terminal",
+      "name": "Sleep_Apnea_Resolved"
+    },
+    "Wellness_Baseline_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "emergency",
+      "reason": "Wellness_Baseline",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 444971000124105,
+          "display": "Annual wellness visit (procedure)",
+          "value_set": ""
+        }
+      ],
+      "name": "Wellness_Baseline_Encounter",
+      "direct_transition": "Wellness_Baseline_Encounter_End"
+    },
+    "Monitor_CPAP": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 702172008,
+        "display": "Home continuous positive airway pressure unit (physical object)"
+      },
+      "direct_transition": "Sleep_Study_Baseline",
+      "assign_to_attribute": "o2_data_cpap",
+      "name": "Monitor_CPAP"
+    },
+    "Sleep_Study_Baseline": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "1234",
+          "display": "SNOMED Code",
+          "value_set": ""
+        }
+      ],
+      "distribution": {
+        "kind": "UNIFORM",
+        "parameters": {
+          "high": 60,
+          "low": 30
+        }
+      },
+      "unit": "minutes",
+      "direct_transition": "CPAP_Baseline",
+      "name": "Sleep_Study_Baseline"
+    },
+    "CPAP_Baseline": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 47545007,
+          "display": "Continuous positive airway pressure ventilation treatment (regime/therapy)",
+          "value_set": ""
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "O2_Sim",
+      "name": "CPAP_Baseline"
+    },
+    "O2_Sim": {
+      "type": "Physiology",
+      "model": "Guyton1972_PulmonaryOxygenIntake.xml",
+      "solver": "euler",
+      "step_size": 0.1,
+      "sim_duration": 60,
+      "lead_time": 2,
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "OVA"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "PO2ART",
+          "to": "o2_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "CPAP_Data",
+      "alt_direct_transition": "Clear_CPAP_result",
+      "name": "O2_Sim"
+    },
+    "CPAP_Data": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2703-7",
+          "display": "Oxygen [Partial pressure] in Arterial blood",
+          "value_set": ""
+        }
+      ],
+      "sampled_data": {
+        "attributes": [
+          "o2_result"
+        ]
+      },
+      "direct_transition": "CPAP_Chart",
+      "name": "CPAP_Data"
+    },
+    "CPAP_Chart": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2703-7",
+          "display": "Oxygen [Partial pressure] in Arterial blood",
+          "value_set": ""
+        }
+      ],
+      "attachment": {
+        "chart": {
+          "type": "line",
+          "title": "CPAP O2 Usage",
+          "axis_attribute_x": "time",
+          "axis_attribute_y": "mmHg",
+          "width": 400,
+          "height": 200,
+          "series": [
+            {
+              "attribute": "o2_result"
+            }
+          ]
+        }
+      },
+      "direct_transition": "Clear_CPAP_result",
+      "name": "CPAP_Chart"
+    },
+    "Clear_CPAP_result": {
+      "type": "SetAttribute",
+      "attribute": "o2_result",
+      "direct_transition": "SleepAnalysis",
+      "name": "Clear_CPAP_result"
+    },
+    "Wellness_Baseline_Encounter_End": {
+      "type": "EncounterEnd",
+      "name": "Wellness_Baseline_Encounter_End",
+      "direct_transition": "SleepStudy_Baseline_Encounter"
+    }
+  },
+  "gmf_version": 1
+}
