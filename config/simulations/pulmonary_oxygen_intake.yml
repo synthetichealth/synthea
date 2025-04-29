@@ -1,0 +1,87 @@
+
+# Data and charts will be placed in output/physiology/{name}/
+# Data file will always be output/physiology/{name}/{name}.csv
+name: pulmonary_oxygen_intake
+
+# Name of the model file
+model: Guyton1972_PulmonaryOxygenIntake.xml
+
+# Which differential equation solver to use.
+# Options are: adams_bashforth, adams_moulton, dormand_prince_54, dormand_prince_853, euler, gragg_bulirsh_stoer, higham_hall_54, rosenbrock, runge_kutta
+solver: euler
+
+# Simulation step size in seconds. Note that this can have significant effects on the results and may impact the ability of the solver to complete successfully.
+stepSize: 0.1
+
+# Simulation duration in seconds
+duration: 60
+
+
+## Model parameter inputs. Any unspecified parameters will use the model's default value.
+inputs:
+    OVA: 60
+#    arr_t0: 0.25
+#    arr_t1: 0.35
+#    arr_base: 0.2
+#    rng_seed: 0.54345
+#    #e_variance: 0.3
+#    #vfib_start: 5
+#    #vfib_end: 10
+
+# What charts to draw. Results will be plotted on PNG images.
+# Note that chart support is a convenience feature and many chart options cannot be manipulated here.
+# If you need more control over the chart, import the csv file into another program with that capability.
+charts:
+    - filename: pulmonary_oxygen_intake.png
+      type: line
+      title: "pulmonary_oxygen_intake"
+      axisParamX: time
+      axisLabelX: time (s)
+      axisLabelY: N·m−2
+      #lowerBoundY: -0.05
+      #upperBoundY: 0.15
+      series:
+        - param: PO2ART
+
+        # - param: O2UTIL
+        # - param: VPF
+        # - param: O2DFS
+        # - param: OVA
+        # - param: DOVA
+
+        # - param: DOB
+        # - param: QRO
+        # - param: RMO
+        # - param: HM
+        # - param: ALVENT
+        # - param: PO2ALV
+        # - param: RSPDFC
+        # - param: PO2ART
+        # - param: OSA
+
+
+
+  # <parameter metaid="_323303" id="VPF" name="VPF" value="0.0123238" units="litre"/>
+  # <parameter metaid="_323306" id="DOB" name="DOB" value="163.508" units="mL_per_minute"/>
+  # <parameter metaid="_323307" id="QRO" name="QRO" value="4.97838" units="L_per_minute"/>
+  # <parameter metaid="_323308" id="RMO" name="RMO" value="56.8057" units="mL_per_minute"/>
+  # <parameter metaid="_323311" id="HM" name="HM" value="40.0381" units="dimensionless"/>
+  # <parameter metaid="_323312" id="O2UTIL" name="O2UTIL" units="mL_per_minute" constant="false"/>
+  # <parameter metaid="_323313" id="ALVENT" name="ALVENT" units="L_per_minute" constant="false"/>
+  # <parameter metaid="_323315" id="PO2ALV" name="PO2ALV" units="mmHg" constant="false"/>
+  # <parameter metaid="_323316" id="O2DFS" name="O2DFS" units="mL_per_minute" constant="false"/>
+  # <parameter metaid="_323319" id="RSPDFC" name="RSPDFC" units="mL_per_minute_per_mmHg" constant="false"/>
+  # <parameter metaid="_323320" id="OVA" name="OVA" value="204.497" units="mL_per_L" constant="false"/>
+  # <parameter metaid="_323323" id="DOVA" name="DOVA" units="mL_per_L_per_minute" constant="false"/>
+  # <parameter metaid="_323324" id="PO2ART" name="PO2ART" units="mmHg" constant="false"/>
+  # <parameter metaid="_323327" id="OSA" name="OSA" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323328" id="O2VTS2" name="O2VTS2" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323331" id="O2VTST" name="O2VTST" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323332" id="O2VTST1" name="O2VTST1" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323335" id="O2VAD2" name="O2VAD2" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323336" id="DO2VAD" name="DO2VAD" units="per_minute" constant="false"/>
+  # <parameter metaid="_323337" id="O2VAD1" name="O2VAD1" value="2.368e-07" units="dimensionless" constant="false"/>
+  # <parameter metaid="_323340" id="PO2AMB" name="PO2AMB" value="150" units="mmHg"/>
+  # <parameter metaid="_323341" id="PL2" name="PL2" value="1.8" units="L_mL_per_minute_per_mmHg"/>
+  # <parameter metaid="_323342" id="VPTISS" name="VPTISS" value="0.0175" units="litre"/>
+  # <parameter metaid="_323345" id="VNTSTM" name="VNTSTM" value="1" units="dimensionless"/>
