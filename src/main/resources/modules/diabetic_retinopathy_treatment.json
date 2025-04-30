@@ -82,7 +82,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Dilation"
+      "direct_transition": "Dilation",
+      "reason": "diabetes_stage"
     },
     "Check_IOP": {
       "type": "CallSubmodule",
@@ -105,7 +106,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Progress_DR_Vitals"
+      "direct_transition": "Progress_DR_Vitals",
+      "reason": "diabetes_stage"
     },
     "Gonioscopy": {
       "type": "Procedure",
@@ -123,7 +125,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Fundoscopy"
+      "direct_transition": "Fundoscopy",
+      "reason": "diabetes_stage"
     },
     "Examination of the peripheral retina and vitreous": {
       "type": "Procedure",
@@ -142,7 +145,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "Consider_OCT"
+      "direct_transition": "Consider_OCT",
+      "reason": "diabetes_stage"
     },
     "Consider_Panretinal_Laser": {
       "type": "Simple",
@@ -440,7 +444,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "End_Encounter",
+      "reason": "diabetic_retinopathy_condition"
     },
     "Grid_Laser": {
       "type": "Procedure",
@@ -459,7 +464,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "End_Encounter",
+      "reason": "macular_edema_condition"
     },
     "Progress_DR_Vitals": {
       "type": "CallSubmodule",
@@ -495,7 +501,8 @@
         }
       },
       "unit": "minutes",
-      "direct_transition": "End_Encounter"
+      "direct_transition": "End_Encounter",
+      "reason": "diabetic_retinopathy_condition"
     },
     "Numbing_Drops_Panretinal_Laser": {
       "type": "MedicationOrder",
@@ -605,7 +612,7 @@
     "Initial_Ophthalmic_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "diabetes_stage",
       "telemedicine_possibility": "none",
       "codes": [
         {

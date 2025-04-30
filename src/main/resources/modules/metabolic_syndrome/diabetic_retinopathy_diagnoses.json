@@ -50,7 +50,8 @@
           "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
-      "direct_transition": "Check_Proliferative_Retinopathy"
+      "direct_transition": "Check_Proliferative_Retinopathy",
+      "assign_to_attribute": "diabetic_retinopathy_condition"
     },
     "Check_Proliferative_Retinopathy": {
       "type": "Simple",
@@ -96,7 +97,8 @@
           "display": "Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)"
         }
       ],
-      "direct_transition": "Check_Macular_Edema"
+      "direct_transition": "Check_Macular_Edema",
+      "assign_to_attribute": "diabetic_retinopathy_condition"
     },
     "Check_Macular_Edema": {
       "type": "Simple",
@@ -142,7 +144,8 @@
           "display": "Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)"
         }
       ],
-      "direct_transition": "Check_Blindness"
+      "direct_transition": "Check_Blindness",
+      "assign_to_attribute": "macular_edema_condition"
     },
     "Check_Blindness": {
       "type": "Simple",
