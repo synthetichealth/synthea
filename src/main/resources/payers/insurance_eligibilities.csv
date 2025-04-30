@@ -1,9 +1,2 @@
-﻿Name,Poverty Multiplier,Income Threshold,Age Threshold,Qualifying Codes,Qualifying Attributes,Poverty Multiplier File,Spenddown File,Acceptance Likelihood,Sub-Eligibilities,Logical Operator,Notes
-StandardSocialSecurityDisability,,,,payers/eligibility_input_files/ssd_eligibility.csv,,,,0.85,,and,
-MedicareEligible,,,65,,end_stage_renal_disease = true,,,,StandardSocialSecurityDisability,or,
-MedicaidEligible,,,,,blindness = true,payers/eligibility_input_files/medicaid_income_eligibilities.csv,payers/eligibility_input_files/medicaid_mnil_eligibilities.csv,,,or,
-DualEligible,,,,,,,,0.85,MedicareEligible|MedicaidEligible,and,
-ACASubsidy150,1.5,,,,,,,0.75,,and,Eligibility for subsidized ACA plans under 150% of the Federal Poverty Level.
-ACASubsidy200,2.0,,,,,,,0.75,,and,Eligibility for subsidized ACA plans under 200% of the Federal Poverty Level.
-ACASubsidy300,3.0,,,,,,,0.75,,and,Eligibility for subsidized ACA plans under 300% of the Federal Poverty Level.
-ACASubsidy400,4.0,,,,,,,0.75,,and,Eligibility for subsidized ACA plans under 400% of the Federal Poverty Level.
+Name,Poverty Multiplier,Income Threshold,Age Threshold,Qualifying Codes,Qualifying Attributes,Poverty Multiplier File,Spenddown File,Acceptance Likelihood,Sub-Eligibilities,Logical Operator
+EveryoneEligible,,,0,,,,,,,

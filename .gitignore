@@ -51,3 +51,9 @@ src/main/resources/export/outpatient_rev_cntr_code_map.json
 
 # VS Code plugin files
 .history
+
+/output/
+
+/output_tx/
+/output_tx_*
+/output_tx01/
