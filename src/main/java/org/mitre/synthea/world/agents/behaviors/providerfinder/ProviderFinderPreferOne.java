@@ -9,7 +9,6 @@ import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
 /**
  * Finder that prioritizes a single provider based on NPI specified in configuration.
- * Also provides a static method to override initial person demographics based on this preference.
  * If the preferred provider is not available or suitable, it falls back to the nearest provider.
  */
 public class ProviderFinderPreferOne implements IProviderFinder {
