@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
-import java.util.Map;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
@@ -36,91 +35,12 @@ public class ProviderFinderPreferOne implements IProviderFinder {
     return isUsingPreferredProvider() ? Config.get(PREFER_ONE_NPI, null) : null;
   }
 
-  public static Provider getPreferredProvider() {
-    if (!isUsingPreferredProvider()) return null;
-
-    String preferredNpi = getPreferredNPI();
-    if (preferredNpi == null || preferredNpi.isEmpty()) {
-      System.err.println("WARNING: generate.providers.selection_behavior=PreferOne but " + PREFER_ONE_NPI + " is not set. Using demographic location.");
-      return null; // NPI not configured, do nothing.
-    }
-
-    // Check if we already have a cached provider with the correct NPI
-    if (cachedPreferredProvider != null && preferredNpi.equals(cachedNpi)) {
-      return cachedPreferredProvider;
-    }
-
-    Provider preferredProvider = null;
-    // Find the preferred provider by NPI from the loaded list
-    // Note: This assumes the provider is within the initially loaded set.
-    for (Provider p : Provider.getProviderList()) {
-      if (preferredNpi.equals(p.npi)) {
-        preferredProvider = p;
-        break;
-      }
-    }
-    
-    // Cache the result for future calls
-    cachedPreferredProvider = preferredProvider;
-    cachedNpi = preferredNpi;
-    
-    return preferredProvider;
-  }
-
-  /**
-   * Checks configuration for the PreferOne provider setting. If enabled and the
-   * preferred provider is found, overrides the City, State, and Coordinate
-   * entries in the provided demographics map with the provider's location.
-   * Logs warnings if the provider or its location data is not found.
-   *
-   * @param demoAttributes The map of demographic attributes to potentially modify.
-   * @throws ExceptionInInitializerError 
-   */
-  public static void overrideDemographicsIfPreferredProvider(Map<String, Object> demoAttributes) throws ExceptionInInitializerError {
-
-    Provider preferredProvider = getPreferredProvider();
-
-    if (preferredProvider != null) {
-      // Override demographics with preferred provider's location data
-      boolean cityOverridden = false;
-      boolean stateOverridden = false;
-      boolean coordsOverridden = false;
-
-      if (preferredProvider.city != null && !preferredProvider.city.isEmpty()) {
-        demoAttributes.put(Person.CITY, preferredProvider.city);
-        cityOverridden = true;
-      }
-      if (preferredProvider.state != null && !preferredProvider.state.isEmpty()) {
-        demoAttributes.put(Person.STATE, preferredProvider.state);
-        stateOverridden = true;
-      }
-      // IMPORTANT: Update coordinates as well for provider finding logic
-      java.awt.geom.Point2D.Double providerCoords = preferredProvider.getLonLat();
-      if (providerCoords != null) {
-        // Create a new Point2D object to avoid modifying the provider's instance
-        demoAttributes.put(Person.COORDINATE,
-            new java.awt.geom.Point2D.Double(providerCoords.getX(), providerCoords.getY()));
-        coordsOverridden = true;
-      }
-
-      if (!cityOverridden || !stateOverridden || !coordsOverridden) {
-        System.err.println("WARNING: Preferred provider NPI '" + preferredProvider.npi
-            + "' found, but missing location data (City: " + preferredProvider.city
-            + ", State: " + preferredProvider.state + ", Coords: " + providerCoords
-            + "). Not all location attributes were overridden.");
-      }
-
-    } else {
-      // provider wasn't found exit
-      throw new ExceptionInInitializerError("WARNING: Preferred provider NPI '" + getPreferredNPI() + "' configured but provider not found in loaded list. Using demographic location.");
-    }
-  }
-
-
+  
+  
   @Override
   public Provider find(List<Provider> providers, Person person, EncounterType service, long time) {
 
-    String preferredNpi = Config.get(PREFER_ONE_NPI, null);
+    String preferredNpi = getPreferredNPI();
 
     if (preferredNpi != null && !preferredNpi.isEmpty()) {
       // first check the list passed in (if the states line up with the detault state, e.g., MA, then it may be found in the list)
@@ -135,9 +55,26 @@ public class ProviderFinderPreferOne implements IProviderFinder {
   }
 
   private Provider findPreferredProvider(List<Provider> providers, String preferredNpi, Person person, EncounterType service, long time) {
-    for (Provider provider : providers) { // Iterate the passed-in list
+
+    if (!isUsingPreferredProvider()) return null;
+
+    if (preferredNpi == null || preferredNpi.isEmpty()) {
+      throw new ExceptionInInitializerError("ERROR: generate.providers.selection_behavior=PreferOne but " + PREFER_ONE_NPI + " is not set. Using demographic location.");
+    }
+  
+    // Check if we already have a cached provider with the correct NPI
+    if (cachedPreferredProvider != null && preferredNpi.equals(cachedNpi)) {
+      return cachedPreferredProvider;
+    }
+  
+    for (Provider provider : providers) {
+
         // Check if this provider matches the preferred NPI
         if (preferredNpi.equals(provider.npi)) {
+
+            cachedPreferredProvider = provider;
+            cachedNpi = provider.npi;
+          
             // Check if the preferred provider offers the service and accepts the patient
             if (provider.hasService(service) && provider.accepts(person, time)) {
                 return provider;
@@ -149,7 +86,9 @@ public class ProviderFinderPreferOne implements IProviderFinder {
             }
         }
     }
+    cachedPreferredProvider = null;
+    cachedNpi = null;
     return null;
-}
-  
+  }
+
 }

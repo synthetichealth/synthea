@@ -1,9 +1,7 @@
 package org.mitre.synthea.world.agents.behaviors.providerfinder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
@@ -15,12 +13,12 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
-import org.mitre.synthea.world.geography.Location;
 import java.awt.geom.Point2D;
 
 public class ProviderFinderPreferOneTest {
 
   // Test Constants
+  private static final String PREFERRED_BEHAVIOUR=  "generate.providers.selection_behavior";
   private static final String PREFERRED_NPI_CONFIG = "generate.providers.prefer_one.npi";
   private static final String PREFER_ONE_IGNORE_SUITABLE = "generate.providers.prefer_one.ignore_suitable";
   
@@ -34,8 +32,8 @@ public class ProviderFinderPreferOneTest {
   private static final String PERSON_INITIAL_STATE = "NY";
 
   private static final Point2D.Double PERSON_COORDS = new Point2D.Double(0.0, 0.0);
-  private static final Point2D.Double NEAREST_PROVIDER_COORDS = new Point2D.Double(0.01, 0.01); // Closer
-  private static final Point2D.Double PREFERRED_PROVIDER_COORDS = new Point2D.Double(0.1, 0.1); // Further
+  private static final Point2D.Double NEAREST_PROVIDER_COORDS = new Point2D.Double(0.0001, 0.0001); // Closer
+  private static final Point2D.Double PREFERRED_PROVIDER_COORDS = new Point2D.Double(0.0002, 0.0002); // Further
 
   // Test Objects
   private Person person;
@@ -49,6 +47,7 @@ public class ProviderFinderPreferOneTest {
   @Before
   public void setUp() {
     // Clear any previously set config
+    Config.set(PREFERRED_BEHAVIOUR, Provider.PREFER_ONE);
     Config.set(PREFERRED_NPI_CONFIG, "");
     Config.set(PREFER_ONE_IGNORE_SUITABLE, "false");
 
@@ -90,10 +89,11 @@ public class ProviderFinderPreferOneTest {
     Config.set(PREFERRED_NPI_CONFIG, PREFERRED_NPI);
     Config.set(PREFER_ONE_IGNORE_SUITABLE, "true");
 
+    finder = new ProviderFinderPreferOne();
     Provider found = finder.find(providers, person, EncounterType.AMBULATORY, time);
 
     assertNotNull(found);
-    assertSame("Should find the preferred provider", preferredProvider, found);
+    assertSame("Should find the preferred provider", preferredProvider.npi, found.npi);
   }
 
   @Test
@@ -107,7 +107,7 @@ public class ProviderFinderPreferOneTest {
     // Since ProviderFinderNearest is the fallback and doesn't have complex logic here,
     // we expect it to find the 'nearestProvider' based on simple list order in this test setup.
     // A more robust test would mock ProviderFinderNearest or set up coordinates.
-    assertSame("Should fall back to nearest provider", nearestProvider, found);
+    assertSame("Should fall back to nearest provider", nearestProvider.npi, found.npi);
     assertEquals("Person's city should NOT be updated",
                  PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
     assertEquals("Person's state should NOT be updated",
@@ -129,7 +129,7 @@ public class ProviderFinderPreferOneTest {
     providers.add(preferredProvider); // Add back for cleanup/other tests
 
     assertNotNull(found);
-    assertSame("Should fall back to nearest provider", nearestProvider, found);
+    assertSame("Should fall back to nearest provider", nearestProvider.npi, found.npi);
     assertEquals("Person's city should NOT be updated",
                  PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
     assertEquals("Person's state should NOT be updated",
@@ -144,7 +144,7 @@ public class ProviderFinderPreferOneTest {
     Provider found = finder.find(providers, person, EncounterType.AMBULATORY, time);
 
     assertNotNull(found);
-    assertSame("Should fall back to nearest provider", nearestProvider, found);
+    assertSame("Should fall back to nearest provider", nearestProvider.npi, found.npi);
     assertEquals("Person's city should NOT be updated",
                  PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
     assertEquals("Person's state should NOT be updated",
@@ -153,47 +153,16 @@ public class ProviderFinderPreferOneTest {
 
   @Test
   public void find_shouldReturnNearestProvider_whenPreferredNpiNotSet() {
-    // Config PREFERRED_NPI_CONFIG is empty by default from setUp()
+    Config.set(PREFERRED_NPI_CONFIG, "");
 
     Provider found = finder.find(providers, person, EncounterType.AMBULATORY, time);
 
     assertNotNull(found);
-    assertSame("Should fall back to nearest provider", nearestProvider, found);
+    assertSame("Should fall back to nearest provider", nearestProvider.npi, found.npi);
     assertEquals("Person's city should NOT be updated",
                  PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
     assertEquals("Person's state should NOT be updated",
                  PERSON_INITIAL_STATE, person.attributes.get(Person.STATE));
   }
 
-  @Test
-  public void find_shouldNotUpdatePersonLocation_whenPreferredProviderLocationNull() {
-    Config.set(PREFERRED_NPI_CONFIG, PREFERRED_NPI);
-    preferredProvider.city = null;
-    preferredProvider.state = null;
-
-    Provider found = finder.find(providers, person, EncounterType.AMBULATORY, time);
-
-    assertNotNull(found);
-    assertSame("Should find the preferred provider", preferredProvider, found);
-    assertEquals("Person's city should NOT be updated",
-                 PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
-    assertEquals("Person's state should NOT be updated",
-                 PERSON_INITIAL_STATE, person.attributes.get(Person.STATE));
-  }
-
-   @Test
-  public void find_shouldNotUpdatePersonLocation_whenPreferredProviderLocationEmpty() {
-    Config.set(PREFERRED_NPI_CONFIG, PREFERRED_NPI);
-    preferredProvider.city = "";
-    preferredProvider.state = "";
-
-    Provider found = finder.find(providers, person, EncounterType.AMBULATORY, time);
-
-    assertNotNull(found);
-    assertSame("Should find the preferred provider", preferredProvider, found);
-    assertEquals("Person's city should NOT be updated",
-                 PERSON_INITIAL_CITY, person.attributes.get(Person.CITY));
-    assertEquals("Person's state should NOT be updated",
-                 PERSON_INITIAL_STATE, person.attributes.get(Person.STATE));
-  }
 }

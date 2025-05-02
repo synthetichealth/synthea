@@ -754,7 +754,7 @@ public class Provider implements QuadTreeElement, Serializable {
     return new ArrayList<Provider>(providerByUuid.values());
   }
 
-  public static String findProviderStateByNPI(String npi) throws ExceptionInInitializerError {
+  public static Location findProviderLocationByNPI(String npi) throws ExceptionInInitializerError {
 
     for (String filename : PROVIDER_SOURCE_FILES) {
 
@@ -767,7 +767,9 @@ public class Provider implements QuadTreeElement, Serializable {
           Map<String,String> row = csv.next();
           String currNpi = row.get("npi");
 
-          if (npi.equals(currNpi) && row.get("state") != null) return Location.getStateName(row.get("state"));
+          if (npi.equals(currNpi) && row.get("state") != null) {
+            return new Location(Location.getStateName(row.get("state")), row.get("city"));
+          }
         }
       } catch (IOException e) {
         throw new ExceptionInInitializerError("ERROR: unable to find state for provider by NPI: '" + npi + "' configured but provider not found in loaded list. Using demographic location." + e.getMessage());

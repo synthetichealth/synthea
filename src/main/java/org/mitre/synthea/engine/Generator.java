@@ -213,7 +213,9 @@ public class Generator {
   private void init() {
     if (options.state == null) {
       if (ProviderFinderPreferOne.isUsingPreferredProvider()) {
-        options.state = Provider.findProviderStateByNPI(ProviderFinderPreferOne.getPreferredNPI());
+        Location providerLocation = Provider.findProviderLocationByNPI(ProviderFinderPreferOne.getPreferredNPI());
+        options.state = providerLocation.state;
+        options.city = providerLocation.city;
       } else {
         options.state = DEFAULT_STATE;
       }
@@ -651,9 +653,6 @@ public class Generator {
     // Initialize person.
     Person person = new Person(personSeed);
     person.populationSeed = this.options.seed;
-
-    // Check if we need to override demographics based on preferred provider setting
-    ProviderFinderPreferOne.overrideDemographicsIfPreferredProvider(demoAttributes);
 
     person.attributes.putAll(demoAttributes);
     person.attributes.put(Person.LOCATION, this.location);
