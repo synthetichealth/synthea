@@ -1,0 +1,80 @@
+{
+  "name": "anti_amyloid_beta_monoclonal_antibody_infusions",
+  "remarks": [
+    "This module depends on the Dementia and Anti-Amyloid-Beta Monoclonal Antibody Treatment modules, and uses the shared medications/anti_ab_mabs_selection submodule."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait Until Study is Active"
+    },
+    "Wait Until Study is Active": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study",
+            "operator": "==",
+            "value": true
+          }
+        ]
+      },
+      "direct_transition": "Wait for Infusion Appointment"
+    },
+    "Wait for Infusion Appointment": {
+      "type": "Delay",
+      "distribution": {
+        "kind": "EXACT",
+        "parameters": {
+          "value": 2
+        }
+      },
+      "unit": "weeks",
+      "conditional_transition": [
+        {
+          "transition": "Infusion Encounter",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "anti-ab-mab-ced-study",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Wait for Infusion Appointment"
+        }
+      ]
+    },
+    "Infusion Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Type of Alzheimer's",
+      "telemedicine_possibility": "none",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387760006",
+          "display": "Infusion care (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Receive_mAbs"
+    },
+    "End Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait for Infusion Appointment"
+    },
+    "Receive_mAbs": {
+      "type": "CallSubmodule",
+      "submodule": "medications/anti_ab_mabs_selection",
+      "direct_transition": "End Encounter"
+    }
+  },
+  "gmf_version": 2
+}
