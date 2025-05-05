@@ -1,5 +1,10 @@
 package org.mitre.synthea.export;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.nio.file.Files;
 
@@ -14,11 +19,6 @@ import org.mitre.synthea.engine.Generator.GeneratorOptions;
 import org.mitre.synthea.export.Exporter.ExporterRuntimeOptions;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
 
 public class CSVExporterTest {
   /**
@@ -246,7 +246,8 @@ public class CSVExporterTest {
       CSVExporter.getInstance().init();
     });
 
-    assertEquals("CSV exporter cannot include and exclude the same file: medications.csv", exception.getMessage());
+    assertEquals("CSV exporter cannot include and exclude the same file:"
+            + " medications.csv", exception.getMessage());
   }
 
   @Test
@@ -257,7 +258,8 @@ public class CSVExporterTest {
     try {
       CSVExporter.getInstance().init();
     } catch (IllegalArgumentException e) {
-      fail("CSV exporter should not throw an exception when there is no overlap between included and excluded files");
+      fail("CSV exporter should not throw an exception when "
+              + "there is no overlap between included and excluded files");
     }
   }
 
@@ -269,7 +271,8 @@ public class CSVExporterTest {
     try {
       CSVExporter.getInstance().init();
     } catch (IllegalArgumentException e) {
-      fail("CSV exporter should not throw an exception when only included files are set");
+      fail("CSV exporter should not throw an exception when "
+              + "only included files are set");
     }
   }
 
@@ -281,7 +284,8 @@ public class CSVExporterTest {
     try {
       CSVExporter.getInstance().init();
     } catch (IllegalArgumentException e) {
-      fail("CSV exporter should not throw an exception when only included files are set");
+      fail("CSV exporter should not throw an exception when "
+             + "only included files are set");
     }
   }
 
