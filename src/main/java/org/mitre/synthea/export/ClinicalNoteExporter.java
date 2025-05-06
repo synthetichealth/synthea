@@ -130,6 +130,11 @@ public class ClinicalNoteExporter {
     person.attributes.put("ehr_medications", encounter.medications);
     person.attributes.put("ehr_careplans", encounter.careplans);
     person.attributes.put("ehr_imaging_studies", encounter.imagingStudies);
+    if (encounter.note == null) {
+      person.attributes.remove("ehr_note");
+    } else {
+      person.attributes.put("ehr_note", encounter.note);
+    }
     person.attributes.put("time", encounter.start);
     if (person.attributes.containsKey(LifecycleModule.QUIT_SMOKING_AGE)) {
       person.attributes.put("quit_smoking_age",

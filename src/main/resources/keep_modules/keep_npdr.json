@@ -1,0 +1,36 @@
+{
+  "name": "Generated Keep Module",
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "name": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "1551000119108",
+                "display": "Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)"
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Keep": {
+      "type": "Terminal",
+      "name": "Keep"
+    }
+  },
+  "gmf_version": 2
+}

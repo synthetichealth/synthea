@@ -167,6 +167,7 @@ public class HealthRecord implements Serializable {
     public String type;
     public List<Code> codes;
     private BigDecimal cost;
+    public String note;
 
     /**
      * Constructor for Entry.
