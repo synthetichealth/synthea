@@ -1,7 +1,9 @@
 package org.mitre.synthea.export;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -235,5 +237,67 @@ public class CSVExporterTest {
 
   }
 
+  @Test
+  public void throwsExceptionWhenFileIncludedAndExcluded() {
+    Config.set("exporter.csv.included_files", "patients.csv,medications.csv");
+    Config.set("exporter.csv.excluded_files", "medications.csv,procedures.csv");
 
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+      CSVExporter.getInstance().init();
+    });
+
+    assertEquals("CSV exporter cannot include and exclude the same file:"
+            + " medications.csv", exception.getMessage());
+  }
+
+  @Test
+  public void doesNotThrowWhenNoOverlapBetweenIncludedAndExcludedFiles() {
+    Config.set("exporter.csv.included_files", "patients.csv,medications.csv");
+    Config.set("exporter.csv.excluded_files", "procedures.csv,observations.csv");
+
+    try {
+      CSVExporter.getInstance().init();
+    } catch (IllegalArgumentException e) {
+      fail("CSV exporter should not throw an exception when "
+              + "there is no overlap between included and excluded files");
+    }
+  }
+
+  @Test
+  public void doesNotThrowWhenOnlyIncludedFilesAreSet() {
+    Config.set("exporter.csv.included_files", "patients.csv,medications.csv");
+    Config.set("exporter.csv.excluded_files", "");
+
+    try {
+      CSVExporter.getInstance().init();
+    } catch (IllegalArgumentException e) {
+      fail("CSV exporter should not throw an exception when "
+              + "only included files are set");
+    }
+  }
+
+  @Test
+  public void doesNotThrowWhenOnlyExcludedFilesAreSet() {
+    Config.set("exporter.csv.included_files", "");
+    Config.set("exporter.csv.excluded_files", "patients.csv,medications.csv");
+
+    try {
+      CSVExporter.getInstance().init();
+    } catch (IllegalArgumentException e) {
+      fail("CSV exporter should not throw an exception when "
+             + "only included files are set");
+    }
+  }
+
+  @Test
+  public void doesNotThrowWhenBothIncludedAndExcludedFilesAreEmpty() {
+    Config.set("exporter.csv.included_files", "");
+    Config.set("exporter.csv.excluded_files", "");
+
+    try {
+      CSVExporter.getInstance().init();
+    } catch (IllegalArgumentException e) {
+      fail("CSV exporter should not throw an exception when only included files are set");
+    }
+  }
 }
