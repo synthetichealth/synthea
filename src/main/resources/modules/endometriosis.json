@@ -1,3 +1,4 @@
+
 {
   "name": "Endometriosis",
   "remarks": [
@@ -42,19 +43,11 @@
     "Female": {
       "type": "Simple",
       "remarks": [
+        "All reproductive-age women are eligible for endometriosis, but only 10% will develop it.",
         "WHO data from 2023 shows endometriosis affects roughly 10% (190 million) of reproductive-age women globally.",
         "https://www.who.int/news-room/fact-sheets/detail/endometriosis"
       ],
-      "distributed_transition": [
-        {
-          "transition": "Age_15-44",
-          "distribution": 0.10
-        },
-        {
-          "distribution": 0.90,
-          "transition": "Terminal"
-        }
-      ],
+      "direct_transition": "Age_15-44",
       "name": "Female"
     },
     "Endometriosis": {
@@ -223,13 +216,22 @@
     },
     "Age_15-44": {
       "type": "Delay",
-      "direct_transition": "Endometriosis",
       "range": {
         "low": 15,
         "high": 44,
         "unit": "years"
       },
-      "name": "Age_15-44"
+      "name": "Age_15-44",
+      "distributed_transition": [
+        {
+          "transition": "Endometriosis",
+          "distribution": 0.10
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.90
+        }
+      ]
     },
     "Prescribe Aromatase Inhibitor": {
       "type": "MedicationOrder",
