@@ -1,26 +1,79 @@
 {
   "name": "Wearables_SleepApnea",
   "remarks": [
-    "The regulation of sleep is processed by the homeostatic physiology of the circadian rhythm, the sleep/wake cycle. Circadian rhythm is the 24-hour internal clock in our brain that regulates cycles of alertness and sleepiness by responding to light changes in our environment. ",
+    "The regulation of sleep is processed by the homeostatic physiology of the circadian rhythm, the sleep/wake cycle. Circadian rhythm is the 24-hour internal clock in our brain that regulates cycles of alertness and sleepiness by responding to light changes in our environment.",
+    "This module models sleep apnea onset, diagnosis, and monitoring using wearable devices.",
+    "Updated prevalence statistics: Sleep apnea affects approximately 2-9% of adults, with higher rates in men and older adults.",
     "",
     "References",
     "https://www.ncbi.nlm.nih.gov/books/NBK519507/",
     "https://houstonsleepsolutions.com/blog/the-statistics-of-sleep-apnea/",
     "",
     "Known model limitations:",
-    "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test.  Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
-    "This model can be interected with another function (i.e. a line), to produce a sleep/wake cycle.  Additional information on how to do this is provided in the Wiki.",
-    "This model me be useful in generating cyclical daily habits, such as taking medicaitons in the morning, exercising at certain times of the day, and so forth.  Please see the Wiki for additional details."
+    "This model produces continuous data over 24hrs, and would not typically be reportable in any sort of laboratory test. Clinical tests of melatonin or cortisol would take discrete sample at a specific time.",
+    "This model can be integrated with another function (i.e. a line), to produce a sleep/wake cycle. Additional information on how to do this is provided in the Wiki.",
+    "This model may be useful in generating cyclical daily habits, such as taking medications in the morning, exercising at certain times of the day, and so forth. Please see the Wiki for additional details."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
       "name": "Initial",
-      "direct_transition": "Sleep Apnea Guard"
+      "distributed_transition": [
+        {
+          "transition": "Sleep_Apnea_Risk_Assessment",
+          "distribution": 0.05,
+          "condition": {
+            "condition_type": "Age",
+            "operator": ">=",
+            "quantity": 30,
+            "unit": "years"
+          }
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.95
+        }
+      ]
     },
     "Terminal": {
       "type": "Terminal",
       "name": "Terminal"
+    },
+    "Sleep_Apnea_Risk_Assessment": {
+      "type": "Simple",
+      "name": "Sleep_Apnea_Risk_Assessment",
+      "distributed_transition": [
+        {
+          "transition": "Sleep_Apnea_Onset",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.4
+        }
+      ]
+    },
+    "Sleep_Apnea_Onset": {
+      "type": "ConditionOnset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 73430006,
+          "display": "Sleep apnea (disorder)",
+          "value_set": ""
+        }
+      ],
+      "name": "Sleep_Apnea_Onset",
+      "distributed_transition": [
+        {
+          "transition": "Symptom_Onset_Delay",
+          "distribution": 0.8
+        },
+        {
+          "transition": "Wellness_Baseline_Encounter",
+          "distribution": 0.2
+        }
+      ]
     },
     "Symptom_Onset_Delay": {
       "type": "Delay",
@@ -33,18 +86,19 @@
       "distributed_transition": [
         {
           "transition": "Snoring",
-          "distribution": 0.5
+          "distribution": 0.7
         },
         {
-          "transition": "Insomia_Symptom",
-          "distribution": 1
+          "transition": "Insomnia_Symptom",
+          "distribution": 0.3
         }
       ]
     },
-    "Insomia_Symptom": {
+    "Insomnia_Symptom": {
       "type": "Symptom",
       "symptom": "Insomnia",
-      "cause": "Sleep_Apnea",
+      "cause": "Sleep_Apnea_Onset",
+      "probability": 0.6,
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -53,25 +107,25 @@
           "value_set": ""
         }
       ],
-      "direct_transition": "Insomia_Symptom_Ends",
-      "name": "Insomia_Symptom"
+      "direct_transition": "Insomnia_Symptom_Ends",
+      "name": "Insomnia_Symptom"
     },
-    "Insomia_Symptom_Ends": {
+    "Insomnia_Symptom_Ends": {
       "type": "Symptom",
       "symptom": "Insomnia",
-      "cause": "Sleep_Apnea",
-      "direct_transition": "Physical_Activity_Resumes",
-      "name": "Insomia_Symptom_Ends"
+      "cause": "Sleep_Apnea_Onset",
+      "direct_transition": "Sleep_Study_Referral",
+      "name": "Insomnia_Symptom_Ends"
     },
-    "Physical_Activity_Resumes": {
+    "Sleep_Study_Referral": {
       "type": "ConditionEnd",
-      "condition_onset": "Sleep Apnea Guard",
+      "condition_onset": "Sleep_Apnea_Onset",
       "direct_transition": "Terminal",
-      "name": "Physical_Activity_Resumes"
+      "name": "Sleep_Study_Referral"
     },
     "SleepStudy_Baseline_Encounter": {
       "type": "Encounter",
-      "encounter_class": "emergency",
+      "encounter_class": "ambulatory",
       "reason": "SleepStudy_Baseline",
       "codes": [
         {
@@ -191,7 +245,7 @@
       "attachment": {
         "chart": {
           "type": "line",
-          "title": "Sleep Monitor - Circadium Rhythm",
+          "title": "Sleep Monitor - Circadian Rhythm",
           "axis_attribute_x": "time",
           "axis_attribute_y": "f(t)",
           "width": 400,
@@ -227,37 +281,14 @@
       "direct_transition": "Terminal",
       "name": "SleepAnalysis",
       "remarks": [
-        "2"
-      ]
-    },
-    "Sleep Apnea Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Active Condition",
-        "codes": [
-          {
-            "system": "SNOMED-CT",
-            "code": 73430006,
-            "display": "Sleep apnea"
-          }
-        ]
-      },
-      "name": "Sleep Apnea Guard",
-      "distributed_transition": [
-        {
-          "transition": "Symptom_Onset_Delay",
-          "distribution": 0.8
-        },
-        {
-          "transition": "Wellness_Baseline_Encounter",
-          "distribution": 0.2
-        }
+        "Average sleep duration observation"
       ]
     },
     "Snoring": {
       "type": "Symptom",
       "symptom": "Snoring",
-      "cause": "Sleep_Apnea",
+      "cause": "Sleep_Apnea_Onset",
+      "probability": 0.9,
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -272,19 +303,19 @@
     "Snoring_Ends": {
       "type": "Symptom",
       "symptom": "Snoring",
-      "cause": "Sleep_Apnea",
+      "cause": "Sleep_Apnea_Onset",
       "direct_transition": "Sleep_Apnea_Resolved",
       "name": "Snoring_Ends"
     },
     "Sleep_Apnea_Resolved": {
       "type": "ConditionEnd",
-      "condition_onset": "Sleep Apnea Guard",
+      "condition_onset": "Sleep_Apnea_Onset",
       "direct_transition": "Terminal",
       "name": "Sleep_Apnea_Resolved"
     },
     "Wellness_Baseline_Encounter": {
       "type": "Encounter",
-      "encounter_class": "emergency",
+      "encounter_class": "ambulatory",
       "reason": "Wellness_Baseline",
       "codes": [
         {
@@ -313,8 +344,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
-          "display": "SNOMED Code",
+          "code": 60554003,
+          "display": "Polysomnography (procedure)",
           "value_set": ""
         }
       ],

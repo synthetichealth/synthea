@@ -33,6 +33,12 @@ part of the normal Synthea execution procedure.
   ./gradlew physiology --args="config/simulations/weight_change.yml"
 ```
 
+## Synthea Usage
+
+```
+/run_synthea -s 21 -p 1000 Indiana "Evansville" --physiology.generators.enabled="true" --physiology.state.enabled="true"
+```
+
 ## Output 
 
 Graphs and raw data in CVS files will be found in `output/physiology` folder.  
