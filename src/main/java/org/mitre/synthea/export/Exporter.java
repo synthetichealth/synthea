@@ -323,7 +323,7 @@ public abstract class Exporter {
         writeNewFile(outFilePath, bundleJson);
       }
     }
-    if (Config.getAsBoolean("exporter.fhir.phr_format")) {
+    if (Config.getAsBoolean("exporter.fhir.phr")) {
       PHRExporter.export(person, stopTime);
     }
     if (Config.getAsBoolean("exporter.fhir.export")) {
