@@ -127,15 +127,18 @@
     "Basic_Fitness_Tracking": {
       "type": "Observation",
       "category": "survey",
-      "unit": "",
+      "unit": "{steps}",
       "codes": [
         {
           "system": "http://loinc.org",
           "code": "55423-8",
-          "display": "Number of steps in unspecified time Pedometer",
-          "value_set": ""
+          "display": "Number of steps in unspecified time Pedometer"
         }
       ],
+      "range": {
+        "low": 2000,
+        "high": 15000
+      },
       "direct_transition": "Terminal",
       "name": "Basic_Fitness_Tracking"
     },
@@ -186,7 +189,6 @@
     "Fitness_Baseline": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -201,7 +203,7 @@
     "Cycling_Baseline_Distance": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "km",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -210,13 +212,17 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 5,
+        "high": 50
+      },
       "direct_transition": "Running_Baseline_StepCount",
       "name": "Cycling_Baseline_Distance"
     },
     "Running_Baseline_StepCount": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "{steps}",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -225,13 +231,17 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 8000,
+        "high": 20000
+      },
       "direct_transition": "Running_Baseline_Distance",
       "name": "Running_Baseline_StepCount"
     },
     "Running_Baseline_Distance": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "km",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -240,13 +250,17 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 2,
+        "high": 10
+      },
       "direct_transition": "Running_Baseline_DoubleSupport_Percentage",
       "name": "Running_Baseline_Distance"
     },
     "Running_Baseline_DoubleSupport_Percentage": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "%",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -255,13 +269,17 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 15,
+        "high": 35
+      },
       "direct_transition": "Running_Baseline_WalkingSpeed",
       "name": "Running_Baseline_DoubleSupport_Percentage"
     },
     "Running_Baseline_WalkingSpeed": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "km/h",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -270,13 +288,17 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 3,
+        "high": 6
+      },
       "direct_transition": "FlightsClimbed_Baseline",
       "name": "Running_Baseline_WalkingSpeed"
     },
     "FlightsClimbed_Baseline": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "{flights}",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -285,6 +307,10 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 5,
+        "high": 50
+      },
       "direct_transition": "ECG_Baseline",
       "name": "FlightsClimbed_Baseline"
     },
@@ -389,7 +415,7 @@
     "SleepAnalysis": {
       "type": "Observation",
       "category": "exam",
-      "unit": "",
+      "unit": "h",
       "codes": [
         {
           "system": "http://loinc.org",
@@ -398,6 +424,10 @@
           "value_set": ""
         }
       ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
       "direct_transition": "Wellness_Baseline_Encounter_End",
       "name": "SleepAnalysis"
     }
