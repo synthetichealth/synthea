@@ -32,6 +32,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.mitre.synthea.engine.Generator;
+import org.mitre.synthea.export.PHRExporter;
 import org.mitre.synthea.export.flexporter.Actions;
 import org.mitre.synthea.export.flexporter.FhirPathUtils;
 import org.mitre.synthea.export.flexporter.FlexporterJavascriptContext;
@@ -321,6 +322,9 @@ public abstract class Exporter {
         Path outFilePath = outDirectory.toPath().resolve(filename(person, fileTag, "json"));
         writeNewFile(outFilePath, bundleJson);
       }
+    }
+    if (Config.getAsBoolean("exporter.fhir.phr_format")) {
+      PHRExporter.export(person, stopTime);
     }
     if (Config.getAsBoolean("exporter.fhir.export")) {
       File outDirectory = getOutputFolder("fhir", person);
