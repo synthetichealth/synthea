@@ -125,6 +125,7 @@ public abstract class TestHelper {
     Config.set("exporter.practitioner.fhir_stu3.export", "false");
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
     Config.set("exporter.json.export", "false");
+    Config.set("exporter.ndjson.export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.cpcds.export", "false");
     Config.set("exporter.bfd.export", "false");
