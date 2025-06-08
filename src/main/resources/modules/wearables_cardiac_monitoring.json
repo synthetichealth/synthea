@@ -376,7 +376,7 @@
             }
           ]
         }
-      ],
+      },
       "direct_transition": "Clear_ECG_result",
       "name": "ECG_Chart"
     },
