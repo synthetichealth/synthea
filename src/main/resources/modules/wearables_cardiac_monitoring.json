@@ -368,6 +368,7 @@
           "type": "line",
           "title": "Electrocardiogram",
           "axis_attribute_x": "time",
+          "axis_attribute_y": "mV",
           "width": 400,
           "height": 200,
           "series": [
