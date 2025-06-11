@@ -55,7 +55,7 @@
         "high": 7,
         "unit": "days"
       },
-      "direct_transition": "Encounter for  Second Line Treatment"
+      "direct_transition": "Encounter for Second Line Treatment"
     },
     "R-DHAP": {
       "type": "MedicationOrder",
@@ -224,7 +224,7 @@
       "direct_transition": "Length of Drug Treatment - Transplant",
       "assign_to_attribute": "second_line_drug_regimen"
     },
-    "Encounter for  Second Line Treatment": {
+    "Encounter for Second Line Treatment": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "",
@@ -292,7 +292,7 @@
       "type": "EncounterEnd",
       "distributed_transition": [
         {
-          "transition": "Second Line Treatment Inneffective",
+          "transition": "Second Line Treatment Ineffective",
           "distribution": 0.1
         },
         {
@@ -424,12 +424,12 @@
     },
     "Check-Up After Second Line Treatment": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "1234",
+          "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
       ],
@@ -469,7 +469,7 @@
         "According to Dr. Wood, if you received second line treatment and achieved remission, you don’t go onto CAR-T. Wait for subsequent progression of disease and then go onto CAR-T."
       ]
     },
-    "Second Line Treatment Inneffective": {
+    "Second Line Treatment Ineffective": {
       "type": "Observation",
       "category": "procedure",
       "unit": "",
