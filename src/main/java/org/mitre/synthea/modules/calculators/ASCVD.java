@@ -9,8 +9,19 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
+/**
+ * Atherosclerotic Cardiovascular Disease (ASCVD) risk calculator and utilities.
+ * 
+ * Implements clinical algorithms for calculating cardiovascular disease risk
+ * based on patient demographics, medical history, and risk factors according
+ * to established clinical guidelines.
+ */
 public class ASCVD {
 
+  /**
+   * Duration constant representing ten years in milliseconds.
+   * Used for cardiovascular risk calculations that evaluate 10-year risk periods.
+   */
   public static final long TEN_YEARS_IN_MS = TimeUnit.DAYS.toMillis(3650);
 
   /**

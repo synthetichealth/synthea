@@ -51,6 +51,12 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class Attributes {
 
+  /**
+   * Manages inventory of medical supplies, medications, and equipment.
+   * 
+   * Tracks availability and usage of healthcare resources within
+   * medical facilities and patient care scenarios.
+   */
   public class Inventory {
     /** Key: Module Name, Values: State names that read this attribute. */
     public Map<String,Set<String>> read;

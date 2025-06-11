@@ -348,10 +348,16 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Export codes that were not mappable during export.
-   * These missing codes might be accidental, they may be intentional.
+   * Exports any missing medical codes that were not found during processing.
+   * This method generates a report of unmapped codes for review and potential
+   * addition to the coding system mappings.
+   * 
+   * @throws IOException if there is an error writing the missing codes file
    */
   public void exportMissingCodes() throws IOException {
+
+
+
     if (Config.getAsBoolean("exporter.bfd.export_missing_codes", true)) {
       List<Map<String, String>> allMissingCodes = new LinkedList<>();
       allMissingCodes.addAll(conditionCodeMapper.getMissingCodes());
@@ -375,11 +381,15 @@ public class BB2RIFExporter {
   }
 
   /**
-   * Export a single person.
-   * @param person the person to export
-   * @param stopTime end time of simulation
-   * @param yearsOfHistory number of years of claims to export
-   * @throws IOException if something goes wrong
+   * Exports a single patient's data to RIF (Research Identifiable Files) format.
+   * Processes the patient's complete medical history within the specified time range
+   * and generates corresponding RIF files for Medicare claims analysis.
+   * 
+   * @param person the patient whose data should be exported
+   * @param stopTime the end time for the export period
+   * @param yearsOfHistory number of years of history to include in export
+   * @return true if the export was successful, false otherwise
+   * @throws IOException if there is an error writing the RIF files
    */
   public boolean export(Person person, long stopTime, int yearsOfHistory) throws IOException {
     Map<EXPORT_SUMMARY, String> exportCounts = new HashMap<>();
