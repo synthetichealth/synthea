@@ -55,7 +55,7 @@
       "encounter_class": "snf",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "185349003",
           "display": "Encounter for check up (procedure)"
         }
@@ -68,7 +68,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "52491-8",
           "display": "Brief Interview for Mental Status"
         }
@@ -86,7 +86,7 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "54614-3",
           "display": "BIMS Summary Score"
         }
@@ -103,7 +103,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "225399008",
           "display": "Mobility assessment (procedure)"
         }
@@ -121,13 +121,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95013-9",
           "display": "Bed mobility - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30909-8",
         "display": "Independent"
       },
@@ -139,13 +139,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95012-1",
           "display": "Transfer - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30910-6",
         "display": "Setup help only"
       },
@@ -157,13 +157,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95011-3",
           "display": "Walk in room - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30911-4",
         "display": "Supervision or touching assistance"
       },
@@ -174,7 +174,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "273542005",
           "display": "Activities of daily living assessment (procedure)"
         }
@@ -192,13 +192,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95019-6",
           "display": "Eating - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30909-8",
         "display": "Independent"
       },
@@ -210,13 +210,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95018-8",
           "display": "Oral hygiene - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30910-6",
         "display": "Setup help only"
       },
@@ -228,13 +228,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95017-0",
           "display": "Toileting hygiene - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30911-4",
         "display": "Supervision or touching assistance"
       },
@@ -259,7 +259,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "410157005",
           "display": "Speech and language assessment (procedure)"
         }
@@ -277,7 +277,7 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "99858-3",
           "display": "Functional Communication Measure - Swallowing score [ASHA NOMS]"
         }
@@ -349,7 +349,7 @@
       "encounter_class": "snf",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "390906007",
           "display": "Follow-up encounter (procedure)"
         }
@@ -376,7 +376,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "225399008",
           "display": "Mobility assessment (procedure)"
         }
@@ -394,13 +394,13 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "95012-1",
           "display": "Transfer - functional ability during assessment period"
         }
       ],
       "value_code": {
-        "system": "LOINC",
+        "system": "http://loinc.org",
         "code": "LA30910-6",
         "display": "Setup help only"
       },
@@ -426,7 +426,7 @@
       "category": "survey",
       "codes": [
         {
-          "system": "LOINC",
+          "system": "http://loinc.org",
           "code": "54614-3",
           "display": "BIMS Summary Score"
         }

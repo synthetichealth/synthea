@@ -25,7 +25,7 @@
       "encounter_class": "snf",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "32485007",
           "display": "Hospital admission (procedure)"
         }
@@ -85,7 +85,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "63332003",
           "display": "History AND physical examination (procedure)"
         }
@@ -96,7 +96,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "315639002",
           "display": "Initial patient assessment (procedure)"
         }
@@ -107,7 +107,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "370789001",
           "display": "Development of individualized plan of care (procedure)"
         }
@@ -125,7 +125,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "410401003",
           "display": "Nursing care/supplementary surveillance (regime/therapy)"
         }
@@ -149,7 +149,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "91251008",
           "display": "Physical therapy procedure (regime/therapy)"
         }
@@ -178,7 +178,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "84478008",
           "display": "Occupational therapy (regime/therapy)"
         }
@@ -202,7 +202,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "311555007",
           "display": "Speech and language therapy regime (regime/therapy)"
         }
@@ -226,7 +226,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "409023009",
           "display": "Professional / ancillary services care (regime/therapy)"
         }
@@ -250,7 +250,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "392091000",
           "display": "Care regimes assessment (procedure)"
         }
@@ -285,7 +285,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "225386006",
           "display": "Pre-discharge assessment (procedure)"
         }
@@ -296,7 +296,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "308283009",
           "display": "Discharge from hospital (procedure)"
         }
@@ -313,7 +313,7 @@
     "Facility_Wheelchair": {
       "type": "Device",
       "code": {
-        "system": "SNOMED-CT",
+        "system": "http://snomed.info/sct",
         "code": "228869008",
         "display": "Manual wheelchair (physical object)"
       },
@@ -336,7 +336,7 @@
       "attribute": "snf_reason",
       "direct_transition": "SNF_Admission",
       "value_code": {
-        "system": "SNOMED-CT",
+        "system": "http://snomed.info/sct",
         "code": "25675004",
         "display": "Patient transfer to skilled nursing facility (procedure)"
       }

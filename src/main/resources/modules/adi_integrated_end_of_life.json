@@ -27,7 +27,7 @@
             "condition_type": "Active Condition",
             "codes": [
               {
-                "system": "SNOMED-CT",
+                "system": "http://snomed.info/sct",
                 "code": "230690007",
                 "display": "Cerebrovascular accident (disorder)"
               }
@@ -37,7 +37,7 @@
             "condition_type": "Active Condition",
             "codes": [
               {
-                "system": "SNOMED-CT",
+                "system": "http://snomed.info/sct",
                 "code": "22298006",
                 "display": "Myocardial infarction (disorder)"
               }
@@ -47,7 +47,7 @@
             "condition_type": "Active Condition",
             "codes": [
               {
-                "system": "SNOMED-CT",
+                "system": "http://snomed.info/sct",
                 "code": "65710008",
                 "display": "Acute respiratory failure (disorder)"
               }
@@ -80,7 +80,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "398204009",
           "display": "Review of advance directive (procedure)"
         }
@@ -115,7 +115,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "304252001",
           "display": "Do not resuscitate (procedure)"
         }
@@ -127,7 +127,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "89666000",
           "display": "Cardiopulmonary resuscitation (procedure)"
         }
@@ -198,7 +198,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "182840001",
           "display": "Refused mechanical ventilation (situation)"
         }
@@ -210,7 +210,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "40617009",
           "display": "Artificial ventilation (procedure)"
         }
@@ -241,7 +241,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "425396009",
           "display": "Withdrawal of life support (procedure)"
         }
@@ -253,7 +253,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "40617009",
           "display": "Artificial ventilation (procedure)"
         }
@@ -265,7 +265,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "133918004",
           "display": "Intensive care treatment (procedure)"
         }
@@ -304,7 +304,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "182842009",
           "display": "Refused artificial feeding (situation)"
         }
@@ -316,7 +316,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "229912004",
           "display": "Enteral feeding (procedure)"
         }
@@ -333,7 +333,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "229912004",
           "display": "Enteral feeding (procedure)"
         }
@@ -370,7 +370,7 @@
       "type": "SetAttribute",
       "attribute": "hospice_reason",
       "value_code": {
-        "system": "SNOMED-CT",
+        "system": "http://snomed.info/sct",
         "code": "385736008",
         "display": "Advance directive followed (finding)"
       },
@@ -381,7 +381,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "103735009",
           "display": "Palliative care (procedure)"
         }
@@ -398,7 +398,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "89666000",
           "display": "Cardiopulmonary resuscitation (procedure)"
         }
@@ -425,7 +425,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "385736008",
           "display": "Advance directive followed (finding)"
         }
@@ -455,7 +455,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "308292007",
           "display": "Contact with family member (procedure)"
         }
@@ -467,7 +467,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "182857004",
           "display": "Healthcare decision made by agent (finding)"
         }
@@ -479,7 +479,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "308292007",
           "display": "Contact with family member (procedure)"
         }

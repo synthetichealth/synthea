@@ -53,7 +53,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "26929004",
                     "display": "Alzheimer's disease (disorder)"
                   }
@@ -63,7 +63,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "230690007",
                     "display": "Cerebrovascular accident (disorder)"
                   }
@@ -73,7 +73,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "254837009",
                     "display": "Malignant neoplasm of breast (disorder)"
                   }
@@ -89,7 +89,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "88805009",
                     "display": "Chronic congestive heart failure (disorder)"
                   }
@@ -179,7 +179,7 @@
       "encounter_class": "outpatient",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "410155007",
           "display": "Advance care planning (procedure)"
         }
@@ -191,7 +191,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "CPT",
+          "system": "http://www.ama-assn.org/go/cpt",
           "code": "99497",
           "display": "Advance care planning including the explanation and discussion of advance directives"
         }
@@ -208,7 +208,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "816151009",
           "display": "Appointment of healthcare agent (procedure)"
         }
@@ -227,7 +227,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "425392003",
           "display": "Creation of living will (procedure)"
         }
@@ -440,7 +440,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "281789004",
           "display": "Documentation of advance directive (procedure)"
         }
@@ -503,7 +503,7 @@
       "encounter_class": "outpatient",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "410155007",
           "display": "Advance care planning (procedure)"
         }
@@ -515,7 +515,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "CPT",
+          "system": "http://www.ama-assn.org/go/cpt",
           "code": "99498",
           "display": "Advance care planning including the explanation and discussion of advance directives; each additional 30 minutes"
         }
@@ -546,7 +546,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "281789004",
           "display": "Documentation of advance directive (procedure)"
         }
@@ -573,7 +573,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "182836005",
           "display": "Review of care plan (procedure)"
         }

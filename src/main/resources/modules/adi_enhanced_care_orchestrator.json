@@ -433,7 +433,7 @@
       "type": "Procedure",
       "codes": [
         {
-          "system": "SNOMED-CT",
+          "system": "http://snomed.info/sct",
           "code": "385736008",
           "display": "Advance directive followed (finding)"
         }
@@ -460,7 +460,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "91302008",
                     "display": "Sepsis (disorder)"
                   }
@@ -475,7 +475,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "233604007",
                     "display": "Pneumonia (disorder)"
                   }
@@ -485,7 +485,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "230690007",
                     "display": "Cerebrovascular accident (disorder)"
                   }
@@ -495,7 +495,7 @@
                 "condition_type": "Active Condition",
                 "codes": [
                   {
-                    "system": "SNOMED-CT",
+                    "system": "http://snomed.info/sct",
                     "code": "22298006",
                     "display": "Myocardial infarction (disorder)"
                   }
