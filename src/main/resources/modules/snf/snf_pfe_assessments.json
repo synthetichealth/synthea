@@ -1,0 +1,461 @@
+{
+  "name": "SNF PFE Assessments",
+  "remarks": [
+    "Personal Functioning and Engagement assessments for Skilled Nursing Facility patients.",
+    "Implements ICF domain-based assessments including mental functions, mobility, self-care, and communication.",
+    "Integrates with existing SNF workflow to provide comprehensive functional status documentation.",
+    "Based on PACIO PFE Implementation Guide and common SNF assessment practices."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_For_SNF_Admission"
+    },
+    
+    "Wait_For_SNF_Admission": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "And",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "snf_days",
+            "operator": "is not nil"
+          },
+          {
+            "condition_type": "Attribute",
+            "attribute": "snf_days",
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      },
+      "direct_transition": "Initial_PFE_Assessment_Check"
+    },
+
+    "Initial_PFE_Assessment_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Admission_Comprehensive_Assessment",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "snf_pfe_admission_complete",
+            "operator": "is nil"
+          }
+        },
+        {
+          "transition": "Daily_Assessment_Check"
+        }
+      ]
+    },
+
+    "Admission_Comprehensive_Assessment": {
+      "type": "Encounter",
+      "encounter_class": "snf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "BIMS_Cognitive_Assessment",
+      "reason": "snf_reason"
+    },
+
+    "BIMS_Cognitive_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "52491-8",
+          "display": "Brief Interview for Mental Status"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "BIMS_Score_Recording"
+    },
+
+    "BIMS_Score_Recording": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "54614-3",
+          "display": "BIMS Summary Score"
+        }
+      ],
+      "unit": "{score}",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "Mobility_Assessment"
+    },
+
+    "Mobility_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225399008",
+          "display": "Mobility assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Bed_Mobility_Observation"
+    },
+
+    "Bed_Mobility_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95013-9",
+          "display": "Bed mobility - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30909-8",
+        "display": "Independent"
+      },
+      "direct_transition": "Transfer_Mobility_Observation"
+    },
+
+    "Transfer_Mobility_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95012-1",
+          "display": "Transfer - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30910-6",
+        "display": "Setup help only"
+      },
+      "direct_transition": "Walking_Mobility_Observation"
+    },
+
+    "Walking_Mobility_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95011-3",
+          "display": "Walk in room - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30911-4",
+        "display": "Supervision or touching assistance"
+      },
+      "direct_transition": "ADL_Self_Care_Assessment"
+    },
+
+    "ADL_Self_Care_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "273542005",
+          "display": "Activities of daily living assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Eating_Self_Care_Observation"
+    },
+
+    "Eating_Self_Care_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95019-6",
+          "display": "Eating - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30909-8",
+        "display": "Independent"
+      },
+      "direct_transition": "Oral_Hygiene_Observation"
+    },
+
+    "Oral_Hygiene_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95018-8",
+          "display": "Oral hygiene - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30910-6",
+        "display": "Setup help only"
+      },
+      "direct_transition": "Toileting_Hygiene_Observation"
+    },
+
+    "Toileting_Hygiene_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95017-0",
+          "display": "Toileting hygiene - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30911-4",
+        "display": "Supervision or touching assistance"
+      },
+      "direct_transition": "Communication_Assessment_Check"
+    },
+
+    "Communication_Assessment_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.3,
+          "transition": "Speech_Language_Assessment"
+        },
+        {
+          "distribution": 0.7,
+          "transition": "Mark_Admission_Complete"
+        }
+      ]
+    },
+
+    "Speech_Language_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410157005",
+          "display": "Speech and language assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Swallowing_Assessment"
+    },
+
+    "Swallowing_Assessment": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "99858-3",
+          "display": "Functional Communication Measure - Swallowing score [ASHA NOMS]"
+        }
+      ],
+      "unit": "{score}",
+      "range": {
+        "low": 1,
+        "high": 7
+      },
+      "direct_transition": "Mark_Admission_Complete"
+    },
+
+    "Mark_Admission_Complete": {
+      "type": "SetAttribute",
+      "attribute": "snf_pfe_admission_complete",
+      "value": true,
+      "direct_transition": "End_Admission_Assessment_Encounter"
+    },
+
+    "End_Admission_Assessment_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Daily_Assessment_Check"
+    },
+
+    "Daily_Assessment_Check": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Terminal",
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "snf_days",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "snf_days",
+                "operator": "<=",
+                "value": 0
+              }
+            ]
+          }
+        },
+        {
+          "transition": "Weekly_Assessment_Check"
+        }
+      ]
+    },
+
+    "Weekly_Assessment_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.14,
+          "transition": "Weekly_Progress_Assessment"
+        },
+        {
+          "distribution": 0.86,
+          "transition": "Wait_One_Day"
+        }
+      ]
+    },
+
+    "Weekly_Progress_Assessment": {
+      "type": "Encounter",
+      "encounter_class": "snf",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "390906007",
+          "display": "Follow-up encounter (procedure)"
+        }
+      ],
+      "direct_transition": "Progress_Mobility_Check",
+      "reason": "snf_reason"
+    },
+
+    "Progress_Mobility_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.8,
+          "transition": "Progress_Mobility_Assessment"
+        },
+        {
+          "distribution": 0.2,
+          "transition": "Progress_Cognitive_Check"
+        }
+      ]
+    },
+
+    "Progress_Mobility_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225399008",
+          "display": "Mobility assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Progress_Transfer_Observation"
+    },
+
+    "Progress_Transfer_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "95012-1",
+          "display": "Transfer - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "LOINC",
+        "code": "LA30910-6",
+        "display": "Setup help only"
+      },
+      "direct_transition": "Progress_Cognitive_Check"
+    },
+
+    "Progress_Cognitive_Check": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.3,
+          "transition": "Progress_Cognitive_Assessment"
+        },
+        {
+          "distribution": 0.7,
+          "transition": "End_Progress_Assessment"
+        }
+      ]
+    },
+
+    "Progress_Cognitive_Assessment": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "54614-3",
+          "display": "BIMS Summary Score"
+        }
+      ],
+      "unit": "{score}",
+      "range": {
+        "low": 0,
+        "high": 15
+      },
+      "direct_transition": "End_Progress_Assessment"
+    },
+
+    "End_Progress_Assessment": {
+      "type": "EncounterEnd",
+      "direct_transition": "Wait_One_Day"
+    },
+
+    "Wait_One_Day": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "days"
+      },
+      "direct_transition": "Daily_Assessment_Check"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}

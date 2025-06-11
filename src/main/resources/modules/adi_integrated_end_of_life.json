@@ -1,0 +1,495 @@
+{
+  "name": "ADI Integrated End-of-Life Care",
+  "remarks": [
+    "Integrates advance directive preferences with end-of-life care decisions.",
+    "Respects patient preferences documented in advance directives for resuscitation,",
+    "life-sustaining treatments, and hospice care. Enhances existing hospice and",
+    "emergency care modules with patient preference-driven decision making."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Wait_For_Critical_Condition"
+    },
+
+    "Wait_For_Critical_Condition": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Or",
+        "conditions": [
+          {
+            "condition_type": "Attribute",
+            "attribute": "days_until_death",
+            "operator": "<=",
+            "value": 30
+          },
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "230690007",
+                "display": "Cerebrovascular accident (disorder)"
+              }
+            ]
+          },
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "22298006",
+                "display": "Myocardial infarction (disorder)"
+              }
+            ]
+          },
+          {
+            "condition_type": "Active Condition",
+            "codes": [
+              {
+                "system": "SNOMED-CT",
+                "code": "65710008",
+                "display": "Acute respiratory failure (disorder)"
+              }
+            ]
+          }
+        ]
+      },
+      "direct_transition": "Check_AD_Existence"
+    },
+
+    "Check_AD_Existence": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Access_AD_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "advance_directive_exists",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Emergency_Default_Care"
+        }
+      ]
+    },
+
+    "Access_AD_Preferences": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "398204009",
+          "display": "Review of advance directive (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 15,
+        "unit": "minutes"
+      },
+      "direct_transition": "Evaluate_Resuscitation_Preference"
+    },
+
+    "Evaluate_Resuscitation_Preference": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Honor_DNR_Preference",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "resuscitation_preference",
+            "operator": "==",
+            "value": "do_not_resuscitate"
+          }
+        },
+        {
+          "transition": "Provide_Full_Resuscitation"
+        }
+      ]
+    },
+
+    "Honor_DNR_Preference": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "304252001",
+          "display": "Do not resuscitate (procedure)"
+        }
+      ],
+      "direct_transition": "Comfort_Care_Assessment"
+    },
+
+    "Provide_Full_Resuscitation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "89666000",
+          "display": "Cardiopulmonary resuscitation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Post_Resuscitation_Assessment"
+    },
+
+    "Post_Resuscitation_Assessment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Evaluate_Life_Support_Preferences",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "life_sustaining_preference",
+            "operator": "==",
+            "value": "limited_intervention"
+          }
+        },
+        {
+          "transition": "Continue_Aggressive_Care",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "life_sustaining_preference",
+            "operator": "==",
+            "value": "full_treatment"
+          }
+        },
+        {
+          "transition": "Comfort_Care_Assessment"
+        }
+      ]
+    },
+
+    "Evaluate_Life_Support_Preferences": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Decline_Mechanical_Ventilation_Care",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mechanical_ventilation_preference",
+            "operator": "==",
+            "value": "decline"
+          }
+        },
+        {
+          "transition": "Time_Limited_Ventilation_Trial",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "mechanical_ventilation_preference",
+            "operator": "==",
+            "value": "time_limited_trial"
+          }
+        },
+        {
+          "transition": "Provide_Mechanical_Ventilation"
+        }
+      ]
+    },
+
+    "Decline_Mechanical_Ventilation_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "182840001",
+          "display": "Refused mechanical ventilation (situation)"
+        }
+      ],
+      "direct_transition": "Comfort_Care_Assessment"
+    },
+
+    "Time_Limited_Ventilation_Trial": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40617009",
+          "display": "Artificial ventilation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 3,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Evaluate_Trial_Outcome"
+    },
+
+    "Evaluate_Trial_Outcome": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.3,
+          "transition": "Continue_Aggressive_Care"
+        },
+        {
+          "distribution": 0.7,
+          "transition": "Withdraw_Life_Support"
+        }
+      ]
+    },
+
+    "Withdraw_Life_Support": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "425396009",
+          "display": "Withdrawal of life support (procedure)"
+        }
+      ],
+      "direct_transition": "Comfort_Care_Assessment"
+    },
+
+    "Provide_Mechanical_Ventilation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40617009",
+          "display": "Artificial ventilation (procedure)"
+        }
+      ],
+      "direct_transition": "Continue_Aggressive_Care"
+    },
+
+    "Continue_Aggressive_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "133918004",
+          "display": "Intensive care treatment (procedure)"
+        }
+      ],
+      "direct_transition": "Artificial_Nutrition_Decision"
+    },
+
+    "Artificial_Nutrition_Decision": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Decline_Artificial_Nutrition_Care",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "artificial_nutrition_preference",
+            "operator": "==",
+            "value": "decline"
+          }
+        },
+        {
+          "transition": "Time_Limited_Nutrition_Trial",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "artificial_nutrition_preference",
+            "operator": "==",
+            "value": "time_limited_trial"
+          }
+        },
+        {
+          "transition": "Provide_Artificial_Nutrition"
+        }
+      ]
+    },
+
+    "Decline_Artificial_Nutrition_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "182842009",
+          "display": "Refused artificial feeding (situation)"
+        }
+      ],
+      "direct_transition": "Monitor_Condition"
+    },
+
+    "Time_Limited_Nutrition_Trial": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229912004",
+          "display": "Enteral feeding (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 7,
+        "high": 14,
+        "unit": "days"
+      },
+      "direct_transition": "Monitor_Condition"
+    },
+
+    "Provide_Artificial_Nutrition": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "229912004",
+          "display": "Enteral feeding (procedure)"
+        }
+      ],
+      "direct_transition": "Monitor_Condition"
+    },
+
+    "Comfort_Care_Assessment": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Initiate_Hospice_Care",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "hospice_care_preference",
+            "operator": "==",
+            "value": "accept"
+          }
+        },
+        {
+          "transition": "Palliative_Care_Consultation"
+        }
+      ]
+    },
+
+    "Initiate_Hospice_Care": {
+      "type": "SetAttribute",
+      "attribute": "hospice",
+      "value": true,
+      "direct_transition": "Set_Hospice_Reason_AD"
+    },
+
+    "Set_Hospice_Reason_AD": {
+      "type": "SetAttribute",
+      "attribute": "hospice_reason",
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "385736008",
+        "display": "Advance directive followed (finding)"
+      },
+      "direct_transition": "Document_AD_Compliance"
+    },
+
+    "Palliative_Care_Consultation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "103735009",
+          "display": "Palliative care (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Document_AD_Compliance"
+    },
+
+    "Emergency_Default_Care": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "89666000",
+          "display": "Cardiopulmonary resuscitation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Continue_Aggressive_Care"
+    },
+
+    "Monitor_Condition": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 3,
+        "unit": "days"
+      },
+      "direct_transition": "Document_AD_Compliance"
+    },
+
+    "Document_AD_Compliance": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385736008",
+          "display": "Advance directive followed (finding)"
+        }
+      ],
+      "direct_transition": "Healthcare_Agent_Notification"
+    },
+
+    "Healthcare_Agent_Notification": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "transition": "Contact_Healthcare_Agent",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "healthcare_agent_designated",
+            "operator": "==",
+            "value": true
+          }
+        },
+        {
+          "transition": "Family_Notification"
+        }
+      ]
+    },
+
+    "Contact_Healthcare_Agent": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308292007",
+          "display": "Contact with family member (procedure)"
+        }
+      ],
+      "direct_transition": "Agent_Decision_Making"
+    },
+
+    "Agent_Decision_Making": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "182857004",
+          "display": "Healthcare decision made by agent (finding)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Family_Notification": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "308292007",
+          "display": "Contact with family member (procedure)"
+        }
+      ],
+      "direct_transition": "Terminal"
+    },
+
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}
