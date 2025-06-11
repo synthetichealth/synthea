@@ -146,11 +146,11 @@
           "distributions": [
             {
               "transition": "Patient stays in remission",
-              "distribution": 0.6
+              "distribution": 0.8
             },
             {
               "transition": "Patient relapses",
-              "distribution": 0.4
+              "distribution": 0.2
             }
           ]
         }
@@ -257,6 +257,7 @@
     "Check-Up": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
+      "reason": "DLBCL_Condition",
       "codes": [
         {
           "system": "SNOMED-CT",
