@@ -1,13 +1,14 @@
 {
   "name": "DLBCL_Stage_I_II_Treatment_Round_One",
   "remarks": [
-    "A blank module"
+    "Stage I/II DLBCL treatment module implementing 3-6 cycles of R-CHOP followed by PET-CT restaging"
   ],
   "states": {
     "Initial": {
       "type": "Initial",
       "direct_transition": "First-line chemoimmunotherapy encounter"
     },
+    
     "3 to 6 cycles of R-CHOP": {
       "type": "Delay",
       "range": {
@@ -83,6 +84,12 @@
         "code": 268910001,
         "display": "Patient condition improved (finding)"
       },
+      "direct_transition": "Set Remission Outcome"
+    },
+    "Set Remission Outcome": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_1_Outcome",
+      "value": "Remission",
       "direct_transition": "Check-ups"
     },
     "Check-ups": {
@@ -195,7 +202,7 @@
     "First-line chemoimmunotherapy encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "DLBCL_Condition",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -212,12 +219,12 @@
     "PET-CT Scan Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "reason": "",
+      "reason": "DLBCL_Condition",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 185347001,
-          "display": "Encounter for problem (procedure)"
+          "code": 185389009,
+          "display": "Follow-up visit (procedure)"
         }
       ],
       "direct_transition": "PET-CT Scan Follow-up"
@@ -293,6 +300,7 @@
         }
       ],
       "direct_transition": "3 to 6 cycles of R-CHOP",
+      "assign_to_attribute": "first_line_drug_regimen",
       "remarks": [
         "https://www.cancer.gov/types/lymphoma/hp/adult-nhl-treatment-pdq#_85_toc"
       ],
@@ -300,8 +308,8 @@
     },
     "End R-CHOP Drugs": {
       "type": "MedicationEnd",
-      "direct_transition": "End of first-line chemoimmunotherapy encounter",
-      "medication_order": "R-CHOP Drugs"
+      "referenced_by_attribute": "first_line_drug_regimen",
+      "direct_transition": "Wait for PET-CT Scan Follow-up"
     }
   }
 }
