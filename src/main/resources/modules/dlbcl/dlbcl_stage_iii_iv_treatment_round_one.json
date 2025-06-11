@@ -1,5 +1,8 @@
 {
   "name": "DLBCL_Stage_III_IV_Treatment_Round_One",
+  "remarks": [
+    "Stage III/IV DLBCL treatment module implementing 3-6 cycles of R-CHOP followed by PET-CT restaging."
+  ],
   "states": {
     "Initial": {
       "type": "Initial",
