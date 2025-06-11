@@ -125,7 +125,6 @@ public abstract class TestHelper {
     Config.set("exporter.practitioner.fhir_stu3.export", "false");
     Config.set("exporter.practitioner.fhir_dstu2.export", "false");
     Config.set("exporter.json.export", "false");
-    Config.set("exporter.ndjson.export", "false");
     Config.set("exporter.csv.export", "false");
     Config.set("exporter.cpcds.export", "false");
     Config.set("exporter.bfd.export", "false");
@@ -138,6 +137,7 @@ public abstract class TestHelper {
     Config.set("exporter.symptoms.text.export", "false");
     Config.set("exporter.cost_access_outcomes_report", "false");
     Config.set("generate.terminology_service_url", "");
+    Config.set("exporter.fhir.phr", "false");
   }
 
   public static long timestamp(int year, int month, int day, int hr, int min, int sec) {
