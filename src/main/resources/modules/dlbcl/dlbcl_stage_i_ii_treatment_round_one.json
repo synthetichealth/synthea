@@ -44,7 +44,7 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "End PET-CT Scan Follow-up",
+      "direct_transition": "End PET-CT Scan Encounter",
       "remarks": [
         "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html",
         "\"After several cycles, doctors may get imaging tests such as a PET/CT scan to see how well treatment is working\""
@@ -256,7 +256,7 @@
     },
     "Check-Up": {
       "type": "Encounter",
-      "encounter_class": "inpatient",
+      "encounter_class": "ambulatory",
       "codes": [
         {
           "system": "SNOMED-CT",

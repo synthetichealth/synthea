@@ -650,11 +650,11 @@
       ]
     },
     "Treatment Unsuccessful": {
-      "attribute": "DLBCL_Survival",
+      "type": "Simple",
       "direct_transition": "Impending Death from Cancer Complications"
     },
     "Treatment Successful": {
-      "attribute": "DLBCL_Survival",
+      "type": "Simple",
       "direct_transition": "Meet with Oncologist for Treatment Options"
     },
     "Impending Death from Cancer Complications": {
@@ -1180,7 +1180,7 @@
         "high": 4,
         "unit": "hours"
       },
-      "reason": "",
+      "reason": "DLBCL_Condition",
       "direct_transition": "End_CAR_T_Initial_Treatment_Encounter",
       "remarks": [
         "https://www.dana-farber.org/cellular-therapies-program/car-t-cell-therapy/how-car-t-cell-therapy-works/"
