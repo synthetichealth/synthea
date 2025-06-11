@@ -360,9 +360,25 @@
         "code": 30440004,
         "display": "Lymphoma Stage I"
       },
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Set Stage I Survival Rate",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Set Stage I Survival Rate": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival", 
+      "distributed_transition": [
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.85,
+          "value": "Yes"
+        },
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.15,
+          "value": "No"
+        }
       ]
     },
     "Stage II": {
@@ -381,11 +397,29 @@
         "code": 76422004,
         "display": "Lymphoma Stage II"
       },
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Set Stage II Survival Rate",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
     },
+    "Set Stage II Survival Rate": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival", 
+      "distributed_transition": [
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.75,
+          "value": "Yes"
+        },
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.25,
+          "value": "No"
+        }
+      ]
+    },
+
+
     "Stage III": {
       "type": "Observation",
       "category": "laboratory",
@@ -402,11 +436,28 @@
         "code": 56944001,
         "display": "Lymphoma Stage III"
       },
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Set Stage III Survival Rate",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
     },
+    "Set Stage III Survival Rate": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival", 
+      "distributed_transition": [
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.65,
+          "value": "Yes"
+        },
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.35,
+          "value": "No"
+        }
+      ]
+    },
+
     "Stage IV": {
       "type": "Observation",
       "category": "laboratory",
@@ -423,16 +474,49 @@
         "code": 66445009,
         "display": "Lymphoma Stage IV"
       },
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Set Stage IV Survival Rate",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
       ]
     },
+    "Set Stage IV Survival Rate": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival", 
+      "distributed_transition": [
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.55,
+          "value": "Yes"
+        },
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.45,
+          "value": "No"
+        }
+      ]
+    },
+
     "Unknown Stage": {
       "type": "Simple",
-      "direct_transition": "End Diagnosis Encounter II",
+      "direct_transition": "Set Unknown Stage Survival Rate",
       "remarks": [
         "https://seer.cancer.gov/statfacts/html/dlbcl.html"
+      ]
+    },
+    "Set Unknown Stage Survival Rate": {
+      "type": "SetAttribute",
+      "attribute": "DLBCL_Survival", 
+      "distributed_transition": [
+        {
+          "transition": "End Diagnosis Encounter II",
+          "distribution": 0.559,
+          "value": "Yes"
+        },
+        {
+          "transition": "End Diagnosis Encounter II", 
+          "distribution": 0.441,
+          "value": "No"
+        }
       ]
     },
     "Diffuse Large B-cell Lymphoma Treatment Success Rate": {
@@ -566,15 +650,11 @@
       ]
     },
     "Treatment Unsuccessful": {
-      "type": "SetAttribute",
       "attribute": "DLBCL_Survival",
-      "value": "No",
       "direct_transition": "Impending Death from Cancer Complications"
     },
     "Treatment Successful": {
-      "type": "SetAttribute",
       "attribute": "DLBCL_Survival",
-      "value": "Yes",
       "direct_transition": "Meet with Oncologist for Treatment Options"
     },
     "Impending Death from Cancer Complications": {
