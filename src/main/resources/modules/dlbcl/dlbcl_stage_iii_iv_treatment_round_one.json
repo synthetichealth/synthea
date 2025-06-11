@@ -533,6 +533,6 @@
         "unit": "days"
       },
       "direct_transition": "Follow-up with oncologist for re-staging"
-    },
+    }
   }
 }

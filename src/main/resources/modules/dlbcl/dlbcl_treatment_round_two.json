@@ -1,7 +1,7 @@
 {
   "name": "DLBCL_Treatment_Round_Two",
   "remarks": [
-    "A blank module"
+    "Second-line DLBCL treatment module for relapsed/refractory patients, including salvage chemotherapy and transplant candidates"
   ],
   "states": {
     "Initial": {
@@ -27,6 +27,22 @@
         }
       ],
       "direct_transition": "End Meeting with Oncologist"
+    },
+    "PET-CT_Scan": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 450436003,
+          "display": "Positron emission tomography with computed tomography (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "Delay after Second-Line Treatment"
     },
     "End Meeting with Oncologist": {
       "type": "EncounterEnd",
