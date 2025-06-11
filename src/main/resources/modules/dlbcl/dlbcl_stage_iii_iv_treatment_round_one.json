@@ -110,10 +110,22 @@
         "code": 271299001,
         "display": "Patient's condition worsened (finding)"
       },
-      "direct_transition": "Worsened",
+      "direct_transition": "Set Treatment Worsened",
       "remarks": [
         "If condition worsened after initial treatment, they do not continue through regimen"
       ]
+    },
+    "Set Treatment Worsened": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_1_Outcome",
+      "value": "Worsened",
+      "direct_transition": "Terminal"
+    },
+    "Set Treatment Remission": {
+      "type": "SetAttribute",
+      "attribute": "Treatment_1_Outcome", 
+      "value": "Remission",
+      "direct_transition": "Terminal"
     },
     "PET-CT Scan Re-Staging": {
       "type": "Procedure",
@@ -434,12 +446,21 @@
     },
     "Length_of_Clinical_Trial": {
       "type": "Delay",
-      "direct_transition": "End encounter for first-line therapy",
       "range": {
         "low": 6,
         "high": 24,
         "unit": "months"
-      }
+      },
+      "distributed_transition": [
+        {
+          "transition": "Set Treatment Worsened",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Set Treatment Remission", 
+          "distribution": 0.9
+        }
+      ]
     },
     "Delay Before Restaging": {
       "type": "Delay",
@@ -494,14 +515,24 @@
         }
       ],
       "direct_transition": "Complete 2-4 cycles before interim re-staging",
+      "assign_to_attribute": "first_line_drug_regimen",
       "remarks": [
         "https://www.cancer.org/cancer/non-hodgkin-lymphoma/treating/b-cell-lymphoma.html"
       ]
     },
     "End R-CHOP Drugs": {
       "type": "MedicationEnd",
-      "direct_transition": "End encounter for first-line therapy",
-      "medication_order": "R-CHOP Drugs"
-    }
+      "referenced_by_attribute": "first_line_drug_regimen",
+      "direct_transition": "Wait for restaging"
+    },
+    "Wait for restaging": {
+      "type": "Delay",
+      "range": {
+        "low": 1,
+        "high": 7,
+        "unit": "days"
+      },
+      "direct_transition": "Follow-up with oncologist for re-staging"
+    },
   }
 }
