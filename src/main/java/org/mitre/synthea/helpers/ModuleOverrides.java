@@ -213,12 +213,12 @@ public class ModuleOverrides {
     String moduleFilename = parts[0];
     String jsonPath = parts[1];
 
-    // Escape only the module filename part for properties file format
+    // Escape the module filename part for properties file format
     String escapedModuleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
 
-    // JSONPath part stays clean - no escaping needed for JSONPath syntax
-    // The properties file format will handle this correctly
+    // CRITICAL FIX: Also escape spaces in the JSONPath part for Properties file format
+    // Properties files treat spaces as delimiters, so we need to escape them
+    String escapedJsonPath = jsonPath.replace(" ", "\\ ");
 
-    return escapedModuleFilename + "\\:\\:" + jsonPath;
+    return escapedModuleFilename + "\\:\\:" + escapedJsonPath;
   }
-}
