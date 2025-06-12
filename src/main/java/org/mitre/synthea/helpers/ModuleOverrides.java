@@ -180,10 +180,10 @@ public class ModuleOverrides {
       JsonObject jo = element.getAsJsonObject();
 
       for (String field : jo.keySet()) {
-        // FIXED: Keep field names clean for JSONPath - no escaping here
-        // JSONPath requires clean field names in brackets, e.g., ['field name']
+        // FIXED: Properly escape single quotes in field names for JSONPath
+        // JSONPath requires proper quote escaping, e.g., ['field\'s name'] or ["field's name"]
         JsonElement fieldValue = jo.get(field);
-        String cleanJsonPath = path + "['" + field + "']";
+        String cleanJsonPath = path + "[" + escapeFieldNameForJsonPath(field) + "]";
         parameters.addAll(handleElement(cleanJsonPath, field, fieldValue));
       }
 
@@ -202,6 +202,24 @@ public class ModuleOverrides {
     }
 
     return parameters;
+  }
+  
+  /**
+   * Escape a field name for use in JSONPath expressions.
+   * Handles single quotes and other special characters that could break JSONPath syntax.
+   * 
+   * @param fieldName The raw field name from JSON
+   * @return Properly quoted field name for JSONPath
+   */
+  private String escapeFieldNameForJsonPath(String fieldName) {
+    // If field name contains single quotes, use double quotes
+    if (fieldName.contains("'")) {
+      // Escape any double quotes in the field name and wrap in double quotes
+      return "\"" + fieldName.replace("\"", "\\\"") + "\"";
+    } else {
+      // Safe to use single quotes
+      return "'" + fieldName + "'";
+    }
   }
   
   /**
