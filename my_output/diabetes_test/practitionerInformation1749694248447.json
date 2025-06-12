@@ -1,0 +1,326 @@
+{
+  "resourceType": "Bundle",
+  "type": "batch",
+  "entry": [ {
+    "fullUrl": "urn:uuid:d502b8e5-36c6-3f67-8a98-ddf57911eba1",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "d502b8e5-36c6-3f67-8a98-ddf57911eba1",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 2
+      } ],
+      "identifier": [ {
+        "system": "http://hl7.org/fhir/sid/us-npi",
+        "value": "9999983692"
+      } ],
+      "active": true,
+      "name": [ {
+        "family": "Eichmann909",
+        "given": [ "Kenia28" ],
+        "prefix": [ "Dr." ]
+      } ],
+      "telecom": [ {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Kenia28.Eichmann909@example.com",
+        "use": "work"
+      } ],
+      "address": [ {
+        "line": [ "375 LAGUNA HONDA BLVD" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941161411",
+        "country": "US"
+      } ],
+      "gender": "female"
+    },
+    "request": {
+      "method": "POST",
+      "url": "Practitioner",
+      "ifNoneExist": "identifier=http://hl7.org/fhir/sid/us-npi|9999983692"
+    }
+  }, {
+    "fullUrl": "urn:uuid:48626a51-b9bf-39bb-e2d9-264126d42b0d",
+    "resource": {
+      "resourceType": "PractitionerRole",
+      "id": "48626a51-b9bf-39bb-e2d9-264126d42b0d",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" ]
+      },
+      "practitioner": {
+        "identifier": {
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "9999983692"
+        },
+        "display": "Dr. Kenia28 Eichmann909"
+      },
+      "organization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "1d5145fa-75e6-3a96-b5b9-bd6b25b69467"
+        },
+        "display": "LAGUNA HONDA HOSPITAL & REHABILITATION CENTER"
+      },
+      "code": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "specialty": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "location": [ {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "ce4d6b1a-107d-30b3-872e-68c3a77050ed"
+        },
+        "display": "LAGUNA HONDA HOSPITAL & REHABILITATION CENTER"
+      } ],
+      "telecom": [ {
+        "system": "phone",
+        "value": "4157592300"
+      }, {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Kenia28.Eichmann909@example.com",
+        "use": "work"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "PractitionerRole"
+    }
+  }, {
+    "fullUrl": "urn:uuid:6c4474db-3b29-30f9-970d-bb9f30b75cc7",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "6c4474db-3b29-30f9-970d-bb9f30b75cc7",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 34
+      } ],
+      "identifier": [ {
+        "system": "http://hl7.org/fhir/sid/us-npi",
+        "value": "9999698092"
+      } ],
+      "active": true,
+      "name": [ {
+        "family": "Schoen8",
+        "given": [ "Garry927" ],
+        "prefix": [ "Dr." ]
+      } ],
+      "telecom": [ {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Garry927.Schoen8@example.com",
+        "use": "work"
+      } ],
+      "address": [ {
+        "line": [ "483 BUENA VISTA AVE E STE A" ],
+        "city": "SAN FRANCISCO",
+        "state": "CA",
+        "postalCode": "941174164",
+        "country": "US"
+      } ],
+      "gender": "male"
+    },
+    "request": {
+      "method": "POST",
+      "url": "Practitioner",
+      "ifNoneExist": "identifier=http://hl7.org/fhir/sid/us-npi|9999698092"
+    }
+  }, {
+    "fullUrl": "urn:uuid:8739c3b2-7041-0bd7-4e8a-8b074b25fc01",
+    "resource": {
+      "resourceType": "PractitionerRole",
+      "id": "8739c3b2-7041-0bd7-4e8a-8b074b25fc01",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" ]
+      },
+      "practitioner": {
+        "identifier": {
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "9999698092"
+        },
+        "display": "Dr. Garry927 Schoen8"
+      },
+      "organization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "cfa97fcd-02e7-3ace-a898-08544cb97c4c"
+        },
+        "display": "PRECISION HEALTHCARE ASSOCIATES"
+      },
+      "code": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "specialty": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "location": [ {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "a26bfc25-09cc-3c4c-9e05-337162f9fd21"
+        },
+        "display": "PRECISION HEALTHCARE ASSOCIATES"
+      } ],
+      "telecom": [ {
+        "system": "phone",
+        "value": "4152977158"
+      }, {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Garry927.Schoen8@example.com",
+        "use": "work"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "PractitionerRole"
+    }
+  }, {
+    "fullUrl": "urn:uuid:2990c938-0535-379d-afc4-cb33f7334642",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "2990c938-0535-379d-afc4-cb33f7334642",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 32
+      } ],
+      "identifier": [ {
+        "system": "http://hl7.org/fhir/sid/us-npi",
+        "value": "9999662197"
+      } ],
+      "active": true,
+      "name": [ {
+        "family": "Will178",
+        "given": [ "Louvenia131" ],
+        "prefix": [ "Dr." ]
+      } ],
+      "telecom": [ {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Louvenia131.Will178@example.com",
+        "use": "work"
+      } ],
+      "address": [ {
+        "line": [ "2248 D ST" ],
+        "city": "LA VERNE",
+        "state": "CA",
+        "postalCode": "917505403",
+        "country": "US"
+      } ],
+      "gender": "female"
+    },
+    "request": {
+      "method": "POST",
+      "url": "Practitioner",
+      "ifNoneExist": "identifier=http://hl7.org/fhir/sid/us-npi|9999662197"
+    }
+  }, {
+    "fullUrl": "urn:uuid:17819a17-c16d-b714-f7c2-7a36d71553d3",
+    "resource": {
+      "resourceType": "PractitionerRole",
+      "id": "17819a17-c16d-b714-f7c2-7a36d71553d3",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" ]
+      },
+      "practitioner": {
+        "identifier": {
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "9999662197"
+        },
+        "display": "Dr. Louvenia131 Will178"
+      },
+      "organization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "748eda13-6f3c-3fb8-8bce-4398e66d38c0"
+        },
+        "display": "ALVA FAMILY SPECIALIST INC"
+      },
+      "code": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "specialty": [ {
+        "coding": [ {
+          "system": "http://nucc.org/provider-taxonomy",
+          "code": "208D00000X",
+          "display": "General Practice Physician"
+        } ],
+        "text": "General Practice Physician"
+      } ],
+      "location": [ {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "7b8a7672-7d3c-3e54-bf7c-8c6f942ae87e"
+        },
+        "display": "ALVA FAMILY SPECIALIST INC"
+      } ],
+      "telecom": [ {
+        "system": "phone",
+        "value": "9095933519"
+      }, {
+        "extension": [ {
+          "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-direct",
+          "valueBoolean": true
+        } ],
+        "system": "email",
+        "value": "Louvenia131.Will178@example.com",
+        "use": "work"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "PractitionerRole"
+    }
+  } ]
+}
