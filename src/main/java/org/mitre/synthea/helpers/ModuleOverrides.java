@@ -1,3 +1,4 @@
+// src/main/java/org/mitre/synthea/helpers/ModuleOverrides.java
 package org.mitre.synthea.helpers;
 
 import com.google.gson.JsonArray;
@@ -148,14 +149,16 @@ public class ModuleOverrides {
     }
 
     try {
-      moduleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
-
+      // Keep the original filename for JSONPath generation (no escaping yet)
+      String originalModuleFilename = moduleFilename;
+      
       String moduleRelativePath = modulesPath.getParent().relativize(modulePath).toString();
       JsonReader reader = new JsonReader(new StringReader(
                Utilities.readResource(moduleRelativePath)));
       JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
 
-      String lineStart = moduleFilename + "\\:\\:$";
+      // Use original filename for JSONPath generation - escaping happens later
+      String lineStart = originalModuleFilename + "\\:\\:$";
       lines.addAll(handleElement(lineStart, "$", module));
     } catch (IOException e) {
       throw new RuntimeException("Unable to read modules", e);
@@ -177,10 +180,11 @@ public class ModuleOverrides {
       JsonObject jo = element.getAsJsonObject();
 
       for (String field : jo.keySet()) {
-        // note: spaces have to be escaped in properties file key
-        String safeFieldName = field.replace(" ", "\\ ").replace(":", "\\:");
+        // FIXED: Keep field names clean for JSONPath - no escaping here
+        // JSONPath requires clean field names in brackets, e.g., ['field name']
         JsonElement fieldValue = jo.get(field);
-        parameters.addAll(handleElement(path + "['" + safeFieldName + "']", field, fieldValue));
+        String cleanJsonPath = path + "['" + field + "']";
+        parameters.addAll(handleElement(cleanJsonPath, field, fieldValue));
       }
 
     } else if (element.isJsonPrimitive()) {
@@ -188,12 +192,42 @@ public class ModuleOverrides {
       if (jp.isNumber()) {
         if ((includeFields != null && includeFields.contains(currentElementName))
             || (excludeFields != null && !excludeFields.contains(currentElementName))) {
-          String newParam = path + " = " + jp.getAsString();
+          
+          // FIXED: Apply properties file escaping only at the final output stage
+          String escapedPath = escapeForPropertiesFile(path);
+          String newParam = escapedPath + " = " + jp.getAsString();
           parameters.add(newParam);
         }
       }
     }
 
     return parameters;
+  }
+  
+  /**
+   * Escape a path for use in Java Properties files.
+   * This should only be called on the final output, not during JSONPath generation.
+   * 
+   * @param path The path containing module filename and JSONPath
+   * @return The escaped path suitable for properties files
+   */
+  private String escapeForPropertiesFile(String path) {
+    // Split the path into filename and JSONPath parts
+    String[] parts = path.split("\\\\:\\\\:", 2);
+    if (parts.length != 2) {
+      // Fallback - escape the whole thing
+      return path.replace(" ", "\\ ").replace(":", "\\:");
+    }
+    
+    String moduleFilename = parts[0];
+    String jsonPath = parts[1];
+    
+    // Escape only the module filename part for properties file format
+    String escapedModuleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
+    
+    // JSONPath part stays clean - no escaping needed for JSONPath syntax
+    // The properties file format will handle this correctly
+    
+    return escapedModuleFilename + "\\:\\:" + jsonPath;
   }
 }
