@@ -1,3 +1,5 @@
+// src/main/java/org/mitre/synthea/helpers/ModuleOverrides.java
+
 package org.mitre.synthea.helpers;
 
 import com.google.gson.JsonArray;
@@ -51,83 +53,59 @@ public class ModuleOverrides {
 
   /**
    * Main method, not to be invoked directly: should always be called via gradle task `overrides`.
-   *
-   * @param args -- format is [includeFields, includeModules, excludeFields, excludeModules]
    */
   public static void main(String[] args) throws Exception {
-    String includeFieldsArg = args[0];
-    String includeModulesArg = args[1];
-    String excludeFieldsArg = args[2];
-    String excludeModulesArg = args[3];
+    List<String> includeFields = null;
+    List<String> excludeFields = null;
+    List<String> includeModules = null;
+    List<String> excludeModules = null;
 
-    List<String> excludeFields = argToList(excludeFieldsArg);
-    List<String> includeFields;
-    if (excludeFields == null) {
-      includeFields = argToList(includeFieldsArg);
-      if (includeFields == null) {
-        includeFields = Arrays.asList("distribution");
-      }
-    } else {
-      includeFields = null; // if they exclude something, don't do anything with includes
+    if (args.length > 0) {
+      includeFields = Arrays.asList(args[0].split(","));
+    }
+    if (args.length > 1) {
+      excludeFields = Arrays.asList(args[1].split(","));
+    }
+    if (args.length > 2) {
+      includeModules = Arrays.asList(args[2].split(","));
+    }
+    if (args.length > 3) {
+      excludeModules = Arrays.asList(args[3].split(","));
     }
 
-    List<String> includeModules = argToList(includeModulesArg);
-    List<String> excludeModules = argToList(excludeModulesArg);
-
-    System.out.println("Included fields: " + includeFields);
-    System.out.println("Excluded fields: " + excludeFields);
-    System.out.println("Included modules: " + includeModules);
-    System.out.println("Excluded modules: " + excludeModules);
-
-    ModuleOverrides mo =
-        new ModuleOverrides(includeFields, includeModules, excludeFields, excludeModules);
-
+    ModuleOverrides mo = new ModuleOverrides(includeFields, includeModules, excludeFields, excludeModules);
     List<String> lines = mo.generateOverrides();
 
-    Path outFilePath = new File("./output/overrides.properties").toPath();
-
-    Files.write(outFilePath, lines);
-
-    System.out.println("Catalogued " + lines.size() + " parameters.");
-    System.out.println("Done.");
-  }
-
-  private static List<String> argToList(String arg) {
-    if (arg == null || arg.isEmpty()) {
-      return null;
+    for (String line : lines) {
+      System.out.println(line);
     }
-
-    List<String> list = new LinkedList<>();
-
-    list.addAll(Arrays.asList(arg.split(",")));
-    list.replaceAll(s -> s.trim());
-
-    return list;
   }
 
   /**
-   * Create a ModuleOverrides object which will process the modules according to the given options.
-   *
-   * @param includeFields - List of field names to include
-   * @param includeModulesList - list of module filename rules to include
-   * @param excludeFields - list of field names to exclude
-   * @param excludeModulesList - list of module filename rules to exclude
+   * Generate a properties list of "overridable" fields within the modules.
+   * @param includeFields List of field names to include
+   * @param includeModules List of module filename patterns to include (supports wildcards)
+   * @param excludeFields List of field names to exclude
+   * @param excludeModules List of module filename patterns to exclude (supports wildcards)
    */
-  public ModuleOverrides(List<String> includeFields, List<String> includeModulesList,
-      List<String> excludeFields, List<String> excludeModulesList) {
+  public ModuleOverrides(List<String> includeFields, List<String> includeModules,
+                         List<String> excludeFields, List<String> excludeModules) {
     this.includeFields = includeFields;
     this.excludeFields = excludeFields;
 
-    if (includeModulesList != null) {
-      this.includeModules = new WildcardFileFilter(includeModulesList, IOCase.INSENSITIVE);
+    if (includeModules != null) {
+      String[] patterns = includeModules.toArray(new String[includeModules.size()]);
+      this.includeModules = new WildcardFileFilter(patterns, IOCase.INSENSITIVE);
     }
-    if (excludeModulesList != null) {
-      this.excludeModules = new WildcardFileFilter(excludeModulesList, IOCase.INSENSITIVE);
+
+    if (excludeModules != null) {
+      String[] patterns = excludeModules.toArray(new String[excludeModules.size()]);
+      this.excludeModules = new WildcardFileFilter(patterns, IOCase.INSENSITIVE);
     }
   }
 
   /**
-   * Perform the actual processing to generate the list of properties, per the given settings.
+   * Generate the list of overrides.
    * @return List of strings to be written to file. Strings are of format:
    *         (module file name)\:\:(JSONPath to numeric field within module) = original value
    */
@@ -148,13 +126,12 @@ public class ModuleOverrides {
     }
 
     try {
-      moduleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
-
       String moduleRelativePath = modulesPath.getParent().relativize(modulePath).toString();
       JsonReader reader = new JsonReader(new StringReader(
                Utilities.readResource(moduleRelativePath)));
       JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
 
+      // Keep module filename clean for JSONPath generation
       String lineStart = moduleFilename + "\\:\\:$";
       lines.addAll(handleElement(lineStart, "$", module));
     } catch (IOException e) {
@@ -177,10 +154,10 @@ public class ModuleOverrides {
       JsonObject jo = element.getAsJsonObject();
 
       for (String field : jo.keySet()) {
-        // note: spaces have to be escaped in properties file key
-        String safeFieldName = field.replace(" ", "\\ ").replace(":", "\\:");
+        // FIXED: Properly escape field names for JSONPath
         JsonElement fieldValue = jo.get(field);
-        parameters.addAll(handleElement(path + "['" + safeFieldName + "']", field, fieldValue));
+        String cleanJsonPath = path + "[" + escapeFieldNameForJsonPath(field) + "]";
+        parameters.addAll(handleElement(cleanJsonPath, field, fieldValue));
       }
 
     } else if (element.isJsonPrimitive()) {
@@ -188,12 +165,61 @@ public class ModuleOverrides {
       if (jp.isNumber()) {
         if ((includeFields != null && includeFields.contains(currentElementName))
             || (excludeFields != null && !excludeFields.contains(currentElementName))) {
-          String newParam = path + " = " + jp.getAsString();
+
+          // Apply properties file escaping only at the final output stage
+          String escapedPath = escapeForPropertiesFile(path);
+          String newParam = escapedPath + " = " + jp.getAsString();
           parameters.add(newParam);
         }
       }
     }
 
     return parameters;
+  }
+
+  /**
+   * Escape a field name for use in JSONPath expressions.
+   * Handles single quotes and other special characters that could break JSONPath syntax.
+   *
+   * @param fieldName The raw field name from JSON
+   * @return Properly quoted field name for JSONPath
+   */
+  private String escapeFieldNameForJsonPath(String fieldName) {
+    // If field name contains single quotes, use double quotes
+    if (fieldName.contains("'")) {
+      // Escape any double quotes in the field name and wrap in double quotes
+      return "\"" + fieldName.replace("\"", "\\\"") + "\"";
+    } else {
+      // Safe to use single quotes
+      return "'" + fieldName + "'";
+    }
+  }
+
+  /**
+   * Escape a path for use in Java Properties files.
+   * This should only be called on the final output, not during JSONPath generation.
+   *
+   * @param path The path containing module filename and JSONPath
+   * @return The escaped path suitable for properties files
+   */
+  private String escapeForPropertiesFile(String path) {
+    // Split the path into filename and JSONPath parts
+    String[] parts = path.split("\\\\:\\\\:", 2);
+    if (parts.length != 2) {
+      // Fallback - escape the whole thing
+      return path.replace(" ", "\\ ").replace(":", "\\:");
+    }
+
+    String moduleFilename = parts[0];
+    String jsonPath = parts[1];
+
+    // Escape the module filename part for properties file format
+    String escapedModuleFilename = moduleFilename.replace(" ", "\\ ").replace(":", "\\:");
+
+    // CRITICAL FIX: Also escape spaces in the JSONPath part for Properties file format
+    // Properties files treat spaces as delimiters, so we need to escape them
+    String escapedJsonPath = jsonPath.replace(" ", "\\ ");
+
+    return escapedModuleFilename + "\\:\\:" + escapedJsonPath;
   }
 }
