@@ -126,6 +126,7 @@ public class ClinicalNoteExporter {
     person.attributes.put("ehr_conditions", encounter.conditions);
     person.attributes.put("ehr_allergies", encounter.allergies);
     person.attributes.put("ehr_procedures", encounter.procedures);
+    person.attributes.put("ehr_reports", encounter.reports);
     person.attributes.put("ehr_immunizations", encounter.immunizations);
     person.attributes.put("ehr_medications", encounter.medications);
     person.attributes.put("ehr_careplans", encounter.careplans);
