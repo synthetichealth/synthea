@@ -1,7 +1,10 @@
 {
-  "name": "Skilled Nursing Facility",
+  "name": "Enhanced Skilled Nursing Facility with PFE",
   "remarks": [
-    "Simplified Skilled Nursing Facility module with a regular routine of physical therapy, occupational therapy, social services, medication administration, and dietary counseling. Length of stay statistics: https://us.milliman.com/-/media/milliman/pdfs/2021-articles/1-21-21_variation_in_snf_alos_for_medicare_beneficiaries.ashx"
+    "Enhanced Skilled Nursing Facility module with integrated Personal Functioning and Engagement assessments.",
+    "Extends the base SNF workflow with comprehensive PFE documentation.",
+    "Includes realistic assessment scheduling and care planning integration.",
+    "Based on PACIO PFE Implementation Guide requirements."
   ],
   "states": {
     "Initial": {
@@ -20,6 +23,7 @@
         }
       ]
     },
+    
     "SNF_Admission": {
       "type": "Encounter",
       "encounter_class": "snf",
@@ -56,6 +60,7 @@
       ],
       "reason": "snf_reason"
     },
+
     "Determine_LOS": {
       "type": "SetAttribute",
       "attribute": "snf_days",
@@ -68,7 +73,7 @@
       },
       "conditional_transition": [
         {
-          "transition": "Max Length of Stay",
+          "transition": "Max_Length_of_Stay",
           "condition": {
             "condition_type": "Attribute",
             "attribute": "snf_days",
@@ -81,6 +86,14 @@
         }
       ]
     },
+
+    "Max_Length_of_Stay": {
+      "type": "SetAttribute",
+      "attribute": "snf_days",
+      "value": 100,
+      "direct_transition": "History_Physical_Exam"
+    },
+
     "History_Physical_Exam": {
       "type": "Procedure",
       "codes": [
@@ -92,6 +105,7 @@
       ],
       "direct_transition": "Initial_Patient_Assessment"
     },
+
     "Initial_Patient_Assessment": {
       "type": "Procedure",
       "codes": [
@@ -101,8 +115,26 @@
           "display": "Initial patient assessment (procedure)"
         }
       ],
+      "direct_transition": "Launch_PFE_Assessments"
+    },
+
+    "Launch_PFE_Assessments": {
+      "type": "CallSubmodule",
+      "submodule": "snf/snf_pfe_assessments",
       "direct_transition": "Facility_Wheelchair"
     },
+
+    "Facility_Wheelchair": {
+      "type": "Device",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "228869008",
+        "display": "Manual wheelchair (physical object)"
+      },
+      "direct_transition": "Development_of_Individualized_Care_Plan",
+      "assign_to_attribute": "snf_wheelchair"
+    },
+
     "Development_of_Individualized_Care_Plan": {
       "type": "Procedure",
       "codes": [
@@ -114,6 +146,7 @@
       ],
       "direct_transition": "Begin_Day"
     },
+
     "Begin_Day": {
       "type": "Counter",
       "attribute": "snf_days",
@@ -121,6 +154,7 @@
       "amount": 1,
       "direct_transition": "Nursing"
     },
+
     "Nursing": {
       "type": "Procedure",
       "codes": [
@@ -132,20 +166,22 @@
       ],
       "direct_transition": "Physical_Therapy_Check"
     },
+
     "Physical_Therapy_Check": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.1,
-          "transition": "Physical_Therapy"
+          "distribution": 0.15,
+          "transition": "Physical_Therapy_with_Assessment"
         },
         {
-          "distribution": 0.9,
+          "distribution": 0.85,
           "transition": "Occupational_Therapy_Check"
         }
       ]
     },
-    "Physical_Therapy": {
+
+    "Physical_Therapy_with_Assessment": {
       "type": "Procedure",
       "codes": [
         {
@@ -159,22 +195,42 @@
         "low": 45,
         "unit": "minutes"
       },
+      "direct_transition": "PT_Mobility_Observation"
+    },
+
+    "PT_Mobility_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "95011-3",
+          "display": "Walk in room - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "http://loinc.org",
+        "code": "LA30910-6",
+        "display": "Setup help only"
+      },
       "direct_transition": "Occupational_Therapy_Check"
     },
+
     "Occupational_Therapy_Check": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.1,
-          "transition": "Occupational_Therapy"
+          "distribution": 0.12,
+          "transition": "Occupational_Therapy_with_Assessment"
         },
         {
-          "distribution": 0.9,
+          "distribution": 0.88,
           "transition": "Speech_Language_Therapy_Check"
         }
       ]
     },
-    "Occupational_Therapy": {
+
+    "Occupational_Therapy_with_Assessment": {
       "type": "Procedure",
       "codes": [
         {
@@ -183,22 +239,47 @@
           "display": "Occupational therapy (regime/therapy)"
         }
       ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "OT_ADL_Observation"
+    },
+
+    "OT_ADL_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "95019-6",
+          "display": "Eating - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "http://loinc.org",
+        "code": "LA30910-6",
+        "display": "Setup help only"
+      },
       "direct_transition": "Speech_Language_Therapy_Check"
     },
+
     "Speech_Language_Therapy_Check": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.05,
-          "transition": "Speech_Language_Therapy"
+          "distribution": 0.08,
+          "transition": "Speech_Language_Therapy_with_Assessment"
         },
         {
-          "distribution": 0.95,
+          "distribution": 0.92,
           "transition": "NTA_Check"
         }
       ]
     },
-    "Speech_Language_Therapy": {
+
+    "Speech_Language_Therapy_with_Assessment": {
       "type": "Procedure",
       "codes": [
         {
@@ -207,8 +288,32 @@
           "display": "Speech and language therapy regime (regime/therapy)"
         }
       ],
+      "duration": {
+        "low": 30,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "SLP_Communication_Observation"
+    },
+
+    "SLP_Communication_Observation": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "99858-3",
+          "display": "Functional Communication Measure - Swallowing score [ASHA NOMS]"
+        }
+      ],
+      "unit": "{score}",
+      "range": {
+        "low": 1,
+        "high": 7
+      },
       "direct_transition": "NTA_Check"
     },
+
     "NTA_Check": {
       "type": "Simple",
       "distributed_transition": [
@@ -222,6 +327,7 @@
         }
       ]
     },
+
     "Professional_Services_Care": {
       "type": "Procedure",
       "codes": [
@@ -233,19 +339,21 @@
       ],
       "direct_transition": "Status_Change_Check"
     },
+
     "Status_Change_Check": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "distribution": 0.01,
+          "distribution": 0.02,
           "transition": "Care_Regimes_Assessment"
         },
         {
-          "distribution": 0.99,
+          "distribution": 0.98,
           "transition": "End_Day"
         }
       ]
     },
+
     "Care_Regimes_Assessment": {
       "type": "Procedure",
       "codes": [
@@ -257,6 +365,7 @@
       ],
       "direct_transition": "End_Day"
     },
+
     "End_Day": {
       "type": "Delay",
       "distribution": {
@@ -281,6 +390,7 @@
         }
       ]
     },
+
     "Predischarge_Assessment": {
       "type": "Procedure",
       "codes": [
@@ -290,8 +400,44 @@
           "display": "Pre-discharge assessment (procedure)"
         }
       ],
+      "direct_transition": "Final_PFE_Assessment"
+    },
+
+    "Final_PFE_Assessment": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "273542005",
+          "display": "Activities of daily living assessment (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Discharge_Mobility_Status"
+    },
+
+    "Discharge_Mobility_Status": {
+      "type": "Observation",
+      "category": "survey",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "95012-1",
+          "display": "Transfer - functional ability during assessment period"
+        }
+      ],
+      "value_code": {
+        "system": "http://loinc.org",
+        "code": "LA30909-8",
+        "display": "Independent"
+      },
       "direct_transition": "Discharge_From_SNF"
     },
+
     "Discharge_From_SNF": {
       "type": "Procedure",
       "codes": [
@@ -303,34 +449,30 @@
       ],
       "direct_transition": "Return_Wheelchair"
     },
-    "Terminal": {
-      "type": "Terminal"
-    },
-    "End Encounter": {
-      "type": "EncounterEnd",
-      "direct_transition": "Clear SNF Reason"
-    },
-    "Facility_Wheelchair": {
-      "type": "Device",
-      "code": {
-        "system": "http://snomed.info/sct",
-        "code": "228869008",
-        "display": "Manual wheelchair (physical object)"
-      },
-      "direct_transition": "Development_of_Individualized_Care_Plan",
-      "assign_to_attribute": "snf_wheelchair"
-    },
+
     "Return_Wheelchair": {
       "type": "DeviceEnd",
       "referenced_by_attribute": "snf_wheelchair",
-      "direct_transition": "End Encounter"
+      "direct_transition": "End_Encounter"
     },
-    "Max Length of Stay": {
+
+    "End_Encounter": {
+      "type": "EncounterEnd",
+      "direct_transition": "Clear_SNF_Reason"
+    },
+
+    "Clear_SNF_Reason": {
       "type": "SetAttribute",
-      "attribute": "snf_days",
-      "value": 100,
-      "direct_transition": "History_Physical_Exam"
+      "attribute": "snf_reason",
+      "direct_transition": "Clear_PFE_Attributes"
     },
+
+    "Clear_PFE_Attributes": {
+      "type": "SetAttribute",
+      "attribute": "snf_pfe_admission_complete",
+      "direct_transition": "Terminal"
+    },
+
     "Transition_To_SNF_Reason": {
       "type": "SetAttribute",
       "attribute": "snf_reason",
@@ -341,11 +483,10 @@
         "display": "Patient transfer to skilled nursing facility (procedure)"
       }
     },
-    "Clear SNF Reason": {
-      "type": "SetAttribute",
-      "attribute": "snf_reason",
-      "direct_transition": "Terminal"
+
+    "Terminal": {
+      "type": "Terminal"
     }
   },
-  "gmf_version": 1
+  "gmf_version": 2
 }
