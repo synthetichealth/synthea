@@ -1,0 +1,436 @@
+{
+  "name": "Wearables_Cardiac_Monitoring",
+  "remarks": [
+    "Wearable devices are routinely used for fitness activities, compliance monitoring, and remote patient monitoring workflows (such as post-surgical stepdown). This module simulates the use of wearable devices for cardiac monitoring, adding FHIR Observation resources corresponding to ECG and cardiovascular biomarkers tracked by smartwatches.",
+    "Updated to reflect 2024 statistics showing 30% of US adults use wearable healthcare devices, with higher adoption among higher-income households.",
+    "Not all wearable users require clinical monitoring - many use devices for fitness tracking only.",
+    "If you wish to include granular ECG data and media files, enable the `physiology.state.enabled` and `physiology.generators.enabled` fields to true in the `synthea.properties` file.",
+    "",
+    "References",
+    "Digital Health Statistics 2025: 30% of American adults use wearable technology for healthcare",
+    "https://media.market.us/digital-health-statistics/",
+    "",
+    "Wearable Medical Devices Statistics 2025: 63% of US population uses fitness trackers",
+    "https://media.market.us/wearable-medical-devices-statistics/",
+    "",
+    "Physical Activity and Health: A Report of the Surgeon General",
+    "https://www.cdc.gov/nccdphp/sgr/adults.htm",
+    "",
+    "Known model limitations:",
+    "- This module focuses specifically on cardiac monitoring capabilities of wearables.",
+    "- Most biomarkers are still modeled with Markov chains, and not yet connected to the Biomodel partial differential equation models.",
+    "- Data follows FHIR normalization best practices, and may not reflect raw biomarker data obtained from wearable devices."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Female",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "F"
+          }
+        },
+        {
+          "transition": "Male",
+          "condition": {
+            "condition_type": "Gender",
+            "gender": "M"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ],
+      "name": "Initial"
+    },
+    "Terminal": {
+      "type": "Terminal",
+      "name": "Terminal"
+    },
+    "Female": {
+      "type": "Simple",
+      "remarks": [
+        "All adults are eligible for wearable device adoption, but only 30% actually use them.",
+        "30% of US adults use wearable healthcare devices as of 2024. Higher adoption among higher-income households (30% vs 12% for low-income).",
+        "https://media.market.us/digital-health-statistics/"
+      ],
+      "direct_transition": "Age_18_65",
+      "name": "Female"
+    },
+    "Male": {
+      "type": "Simple",
+      "remarks": [
+        "All adults are eligible for wearable device adoption, but only 30% actually use them.",
+        "30% of US adults use wearable healthcare devices as of 2024. Higher adoption among higher-income households (30% vs 12% for low-income).",
+        "https://media.market.us/digital-health-statistics/"
+      ],
+      "direct_transition": "Age_18_65",
+      "name": "Male"
+    },
+    "Age_18_65": {
+      "type": "Delay",
+      "range": {
+        "low": 18,
+        "high": 65,
+        "unit": "years"
+      },
+      "name": "Age_18_65",
+      "distributed_transition": [
+        {
+          "transition": "Wearable_Device_Adoption",
+          "distribution": 0.30
+        },
+        {
+          "transition": "Terminal",
+          "distribution": 0.70
+        }
+      ]
+    },
+    "Wearable_Device_Adoption": {
+      "type": "Simple",
+      "name": "Wearable_Device_Adoption",
+      "remarks": [
+        "Person adopts wearable technology. Not all users require clinical monitoring."
+      ],
+      "distributed_transition": [
+        {
+          "transition": "Fitness_Only_Tracking",
+          "distribution": 0.60
+        },
+        {
+          "transition": "Clinical_Monitoring_Pathway",
+          "distribution": 0.40
+        }
+      ]
+    },
+    "Fitness_Only_Tracking": {
+      "type": "Simple",
+      "name": "Fitness_Only_Tracking",
+      "remarks": [
+        "Majority of wearable users primarily use devices for fitness tracking without clinical encounters."
+      ],
+      "direct_transition": "Monitor_iWatch_Fitness"
+    },
+    "Monitor_iWatch_Fitness": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 13288007,
+        "display": "Monitor, device (physical object)"
+      },
+      "direct_transition": "Basic_Fitness_Tracking",
+      "assign_to_attribute": "fitness_tracker",
+      "name": "Monitor_iWatch_Fitness"
+    },
+    "Basic_Fitness_Tracking": {
+      "type": "Observation",
+      "category": "survey",
+      "unit": "{steps}",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Number of steps in unspecified time Pedometer"
+        }
+      ],
+      "range": {
+        "low": 2000,
+        "high": 15000
+      },
+      "direct_transition": "Terminal",
+      "name": "Basic_Fitness_Tracking"
+    },
+    "Clinical_Monitoring_Pathway": {
+      "type": "Simple",
+      "name": "Clinical_Monitoring_Pathway",
+      "remarks": [
+        "Subset of wearable users who engage in clinical monitoring and wellness encounters."
+      ],
+      "direct_transition": "Wellness_Baseline_Encounter"
+    },
+    "Wellness_Baseline_Encounter": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Wellness_Baseline",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 225385005,
+          "display": "Behavioral assessment (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Monitor_iWatch",
+      "name": "Wellness_Baseline_Encounter"
+    },
+    "Monitor_iWatch": {
+      "type": "Device",
+      "code": {
+        "system": "SNOMED-CT",
+        "code": 13288007,
+        "display": "Monitor, device (physical object)"
+      },
+      "direct_transition": "Fitness_Baseline",
+      "assign_to_attribute": "ecg_iwatch",
+      "name": "Monitor_iWatch"
+    },
+    "Wellness_Baseline_Encounter_End": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal",
+      "discharge_disposition": {
+        "system": "NUBC",
+        "code": "01",
+        "display": "Discharged to home care or self care (routine discharge)"
+      },
+      "name": "Wellness_Baseline_Encounter_End"
+    },
+    "Fitness_Baseline": {
+      "type": "Observation",
+      "category": "exam",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "410189008",
+          "display": "Taking patient vitals signs education (procedure)",
+          "value_set": ""
+        }
+      ],
+      "direct_transition": "Cycling_Baseline_Distance",
+      "name": "Fitness_Baseline"
+    },
+    "Cycling_Baseline_Distance": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "km",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "93818-3",
+          "display": "Cycling distance unspecified time",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 50
+      },
+      "direct_transition": "Running_Baseline_StepCount",
+      "name": "Cycling_Baseline_Distance"
+    },
+    "Running_Baseline_StepCount": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "{steps}",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "55423-8",
+          "display": "Number of steps in unspecified time Pedometer",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 8000,
+        "high": 20000
+      },
+      "direct_transition": "Running_Baseline_Distance",
+      "name": "Running_Baseline_StepCount"
+    },
+    "Running_Baseline_Distance": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "km",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "55430-3",
+          "display": "Walking distance unspecified time Pedometer",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 2,
+        "high": 10
+      },
+      "direct_transition": "Running_Baseline_DoubleSupport_Percentage",
+      "name": "Running_Baseline_Distance"
+    },
+    "Running_Baseline_DoubleSupport_Percentage": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "%",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "93015-6",
+          "display": "Gait and turn and tandem gait assessment",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 15,
+        "high": 35
+      },
+      "direct_transition": "Running_Baseline_WalkingSpeed",
+      "name": "Running_Baseline_DoubleSupport_Percentage"
+    },
+    "Running_Baseline_WalkingSpeed": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "km/h",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "41957-2",
+          "display": "Walking speed 24 hour mean Calculated",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 3,
+        "high": 6
+      },
+      "direct_transition": "FlightsClimbed_Baseline",
+      "name": "Running_Baseline_WalkingSpeed"
+    },
+    "FlightsClimbed_Baseline": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "{flights}",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "100304-5",
+          "display": "Flights climbed [#] Reporting Period",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 50
+      },
+      "direct_transition": "ECG_Baseline",
+      "name": "FlightsClimbed_Baseline"
+    },
+    "ECG_Baseline": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
+        }
+      ],
+      "duration": {
+        "low": 5,
+        "high": 10,
+        "unit": "minutes"
+      },
+      "direct_transition": "ECG_Sim",
+      "name": "ECG_Baseline"
+    },
+    "ECG_Sim": {
+      "type": "Physiology",
+      "model": "circulation/McSharry2003_Synthetic_ECG.xml",
+      "solver": "runge_kutta",
+      "step_size": 0.01,
+      "sim_duration": 4,
+      "lead_time": 0,
+      "inputs": [
+        {
+          "from_exp": "#{BMI} * 0.497 + 56.15",
+          "to": "hrmean"
+        }
+      ],
+      "outputs": [
+        {
+          "from_list": "zf",
+          "to": "ecg_result",
+          "type": "Attribute"
+        }
+      ],
+      "direct_transition": "ECG_Data",
+      "alt_direct_transition": "Clear_ECG_result",
+      "name": "ECG_Sim"
+    },
+    "ECG_Data": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
+        }
+      ],
+      "sampled_data": {
+        "attributes": [
+          "ecg_result"
+        ]
+      },
+      "direct_transition": "ECG_Chart",
+      "name": "ECG_Data"
+    },
+    "ECG_Chart": {
+      "type": "Observation",
+      "category": "procedure",
+      "unit": "",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": 29303009,
+          "display": "Electrocardiographic procedure",
+          "value_set": ""
+        }
+      ],
+      "attachment": {
+        "chart": {
+          "type": "line",
+          "title": "Electrocardiogram",
+          "axis_attribute_x": "time",
+          "axis_attribute_y": "mV",
+          "width": 400,
+          "height": 200,
+          "series": [
+            {
+              "attribute": "ecg_result"
+            }
+          ]
+        }
+      },
+      "direct_transition": "Clear_ECG_result",
+      "name": "ECG_Chart"
+    },
+    "Clear_ECG_result": {
+      "type": "SetAttribute",
+      "attribute": "ecg_result",
+      "direct_transition": "SleepAnalysis",
+      "name": "Clear_ECG_result"
+    },
+    "SleepAnalysis": {
+      "type": "Observation",
+      "category": "exam",
+      "unit": "h",
+      "codes": [
+        {
+          "system": "http://loinc.org",
+          "code": "93832-4",
+          "display": "Sleep duration.",
+          "value_set": ""
+        }
+      ],
+      "range": {
+        "low": 5,
+        "high": 10
+      },
+      "direct_transition": "Wellness_Baseline_Encounter_End",
+      "name": "SleepAnalysis"
+    }
+  },
+  "gmf_version": 1
+}
