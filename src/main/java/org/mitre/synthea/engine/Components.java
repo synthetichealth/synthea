@@ -202,7 +202,7 @@ public abstract class Components {
     public int height;
     /** Width of the image in pixels (photo/video). */
     public int width;
-    /** Number of frames if > 1 (photo). */
+    /** Number of frames if more than 1 (photo). */
     public int frames;
     /** Length in seconds (audio/video). */
     public double duration;

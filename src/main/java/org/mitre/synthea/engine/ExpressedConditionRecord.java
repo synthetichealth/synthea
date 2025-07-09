@@ -394,7 +394,7 @@ public class ExpressedConditionRecord implements Cloneable, Serializable {
     }
   }
 
-  /** a map:  module.name -> Conditions */
+  /** a map:  module.name to Conditions */
   private Map<String, ModuleConditions> sources;
   /** The person in context */
   @JSONSkip
