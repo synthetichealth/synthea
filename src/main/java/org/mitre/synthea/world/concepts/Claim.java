@@ -17,26 +17,39 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 import org.mitre.synthea.world.concepts.healthinsurance.PlanRecord;
 
+/**
+ * Represents a claim for healthcare services, including costs and payer details.
+ */
 public class Claim implements Serializable {
+  /**
+   * Serial version UID for serialization.
+   */
   private static final long serialVersionUID = -3565704321813987656L;
+
+  /**
+   * Constant representing zero cost in cents.
+   */
   public static final BigDecimal ZERO_CENTS = BigDecimal.ZERO.setScale(2);
 
+  /**
+   * Represents the cost details of a claim.
+   */
   public static class ClaimCost {
-    /** total cost of the entry. */
+    /** Total cost of the entry. */
     public BigDecimal cost = ZERO_CENTS;
-    /** copay paid by patient. */
+    /** Copay paid by the patient. */
     public BigDecimal copayPaidByPatient = ZERO_CENTS;
-    /** deductible paid by patient. */
+    /** Deductible paid by the patient. */
     public BigDecimal deductiblePaidByPatient = ZERO_CENTS;
-    /** amount the charge was decreased by payer adjustment. */
+    /** Amount the charge was decreased by payer adjustment. */
     public BigDecimal adjustment = ZERO_CENTS;
-    /** coinsurance paid by payer. */
+    /** Coinsurance paid by the payer. */
     public BigDecimal coinsurancePaidByPayer = ZERO_CENTS;
-    /** otherwise paid by payer. */
+    /** Amount otherwise paid by the primary payer. */
     public BigDecimal paidByPayer = ZERO_CENTS;
-    /** otherwise paid by secondary payer. */
+    /** Amount otherwise paid by the secondary payer. */
     public BigDecimal paidBySecondaryPayer = ZERO_CENTS;
-    /** otherwise paid by patient out of pocket. */
+    /** Amount otherwise paid by the patient out of pocket. */
     public BigDecimal patientOutOfPocket = ZERO_CENTS;
 
     /**
@@ -107,40 +120,71 @@ public class Claim implements Serializable {
     /**
      * Returns the total cost of the Claim, including immunizations/procedures tied to the
      * encounter.
+     * @return the total claim cost
      */
     public BigDecimal getTotalClaimCost() {
       return cost;
     }
 
+    /**
+     * Returns the total cost covered by the payer, which includes coinsurance and
+     * any amounts paid by the secondary payer.
+     * @return the cost covered by the payer.
+     */
     public BigDecimal getCoveredCost() {
       return coinsurancePaidByPayer.add(paidByPayer);
     }
 
+    /**
+     * Returns the total deductible paid by the patient.
+     * @return the deductible paid by the patient.
+     */
     public BigDecimal getDeductiblePaid() {
       return deductiblePaidByPatient;
     }
 
+    /**
+     * Returns the total copay paid by the patient.
+     * @return the copay paid by the patient.
+     */
     public BigDecimal getCopayPaid() {
       return copayPaidByPatient;
     }
 
+    /**
+     * Returns the total cost paid by the patient, which includes
+     * out-of-pocket expenses, copay, and deductible.
+     * @return the total cost paid by the patient.
+     */
     public BigDecimal getPatientCost() {
       return patientOutOfPocket.add(copayPaidByPatient).add(deductiblePaidByPatient);
     }
   }
 
+  /**
+   * Represents a specific entry in a claim, such as an encounter or medication.
+   */
   public class ClaimEntry extends ClaimCost implements Serializable {
+    /**
+     * Serial version UID for serialization.
+     */
     private static final long serialVersionUID = 1871121895630816723L;
+
+    /** The health record entry associated with this claim entry. */
     @JSONSkip
     public Entry entry;
 
+    /**
+     * Create a new ClaimEntry for the given health record entry.
+     * @param entry the health record entry
+     */
     public ClaimEntry(Entry entry) {
       this.entry = entry;
     }
 
     /**
      * Assign costs for this ClaimEntry.
-     * @param planRecord  The planrecord to check patient costs from.
+     * @param planRecord the plan record to check patient costs from
      */
     private void assignCosts(PlanRecord planRecord) {
       reset();
@@ -164,7 +208,7 @@ public class Claim implements Serializable {
         // assigned costs in this method.
         // The person has already paid their maximum out-of-pocket costs.
         this.paidByPayer = remainingBalance;
-        remainingBalance = BigDecimal.ZERO;
+        remainingBalance = ZERO_CENTS;
       }
 
       // Apply copay to Encounters and Medication claims only
@@ -205,7 +249,7 @@ public class Claim implements Serializable {
         } else {
           // Payer covers all
           this.paidByPayer = remainingBalance;
-          remainingBalance = BigDecimal.ZERO;
+          remainingBalance = ZERO_CENTS;
         }
       }
       if (remainingBalance.compareTo(Claim.ZERO_CENTS) > 0) {
@@ -223,16 +267,24 @@ public class Claim implements Serializable {
     }
   }
 
+  /** The person associated with this claim. */
   @JSONSkip
   public final Person person;
+  /** The main entry of the claim. */
   public final ClaimEntry mainEntry;
+  /** Additional items in the claim. */
   public final List<ClaimEntry> items;
+  /** Totals for the claim. */
   public ClaimEntry totals;
+  /** Unique identifier for the claim. */
   public final UUID uuid;
+  /** The plan record associated with the claim. */
   private final PlanRecord planRecord;
 
   /**
    * Constructor of a Claim for an Entry.
+   * @param entry the health record entry
+   * @param person the person associated with the claim
    */
   public Claim(Entry entry, Person person) {
     // Set the Entry.
@@ -258,7 +310,8 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Adds non-explicit costs to the Claim. (Procedures/Immunizations/etc).
+   * Adds non-explicit costs to the Claim (e.g., procedures, immunizations).
+   * @param entry the health record entry to add as a line item
    */
   public void addLineItem(Entry entry) {
     ClaimEntry claimEntry = new ClaimEntry(entry);
@@ -283,31 +336,49 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Returns the total cost of the Claim, including immunizations/procedures tied to the encounter.
+   * Returns the unique identifier for this claim.
+   * @return the total cost of the claim, including all associated items
    */
   public BigDecimal getTotalClaimCost() {
     return this.totals.getTotalClaimCost();
   }
 
   /**
-   * Returns the total cost that the Payer covered for this claim.
+   * Returns the total cost covered by the payer for this claim.
+   * @return the total cost covered by the payer for this claim
    */
   public BigDecimal getTotalCoveredCost() {
     return this.totals.getCoveredCost();
   }
 
+  /**
+   * Returns the total cost of the claim, including all associated items.
+   * @return the total deductible paid by the patient
+   */
   public BigDecimal getTotalDeductiblePaid() {
     return this.totals.getDeductiblePaid();
   }
 
+  /**
+   * Returns the total copay paid by the patient for this claim.
+   * @return the total copay paid by the patient
+   */
   public BigDecimal getTotalCopayPaid() {
     return this.totals.getCopayPaid();
   }
 
+  /**
+   * Returns the total amount paid by the patient, which includes
+   * @return the total amount paid by the secondary payer
+   */
   public BigDecimal getTotalPaidBySecondaryPayer() {
     return this.totals.paidBySecondaryPayer;
   }
 
+  /**
+   * Returns the total adjustment amount for this claim, which is the amount
+   * @return the total adjustment amount
+   */
   public BigDecimal getTotalAdjustment() {
     return this.totals.adjustment;
   }
@@ -322,14 +393,16 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Returns the total cost to the patient, including copay, coinsurance, and deductible.
+   * Returns the total cost to the patient, which includes copay, coinsurance, and deductible.
+   * @return the total cost to the patient, including copay, coinsurance, and deductible
    */
   public BigDecimal getTotalPatientCost() {
     return this.totals.getPatientCost();
   }
 
   /**
-   * Returns whether this Claim was covered by Medicare as the primary payer.
+   * Checks if this claim was covered by Medicare as the primary payer.
+   * @return whether this Claim was covered by Medicare as the primary payer
    */
   public boolean coveredByMedicare() {
     String payerName = this.getPayer().getName();
@@ -338,21 +411,24 @@ public class Claim implements Serializable {
   }
 
   /**
-   * Get the plan record associated with this claim.
+   * Returns the member ID of the plan record associated with this claim.
+   * @return the member ID.
    */
   public String getPlanRecordMemberId() {
     return this.planRecord.id;
   }
 
   /**
-   * Get the primary payer of this claim.
+   * Returns the plan record associated with this claim.
+   * @return the primary payer of this claim
    */
   public Payer getPayer() {
     return this.planRecord.getPlan().getPayer();
   }
 
   /**
-   * Return the secondary payer of this claim.
+   * Returns the secondary payer of this claim, if applicable.
+   * @return the secondary payer of this claim
    */
   public Payer getSecondaryPayer() {
     return this.planRecord.getSecondaryPlan().getPayer();

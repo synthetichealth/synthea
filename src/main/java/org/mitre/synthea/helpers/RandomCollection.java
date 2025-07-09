@@ -9,7 +9,12 @@ import java.util.TreeMap;
  * gem. Adapted from https://stackoverflow.com/a/6409791/630384
  */
 public class RandomCollection<E> implements Serializable {
+  /**
+   * A collection of objects (results) that can be selected at random
+   * based on their associated weights.
+   */
   private final TreeMap<Double, E> map = new TreeMap<Double, E>();
+  /** The total weight of all objects in the collection. */
   private double total = 0;
 
   /**

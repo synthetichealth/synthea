@@ -17,17 +17,28 @@ import org.simulator.math.odes.MultiTable.Block.Column;
 
 /** Class for handling simulation inputs and outputs. **/
 public class IoMapper implements Serializable {
+  /** Type of input/output mapping. */
   private IoType type;
+  /** Source field for mapping. */
   private String from;
+  /** Target field for mapping. */
   private String to;
+  /** Source list for mapping. */
   private String fromList;
+  /** Expression for mapping. */
   private String fromExp;
+  /** Variance threshold for mapping. */
   private double variance;
+  /** Vital sign associated with the mapping. */
   private VitalSign vitalSign;
-
-  // ExpressionProcessor instances are not thread safe, so we need
-  // to have a separate processor for each thread
+  /**
+   * ExpressionProcessor instances are not thread safe, so we need
+   * to have a separate processor for each thread
+   */
   private transient ThreadLocal<ExpressionProcessor> threadExpProcessor;
+  /**
+   * PreGenerator instance for pre-simulation outputs.
+   */
   private PreGenerator preGenerator;
 
   private ExpressionProcessor getThreadExpProcessor() {
@@ -44,6 +55,9 @@ public class IoMapper implements Serializable {
     threadExpProcessor.set(exp);
   }
 
+  /**
+   * Default constructor for IoMapper.
+   */
   public IoMapper() {}
 
   /**
@@ -59,63 +73,124 @@ public class IoMapper implements Serializable {
     setThreadExpProcessor(other.getThreadExpProcessor());
   }
 
+  /**
+   * Represents the type of input/output mapping.
+   */
   public enum IoType {
+    /** Attribute type mapping. */
     @SerializedName("Attribute") ATTRIBUTE,
+    /** Vital sign type mapping. */
     @SerializedName("Vital Sign") VITAL_SIGN
   }
 
+  /**
+   * Retrieves the type of this IoMapper.
+   * @return The IoType of this IoMapper.
+   */
   public IoType getType() {
     return type;
   }
 
+  /**
+   * Sets the type of this IoMapper.
+   * @param type The IoType to set.
+   */
   public void setType(IoType type) {
     this.type = type;
   }
 
+  /**
+   * Retrieves the "from" field of this IoMapper.
+   * @return The "from" field value.
+   */
   public String getFrom() {
     return from;
   }
 
+  /**
+   * Sets the "from" field of this IoMapper.
+   * @param from The "from" field value to set.
+   */
   public void setFrom(String from) {
     this.from = from;
   }
 
+  /**
+   * Retrieves the "to" field of this IoMapper.
+   * @return The "to" field value.
+   */
   public String getTo() {
     return to;
   }
 
+  /**
+   * Sets the "to" field of this IoMapper.
+   * @param to The "to" field value to set.
+   */
   public void setTo(String to) {
     this.to = to;
   }
 
+  /**
+   * Retrieves the "fromList" field of this IoMapper.
+   * @return The "fromList" field value.
+   */
   public String getFromList() {
     return fromList;
   }
 
+  /**
+   * Sets the "fromList" field of this IoMapper.
+   * @param fromList The "fromList" field value to set.
+   */
   public void setFromList(String fromList) {
     this.fromList = fromList;
   }
 
+  /**
+   * Gets the expression for the 'from' field.
+   * @return The 'from' expression.
+   */
   public String getFromExp() {
     return fromExp;
   }
 
+  /**
+   * Sets the expression for the 'from' field.
+   * @param fromExp The 'from' expression to set.
+   */
   public void setFromExp(String fromExp) {
     this.fromExp = fromExp;
   }
 
+  /**
+   * Gets the variance threshold.
+   * @return The variance threshold.
+   */
   public double getVariance() {
     return variance;
   }
 
+  /**
+   * Sets the variance threshold.
+   * @param varianceThreshold The variance threshold to set.
+   */
   public void setVariance(double varianceThreshold) {
     this.variance = varianceThreshold;
   }
 
+  /**
+   * Gets the pre-generator instance.
+   * @return The pre-generator instance.
+   */
   public PreGenerator getPreGenerator() {
     return preGenerator;
   }
 
+  /**
+   * Sets the pre-generator instance.
+   * @param preGenerator The pre-generator instance to set.
+   */
   public void setPreGenerator(PreGenerator preGenerator) {
     this.preGenerator = preGenerator;
   }
@@ -160,6 +235,7 @@ public class IoMapper implements Serializable {
    * @param person Person instance to get parameter values from
    * @param time Synthea simulation time
    * @param modelInputs map of input parameters to be populated
+   * @return double value of the mapped parameter
    */
   public double toModelInputs(Person person, long time, Map<String,Double> modelInputs) {
     double resultValue;

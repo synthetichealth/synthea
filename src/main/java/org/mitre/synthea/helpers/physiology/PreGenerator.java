@@ -12,28 +12,47 @@ import org.mitre.synthea.world.agents.Person;
 
 /** Class for handling pre-simulation outputs. **/
 public class PreGenerator implements Serializable {
+  /** Fully qualified class name for the generator. */
   private String className;
+  /** List of arguments to pass to the generator's constructor. */
   private List<PreGeneratorArg> args;
 
+  /**
+   * Gets the fully qualified class name for the generator.
+   * @return The class name.
+   */
   public String getClassName() {
     return className;
   }
 
+  /**
+   * Sets the fully qualified class name for the generator.
+   * @param className The class name to set.
+   */
   public void setClassName(String className) {
     this.className = className;
   }
 
+  /**
+   * Gets the list of arguments to pass to the generator's constructor.
+   * @return The list of arguments.
+   */
   public List<PreGeneratorArg> getArgs() {
     return args;
   }
 
+  /**
+   * Sets the list of arguments to pass to the generator's constructor.
+   * @param args The list of arguments to set.
+   */
   public void setArgs(List<PreGeneratorArg> args) {
     this.args = args;
   }
 
   /**
    * Instantiates the ValueGenerator from the configuration options.
-   * @return new ValueGenerator instance
+   * @param person The person for whom the generator is created.
+   * @return A new ValueGenerator instance.
    */
   public ValueGenerator getGenerator(Person person) {
 
@@ -103,31 +122,61 @@ public class PreGenerator implements Serializable {
 
   }
 
+  /**
+   * Represents an argument for the PreGenerator.
+   */
   public static class PreGeneratorArg {
+    /** Data type of the argument. */
     private String type;
+    /** Value of the argument. */
     private String value;
+    /** Indicates if the argument is a primitive type. */
     private boolean primitive;
 
+    /**
+     * Returns the data type of the argument.
+     * @return The data type.
+     */
     public String getType() {
       return type;
     }
 
+    /**
+     * Sets the data type of the argument.
+     * @param type The data type.
+     */
     public void setType(String type) {
       this.type = type;
     }
 
+    /**
+     * Returns the value of the argument.
+     * @return The value.
+     */
     public String getValue() {
       return value;
     }
 
+    /**
+     * Sets the value of the argument.
+     * @param value The value.
+     */
     public void setValue(String value) {
       this.value = value;
     }
 
+    /**
+     * Returns whether the argument is a primitive type.
+     * @return True if the argument is primitive, false otherwise.
+     */
     public boolean isPrimitive() {
       return primitive;
     }
 
+    /**
+     * Sets whether the argument is a primitive type.
+     * @param primitive True if the argument is primitive, false otherwise.
+     */
     public void setPrimitive(boolean primitive) {
       this.primitive = primitive;
     }

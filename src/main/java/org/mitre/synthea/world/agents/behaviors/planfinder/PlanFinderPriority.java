@@ -8,6 +8,9 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
+/**
+ * Implements a priority-based plan finder.
+ */
 public class PlanFinderPriority implements IPlanFinder {
 
   @Override

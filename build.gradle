@@ -186,6 +186,20 @@ task graphviz(type: JavaExec) {
   mainClass = "Graphviz"
 }
 
+tasks.javadoc {
+    // Exclude the rif package
+    exclude 'org/mitre/synthea/export/rif/**'
+    // Exclude ClinicianSpecialty which is mostly just a big list of constants
+    exclude 'org/mitre/synthea/world/concepts/ClinicianSpecialty.java'
+    // Exclude the exporters, which are mostly missing comments on enums of straightforward values
+    exclude 'org/mitre/synthea/export/**'
+    // Exclude VitalSign, which is an enum and self-documenting
+    exclude '/org/mitre/synthea/world/concepts/VitalSign.java'
+    // Exclude some agent classes, which have large quantities of constants that don't need documentation
+    exclude '/org/mitre/synthea/world/agents/Person.java'
+    exclude '/org/mitre/synthea/world/agents/Provider.java'
+    exclude '/org/mitre/synthea/world/agents/PayerManager.java'
+}
 
 task rifMinimize(type: JavaExec) {
   group 'Application'

@@ -121,6 +121,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   public static final String NO_VEHICLE_ACCESS = "no_vehicle_access";
   public static final String UNINSURED = "uninsured";
 
+  /** The random number generator to default to */
   private final DefaultRandomNumberGenerator random;
   public long populationSeed;
   /**
@@ -162,6 +163,7 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Person constructor.
+   * @param seed the seed for random number generation
    */
   public Person(long seed) {
     random = new DefaultRandomNumberGenerator(seed);
@@ -325,6 +327,8 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Returns whether a person is alive at the given time.
+   * @param time the current time in milliseconds
+   * @return true if the person is alive, false otherwise
    */
   public boolean alive(long time) {
     boolean born = attributes.containsKey(Person.BIRTHDATE);
@@ -333,21 +337,24 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
   }
 
   /**
-  * Get the expressed symptoms.
-  */
+   * Gets the expressed symptoms of the person.
+   * @return a map of symptom names to their expressed symptoms
+   */
   public Map<String, ExpressedSymptom> getExpressedSymptoms() {
     return symptoms;
   }
 
   /**
-  * Get the onsetonditionRecord.
-  */
+   * Gets the onset condition record of the person.
+   * @return the onset condition record
+   */
   public ExpressedConditionRecord getOnsetConditionRecord() {
     return onsetConditionRecord;
   }
 
   /**
-   * Returns the number of providers that this person has.
+   * Gets the count of providers associated with the person.
+   * @return the number of providers
    */
   public int providerCount() {
     int count = 1;
@@ -375,6 +382,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Method for retrieving the last time a given symptom has been updated from a given module.
+   * @param module the module containing the symptom
+   * @param symptom the symptom to check
+   * @return the last updated time of the symptom
    */
   public Long getSymptomLastUpdatedTime(String module, String symptom) {
     Long result = null;
@@ -387,7 +397,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Method for retrieving the value associated to a given symptom.
-   * This correspond to the maximum value across all potential causes.
+   * This corresponds to the maximum value across all potential causes.
+   * @param type the symptom type
+   * @return the value of the symptom
    */
   public int getSymptom(String type) {
     int max = 0;
@@ -440,6 +452,10 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Get a vital sign value.
+   *
+   * @param vitalSign The vital sign to retrieve.
+   * @param time The time at which to retrieve the vital sign value.
+   * @return The value of the vital sign at the specified time.
    */
   public Double getVitalSign(VitalSign vitalSign, long time) {
     ValueGenerator valueGenerator = vitalSigns.get(vitalSign);
@@ -480,6 +496,9 @@ public class Person implements Serializable, RandomNumberGenerator, QuadTreeElem
 
   /**
    * Convenience function to set a vital sign to a constant value.
+   *
+   * @param vitalSign The vital sign to set.
+   * @param value The constant value to set for the vital sign.
    */
   public void setVitalSign(VitalSign vitalSign, double value) {
     if (!Double.isFinite(value)) {

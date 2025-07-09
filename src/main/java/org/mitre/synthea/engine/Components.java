@@ -22,24 +22,18 @@ public abstract class Components {
 
   /**
    * A Range of values, with a low and a high.
-   * Values must be numeric. (ex, Integer, Long, Double)
+   * Values must be numeric (e.g., Integer, Long, Double).
    *
    * @param <R> Type of range
    */
   public static class Range<R extends Number> implements Serializable {
-    /**
-     * Minimum value of the range.
-     */
+    /** Minimum value of the range. */
     public R low;
 
-    /**
-     * Maximum value of the range.
-     */
+    /** Maximum value of the range. */
     public R high;
 
-    /**
-     * Decimal places for value within the range.
-     */
+    /** Decimal places for value within the range. */
     public Integer decimals;
   }
 
@@ -50,10 +44,8 @@ public abstract class Components {
    *
    * @param <R> Type of range
    */
-  public static class RangeWithUnit<R extends Number> extends Range<R> implements Serializable {
-    /**
-     * Unit for the range. Ex, "years" if the range represents an amount of time.
-     */
+  public static class RangeWithUnit<R extends Number> extends Range<R> {
+    /** Unit for the range (e.g., "years" if the range represents an amount of time). */
     public String unit;
   }
 
@@ -61,13 +53,10 @@ public abstract class Components {
    * An Exact quantity representing a single fixed value. Note that "quantity" here may be a bit of
    * a misnomer as the value does not have to be numeric. Ex, it may be a String or Code.
    *
-   * @param <T>
-   *          Type of quantity
+   * @param <T> Type of quantity
    */
   public static class Exact<T> implements Serializable {
-    /**
-     * The fixed value.
-     */
+    /** The fixed value. */
     public T quantity;
   }
 
@@ -78,35 +67,66 @@ public abstract class Components {
    *
    * @param <T> Type of quantity
    */
-  public static class ExactWithUnit<T> extends Exact<T> implements Serializable {
-    /**
-     * Unit for the quantity. Ex, "days" if the quantity represents an amount of time.
-     */
+  public static class ExactWithUnit<T> extends Exact<T> {
+    /** Unit for the quantity (e.g., "days" if the quantity represents an amount of time). */
     public String unit;
   }
 
+  /**
+   * Represents a specific date input with detailed time components.
+   */
   public static class DateInput implements Serializable {
+    /** The year component of the date. */
     public int year;
+
+    /** The month component of the date. */
     public int month;
+
+    /** The day component of the date. */
     public int day;
+
+    /** The hour component of the time. */
     public int hour;
+
+    /** The minute component of the time. */
     public int minute;
+
+    /** The second component of the time. */
     public int second;
+
+    /** The millisecond component of the time. */
     public int millisecond;
   }
 
+  /**
+   * Represents sampled data with attributes and series.
+   */
   public static class SampledData implements Serializable {
-    public double originValue; // Zero value
-    public Double factor; // Multiply data by this before adding to origin
-    public Double lowerLimit; // Lower limit of detection
-    public Double upperLimit; // Upper limit of detection
-    public List<String> attributes; // Person attributes containing TimeSeriesData objects
-    public List<TimeSeriesData> series; // List of actual series data collections
+    /** Zero value. */
+    public double originValue;
 
-    // Format for the output decimal numbers
-    // See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
+    /** Multiply data by this before adding to origin. */
+    public Double factor;
+
+    /** Lower limit of detection. */
+    public Double lowerLimit;
+
+    /** Upper limit of detection. */
+    public Double upperLimit;
+
+    /** Person attributes containing TimeSeriesData objects. */
+    public List<String> attributes;
+
+    /** List of actual series data collections. */
+    public List<TimeSeriesData> series;
+
+    /**
+     * Format for the output decimal numbers.
+     * See https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
+     */
     public String decimalFormat;
 
+    /** Default constructor for SampledData. */
     public SampledData() {}
 
     /**
@@ -162,22 +182,38 @@ public abstract class Components {
    * raw base64 data, or URLs of image attachments for Observations.
    */
   public static class Attachment implements Serializable {
-    public String contentType; // Code for the MIME type of the content, with charset etc.
-    public String language; // Human language of the content (BCP-47)
-    public String data; // Data inline, base64ed
-    public String url; // URI where the data can be found
-    public int size; // Number of bytes of content (if url provided)
-    public String hash; // Hash of the data (sha1, base64ed)
-    public String title; // Label to display in place of the data
-    public String creation; // Date attachment was first created
-    public int height; // Height of the image in pixels (photo/video)
-    public int width; // Width of the image in pixesl (photo/video)
-    public int frames; // Number of frames if > 1 (photo)
-    public double duration; // Length in seconds (audio / video)
-    public int pages; // Number of printed pages
-    public PersonChartConfig chart; // Configuration to generate a chart image
-    public Boolean validated; // Whether this Attachment has been validated
+    /** Code for the MIME type of the content, with charset etc. */
+    public String contentType;
+    /** Human language of the content (BCP-47). */
+    public String language;
+    /** Data inline, base64 encoded. */
+    public String data;
+    /** URI where the data can be found. */
+    public String url;
+    /** Number of bytes of content (if URL provided). */
+    public int size;
+    /** Hash of the data (SHA-1, base64 encoded). */
+    public String hash;
+    /** Label to display in place of the data. */
+    public String title;
+    /** Date attachment was first created. */
+    public String creation;
+    /** Height of the image in pixels (photo/video). */
+    public int height;
+    /** Width of the image in pixels (photo/video). */
+    public int width;
+    /** Number of frames if > 1 (photo). */
+    public int frames;
+    /** Length in seconds (audio/video). */
+    public double duration;
+    /** Number of printed pages. */
+    public int pages;
+    /** Configuration to generate a chart image. */
+    public PersonChartConfig chart;
+    /** Whether this Attachment has been validated. */
+    public Boolean validated;
 
+    /** Default constructor for Attachment. */
     public Attachment() {
       validated = false;
     }
