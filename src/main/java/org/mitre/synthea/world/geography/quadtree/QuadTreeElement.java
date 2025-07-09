@@ -1,8 +1,7 @@
 package org.mitre.synthea.world.geography.quadtree;
 
 /**
- * QuadTreeElement represents an element that can be stored in a QuadTree.
- * It provides methods to get its coordinates and calculate distances.
+ * QuadTreeElement represents a subdivision of the tree.
  */
 public interface QuadTreeElement {
   /** Get the x-coordinate of this element.
