@@ -196,8 +196,6 @@ tasks.javadoc {
     // Exclude VitalSign, which is an enum and self-documenting
     exclude '/org/mitre/synthea/world/concepts/VitalSign.java'
     // Exclude some agent classes, which have large quantities of constants that don't need documentation
-    exclude '/org/mitre/synthea/world/agents/Person.java'
-    exclude '/org/mitre/synthea/world/agents/Provider.java'
     exclude '/org/mitre/synthea/world/agents/PayerManager.java'
 }
 

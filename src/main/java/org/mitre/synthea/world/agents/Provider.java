@@ -37,36 +37,93 @@ import org.mitre.synthea.world.geography.Location;
 import org.mitre.synthea.world.geography.quadtree.QuadTree;
 import org.mitre.synthea.world.geography.quadtree.QuadTreeElement;
 
+/**
+ * Represents a healthcare provider.
+ */
+@SuppressWarnings("javadoc")
 public class Provider implements QuadTreeElement, Serializable {
 
+  /**
+   * Types of healthcare providers.
+   */
   public enum ProviderType {
-    DIALYSIS, HOME_HEALTH, HOSPICE, HOSPITAL, LONG_TERM,
-    NURSING, PRIMARY, REHAB, URGENT, VETERAN, PHARMACY, IHS;
+    /** Dialysis provider. */
+    DIALYSIS,
+    /** Home health provider. */
+    HOME_HEALTH,
+    /** Hospice provider. */
+    HOSPICE,
+    /** Hospital provider. */
+    HOSPITAL,
+    /** Long-term care provider. */
+    LONG_TERM,
+    /** Nursing provider. */
+    NURSING,
+    /** Primary care provider. */
+    PRIMARY,
+    /** Rehabilitation provider. */
+    REHAB,
+    /** Urgent care provider. */
+    URGENT,
+    /** Veteran care provider. */
+    VETERAN,
+    /** Pharmacy provider. */
+    PHARMACY,
+    /** Indian Health Service provider. */
+    IHS;
   }
 
+  /**
+   * Key for tracking encounters.
+   */
   public static final String ENCOUNTERS = "encounters";
+
+  /**
+   * Key for tracking procedures.
+   */
   public static final String PROCEDURES = "procedures";
+
+  /**
+   * Key for tracking labs.
+   */
   public static final String LABS = "labs";
+
+  /**
+   * Key for tracking prescriptions.
+   */
   public static final String PRESCRIPTIONS = "prescriptions";
 
   // Provider Selection Behavior algorithm choices:
+  /** Provider selection behavior: nearest provider. */
   public static final String NEAREST = "nearest";
+
+  /** Provider selection behavior: random provider. */
   public static final String RANDOM = "random";
+
+  /** Provider selection behavior: network provider. */
   public static final String NETWORK = "network";
+
+  /** Provider selection behavior: Medicare provider. */
   public static final String MEDICARE = "medicare";
+
+  /** Default behavior to use hospital when provider selection fails. */
+  public static final Boolean USE_HOSPITAL_AS_DEFAULT =
+      Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
   /** Map of providers imported by UUID. */
   private static Map<String, Provider> providerByUuid = new HashMap<String, Provider>();
+  /** Map of providers by location. */
   private static QuadTree providerMap = generateQuadTree();
+  /** Set of states that have been loaded. */
   private static Set<String> statesLoaded = new HashSet<String>();
+  /** Count of providers loaded. */
   private static int loaded = 0;
 
   private static final double MAX_PROVIDER_SEARCH_DISTANCE =
       Config.getAsDouble("generate.providers.maximum_search_distance", 2);
   private static IProviderFinder providerFinder = buildProviderFinder();
-  public static final Boolean USE_HOSPITAL_AS_DEFAULT =
-      Config.getAsBoolean("generate.providers.default_to_hospital_on_failure", true);
 
+  /** Map of provider attributes. */
   @JSONSkip
   public Map<String, Object> attributes;
   /** Unique identifier for the provider. */
@@ -121,6 +178,9 @@ public class Provider implements QuadTreeElement, Serializable {
   private Point2D.Double coordinates;
   /** Set of services provided by the provider. */
   public Set<EncounterType> servicesProvided;
+  /**
+   * Map of clinicians categorized by their specialties.
+   */
   @JSONSkip
   public Map<String, ArrayList<Clinician>> clinicianMap;
   // row: year, column: type, value: count
@@ -325,6 +385,8 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Returns the total revenue of this provider.
+   *
+   * @return the total revenue.
    */
   public double getRevenue() {
     return this.revenue;
@@ -354,7 +416,12 @@ public class Provider implements QuadTreeElement, Serializable {
   }
 
   /**
-   * Find a provider that does not already have a healthrecord for the given person.
+   * Find a provider that does not already have a health record for the given person.
+   * @param person The patient who requires the service.
+   * @param service The service required. For example, EncounterType.AMBULATORY.
+   * @param time The date/time within the simulated world, in milliseconds.
+   * @param takenIds List of provider UUIDs that are already taken.
+   * @return Service provider or null if none is available.
    */
   public static Provider findServiceNewProvider(Person person, EncounterType service, long time,
       List<String> takenIds) {
@@ -422,7 +489,9 @@ public class Provider implements QuadTreeElement, Serializable {
 
   /**
    * Load into cache the list of providers for a state.
+   *
    * @param location the state being loaded.
+   * @param random Source of randomness for provider generation.
    */
   public static void loadProviders(Location location, DefaultRandomNumberGenerator random) {
     if (!statesLoaded.contains(location.state)
@@ -802,6 +871,20 @@ public class Provider implements QuadTreeElement, Serializable {
     return d;
   }
 
+  /**
+   * Returns the geographic coordinates of the provider.
+   *
+   * @return the geographic coordinates.
+   */
+  public Point2D.Double getLonLat() {
+    return coordinates;
+  }
+
+  /**
+   * Returns the list of all providers.
+   *
+   * @return the list of providers.
+   */
   public static List<Provider> getProviderList() {
     return new ArrayList<Provider>(providerByUuid.values());
   }
@@ -886,9 +969,5 @@ public class Provider implements QuadTreeElement, Serializable {
   @Override
   public double getY() {
     return coordinates.getY();
-  }
-
-  public Point2D.Double getLonLat() {
-    return coordinates;
   }
 }
