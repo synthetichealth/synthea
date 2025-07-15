@@ -6,22 +6,41 @@ import java.util.HashMap;
 import org.mitre.synthea.world.agents.Person;
 
 /**
- * Representation of different types of distributions that can be used to represent
- * random variables used in Synthea States.
+ * Represents different types of distributions that can be used to model
+ * random variables in Synthea States.
  */
 public class Distribution implements Serializable {
+
+  /**
+   * Enum representing the types of distributions supported.
+   */
   public enum Kind {
-    EXACT, GAUSSIAN, UNIFORM, EXPONENTIAL, TRIANGULAR
+    /** A distribution with a single exact value. */
+    EXACT,
+    /** A Gaussian (normal) distribution. */
+    GAUSSIAN,
+    /** A uniform distribution. */
+    UNIFORM,
+    /** An exponential distribution. */
+    EXPONENTIAL,
+    /** A triangular distribution. */
+    TRIANGULAR
   }
 
+  /** The type of distribution. */
   public Kind kind;
+
+  /** Whether the generated value should be rounded to the nearest integer. */
   public Boolean round;
+
+  /** Parameters defining the distribution (e.g., mean, standard deviation). */
   public HashMap<String, Double> parameters;
 
   /**
    * Generate a sample from the random variable.
-   * @param person The place to obtain a repeatable source of randomness
-   * @return The value
+   *
+   * @param person the person object to obtain a repeatable source of randomness
+   * @return the generated value
    */
   public double generate(Person person) {
     double value;

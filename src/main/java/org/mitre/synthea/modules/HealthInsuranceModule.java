@@ -11,14 +11,28 @@ import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
+/**
+ * HealthInsuranceModule represents health insurance coverage for a Person.
+ */
 public class HealthInsuranceModule extends Module {
 
   // Load properties insurance numbers.
+  /** The year at which the mandate went into effect */
   public static long mandateTime
       = Utilities.convertCalendarYearsToTime(Integer.parseInt(Config
       .get("generate.insurance.mandate.year", "2006")));
+
+  /**
+   * Represents the proportion of the population required to have health insurance
+   * coverage due to an occupation-related mandate. This value is read from the
+   * configuration file and defaults to 0.2 (20%) if not specified.
+   */
   public static double mandateOccupation =
       Config.getAsDouble("generate.insurance.mandate.occupation", 0.2);
+
+  /**
+   * The poverty level used in the simulation to determine socioeconomic factors.
+   */
   public static double povertyLevel =
           Config.getAsDouble("generate.demographics.socioeconomic.income.poverty", 17550);
 

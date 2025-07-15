@@ -20,10 +20,14 @@ public class Telemedicine {
    * </p>
    */
   public static final double CURRENT_CHANCE = 0.15;
+  /** Chance of a telemedicine visit prior to the COVID pandemic */
   public static final double PREPANDEMIC_CHANCE = 0.004;
-
+  /** The first date telemedicine was available to patients */
   public static final long TELEMEDICINE_START_DATE = LocalDateTime.of(2016, 1, 1, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
+  /** The date at which to switch from using the prepandemic chance
+   * to the current chance of a telemedicine encounter
+   */
   public static final long TELEMEDICINE_UPTAKE_DATE = LocalDateTime.of(2020, 4, 1, 12, 0)
       .toInstant(ZoneOffset.UTC).toEpochMilli();
 

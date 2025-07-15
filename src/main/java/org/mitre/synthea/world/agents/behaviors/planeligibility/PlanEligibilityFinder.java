@@ -19,7 +19,14 @@ public class PlanEligibilityFinder {
   private static Map<String, IPlanEligibility> planEligibilities;
 
   private static final String ELIGIBILITY_NAME = "Name";
+  /**
+   * Generic eligibility type.
+   */
   public static final String GENERIC = "GENERIC";
+
+  /**
+   * Default eligibility algorithm.
+   */
   public static final IPlanEligibility DEFAULT = new DefaultPlanEligibility();
 
   /**
@@ -40,6 +47,7 @@ public class PlanEligibilityFinder {
   /**
    * Builds the plan eligibilities for the given state and CSV input file.
    * @param state The state.
+   * @param fileName The name of the file containing eligibility data.
    */
   public static void buildPlanEligibilities(String state, String fileName) {
     planEligibilities = new HashMap<>();

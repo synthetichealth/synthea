@@ -36,6 +36,9 @@ import org.mitre.synthea.world.concepts.PediatricGrowthTrajectory;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mitre.synthea.world.geography.Location;
 
+/**
+ * LifecycleModule is responsible for managing the lifecycle of a Person.
+ */
 public final class LifecycleModule extends Module {
   private static final Map<GrowthChart.ChartType, GrowthChart> growthChart =
       GrowthChart.loadCharts();
@@ -45,11 +48,17 @@ public final class LifecycleModule extends Module {
       loadDisabilityData();
   private static final String AGE = "AGE";
   private static final String AGE_MONTHS = "AGE_MONTHS";
+  /** Attribute key for days until a person will die */
   public static final String DAYS_UNTIL_DEATH = "days_until_death";
+  /** Attribute key for the probability a person quits smoking per process call*/
   public static final String QUIT_SMOKING_PROBABILITY = "quit smoking probability";
+  /** Attribute key for the age at which the person stopped smoking */
   public static final String QUIT_SMOKING_AGE = "quit smoking age";
+  /** Attribute key for the probability a person stops drinking per process call */
   public static final String QUIT_ALCOHOLISM_PROBABILITY = "quit alcoholism probability";
+  /** Attribute key for the age at which a person quit alcoholism */
   public static final String QUIT_ALCOHOLISM_AGE = "quit alcoholism age";
+  /** Attribute key for a person's probability to follow doctor's orders and recommendations */
   public static final String ADHERENCE_PROBABILITY = "adherence probability";
 
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
@@ -58,7 +67,9 @@ public final class LifecycleModule extends Module {
 
   private static RandomCollection<String> sexualOrientationData = loadSexualOrientationData();
 
-
+  /**
+   * Constructor for LifecycleModule.
+   */
   public LifecycleModule() {
     this.name = "Lifecycle";
   }
@@ -933,21 +944,39 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * Enables death by natural causes.
+   */
   protected static boolean ENABLE_DEATH_BY_NATURAL_CAUSES =
       Config.getAsBoolean("lifecycle.death_by_natural_causes");
+
+  /**
+   * Enables death by loss of care.
+   */
   protected static boolean ENABLE_DEATH_BY_LOSS_OF_CARE =
       Config.getAsBoolean("lifecycle.death_by_loss_of_care");
+
+  /**
+   * Enables physiology generators.
+   */
   public static boolean ENABLE_PHYSIOLOGY_GENERATORS =
       Config.getAsBoolean("physiology.generators.enabled", false);
 
-  // Death From Natural Causes SNOMED Code
+  /** Death From Natural Causes SNOMED Code */
   private static final Code NATURAL_CAUSES = new Code("SNOMED-CT", "9855000",
       "Natural death with unknown cause");
-  // Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
-  // Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+  /** Death From Lack of Treatment SNOMED Code (Due to a Payer not covering treatment)
+    * Note: This SNOMED Code (397709008) is just for death - not death from lack of treatment.
+    */
   public static final Code LOSS_OF_CARE = new Code("SNOMED-CT", "397709008",
       "Death due to Uncovered and Unreceived Treatment");
 
+  /**
+   * Mark a person as dead if they are old enough or if they roll a random number
+   * that is less than the likelihood of death for their age.
+   * @param person the person to check for death.
+   * @param time the time of the simulation
+   */
   protected static void death(Person person, long time) {
     if (ENABLE_DEATH_BY_NATURAL_CAUSES) {
       double roll = person.rand();
@@ -969,6 +998,11 @@ public final class LifecycleModule extends Module {
     }
   }
 
+  /**
+   * Function that determines the probability of death based on age.
+   * @param age the age of the person in years.
+   * @return the probability of death in the next year.
+   */
   protected static double likelihoodOfDeath(int age) {
     double yearlyRisk;
 
@@ -1009,6 +1043,7 @@ public final class LifecycleModule extends Module {
    * necessary treatment.
    *
    * @param person the person to check for loss of care death.
+   * @return true if the person dies from loss of care, false otherwise.
    */
   public static boolean deathFromLossOfCare(Person person) {
     // Search the person's lossOfCareHealthRecord for missed treatments.

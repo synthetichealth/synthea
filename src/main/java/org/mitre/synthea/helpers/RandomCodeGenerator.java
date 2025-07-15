@@ -39,10 +39,22 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
  */
 public abstract class RandomCodeGenerator {
 
+  /**
+   * The base URL for expanding ValueSets using the terminology service.
+   */
   public static String expandBaseUrl = Config.get("generate.terminology_service_url")
       + "/ValueSet/$expand?url=";
+
+  /**
+   * A cache of ValueSet URIs to their corresponding list of codes.
+   */
   public static Map<String, List<Code>> codeListCache = new HashMap<>();
+
+  /**
+   * A list of codes that have been selected during the current session.
+   */
   public static List<Code> selectedCodes = new ArrayList<>();
+
   private static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
   private static OkHttpClient client = new OkHttpClient();
 
@@ -53,7 +65,9 @@ public abstract class RandomCodeGenerator {
    *          the URI of the ValueSet
    * @param seed
    *          a random seed to ensure reproducibility of this result
-   * @return the randomly selected Code
+   * @param code
+   *          a fallback code to return if no new code is found
+   * @return the randomly selected Code, or the fallback code if no new code is found
    */
   public static Code getCode(String valueSetUri, long seed, Code code) {
     if (urlValidator.isValid(valueSetUri)) {
@@ -211,6 +225,11 @@ public abstract class RandomCodeGenerator {
     }
   }
 
+  /**
+   * Sets the base URL for the terminology service.
+   *
+   * @param url The new base URL to set.
+   */
   public static void setBaseUrl(String url) {
     expandBaseUrl = url + "/ValueSet/$expand?url=";
   }

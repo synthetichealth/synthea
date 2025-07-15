@@ -36,6 +36,9 @@ import org.opencds.cqf.cql.engine.serializing.jackson.XmlCqlLibraryReader;
 import org.simulator.math.odes.MultiTable;
 import org.simulator.math.odes.MultiTable.Block.Column;
 
+/**
+ * ExpressionProcessor is a utility class for evaluating CQL expressions
+ */
 public class ExpressionProcessor {
   private static final String LIBRARY_NAME = "Synthea";
   private static final ModelManager modelManager = new ModelManager();
@@ -172,6 +175,7 @@ public class ExpressionProcessor {
    * @param param name of the VitalSign or attribute to retrieve from the Person
    * @param person Person instance to get the parameter from
    * @param time current time
+   * @param expression the expression being evaluated, for error reporting
    * @return value
    */
   public static Object getPersonValue(String param, Person person, long time, String expression) {

@@ -35,6 +35,9 @@ import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.export.Exporter;
 import org.mitre.synthea.helpers.Utilities;
 
+/**
+ * Generate Graphviz-like graphs of disease modules.
+ */
 public class Graphviz {
   private static final String NEWLINE = "\\l";
 
@@ -43,6 +46,7 @@ public class Graphviz {
    * @param args Optional path of modules to render. If not provided,
    *     the default modules will be loaded using the ClassLoader.
    * @throws URISyntaxException on failure to load modules.
+   * @throws IOException on failure to read module files.
    */
   public static void main(String[] args) throws URISyntaxException, IOException {
     File folder = Exporter.getOutputFolder("graphviz", null);

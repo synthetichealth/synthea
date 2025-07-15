@@ -9,6 +9,10 @@ import org.mitre.synthea.world.agents.Person;
  * Generate random values within a defined range.
  */
 public class RandomValueGenerator extends ValueGenerator {
+  /**
+   * The distribution used to generate random values.
+   * Typically a uniform distribution with low and high bounds.
+   */
   private Distribution distribution;
 
   /**
@@ -27,6 +31,11 @@ public class RandomValueGenerator extends ValueGenerator {
     distribution.parameters = parameters;
   }
 
+  /**
+   * Create a new RandomValueGenerator with a specific distribution.
+   * @param person The person to generate data for.
+   * @param distribution The distribution type used to generate random values.
+   */
   public RandomValueGenerator(Person person, Distribution distribution) {
     super(person);
     this.distribution = distribution;

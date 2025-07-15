@@ -112,6 +112,8 @@ import org.apache.commons.lang3.NotImplementedException;
  * }</pre>
  */
 public final class InnerClassTypeAdapterFactory<T> implements TypeAdapterFactory {
+
+  /** The base type for the adapter factory. */
   private final Class<?> baseType;
   private final String typeFieldName;
 
@@ -126,11 +128,21 @@ public final class InnerClassTypeAdapterFactory<T> implements TypeAdapterFactory
   /**
    * Creates a new runtime type adapter using for {@code baseType} using {@code
    * typeFieldName} as the type field name. Type field names are case sensitive.
+   * @param <T> The type of the base class.
+   * @param baseType the base type.
+   * @param typeFieldName the name of the type field.
+   * @return a new InnerClassTypeAdapterFactory instance.
    */
   public static <T> InnerClassTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName) {
     return new InnerClassTypeAdapterFactory<T>(baseType, typeFieldName);
   }
 
+  /**
+   * Creates a type adapter for the specified type.
+   * @param gson the Gson instance.
+   * @param type the type token.
+   * @return a type adapter for the specified type.
+   */
   @Override
   public <R> TypeAdapter<R> create(Gson gson, TypeToken<R> type) {
     if (type.getRawType() != baseType) {
@@ -138,7 +150,15 @@ public final class InnerClassTypeAdapterFactory<T> implements TypeAdapterFactory
     }
 
     return new TypeAdapter<R>() {
-      @Override public R read(JsonReader in) throws IOException {
+
+      /**
+       * Reads a JSON element and deserializes it into the appropriate subtype.
+       * @param in the JSON reader.
+       * @return the deserialized object.
+       * @throws IOException if an error occurs during reading.
+       */
+      @Override
+      public R read(JsonReader in) throws IOException {
         JsonElement jsonElement = Streams.parse(in);
         JsonElement labelJsonElement = jsonElement.getAsJsonObject().remove(typeFieldName);
         if (labelJsonElement == null) {
@@ -164,7 +184,14 @@ public final class InnerClassTypeAdapterFactory<T> implements TypeAdapterFactory
         }
       }
 
-      @Override public void write(JsonWriter out, R value) throws IOException {
+      /**
+       * Throws an exception as writing is not implemented.
+       * @param out the JSON writer.
+       * @param value the value to write.
+       * @throws IOException if an error occurs during writing.
+       */
+      @Override
+      public void write(JsonWriter out, R value) throws IOException {
         throw new NotImplementedException("Write not implemented for InnerClassTypeAdapter");
       }
     }.nullSafe();

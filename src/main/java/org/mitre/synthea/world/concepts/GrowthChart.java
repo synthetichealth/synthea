@@ -14,12 +14,26 @@ import org.mitre.synthea.helpers.Utilities;
  * Represents a growth chart for a particular measure.
  */
 public class GrowthChart implements Serializable {
+
+  /**
+   * The type of growth chart (e.g., HEIGHT, WEIGHT, BMI, HEAD).
+   */
   public enum ChartType {
-    HEIGHT, WEIGHT, BMI, HEAD
+    /** Growth chart for height */
+    HEIGHT,
+    /** Growth chart for weight */
+    WEIGHT,
+    /** Growth chart for body mass index */
+    BMI,
+    /** Growth chart for head size */
+    HEAD
   }
 
+  /** The chart type */
   private ChartType chartType;
+  /** A map of age in months to growth chart entries for male individuals. */
   private HashMap<Integer, GrowthChartEntry> maleEntries;
+  /** A map of age in months to growth chart entries for female individuals. */
   private HashMap<Integer, GrowthChartEntry> femaleEntries;
 
   /**
@@ -53,7 +67,7 @@ public class GrowthChart implements Serializable {
   /**
    * Lookup and calculate values from the CDC growth charts, using the LMS
    * values to calculate the intermediate values.
-   * Reference : https://www.cdc.gov/growthcharts/percentile_data_files.htm
+   * Reference: https://www.cdc.gov/growthcharts/percentile_data_files.htm
    *
    * @param gender "M" | "F"
    * @param ageInMonths 0 - 240
@@ -135,8 +149,9 @@ public class GrowthChart implements Serializable {
   }
 
   /**
-   * Load all of the charts in the cdc_growth_charts.json file
-   * @return a map of chart type to growth chart
+   * Load all of the growth charts from the cdc_growth_charts.json file.
+   *
+   * @return A map of chart types to their corresponding growth charts.
    */
   public static Map<ChartType, GrowthChart> loadCharts() {
     String filename = "cdc_growth_charts.json";

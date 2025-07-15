@@ -14,6 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.mitre.synthea.modules.HealthInsuranceModule;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * Determines if a person is eligible for a health insurance plan based on
+ * a CSV input file that defines various eligibility criteria.
+ */
 public class CSVEligibility implements IPlanEligibility {
 
   // The possible columns of the CSV input file.
@@ -30,10 +34,11 @@ public class CSVEligibility implements IPlanEligibility {
   private static final String AND = "and";
   private static final String OR = "or";
 
-  // A map of column names to the type of eligibility it should create.
+  /** A map of column names to the type of eligibility it should create. */
   private static Map<String, Function<String, IPlanEligibility>> eligbilityOptions;
-  // An eligibility logic function that takes a person and the current time.
+  /** An eligibility logic function that takes a person and the current time. */
   private final BiFunction<Person, Long, Boolean> eligibilityLogic;
+  /** List of all elibigility criteria that apply */
   private final List<IPlanEligibility> eligibilityCriteria;
 
   /**

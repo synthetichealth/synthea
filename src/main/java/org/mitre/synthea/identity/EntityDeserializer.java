@@ -12,6 +12,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class responsible for converting JSON representations of an Entity into Entity objects.
+ */
 public class EntityDeserializer implements JsonDeserializer<Entity> {
   @Override
   public Entity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

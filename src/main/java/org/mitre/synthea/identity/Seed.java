@@ -28,67 +28,144 @@ import org.mitre.synthea.world.agents.Person;
  * </p>
  */
 public class Seed implements IdentityRecord {
+  /** The unique identifier for the seed. */
   private String seedId;
+  /** The period during which the seed is valid. */
   private Period period;
+  /** The given name of the entity. */
   private String givenName;
+  /** The family name of the entity. */
   private String familyName;
+  /** The phone number of the entity. */
   private String phone;
+  /** The address lines of the entity. */
   private List<String> addressLines;
+  /** The city of the entity. */
   private String city;
+  /** The state of the entity. */
   private String state;
+  /** The ZIP code of the entity. */
   private String zipCode;
+  /** The social security number of the entity. */
   private String socialSecurityNumber;
+  /** The associated entity for this seed. */
   private transient Entity entity;
+  /** The list of variants associated with this seed. */
   private List<Variant> variants;
 
+  /**
+   * Retrieves the unique identifier for the seed.
+   *
+   * @return The seed ID.
+   */
   public String getSeedId() {
     return seedId;
   }
 
+  /**
+   * Sets the unique identifier for the seed.
+   *
+   * @param seedId The seed ID to set.
+   */
   public void setSeedId(String seedId) {
     this.seedId = seedId;
   }
 
+  /**
+   * Retrieves the period during which the seed is valid.
+   *
+   * @return The period of the seed.
+   */
   public Period getPeriod() {
     return period;
   }
 
+  /**
+   * Sets the period during which the seed is valid.
+   *
+   * @param period The period to set.
+   */
   public void setPeriod(Period period) {
     this.period = period;
   }
 
+  /**
+   * Sets the given name of the entity.
+   *
+   * @param givenName The given name to set.
+   */
   public void setGivenName(String givenName) {
     this.givenName = givenName;
   }
 
+  /**
+   * Sets the family name of the entity.
+   *
+   * @param familyName The family name to set.
+   */
   public void setFamilyName(String familyName) {
     this.familyName = familyName;
   }
 
+  /**
+   * Sets the phone number of the entity.
+   *
+   * @param phone The phone number to set.
+   */
   public void setPhone(String phone) {
     this.phone = phone;
   }
 
+  /**
+   * Sets the address lines of the entity.
+   *
+   * @param addressLines The address lines to set.
+   */
   public void setAddressLines(List<String> addressLines) {
     this.addressLines = addressLines;
   }
 
+  /**
+   * Sets the city of the entity.
+   *
+   * @param city The city to set.
+   */
   public void setCity(String city) {
     this.city = city;
   }
 
+  /**
+   * Sets the state of the entity.
+   *
+   * @param state The state to set.
+   */
   public void setState(String state) {
     this.state = state;
   }
 
+  /**
+   * Sets the ZIP code of the entity.
+   *
+   * @param zipCode The ZIP code to set.
+   */
   public void setZipCode(String zipCode) {
     this.zipCode = zipCode;
   }
 
+  /**
+   * Retrieves the list of variants associated with this seed.
+   *
+   * @return The list of variants.
+   */
   public List<Variant> getVariants() {
     return variants;
   }
 
+  /**
+   * Sets the list of variants associated with this seed.
+   *
+   * @param variants The list of variants to set.
+   */
   public void setVariants(List<Variant> variants) {
     this.variants = variants;
   }
@@ -156,17 +233,25 @@ public class Seed implements IdentityRecord {
     return socialSecurityNumber;
   }
 
+  /**
+   * Sets the social security number for the entity.
+   * @param socialSecurityNumber the social security number to set
+   */
   public void setSocialSecurityNumber(String socialSecurityNumber) {
     this.socialSecurityNumber = socialSecurityNumber;
+  }
+
+  /**
+   * Sets the entity associated with this seed.
+   * @param entity the entity to associate with this seed
+   */
+  public void setEntity(Entity entity) {
+    this.entity = entity;
   }
 
   @Override
   public long birthdateTimestamp() {
     return localDateToTimestamp(this.getDateOfBirth());
-  }
-
-  public void setEntity(Entity entity) {
-    this.entity = entity;
   }
 
   /**

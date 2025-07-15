@@ -64,6 +64,8 @@ public class Concepts {
 
   /**
    * Get the list of all concepts in Synthea, as a list of CSV strings.
+   *
+   * @param onlyMissingCosts whether to include only concepts without specified costs
    * @return list of CSV strings
    * @throws Exception if any exception occurs in reading the modules.
    */
@@ -127,6 +129,7 @@ public class Concepts {
    *
    * @param concepts Table of concepts to add to
    * @param state State to parse for concepts and codes
+   * @param module Name of the module the state belongs to
    */
   public static void inventoryState(Map<Code,Set<String>> concepts, JsonObject state,
       String module) {
@@ -168,8 +171,10 @@ public class Concepts {
 
   /**
    * Add the Codes in the given Collection to the given inventory of concepts.
+   *
    * @param concepts Table of concepts to add to
    * @param codes Collection of codes to add
+   * @param module Name of the module the codes belong to
    */
   public static void inventoryCodes(Map<Code,Set<String>> concepts,
       Collection<Code> codes, String module) {

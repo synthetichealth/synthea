@@ -7,6 +7,10 @@ import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 
+/**
+ * ProviderFinderRandom selects a random provider for a person from the list of
+ * available providers that meet the criteria.
+ */
 public class ProviderFinderRandom implements IProviderFinder {
 
   @Override

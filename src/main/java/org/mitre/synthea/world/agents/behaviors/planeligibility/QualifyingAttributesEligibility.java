@@ -19,7 +19,9 @@ import org.mitre.synthea.world.agents.Person;
  * input by splitting attribute logic expressions with "|".
  */
 public class QualifyingAttributesEligibility implements IPlanEligibility {
-
+  /**
+   * A list of logical expressions that qualify a person for this eligibility type.
+   */
   private final List<AttributeQualifier> qualifyingAttributes;
 
   /**

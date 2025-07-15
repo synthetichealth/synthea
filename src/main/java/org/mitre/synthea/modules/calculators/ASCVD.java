@@ -9,8 +9,13 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
+/**
+ * ASCVD Risk Calculator.
+ */
 public class ASCVD {
-
+  /**
+   * 10 years in milliseconds (used for risk conversion).
+   */
   public static final long TEN_YEARS_IN_MS = TimeUnit.DAYS.toMillis(3650);
 
   /**
