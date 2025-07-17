@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -143,7 +142,6 @@ import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.export.rif.CodeMapper;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
-import org.mitre.synthea.helpers.RandomValueGenerator;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.identity.Entity;
