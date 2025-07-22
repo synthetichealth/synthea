@@ -35,7 +35,7 @@ public abstract class TransitionMetrics {
    */
   private static final Table<String, String, Metric> metrics =
       Tables.synchronizedTable(HashBasedTable.create());
-
+  /** Whether to track the metrics */
   public static boolean enabled =
       Config.getAsBoolean("generate.track_detailed_transition_metrics", false);
 

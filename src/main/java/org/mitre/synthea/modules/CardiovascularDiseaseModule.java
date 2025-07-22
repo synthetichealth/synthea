@@ -14,15 +14,34 @@ import org.mitre.synthea.modules.calculators.Framingham;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 
+/**
+ * Module for simulating cardiovascular disease risks and outcomes.
+ */
 public final class CardiovascularDiseaseModule extends Module {
+
+  /**
+   * Constructor for the Cardiovascular Disease Module.
+   */
   public CardiovascularDiseaseModule() {
     this.name = "Cardiovascular Disease";
   }
 
+  /**
+   * Clone the module.
+   *
+   * @return a clone of the module.
+   */
   public Module clone() {
     return this;
   }
 
+  /**
+   * Process the module for a person at a given time.
+   *
+   * @param person The person to process.
+   * @param time   The current time in the simulation.
+   * @return true if the module has finished processing, false otherwise.
+   */
   @Override
   public boolean process(Person person, long time) {
     if (!person.alive(time)) {
@@ -45,14 +64,19 @@ public final class CardiovascularDiseaseModule extends Module {
 
   /** TODO: make this a config parameter for which risk system we want to use. */
   private static boolean useFramingham = false;
+
+  /** Ten years in milliseconds. */
   private static final long tenYearsInMS = TimeUnit.DAYS.toMillis(3650);
-  private static final long oneMonthInMS = TimeUnit.DAYS.toMillis(30); // roughly
+
+  /** One month in milliseconds (approximately). */
+  private static final long oneMonthInMS = TimeUnit.DAYS.toMillis(30);
 
   /**
    * Calculates the risk of cardiovascular disease using Framingham points
    * and look up tables, putting the current risk in a "cardio_risk" attribute.
+   *
    * @param person The patient.
-   * @param time The risk is calculated for the given time.
+   * @param time   The risk is calculated for the given time.
    */
   private static void calculateCardioRisk(Person person, long time) {
     double framinghamRisk = Framingham.chd10Year(person, time, false);
@@ -73,6 +97,9 @@ public final class CardiovascularDiseaseModule extends Module {
 
   /**
    * Calculates the 10-year ASCVD Risk Estimates.
+   *
+   * @param person The patient.
+   * @param time   The time for which the risk is calculated.
    */
   private static void calculateAscvdRisk(Person person, long time) {
     double ascvdRisk = ASCVD.ascvd10Year(person, time, false);
@@ -93,8 +120,9 @@ public final class CardiovascularDiseaseModule extends Module {
   /**
    * Depending on gender, BMI, and blood pressure, there is a small risk of
    * Atrial Fibrillation which is calculated and stored in "atrial_fibrillation_risk".
+   *
    * @param person The patient.
-   * @param time The time.
+   * @param time   The time.
    */
   private static void calculateAtrialFibrillationRisk(Person person, long time) {
     double afRisk = Framingham.atrialFibrillation10Year(person, time, false);
@@ -106,8 +134,9 @@ public final class CardiovascularDiseaseModule extends Module {
    * Depending on gender, age, smoking status, and various comorbidities (e.g. diabetes,
    * coronary heart disease, atrial fibrillation), this function calculates the risk
    * of a stroke and stores it in the "stroke_risk" attribute.
+   *
    * @param person The patient.
-   * @param time The time.
+   * @param time   The time.
    */
   private static void calculateStrokeRisk(Person person, long time) {
     double tenStrokeRisk = Framingham.stroke10Year(person, time, false);
@@ -131,7 +160,7 @@ public final class CardiovascularDiseaseModule extends Module {
    *
    * @param attributes Attribute map to populate.
    */
-  public static void inventoryAttributes(Map<String,Inventory> attributes) {
+  public static void inventoryAttributes(Map<String, Inventory> attributes) {
     String m = CardiovascularDiseaseModule.class.getSimpleName();
     // Write
     Attributes.inventory(attributes, m, "ascvd_risk", false, true, "0.001");

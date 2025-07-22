@@ -15,6 +15,11 @@ import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
 import org.mitre.synthea.world.geography.Location;
 
+/**
+ * Costs is a utility class that provides methods to determine the cost of various healthcare
+ * entries such as procedures, medications, encounters, immunizations, devices, and supplies.
+ * It loads cost data from CSV files and applies location-based adjustments.
+ */
 public class Costs {
   private static final Distribution.Kind COST_METHOD = parseCostMethod();
 

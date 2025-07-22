@@ -36,18 +36,37 @@ public class Entity {
   private String individualId;
   private String housingStatus;
 
+  /**
+   * Default constructor for the Entity class.
+   */
   public Entity() {
     this.seeds = new ArrayList<>();
   }
 
+  /**
+   * Get the list of seeds representing demographic information over time.
+   *
+   * @return the list of seeds
+   */
   public List<Seed> getSeeds() {
     return seeds;
   }
 
+  /**
+   * Set the list of seeds representing demographic information over time.
+   *
+   * @param seeds the list of seeds to set
+   */
   public void setSeeds(List<Seed> seeds) {
     this.seeds = seeds;
   }
 
+  /**
+   * Find the seed at a particular date.
+   * @param date the date to find a seed
+   * @return The seed that covers the date. If before the first seed, will still return the first
+   *     seed
+   */
   public Seed seedAt(LocalDate date) {
     return seeds.stream().filter(s -> s.getPeriod().contains(date)).findFirst().orElse(null);
   }
@@ -86,34 +105,74 @@ public class Entity {
     return valid;
   }
 
+  /**
+   * Get the date of birth of the person.
+   *
+   * @return the date of birth
+   */
   public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }
 
+  /**
+   * Set the date of birth of the person.
+   *
+   * @param dateOfBirth the date of birth to set
+   */
   public void setDateOfBirth(LocalDate dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
   }
 
+  /**
+   * Get the gender of the person.
+   *
+   * @return the gender
+   */
   public String getGender() {
     return gender;
   }
 
+  /**
+   * Set the gender of the person.
+   *
+   * @param gender the gender to set
+   */
   public void setGender(String gender) {
     this.gender = gender;
   }
 
+  /**
+   * Get the unique identifier for the individual.
+   *
+   * @return the individual ID
+   */
   public String getIndividualId() {
     return individualId;
   }
 
+  /**
+   * Set the unique identifier for the individual.
+   *
+   * @param individualId the individual ID to set
+   */
   public void setIndividualId(String individualId) {
     this.individualId = individualId;
   }
 
+  /**
+   * Get the housing status of the person.
+   *
+   * @return the housing status
+   */
   public String getHousingStatus() {
     return housingStatus;
   }
 
+  /**
+   * Set the housing status of the person.
+   *
+   * @param housingStatus the housing status to set
+   */
   public void setHousingStatus(String housingStatus) {
     this.housingStatus = housingStatus;
   }

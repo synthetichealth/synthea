@@ -12,10 +12,8 @@ import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
-import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Entry;
-import org.mitre.synthea.world.concepts.HealthRecord.Medication;
 
 /**
  * Logic represents any portion of a generic module that requires a logical
@@ -24,6 +22,7 @@ import org.mitre.synthea.world.concepts.HealthRecord.Medication;
  * across the population.
  */
 public abstract class Logic implements Serializable {
+  /** Remarks or comments associated with the logic. */
   public List<String> remarks;
 
   /**
@@ -46,7 +45,6 @@ public abstract class Logic implements Serializable {
   @SuppressWarnings("unchecked")
   private static <T extends HealthRecord.Entry> HealthRecord.Entry findEntryFromHistory(
       Person person, Class<T> classType, Code code) {
-    // Find the most recent health record entry from the patient history
     HealthRecord.Entry entry = null;
     for (State state : person.history) {
       if (state.entry != null && classType.isInstance(state.entry)) {
@@ -69,8 +67,15 @@ public abstract class Logic implements Serializable {
    * The Gender condition type tests the patient's gender. (M or F)
    */
   public static class Gender extends Logic {
+    /** Gender to test against (e.g., M or F). */
     private String gender;
 
+    /**
+     * Test whether the person's gender matches the specified gender.
+     * @param person Person to test.
+     * @param time Timestamp for the test.
+     * @return True if the gender matches, false otherwise.
+     */
     @Override
     public boolean test(Person person, long time) {
       return gender.equals(person.attributes.get(Person.GENDER));
@@ -82,10 +87,19 @@ public abstract class Logic implements Serializable {
    * (Ex, years for adults or months for young children)
    */
   public static class Age extends Logic {
+    /** Quantity of age to test against. */
     private Double quantity;
+    /** Unit of age (e.g., years, months). */
     private String unit;
+    /** Operator for comparison */
     private String operator;
 
+    /**
+     * Test whether the person's age satisfies the specified condition.
+     * @param person Person to test.
+     * @param time Timestamp for the test.
+     * @return True if the age condition is satisfied, false otherwise.
+     */
     @Override
     public boolean test(Person person, long time) {
       double age;
@@ -114,9 +128,13 @@ public abstract class Logic implements Serializable {
    * of conditions.
    */
   public static class Date extends Logic {
+    /** Year to test against. */
     private Integer year;
+    /** Month to test against. */
     private Integer month;
+    /** Specific date to test against. */
     private DateInput date;
+    /** Operator for comparison */
     private String operator;
 
     @Override
@@ -146,6 +164,7 @@ public abstract class Logic implements Serializable {
    * "Middle", or "Low".
    */
   public static class SocioeconomicStatus extends Logic {
+    /** Socioeconomic category to test against (e.g., High, Middle, Low). */
     private String category;
 
     @Override
@@ -159,8 +178,15 @@ public abstract class Logic implements Serializable {
    * "White", "Native" (Native American), "Hispanic", "Black", "Asian", and "Other".
    */
   public static class Race extends Logic {
+    /** Race to test against. */
     private String race;
 
+    /**
+     * Test whether the person's race matches the specified race.
+     * @param person Person to test.
+     * @param time Timestamp for the test.
+     * @return True if the race matches, false otherwise.
+     */
     @Override
     public boolean test(Person person, long time) {
       return race.equalsIgnoreCase((String) person.attributes.get(Person.RACE));
@@ -173,8 +199,11 @@ public abstract class Logic implements Serializable {
    * conditions, in these cases only the highest value is considered. See also the Symptom State.
    */
   public static class Symptom extends Logic {
+    /** The symptom to test against */
     private String symptom;
+    /** The comparison operator */
     private String operator;
+    /** The value to compare the person's symptom against */
     private double value;
 
     @Override
@@ -194,10 +223,15 @@ public abstract class Logic implements Serializable {
    *   that the observation value cannot be compared as there has been no observation made.
    */
   public static class Observation extends Logic {
+    /** The comparison operator. */
     private String operator;
+    /** List of codes to test against. */
     private List<Code> codes;
+    /** Attribute referencing the observation. */
     private String referencedByAttribute;
+    /** Value to compare the observation against. */
     private Object value;
+    /** Code representing the value to compare. */
     private Code valueCode;
 
     @Override
@@ -275,9 +309,11 @@ public abstract class Logic implements Serializable {
    * The Attribute condition type tests a named attribute on the patient entity.
    */
   public static class Attribute extends Logic {
+    /** Attribute name */
     private String attribute;
+    /** Comparison operator  */
     private String operator;
-
+    /** Value to compare the attribute to */
     private Object value;
 
     @Override
@@ -297,6 +333,9 @@ public abstract class Logic implements Serializable {
    * It should never be used directly in a JSON file.
    */
   private abstract static class GroupedCondition extends Logic {
+    /**
+     * A collection of conditions associated with the logic.
+     */
     protected Collection<Logic> conditions;
   }
 
@@ -330,6 +369,7 @@ public abstract class Logic implements Serializable {
    * if the sub-condition is false, it will return true.
    */
   public static class Not extends Logic {
+    /** The condition to negate */
     private Logic condition;
 
     @Override
@@ -348,6 +388,7 @@ public abstract class Logic implements Serializable {
    * If the minimum is 1, this is equivalent to the Or condition.)
    */
   public static class AtLeast extends GroupedCondition {
+    /** The lower bound of sub-conditions that need to be true to return true */
     private Integer minimum;
 
     @Override
@@ -362,6 +403,7 @@ public abstract class Logic implements Serializable {
    * it will return true, but if more than the maximum are true, it will return false.
    */
   public static class AtMost extends GroupedCondition {
+    /** The max number of sub-conditions that can be true */
     private Integer maximum;
 
     @Override
@@ -402,9 +444,13 @@ public abstract class Logic implements Serializable {
    * state.
    */
   public static class PriorState extends Logic {
+    /** Name of the prior state */
     private String name;
+    /** Name of a state, cuts off the search when reached */
     private String since;
+    /** Max amount of time we'll look back at the history */
     private ExactWithUnit<Double> within;
+    /** Converted value of the `within` variable */
     private Long window;
 
     @Override
@@ -428,7 +474,13 @@ public abstract class Logic implements Serializable {
    * This class should never be referenced directly.
    */
   private abstract static class ActiveLogic extends Logic {
+    /**
+     * A collection of codes associated with the logic.
+     */
     protected List<Code> codes;
+    /**
+     * An attribute referenced by the logic.
+     */
     protected String referencedByAttribute;
 
     abstract boolean checkCode(Person person, HealthRecord.Code code);
@@ -502,6 +554,9 @@ public abstract class Logic implements Serializable {
     }
   }
 
+  /**
+   * Represents an active allergy logic condition.
+   */
   public static class ActiveAllergy extends ActiveLogic {
     @Override
     boolean checkCode(Person person, Code code) {
@@ -582,8 +637,11 @@ public abstract class Logic implements Serializable {
    * the Symptom State.
    */
   public static class VitalSign extends Logic {
+    /** The vital sign to test against, like blood pressure */
     private org.mitre.synthea.world.concepts.VitalSign vitalSign;
+    /** Comparator for the vital sign's value */
     private String operator;
+    /** The value to compare against */
     private double value;
 
     @Override

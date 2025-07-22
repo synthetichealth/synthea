@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.mitre.synthea.world.agents.Person;
 
+/** Interface for plan elgibility algorithms */
 @FunctionalInterface
 public interface IPlanEligibility extends Serializable {
 

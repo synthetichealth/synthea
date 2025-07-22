@@ -42,8 +42,9 @@ public class RunFlexporter {
    *  -ig {Implementation Guide file path}
    *
    * @param args Command line args as described above
+   * @throws IOException If a required file is not found
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     Queue<String> argsQ = new ArrayDeque<String>(Arrays.asList(args));
 
     File igDirectory = null;

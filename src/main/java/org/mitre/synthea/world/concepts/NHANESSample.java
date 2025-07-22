@@ -20,23 +20,32 @@ import org.mitre.synthea.helpers.Utilities;
  * and weights were recorded for individuals between 24 and 36 months old.
  */
 public class NHANESSample implements Serializable {
-  // NHANES ID
+  /** NHANES ID. */
   public int id;
-  // Sex
+
+  /** Sex of the individual. */
   public int sex;
-  // Age in months
+
+  /** Age in months. */
   public int agem;
-  // Weight
+
+  /** Weight of the individual. */
   public double wt;
-  // Height
+
+  /** Height of the individual. */
   public double ht;
-  // Sample weight as assigned by NHANES
+
+  /** Sample weight as assigned by NHANES. */
   public double swt;
-  // Race code
+
+  /** Race code of the individual. */
   public String racec;
-  // BMI computed from height and weight
+
+  /** BMI computed from height and weight. */
   public double bmi;
-  // Weighted probability that this sample should be selected relative to the other selected samples
+
+  /** Weighted probability that this sample should be selected relative to the
+   * other selected samples. */
   public double prob;
 
   public String toString() {

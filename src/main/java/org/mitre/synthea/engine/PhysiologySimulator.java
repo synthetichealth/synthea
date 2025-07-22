@@ -71,58 +71,114 @@ public class PhysiologySimulator {
     private List<MultiTableChartConfig> charts;
     private Map<String, Double> inputs;
 
+    /**
+     * Gets the input mappings for the simulation.
+     * @return the input mappings
+     */
     public final Map<String, Double> getInputs() {
       return inputs;
     }
 
+    /**
+     * Sets the input mappings for the simulation.
+     * @param inputs the input mappings to set
+     */
     public final void setInputs(Map<String, Double> inputs) {
       this.inputs = inputs;
     }
 
+    /**
+     * Gets the name of the simulation.
+     * @return the simulation name
+     */
     public String getName() {
       return name;
     }
 
+    /**
+     * Sets the name of the simulation.
+     * @param name the simulation name to set
+     */
     public void setName(String name) {
       this.name = name;
     }
 
+    /**
+     * Gets the model name for the simulation.
+     * @return the model name
+     */
     public String getModel() {
       return model;
     }
 
+    /**
+     * Sets the model name for the simulation.
+     * @param model the model name to set
+     */
     public void setModel(String model) {
       this.model = model;
     }
 
+    /**
+     * Gets the solver name for the simulation.
+     * @return the solver name
+     */
     public String getSolver() {
       return solver;
     }
 
+    /**
+     * Sets the solver name for the simulation.
+     * @param solver the solver name to set
+     */
     public void setSolver(String solver) {
       this.solver = solver;
     }
 
+    /**
+     * Gets the step size for the simulation.
+     * @return the step size
+     */
     public double getStepSize() {
       return stepSize;
     }
 
+    /**
+     * Sets the step size for the simulation.
+     * @param stepSize the step size to set
+     */
     public void setStepSize(double stepSize) {
       this.stepSize = stepSize;
     }
 
+    /**
+     * Gets the duration of the simulation.
+     * @return the simulation duration
+     */
     public double getDuration() {
       return duration;
     }
 
+    /**
+     * Sets the duration of the simulation.
+     * @param duration the simulation duration to set
+     */
     public void setDuration(double duration) {
       this.duration = duration;
     }
 
+    /**
+     * Gets the chart configurations for the simulation.
+     * @return the chart configurations
+     */
     public List<MultiTableChartConfig> getCharts() {
       return charts;
     }
 
+    /**
+     * Sets the chart configurations for the simulation.
+     * @param charts the chart configurations to set
+     */
     public void setCharts(List<MultiTableChartConfig> charts) {
       this.charts = charts;
     }

@@ -1,10 +1,17 @@
 package org.mitre.synthea.world.geography.quadtree;
 
+/**
+ * QuadTreeElement represents a subdivision of the tree.
+ */
 public interface QuadTreeElement {
-  /** Get the x-coordinate of this element. */
+  /** Get the x-coordinate of this element.
+   * @return the x-coordinate
+  */
   public double getX();
 
-  /** Get the y-coordinate of this element. */
+  /** Get the y-coordinate of this element.
+   * @return the y-coordinate
+  */
   public double getY();
 
   /**

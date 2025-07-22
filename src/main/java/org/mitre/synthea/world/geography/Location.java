@@ -21,6 +21,9 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.Employment;
 
+/**
+ * Represents a geographical location with associated data such as population.
+ */
 public class Location implements Serializable {
   private static final long serialVersionUID = 1L;
   private static LinkedHashMap<String, String> stateAbbreviations = loadAbbreviations();
@@ -28,19 +31,31 @@ public class Location implements Serializable {
   private static Map<String, List<String>> foreignPlacesOfBirth = loadCitiesByLanguage();
   private static final String COUNTRY_CODE = Config.get("generate.geography.country_code");
   private static CMSStateCodeMapper cmsStateCodeMapper = new CMSStateCodeMapper();
+
+  /** Total population of the location. */
   private long totalPopulation;
 
-  // cache the population by city name for performance
+  /** Cache the population by city name for performance */
   @JSONSkip
   private Map<String, Long> populationByCity;
+
+  /** Cache of population by city ID for performance. */
   @JSONSkip
   private Map<String, Long> populationByCityId;
+
+  /** Cache of zip codes by city name. */
   @JSONSkip
   private Map<String, List<Place>> zipCodes;
 
+  /** The name of the city. */
   public final String city;
+
+  /** Demographics for the city represented by the above variable. */
   private Demographics fixedCity;
+
+  /** The name of the state. */
   public final String state;
+
   /** Map of CityId to Demographics. */
   @JSONSkip
   private Map<String, Demographics> demographics;
@@ -233,6 +248,11 @@ public class Location implements Serializable {
     return results;
   }
 
+  /**
+   * Gets the population of a specific city.
+   * @param cityName The name of the city.
+   * @return The population of the city.
+   */
   public long getPopulation(String cityName) {
     return populationByCity.getOrDefault(cityName, 0L);
   }
@@ -508,9 +528,9 @@ public class Location implements Serializable {
 
   /**
    * Load a resource which contains foreign places of birth based on ethnicity in json format:
-   * <p></p>
+   * <p>
    * {"ethnicity":["city1,state1,country1", "city2,state2,country2"..., "cityN,stateN,countryN"]}
-   * <p></p>
+   * </p>
    * see src/main/resources/foreign_birthplace.json for a working example
    * package protected for testing
    * @param resource A json file listing foreign places of birth by ethnicity.

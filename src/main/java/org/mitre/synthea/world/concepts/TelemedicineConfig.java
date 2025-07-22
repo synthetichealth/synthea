@@ -20,26 +20,45 @@ import org.mitre.synthea.helpers.Utilities;
  * utilization of the emergency department.
  */
 public class TelemedicineConfig implements Serializable {
+  /** Ambulatory type of care */
   public static final String AMBULATORY = "ambulatory";
+  /** Emergency type of care */
   public static final String EMERGENCY = "emergency";
+  /** Telemedicine type of care */
   public static final String TELEMEDICINE = "telemedicine";
 
-  // The time in the simulation that transitions to telemedicine should start
+  /** The time in the simulation that transitions to telemedicine should start. */
   private long telemedicineStartTime;
+
+  /** List of insurance names with high emergency department utilization. */
   private List<String> highEmergencyUseInsuranceNames;
 
+  /** Distribution of emergency care types before telemedicine for high emergency use insurance. */
   private EnumeratedDistribution<String> preTelemedHighEmergency;
+
+  /** Distribution of emergency care types before telemedicine
+   * for typical emergency use insurance. */
   private EnumeratedDistribution<String> preTelemedTypicalEmergency;
+
+  /** Distribution of emergency care types during telemedicine
+   * for high emergency use insurance. */
   private EnumeratedDistribution<String> telemedHighEmergency;
+
+  /** Distribution of emergency care types during telemedicine
+   * for typical emergency use insurance. */
   private EnumeratedDistribution<String> telemedTypicalEmergency;
 
   /**
-   * A class to hold the transition probabilities of a given scenario. A scenario could be a person
-   * with a high ED utilization insurance plan and in the telemedicine era.
+   * A class to hold the transition probabilities of a given scenario.
+   * A scenario could be a person with a high ED utilization insurance plan
+   * and in the telemedicine era.
    */
   public static class TelemedicineProbabilities {
+    /** Ambulatory care transition probability */
     public double ambulatory;
+    /** Emergency care transition probability */
     public double emergency;
+    /** Telemedicine care transition probability */
     public double telemedicine;
 
     /**
@@ -70,33 +89,62 @@ public class TelemedicineConfig implements Serializable {
     }
   }
 
+  /**
+   * Returns the time in the simulation that transitions to telemedicine should start.
+   * @return The telemedicine start time.
+   */
   public long getTelemedicineStartTime() {
     return telemedicineStartTime;
   }
 
+  /**
+   * Returns the list of insurance names with high emergency department utilization.
+   * @return List of insurance names.
+   */
   public List<String> getHighEmergencyUseInsuranceNames() {
     return highEmergencyUseInsuranceNames;
   }
 
+  /**
+   * Returns the distribution of emergency care types before
+   * telemedicine for high emergency use insurance.
+   * @return Distribution of emergency care types.
+   */
   public EnumeratedDistribution<String> getPreTelemedHighEmergency() {
     return preTelemedHighEmergency;
   }
 
+  /**
+   * Returns the distribution of emergency care types before telemedicine for
+   * typical emergency use insurance.
+   * @return Distribution of emergency care types.
+   */
   public EnumeratedDistribution<String> getPreTelemedTypicalEmergency() {
     return preTelemedTypicalEmergency;
   }
 
+  /**
+   * Returns the distribution of emergency care types during
+   * telemedicine for high emergency use insurance.
+   * @return Distribution of emergency care types.
+   */
   public EnumeratedDistribution<String> getTelemedHighEmergency() {
     return telemedHighEmergency;
   }
 
+  /**
+   * Returns the distribution of emergency care types during
+   * telemedicine for typical emergency use insurance.
+   * @return Distribution of emergency care types.
+   */
   public EnumeratedDistribution<String> getTelemedTypicalEmergency() {
     return telemedTypicalEmergency;
   }
 
   /**
-   * Create an instance of TelemedicineConfig by reading it in from the JSON file in resources.
-   * @return A fully populated TelemedicineConfig object
+   * Create an instance of TelemedicineConfig by reading it in from
+   * the JSON file in resources.
+   * @return A fully populated TelemedicineConfig object.
    */
   public static TelemedicineConfig fromJSON() {
     TelemedicineConfig config = new TelemedicineConfig();

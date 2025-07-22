@@ -7,6 +7,9 @@ import org.mitre.synthea.helpers.SimpleYML;
 import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 
+/**
+ * Provides utilities for generating and managing names.
+ */
 public class Names {
 
   private static SimpleYML names = loadNames();
@@ -23,6 +26,10 @@ public class Names {
     }
   }
 
+  /**
+   * Indicates whether numbers should be appended to generated names.
+   * These numbers are used to indicate the patients as not real people.
+   */
   public static final boolean appendNumbersToNames =
       Config.getAsBoolean("generate.append_numbers_to_person_names", false);
 

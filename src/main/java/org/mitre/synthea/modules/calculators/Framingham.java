@@ -11,8 +11,13 @@ import org.mitre.synthea.helpers.Utilities;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.VitalSign;
 
+/**
+ * Calculates cardiovascular risk using the Framingham Heart Study.
+ */
 public class Framingham {
-
+  /**
+   * The number of milliseconds in 10 years.
+   */
   public static final long TEN_YEARS_IN_MS = TimeUnit.DAYS.toMillis(3650);
 
   private static int bound(int value, int min, int max) {
@@ -387,6 +392,9 @@ public class Framingham {
 
   /**
    * Calculate 10 year risk of atrial fibrillation.
+   * @param person The patient
+   * @param time Time to calculate risk as of
+   * @param perTimestep Whether to return the risk per timestep
    * @return risk
    */
   public static double atrialFibrillation10Year(Person person, long time, boolean perTimestep) {
@@ -474,6 +482,9 @@ public class Framingham {
 
   /**
    * Calculate 10 year stroke risk.
+   * @param person The patient
+   * @param time Time to calculate risk as of
+   * @param perTimestep Whether to return the risk per timestep
    * @return risk
    */
   public static double stroke10Year(Person person, long time, boolean perTimestep) {

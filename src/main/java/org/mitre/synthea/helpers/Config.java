@@ -8,6 +8,10 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * Utility class for managing configuration properties in Synthea.
+ * Provides methods to load, retrieve, and manipulate configuration values.
+ */
 public abstract class Config {
   private static Properties properties = new Properties();
 
@@ -22,13 +26,20 @@ public abstract class Config {
 
   /**
    * Load properties from a file.
+   *
+   * @param propsFile the file containing properties to load
+   * @throws FileNotFoundException if the file is not found
+   * @throws IOException if an error occurs while reading the file
    */
   public static void load(File propsFile) throws FileNotFoundException, IOException {
     properties.load(new FileReader(propsFile));
   }
 
   /**
-   * Load properties from an input stream. (ex, when running inside a JAR)
+   * Load properties from an input stream (e.g., when running inside a JAR).
+   *
+   * @param stream the input stream containing properties to load
+   * @throws IOException if an error occurs while reading the stream
    */
   public static void load(InputStream stream) throws IOException {
     properties.load(stream);
@@ -47,7 +58,7 @@ public abstract class Config {
   /**
    * Get a named property, or the default value if not found.
    *
-   * @param key          property name
+   * @param key property name
    * @param defaultValue value to return if the property is not found in the list
    * @return value for the property, or defaultValue if not found
    */
@@ -59,7 +70,7 @@ public abstract class Config {
    * Get a named property as a double value.
    *
    * @param key property name
-   * @return value for the property, or null if not found
+   * @return value for the property as a double, or null if not found
    */
   public static double getAsDouble(String key) {
     return Double.parseDouble(get(key));
@@ -68,9 +79,9 @@ public abstract class Config {
   /**
    * Get a named property as a double, or the default value if not found.
    *
-   * @param key          property name
+   * @param key property name
    * @param defaultValue value to return if the property is not found in the list
-   * @return value for the property, or defaultValue if not found
+   * @return value for the property as a double, or defaultValue if not found
    */
   public static double getAsDouble(String key, double defaultValue) {
     if (properties.containsKey(key)) {
@@ -84,7 +95,7 @@ public abstract class Config {
    * Get a named property as a boolean value.
    *
    * @param key property name
-   * @return value for the property, or null if not found
+   * @return value for the property as a boolean, or null if not found
    */
   public static boolean getAsBoolean(String key) {
     return Boolean.parseBoolean(get(key));
@@ -93,9 +104,9 @@ public abstract class Config {
   /**
    * Get a named property as a boolean, or the default value if not found.
    *
-   * @param key          property name
+   * @param key property name
    * @param defaultValue value to return if the property is not found in the list
-   * @return value for the property, or defaultValue if not found
+   * @return value for the property as a boolean, or defaultValue if not found
    */
   public static boolean getAsBoolean(String key, boolean defaultValue) {
     if (properties.containsKey(key)) {
@@ -109,7 +120,7 @@ public abstract class Config {
    * Get a named property as an int value.
    *
    * @param key property name
-   * @return value for the property, or null if not found
+   * @return value for the property as an int, or null if not found
    */
   public static int getAsInteger(String key) {
     return Integer.parseInt(get(key));
@@ -118,9 +129,9 @@ public abstract class Config {
   /**
    * Get a named property as an int, or the default value if not found.
    *
-   * @param key          property name
+   * @param key property name
    * @param defaultValue value to return if the property is not found in the list
-   * @return value for the property, or defaultValue if not found
+   * @return value for the property as an int, or defaultValue if not found
    */
   public static int getAsInteger(String key, int defaultValue) {
     if (properties.containsKey(key)) {
@@ -134,7 +145,7 @@ public abstract class Config {
    * Get a named property as a long value.
    *
    * @param key property name
-   * @return value for the property, or null if not found
+   * @return value for the property as a long, or null if not found
    */
   public static long getAsLong(String key) {
     return Long.parseLong(get(key));
@@ -143,9 +154,9 @@ public abstract class Config {
   /**
    * Get a named property as a long, or the default value if not found.
    *
-   * @param key          property name
+   * @param key property name
    * @param defaultValue value to return if the property is not found in the list
-   * @return value for the property, or defaultValue if not found
+   * @return value for the property as a long, or defaultValue if not found
    */
   public static long getAsLong(String key, long defaultValue) {
     if (properties.containsKey(key)) {
@@ -158,7 +169,7 @@ public abstract class Config {
   /**
    * Manually set a property.
    *
-   * @param key   property name
+   * @param key property name
    * @param value property value
    */
   public static void set(String key, String value) {
@@ -190,5 +201,4 @@ public abstract class Config {
       properties.remove(key);
     }
   }
-
 }

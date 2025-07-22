@@ -25,27 +25,51 @@ import org.mitre.synthea.helpers.Utilities;
  * probably don't need to be separate classes
  */
 public class Demographics implements Comparable<Demographics>, Serializable {
+  /** Number of people in the location. */
   public long population;
+  /** The unique identifier for the location. */
   public String id;
+  /** The name of the city. */
   public String city;
+  /** The name of the state where the city is located. */
   public String state;
+  /** The name of the county where the city is located. */
   public String county;
+
+  /** A map of age ranges to their frequency in the population. */
   public Map<String, Double> ages;
+  /** Age distribution for the population */
   private RandomCollection<String> ageDistribution;
+
+  /** A map of genders to their frequency in the population. */
   public Map<String, Double> gender;
+  /** Gender distribution of the population */
   private RandomCollection<String> genderDistribution;
+
+  /** A map of races to their frequency in the population. */
   public Map<String, Double> race;
+  /** Race distribution for the population */
   private RandomCollection<String> raceDistribution;
+
+  /** The percentage of the population that is of Hispanic ethnicity. */
   public double ethnicity;
+  /** Ethnicity distribution for the population */
   private RandomCollection<String> ethnicityDistribution;
+
+  /** A map of income ranges to their frequency in the population. */
   public Map<String, Double> income;
+  /** Income distribution for the population */
   private RandomCollection<String> incomeDistribution;
+
+  /** A map of education levels to their frequency in the population. */
   public Map<String, Double> education;
+  /** Eduction distribution for the population */
   private RandomCollection<String> educationDistribution;
 
   /**
    * Pick an age based on the population distribution for the city.
-   * @param random random to use
+   *
+   * @param random the random number generator to use
    * @return the age in years
    */
   public int pickAge(RandomNumberGenerator random) {
@@ -73,7 +97,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Pick a gender based on the population distribution for the city.
-   * @param random random to use
+   *
+   * @param random the random number generator to use
    * @return the gender
    */
   public String pickGender(RandomNumberGenerator random) {
@@ -92,8 +117,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Pick a race based on the population distribution for the city.
-   * Uses the US Census definition for race
-   * @param random random to use
+   * Uses the US Census definition for race.
+   *
+   * @param random the random number generator to use
    * @return the race
    */
   public String pickRace(RandomNumberGenerator random) {
@@ -115,7 +141,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * Pick an ethnicity based on the population distribution for the city.
    * Uses the US Census definition for ethnicity.
    *
-   * @param random random to use
+   * @param random the random number generator to use
    * @return "hispanic" or "nonhispanic"
    */
   public String pickEthnicity(RandomNumberGenerator random) {
@@ -133,7 +159,7 @@ public class Demographics implements Comparable<Demographics>, Serializable {
    * of spoken languages. For non-Hispanic, national distributions by race are used.
    * @param race US Census race
    * @param ethnicity "hispanic" or "nonhispanic"
-   * @param random random to use
+   * @param random the random number generator to use
    * @return the language spoken
    */
   public String languageFromRaceAndEthnicity(String race, String ethnicity,
@@ -232,9 +258,10 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   }
 
   /**
-   * Pick an ethnicity based on the population distribution for the city.
-   * @param random the random to use
-   * @return the income
+   * Pick an income level based on the population distribution for the city.
+   *
+   * @param random the random number generator to use
+   * @return the income level
    */
   public int pickIncome(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
@@ -266,8 +293,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   /**
    * Simple linear formula just maps federal poverty level to 0.0 and 75,000 to 1.0.
    * The 75,000 figure was chosen based on
-   * https://www.princeton.edu/~deaton/downloads/
-   * deaton_kahneman_high_income_improves_evaluation_August2010.pdf.
+   * https://www.princeton.edu/~deaton/downloads/deaton_kahneman_high_income_improves_evaluation_August2010.pdf
+   * @param income Annual income.
+   * @return a value between 0.0 and 1.0 representing the income level.
    */
   public double incomeLevel(int income) {
     double poverty =
@@ -296,6 +324,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Return a random education level based on statistics.
+   * @param random the random number generator to use
+   * @return the randomly selected education level
    */
   public String pickEducation(RandomNumberGenerator random) {
     // lazy-load in case this randomcollection isn't necessary
@@ -308,6 +338,10 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Return a random number between the configured bounds for a specified education level.
+   * @param level the education level, one of "less_than_hs", "hs_degree", "some_college",
+   *        "bs_degree"
+   * @param random the random number generator to use
+   * @return a random number between the configured bounds representing the education level
    */
   public double educationLevel(String level, RandomNumberGenerator random) {
     double lessThanHsMin = Config.getAsDouble(
@@ -344,6 +378,11 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Calculate the socio-economic score for the supplied parameters.
+   *
+   * @param income the income level
+   * @param education the education level
+   * @param occupation the occupation level
+   * @return the socio-economic score
    */
   public double socioeconomicScore(double income, double education, double occupation) {
     double incomeWeight = Config.getAsDouble("generate.demographics.socioeconomic.weights.income");
@@ -359,6 +398,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   /**
    * Return a high/middle/low socio economic category based on the supplied score and the
    * configured stratifier values.
+   *
+   * @param score the socio-economic score
+   * @return the socio-economic category, one of "High", "Middle", or "Low"
    */
   public String socioeconomicCategory(double score) {
     double highScore = Config.getAsDouble("generate.demographics.socioeconomic.score.high");
@@ -430,8 +472,8 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   /**
    * Map a single line of the demographics CSV file into a Demographics object.
    *
-   * @param line Line representing one city, parsed via SimpleCSV
-   * @return the Demographics for that city
+   * @param line a line representing one city, parsed via SimpleCSV
+   * @return the Demographics object for that city
    */
   private static Demographics csvLineToDemographics(Map<String,String> line) {
     Demographics d = new Demographics();
@@ -512,10 +554,10 @@ public class Demographics implements Comparable<Demographics>, Serializable {
   }
 
   /**
-   * A distribution with all zero values will cause run-time issues.
-   * If the values are all zero, an equally weighted uniform distribution
-   * will be set.
-   * @param map The map to check.
+   * A distribution with all zero values will cause runtime issues.
+   * If the values are all zero, an equally weighted uniform distribution will be set.
+   *
+   * @param map the map to check
    */
   private static void nonZeroDefaults(Map<String, Double> map) {
     // Any null or nan values should be zero
@@ -537,6 +579,9 @@ public class Demographics implements Comparable<Demographics>, Serializable {
 
   /**
    * Helper function to convert a map of frequencies into a RandomCollection.
+   *
+   * @param map the map of frequencies
+   * @return a RandomCollection based on the map
    */
   private static RandomCollection<String> buildRandomCollectionFromMap(Map<String, Double> map) {
     RandomCollection<String> distribution = new RandomCollection<>();

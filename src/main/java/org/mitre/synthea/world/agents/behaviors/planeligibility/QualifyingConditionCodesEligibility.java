@@ -22,7 +22,7 @@ import org.mitre.synthea.world.agents.Person;
  */
 public class QualifyingConditionCodesEligibility implements IPlanEligibility {
 
-  // A list that maintains the qualifying codes for this instance of an eligibility criteria.
+  /** A list that maintains the qualifying codes for this instance of an eligibility criteria. */
   private final List<String> qualifyingCodes;
 
   /**

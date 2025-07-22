@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class QuadTree {
 
+  /** Indicates whether this QuadTree node is a leaf. */
   protected boolean isLeaf = true;
   /** maximum amount of data at this node before it splits. */
   private int maxLeafSize = 50;
@@ -24,7 +25,7 @@ public class QuadTree {
   private double ycoord;
   private double radius;
 
-  /* branch data after split. */
+  /** The branches of this QuadTree node, if it is not a leaf. */
   protected QuadTree[] branches;
 
   /**

@@ -25,7 +25,9 @@ public class SimRunner {
 
   /**
    * Handles execution of a PhysiologySimulator.
-   * @param config simulation configuration
+   *
+   * @param config The simulation configuration.
+   * @param person The person for whom the simulation is being run.
    */
   public SimRunner(PhysiologyGeneratorConfig config, Person person) {
     this.config = config;
@@ -62,10 +64,21 @@ public class SimRunner {
     return config;
   }
 
+  /**
+   * Retrieves the value of a specified vital sign from the simulation results.
+   *
+   * @param parameter The vital sign to retrieve.
+   * @return The value of the specified vital sign.
+   */
   public double getVitalSignValue(VitalSign parameter) {
     return vitalSignResults.get(parameter);
   }
 
+  /**
+   * Checks if the simulation has been executed.
+   *
+   * @return True if the simulation has been executed, false otherwise.
+   */
   public boolean hasExecuted() {
     return firstExecution;
   }
