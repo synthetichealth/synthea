@@ -21,7 +21,8 @@ public class Claim implements Serializable {
   private static final long serialVersionUID = -3565704321813987656L;
   public static final BigDecimal ZERO_CENTS = BigDecimal.ZERO.setScale(2);
 
-  public static class ClaimCost {
+  public static class ClaimCost implements Serializable {
+    private static final long serialVersionUID = 1L;
     /** total cost of the entry. */
     public BigDecimal cost = ZERO_CENTS;
     /** copay paid by patient. */
