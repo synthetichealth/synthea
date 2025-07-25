@@ -135,6 +135,8 @@ public class Provider implements QuadTreeElement, Serializable {
         this.utilization.put(u.year, u.type, u.count);
       }
     }
+    // add the object being read to the static provider map
+    insertIntoProviderMap(this);
   }
 
   /**
@@ -506,18 +508,22 @@ public class Provider implements QuadTreeElement, Serializable {
           }
         }
 
-        if (providerByUuid.containsKey(parsed.uuid)) {
-          providerByUuid.get(parsed.uuid).merge(parsed);
-        } else {
-          providerByUuid.put(parsed.uuid, parsed);
-          boolean inserted = providerMap.insert(parsed);
-          if (!inserted) {
-            throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
-                + parsed.name + " @ " + parsed.city);
-          } else {
-            loaded++;
-          }
-        }
+        insertIntoProviderMap(parsed);
+      }
+    }
+  }
+
+  private static void insertIntoProviderMap(Provider provider) {
+    if (providerByUuid.containsKey(provider.uuid)) {
+      providerByUuid.get(provider.uuid).merge(provider);
+    } else {
+      providerByUuid.put(provider.uuid, provider);
+      boolean inserted = providerMap.insert(provider);
+      if (!inserted) {
+        throw new RuntimeException("Provider QuadTree Full! Dropping # " + loaded + ": "
+            + provider.name + " @ " + provider.city);
+      } else {
+        loaded++;
       }
     }
   }
@@ -812,6 +818,23 @@ public class Provider implements QuadTreeElement, Serializable {
       this.servicesProvided = other.servicesProvided;
     } else {
       this.servicesProvided.addAll(other.servicesProvided);
+    }
+
+    // Merge utilization tables
+    if (this.utilization == null) {
+        this.utilization = other.utilization;
+    } else if (other.utilization != null) {
+        for (Table.Cell<Integer, String, AtomicInteger> cell : other.utilization.cellSet()) {
+            Integer year = cell.getRowKey();
+            String key = cell.getColumnKey();
+            AtomicInteger otherValue = cell.getValue();
+
+            if (this.utilization.contains(year, key)) {
+                this.utilization.get(year, key).addAndGet(otherValue.get());
+            } else {
+                this.utilization.put(year, key, new AtomicInteger(otherValue.get()));
+            }
+        }
     }
   }
 
