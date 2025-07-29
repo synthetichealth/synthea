@@ -17,7 +17,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -103,6 +106,7 @@ public class Generator {
   public static class GeneratorOptions {
     public int population = Config.getAsInteger("generate.default_population", 1);
     public int threadPoolSize = Config.getAsInteger("generate.thread_pool_size", -1);
+    public int threadQueueSize = Config.getAsInteger("generate.thread_queue_size", -1);
     /** Reference Time when to start Synthea. By default equal to the current system time. */
     public long referenceTime = System.currentTimeMillis();
     /** End time of Synthea simulation. By default equal to the current system time. */
@@ -345,7 +349,30 @@ public class Generator {
 
     }
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(threadPoolSize);
+    ExecutorService threadPool;
+    if (this.options.threadQueueSize > 0) {
+      // bound the thread queue size to avoid memory issues in large sims
+      threadPool = new ThreadPoolExecutor(
+          1, threadPoolSize, 50L, TimeUnit.MILLISECONDS,
+          new ArrayBlockingQueue<>(this.options.threadQueueSize),
+          // rejection function, runs when the queue is full and a task cannot be accepted
+          (rTask, executor) -> {
+              try {
+                // the put function halts the thread until space is available in the queue
+                // functionally this means that once the queue is full new tasks will
+                // be put into the sequence as fast as current tasks are completed
+                // by worker threads
+                executor.getQueue().put(rTask);
+              } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  throw new RejectedExecutionException("Task interrupted while waiting for space in the queue", e);
+              }
+          }
+      );
+    } else {
+      // just use an unbounded, fixed pool
+      threadPool = Executors.newFixedThreadPool(threadPoolSize);
+    }
 
     if (options.initialPopulationSnapshotPath != null) {
       FileInputStream fis = null;
